@@ -67,15 +67,20 @@ compile_inputDB <- function(){
   inputDB
 }
 
+get_standby_inputDB <- function(){
+  rubric <- get_input_rubric(sheet = "output")
+  inputDB_ss <- 
+    rubric %>% 
+    filter(tab == "inputDB") %>% 
+    pull(Sheet)
+  standbyDB <- sheets_read(inputDB_ss, sheet = "inputDB", na = "NA", col_types= "ccccccccd")
+  standbyDB
+}
+
 check_input_updates <- function(inputDB  = NULL, standbyDB = NULL){
 
   if (is.null(standbyDB)){
-    rubric <- get_input_rubric(sheet = "output")
-    inputDB_ss <- 
-      rubric %>% 
-      filter(tab == "inputDB") %>% 
-      pull(Sheet)
-    standbyDB <- sheets_read(inputDB_ss, sheet = "inputDB", na = "NA", col_types= "ccccccccd")
+    standbyDB <- get_standby_inputDB()
   }
   if (is.null(inputDB)){
     inputDB <- compile_inputDB()
