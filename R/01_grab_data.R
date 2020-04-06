@@ -1,22 +1,16 @@
 
-remotes::install_github("tidyverse/googlesheets4")
-library(googlesheets4)
-library(tidyverse)
-library(lubridate)
-
+source("R/00_Functions.R")
 
 # for writing to the master input
 
 # sheets_write(dat, ssMaster, "master")
 
-ss_rubric <- "https://docs.google.com/spreadsheets/d/15kat5Qddi11WhUPBW3Kj3faAmhuWkgtQzioaHvAGZI0/edit#gid=0"
-input_rubric <- sheets_read(ss_rubric, sheet = "input") %>% 
-  filter(!is.na(Sheet))
 
 # -----------------------------------
 # THIS IS A VIOLENT RENEWAL, no checks yet. We need to make sure that the renewal
 # is lossless unless it's warranted.
 # -----------------------------------
+library(here)
 
 # renew the master input database
 output_source_ss <- 
@@ -25,23 +19,7 @@ output_source_ss <-
   pull(Sheet)
 
 # gather all the inputDBs
-input_list <- list()
-for (i in input_rubric$Short){
-  (ss_i           <- input_rubric %>% filter(Short == i) %>% pull(Sheet))
-  input_list[[i]] <-  sheets_read(ss_i, sheet = "database", na = "NA", col_types= "ccccccccd")
-}
-# bind and sort:
-outgoing <- 
-input_list %>% 
-  bind_rows() %>%  
-  mutate(Date2 = dmy(Date)) %>% 
-  arrange(Country,
-          Date2,
-          Sex, 
-          Measure,
-          Metric,
-          Age) %>% 
-  select(-Date2)
+outgoing <- compile_inputDB()
 
 # write it out
 sheets_write(outgoing, ss = output_source_ss, sheet = "inputDB")
