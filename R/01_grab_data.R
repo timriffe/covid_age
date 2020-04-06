@@ -12,17 +12,12 @@ source("R/00_Functions.R")
 # -----------------------------------
 library(here)
 
-# renew the master input database
-output_source_ss <- 
-  sheets_read(ss_rubric, sheet = "output") %>% 
-  filter(tab == "inputDB") %>% 
-  pull(Sheet)
+check_input_updates()
 
 # gather all the inputDBs
 outgoing <- compile_inputDB()
 
-# write it out
-sheets_write(outgoing, ss = output_source_ss, sheet = "inputDB")
+push_inputDB(outgoing)
 # ---------------------------------------------------------------------------- #
 
 

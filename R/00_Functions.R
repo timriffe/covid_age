@@ -31,7 +31,7 @@ p_load(gphgs, character.only = TRUE)
 sort_input_data <- function(X){
   X %>% 
   mutate(Date2 = dmy(Date)) %>% 
-    arrange(Country,
+    arrange(Code,
             Date2,
             Sex, 
             Measure,
@@ -42,16 +42,16 @@ sort_input_data <- function(X){
 
 # -------------------------------------------------
 
-get_input_rubric <- function(sheet = "input"){
+get_input_rubric <- function(tab = "input"){
   ss_rubric <- "https://docs.google.com/spreadsheets/d/15kat5Qddi11WhUPBW3Kj3faAmhuWkgtQzioaHvAGZI0/edit#gid=0"
-  input_rubric <- sheets_read(ss_rubric, sheet = sheet) %>% 
+  input_rubric <- sheets_read(ss_rubric, sheet = tab) %>% 
     filter(!is.na(Sheet))
   input_rubric
 }
 
 compile_inputDB <- function(){
 
-  rubric <- get_input_rubric(sheet = "input")
+  rubric <- get_input_rubric(tab = "input")
 
   input_list <- list()
   for (i in rubric$Short){
@@ -68,7 +68,7 @@ compile_inputDB <- function(){
 }
 
 get_standby_inputDB <- function(){
-  rubric <- get_input_rubric(sheet = "output")
+  rubric <- get_input_rubric(tab = "output")
   inputDB_ss <- 
     rubric %>% 
     filter(tab == "inputDB") %>% 
@@ -88,7 +88,7 @@ check_input_updates <- function(inputDB  = NULL, standbyDB = NULL){
   codes_have      <- standbyDB %>% pull(Code) %>% unique()
   codes_collected <- inputDB %>% pull(Code) %>% unique()
   
-  new_codes <- setdiff(codes_have, codes_collected)
+  new_codes <- codes_collected[!codes_collected%in%codes_have]
   if (length(new_codes)  > 0){
     cat(new_codes)
     nr <- nrow(standbyDB) - nrow(inputDB)
@@ -106,4 +106,16 @@ inspect_code <- function(DB, .Code){
     View()
 }
 
+# aghressive push
+push_inputDB <- function(inputDB = NULL){
+  if (is.null(inputDB)){
+    inputDB <- compile_inputDB()
+  }
+  inputDB_ss <- 
+    get_input_rubric(tab="output") %>% 
+    filter(tab == "inputDB") %>% 
+    pull(Sheet)
+  
+  sheets_write(inputDB, ss = inputDB_ss, sheet = "inputDB")
+}
 # TODO: write validation functions
