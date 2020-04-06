@@ -10,14 +10,14 @@ source("R/00_Functions.R")
 # THIS IS A VIOLENT RENEWAL, no checks yet. We need to make sure that the renewal
 # is lossless unless it's warranted.
 # -----------------------------------
-library(here)
 
-check_input_updates()
+
+#check_input_updates()
 
 # gather all the inputDBs
-outgoing <- compile_inputDB()
+inputDB <- compile_inputDB()
 
-push_inputDB(outgoing)
+#push_inputDB(inputDB)
 # ---------------------------------------------------------------------------- #
 
 
