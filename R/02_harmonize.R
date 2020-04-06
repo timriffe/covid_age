@@ -9,8 +9,9 @@ source("R/00_Functions.R")
 # 3) redistribute unknown Age
 
 inputDB <- get_standby_inputDB()
-chunk <- inputDB %>% filter(Code == "WA25.03.2020",
-                            Measure == "Cases")
+chunk <- inputDB %>% filter(Code == "ITinfo30.03.2020")
+
+# Need to subset on Measure as well!!
 convert_fractions <- function(chunk){
   # subset should contain only Fractions and one Total Count
   
@@ -36,6 +37,31 @@ convert_fractions <- function(chunk){
            Metric = "Count")
   
   out
+}
+
+# subset cannot include Metric or Measure
+infer_cases_from_deaths_and_ascfr <- function(chunk){
+  if (! all(c("Ratio","Count") %in% chunk$Metric)){
+    return(chunk)
+  }
+  ASCFR  <- chunk %>% filter(Metric == "Ratio")
+  stopifnot(all(ASCFR$Measure == "ASCFR"))
+  Deaths <- chunk %>% filter(Metric == "Count")
+  stopifnot(all(Deaths$Measure == "Deaths"))
+  stopifnot(nrow(Deaths) == nrow(ASCFR))
+  Cases  <- ASCFR
+  
+  if (any(ASCFR$Value == 0)){
+    ind <- ASCFR$Value > 0 & !is.na(ASCFR$AgeInt)
+    a <- smooth.spline(log(ASCFR$Value[ind]) ~ ASCFR$Age[ind])
+  }
+  
+  Cases %>% 
+    mutate(Value = Deaths$Value / ASCFR$Value,
+           Measure = "Cases",
+           Metric = "Count")
+           
+  
   
 }
 

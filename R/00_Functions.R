@@ -31,8 +31,9 @@ p_load(gphgs, character.only = TRUE)
 sort_input_data <- function(X){
   X %>% 
   mutate(Date2 = dmy(Date)) %>% 
-    arrange(Code,
+    arrange(Country,
             Date2,
+            Code,
             Sex, 
             Measure,
             Metric,
