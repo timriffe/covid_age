@@ -106,3 +106,4 @@ inspect_code <- function(DB, .Code){
     View()
 }
 
+# TODO: write validation functions

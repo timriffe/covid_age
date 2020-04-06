@@ -66,12 +66,9 @@ sheets_write(outgoing, ss = output_source_ss, sheet = "inputDB")
 
 
 
-# deprecated from old project
-# ss  <- "https://docs.google.com/spreadsheets/d/1LdMsCq7JAgeWpJ-veobTDTzeZ9A3WIAx-ghjF49JDGE"
-# 
-# dat <- sheets_read(ss, sheet = "long(Flexible Inputs)",skip =1, na = "NA", col_types= "ccccccccd")
-# 
-# dat %>% 
-#   mutate(Date = dmy(Date)) 
 
-# sheets_append()
+#  ss  <- "https://docs.google.com/spreadsheets/d/1LdMsCq7JAgeWpJ-veobTDTzeZ9A3WIAx-ghjF49JDGE"
+#  
+#  dat <- sheets_read(ss, sheet = "long(Flexible Inputs)",skip =1, na = "NA", col_types= "ccccccccd")
+#  can <- dat %>% filter(Country == "Canada")
+# View(can)
