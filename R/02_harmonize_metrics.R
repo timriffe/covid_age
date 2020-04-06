@@ -7,22 +7,22 @@ source("R/01_grab_data.R")
 # 1) convert Fractions to Counts
 # 2) calculate Cases from ASCFR and Deaths
 # 3) redistribute unknown Age
+# Careful to subset on the right things for each step.
 
-# inputDB <- get_standby_inputDB()
-# chunk   <- inputDB %>% filter(Code == "ITinfo30.03.2020")
-
-# Need to subset on Measure as well!!
 inputCounts <- 
   inputDB %>% 
   group_by(Code, Sex, Measure) %>% 
   do(convert_fractions(chunk = .data)) %>% 
   ungroup() %>% 
   group_by(Code, Sex) %>% 
+  # TR: This step can be improved I think.
   do(infer_cases_from_deaths_and_ascfr(chunk = .data)) %>% 
   ungroup() %>% 
   group_by(Code, Sex, Measure) %>% 
   do(redistribute_unknown_age(chunk = .data)) %>% 
   ungroup() 
 
-
+# -------------------------------#
+# Next step harmonize age groups #
+# -------------------------------#
 
