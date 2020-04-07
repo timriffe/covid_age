@@ -20,8 +20,11 @@ inputCounts <-
   ungroup() %>% 
   group_by(Code, Sex, Measure) %>% 
   do(redistribute_unknown_age(chunk = .data)) %>% 
-  ungroup() 
+  ungroup() %>% 
+  mutate(Age = as.integer(Age))
 
+inputCounts %>% 
+  filter(is.na(Age))
 # -------------------------------#
 # Next step harmonize age groups #
 # -------------------------------#
