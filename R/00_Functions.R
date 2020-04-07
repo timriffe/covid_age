@@ -56,9 +56,9 @@ compile_inputDB <- function(){
 
   input_list <- list()
   for (i in rubric$Short){
-    (ss_i           <- rubric %>% filter(Short == i) %>% pull(Sheet))
+    ss_i           <- rubric %>% filter(Short == i) %>% pull(Sheet)
     input_list[[i]] <- sheets_read(ss_i, sheet = "database", na = "NA", col_types= "ccccccccd")
-    Sys.sleep(2)
+    Sys.sleep(20)
   }
   # bind and sort:
   inputDB <- 
@@ -68,6 +68,15 @@ compile_inputDB <- function(){
   
   inputDB
 }
+
+# load just a single country
+get_country_inputDB <- function(ShortCode){
+  rubric <- get_input_rubric(tab = "input")
+  ss_i   <- rubric %>% filter(Short == ShortCode) %>% pull(Sheet)
+  sheets_read(ss_i, sheet = "database", na = "NA", col_types= "ccccccccd")
+}
+
+
 
 get_standby_inputDB <- function(){
   rubric <- get_input_rubric(tab = "output")
@@ -120,8 +129,12 @@ push_inputDB <- function(inputDB = NULL){
   
   sheets_write(inputDB, ss = inputDB_ss, sheet = "inputDB")
 }
-# TODO: write validation functions
 
+
+
+
+
+# TODO: write validation functions
 
 
 
