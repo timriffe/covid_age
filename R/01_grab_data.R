@@ -18,13 +18,13 @@ source("R/00_Functions.R")
 inputDB   <- compile_inputDB()
 standbyDB <- get_standby_inputDB()
 
-codes_all <- unique(inputDB$Code)
-codes_standby <- unique(standbyDB$Code)
-dim(standbyDB)
-
-inspect <- codes_all[!codes_all %in% codes_standby]
-
-inspect_code(inputDB, inspect[1])
+# codes_all <- unique(inputDB$Code)
+# codes_standby <- unique(standbyDB$Code)
+# dim(standbyDB)
+# 
+# inspect <- codes_all[!codes_all %in% codes_standby]
+# 
+# inspect_code(inputDB, inspect[1])
 #push_inputDB(inputDB)
 # ---------------------------------------------------------------------------- #
 
