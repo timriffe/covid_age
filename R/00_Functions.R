@@ -37,7 +37,7 @@ sort_input_data <- function(X){
             Sex, 
             Measure,
             Metric,
-            Age) %>% 
+            suppressWarnings(as.integer(Age))) %>% 
     select(-Date2)
 }
 

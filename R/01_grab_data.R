@@ -18,14 +18,44 @@ source("R/00_Functions.R")
 inputDB   <- compile_inputDB()
 standbyDB <- get_standby_inputDB()
 
-# codes_all <- unique(inputDB$Code)
-# codes_standby <- unique(standbyDB$Code)
-# dim(standbyDB)
-# 
-# inspect <- codes_all[!codes_all %in% codes_standby]
-# 
-# inspect_code(inputDB, inspect[1])
-#push_inputDB(inputDB)
+check_db <- FALSE
+if (check_db){
+  dim(standbyDB)
+  dim(inputDB)
+  codes_all     <- unique(inputDB$Code)
+  codes_standby <- unique(standbyDB$Code)
+
+  (inspect <- codes_all[!codes_all %in% codes_standby])
+  # 
+  # inputDB <- inputDB %>% 
+  #   sort_input_data()
+  
+  # 
+  # inspect_code(inputDB, inspect[1])
+  #push_inputDB(inputDB)
+  
+  # replace ITbol* with new load after Date correction
+  #  ES <- get_country_inputDB("ES")
+  # inputDB <-
+  #    inputDB %>% 
+  #    filter(!grepl("ES",Code)) %>% 
+  #    rbind(ES) %>% dim()
+  
+  
+  # check closeout ages:
+  CloseoutCheck <- 
+    inputDB %>% 
+    group_by(Code,Sex)  %>% 
+    filter(Age!="UNK",
+           Age!="TOT") %>% 
+    mutate(Age = as.integer(Age),
+           AgeInt = as.integer(AgeInt))  %>% 
+    slice(n()) %>% 
+    mutate(Closeout = Age + AgeInt) %>% 
+    filter(Closeout != 105)
+    
+}
+
 # ---------------------------------------------------------------------------- #
 
 
