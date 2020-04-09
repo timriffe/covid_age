@@ -3,18 +3,27 @@
 
 
 
+have_offsets <- Offsets %>% 
+  pull(Country) %>% 
+  unique()
 
-library(tidyverse)
-library(ungroup)
-library(DemoTools)
+chunk <- inputCounts %>% 
+  filter(Code == "NYC31.03.2020",
+         Measure == "Deaths")
 
-
-
-harmonize_age <- function(chunk, pop, age_pop, N = 5, OAnew = 100){
+harmonize_age <- function(chunk, Offsets, N = 5, OAnew = 100){
   Age     <- chunk %>% pull(Age)
   AgeInt  <- chunk %>% pull(AgeInt)
   Value   <- chunk %>% pull(Value) 
   
+  .Country <- chunk %>% pull(Country) %>% "["(1)
+  .Sex     <- chunk %>% pull(Sex) %>% "["(1)
+  Offset <- Offsets %>% 
+    filter(Country == .Country,
+           Sex == .Sex)
+  
+  pop <- Offset %>% pull(Population)
+  age_pop <- Offset %>% pull(Age)
   # maybe we don't need to do anything but lower the OAG?
   if (all(AgeInt == N) & max(Age) >= OAnew){
     Value  <- groupOAG(Value, Age, OAnew = OAnew)
@@ -51,6 +60,18 @@ harmonize_age <- function(chunk, pop, age_pop, N = 5, OAnew = 100){
   
   tibble(Age = Age, AgeInt = AgeInt, Value = VN)
 }
+
+
+inputCounts <- 
+  inputCounts %>% 
+  filter(Country %in% have_offsets)
+
+
+hm <- 
+  inputCounts %>% 
+  group_by(Country, Code, Date, Sex, Measure) %>% 
+  do(harmonize_age(chunk = .data, Offsets, N = 5, OAnew = 100)) %>% 
+  ungroup()
 
 # 
 # NYCpop2 <- c(NYCpop[1:85],yhat[86:length(yhat)])

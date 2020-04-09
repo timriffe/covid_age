@@ -40,7 +40,6 @@ our_names    <- c("SouthKorea","France","Germany","Italy",
 names(hmdCountries) <- our_names
 names(our_names)    <- hmdCountries
 
-library(HMDHFDplus)
 HMDOffsets <- lapply(hmdCountries, function(XYZ,us,pw,our_names){
   X         <- readHMDweb(XYZ, "Population",us,pw)
   X$HMDcode <- XYZ
@@ -64,7 +63,7 @@ us, pw, our_names) %>%
 #-------------------------------------------------------------
 
 # Offsets
-Offsets <- HMDoffsets %>% 
+Offsets <- HMDOffsets %>% 
   rbind(WAoffset) %>% 
   rbind(NYCoffset)
 
