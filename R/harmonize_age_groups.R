@@ -1,33 +1,15 @@
 
 # prelims to get offsets
-unique(inputDB$Country)
-hmdCountries <- c("KOR","CAN","FRATNP","DEUTNP","ITA","NLD","ESP","USA","BEL","CHE")
-our_names <- c("SouthKorea","Canada","France","Germany","Italy",
-               "Netherlands","Spain","USA","Belgium","Switzerland")
 
-WApop <- c(453551,475580,478896,464081,492661,539615,522479,521493,
-465060,470565,461238,495654,479135,419113,327717,212066,130696,136810)
-WAage <- (1:length(WApop) - 1) * 5
-
-NYCpop <- read_csv("Data/NYC_proj_pop_2020_Cornell.csv") %>% 
-  filter(Sex == "Total") %>% 
-  pull(`2020 estimate`)
-NYCage <- 0:85
 
 
 
 library(tidyverse)
-
 library(ungroup)
 library(DemoTools)
 
-plot(0:84,yhat[1:85] - y[1:85])
 
 
-chunk <- inputCounts %>% filter(Code == "NYC06.04.2020",
-                                Measure == "Deaths")
-chunk <- inputCounts %>% filter(Code == "WA31.03.2020",
-                                Measure == "Deaths")
 harmonize_age <- function(chunk, pop, age_pop, N = 5, OAnew = 100){
   Age     <- chunk %>% pull(Age)
   AgeInt  <- chunk %>% pull(AgeInt)
@@ -101,12 +83,5 @@ harmonize_age <- function(chunk, pop, age_pop, N = 5, OAnew = 100){
 # plot(0:104, NYCpop2)
 
 # step 1: get single age offsets for each country.
-
-library(HMDHFDplus)
-
-
-
-
-
 
 

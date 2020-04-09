@@ -1,3 +1,6 @@
+
+
+# ----------------------------------------------
 # dependency preamble
 # ----------------------------------------------
 # install pacman to streamline further package installation
@@ -7,7 +10,7 @@ if (!require("pacman", character.only = TRUE)){
     stop("Package not found")
 }
 
-packages_CRAN <- c("tidyverse","lubridate","here","gargle","ungroup")
+packages_CRAN <- c("tidyverse","lubridate","here","gargle","ungroup","HMDHFDplus")
 
 if(!sum(!p_isinstalled(packages_CRAN))==0){
   p_install(
@@ -16,16 +19,24 @@ if(!sum(!p_isinstalled(packages_CRAN))==0){
   )
 }
 
-gphgs <-c("googlesheets4")
-
+gphgs <- c("googlesheets4","DemoTools")
 # install from github if necessary
-if (!p_isinstalled(gphgs)){
+if (!p_isinstalled("googlesheets4")){
   library(remotes)
   install_github("tidyverse/googlesheets4")
 }
+if (!p_isinstalled("DemoTools")){
+  library(remotes)
+  install_github("timriffe/DemoTools")
+}
+
 # load the packages
 p_load(packages_CRAN, character.only = TRUE)
 p_load(gphgs, character.only = TRUE)
+
+# --------------------------------
+
+
 
 #--------------------------------------------------
 sort_input_data <- function(X){
