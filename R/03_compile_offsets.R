@@ -51,6 +51,7 @@ us, pw, our_names) %>%
   select(Country, Year, Age, Female2, Male2, Total2) %>% 
   rename(f = Female2, m = Male2, b = Total2) %>% 
   group_by(Country) %>% 
+  filter(Year < 2020) %>% 
   filter(Year == max(Year)) %>% 
   mutate(Year = Year + 1) %>% # implies Jan 1 pop
   pivot_longer(cols = 4:6, names_to = "Sex", values_to = "Population") %>% 

@@ -53,7 +53,8 @@ if (check_db){
     slice(n()) %>% 
     mutate(Closeout = Age + AgeInt) %>% 
     filter(Closeout != 105)
-    
+  
+  CloseoutCheck
 }
 
 # ---------------------------------------------------------------------------- #
