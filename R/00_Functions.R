@@ -130,9 +130,7 @@ inspect_code <- function(DB, .Code){
 
 # aghressive push
 push_inputDB <- function(inputDB = NULL){
-  if (is.null(inputDB)){
-    inputDB <- compile_inputDB()
-  }
+
   inputDB_ss <- 
     get_input_rubric(tab="output") %>% 
     filter(tab == "inputDB") %>% 
@@ -141,7 +139,15 @@ push_inputDB <- function(inputDB = NULL){
   sheets_write(inputDB, ss = inputDB_ss, sheet = "inputDB")
 }
 
+push_outputDB <- function(outputDB = NULL){
 
+  inputDB_ss <- 
+    get_input_rubric(tab="output") %>% 
+    filter(tab == "outputDB") %>% 
+    pull(Sheet)
+  
+  sheets_write(outputDB, ss = inputDB_ss, sheet = "outputDB")
+}
 
 
 
@@ -226,6 +232,7 @@ infer_cases_from_deaths_and_ascfr <- function(chunk){
   Cases <-
     Cases %>% 
     mutate(Value = Deaths$Value / ASCFR$Value,
+           Value = ifelse(is.nan(Value),0,Value), # in case UNK deaths was 0
            Measure = "Cases",
            Metric = "Count")
   
@@ -253,4 +260,62 @@ redistribute_unknown_age <- function(chunk){
   chunk
 }
 
+harmonize_age <- function(chunk, Offsets, N = 5, OAnew = 100){
+  Age     <- chunk %>% pull(Age)
+  AgeInt  <- chunk %>% pull(AgeInt)
+  Value   <- chunk %>% pull(Value) 
+  
+  .Country <- chunk %>% pull(Country) %>% "["(1)
+  .Sex     <- chunk %>% pull(Sex) %>% "["(1)
+  Offset   <- Offsets %>% 
+    filter(Country == .Country,
+           Sex == .Sex)
+  
+  pop     <- Offset %>% pull(Population)
+  age_pop <- Offset %>% pull(Age)
+  # maybe we don't need to do anything but lower the OAG?
+  if (all(AgeInt == N) & max(Age) >= OAnew){
+    Value   <- groupOAG(Value, Age, OAnew = OAnew)
+    Age     <- Age[1:length(Value)]
+    AgeInt  <- AgeInt[1:length(Value)]
+    return(select(chunk, Age, AgeInt, Value))
+  }
+  
+  # otherwise get offset sorted out.
+  if (max(age_pop) < 104 | !is_single(age_pop)){
+    p1 <- pclm(y = pop, x = age_pop, nlast = 105-max(age_pop), control = list(lambda = 10))$fitted
+    if (is_single(age_pop)){
+      ind            <- c(diff(age_pop)==1,FALSE)
+      p1[which(ind)] <- pop[ind]
+      
+    } 
+    pop            <- p1
+    age_pop        <- 0:104
+  }
+  
+  if (max(age_pop) > 104){
+    pop      <- groupOAG(pop, age_pop, OAnew = 104)
+    age_pop  <- 0:104
+  }
+  
+  # TR: I thought multiplying with offset would bring back to scale, but sum doesn't match.
+  # so need to rescale in next step (pattern looks OK)
+  V1      <- pclm(x = Age, 
+                  y = Value, 
+                  nlast = AgeInt[length(AgeInt)], 
+                  offset = pop, control = list(lambda = 10))$fitted * pop
+  # plot(V1)
+  # lines(rescaleAgeGroups(V1, rep(1,length(V1)), Value, AgeInt,splitfun=graduate_uniform) )
+  # Important to rescale
+  V1      <- rescaleAgeGroups(Value1 = V1, 
+                              AgeInt1 = rep(1,length(V1)), 
+                              Value2 = Value, 
+                              AgeInt2 = AgeInt, 
+                              splitfun = graduate_uniform)
+  VN      <- groupAges(V1, age_pop, N = N, OAnew = OAnew)
+  Age     <- names2age(VN)
+  AgeInt  <- rep(N, length(VN))
+  
+  tibble(Age = Age, AgeInt = AgeInt, Value = VN)
+}
 

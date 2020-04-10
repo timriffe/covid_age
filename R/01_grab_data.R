@@ -25,6 +25,7 @@ if (check_db){
   codes_all     <- unique(inputDB$Code)
   codes_standby <- unique(standbyDB$Code)
 
+  codes_standby[!codes_standby %in% codes_all]
   (inspect <- codes_all[!codes_all %in% codes_standby])
   # 
   # inputDB <- inputDB %>% 
