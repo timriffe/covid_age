@@ -28,4 +28,5 @@ inputCounts <-
 # Next step harmonize age groups #
 # -------------------------------#
 
-
+# NOTE: add function to check that for subsets with m and f Sex there is also a b
+# and create it if necessary.

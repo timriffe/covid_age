@@ -33,10 +33,16 @@ NYCoffset <- tibble(Country = "USA_NYC",
                     Sex = "b",
                     Population = NYCpop)
 
+CanadaOffsets <- read_csv("Data/CanadaOffsets.csv") %>% 
+  mutate(Population = Population * 1000)
+
+
+
 # HMD offsets:
-hmdCountries <- c("KOR","FRATNP","DEUTNP","ITA","NLD","ESP","USA","BEL","CHE","SWE")
+hmdCountries <- c("KOR","FRATNP","DEUTNP","ITA","NLD","ESP","USA","BEL","CHE","SWE","DNK","PRT")
 our_names    <- c("SouthKorea","France","Germany","Italy",
-               "Netherlands","Spain","USA","Belgium","Switzerland","Sweden")
+               "Netherlands","Spain","USA","Belgium","Switzerland","Sweden",
+               "Denmark","Portugal")
 names(hmdCountries) <- our_names
 names(our_names)    <- hmdCountries
 
@@ -66,7 +72,8 @@ us, pw, our_names) %>%
 # Offsets
 Offsets <- HMDOffsets %>% 
   rbind(WAoffset) %>% 
-  rbind(NYCoffset)
+  rbind(NYCoffset) %>% 
+  rbind(CanadaOffsets)
 
 
 
