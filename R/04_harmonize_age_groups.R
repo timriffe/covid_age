@@ -7,9 +7,21 @@ have_offsets <- Offsets %>%
   pull(Country) %>% 
   unique()
 
+
 inputCounts <- 
   inputCounts %>% 
   filter(Country %in% have_offsets)
+
+# iL<- split(inputCounts, list(inputCounts$Country, 
+#                              inputCounts$Code,
+#                              inputCounts$Date,
+#                              inputCounts$Sex,
+#                              inputCounts$Measure),
+#            drop = TRUE)
+# for (i in 1:length(iL)){
+#   chunk <- iL[[i]]
+#   harmonize_age(chunk, Offsets, N = 5, OAnew = 100)
+# }
 
 outputCounts_5 <- 
   inputCounts %>% 
@@ -18,6 +30,33 @@ outputCounts_5 <-
   ungroup() %>% 
   pivot_wider(names_from = Measure,
               values_from = Value) 
+head(outputCounts_5)
+
+spot_checks <- FALSE
+if (spot_checks){
+# Once-off diagnostic plot:
+outputCounts_5 %>% 
+  mutate(ASCFR = Deaths / Cases,
+         ASCFR = na_if(ASCFR, Deaths == 0)) %>% 
+  filter(!is.na(ASCFR),
+         Sex == "m") %>% 
+  ggplot(aes(x=Age, y = ASCFR, group = interaction(Country, Code))) + 
+  geom_line(alpha=.4) + 
+  scale_y_log10() + 
+  xlim(40,100)
+
+outputCounts_5 %>% 
+  mutate(ASCFR = Deaths / Cases,
+         ASCFR = na_if(ASCFR, Deaths == 0)) %>% 
+  filter(Age == 40,
+         !is.na(ASCFR),
+         ASCFR > 1e-2)
+outputCounts_5 %>% 
+  mutate(ASCFR = Deaths / Cases,
+         ASCFR = na_if(ASCFR, Deaths == 0)) %>% 
+  filter(Age == 60,
+         is.na(ASCFR))
+}
 
 outputCounts_10 <- 
   inputCounts %>% 

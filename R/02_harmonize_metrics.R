@@ -1,5 +1,5 @@
 source("R/00_Functions.R")
-source("R/01_grab_data.R")
+#source("R/01_grab_data.R")
 # this script transforms the inputDB as required, and produces standardized age groups
 # and columns.
 
@@ -11,6 +11,8 @@ source("R/01_grab_data.R")
 
 inputCounts <- 
   inputDB %>% 
+  filter(Sex != "UNK",
+         !(Age == "TOT" & Metric == "Fraction")) %>% 
   group_by(Code, Sex, Measure) %>% 
   do(convert_fractions(chunk = .data)) %>% 
   ungroup() %>% 
@@ -22,7 +24,7 @@ inputCounts <-
   do(redistribute_unknown_age(chunk = .data)) %>% 
   ungroup() %>% 
   mutate(Age = as.integer(Age),
-         AgeInt = as.integer(AgeInt))
+         AgeInt = as.integer(AgeInt)) 
 
 # -------------------------------#
 # Next step harmonize age groups #
@@ -30,3 +32,7 @@ inputCounts <-
 
 # NOTE: add function to check that for subsets with m and f Sex there is also a b
 # and create it if necessary.
+
+# inputCounts %>% pull(Age) %>% is.na() %>% sum()
+# inputCounts %>% 
+#   filter(is.na(Age))
