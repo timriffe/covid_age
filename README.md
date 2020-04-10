@@ -1,5 +1,4 @@
-# covid_age
-COVID-19 cases and deaths by age and sex
+# COVID-19 cases and deaths by age and sex
 
 What shall we name this database?
 
@@ -19,7 +18,6 @@ Other populations are on the way, including:
 - Ontario
 - Quebec
 - Montreal
-- Michigan
 - Ohio
 - Florida
 - revamped France including deaths outside hospitals 
