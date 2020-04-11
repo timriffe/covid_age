@@ -284,6 +284,9 @@ harmonize_age <- function(chunk, Offsets, N = 5, OAnew = 100){
   # otherwise get offset sorted out.
   if (max(age_pop) < 104 | !is_single(age_pop)){
     p1 <- pclm(y = pop, x = age_pop, nlast = 105-max(age_pop), control = list(lambda = 10))$fitted
+    # Some series report Cases before deaths start,
+    # and they're filled in with 0s, so this catches those?
+    # p1[is.nan(p1)] <- 0
     if (is_single(age_pop)){
       ind            <- c(diff(age_pop)==1,FALSE)
       p1[which(ind)] <- pop[ind]

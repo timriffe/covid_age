@@ -52,10 +52,10 @@ CanadaOffsets <- read_csv("Data/CanadaOffsets.csv") %>%
 
 
 # HMD offsets:
-hmdCountries <- c("KOR","FRATNP","DEUTNP","ITA","NLD","ESP","USA","BEL","CHE","SWE","DNK","PRT","JPN")
+hmdCountries <- c("KOR","FRATNP","DEUTNP","ITA","NLD","ESP","USA","BEL","CHE","SWE","DNK","PRT","JPN","AUS","GBR_NP","GBR_SCO")
 our_names    <- c("SouthKorea","France","Germany","Italy",
                "Netherlands","Spain","USA","Belgium","Switzerland","Sweden",
-               "Denmark","Portugal","Japan")
+               "Denmark","Portugal","Japan","Australia","United Kingdom","Scotland" )
 names(hmdCountries) <- our_names
 names(our_names)    <- hmdCountries
 
