@@ -5,7 +5,7 @@ What shall we name this database?
 This project is currently in development, stay tuned for documentation. You can get preliminary output in 5 and 10-year age groups in the `/Data` folder. This contains columns for `Cases`, `Deaths`, and `Tests` (presently only available by age for Denmark). There are more populations availale in the unharmonized input database (`inputDB.csv`) because they may be awaiting additional inputs needed to harmonize age groups.
 
 Presently, in the `inputDB` we have data for:
-Belgium, Canada, China (one snapshot only), Colombia, Denmark, France, Germany, Italy, Louisiana, Michigan, Netherlands, Portugal, South Korea, Spain, Sweden, Switzerland, USA, New York City, and Washington State.
+Colombia, Belgium, China (one snapshot only), Denmark, France, Germany, Italy, Netherlands, Portugal, South Korea, Spain, Sweden, Switzerland, Canada, USA, Louisiana, Michigan, Washington State, and New York City.
 
 Other populations are on the way, including:
 
@@ -22,7 +22,8 @@ Other populations are on the way, including:
 - Ohio
 - Florida
 - revamped France including deaths outside hospitals 
-- Italy regions (at least one snapshot)
+- Italy regions
+- UK
 - Scotland
 - Australia
 - Taiwan
