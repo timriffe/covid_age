@@ -10,9 +10,10 @@ Belgium, Canada, China (one snapshot only), Colombia, Denmark, France, Germany, 
 Other populations are on the way, including:
 
 - revamped Germany, including Bundesländer
+- Basque Country, Catalonia, and possibly other regions in Spain
 - South Africa
 - Japan
-- Brasil (possibly including regional detail)
+- Brasil (including regional detail)
 - Ecuador
 - Chile
 - Ontario
@@ -22,11 +23,15 @@ Other populations are on the way, including:
 - Florida
 - revamped France including deaths outside hospitals 
 - Italy regions (at least one snapshot)
+- Scotland
+- Australia
+- Taiwan
+- Hong Kong
 - your tip
 
-Most populations in the database contain multiple time snapshots, and all are continually monitored for new data releases. All statistics reported here are **cumulative**. 
+Most populations in the database contain multiple time snapshots, and all are continually monitored for new data releases.  All statistics reported here are **cumulative**. 
 
-Source documentation and a methods protocol are forthcoming. These results are provisional and may change if we decide to throw out particular sources, or if we change our minds about how to split age groups, etc. So please always use the most up-to-date version.
+Source documentation and a methods protocol are forthcoming. These results are provisional and may change if we decide to throw out particular sources, or if we change our minds about how to split age groups, etc. So **please always use the most up-to-date version**.
 
 If you know of sources for other populations, please either email, Tweet, or leave an *Issue* in this repository, and we'll look into it. If you would like to assist this project in gathering data, or other tasks, please let us know and I'm sure we can find a task!
 
