@@ -26,6 +26,9 @@ inputCounts <-
   mutate(Age = as.integer(Age),
          AgeInt = as.integer(AgeInt)) 
 
+# TR: add rescale_to_total() into the chain
+
+
 # -------------------------------#
 # Next step harmonize age groups #
 # -------------------------------#

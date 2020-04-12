@@ -139,15 +139,17 @@ push_inputDB <- function(inputDB = NULL){
   sheets_write(inputDB, ss = inputDB_ss, sheet = "inputDB")
 }
 
-push_outputDB <- function(outputDB = NULL){
 
-  inputDB_ss <- 
-    get_input_rubric(tab="output") %>% 
-    filter(tab == "outputDB") %>% 
-    pull(Sheet)
-  
-  sheets_write(outputDB, ss = inputDB_ss, sheet = "outputDB")
-}
+# Output can live straight in github now
+# push_outputDB <- function(outputDB = NULL){
+# 
+#   inputDB_ss <- 
+#     get_input_rubric(tab="output") %>% 
+#     filter(tab == "outputDB") %>% 
+#     pull(Sheet)
+#   
+#   sheets_write(outputDB, ss = inputDB_ss, sheet = "outputDB")
+# }
 
 
 
@@ -251,12 +253,16 @@ redistribute_unknown_age <- function(chunk){
   # this should happen after ratios turned to counts!
   stopifnot(all(chunk$Metric != "Ratio"))
   
+  # foresee TOT,
+  TOT <- chunk %>% filter(Age == "TOT")
+  
   if ("UNK" %in% chunk$Age){
     UNK   <- chunk %>% filter(Age == "UNK")
     chunk <- chunk %>% 
       filter(Age != "UNK") %>% 
       mutate(Value = Value + (Value / sum(Value)) * UNK$Value)
   }
+  chunk <- rbind(chunk, TOT)
   chunk
 }
 
@@ -321,4 +327,43 @@ harmonize_age <- function(chunk, Offsets, N = 5, OAnew = 100){
   
   tibble(Age = Age, AgeInt = AgeInt, Value = VN)
 }
+
+# This function to be run on a given Code * Sex subset.
+# This could be run before redistributing UNK, for example.
+rescale_to_total <- function(chunk){
+  hasTOT <- any("TOT" %in% chunk$Age)
+  allCounts <- all(chunk$Metric == "Count")
+  if (!hatTOT | !allCounts){
+    return(chunk)
+  }
+  
+  TOT <- chunk %>% filter(Age == "TOT")
+  # foresee this pathology
+  stopifnot(nrow(TOT) == 1)
+  
+  chunk <- chunk %>% 
+    filter(Age != "TOT") %>% 
+    mutate(Value = rescale_vector(Value, 
+                                  scale = TOT$Value))
+    
+  chunk
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
