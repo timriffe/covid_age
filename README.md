@@ -4,7 +4,10 @@ What shall we name this database?
 
 This project is currently in development, stay tuned for documentation. You can get preliminary output in 5 and 10-year age groups in the `/Data` folder. This contains columns for `Cases`, `Deaths`, and `Tests` (presently only available by age for Denmark). There are more populations availale in the unharmonized input database (`inputDB.csv`) because they may be awaiting additional inputs needed to harmonize age groups.
 
-Presently, in the `inputDB` we have data for:
+Here's an overview of populations available in the `inputDB` 
+- [x] Presently in the database
+- [ ] Forthcoming
+
 
 - [x] Belgium 
 - [x] Brazil    
@@ -43,9 +46,14 @@ Presently, in the `inputDB` we have data for:
   - [ ] Illinois
   - [ ] Massachusetts
   - [ ] Ohio
+- [ ] Peru
 - [ ] South Africa
 - [ ] Nigeria
 - [ ] Iceland
+- [ ] Norway
+- [ ] Ireland
+- [ ] Austria
+- [ ] Israel
 - [ ] Great Britain
 - [ ] Scotland
 - [ ] Australia

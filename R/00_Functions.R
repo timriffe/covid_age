@@ -128,7 +128,7 @@ inspect_code <- function(DB, .Code){
     View()
 }
 
-# aghressive push
+# agressive push
 push_inputDB <- function(inputDB = NULL){
 
   inputDB_ss <- 
@@ -254,13 +254,16 @@ redistribute_unknown_age <- function(chunk){
   stopifnot(all(chunk$Metric != "Ratio"))
   
   # foresee TOT,
-  TOT <- chunk %>% filter(Age == "TOT")
+  TOT   <- chunk %>% filter(Age == "TOT")
+  chunk <- chunk %>% filter(Age != "TOT")
   
   if ("UNK" %in% chunk$Age){
     UNK   <- chunk %>% filter(Age == "UNK")
     chunk <- chunk %>% 
       filter(Age != "UNK") %>% 
-      mutate(Value = Value + (Value / sum(Value)) * UNK$Value)
+      mutate(Value = Value + (Value / sum(Value)) * UNK$Value,
+             Value = ifelse(is.nan(Value),0,Value))
+    
   }
   chunk <- rbind(chunk, TOT)
   chunk
@@ -333,7 +336,7 @@ harmonize_age <- function(chunk, Offsets, N = 5, OAnew = 100){
 rescale_to_total <- function(chunk){
   hasTOT    <- any("TOT" %in% chunk$Age)
   allCounts <- all(chunk$Metric == "Count")
-  if (!hatTOT | !allCounts){
+  if (!hasTOT | !allCounts){
     return(chunk)
   }
   

@@ -19,7 +19,7 @@ inputDB   <- compile_inputDB()
 standbyDB <- get_standby_inputDB()
 
 check_db <- FALSE
-if (check_db){
+if (check_db){                     
   dim(standbyDB)
   dim(inputDB)
   codes_all     <- unique(inputDB$Code)
@@ -27,7 +27,7 @@ if (check_db){
 
   codes_standby[!codes_standby %in% codes_all]
       (inspect <- codes_all[!codes_all %in% codes_standby])
-  # 
+
   # inputDB <- inputDB %>% 
   #   sort_input_data()
   
