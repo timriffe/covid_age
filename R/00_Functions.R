@@ -68,7 +68,7 @@ compile_inputDB <- function(){
   input_list <- list()
   for (i in rubric$Short){
     ss_i           <- rubric %>% filter(Short == i) %>% pull(Sheet)
-    input_list[[i]] <- sheets_read(ss_i, sheet = "database", na = "NA", col_types= "ccccccccd")
+    input_list[[i]] <- sheets_read(ss_i, sheet = "database", na = "NA", col_types= "cccccccccd")
     Sys.sleep(20)
   }
   # bind and sort:
@@ -84,7 +84,7 @@ compile_inputDB <- function(){
 get_country_inputDB <- function(ShortCode){
   rubric <- get_input_rubric(tab = "input")
   ss_i   <- rubric %>% filter(Short == ShortCode) %>% pull(Sheet)
-  sheets_read(ss_i, sheet = "database", na = "NA", col_types= "ccccccccd")
+  sheets_read(ss_i, sheet = "database", na = "NA", col_types= "cccccccccd")
 }
 
 
@@ -331,7 +331,7 @@ harmonize_age <- function(chunk, Offsets, N = 5, OAnew = 100){
 # This function to be run on a given Code * Sex subset.
 # This could be run before redistributing UNK, for example.
 rescale_to_total <- function(chunk){
-  hasTOT <- any("TOT" %in% chunk$Age)
+  hasTOT    <- any("TOT" %in% chunk$Age)
   allCounts <- all(chunk$Metric == "Count")
   if (!hatTOT | !allCounts){
     return(chunk)
@@ -348,7 +348,6 @@ rescale_to_total <- function(chunk){
     
   chunk
 }
-
 
 
 
