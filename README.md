@@ -5,30 +5,54 @@ What shall we name this database?
 This project is currently in development, stay tuned for documentation. You can get preliminary output in 5 and 10-year age groups in the `/Data` folder. This contains columns for `Cases`, `Deaths`, and `Tests` (presently only available by age for Denmark). There are more populations availale in the unharmonized input database (`inputDB.csv`) because they may be awaiting additional inputs needed to harmonize age groups.
 
 Presently, in the `inputDB` we have data for:
-Colombia, Belgium, China (one snapshot only), Denmark, France, Germany, Italy, Netherlands, Portugal, South Korea, Spain, Sweden, Switzerland, Canada, USA, Louisiana, Michigan, Washington State, and New York City.
 
-Other populations are on the way, including:
+- [x] Belgium 
+- [x] Brazil    
+  - [x] Rio de Janeiro
+  - [ ] Brazilian regions
+- [x] Canada  
+  - [ ] Quebec
+  - [ ] Montreal
+  - [ ] Ontario
+- [x] China       
+- [x] Colombia    
+- [x] Denmark    
+- [x] Ecuador     
+- [x] Eswatini    
+- [x] France     
+- [x] Germany   
+  - [ ] German federal states
+- [x] Italy     
+  - [ ] Italian regions
+- [x] Mexico     
+- [x] Netherlands 
+- [x] Portugal   
+- [x] Scotland   
+- [x] South Korea  
+- [x] Spain  
+  - [x] Basque Country
+  - [ ] Catalonia
+- [x] Sweden     
+- [x] Switzerland
+- [x] USA 
+  - [x] New York City
+  - [x] Louisiana
+  - [x] Michigan
+  - [x] Washington state
+  - [ ] Georgia
+  - [ ] Illinois
+  - [ ] Massachusetts
+  - [ ] Ohio
+- [ ] South Africa
+- [ ] Nigeria
+- [ ] Iceland
+- [ ] Great Britain
+- [ ] Scotland
+- [ ] Australia
+- [ ] Hong Kong
+- [ ] Taiwan
+- [ ] Japan
 
-- revamped Germany, including Bundesländer
-- Basque Country, Catalonia, and possibly other regions in Spain
-- South Africa
-- Japan
-- Brasil (including regional detail)
-- Ecuador
-- Chile
-- Ontario
-- Quebec
-- Montreal
-- Ohio
-- Florida
-- revamped France including deaths outside hospitals 
-- Italy regions
-- UK
-- Scotland
-- Australia
-- Taiwan
-- Hong Kong
-- your tip
 
 Most populations in the database contain multiple time snapshots, and all are continually monitored for new data releases.  All statistics reported here are **cumulative**. 
 
