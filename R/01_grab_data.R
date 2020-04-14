@@ -34,6 +34,10 @@ if (check_db){
   # 
   # inspect_code(inputDB, inspect[1])
   #push_inputDB(inputDB)
+  # Save out the inputDB
+  
+  write_csv(inputDB, path = "Data/inputDB.csv")
+  saveRDS(inputDB, "Data/inputDB.rds")
   
   # replace ITbol* with new load after Date correction
   #  ES <- get_country_inputDB("ES")

@@ -63,10 +63,6 @@ outputCounts_10_rounded <-
 write_csv(outputCounts_10_rounded, path = "Data/Output_10.csv")
 saveRDS(outputCounts_10, "Data/Output_10.rds")
 
-# Save out the inputDB
-
-write_csv(inputDB, path = "Data/inputDB.csv")
-saveRDS(inputDB, "Data/inputDB.rds")
 
 # 
 

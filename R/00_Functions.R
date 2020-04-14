@@ -95,7 +95,7 @@ get_standby_inputDB <- function(){
     rubric %>% 
     filter(tab == "inputDB") %>% 
     pull(Sheet)
-  standbyDB <- sheets_read(inputDB_ss, sheet = "inputDB", na = "NA", col_types= "ccccccccd")
+  standbyDB <- sheets_read(inputDB_ss, sheet = "inputDB", na = "NA", col_types= "cccccccccd")
   standbyDB
 }
 
