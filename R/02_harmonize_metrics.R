@@ -14,6 +14,7 @@ source("R/00_Functions.R")
 #   inputDB %>% 
 #   filter(Country != "Ecuador")
 
+
 inputCounts <- 
   inputDB %>% 
   filter(Sex != "UNK",

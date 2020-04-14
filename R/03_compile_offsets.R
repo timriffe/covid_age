@@ -12,7 +12,8 @@ WApop <- c(453551,475580,478896,464081,492661,539615,522479,521493,
            465060,470565,461238,495654,479135,419113,327717,212066,130696,136810)
 WAage <- (1:length(WApop) - 1) * 5
 
-WAoffset <- tibble(Country = "USA_WA",
+WAoffset <- tibble(Country = "USA",
+                   Region = "Washington",
                    Year = 2020,
                    Age = WAage,
                    Sex = "b",
@@ -33,7 +34,8 @@ NYCpop <- c(119032, 116883, 114956, 112933, 110755, 110485, 107257, 106327,
             28920, 186691)
 
 NYCage <- 0:85
-NYCoffset <- tibble(Country = "USA_NYC",
+NYCoffset <- tibble(Country = "USA",
+                    Region = "NYC",
                     Year = 2020,
                     Age = NYCage,
                     Sex = "b",
@@ -51,7 +53,7 @@ CAN_both <- function(X){
 
 CanadaOffsets <- read_csv("Data/CanadaOffsets.csv") %>% 
   mutate(Population = Population * 1000) %>% 
-  group_by(Country) %>% 
+  group_by(Country, Region) %>% 
   do( CAN_both(X = .data)) %>% 
   ungroup()
 
