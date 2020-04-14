@@ -69,7 +69,7 @@ compile_inputDB <- function(){
   for (i in rubric$Short){
     ss_i           <- rubric %>% filter(Short == i) %>% pull(Sheet)
     input_list[[i]] <- sheets_read(ss_i, sheet = "database", na = "NA", col_types= "cccccccccd")
-    Sys.sleep(20)
+    Sys.sleep(30)
   }
   # bind and sort:
   inputDB <- 
@@ -86,7 +86,7 @@ get_country_inputDB <- function(ShortCode){
   ss_i   <- rubric %>% filter(Short == ShortCode) %>% pull(Sheet)
   sheets_read(ss_i, sheet = "database", na = "NA", col_types= "cccccccccd")
 }
-
+  
 
 
 get_standby_inputDB <- function(){

@@ -10,9 +10,9 @@ source("R/00_Functions.R")
 # Careful to subset on the right things for each step.
 
 # Temp filter, can't include Ecuador just yet:
-inputDB <- 
-  inputDB %>% 
-  filter(Country != "Ecuador")
+# inputDB <- 
+#   inputDB %>% 
+#   filter(Country != "Ecuador")
 
 inputCounts <- 
   inputDB %>% 
