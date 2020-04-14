@@ -275,9 +275,11 @@ harmonize_age <- function(chunk, Offsets, N = 5, OAnew = 100){
   Value   <- chunk %>% pull(Value) 
   
   .Country <- chunk %>% pull(Country) %>% "["(1)
+  .Region  <- chunk %>% pull(Region) %>% "["(1)
   .Sex     <- chunk %>% pull(Sex) %>% "["(1)
   Offset   <- Offsets %>% 
     filter(Country == .Country,
+           Region == .Region,
            Sex == .Sex)
   
   pop     <- Offset %>% pull(Population)

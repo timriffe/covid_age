@@ -69,7 +69,7 @@ Source documentation and a methods protocol are forthcoming. These results are p
 If you know of sources for other populations, please either email, Tweet, or leave an *Issue* in this repository, and we'll look into it. If you would like to assist this project in gathering data, or other tasks, please let us know and I'm sure we can find a task!
 
 ## The team (so far)
-Tim Riffe, Enrique Acosta, Toni F., Catalina Torres, Jose Manuel Aburto, Cosmo Strozza, Silvia Rizzi, Emanuele del Fava, Marilia Nepomuceno, Ugofilippo Basellini, Diego Alburez-Gutierrez, Rafael Silva, Alain Gagnon, Irwin Hecker, Didier Breton, Sergi Trias-Llimos, Ryohei Mogi, Fumiya Uchikoshi, Filipe Ribeiro, Emmanuel Olamijuwon, Raquel Guimaraes, Armando González, Christian Dudel, Alyson van Raalte, Mikko Myrskylä.
+Tim Riffe, Enrique Acosta, Filipe Ribeiro, Alyson van Raalte, Catalina Torres, Jose Manuel Aburto, Cosmo Strozza, Silvia Rizzi, Emanuele del Fava, Marilia Nepomuceno, Ugofilippo Basellini, Diego Alburez-Gutierrez, Rafael Silva, Alain Gagnon, Irwin Hecker, Didier Breton, Sergi Trias-Llimos, Ryohei Mogi, Fumiya Uchikoshi, Emmanuel Olamijuwon, Armando González, Toni F., Christian Dudel, Mikko Myrskylä.
 
 (and a few more people at the moment have made commitments. )
 

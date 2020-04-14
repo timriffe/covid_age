@@ -3,31 +3,34 @@
 
 
 # FOR NOW WE PROCESS INPUTS THAT HAVE OFFSETS, see step 3
-have_offsets <- Offsets %>% 
-  pull(Country) %>% 
-  unique()
+(have_offsets <- Offsets %>% 
+  mutate(code = paste(Country,Region,sep="-")) %>% 
+  pull(code) %>% 
+  unique())
 
 
-inputCounts <- 
+inputs_to_split <- 
   inputCounts %>% 
-  filter(Country %in% have_offsets)
+  mutate(code = paste(Country,Region,sep="-")) %>% 
+  filter(code %in% have_offsets)
 
-# iL<- split(inputCounts, list(inputCounts$Country, 
-#                              inputCounts$Code,
-#                              inputCounts$Date,
-#                              inputCounts$Sex,
-#                              inputCounts$Measure),
-#            drop = TRUE)
-# for (i in 1:length(iL)){
-#   chunk <- iL[[i]]
-#   harmonize_age(chunk, Offsets, N = 5, OAnew = 100)
-# }
+ iL<- split(inputs_to_split, list(inputs_to_split$Country, 
+                                  inputs_to_split$Region,
+                                  inputs_to_split$Code,
+                                  inputs_to_split$Date,
+                                  inputs_to_split$Sex,
+                                  inputs_to_split$Measure),
+            drop = TRUE)
+ for (i in 1:length(iL)){
+   chunk <- iL[[i]]
+   harmonize_age(chunk, Offsets, N = 5, OAnew = 100)
+ }
 
 
 
 outputCounts_5 <- 
-  inputCounts %>% 
-  group_by(Country, Code, Date, Sex, Measure) %>% 
+  inputs_to_split %>% 
+  group_by(Country, Region, Code, Date, Sex, Measure) %>% 
   do(harmonize_age(chunk = .data, Offsets, N = 5, OAnew = 100)) %>% 
   ungroup() %>% 
   pivot_wider(names_from = Measure,

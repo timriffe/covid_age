@@ -14,6 +14,8 @@ source("R/00_Functions.R")
 #   inputDB %>% 
 #   filter(Country != "Ecuador")
 
+# Some UNK Values in Chile coded as NA 
+#inputDB$Value[is.na(inputDB$Value)] <- 0
 
 inputCounts <- 
   inputDB %>% 

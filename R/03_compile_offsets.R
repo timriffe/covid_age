@@ -8,6 +8,7 @@
 
 # --------------------------------------
 # Washington State
+# These have a 2020 ref date. In 5-year age groups. Still on hunt for single ages.
 WApop <- c(453551,475580,478896,464081,492661,539615,522479,521493,
            465060,470565,461238,495654,479135,419113,327717,212066,130696,136810)
 WAage <- (1:length(WApop) - 1) * 5
@@ -19,8 +20,11 @@ WAoffset <- tibble(Country = "USA",
                    Sex = "b",
                    Population = WApop)
 
+# USA Needed still: Michigan, Louisiana, Illinois, Massechusetts (and maybe more)
+
 # --------------------------------------
 # New York City (Cornell Projection, HT Denys Dukovnov)
+# these are 2020 ref date already, so good to go.
 NYCpop <- c(119032, 116883, 114956, 112933, 110755, 110485, 107257, 106327, 
             104288, 104840, 97395, 93967, 94670, 93912, 92314, 92380, 92399, 
             92591, 90961, 89964, 94810, 97191, 103071, 117002, 130114, 141129, 
@@ -57,13 +61,18 @@ CanadaOffsets <- read_csv("Data/CanadaOffsets.csv") %>%
   do( CAN_both(X = .data)) %>% 
   ungroup()
 
+# -------------------- #
+# ALso NEED Montreal!  #
+# -------------------- #
 
 
+# ---------------------------------------
 # HMD offsets:
-hmdCountries <- c("KOR","FRATNP","DEUTNP","ITA","NLD","ESP","USA","BEL","CHE","SWE","DNK","PRT","JPN","AUS","GBR_NP","GBR_SCO")
+# ---------------------------------------
+hmdCountries <- c("KOR","FRATNP","DEUTNP","ITA","NLD","ESP","USA","BEL","CHE","SWE","DNK","PRT","JPN","AUS","GBR_NP","GBR_SCO","TWN")
 our_names    <- c("SouthKorea","France","Germany","Italy",
                "Netherlands","Spain","USA","Belgium","Switzerland","Sweden",
-               "Denmark","Portugal","Japan","Australia","United Kingdom","Scotland" )
+               "Denmark","Portugal","Japan","Australia","United Kingdom","Scotland","Taiwan" )
 names(hmdCountries) <- our_names
 names(our_names)    <- hmdCountries
 
@@ -71,19 +80,20 @@ HMDOffsets <- lapply(hmdCountries, function(XYZ,us,pw,our_names){
   X         <- readHMDweb(XYZ, "Population",us,pw)
   X$HMDcode <- XYZ
   X$Country <- our_names[XYZ]
+  X$Region <- "All"
   X
 },
 us, pw, our_names) %>% 
   bind_rows() %>% 
-  select(Country, Year, Age, Female2, Male2, Total2) %>% 
+  select(Country, Region, Year, Age, Female2, Male2, Total2) %>% 
   rename(f = Female2, m = Male2, b = Total2) %>% 
   group_by(Country) %>% 
   filter(Year < 2020) %>% 
   filter(Year == max(Year)) %>% 
   mutate(Year = Year + 1) %>% # implies Jan 1 pop
-  pivot_longer(cols = 4:6, names_to = "Sex", values_to = "Population") %>% 
+  pivot_longer(cols = 5:7, names_to = "Sex", values_to = "Population") %>% 
   ungroup() %>% 
-  arrange(Country, Sex, Age) 
+  arrange(Country, Region, Sex, Age) 
 
 
 #-------------------------------------------------------------
