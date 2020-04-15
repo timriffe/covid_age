@@ -15,11 +15,12 @@ source("R/00_Functions.R")
 #check_input_updates()
 
 # gather all the inputDBs
-inputDB   <- compile_inputDB()
-standbyDB <- get_standby_inputDB()
 
 check_db <- FALSE
-if (check_db){                     
+if (check_db){   
+  inputDB   <- compile_inputDB()
+  standbyDB <- get_standby_inputDB()
+  
   dim(standbyDB)
   dim(inputDB)
   codes_all     <- unique(inputDB$Code)
@@ -28,25 +29,45 @@ if (check_db){
   codes_standby[!codes_standby %in% codes_all]
       (inspect <- codes_all[!codes_all %in% codes_standby])
 
-  # inputDB <- inputDB %>% 
-  #   sort_input_data()
+  inputDB %>% filter(is.na(Code)) %>% View()
+  # Remove blank subsets, where they coming from?
+  inputDB <- inputDB %>% filter(!is.na(Country))
   
+  # any remaining NAs in Value?
+  inputDB %>% filter(is.na(Value)) %>% View()
+  
+  inputDB %>% pull(Measure) %>% unique()
+  
+  inputDB <- inputDB %>% mutate(
+    Measure = ifelse(Measure == "Death","Deaths","Measure")
+  )
+  
+  inputDB <- inputDB %>% 
+    mutate(Value = ifelse(is.na(Value),0,Value))
   # 
-  # inspect_code(inputDB, inspect[1])
-  #push_inputDB(inputDB)
-  # Save out the inputDB
+  inspect_code(inputDB, inspect[90])
+
+  # inputDB <- inputDB %>% 
+  #   mutate(Sex = ifelse(Sex == "t","b",Sex))
   
+  # DNK has too many pathological cases to include at the moment
+  inputDB <- inputDB %>% filter(Country != "Denmark")
+  # These are all aggressive pushes:
+  # Save out the inputDB
+  push_inputDB(inputDB)
   write_csv(inputDB, path = "Data/inputDB.csv")
   saveRDS(inputDB, "Data/inputDB.rds")
   
-  # replace ITbol* with new load after Date correction
-  #  ES <- get_country_inputDB("ES")
+  # ---------------------------------------------------
+  # replace subset with new load after Date correction
+  # ShortCode <- "ES"
+  # X <- get_country_inputDB(ShortCode)
   # inputDB <-
   #    inputDB %>% 
-  #    filter(!grepl("ES",Code)) %>% 
-  #    rbind(ES) %>% dim()
-  
-  
+  #    filter(!grepl(ShortCode,Code)) %>% 
+  #    rbind(X) %>% 
+  #    sort_input_data()
+  # ----------------------------------------------------
   # check closeout ages:
   CloseoutCheck <- 
     inputDB %>% 

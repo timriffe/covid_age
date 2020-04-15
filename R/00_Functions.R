@@ -172,6 +172,7 @@ convert_fractions <- function(chunk){
     return(chunk)
   }
   
+  # Console message
   cat("Fractions converted for", unique(chunk$Code),"\n")
   # one way to check a subset is single is that there should be a unique
   # Age for each row.
@@ -235,7 +236,9 @@ infer_cases_from_deaths_and_ascfr <- function(chunk){
     # stick UNK back on (assuming sorted properly)
     ASCFR <- rbind(ASCFR,UNK)
   }
+  # Console message
   cat("ACSFR converted to counts for",unique(chunk$Code),"\n")
+  
   Cases <-
     Cases %>% 
     mutate(Value = Deaths$Value / ASCFR$Value,
@@ -269,6 +272,11 @@ redistribute_unknown_age <- function(chunk){
       mutate(Value = Value + (Value / sum(Value)) * UNK$Value,
              Value = ifelse(is.nan(Value),0,Value))
     
+    # Console message
+    cat(paste("UNK Age redistributed for",
+        unique(chunk$Code),
+        unique(chunk$Sex),
+        unique(chunk$Measure)),"\n")
   }
   chunk <- rbind(chunk, TOT)
   chunk
@@ -283,6 +291,15 @@ rescale_to_total <- function(chunk){
     return(chunk)
   }
   
+  # Also could be only TOT is given, in which
+  # case we return zero rows. Such cases
+  # can remain in the inputDB, but not used downstream
+  if (nrow(chunk) == 1){
+    chunk %>% 
+      filter(Age != "TOT") %>% 
+      return()
+  }
+  
   TOT <- chunk %>% filter(Age == "TOT")
   # foresee this pathology
   stopifnot(nrow(TOT) == 1)
@@ -292,20 +309,119 @@ rescale_to_total <- function(chunk){
     mutate(Value = rescale_vector(Value, 
                                   scale = TOT$Value))
   
+  # Console message
+  cat(paste("Counts rescaled to TOT for",
+      unique(chunk$Code),
+      unique(chunk$Sex),
+      unique(chunk$Measure)),"\n")
+  
   chunk
 }
 
+# step must precede sex rescaling, right?
+
+# this should happen within age, though
+# group_by(Code, Age, Measure)
+redistribute_unknown_sex <- function(chunk){
+  # this should happen after ratios turned to counts!
+  stopifnot(all(chunk$Metric != "Ratio"))
+  
+  if ("UNK" %in% chunk$Sex){
+    UNK   <- chunk %>% filter(Sex == "UNK")
+    chunk <- chunk %>% 
+      filter(Sex != "UNK") %>% 
+      mutate(Value = Value + (Value / sum(Value)) * UNK$Value,
+             Value = ifelse(is.nan(Value),0,Value))
+    
+    # Console message
+    cat("UNK Sex redistributed for",
+        unique(chunk$Code),
+        unique(chunk$Age),
+        unique(chunk$Measure),"\n")
+  }
+
+  chunk
+}
+# inputDB %>%
+#   filter(Code == "US_IL14.04.2020") %>% 
+#   group_by(Code, Age, Measure) %>% 
+#   do(redistribute_unknown_sex(chunk = .data)) %>% 
+#   ungroup() %>% 
+#   group_by(Code, Sex, Measure) %>% 
+#   do(redistribute_unknown_age(chunk = .data)) %>% 
+#   View()
+
 # Here group_by(Country, Region, Code, Date, Measure).
 # AFTER all Measure == "Count", ergo at the end of the pipe.
+# this scales to totals (either stated or derived).
+# it doesn't scale within age groups. Hmmm.
+
+# This can produce NAs in early Belgium Deaths (presumably)
 rescale_sexes <- function(chunk){
-  if (TRUE){
-    
+  sexes <- chunk %>% pull(Sex) %>% unique()
+  Counts <- all(chunk$Metric == "Count")
+  if (!setequal(sexes,c("b","f","m")) | ! Counts){
+    return(chunk)
   }
+  
+  # Console message
+  cat("Sex-specific estimates rescaled to both-sex Totals for",
+      unique(chunk$Code),
+      unique(chunk$Measure),"\n")
+  
+  # separate chunks
+  m    <- chunk %>% filter(Sex == "m")
+  f    <- chunk %>% filter(Sex == "f")
+  b    <- chunk %>% filter(Sex == "b")
+  
+  # Get marginal sums
+  if ("TOT" %in% m$Age){
+    MM   <- m %>% filter(Age=="TOT") %>% pull(Value)
+  } else {
+    MM   <- m %>% pull(Value) %>% sum()
+  }
+  if ("TOT" %in% f$Age){
+    FF   <- f %>% filter(Age=="TOT") %>% pull(Value)
+  } else {
+    FF   <- f %>% pull(Value) %>% sum()
+  }
+  if ("TOT" %in% b$Age){
+    BB   <- b %>% filter(Age=="TOT") %>% pull(Value)
+  } else {
+    BB   <- b %>% pull(Value) %>% sum()
+  }
+  # Get adjustment coefs
+  PM     <- MM / (MM + FF)
+  Madj   <- (PM * BB) / MM
+  Fadj   <- ((1 - PM) * BB) / FF
+  
+  Madj <- ifelse(is.nan(Madj),1,Madj)
+  Fadj <- ifelse(is.nan(Fadj),1,Fadj)
+  # adjust Value
+  m      <- m %>% filter(Age != "TOT") %>% mutate(Value = Value * Madj)
+  f      <- f %>% filter(Age != "TOT") %>% mutate(Value = Value * Fadj)
+  
+  # return binded, no need for TOT columns,
+  # If these were previously there, they should
+  # have been used and thrown out already.
+  rbind(f,m,b)
 }
 
-
-
-
+infer_both_sex <- function(chunk){
+  sexes  <- chunk %>% pull(Sex) %>% unique()
+  Counts <- all(chunk$Metric == "Count")
+  if (!setequal(sexes,c("f","m")) | ! Counts){
+    return(chunk)
+  }
+  
+  chunk %>% 
+    pivot_wider(names_from = "Sex",
+                values_from = "Value") %>% 
+    mutate(b = f + m) %>% 
+    pivot_longer(cols = c(f,m,b),
+                 values_to = "Value",
+                 names_to = "Sex")
+}
 
 
 # Age harmonization is the last step.

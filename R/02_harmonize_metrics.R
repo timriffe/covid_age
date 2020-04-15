@@ -17,20 +17,26 @@ source("R/00_Functions.R")
 # Some UNK Values in Chile coded as NA 
 #inputDB$Value[is.na(inputDB$Value)] <- 0
 
-inputCounts <- 
+# TR: add Short to group_by!
+inputCounts <-
   inputDB %>% 
-  filter(Sex != "UNK",
-         !(Age == "TOT" & Metric == "Fraction")) %>% 
-  group_by(Country, Region, Code, Date, Sex, Measure) %>% 
+  filter(!(Age == "TOT" & Metric == "Fraction")) %>% 
+  group_by(Code, Sex, Measure) %>% 
   do(convert_fractions(chunk = .data)) %>% 
   ungroup() %>% 
-  group_by(Country, Region, Code, Date, Sex) %>% 
+  group_by(Code, Sex) %>% 
   # TR: This step can be improved I think.
   do(infer_cases_from_deaths_and_ascfr(chunk = .data)) %>% 
   ungroup() %>% 
-  group_by(Country, Region, Code, Date, Sex, Measure) %>% 
+  group_by(Code, Sex, Measure) %>% 
   do(redistribute_unknown_age(chunk = .data)) %>% 
   do(rescale_to_total(chunk = .data)) %>% 
+  ungroup() %>% 
+  group_by(Code, Measure) %>% 
+  do(rescale_sexes(chunk = .data)) %>% 
+  do(infer_both_sex(chunk = .data)) %>% 
+  group_by(Code, Age, Measure) %>% 
+  do(redistribute_unknown_sex(chunk = .data)) %>% 
   ungroup() %>% 
   mutate(Age = as.integer(Age),
          AgeInt = as.integer(AgeInt)) 

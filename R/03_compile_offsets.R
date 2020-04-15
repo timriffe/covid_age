@@ -7,6 +7,23 @@
 # --------------------------------------------#
 
 # --------------------------------------
+# China Offset from WPP2019:
+# United Nations, Department of Economic and Social Affairs, Population Division (2019). World Population Prospects 2019, custom data acquired via website.
+# it's a 2020 mid-year projection in 5-year age groups, good enough for now.
+
+CNpop <- c(83932,86735,84263,82342,87158,97989,
+128739,100091,96274,119838,123445,98740,77514,74150,
+44950,26545,16181,7582,2305,475,75) * 1000
+CNage <- (1:length(CNpop) - 1) * 5
+
+CNoffset <- tibble(Country = "China",
+                   Region = "All",
+                   Year = 2020,
+                   Age = CNage,
+                   Sex = "b",
+                   Population = CNpop)
+
+# --------------------------------------
 # Washington State
 # These have a 2020 ref date. In 5-year age groups. Still on hunt for single ages.
 WApop <- c(453551,475580,478896,464081,492661,539615,522479,521493,
@@ -65,14 +82,28 @@ CanadaOffsets <- read_csv("Data/CanadaOffsets.csv") %>%
 # ALso NEED Montreal!  #
 # -------------------- #
 
+# -------------------------------
+# Taiwan Offsets:
+TaiwanOffset <- 
+read_csv("Data/TaiwanOffset.csv") %>% 
+  pivot_longer(cols = 2:4,
+               names_to = "Sex",
+               values_to = "Population") %>% 
+  mutate(Country = "Taiwan",
+         Region = "All",
+         Year = 2020) %>% 
+  select(Country,Region, Year, Sex, Age, Population) %>% 
+  arrange(Sex, Age)
+
+
 
 # ---------------------------------------
 # HMD offsets:
 # ---------------------------------------
-hmdCountries <- c("KOR","FRATNP","DEUTNP","ITA","NLD","ESP","USA","BEL","CHE","SWE","DNK","PRT","JPN","AUS","GBR_NP","GBR_SCO","TWN")
+hmdCountries <- c("KOR","FRATNP","DEUTNP","ITA","NLD","ESP","USA","BEL","CHE","SWE","DNK","PRT","JPN","AUS","GBR_NP","GBR_SCO")
 our_names    <- c("SouthKorea","France","Germany","Italy",
                "Netherlands","Spain","USA","Belgium","Switzerland","Sweden",
-               "Denmark","Portugal","Japan","Australia","United Kingdom","Scotland","Taiwan" )
+               "Denmark","Portugal","Japan","Australia","United Kingdom","Scotland" )
 names(hmdCountries) <- our_names
 names(our_names)    <- hmdCountries
 
@@ -104,7 +135,9 @@ us, pw, our_names) %>%
 Offsets <- HMDOffsets %>% 
   rbind(WAoffset) %>% 
   rbind(NYCoffset) %>% 
-  rbind(CanadaOffsets)
+  rbind(CanadaOffsets) %>% 
+  rbind(CNoffset) %>% 
+  rbind(TaiwanOffset)
 
 
 

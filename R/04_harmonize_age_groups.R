@@ -12,20 +12,25 @@
 inputs_to_split <- 
   inputCounts %>% 
   mutate(code = paste(Country,Region,sep="-")) %>% 
-  filter(code %in% have_offsets)
+  filter(code %in% have_offsets, 
+         Country != "Denmark")
 
- iL<- split(inputs_to_split, list(inputs_to_split$Country, 
-                                  inputs_to_split$Region,
-                                  inputs_to_split$Code,
-                                  inputs_to_split$Date,
-                                  inputs_to_split$Sex,
-                                  inputs_to_split$Measure),
-            drop = TRUE)
- for (i in 1:length(iL)){
-   chunk <- iL[[i]]
-   harmonize_age(chunk, Offsets, N = 5, OAnew = 100)
- }
-
+#  iL<- split(inputs_to_split, list(inputs_to_split$Country, 
+#                                   inputs_to_split$Region,
+#                                   inputs_to_split$Code,
+#                                   inputs_to_split$Date,
+#                                   inputs_to_split$Sex,
+#                                   inputs_to_split$Measure),
+#             drop = TRUE)
+#  outTry5 <- list()
+#  for (i in 1:length(iL)){
+#    chunk <- iL[[i]]
+#    outTry5[[i]] <- try(harmonize_age(chunk, Offsets, N = 5, OAnew = 100))
+#  }
+#  outTry5[[1]]
+# (errors <- lapply(outTry5, function(x){
+#  length(x) == 1 
+# }) %>% unlist() %>% which())
 
 
 outputCounts_5 <- 
@@ -68,7 +73,7 @@ saveRDS(outputCounts_10, "Data/Output_10.rds")
 
 
 # 
-
+inputDB %>% pull(Measure) %>% unique()
 spot_checks <- FALSE
 if (spot_checks){
 # Once-off diagnostic plot:
@@ -79,7 +84,7 @@ outputCounts_5 %>%
          Sex == "b") %>% 
   ggplot(aes(x=Age, y = ASCFR, group = interaction(Country, Code))) + 
   geom_line(alpha=.4) + 
-  scale_y_log10() + 
+ #scale_y_log10() + 
   xlim(40,100)
 
 outputCounts_5 %>% 
