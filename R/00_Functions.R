@@ -68,7 +68,12 @@ compile_inputDB <- function(){
   input_list <- list()
   for (i in rubric$Short){
     ss_i           <- rubric %>% filter(Short == i) %>% pull(Sheet)
-    input_list[[i]] <- sheets_read(ss_i, sheet = "database", na = "NA", col_types= "cccccccccd")
+    X <- sheets_read(ss_i, 
+                     sheet = "database", 
+                     na = "NA", 
+                     col_types = "cccccccccd") %>% 
+      mutate(Short = i)
+    input_list[[i]] <- X
     Sys.sleep(30)
   }
   # bind and sort:
@@ -269,6 +274,42 @@ redistribute_unknown_age <- function(chunk){
   chunk
 }
 
+# This function to be run on a given Code * Sex subset.
+# This could be run before redistributing UNK, for example.
+rescale_to_total <- function(chunk){
+  hasTOT    <- any("TOT" %in% chunk$Age)
+  allCounts <- all(chunk$Metric == "Count")
+  if (!hasTOT | !allCounts){
+    return(chunk)
+  }
+  
+  TOT <- chunk %>% filter(Age == "TOT")
+  # foresee this pathology
+  stopifnot(nrow(TOT) == 1)
+  
+  chunk <- chunk %>% 
+    filter(Age != "TOT") %>% 
+    mutate(Value = rescale_vector(Value, 
+                                  scale = TOT$Value))
+  
+  chunk
+}
+
+# Here group_by(Country, Region, Code, Date, Measure).
+# AFTER all Measure == "Count", ergo at the end of the pipe.
+rescale_sexes <- function(chunk){
+  if (TRUE){
+    
+  }
+}
+
+
+
+
+
+
+# Age harmonization is the last step.
+
 harmonize_age <- function(chunk, Offsets, N = 5, OAnew = 100){
   Age     <- chunk %>% pull(Age)
   AgeInt  <- chunk %>% pull(AgeInt)
@@ -333,26 +374,6 @@ harmonize_age <- function(chunk, Offsets, N = 5, OAnew = 100){
   tibble(Age = Age, AgeInt = AgeInt, Value = VN)
 }
 
-# This function to be run on a given Code * Sex subset.
-# This could be run before redistributing UNK, for example.
-rescale_to_total <- function(chunk){
-  hasTOT    <- any("TOT" %in% chunk$Age)
-  allCounts <- all(chunk$Metric == "Count")
-  if (!hasTOT | !allCounts){
-    return(chunk)
-  }
-  
-  TOT <- chunk %>% filter(Age == "TOT")
-  # foresee this pathology
-  stopifnot(nrow(TOT) == 1)
-  
-  chunk <- chunk %>% 
-    filter(Age != "TOT") %>% 
-    mutate(Value = rescale_vector(Value, 
-                                  scale = TOT$Value))
-    
-  chunk
-}
 
 
 
