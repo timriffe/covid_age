@@ -7,7 +7,7 @@ This project is currently in development, stay tuned for documentation. You can 
 Here's an overview of populations available in the `inputDB` 
 - [x] Presently in the database
 - [ ] Forthcoming
-
+-------------------------------
 
 - [x] Belgium 
 - [x] Brazil    
