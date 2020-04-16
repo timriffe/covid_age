@@ -89,7 +89,12 @@ compile_inputDB <- function(){
 get_country_inputDB <- function(ShortCode){
   rubric <- get_input_rubric(tab = "input")
   ss_i   <- rubric %>% filter(Short == ShortCode) %>% pull(Sheet)
-  sheets_read(ss_i, sheet = "database", na = "NA", col_types= "cccccccccd")
+  out <- sheets_read(ss_i, 
+                     sheet = "database", 
+                     na = "NA", 
+                     col_types= "cccccccccd")
+  out$Short <- ShortCode
+  out
 }
   
 
@@ -429,8 +434,6 @@ infer_both_sex <- function(chunk){
 
 # Separate harmonize_offsets() is better,
 # it saves multiple redundant
-chunk<- Offsets %>% 
-  filter(Region == "NYC")
 
 harmonize_offset_age <- function(chunk){
   Age     <- chunk %>% pull(Age)
