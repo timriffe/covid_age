@@ -100,7 +100,7 @@ get_standby_inputDB <- function(){
     rubric %>% 
     filter(tab == "inputDB") %>% 
     pull(Sheet)
-  standbyDB <- sheets_read(inputDB_ss, sheet = "inputDB", na = "NA", col_types= "cccccccccd")
+  standbyDB <- sheets_read(inputDB_ss, sheet = "inputDB", na = "NA", col_types= "cccccccccdc")
   standbyDB
 }
 
@@ -203,6 +203,10 @@ infer_cases_from_deaths_and_ascfr <- function(chunk){
   if (! setequal(chunk$Metric, c("Ratio","Count") )){
     return(chunk)
   }
+  
+  TOT <- chunk %>% filter(Age == "TOT")
+  chunk <- chunk %>% filter(Age != "TOT")
+  
   ASCFR  <- chunk %>% filter(Metric == "Ratio")
   stopifnot(all(ASCFR$Measure == "ASCFR"))
   Deaths <- chunk %>% filter(Metric == "Count")
@@ -246,7 +250,7 @@ infer_cases_from_deaths_and_ascfr <- function(chunk){
            Measure = "Cases",
            Metric = "Count")
   
-  rbind(Cases, Deaths)
+  rbind(Cases, Deaths, TOT)
   
 }
 

@@ -39,11 +39,12 @@ if (check_db){
   inputDB %>% pull(Measure) %>% unique()
   
   inputDB <- inputDB %>% mutate(
-    Measure = ifelse(Measure == "Death","Deaths","Measure")
+    Measure = ifelse(Measure == "Death","Deaths",Measure)
   )
+  inputDB <- inputDB %>% filter(Measure != "Probable deaths")
   
-  inputDB <- inputDB %>% 
-    mutate(Value = ifelse(is.na(Value),0,Value))
+  # inputDB <- inputDB %>% 
+  #   mutate(Value = ifelse(is.na(Value),0,Value))
   # 
   inspect_code(inputDB, inspect[90])
 
@@ -132,3 +133,21 @@ if (check_db){
 #  dat <- sheets_read(ss, sheet = "long(Flexible Inputs)",skip =1, na = "NA", col_types= "ccccccccd")
 #  can <- dat %>% filter(Country == "Canada")
 # View(can)
+# 
+ # inputDB %>% 
+ #   filter(Short == "BR_RJ", 
+ #          Sex == "b", 
+ #          Measure == "Cases", 
+ #          Metric == "Count",
+ #          Age != "TOT") %>% 
+ #   group_by(Date)%>% 
+ #   summarize(Value = sum(Value)) %>%
+ #   ungroup() %>% 
+ #   mutate(date = dmy(Date)) %>% 
+ #   ggplot(aes(x=date,y=Value)) +
+ #   geom_line() 
+ #  
+ #  
+  
+  
+  

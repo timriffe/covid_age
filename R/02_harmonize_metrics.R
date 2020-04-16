@@ -33,6 +33,7 @@ inputCounts <-
   do(rescale_to_total(chunk = .data)) %>% 
   ungroup() %>% 
   group_by(Code, Measure) %>% 
+  # TR: change this to happen within Age
   do(rescale_sexes(chunk = .data)) %>% 
   do(infer_both_sex(chunk = .data)) %>% 
   group_by(Code, Age, Measure) %>% 
@@ -46,6 +47,10 @@ inputCounts <-
 inputCounts %>% 
   filter(is.na(Value))
 
+n <- duplicated(inputDB[,c("Code","Sex","Age","Measure","Metric")])
+sum(n)
+View(inputDB[n,])
+
 # -------------------------------#
 # Next step harmonize age groups #
 # -------------------------------#
@@ -56,3 +61,4 @@ inputCounts %>%
 # inputCounts %>% pull(Age) %>% is.na() %>% sum()
 # inputCounts %>% 
 #   filter(is.na(Age))
+?duplicated
