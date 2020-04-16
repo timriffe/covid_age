@@ -47,9 +47,6 @@ inputCounts <-
 inputCounts %>% 
   filter(is.na(Value))
 
-n <- duplicated(inputDB[,c("Code","Sex","Age","Measure","Metric")])
-sum(n)
-View(inputDB[n,])
 
 # -------------------------------#
 # Next step harmonize age groups #
@@ -61,4 +58,4 @@ View(inputDB[n,])
 # inputCounts %>% pull(Age) %>% is.na() %>% sum()
 # inputCounts %>% 
 #   filter(is.na(Age))
-?duplicated
+

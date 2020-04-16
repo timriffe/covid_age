@@ -127,9 +127,9 @@ us, pw, our_names) %>%
   arrange(Country, Region, Sex, Age) 
 
 
-#-------------------------------------------------------------
-# Compile Offset data object. single or 5-year age groups.   #
-#-------------------------------------------------------------
+# ------------------------------------------------------- #
+# Compile Offset data object. single or 5-year age groups #
+# ------------------------------------------------------- #
 
 # Offsets
 Offsets <- HMDOffsets %>% 
@@ -140,9 +140,15 @@ Offsets <- HMDOffsets %>%
   rbind(TaiwanOffset)
 
 
+# ------------------------------------------------------- #
+# pre-split offsets to standard age ranges                #
+# ------------------------------------------------------- #
 
-
-
+Offsets <- 
+   Offsets %>% 
+   group_by(Country, Region, Sex) %>% 
+   do(harmonize_offset_age(chunk = .data)) %>% 
+  ungroup()
 
 
 

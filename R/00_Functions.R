@@ -427,9 +427,56 @@ infer_both_sex <- function(chunk){
                  names_to = "Sex")
 }
 
+# Separate harmonize_offsets() is better,
+# it saves multiple redundant
+chunk<- Offsets %>% 
+  filter(Region == "NYC")
+
+harmonize_offset_age <- function(chunk){
+  Age     <- chunk %>% pull(Age)
+  Pop     <- chunk %>% pull(Population) 
+  
+  # if already in shape, then skip it
+  if (is_single(Age) & max(Age) == 104){
+    return(chunk[,"Age","Population"])
+  }
+  
+  # if single, but high open age, then drop it:
+  if (is_single(Age) & max(Age) > 104){
+    p1 <- groupOAG(Pop,Age,OAnew = 104)
+    out <- tibble(Age = 0:104,
+                  Population = p1)
+    return(out)
+  }
+  
+  nlast <- max(105 - max(Age), 5)
+  AgeInt<- age2int(Age, OAvalue = nlast)
+  p1 <- pclm(y = Pop, 
+             x = Age, 
+             nlast = nlast, 
+             control = list(lambda = 10))$fitted
+  
+  p1      <- rescaleAgeGroups(Value1 = p1, 
+                              AgeInt1 = rep(1,length(p1)), 
+                              Value2 = Pop, 
+                              AgeInt2 = AgeInt, 
+                              splitfun = graduate_uniform)
+  a1 <- 1:length(p1)-1
+  p1 <- groupOAG(p1, a1, OAnew = 104)
+  
+  out <- tibble(Age = 0:104,
+                Population = p1)
+  out
+}
+
+
+
+
+
+
+
 
 # Age harmonization is the last step.
-
 harmonize_age <- function(chunk, Offsets, N = 5, OAnew = 100){
   Age     <- chunk %>% pull(Age)
   AgeInt  <- chunk %>% pull(AgeInt)
@@ -452,26 +499,10 @@ harmonize_age <- function(chunk, Offsets, N = 5, OAnew = 100){
     AgeInt  <- AgeInt[1:length(Value)]
     return(select(chunk, Age, AgeInt, Value))
   }
-  
-  # otherwise get offset sorted out.
-  if (max(age_pop) < 104 | !is_single(age_pop)){
-    p1 <- pclm(y = pop, x = age_pop, nlast = 105-max(age_pop), control = list(lambda = 10))$fitted
-    # Some series report Cases before deaths start,
-    # and they're filled in with 0s, so this catches those?
-    # p1[is.nan(p1)] <- 0
-    if (is_single(age_pop)){
-      ind            <- c(diff(age_pop)==1,FALSE)
-      p1[which(ind)] <- pop[ind]
-      
-    } 
-    pop            <- p1
-    age_pop        <- 0:104
-  }
-  
-  if (max(age_pop) > 104){
-    pop      <- groupOAG(pop, age_pop, OAnew = 104)
-    age_pop  <- 0:104
-  }
+  # --------------------------------- #
+  # otherwise get offset sorted out.  #
+  # Offsets now handled in advance    #
+  # --------------------------------- #
   
   # TR: I thought multiplying with offset would bring back to scale, but sum doesn't match.
   # so need to rescale in next step (pattern looks OK)

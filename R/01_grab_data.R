@@ -51,6 +51,13 @@ if (check_db){
   # inputDB <- inputDB %>% 
   #   mutate(Sex = ifelse(Sex == "t","b",Sex))
   
+  # ---------------------------------- #
+  # duplicates check:
+  # -----------------------------------#
+  n <- duplicated(inputDB[,c("Code","Sex","Age","Measure","Metric")])
+  inputDB <- inputDB[-n, ]
+  
+  
   # DNK has too many pathological cases to include at the moment
   inputDB <- inputDB %>% filter(Country != "Denmark")
   # These are all aggressive pushes:
