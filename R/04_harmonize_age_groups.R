@@ -15,23 +15,26 @@ inputs_to_split <-
   filter(code %in% have_offsets, 
          Country != "Denmark")
 
-#  iL<- split(inputs_to_split, list(inputs_to_split$Country, 
-#                                   inputs_to_split$Region,
-#                                   inputs_to_split$Code,
-#                                   inputs_to_split$Date,
-#                                   inputs_to_split$Sex,
-#                                   inputs_to_split$Measure),
-#             drop = TRUE)
-#  outTry5 <- list()
-#  for (i in 1:length(iL)){
-#    chunk <- iL[[i]]
-#    outTry5[[i]] <- try(harmonize_age(chunk, Offsets, N = 5, OAnew = 100))
-#  }
-#  outTry5[[1]]
-# (errors <- lapply(outTry5, function(x){
-#  length(x) == 1 
-# }) %>% unlist() %>% which())
 
+# For detective work:
+ #  iL<- split(inputs_to_split, list(inputs_to_split$Country, 
+ #                                   inputs_to_split$Region,
+ #                                   inputs_to_split$Code,
+ #                                   inputs_to_split$Date,
+ #                                   inputs_to_split$Sex,
+ #                                   inputs_to_split$Measure),
+ #             drop = TRUE)
+ #  outTry5 <- list()
+ #  for (i in 1:length(iL)){
+ #    chunk <- iL[[i]]
+ #    outTry5[[i]] <- try(harmonize_age(chunk, Offsets, N = 5, OAnew = 100))
+ #  }
+ #  outTry5[[1]]
+ #  
+ # (errors <- lapply(outTry5, function(x){
+ #  length(x) == 1 
+ # }) %>% unlist() %>% which())
+ # 
 
 outputCounts_5 <- 
   inputs_to_split %>% 
@@ -45,8 +48,7 @@ outputCounts_5 <-
 outputCounts_5_rounded <- 
   outputCounts_5 %>% 
   mutate(Cases = round(Cases,1),
-         Deaths = round(Deaths,1),
-         Tests = round(Tests,1))
+         Deaths = round(Deaths,1))
 
 write_csv(outputCounts_5_rounded, path = "Data/Output_5.csv")
 saveRDS(outputCounts_5, "Data/Output_5.rds")
@@ -54,8 +56,8 @@ saveRDS(outputCounts_5, "Data/Output_5.rds")
 
 # Repeat for 10-year age groups
 outputCounts_10 <- 
-  inputCounts %>% 
-  group_by(Country, Code, Date, Sex, Measure) %>% 
+  inputs_to_split %>% 
+  group_by(Country, Region, Code, Date, Sex, Measure) %>% 
   do(harmonize_age(chunk = .data, Offsets, N = 10, OAnew = 100)) %>% 
   ungroup() %>% 
   pivot_wider(names_from = Measure,
@@ -65,11 +67,12 @@ outputCounts_10 <-
 outputCounts_10_rounded <- 
   outputCounts_10 %>% 
   mutate(Cases = round(Cases,1),
-         Deaths = round(Deaths,1),
-         Tests = round(Tests,1))
+         Deaths = round(Deaths,1))
 
 write_csv(outputCounts_10_rounded, path = "Data/Output_10.csv")
 saveRDS(outputCounts_10, "Data/Output_10.rds")
+
+
 
 
 # 
@@ -77,14 +80,34 @@ inputDB %>% pull(Measure) %>% unique()
 spot_checks <- FALSE
 if (spot_checks){
 # Once-off diagnostic plot:
-outputCounts_5 %>% 
-  mutate(ASCFR = Deaths / Cases,
-         ASCFR = na_if(ASCFR, Deaths == 0)) %>% 
-  filter(!is.na(ASCFR),
-         Sex == "b") %>% 
-  ggplot(aes(x=Age, y = ASCFR, group = interaction(Country, Code))) + 
+  
+  
+# populations with > 100 deaths,
+# but no deaths in ages > 70 is weird.
+  outputCounts_10 %>% 
+    group_by(Country, Region, Code, Sex) %>% 
+    mutate(D = sum(Deaths),
+           D70 = sum(Deaths[Age >=70])) %>% 
+    ungroup() %>% 
+    filter(D >= 100,
+           D70 == 0) %>%
+    View()
+  
+  
+  
+outputCounts_10 %>% 
+    group_by(Country, Region, Code, Sex) %>% 
+    mutate(D = sum(Deaths)) %>% 
+    ungroup() %>% 
+    filter(D >= 100) %>% 
+    mutate(ASCFR = Deaths / Cases,
+           ASCFR = na_if(ASCFR, Deaths == 0)) %>% 
+    filter(!is.na(ASCFR),
+           Sex == "b",
+           D >= 100) %>% 
+  ggplot(aes(x=Age, y = ASCFR, color = Country, group = interaction(Country, Region, Code))) + 
   geom_line(alpha=.4) + 
- #scale_y_log10() + 
+ scale_y_log10() + 
   xlim(40,100)
 
 outputCounts_5 %>% 

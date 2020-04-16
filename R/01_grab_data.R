@@ -48,8 +48,9 @@ if (check_db){
   # 
   inspect_code(inputDB, inspect[90])
 
-  # inputDB <- inputDB %>% 
-  #   mutate(Sex = ifelse(Sex == "t","b",Sex))
+  # temp JP correction
+   inputDB <- inputDB %>% 
+     mutate(Sex = ifelse(Sex == "t","b",Sex))
   
   # ---------------------------------- #
   # duplicates check:
