@@ -17,6 +17,7 @@ Here's an overview of populations available in the `inputDB`
   - [ ] Quebec
   - [ ] Montreal
   - [ ] Ontario
+- [x] Chile
 - [x] China       
 - [x] Colombia    
 - [x] Denmark    
@@ -27,39 +28,41 @@ Here's an overview of populations available in the `inputDB`
   - [ ] German federal states
 - [x] Italy     
   - [ ] Italian regions
+- [x] Japan
 - [x] Mexico     
 - [x] Netherlands 
+- [x] Nigeria
 - [x] Portugal   
 - [x] Scotland   
 - [x] South Korea  
 - [x] Spain  
   - [x] Basque Country
   - [ ] Catalonia
+- [x] Scotland
+- [x] South Africa
 - [x] Sweden     
 - [x] Switzerland
+- [x] Taiwan
 - [x] USA 
   - [x] New York City
   - [x] Louisiana
   - [x] Michigan
   - [x] Washington state
   - [ ] Georgia
-  - [ ] Illinois
+  - [x] Illinois
   - [ ] Massachusetts
   - [ ] Ohio
 - [ ] Peru
-- [ ] South Africa
-- [ ] Nigeria
+- [ ] Nothern Ireland
 - [ ] Iceland
 - [ ] Norway
 - [ ] Ireland
 - [ ] Austria
 - [ ] Israel
-- [ ] Great Britain
-- [ ] Scotland
+- [ ] Great Britain / UK
 - [ ] Australia
 - [ ] Hong Kong
-- [ ] Taiwan
-- [ ] Japan
+
 
 
 Most populations in the database contain multiple time snapshots, and all are continually monitored for new data releases.  All statistics reported here are **cumulative**. 
