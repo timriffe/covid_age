@@ -16,10 +16,12 @@ Here's an overview of populations available in the `inputDB`
 - [x] Canada  
   - [ ] Quebec
   - [ ] Montreal
-  - [ ] Ontario
+  - [x] Ontario
+  - [x] British Columbia
 - [x] Chile
 - [x] China       
-- [x] Colombia    
+- [x] Colombia   
+  - [x] Bogotá
 - [x] Denmark    
 - [x] Ecuador     
 - [x] Eswatini    
@@ -30,14 +32,17 @@ Here's an overview of populations available in the `inputDB`
   - [ ] Italian regions
 - [x] Japan
 - [x] Mexico     
+  - [ ] Mexican states
 - [x] Netherlands 
 - [x] Nigeria
+- [x] Norway
 - [x] Portugal   
 - [x] Scotland   
 - [x] South Korea  
 - [x] Spain  
   - [x] Basque Country
   - [ ] Catalonia
+  - [ ] Barcelona
 - [x] Scotland
 - [x] South Africa
 - [x] Sweden     
@@ -45,17 +50,16 @@ Here's an overview of populations available in the `inputDB`
 - [x] Taiwan
 - [x] USA 
   - [x] New York City
+  - [x] Illinois
   - [x] Louisiana
   - [x] Michigan
   - [x] Washington state
   - [ ] Georgia
-  - [x] Illinois
   - [ ] Massachusetts
   - [ ] Ohio
 - [ ] Peru
 - [ ] Nothern Ireland
 - [ ] Iceland
-- [ ] Norway
 - [ ] Ireland
 - [ ] Austria
 - [ ] Israel
@@ -72,7 +76,7 @@ Source documentation and a methods protocol are forthcoming. These results are p
 If you know of sources for other populations, please either email, Tweet, or leave an *Issue* in this repository, and we'll look into it. If you would like to assist this project in gathering data, or other tasks, please let us know and I'm sure we can find a task!
 
 ## The team (so far)
-Tim Riffe, Enrique Acosta, Filipe Ribeiro, Alyson van Raalte, Catalina Torres, José Manuel Aburto, Cosmo Strozza, Silvia Rizzi, Chia Liu, Fracncisco Rowe, Victor García Guerrero, Emanuele del Fava, Jorge Cimentada, Marilia Nepomuceno, Ugofilippo Basellini, Diego Alburez-Gutierrez, Rafael Silva, Alain Gagnon, Irwin Hecker, Didier Breton, Sergi Trias-Llimos, Ryohei Mogi, Fumiya Uchikoshi, Emmanuel Olamijuwon, Iván Williams, Armando González, Toni F., Christian Dudel, Mikko Myrskylä.
+Tim Riffe, Enrique Acosta, Filipe Ribeiro, Alyson van Raalte, Catalina Torres, José Manuel Aburto, Cosmo Strozza, Silvia Rizzi, Chia Liu, Jorge Cimentada, Jorge López, Marius Pascariu, Viorela Diaconu, Francisco Rowe, Victor Manuel García Guerrero, Emanuele del Fava, Jorge Cimentada, Marilia Nepomuceno, Ugofilippo Basellini, Diego Alburez-Gutierrez, Rafael Silva, Alain Gagnon, Irwin Hecker, Didier Breton, Sergi Trias-Llimos, Ryohei Mogi, Fumiya Uchikoshi, Emmanuel Olamijuwon, Iván Williams, Armando González, Toni F., Christian Dudel, Mikko Myrskylä.
 
 (and a few more people at the moment have made commitments. )
 
