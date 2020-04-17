@@ -68,7 +68,6 @@ Here's an overview of populations available in the `inputDB`
 - [ ] Hong Kong
 
 
-
 Most populations in the database contain multiple time snapshots, and all are continually monitored for new data releases.  All statistics reported here are **cumulative**. 
 
 Source documentation and a methods protocol are forthcoming. These results are provisional and may change if we decide to throw out particular sources, or if we change our minds about how to split age groups, etc. So **please always use the most up-to-date version**.

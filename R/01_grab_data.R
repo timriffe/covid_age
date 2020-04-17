@@ -21,7 +21,7 @@ if (check_db){
   inputDB   <- compile_inputDB()
   standbyDB <- get_standby_inputDB()
   
-  dim(standbyDB)
+    dim(standbyDB)
   dim(inputDB)
   codes_all     <- unique(inputDB$Code)
   codes_standby <- unique(standbyDB$Code)
@@ -36,11 +36,15 @@ if (check_db){
   # any remaining NAs in Value?
   inputDB %>% filter(is.na(Value)) %>% View()
   
-  inputDB %>% pull(Measure) %>% unique()
   
+  # What's the Measure catch today?
+  inputDB %>% pull(Measure) %>% unique()
+  inputDB %>% filter(Measure == "Death") %>% pull(Country) %>% unique()
+  inputDB %>% filter(Measure == "Probable deaths") %>% pull(Region) %>% unique()
   inputDB <- inputDB %>% mutate(
     Measure = ifelse(Measure == "Death","Deaths",Measure)
   )
+  
   inputDB <- inputDB %>% filter(Measure != "Probable deaths")
   
   # inputDB <- inputDB %>% 
