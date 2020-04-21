@@ -18,6 +18,7 @@ source("R/00_Functions.R")
 #inputDB$Value[is.na(inputDB$Value)] <- 0
 
 # TR: add Short to group_by!
+
 inputCounts <-
   inputDB %>% 
   filter(!(Age == "TOT" & Metric == "Fraction")) %>% 
@@ -42,10 +43,11 @@ inputCounts <-
   mutate(Age = as.integer(Age),
          AgeInt = as.integer(AgeInt)) 
 
-# TR: add rescale_to_total() into the chain
+  # TR: add rescale_to_total() into the chain
 
 inputCounts %>% 
-  filter(is.na(Value))
+  filter(is.na(Value)) %>% 
+  View()
 
 
 # -------------------------------#

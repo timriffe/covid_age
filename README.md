@@ -65,11 +65,11 @@ Here's an overview of populations available in the `inputDB`
 - [ ] Peru
 - [ ] Nothern Ireland
 - [ ] Iceland
-- [ ] Ireland
+- [x] Ireland
 - [ ] Austria
 - [ ] Israel
 - [ ] Great Britain / UK
-- [ ] Australia
+- [x] Australia
 - [ ] Hong Kong
 
 

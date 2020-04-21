@@ -312,11 +312,17 @@ rescale_to_total <- function(chunk){
   TOT <- chunk %>% filter(Age == "TOT")
   # foresee this pathology
   stopifnot(nrow(TOT) == 1)
+  # if (TOT$Value == 0){
+  #   chunk <- chunk %>% 
+  #     filter(Age != "TOT")
+  #   return(chunk)
+  # }
   
   chunk <- chunk %>% 
     filter(Age != "TOT") %>% 
     mutate(Value = rescale_vector(Value, 
-                                  scale = TOT$Value))
+                                  scale = TOT$Value),
+           Value = ifelse(is.nan(Value),0,Value))
   
   # Console message
   cat(paste("Counts rescaled to TOT for",
@@ -453,11 +459,11 @@ harmonize_offset_age <- function(chunk){
   }
   
   nlast <- max(105 - max(Age), 5)
-  AgeInt<- age2int(Age, OAvalue = nlast)
+  AgeInt<- DemoTools::age2int(Age, OAvalue = nlast)
   p1 <- pclm(y = Pop, 
              x = Age, 
              nlast = nlast, 
-             control = list(lambda = 10))$fitted
+             control = list(lambda = 10, deg = 3))$fitted
   
   p1      <- rescaleAgeGroups(Value1 = p1, 
                               AgeInt1 = rep(1,length(p1)), 
@@ -485,17 +491,7 @@ harmonize_age <- function(chunk, Offsets, N = 5, OAnew = 100){
   AgeInt  <- chunk %>% pull(AgeInt)
   Value   <- chunk %>% pull(Value) 
   
-  .Country <- chunk %>% pull(Country) %>% "["(1)
-  .Region  <- chunk %>% pull(Region) %>% "["(1)
-  .Sex     <- chunk %>% pull(Sex) %>% "["(1)
-  Offset   <- Offsets %>% 
-    filter(Country == .Country,
-           Region == .Region,
-           Sex == .Sex)
-  
-  pop     <- Offset %>% pull(Population)
-  age_pop <- Offset %>% pull(Age)
-  # maybe we don't need to do anything but lower the OAG?
+   # maybe we don't need to do anything but lower the OAG?
   if (all(AgeInt == N) & max(Age) >= OAnew){
     Value   <- groupOAG(Value, Age, OAnew = OAnew)
     Age     <- Age[1:length(Value)]
@@ -506,13 +502,31 @@ harmonize_age <- function(chunk, Offsets, N = 5, OAnew = 100){
   # otherwise get offset sorted out.  #
   # Offsets now handled in advance    #
   # --------------------------------- #
+  .Country <- chunk %>% pull(Country) %>% "["(1)
+  .Region  <- chunk %>% pull(Region) %>% "["(1)
+  .Sex     <- chunk %>% pull(Sex) %>% "["(1)
+  Offset   <- Offsets %>% 
+    filter(Country == .Country,
+           Region == .Region,
+           Sex == .Sex)
   
+  if (nrow(Offset) == 105){
+    pop     <- Offset %>% pull(Population)
+    age_pop <- Offset %>% pull(Age)
   # TR: I thought multiplying with offset would bring back to scale, but sum doesn't match.
   # so need to rescale in next step (pattern looks OK)
-  V1      <- pclm(x = Age, 
+    V1      <- pclm(x = Age, 
                   y = Value, 
                   nlast = AgeInt[length(AgeInt)], 
-                  offset = pop, control = list(lambda = 10))$fitted * pop
+                  offset = pop, 
+                  control = list(lambda = 100, deg = 3))$fitted * pop
+  } else {
+    # if no offsets are available then run through without.
+    V1      <- pclm(x = Age, 
+                    y = Value, 
+                    nlast = AgeInt[length(AgeInt)], 
+                    control = list(lambda = 100, deg = 3))$fitted
+  }
   # plot(V1)
   # lines(rescaleAgeGroups(V1, rep(1,length(V1)), Value, AgeInt,splitfun=graduate_uniform) )
   # Important to rescale
@@ -521,7 +535,7 @@ harmonize_age <- function(chunk, Offsets, N = 5, OAnew = 100){
                               Value2 = Value, 
                               AgeInt2 = AgeInt, 
                               splitfun = graduate_uniform)
-  VN      <- groupAges(V1, age_pop, N = N, OAnew = OAnew)
+  VN      <- groupAges(V1, 0:104, N = N, OAnew = OAnew)
   Age     <- names2age(VN)
   AgeInt  <- rep(N, length(VN))
   

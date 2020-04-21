@@ -2,47 +2,46 @@
 # prelims to get offsets
 
 
-# FOR NOW WE PROCESS INPUTS THAT HAVE OFFSETS, see step 3
-(have_offsets <- Offsets %>% 
-  mutate(code = paste(Country,Region,sep="-")) %>% 
-  pull(code) %>% 
-  unique())
-
-
-inputs_to_split <- 
-  inputCounts %>% 
-  mutate(code = paste(Country,Region,sep="-")) %>% 
-  filter(code %in% have_offsets, 
-         Country != "Denmark")
-
-
-# For detective work:
- #  iL<- split(inputs_to_split, list(inputs_to_split$Country, 
- #                                   inputs_to_split$Region,
- #                                   inputs_to_split$Code,
- #                                   inputs_to_split$Date,
- #                                   inputs_to_split$Sex,
- #                                   inputs_to_split$Measure),
- #             drop = TRUE)
- #  outTry5 <- list()
- #  for (i in 1:length(iL)){
- #    chunk <- iL[[i]]
- #    outTry5[[i]] <- try(harmonize_age(chunk, Offsets, N = 5, OAnew = 100))
- #  }
- #  outTry5[[1]]
- #  
- # (errors <- lapply(outTry5, function(x){
- #  length(x) == 1 
- # }) %>% unlist() %>% which())
+ # # FOR NOW WE PROCESS INPUTS THAT HAVE OFFSETS, see step 3
+ # (have_offsets <- Offsets %>% 
+ #   mutate(code = paste(Country,Region,sep="-")) %>% 
+ #   pull(code) %>% 
+ #   unique())
  # 
+ # 
+ # inputs_to_split <- 
+ #   inputCounts %>% 
+ #   mutate(code = paste(Country,Region,sep="-")) %>% 
+ #   filter(code %in% have_offsets, 
+ #          Country != "Denmark")
+ #  
+
+# inputCounts <- inputCounts %>% filter(Country !="Denmark")
+# iL <- split(inputCounts,
+#             list(inputCounts$Code,
+#                  inputCounts$Sex,
+#                  inputCounts$Measure),
+#             drop =TRUE)
+# iLout <- list()
+# for (i in 1:length(iL)){
+#   chunk <- iL[[i]]
+#   iLout[[i]] <- try(harmonize_age(chunk, Offsets = Offsets, N = 5, OAnew = 100))
+# }
+# n <- lapply(iLout,function(x){class(x)[1] == "try-error"}) %>% unlist() %>% which()
+
 
 outputCounts_5 <- 
-  inputs_to_split %>% 
+  inputCounts %>% 
   group_by(Country, Region, Code, Date, Sex, Measure) %>% 
   do(harmonize_age(chunk = .data, Offsets, N = 5, OAnew = 100)) %>% 
   ungroup() %>% 
   pivot_wider(names_from = Measure,
               values_from = Value) 
+
+outputCounts_5 <- outputCounts_5 %>% 
+  mutate(Cases = ifelse(is.nan(Cases),0, Cases),
+         Deaths = ifelse(is.nan(Deaths),0, Deaths),
+         Tests = ifelse(is.nan(Tests),0, Tests))
 
 # round output for csv
 outputCounts_5_rounded <- 
@@ -55,13 +54,16 @@ saveRDS(outputCounts_5, "Data/Output_5.rds")
 
 
 # Repeat for 10-year age groups
-outputCounts_10 <- 
-  inputs_to_split %>% 
-  group_by(Country, Region, Code, Date, Sex, Measure) %>% 
-  do(harmonize_age(chunk = .data, Offsets, N = 10, OAnew = 100)) %>% 
+ outputCounts_10 <- 
+  outputCounts_5 %>% 
+  mutate(Age = Age - Age %% 10) %>% 
+  group_by(Country, Region, Code, Date, Sex, Age) %>% 
+  summarize(Cases = sum(Cases),
+            Deaths = sum(Deaths),
+            Tests = sum(Tests)) %>% 
   ungroup() %>% 
-  pivot_wider(names_from = Measure,
-              values_from = Value) 
+  mutate(AgeInt = ifelse(Age == 100, 5, 10)) 
+outputCounts_10 <- outputCounts_10[, colnames(outputCounts_5)]
 
 # round output for csv
 outputCounts_10_rounded <- 
@@ -74,9 +76,6 @@ saveRDS(outputCounts_10, "Data/Output_10.rds")
 
 
 
-
-# 
-inputDB %>% pull(Measure) %>% unique()
 spot_checks <- FALSE
 if (spot_checks){
 # Once-off diagnostic plot:
@@ -92,7 +91,8 @@ if (spot_checks){
     filter(D >= 100,
            D70 == 0) %>%
     View()
-  
+  outputCounts_10 %>% pull(Age) %>% table()
+  outputCounts_10 %>% filter(is.na(Deaths)) %>% View()
   
   
 outputCounts_10 %>% 

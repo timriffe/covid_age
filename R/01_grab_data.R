@@ -53,18 +53,21 @@ if (check_db){
   inspect_code(inputDB, inspect[90])
 
   # temp JP correction
+  unique(inputDB$Sex)
    inputDB <- inputDB %>% 
      mutate(Sex = ifelse(Sex == "t","b",Sex))
   
   # ---------------------------------- #
   # duplicates check:
   # -----------------------------------#
+   
   n <- duplicated(inputDB[,c("Code","Sex","Age","Measure","Metric")])
   inputDB <- inputDB[-n, ]
   
   
   # DNK has too many pathological cases to include at the moment
-  inputDB <- inputDB %>% filter(Country != "Denmark")
+  inputDB <- inputDB %>% filter(!Country %in% c("Denmark","Eswatini"))
+  inputDB <- inputDB %>% filter(!Code %in% c("CA_BC17.04.2020"))
   # These are all aggressive pushes:
   # Save out the inputDB
   push_inputDB(inputDB)
@@ -72,14 +75,14 @@ if (check_db){
   saveRDS(inputDB, "Data/inputDB.rds")
   
   # ---------------------------------------------------
-  # replace subset with new load after Date correction
-  # ShortCode <- "ES"
-  # X <- get_country_inputDB(ShortCode)
-  # inputDB <-
-  #    inputDB %>% 
-  #    filter(!grepl(ShortCode,Code)) %>% 
-  #    rbind(X) %>% 
-  #    sort_input_data()
+  # # replace subset with new load after Date correction
+  #      ShortCode <- "BE"
+  #      X <- get_country_inputDB(ShortCode)
+  #      inputDB <-
+  #         inputDB %>% 
+  #         filter(!grepl(ShortCode,Code)) %>% 
+  #         rbind(X) %>% 
+  #         sort_input_data()
   # ----------------------------------------------------
   # check closeout ages:
   CloseoutCheck <- 
