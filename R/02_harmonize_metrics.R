@@ -33,12 +33,13 @@ inputCounts <-
   do(redistribute_unknown_age(chunk = .data)) %>% 
   do(rescale_to_total(chunk = .data)) %>% 
   ungroup() %>% 
+  group_by(Code, Age, Measure) %>% 
+  do(redistribute_unknown_sex(chunk = .data)) %>% 
+  ungroup() %>% 
   group_by(Code, Measure) %>% 
   # TR: change this to happen within Age
   do(rescale_sexes(chunk = .data)) %>% 
   do(infer_both_sex(chunk = .data)) %>% 
-  group_by(Code, Age, Measure) %>% 
-  do(redistribute_unknown_sex(chunk = .data)) %>% 
   ungroup() %>% 
   mutate(Age = as.integer(Age),
          AgeInt = as.integer(AgeInt)) 

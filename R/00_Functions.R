@@ -346,7 +346,7 @@ redistribute_unknown_sex <- function(chunk){
     chunk <- chunk %>% 
       filter(Sex != "UNK") %>% 
       mutate(Value = Value + (Value / sum(Value)) * UNK$Value,
-             Value = ifelse(is.nan(Value),0,Value))
+             Value = ifelse(is.nan(Value), UNK$Value / 2, Value))
     
     # Console message
     cat("UNK Sex redistributed for",
@@ -425,6 +425,10 @@ rescale_sexes <- function(chunk){
 infer_both_sex <- function(chunk){
   sexes  <- chunk %>% pull(Sex) %>% unique()
   Counts <- all(chunk$Metric == "Count")
+  
+  
+  # 2 things: 
+  # 1) could be a both-sex total available, so far unused.
   if (!setequal(sexes,c("f","m")) | ! Counts){
     return(chunk)
   }
@@ -470,6 +474,7 @@ harmonize_offset_age <- function(chunk){
                               Value2 = Pop, 
                               AgeInt2 = AgeInt, 
                               splitfun = graduate_uniform)
+  
   a1 <- 1:length(p1)-1
   p1 <- groupOAG(p1, a1, OAnew = 104)
   
@@ -535,6 +540,10 @@ harmonize_age <- function(chunk, Offsets, N = 5, OAnew = 100){
                               Value2 = Value, 
                               AgeInt2 = AgeInt, 
                               splitfun = graduate_uniform)
+  
+  # division by 0, it's a thing
+  V1[is.nan(V1)] <- 0
+  
   VN      <- groupAges(V1, 0:104, N = N, OAnew = OAnew)
   Age     <- names2age(VN)
   AgeInt  <- rep(N, length(VN))

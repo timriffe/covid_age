@@ -21,8 +21,20 @@ if (check_db){
   inputDB   <- compile_inputDB()
   standbyDB <- get_standby_inputDB()
   
-    dim(standbyDB)
-  dim(inputDB)
+  # REMOVE DK UNTIL FURTHER NOTICE
+  inputDB <- 
+    inputDB %>% 
+    filter(Country !="Denmark")
+
+  # Date range check:
+  inputDB %>% 
+    mutate(date = dmy(Date)) %>% 
+    pull(date) %>% 
+    range()
+  # hunt down anything implausible
+  # ----------------------
+  
+
   codes_all     <- unique(inputDB$Code)
   codes_standby <- unique(standbyDB$Code)
 
@@ -36,16 +48,37 @@ if (check_db){
   # any remaining NAs in Value?
   inputDB %>% filter(is.na(Value)) %>% View()
   
-  
-  # What's the Measure catch today?
+  # -------------------------------------
+  # Check Measure 
+  # Valid: Deaths, Cases, Tests, ASCFR
   inputDB %>% pull(Measure) %>% unique()
-  inputDB %>% filter(Measure == "Death") %>% pull(Country) %>% unique()
-  inputDB %>% filter(Measure == "Probable deaths") %>% pull(Region) %>% unique()
+  
+  inputDB %>% filter(Measure == "Death") %>% 
+    pull(Country) %>% 
+    unique() 
+  # just a few, nope
+  table(inputDB$Measure)
+  
   inputDB <- inputDB %>% mutate(
     Measure = ifelse(Measure == "Death","Deaths",Measure)
   )
   
+  # Just for time being we remove probable / suspected, etc
+  inputDB %>% filter(Measure == "Probable deaths") %>% pull(Region) %>% unique()
   inputDB <- inputDB %>% filter(Measure != "Probable deaths")
+  # -------------------------------------
+  
+  # -------------------------------------
+  # Check Metric
+  # Count, Fraction, Ratio
+  inputDB %>% pull(Metric) %>% unique()
+  
+  # -------------------------------------
+  # Check NA values
+  inputDB %>% pull(Value) %>% is.na() %>% sum()
+  inputDB %>%
+    filter(is.na(Value)) %>% 
+    View()
   
   # inputDB <- inputDB %>% 
   #   mutate(Value = ifelse(is.na(Value),0,Value))
@@ -54,6 +87,11 @@ if (check_db){
 
   # temp JP correction
   unique(inputDB$Sex)
+  inputDB %>% filter(Sex == "t") %>% 
+    pull(Country) %>% 
+    unique()
+  table(inputDB$Sex)
+  
    inputDB <- inputDB %>% 
      mutate(Sex = ifelse(Sex == "t","b",Sex))
   
@@ -62,12 +100,14 @@ if (check_db){
   # -----------------------------------#
    
   n <- duplicated(inputDB[,c("Code","Sex","Age","Measure","Metric")])
-  inputDB <- inputDB[-n, ]
+  sum(n)
+  # inputDB[n, ] %>% View()
+  # inputDB <- inputDB[-n, ]
   
   
   # DNK has too many pathological cases to include at the moment
-  inputDB <- inputDB %>% filter(!Country %in% c("Denmark","Eswatini"))
-  inputDB <- inputDB %>% filter(!Code %in% c("CA_BC17.04.2020"))
+  # inputDB <- inputDB %>% filter(!Country %in% c("Denmark"))
+  # inputDB <- inputDB %>% filter(!Code %in% c("CA_BC17.04.2020"))
   # These are all aggressive pushes:
   # Save out the inputDB
   push_inputDB(inputDB)
@@ -76,13 +116,14 @@ if (check_db){
   
   # ---------------------------------------------------
   # # replace subset with new load after Date correction
-  #      ShortCode <- "BE"
-  #      X <- get_country_inputDB(ShortCode)
-  #      inputDB <-
-  #         inputDB %>% 
-  #         filter(!grepl(ShortCode,Code)) %>% 
-  #         rbind(X) %>% 
-  #         sort_input_data()
+  # NOTE THIS WILL FAIL FOR REGIONS!!
+     # ShortCode <- "SE"
+     # X <- get_country_inputDB(ShortCode)
+     # inputDB <-
+     #    inputDB %>% 
+     #    filter(!grepl(ShortCode,Code)) %>% 
+     #    rbind(X) %>% 
+     #    sort_input_data()
   # ----------------------------------------------------
   # check closeout ages:
   CloseoutCheck <- 

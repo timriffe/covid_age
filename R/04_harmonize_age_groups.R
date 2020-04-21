@@ -95,7 +95,7 @@ if (spot_checks){
   outputCounts_10 %>% filter(is.na(Deaths)) %>% View()
   
   
-outputCounts_10 %>% 
+outputCounts_5 %>% 
     group_by(Country, Region, Code, Sex) %>% 
     mutate(D = sum(Deaths)) %>% 
     ungroup() %>% 
@@ -103,7 +103,7 @@ outputCounts_10 %>%
     mutate(ASCFR = Deaths / Cases,
            ASCFR = na_if(ASCFR, Deaths == 0)) %>% 
     filter(!is.na(ASCFR),
-           Sex == "b",
+           Sex == "f",
            D >= 100) %>% 
   ggplot(aes(x=Age, y = ASCFR, color = Country, group = interaction(Country, Region, Code))) + 
   geom_line(alpha=.4) + 
@@ -122,7 +122,18 @@ outputCounts_5 %>%
   filter(Age == 60,
          is.na(ASCFR))
 
-
+outputCounts_5 %>% 
+  group_by(Country, Region, Code, Sex) %>% 
+  mutate(D = sum(Deaths)) %>% 
+  ungroup() %>% 
+  filter(D >= 100) %>% 
+  mutate(ASCFR = Deaths / Cases,
+         ASCFR = na_if(ASCFR, Deaths == 0)) %>% 
+  filter(!is.na(ASCFR),
+         Sex == "f",
+         D >= 100) %>% 
+  filter(Age==40,
+         ASCFR > .01)
 
 #####
 Test <- outputCounts_5 %>% 
