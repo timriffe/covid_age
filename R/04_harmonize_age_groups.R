@@ -32,6 +32,7 @@
 
 outputCounts_5 <- 
   inputCounts %>% 
+  sort_input_data() %>% 
   group_by(Country, Region, Code, Date, Sex, Measure) %>% 
   do(harmonize_age(chunk = .data, Offsets, N = 5, OAnew = 100)) %>% 
   ungroup() %>% 
