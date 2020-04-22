@@ -133,6 +133,15 @@ expect_false(
   )
 
 } # end bulk_checks()
+# ------------------------------------------
+# Log parser
+parse_log <- function(file = "Data/log.txt"){
+  Log <- read_lines(file)
+  Errors <- grepl(Log, pattern = "Error : ") %>% which()
+  Log[Errors] <- paste(Log[Errors], "\n")
+  write_lines(Log[sort(c(Errors, Errors-1))], path = file)
+}
+
 
 # ------------------------------------------
 # RUN VALIDATION HERE
@@ -141,18 +150,17 @@ expect_false(
 entry_codes <- as.character(unique(test_data$Code))
 file.remove("Data/log.txt")
 for (k in entry_codes) {
-  
   utils::capture.output(
-  try(bulk_checks(
-    data = test_data %>% 
-    filter(Code == k)
-  )),
-  file = "Data/log.txt",
-  type = "message",
-  append = TRUE
+    try(bulk_checks(
+          data = test_data %>% 
+          filter(Code == k))),
+    file = "Data/log.txt",
+    type = "message",
+    append = TRUE
   )
 }
 
+parse_log()
 
 # Dataset failing
 # d <- test_data %>% 
