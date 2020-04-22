@@ -1,6 +1,6 @@
 
 source("R/00_Functions.R")
-
+source("R_checks/inputDB_check.R")
 # for writing to the master input
 
 # sheets_write(dat, ssMaster, "master")
@@ -18,8 +18,14 @@ source("R/00_Functions.R")
 
 check_db <- FALSE
 if (check_db){   
+  tic()
   inputDB   <- compile_inputDB()
+  toc()
   standbyDB <- get_standby_inputDB()
+  
+  my_codes <- inputDB %>% pull(Short) %>% unique()
+  run_checks(inputDB, my_codes)
+  
   
   # REMOVE DK UNTIL FURTHER NOTICE
   inputDB <- 
@@ -117,13 +123,13 @@ if (check_db){
   # ---------------------------------------------------
   # # replace subset with new load after Date correction
   # NOTE THIS WILL FAIL FOR REGIONS!!
-     # ShortCode <- "SE"
-     # X <- get_country_inputDB(ShortCode)
-     # inputDB <-
-     #    inputDB %>% 
-     #    filter(!grepl(ShortCode,Code)) %>% 
-     #    rbind(X) %>% 
-     #    sort_input_data()
+ # ShortCode <- "CA_BC"
+ # X <- get_country_inputDB(ShortCode)
+ # inputDB <-
+ #    inputDB %>% 
+ #    filter(!grepl(ShortCode,Code)) %>% 
+ #    rbind(X) %>% 
+ #    sort_input_data()
   # ----------------------------------------------------
   # check closeout ages:
   CloseoutCheck <- 
