@@ -146,21 +146,32 @@ parse_log <- function(file = "Data/log.txt"){
 # ------------------------------------------
 # RUN VALIDATION HERE
 
-
-entry_codes <- as.character(unique(test_data$Code))
-file.remove("Data/log.txt")
-for (k in entry_codes) {
-  utils::capture.output(
-    try(bulk_checks(
-          data = test_data %>% 
-          filter(Code == k))),
-    file = "Data/log.txt",
-    type = "message",
-    append = TRUE
-  )
+prep_data_check <- function(inputDB, ShortCodes){
+  input_data %>% 
+    filter(Short %in% ShortCodes) %>% 
+    mutate(Date = as.Date(Date, format = "%d.%m.%Y"),
+           Code = paste(Short, Region, Date, Sex, Metric, Measure, sep = "-"))
 }
 
-parse_log()
+run_checks <- function(inputDB, ShortCodes, logfile = "R_checks/log.txt"){
+  test_data   <- prep_data_check(inputDB, ShortCodes)
+  entry_codes <- as.character(unique(test_data$Code))
+  file.remove("Data/log.txt")
+  for (k in entry_codes) {
+    utils::capture.output(
+      try(bulk_checks(
+        data = test_data %>% 
+          filter(Code == k))),
+      file = logfile,
+      type = "message",
+      append = TRUE
+    )
+  }
+  
+  parse_log(logfile)
+}
+
+# run_checks(inputDB, "CO")
 
 # Dataset failing
 # d <- test_data %>% 
