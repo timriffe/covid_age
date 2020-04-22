@@ -7,7 +7,7 @@ library(tidyverse)
 library(testthat)
 
 
-input_data <- read.csv("data/inputDB.csv")
+input_data <- read.csv("Data/inputDB.csv")
 
 test_data <- input_data %>% 
   mutate(Date = as.Date(Date, format = "%d.%m.%Y"),
@@ -25,6 +25,9 @@ bulk_checks <- function(data) {
   d = data
   age_range = 0:105
 
+  with(d[1,],paste(Short, Region, Date, Sex, Metric, Measure, sep = "-")) %>% 
+    message()
+  
 # 1. can't have NAs in Value column
 expect_false(
   any(is.na(d$Value))
@@ -80,7 +83,7 @@ if (nrow(d) == 1) {
 
 # 8. Sex can only be "f", "m", or "b"
 expect_true(
-  all(d$Sex %in% c("m", "f", "b"))
+  all(d$Sex %in% c("m", "f", "b", "UNK"))
 )
 
 # 9. Date must be "DD.MM.YYYY", which will work with lubridate::dmy().
@@ -129,28 +132,32 @@ expect_false(
   any(duplicated(paste(d$Code, d$Age)))
   )
 
-}
+} # end bulk_checks()
 
 # ------------------------------------------
 # RUN VALIDATION HERE
 
 
 entry_codes <- as.character(unique(test_data$Code))
-
+file.remove("Data/log.txt")
 for (k in entry_codes) {
-  print(k)
   
-  bulk_checks(
+  utils::capture.output(
+  try(bulk_checks(
     data = test_data %>% 
     filter(Code == k)
+  )),
+  file = "Data/log.txt",
+  type = "message",
+  append = TRUE
   )
 }
 
 
 # Dataset failing
-d <- test_data %>% 
-  filter(Code == "CA_BC-British Columbia-2020-04-15-b-Count-Deaths")
-
+# d <- test_data %>% 
+#   filter(Code == "CA_BC-British Columbia-2020-04-15-b-Count-Deaths")
+# d
 
 
 
