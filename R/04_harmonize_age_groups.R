@@ -103,11 +103,10 @@ outputCounts_5 %>%
     mutate(ASCFR = Deaths / Cases,
            ASCFR = na_if(ASCFR, Deaths == 0)) %>% 
     filter(!is.na(ASCFR),
-           Sex == "b",
-           D >= 100,
-           Country == "Mexico") %>% 
-  ggplot(aes(x=Age, y = ASCFR, color = Country, group = interaction(Country, Region, Code))) + 
-  geom_line(alpha=.4) + 
+           Sex == "m",
+           D >= 100) %>% 
+  ggplot(aes(x=Age, y = ASCFR, group = interaction(Country, Region, Code))) + 
+  geom_line(alpha=.1) + 
  scale_y_log10() + 
   xlim(40,100)
 
