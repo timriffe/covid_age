@@ -100,12 +100,12 @@ outputCounts_5 %>%
     group_by(Country, Region, Code, Sex) %>% 
     mutate(D = sum(Deaths)) %>% 
     ungroup() %>% 
-    filter(D >= 100) %>% 
     mutate(ASCFR = Deaths / Cases,
            ASCFR = na_if(ASCFR, Deaths == 0)) %>% 
     filter(!is.na(ASCFR),
-           Sex == "f",
-           D >= 100) %>% 
+           Sex == "b",
+           D >= 100,
+           Country == "Mexico") %>% 
   ggplot(aes(x=Age, y = ASCFR, color = Country, group = interaction(Country, Region, Code))) + 
   geom_line(alpha=.4) + 
  scale_y_log10() + 
@@ -117,11 +117,13 @@ outputCounts_5 %>%
   filter(Age == 40,
          !is.na(ASCFR),
          ASCFR > 1e-2)
+
 outputCounts_5 %>% 
   mutate(ASCFR = Deaths / Cases,
          ASCFR = na_if(ASCFR, Deaths == 0)) %>% 
-  filter(Age == 60,
-         is.na(ASCFR))
+  filter(!is.na(Deaths),
+         Age == 90,
+         ASCFR < 1e-2) %>% View()
 
 outputCounts_5 %>% 
   group_by(Country, Region, Code, Sex) %>% 
