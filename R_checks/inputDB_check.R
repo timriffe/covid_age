@@ -2,19 +2,19 @@
 # Author: Marius D. Pascariu
 # Last update: Wed Apr 22 17:03:19 2020
 # --------------------------------------------------- #
-remove(list = ls())
+# remove(list = ls())
 library(tidyverse)
 library(testthat)
 
 
-input_data <- read.csv("Data/inputDB.csv")
-
-test_data <- input_data %>% 
-  mutate(Date = as.Date(Date, format = "%d.%m.%Y"),
-         Code = paste(Short, Region, Date, Sex, Metric, Measure, sep = "-"))
-
-
-
+# input_data <- read.csv("Data/inputDB.csv")
+# 
+# test_data <- input_data %>% 
+#   mutate(Date = as.Date(Date, format = "%d.%m.%Y"),
+#          Code = paste(Short, Region, Date, Sex, Metric, Measure, sep = "-"))
+# 
+# 
+# 
 
 # ------------------------------------------
 #' Bulk checks on inputDB
@@ -110,9 +110,9 @@ expect_true(
   all(d$Metric %in% c("Count", "Fraction", "Ratio"))
   )
 
-# 12. Measure can only be "Cases", "Deaths", or "Tests" (so far)
+# 12. Measure can only be "Cases", "Deaths", "Tests", or "ASCFR" (so far)
 expect_true(
-  all(d$Measure %in% c("Cases", "Deaths", "Tests"))
+  all(d$Measure %in% c("Cases", "Deaths", "Tests", "ASCFR"))
   )
 
 # 13. Code must be a concatenation of Short and Date
@@ -136,10 +136,15 @@ expect_false(
 # ------------------------------------------
 # Log parser
 parse_log <- function(file = "Data/log.txt"){
-  Log <- read_lines(file)
-  Errors <- grepl(Log, pattern = "Error : ") %>% which()
-  Log[Errors] <- paste(Log[Errors], "\n")
-  write_lines(Log[sort(c(Errors, Errors-1))], path = file)
+  Log         <- read_lines(file)
+  Errors      <- grepl(Log, pattern = "Error : ") %>% which()
+  if (length(Errors) == 0){
+    Log <- c(Log[1:3], "No errors! Do a happy dance!\n")
+    write_lines(Log, path = file)
+  } else {
+    Log[Errors] <- paste(Log[Errors], "\n")
+    write_lines(Log[sort(c(1,2,3,Errors, Errors-1))], path = file)
+  }
 }
 
 
@@ -156,7 +161,11 @@ prep_data_check <- function(inputDB, ShortCodes){
 run_checks <- function(inputDB, ShortCodes, logfile = "R_checks/log.txt"){
   test_data   <- prep_data_check(inputDB, ShortCodes)
   entry_codes <- as.character(unique(test_data$Code))
-  file.remove("Data/log.txt")
+  if (file.exists(logfile)) file.remove(logfile)
+  
+  cat("Bulk checks performed on:",paste(ShortCodes, collapse = ", "),
+      "\n",suppressMessages(timestamp()),"\n\n", file = logfile)
+  
   for (k in entry_codes) {
     utils::capture.output(
       try(bulk_checks(
@@ -169,6 +178,8 @@ run_checks <- function(inputDB, ShortCodes, logfile = "R_checks/log.txt"){
   }
   
   parse_log(logfile)
+  
+  cat("Done!, please check the file",logfile,"for any error messages")
 }
 
 # run_checks(inputDB, "CO")
