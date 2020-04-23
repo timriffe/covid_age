@@ -179,7 +179,7 @@ parse_log <- function(file = "Data/log.txt"){
 # ------------------------------------------
 # RUN VALIDATION HERE
 
-prep_data_check <- function(inputDB, ShortCodes){
+prep_data_check <- function(input_data, ShortCodes){
   input_data %>% 
     filter(Short %in% ShortCodes) %>% 
     mutate(Date = as.Date(Date, format = "%d.%m.%Y"),
