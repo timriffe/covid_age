@@ -45,6 +45,7 @@ Here's an overview of populations available in the `inputDB`
 - [x] Spain  
   - [x] Basque Country
   - [ ] Catalonia
+  - [x] Valencian Community
   - [ ] Barcelona
 - [x] Scotland
 - [x] South Africa
