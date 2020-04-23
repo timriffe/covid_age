@@ -44,6 +44,7 @@ bulk_checks <- function(data) {
   })
 
   # 3. Age (chr) can only be coercible to integer or "UNK" or "TOT", no NAs
+  # TR: chokes on leading 0s.
   test_that("Age (chr) can only be coercible to integer or 'UNK' or 'TOT', no NAs", {
     expect_true(
       all(d$Age %in% c(age_range, "TOT", "UNK"))
@@ -52,6 +53,13 @@ bulk_checks <- function(data) {
 
   # 4. AgeInt can only be coercible to integer or NA (maybe we should just read 
   # it in as integer?)
+  
+  # TR: this chokes if there are leading 0s for age (weird I know)
+  # Maybe the better check is that for each Age that is not UNK or TOT
+  # AgeInt coerces to integer without NAs. Note, for this group_by()
+  # level, it's possible to have TOT and only TOT in a 1-row subset.
+  # so this needs to be qualified some. My try:
+  
   test_that("AgeInt can only be coercible to integer or NA", {
     expect_true(
       is.integer(d$AgeInt)
@@ -59,12 +67,13 @@ bulk_checks <- function(data) {
   })
 
   # 5. AgeInt can only be NA for UNK or TOT
-  test_that("AgeInt can only be NA for UNK or TOT", {
-    expect_true(
-      all(is.na(d[d$Age %in% c("UNK", "TOT"), ]$AgeInt))
-    )
-  })
-
+  if (any(d$Age %in% c("UNK", "TOT"))){
+    test_that("AgeInt can only be NA for UNK or TOT", {
+      expect_true(
+        all(is.na(d[d$Age %in% c("UNK", "TOT"), ]$AgeInt))
+      )
+    })
+  }
   # 6. AgeInt must sum to 105
   if (nrow(d) == 1) {
     test_that("AgeInt must sum to 105", {
@@ -87,17 +96,19 @@ bulk_checks <- function(data) {
     
     len_x <- length(x)
 
-    # TODO: WHAT MESSAGE TO PUT HERE FOR TEST_THAT?
-    expect_identical(
-      d$AgeInt[1:len_x],
-      x
-    )
+    #
+    test_that("Age range must be continuosly covered with neither gaps nor overlap", {
+      expect_identical(
+        d$AgeInt[1:len_x],
+        x
+      )
+    })
   }
 
 
 
   # 8. Sex can only be "f", "m", or "b"
-  test_that("Sex can only be 'f', 'm', or 'b'", {
+  test_that("Sex can only be 'f', 'm', 'b', or 'UNK'", {
     expect_true(
       all(d$Sex %in% c("m", "f", "b", "UNK"))
     )
