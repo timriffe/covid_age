@@ -1,30 +1,15 @@
-# --------------------------------------------------- #
-# Author: Marius D. Pascariu
-# Last update: Wed Apr 22 17:03:19 2020
-# --------------------------------------------------- #
-# remove(list = ls())
 library(tidyverse)
 library(testthat)
-
-
-# input_data <- read.csv("Data/inputDB.csv")
-# 
-# test_data <- input_data %>% 
-#   mutate(Date = as.Date(Date, format = "%d.%m.%Y"),
-#          Code = paste(Short, Region, Date, Sex, Metric, Measure, sep = "-"))
-# 
-# 
-# 
 
 # ------------------------------------------
 #' Bulk checks on inputDB
 #' 
-#' @param data Dataset to be tested. This would corespond to 
+#' @param data Dataset to be tested. This would correspond to 
 #' 1 country-region-date-sex-Metric-Measure
 bulk_checks <- function(data) {
   d = data
   age_range = 0:105
-
+  
   with(d[1,],paste(Short, Region, Date, Sex, Metric, Measure, sep = "-")) %>% 
     message()
   
@@ -34,7 +19,7 @@ bulk_checks <- function(data) {
       any(is.na(d$Value))
     )
   })
-
+  
   # 2. All Country and entries in a subset must be identical and equal to 
   # the Country entry in rubric
   test_that("All Country and entries in a subset must be identical and equal to the Country entry in rubric", {
@@ -42,14 +27,14 @@ bulk_checks <- function(data) {
       all(as.character(d$Country) == d$Country[1])
     )
   })
-
+  
   # 3. Age (chr) can only be coercible to integer or "UNK" or "TOT", no NAs
   test_that("Age (chr) can only be coercible to integer or 'UNK' or 'TOT', no NAs", {
     expect_true(
       all(d$Age %in% c(age_range, "TOT", "UNK"))
     )
   })
-
+  
   # 4. AgeInt can only be coercible to integer or NA (maybe we should just read 
   # it in as integer?)
   test_that("AgeInt can only be coercible to integer or NA", {
@@ -57,21 +42,21 @@ bulk_checks <- function(data) {
       is.integer(d$AgeInt)
     )
   })
-
+  
   # 5. AgeInt can only be NA for UNK or TOT
   test_that("AgeInt can only be NA for UNK or TOT", {
     expect_true(
       all(is.na(d[d$Age %in% c("UNK", "TOT"), ]$AgeInt))
     )
   })
-
+  
   # 6. AgeInt must sum to 105
   if (nrow(d) == 1) {
     test_that("AgeInt must sum to 105", {
       expect_true(is.na(d$AgeInt))
     })
   } else {
-
+    
     test_that("AgeInt must sum to 105", {
       expect_equal(
         sum(d$AgeInt, na.rm = TRUE),
@@ -86,80 +71,80 @@ bulk_checks <- function(data) {
       diff()
     
     len_x <- length(x)
-
+    
     # TODO: WHAT MESSAGE TO PUT HERE FOR TEST_THAT?
     expect_identical(
       d$AgeInt[1:len_x],
       x
     )
   }
-
-
-
+  
+  
+  
   # 8. Sex can only be "f", "m", or "b"
   test_that("Sex can only be 'f', 'm', or 'b'", {
     expect_true(
       all(d$Sex %in% c("m", "f", "b", "UNK"))
     )
   })
-
+  
   # 9. Date must be "DD.MM.YYYY", which will work with lubridate::dmy().
-  # we already converted the Date to the %d.%m.%Y format. If the datat is 
+  # we already converted the Date to the %d.%m.%Y format. If the data is 
   # wrongly added an NA is returned
   test_that("Date must be 'DD.MM.YYYY'", {
     expect_false(
       any(is.na(d$Date))
     )
   })
-
-  # 10. Date can't be before 1/12/2019 and can't be later than today
+  
+  # 10. Date cannot be before 1/12/2019 and can't be later than today
   # Build time range
   dt <- seq(as.Date("2019-12-01"), 
             by = "day", 
             length.out = as.double(difftime(Sys.Date(), as.Date("2019-12-01")) + 1)
-            )
-
+  )
+  
   test_that("Date can't be before 1/12/2019 and can't be later than today", {
     expect_true(
       all(d$Date %in% dt)
     )
   })
-
+  
   # 11. Metric can only be "Count", "Fraction", or "Ratio" (so far)
   test_that('Metric can only be "Count", "Fraction", or "Ratio" (so far)', {
     expect_true(
       all(d$Metric %in% c("Count", "Fraction", "Ratio"))
     )
   })
-
+  
   # 12. Measure can only be "Cases", "Deaths", "Tests", or "ASCFR" (so far)
   test_that('Measure can only be "Cases", "Deaths", "Tests", or "ASCFR" (so far)', {
     expect_true(
       all(d$Measure %in% c("Cases", "Deaths", "Tests", "ASCFR"))
     )
   })
-
+  
   # 13. Code must be a concatenation of Short and Date
-  # I don't think a code is necessary in the colected data. This can be build 
-  # later on in the scripts. Moreover, we might decided to change the format.
+  # I do not think a code is necessary in the collected data. This can be built 
+  # later in the scripts. Moreover, we might decide to change the format.
   # The less details are collected the less chances of typos.
-
+  
   # 14. No negatives in Value column
   test_that('No negatives in Value column', {
     expect_true(
       all(d$Value >= 0)
     )
   })
-
+  
   # 15. duplicated group-by variables (Each combo of Code, Sex, Age, 
-  # Measure can only be present once) - we've had instances of double-entry 
+  # Measure can only be present once) - we have had instances of double-entry 
   # already. See duplicated()
-    test_that('Duplicated group-by variables (Each combo of Code, Sex, Age, Measure can only be present once)', {
-      expect_false(
-        any(duplicated(paste(d$Code, d$Age)))
-      )
+  test_that('Duplicated group-by variables (Each combo of Code, Sex, Age, Measure can only be present once)', {
+    expect_false(
+      any(duplicated(paste(d$Code, d$Age)))
+    )
   })
-
+  
 } # end bulk_checks()
 # ------------------------------------------
 # Log parser
@@ -167,7 +152,9 @@ parse_log <- function(file = "Data/log.txt"){
   Log         <- read_lines(file)
   Errors      <- grepl(Log, pattern = "Error : ") %>% which()
   if (length(Errors) == 0){
-    Log <- c(Log[1:3], "No errors! Do a happy dance!\n")
+    Log <- c(Log[1:3], 
+             praise::praise(), 
+             "No errors! Do a happy dance!\n")
     write_lines(Log, path = file)
   } else {
     Log[Errors] <- paste(Log[Errors], "\n")
@@ -191,7 +178,7 @@ run_checks <- function(inputDB, ShortCodes, logfile = "R_checks/log.txt"){
   entry_codes <- as.character(unique(test_data$Code))
   if (file.exists(logfile)) file.remove(logfile)
   
-  cat("Bulk checks performed on:",paste(ShortCodes, collapse = ", "),
+  cat("Bulk checks performed on:", paste(ShortCodes, collapse = ", "),
       "\n",suppressMessages(timestamp()),"\n\n", file = logfile)
   
   for (k in entry_codes) {
@@ -205,17 +192,24 @@ run_checks <- function(inputDB, ShortCodes, logfile = "R_checks/log.txt"){
     )
   }
   
+  utils::capture.output(
+    message("\n\nConsistency checks performed on count data\n\n"),
+    file = logfile,
+    type = "message",
+    append = TRUE
+  )
+  
+  utils::capture.output(
+    check_consistency(inputDB),
+    file = logfile,
+    type = "message",
+    append = TRUE
+  )
+  
   parse_log(logfile)
   
   cat("Done!, please check the file",logfile,"for any error messages")
 }
-
-# run_checks(inputDB, "CO")
-
-# Dataset failing
-# d <- test_data %>% 
-#   filter(Code == "CA_BC-British Columbia-2020-04-15-b-Count-Deaths")
-# d
 
 
 
