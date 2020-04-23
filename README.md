@@ -24,10 +24,12 @@ Here's an overview of populations available in the `inputDB`
   - [x] Bogotá
 - [x] Denmark    
 - [x] Ecuador     
+- [x] Estonia
 - [x] Eswatini    
 - [x] France     
 - [x] Germany   
   - [ ] German federal states
+- [x] Ireland
 - [x] Italy     
   - [ ] Italian regions
 - [x] Japan
@@ -62,15 +64,21 @@ Here's an overview of populations available in the `inputDB`
   - [ ] Ohio
   - [ ] Oregon
   - [ ] Wisconsin
-- [ ] Peru
-- [ ] Nothern Ireland
-- [ ] Iceland
-- [x] Ireland
+- [ ] Algeria
+- [ ] Armenia
+- [ ] Australia
 - [ ] Austria
-- [ ] Israel
+- [ ] Czech Republic
 - [ ] Great Britain / UK
-- [x] Australia
+- [ ] Greece
 - [ ] Hong Kong
+- [ ] Iceland
+- [ ] Israel
+- [ ] Nothern Ireland
+- [ ] Pakistan
+- [ ] Panama
+- [ ] Peru
+- [ ] Philippines
 
 
 Most populations in the database contain multiple time snapshots, and all are continually monitored for new data releases.  All statistics reported here are **cumulative**. 
