@@ -79,7 +79,7 @@ Here's an overview of populations available in the `inputDB`
 - [ ] Panama
 - [ ] Peru
 - [ ] Philippines
-
+  
 
 Most populations in the database contain multiple time snapshots, and all are continually monitored for new data releases.  All statistics reported here are **cumulative**. 
 
@@ -87,8 +87,8 @@ Source documentation and a methods protocol are forthcoming. These results are p
 
 If you know of sources for other populations, please either email, Tweet, or leave an *Issue* in this repository, and we'll look into it. If you would like to assist this project in gathering data, or other tasks, please let us know and I'm sure we can find a task!
 
-## The team (so far)
-Tim Riffe, Enrique Acosta, Filipe Ribeiro, Alyson van Raalte, Catalina Torres, José Manuel Aburto, Cosmo Strozza, Silvia Rizzi, Virginia Zarulli, Chia Liu, Jorge Cimentada, Jorge López, Marius Pascariu, Viorela Diaconu, Francisco Rowe, Natalie Nitsche, Paola Vasquez, Victor Manuel García Guerrero, Emanuele del Fava, Marilia Nepomuceno, Ugofilippo Basellini, Diego Alburez-Gutierrez, Rafael Silva, Alain Gagnon, Irwin Hecker, Didier Breton, Sergi Trias-Llimos, Ryohei Mogi, Fumiya Uchikoshi, Emmanuel Olamijuwon, Iván Williams, Armando González, Toni F., Christian Dudel, Mikko Myrskylä.
+## The team (so far), alphabetical by last name
+José Manuel Aburto, Enrique Acosta, Diego Alburez-Gutierrez, Anna Altová, Ugofilippo Baselini, Simona Bignami, Didier Breton, Emanuele del Fava, Viorela Diaconu, Jessica Donzowa, Christian Dudel, Toni Froehlich, Alain Gagnon, Mariana Garcia Cristómo, Armando González, Irwin Hecker, Chia Liu, Jorge Lopez, Andrea Lozer, Garcia Guerrero\tVictor Manuel, Ryohei Mogi, Saskia Morwinsky, Mikko Myrskylä, Marilia Nepomuceno, Natalie Nitsche, Anna Oksuzyan, Emmanuel Olamijuwon, Filipe Ribeiro, Tim Riffe, Silvia Rizzi, Francisco Rowe, Jiaxin Shi, Rafael Silva, Cosmo Strozza, Catalina Torres, Sergi Trias, Fumiya Uchikoshi, Alyson van Raalte, Paola Vasquez, Iván Williams, Virginia Zarulli
 
 (and a few more people at the moment have made commitments. )
 
