@@ -442,6 +442,62 @@ infer_both_sex <- function(chunk){
                  names_to = "Sex")
 }
 
+# Standardize closeout.
+# closing out with 0 counts is pretty bad.
+# closing out with known single ages that 
+# don't go cleanly to 105 is also a pain for processing.
+# age ranges that don't start at 0 are a pain for processing.
+# need to standardize these things. What shall it be?
+# on the lower end, if there are 0s
+
+# 
+
+# chunk <- inputDB %>% 
+#   filter(Code =="MX19.04.2020",
+#          Measure == "Deaths",
+#          Sex == "m")
+
+
+# this is after all rescaling is done. Group OAG down to the 
+# highest age with a positive count.
+# group_by(Code, Sex, Measure) %>% 
+maybe_lower_closeout <- function(chunk, OAnew_min = 85){
+  if (!all(chunk$Metric == "Count")){
+    return(chunk)
+  }
+  chunk <- chunk %>% 
+    mutate(Age = as.integer(Age)) %>% 
+    arrange(Age)
+  Age    <- chunk %>% pull(Age) %>% as.integer()
+  Value  <- chunk %>% pull(Value) 
+  AgeInt <- chunk %>% pull(AgeInt)%>% as.integer()
+  
+  n <- length(Age)
+  nm <- (Age >= OAnew_min) %>% which() %>% min()
+  for (i in n:nm){
+    if (Value[i] > 0){
+      break
+    }
+  }
+  if (i < n){
+    .Code    <- chunk %>% pull(Code) %>% '[['(1)
+    .Sex     <- chunk %>% pull(Sex) %>% '[['(1)
+    .Measure <- chunk %>% pull(Measure) %>% '[['(1)
+    cat("Open age group lowered from",Age[n],"to",Age[i],"for",.Code,.Sex,.Measure,"\n")
+    Value  <- c(Value[1:(i-1)],sum(Value[i:n]))
+    Age    <- Age[1:i]
+    AgeInt <- c(AgeInt[1:(i-1)], 105 - Age[i])
+    
+    chunk <- chunk[1:i, ]
+    chunk$Age = Age
+    chunk$AgeInt = AgeInt
+    chunk$Value = Value
+  }
+  chunk
+}
+
+
+
 # Separate harmonize_offsets() is better,
 # it saves multiple redundant
 

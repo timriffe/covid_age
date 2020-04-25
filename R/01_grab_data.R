@@ -32,6 +32,12 @@ if (check_db){
     inputDB %>% 
     filter(Country !="Denmark")
 
+  inputDB %>% 
+    filter(is.na(Date)) %>% 
+    View()
+  inputDB <-
+    inputDB %>% 
+    filter(!is.na(Date)) 
   # Date range check:
   inputDB %>% 
     mutate(date = dmy(Date)) %>% 
@@ -53,7 +59,8 @@ if (check_db){
   
   # any remaining NAs in Value?
   inputDB %>% filter(is.na(Value)) %>% View()
-  
+  inputDB <- inputDB %>% 
+    filter(!is.na(Value)) 
   # -------------------------------------
   # Check Measure 
   # Valid: Deaths, Cases, Tests, ASCFR
@@ -123,13 +130,13 @@ if (check_db){
   # ---------------------------------------------------
   # # replace subset with new load after Date correction
   # NOTE THIS WILL FAIL FOR REGIONS!!
-  # ShortCode <- "AT"
-  # X <- get_country_inputDB(ShortCode)
-  # inputDB <-
-  #    inputDB %>% 
-  #    filter(!grepl(ShortCode,Code)) %>% 
-  #    rbind(X) %>% 
-  #    sort_input_data()
+  # ShortCode <- "US_OR"
+   # X <- get_country_inputDB(ShortCode)
+   # inputDB <-
+   #    inputDB %>% 
+   #    filter(!grepl(ShortCode,Code)) %>% 
+   #    rbind(X) %>% 
+   #    sort_input_data()
   # ----------------------------------------------------
   # check closeout ages:
   CloseoutCheck <- 

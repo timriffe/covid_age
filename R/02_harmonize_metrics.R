@@ -41,6 +41,11 @@ inputCounts <-
   do(rescale_sexes(chunk = .data)) %>% 
   do(infer_both_sex(chunk = .data)) %>% 
   ungroup() %>% 
+  # Needs debugging
+  # Error in n:nm : result would be too long a vector
+  # group_by(Code, Sex, Measure) %>% 
+  # do(maybe_lower_closeout(chunk = .data, OAnew_min = 85)) %>% 
+  # ungroup() %>% 
   mutate(Age = as.integer(Age),
          AgeInt = as.integer(AgeInt)) 
 
@@ -61,4 +66,5 @@ inputCounts %>%
 # inputCounts %>% pull(Age) %>% is.na() %>% sum()
 # inputCounts %>% 
 #   filter(is.na(Age))
+
 

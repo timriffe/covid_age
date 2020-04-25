@@ -1,6 +1,6 @@
 library(tidyverse)
 library(testthat)
-
+source(here::here("R_checks/check_consistency.R"))
 # ------------------------------------------
 #' Bulk checks on inputDB
 #' 
