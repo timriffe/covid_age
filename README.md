@@ -9,17 +9,21 @@ Here's an overview of populations available in the `inputDB`
 - [ ] Forthcoming
 -------------------------------
 
+- [x] Algeria
+- [x] Austria
 - [x] Belgium 
-- [x] Brazil    
+- [ ] Brazil    
   - [x] Rio de Janeiro
   - [ ] Brazilian regions
 - [x] Canada  
   - [ ] Quebec
   - [ ] Montreal
-  - [x] Ontario
+  - [x] Alberta
   - [x] British Columbia
+  - [x] Ontario
 - [x] Chile
-- [x] China       
+- [x] China    
+  - [x] Hong Kong
 - [x] Colombia   
   - [x] Bogotá
 - [x] Denmark    
@@ -28,7 +32,8 @@ Here's an overview of populations available in the `inputDB`
 - [x] Eswatini    
 - [x] France     
 - [x] Germany   
-  - [ ] German federal states
+  - [x] German federal states
+- [x] Greece
 - [x] Ireland
 - [x] Italy     
   - [ ] Italian regions
@@ -40,15 +45,13 @@ Here's an overview of populations available in the `inputDB`
 - [x] Nigeria
 - [x] Norway
 - [x] Portugal   
-- [x] Scotland   
+- [x] Scotland  
+- [x] South Africa
 - [x] South Korea  
 - [x] Spain  
   - [x] Basque Country
   - [ ] Catalonia
   - [x] Valencian Community
-  - [ ] Barcelona
-- [x] Scotland
-- [x] South Africa
 - [x] Sweden     
 - [x] Switzerland
 - [x] Taiwan
@@ -57,22 +60,20 @@ Here's an overview of populations available in the `inputDB`
   - [x] Illinois
   - [x] Louisiana
   - [x] Michigan
+  - [x] New Jersey
+  - [x] Oregon
   - [x] Washington state
+  - [x] Wisconsin
   - [ ] Arizona
   - [ ] Georgia
   - [ ] Indiana
   - [ ] Massachusetts
   - [ ] Ohio
-  - [ ] Oregon
-  - [ ] Wisconsin
-- [ ] Algeria
+  
 - [ ] Armenia
 - [ ] Australia
-- [ ] Austria
 - [ ] Czech Republic
 - [ ] Great Britain / UK
-- [ ] Greece
-- [ ] Hong Kong
 - [ ] Iceland
 - [ ] Israel
 - [ ] Nothern Ireland
@@ -89,7 +90,7 @@ Source documentation and a methods protocol are forthcoming. These results are p
 If you know of sources for other populations, please either email, Tweet, or leave an *Issue* in this repository, and we'll look into it. If you would like to assist this project in gathering data, or other tasks, please let us know and I'm sure we can find a task!
 
 ## The team (so far), alphabetical by last name
-José Manuel Aburto, Enrique Acosta, Diego Alburez-Gutierrez, Anna Altová, Ugofilippo Baselini, Simona Bignami, Didier Breton, Emanuele del Fava, Viorela Diaconu, Jessica Donzowa, Christian Dudel, Toni Froehlich, Alain Gagnon, Mariana Garcia Cristómo, Armando González, Irwin Hecker, Chia Liu, Jorge Lopez, Andrea Lozer, Garcia Guerrero\tVictor Manuel, Ryohei Mogi, Saskia Morwinsky, Mikko Myrskylä, Marilia Nepomuceno, Natalie Nitsche, Anna Oksuzyan, Emmanuel Olamijuwon, Marius D. Pascariu, Filipe Ribeiro, Tim Riffe, Silvia Rizzi, Francisco Rowe, Jiaxin Shi, Rafael Silva, Cosmo Strozza, Catalina Torres, Sergi Trias, Fumiya Uchikoshi, Alyson van Raalte, Paola Vasquez, Iván Williams, Virginia Zarulli
+José Manuel Aburto, Enrique Acosta, Diego Alburez-Gutierrez, Anna Altová, Ugofilippo Baselini, Simona Bignami, Didier Breton, Emanuele del Fava, Viorela Diaconu, Jessica Donzowa, Christian Dudel, Toni Froehlich, Alain Gagnon, Mariana Garcia Cristómo, Armando González, Irwin Hecker, Chia Liu, Jorge Lopez, Andrea Lozer, Victor Manuel Garcia Guerrero, Ryohei Mogi, Saskia Morwinsky, Mikko Myrskylä, Marilia Nepomuceno, Natalie Nitsche, Anna Oksuzyan, Emmanuel Olamijuwon, Marius D. Pascariu, Filipe Ribeiro, Tim Riffe, Silvia Rizzi, Francisco Rowe, Jiaxin Shi, Rafael Silva, Cosmo Strozza, Catalina Torres, Sergi Trias, Fumiya Uchikoshi, Alyson van Raalte, Paola Vasquez, Iván Williams, Virginia Zarulli
 
 (and a few more people at the moment have made commitments. )
 
