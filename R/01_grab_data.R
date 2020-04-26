@@ -31,6 +31,11 @@ if (check_db){
   inputDB <- 
     inputDB %>% 
     filter(Country !="Denmark")
+  
+  # REMOVE GEORGIA until inputs fixed
+  inputDB <- 
+    inputDB %>% 
+    filter(Region !="Georgia")
 
   inputDB %>% 
     filter(is.na(Date)) %>% 
@@ -43,6 +48,10 @@ if (check_db){
     mutate(date = dmy(Date)) %>% 
     pull(date) %>% 
     range()
+  inputDB %>% 
+    mutate(date = dmy(Date)) %>% 
+    filter(date > today()) %>% 
+    pull(Code) %>% unique()
   # hunt down anything implausible
   # ----------------------
   
@@ -130,12 +139,12 @@ if (check_db){
   # ---------------------------------------------------
   # # replace subset with new load after Date correction
   # NOTE THIS WILL FAIL FOR REGIONS!!
-  # ShortCode <- "US_OR"
-   # X <- get_country_inputDB(ShortCode)
+  # ShortCode <- "GB_SC"
+   #  X <- get_country_inputDB(ShortCode)
    # inputDB <-
-   #    inputDB %>% 
-   #    filter(!grepl(ShortCode,Code)) %>% 
-   #    rbind(X) %>% 
+   #   inputDB %>% 
+   #   filter(!grepl(ShortCode,Code)) %>% 
+   #   rbind(X) %>% 
    #    sort_input_data()
   # ----------------------------------------------------
   # check closeout ages:
