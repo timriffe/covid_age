@@ -71,7 +71,7 @@ compile_inputDB <- function(){
     X <- read_sheet(ss_i, 
                      sheet = "database", 
                      na = "NA", 
-                     col_types = "cccccccccd") %>% 
+                     col_types = "cccccciccd") %>% 
       mutate(Short = i)
     input_list[[i]] <- X
     Sys.sleep(30)
@@ -92,7 +92,7 @@ get_country_inputDB <- function(ShortCode){
   out <- read_sheet(ss_i, 
                      sheet = "database", 
                      na = "NA", 
-                     col_types= "cccccccccd")
+                     col_types= "cccccciccd")
   out$Short <- ShortCode
   out
 }
@@ -105,7 +105,7 @@ get_standby_inputDB <- function(){
     rubric %>% 
     filter(tab == "inputDB") %>% 
     pull(Sheet)
-  standbyDB <- read_sheet(inputDB_ss, sheet = "inputDB", na = "NA", col_types= "cccccccccdc")
+  standbyDB <- read_sheet(inputDB_ss, sheet = "inputDB", na = "NA", col_types= "cccccciccdc")
   standbyDB
 }
 
