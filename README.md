@@ -64,11 +64,15 @@ Here's an overview of populations available in the `inputDB`
   - [x] Oregon
   - [x] Washington state
   - [x] Wisconsin
+  - [ ] Chicago
   - [ ] Arizona
   - [ ] Georgia
   - [ ] Indiana
+  - [ ] Iowa
   - [ ] Massachusetts
   - [ ] Ohio
+  - [ ] Oklahoma
+  - [ ] Virginia
   
 - [ ] Armenia
 - [ ] Australia
@@ -81,6 +85,7 @@ Here's an overview of populations available in the `inputDB`
 - [ ] Panama
 - [ ] Peru
 - [ ] Philippines
+- [ ] Romania
   
 
 Most populations in the database contain multiple time snapshots, and all are continually monitored for new data releases.  All statistics reported here are **cumulative**. 

@@ -56,7 +56,7 @@ sort_input_data <- function(X){
 
 get_input_rubric <- function(tab = "input"){
   ss_rubric <- "https://docs.google.com/spreadsheets/d/15kat5Qddi11WhUPBW3Kj3faAmhuWkgtQzioaHvAGZI0/edit#gid=0"
-  input_rubric <- sheets_read(ss_rubric, sheet = tab) %>% 
+  input_rubric <- read_sheet(ss_rubric, sheet = tab) %>% 
     filter(!is.na(Sheet))
   input_rubric
 }
@@ -68,7 +68,7 @@ compile_inputDB <- function(){
   input_list <- list()
   for (i in rubric$Short){
     ss_i           <- rubric %>% filter(Short == i) %>% pull(Sheet)
-    X <- sheets_read(ss_i, 
+    X <- read_sheet(ss_i, 
                      sheet = "database", 
                      na = "NA", 
                      col_types = "cccccccccd") %>% 
@@ -89,7 +89,7 @@ compile_inputDB <- function(){
 get_country_inputDB <- function(ShortCode){
   rubric <- get_input_rubric(tab = "input")
   ss_i   <- rubric %>% filter(Short == ShortCode) %>% pull(Sheet)
-  out <- sheets_read(ss_i, 
+  out <- read_sheet(ss_i, 
                      sheet = "database", 
                      na = "NA", 
                      col_types= "cccccccccd")
@@ -105,7 +105,7 @@ get_standby_inputDB <- function(){
     rubric %>% 
     filter(tab == "inputDB") %>% 
     pull(Sheet)
-  standbyDB <- sheets_read(inputDB_ss, sheet = "inputDB", na = "NA", col_types= "cccccccccdc")
+  standbyDB <- read_sheet(inputDB_ss, sheet = "inputDB", na = "NA", col_types= "cccccccccdc")
   standbyDB
 }
 
@@ -146,7 +146,7 @@ push_inputDB <- function(inputDB = NULL){
     filter(tab == "inputDB") %>% 
     pull(Sheet)
   
-  sheets_write(inputDB, ss = inputDB_ss, sheet = "inputDB")
+  write_sheet(inputDB, ss = inputDB_ss, sheet = "inputDB")
 }
 
 
@@ -158,7 +158,7 @@ push_inputDB <- function(inputDB = NULL){
 #     filter(tab == "outputDB") %>% 
 #     pull(Sheet)
 #   
-#   sheets_write(outputDB, ss = inputDB_ss, sheet = "outputDB")
+#   write_sheet(outputDB, ss = inputDB_ss, sheet = "outputDB")
 # }
 
 
@@ -456,8 +456,33 @@ infer_both_sex <- function(chunk){
 #   filter(Code =="MX19.04.2020",
 #          Measure == "Deaths",
 #          Sex == "m")
+# group_by(Code, Sex, Measure) %>% 
+# do(maybe_lower_closeout(chunk = .data, OAnew_min = 85)) %>% 
 
+# pad_single_zeros <- function(chunk, OAnew_min = 85){
+#   if (!all(chunk$Metric == "Count")){
+#     return(chunk)
+#   }
+#   chunk <- chunk %>% 
+#     mutate(Age = as.integer(Age)) %>% 
+#     arrange(Age)
+#   Age    <- chunk %>% pull(Age) %>% as.integer()
+#   Value  <- chunk %>% pull(Value) 
+#   AgeInt <- chunk %>% pull(AgeInt)%>% as.integer()
+#   
+#   ind1   <- AgeInt == 1
+#   if (all(ind1[Age < 100])){
+#     
+#   }
+# 
+# }
 
+# iL <- split(inputCounts, list(inputCounts$Code, inputCounts$Sex, inputCounts$Measure),drop = TRUE) 
+# 
+# for (i in 1:length(iL)){
+#   chunk <- iL[[i]]
+#   maybe_lower_closeout(iL[[i]])
+# }
 # this is after all rescaling is done. Group OAG down to the 
 # highest age with a positive count.
 # group_by(Code, Sex, Measure) %>% 
@@ -471,6 +496,10 @@ maybe_lower_closeout <- function(chunk, OAnew_min = 85){
   Age    <- chunk %>% pull(Age) %>% as.integer()
   Value  <- chunk %>% pull(Value) 
   AgeInt <- chunk %>% pull(AgeInt)%>% as.integer()
+  
+  if (max(Age) <= OAnew_min){
+    return(chunk)
+  }
   
   n <- length(Age)
   nm <- (Age >= OAnew_min) %>% which() %>% min()
