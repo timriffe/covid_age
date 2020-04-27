@@ -14,6 +14,8 @@ source("R/00_Functions.R")
 #   inputDB %>% 
 #   filter(Country != "Ecuador")
 
+# inputDB <- readRDS("Data/inputDB.rds")
+
 # Some UNK Values in Chile coded as NA 
 #inputDB$Value[is.na(inputDB$Value)] <- 0
 
@@ -43,9 +45,9 @@ inputCounts <-
   ungroup() %>% 
   # Needs debugging
   # Error in n:nm : result would be too long a vector
-  # group_by(Code, Sex, Measure) %>% 
-  # do(maybe_lower_closeout(chunk = .data, OAnew_min = 85)) %>% 
-  # ungroup() %>% 
+  group_by(Code, Sex, Measure) %>% 
+  do(maybe_lower_closeout(chunk = .data, OAnew_min = 85)) %>% 
+  ungroup() %>% 
   mutate(Age = as.integer(Age),
          AgeInt = as.integer(AgeInt)) 
 
