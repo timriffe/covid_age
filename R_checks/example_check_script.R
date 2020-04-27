@@ -1,6 +1,7 @@
 
 # load checker functions
-source(here("R_checks/inputDB_check.R"))
+source(here::here("R_checks/inputDB_check.R"))
+source(here::here("R_checks/check_consistency.R"))
 
 inputDB <- read_csv("Data/inputDB.csv")
 

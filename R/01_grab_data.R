@@ -21,7 +21,7 @@ if (check_db){
   tic()
   inputDB   <- compile_inputDB()
   toc()
-  standbyDB <- get_standby_inputDB()
+  standbyDB <- readRDS(here::here("Data/inputDB.rds"))
   
   my_codes <- inputDB %>% pull(Short) %>% unique()
   run_checks(inputDB, my_codes)
@@ -31,12 +31,27 @@ if (check_db){
   inputDB <- 
     inputDB %>% 
     filter(Country !="Denmark")
+  
+  # REMOVE GEORGIA until inputs fixed
+  inputDB <- 
+    inputDB %>% 
+    filter(Region !="Georgia")
 
+  inputDB %>% 
+    filter(is.na(Date)) %>% 
+    View()
+  inputDB <-
+    inputDB %>% 
+    filter(!is.na(Date)) 
   # Date range check:
   inputDB %>% 
     mutate(date = dmy(Date)) %>% 
     pull(date) %>% 
     range()
+  inputDB %>% 
+    mutate(date = dmy(Date)) %>% 
+    filter(date > today()) %>% 
+    pull(Code) %>% unique()
   # hunt down anything implausible
   # ----------------------
   
@@ -53,7 +68,8 @@ if (check_db){
   
   # any remaining NAs in Value?
   inputDB %>% filter(is.na(Value)) %>% View()
-  
+  inputDB <- inputDB %>% 
+    filter(!is.na(Value)) 
   # -------------------------------------
   # Check Measure 
   # Valid: Deaths, Cases, Tests, ASCFR
@@ -123,13 +139,13 @@ if (check_db){
   # ---------------------------------------------------
   # # replace subset with new load after Date correction
   # NOTE THIS WILL FAIL FOR REGIONS!!
- # ShortCode <- "CA_BC"
- # X <- get_country_inputDB(ShortCode)
- # inputDB <-
- #    inputDB %>% 
- #    filter(!grepl(ShortCode,Code)) %>% 
- #    rbind(X) %>% 
- #    sort_input_data()
+  # ShortCode <- "GB_SC"
+   #  X <- get_country_inputDB(ShortCode)
+   # inputDB <-
+   #   inputDB %>% 
+   #   filter(!grepl(ShortCode,Code)) %>% 
+   #   rbind(X) %>% 
+   #    sort_input_data()
   # ----------------------------------------------------
   # check closeout ages:
   CloseoutCheck <- 
