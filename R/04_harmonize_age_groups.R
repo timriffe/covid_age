@@ -48,7 +48,8 @@ outputCounts_5 <- outputCounts_5 %>%
 outputCounts_5_rounded <- 
   outputCounts_5 %>% 
   mutate(Cases = round(Cases,1),
-         Deaths = round(Deaths,1))
+         Deaths = round(Deaths,1),
+         Tests = round(Tests,1))
 
 write_csv(outputCounts_5_rounded, path = "Data/Output_5.csv")
 saveRDS(outputCounts_5, "Data/Output_5.rds")
