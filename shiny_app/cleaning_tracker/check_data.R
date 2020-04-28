@@ -54,7 +54,7 @@ test_true <- function(error_message,
   if (!true) {
     err_msg <- paste0("Error: ",
                       error_message,
-                      " Found these anomalous ", val, ": ",
+                      ". Found these anomalous ", val, ": ",
                       paste0(anomaly_vals, collapse = ", "))
     message(err_msg)
   } else {
@@ -80,7 +80,6 @@ bulk_checks <- function(data) {
   )
 
   # 2. Countries must be unique values
-
   test_true(
     error_message = "There can't be any row in 'Country' with missing values",
     test_expression = !any(is.na(d$Country)),
@@ -89,14 +88,14 @@ bulk_checks <- function(data) {
   )
 
   test_true(
-    error_message = "All Country and entries in a subset must be identical and equal to the Country entry in rubric.",
+    error_message = "The country column must only contain the unique value of the current country",
     test_expression = all(as.character(d$Country) == d$Country[1], na.rm = TRUE),
     anomaly_vals = unique(d$Country)
   )
 
   # 3. Age variable must only have integer values between 0:105 and UNK or TOT
   test_true(
-    error_message = "Age (chr) can only have numbers between 0:105 or 'UNK' or 'TOT'. No NAs permitted. ",
+    error_message = "Age (chr) can only have numbers between 0:105 or 'UNK' or 'TOT'. No NAs permitted",
     test_expression = all(d$Age %in% c(as.character(age_range), "TOT", "UNK")),
     anomaly_vals = unique(setdiff(d$Age, c(as.character(age_range), "TOT", "UNK")))
   )
@@ -118,34 +117,52 @@ bulk_checks <- function(data) {
   )
 
   # 6. AgeInt must sum to 105
-  ## if (nrow(d) == 1) {
-  ##   test_that("AgeInt must sum to 105", {
-  ##     expect_true(is.na(d$AgeInt))
-  ##   })
-  ## } else {
+  res <-
+    d %>%
+    # Only when Age is not the total, for which AgeInt is empty and usualy
+    # is just a row for male/female
+    filter(!is.na(AgeInt)) %>% 
+    group_by(Code) %>%
+    summarize(res = sum(AgeInt, na.rm = TRUE) == 105)
 
-  ##   test_that("AgeInt must sum to 105", {
-  ##     expect_equal(
-  ##       sum(d$AgeInt, na.rm = TRUE),
-  ##       105
-  ##     )
-  ##   })
-  
-  ##   # 7. Age(i) + AgeInt(i) must equal Age(i+1)
-  ##   x <-
-  ##     d$Age[d$Age %in% age_range] %>% 
-  ##     as.character() %>% 
-  ##     as.integer() %>% 
-  ##     diff()
-  
-  ##   len_x <- length(x)
+  values_failed <-
+    res %>%
+    filter(!res) %>%
+    mutate(id = paste0("\n  * ", Code)) %>%
+    pull(id)
 
-  ##   # TODO: WHAT MESSAGE TO PUT HERE FOR TEST_THAT?
-  ##   expect_identical(
-  ##     d$AgeInt[1:len_x],
-  ##     x
-  ##   )
-  ## }
+  test_true(
+    error_message = "AgeInt must sum up to 105 for every Region-Date-Sex-Metric-Measure combination",
+    test_expression = all(res$res),
+    anomaly_vals = values_failed
+  )
+
+  # 7. `Age` column must only have 10 year gaps for every Region-Date-Sex-Metric-Measure combination
+  res <-
+    d %>% 
+    filter(Age %in% 0:105) %>% 
+    mutate(
+      Age = as.integer(Age),
+      AgeInt = as.integer(AgeInt),
+      Age1 = Age + AgeInt
+    )
+
+  all_res <-
+    res %>%
+    group_by(Code, Sex, Measure) %>%
+    summarize(res = all(Age[-1] == Age1[-length(Age1)]))
+
+  values_failed <-
+    all_res %>%
+    filter(!res) %>%
+    mutate(id = paste0("\n  * ", Code)) %>%
+    pull(id)
+
+  test_true(
+    error_message = "`Age` column must only have 10 year gaps for every Region-Date-Sex-Metric-Measure combination",
+    test_expression = all(all_res$res),
+    anomaly_vals = values_failed
+  )
 
   # 8. Sex can only be "f", "m", or "b"
   test_true(
@@ -174,7 +191,7 @@ bulk_checks <- function(data) {
   # Here I return the rows rather than the dates because setdiff would convert
   # dates to numbers and I don't want to make things more verbose.
   test_true(
-    error_message = "Date can't be before 1/12/2019 and can't be later than today.",
+    error_message = "Date can't be before 1/12/2019 and can't be later than today",
     test_expression = all(d$Date %in% dt),
     anomaly_vals = which(!d$Date %in% dt),
     value = FALSE
@@ -198,10 +215,8 @@ bulk_checks <- function(data) {
   # I don't think a code is necessary in the colected data. This can be build 
   # later on in the scripts. Moreover, we might decided to change the format.
   # The less details are collected the less chances of typos.
-
-
   test_true(
-    error_message = "No NAs in Value column allowed. ",
+    error_message = "No NAs in Value column allowed",
     test_expression = all(!is.na(d$Value)),
     anomaly_vals = which(is.na(d$Value)),
     value = FALSE
@@ -210,7 +225,7 @@ bulk_checks <- function(data) {
   # 14. No negatives in Value column
   value_col <- d$Value[!is.na(d$Value)]
   test_true(
-    error_message = "No negatives in Value column allowed. ",
+    error_message = "No negatives in Value column allowed",
     test_expression = all(value_col >= 0),
     anomaly_vals = value_col[!value_col >= 0]
   )
@@ -218,7 +233,6 @@ bulk_checks <- function(data) {
   # 15. duplicated group-by variables (Each combo of Code, Sex, Age, 
   # Measure can only be present once) - we've had instances of double-entry 
   # already. See duplicated()
-
   test_true(
     error_message = 'Duplicated group-by variables (Each combo of Code, Sex, Age, Measure can only be present once) ',
     test_expression = !any(duplicated(paste(d$Code, d$Age))),
@@ -226,38 +240,38 @@ bulk_checks <- function(data) {
     value = FALSE
   )
 
-} # end bulk_checks()
+}
 
 # ------------------------------------------
 # Log parser
-parse_log <- function(file = "Data/log.txt"){
+parse_log <- function(file = "Data/log.txt") {
   Log         <- read_lines(file)
-  Errors      <- grepl(Log, pattern = "Error: ") %>% which()
+  Errors      <- grepl(Log, pattern = "Error: | \\*") %>% which()
 
-  if (length(Errors) == 0){
+  if (length(Errors) == 0) {
     Log <- c(Log[1:3], "No errors! Do a happy dance!\n")
-    final_error <- Log
-    write_lines(final_error, path = file)
-  } else {
-    Log[Errors] <- paste(Log[Errors], "\n")
-    final_error <- Log[sort(c(1,2,3,Errors))]
-    write_lines(final_error, path = file)
+    write_lines(Log, path = file)
   }
-  final_error
+  ## } else {
+  ##   Log[Errors] <- paste(Log[Errors], "\n")
+  ##   final_error <- Log[sort(c(1,2,3,Errors))]
+  ##   write_lines(final_error, path = file)
+  ## }
+  Log
 }
 
 
 # ------------------------------------------
 # RUN VALIDATION HERE
 
-prep_data_check <- function(input_data){
+prep_data_check <- function(input_data) {
   input_data %>% 
     ## filter(Short %in% ShortCodes) %>% 
     mutate(Date = as.Date(Date, format = "%d.%m.%Y"),
            Code = paste(Region, Date, Sex, Metric, Measure, sep = "-"))
 }
 
-run_checks <- function(inputDB, logfile = "R_checks/log.txt"){
+run_checks <- function(inputDB, logfile = "R_checks/log.txt") {
   test_data   <- prep_data_check(inputDB)
   entry_codes <- as.character(unique(test_data$Code))
   if (file.exists(logfile)) file.remove(logfile)
