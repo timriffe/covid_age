@@ -99,7 +99,8 @@ if (check_db){
   inputDB %>%
     filter(is.na(Value)) %>% 
     View()
-  
+  # inputDB <- inputDB %>% filter(!is.na(Value))
+  # inputDB %>% 
   # inputDB <- inputDB %>% 
   #   mutate(Value = ifelse(is.na(Value),0,Value))
   # 
@@ -130,7 +131,7 @@ if (check_db){
   # inputDB <- inputDB %>% filter(!Code %in% c("CA_BC17.04.2020"))
   # These are all aggressive pushes:
   # Save out the inputDB
-  push_inputDB(inputDB)
+  #push_inputDB(inputDB)
   write_csv(inputDB, path = "Data/inputDB.csv")
   saveRDS(inputDB, "Data/inputDB.rds")
   
@@ -138,12 +139,12 @@ if (check_db){
   # # replace subset with new load after Date correction
   # NOTE THIS WILL FAIL FOR REGIONS!!
   # ShortCode <- "US"
-       X <- get_country_inputDB(ShortCode)
-      inputDB <-
-        inputDB %>% 
-        filter(!grepl(ShortCode,Code)) %>% 
-        rbind(X) %>% 
-         sort_input_data()
+      #  X <- get_country_inputDB(ShortCode)
+      # inputDB <-
+      #   inputDB %>% 
+      #   filter(!grepl(ShortCode,Code)) %>% 
+      #   rbind(X) %>% 
+      #    sort_input_data()
   # ----------------------------------------------------
   # check closeout ages:
   CloseoutCheck <- 
