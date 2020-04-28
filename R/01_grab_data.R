@@ -40,18 +40,16 @@ if (check_db){
   inputDB %>% 
     filter(is.na(Date)) %>% 
     View()
-  inputDB <-
-    inputDB %>% 
-    filter(!is.na(Date)) 
+
   # Date range check:
   inputDB %>% 
     mutate(date = dmy(Date)) %>% 
     pull(date) %>% 
     range()
-  inputDB %>% 
-    mutate(date = dmy(Date)) %>% 
-    filter(date > today()) %>% 
-    pull(Code) %>% unique()
+  # inputDB %>% 
+  #   mutate(date = dmy(Date)) %>% 
+  #   filter(date > today()) %>% 
+  #   pull(Code) %>% unique()
   # hunt down anything implausible
   # ----------------------
   
@@ -101,7 +99,8 @@ if (check_db){
   inputDB %>%
     filter(is.na(Value)) %>% 
     View()
-  
+  # inputDB <- inputDB %>% filter(!is.na(Value))
+  # inputDB %>% 
   # inputDB <- inputDB %>% 
   #   mutate(Value = ifelse(is.na(Value),0,Value))
   # 
@@ -132,20 +131,20 @@ if (check_db){
   # inputDB <- inputDB %>% filter(!Code %in% c("CA_BC17.04.2020"))
   # These are all aggressive pushes:
   # Save out the inputDB
-  push_inputDB(inputDB)
+  #push_inputDB(inputDB)
   write_csv(inputDB, path = "Data/inputDB.csv")
   saveRDS(inputDB, "Data/inputDB.rds")
   
   # ---------------------------------------------------
   # # replace subset with new load after Date correction
   # NOTE THIS WILL FAIL FOR REGIONS!!
-  # ShortCode <- "GB_SC"
-   #  X <- get_country_inputDB(ShortCode)
-   # inputDB <-
-   #   inputDB %>% 
-   #   filter(!grepl(ShortCode,Code)) %>% 
-   #   rbind(X) %>% 
-   #    sort_input_data()
+  # ShortCode <- "US"
+      #  X <- get_country_inputDB(ShortCode)
+      # inputDB <-
+      #   inputDB %>% 
+      #   filter(!grepl(ShortCode,Code)) %>% 
+      #   rbind(X) %>% 
+      #    sort_input_data()
   # ----------------------------------------------------
   # check closeout ages:
   CloseoutCheck <- 
@@ -179,7 +178,7 @@ if (check_db){
 # 
 # (codes_have <- standby %>% pull(Code) %>% unique())
 # (ss_i       <- input_rubric %>% filter(Short == ShortCode) %>% pull(Sheet))
-# incoming   <- sheets_read(ss_i, sheet = "database", na = "NA", col_types= "ccccccccd")
+# incoming   <- read_sheet(ss_i, sheet = "database", na = "NA", col_types= "ccccccccd")
 # 
 # incoming <-
 #   incoming %>% 
@@ -199,7 +198,7 @@ if (check_db){
 #           Age) %>% 
 #   select(-Date2)
 # 
-# sheets_write(outgoing, ss = ss_i, sheet = "database")
+# write_sheet(outgoing, ss = ss_i, sheet = "database")
 # }
 
 

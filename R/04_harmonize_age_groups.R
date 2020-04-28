@@ -48,7 +48,8 @@ outputCounts_5 <- outputCounts_5 %>%
 outputCounts_5_rounded <- 
   outputCounts_5 %>% 
   mutate(Cases = round(Cases,1),
-         Deaths = round(Deaths,1))
+         Deaths = round(Deaths,1),
+         Tests = round(Tests,1))
 
 write_csv(outputCounts_5_rounded, path = "Data/Output_5.csv")
 saveRDS(outputCounts_5, "Data/Output_5.rds")
@@ -70,7 +71,8 @@ outputCounts_10 <- outputCounts_10[, colnames(outputCounts_5)]
 outputCounts_10_rounded <- 
   outputCounts_10 %>% 
   mutate(Cases = round(Cases,1),
-         Deaths = round(Deaths,1))
+         Deaths = round(Deaths,1),
+         Tests = round(Tests,1))
 
 write_csv(outputCounts_10_rounded, path = "Data/Output_10.csv")
 saveRDS(outputCounts_10, "Data/Output_10.rds")
@@ -103,7 +105,7 @@ outputCounts_5 %>%
     mutate(ASCFR = Deaths / Cases,
            ASCFR = na_if(ASCFR, Deaths == 0)) %>% 
     filter(!is.na(ASCFR),
-           Sex == "b",
+           Sex == "m",
            D >= 100) %>% 
   ggplot(aes(x=Age, y = ASCFR, group = interaction(Country, Region, Code))) + 
   geom_line(alpha=.1) + 
