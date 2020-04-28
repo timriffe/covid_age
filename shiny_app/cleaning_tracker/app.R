@@ -17,8 +17,8 @@ get_input_rubric <- function(tab = "input"){
   input_rubric <-
     range_read(ss_rubric, sheet = tab) %>% 
     filter(!is.na(Sheet)) %>%
-    select(Country, Region, Sheet) %>%
-    mutate(id = paste0(Country, " - ", Region))
+    select(Country, Short, Region, Sheet) %>%
+    mutate(id = paste0(Country, " - ", Region, " - ", Short))
 
   input_rubric
 }
