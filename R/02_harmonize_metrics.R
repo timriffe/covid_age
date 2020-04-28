@@ -16,6 +16,7 @@ source("R/00_Functions.R")
 
 # inputDB <- readRDS("Data/inputDB.rds")
 
+# NYC <- inputDB %>% filter(Short == "US_NYC")
 # Some UNK Values in Chile coded as NA 
 #inputDB$Value[is.na(inputDB$Value)] <- 0
 

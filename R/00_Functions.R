@@ -525,7 +525,64 @@ maybe_lower_closeout <- function(chunk, OAnew_min = 85){
   chunk
 }
 
-
+process_counts <- function(inputDB, Offets = NULL, N = 10){
+  inputDB %>% 
+    filter(!(Age == "TOT" & Metric == "Fraction")) %>% 
+    
+    # Multiply Fraction Metrics into stated total counts
+    group_by(Code, Sex, Measure) %>% 
+    do(convert_fractions(chunk = .data)) %>% 
+    ungroup() %>% 
+    
+    # Infer cases as Deaths / ASCFR. This is a problem in young ages
+    # if there are cases but no deaths, or even if there are deaths
+    # it's a problem if there is rounding. Therefore we model it. The
+    # present model sucks and needs to be improved. This only affects
+    # CA_BC and ITinfo
+    group_by(Code, Sex) %>% 
+    do(infer_cases_from_deaths_and_ascfr(chunk = .data)) %>% 
+    ungroup() %>% 
+   
+    # Redistribute counts of unknown age proportional to counts 
+    # of known age
+    group_by(Code, Sex, Measure) %>% 
+    do(redistribute_unknown_age(chunk = .data)) %>% 
+    
+    # Age distribution should sum to total, if specified separately
+    do(rescale_to_total(chunk = .data)) %>% 
+    ungroup() %>% 
+    
+    # Counts of unknown sex redistributed with age
+    group_by(Code, Age, Measure) %>% 
+    do(redistribute_unknown_sex(chunk = .data)) %>% 
+    ungroup() %>% 
+    
+    # Rescale sexes to sum to same as both-sex margin total
+    group_by(Code, Measure) %>% 
+    do(rescale_sexes(chunk = .data)) %>% 
+    
+    # if sexes given but not both-sex, then generate it
+    do(infer_both_sex(chunk = .data)) %>% 
+    ungroup() %>% 
+    
+    # If upper tail in 0s then group down until there are positive counts,
+    # but not lower than 85
+    group_by(Code, Sex, Measure) %>% 
+    do(maybe_lower_closeout(chunk = .data, OAnew_min = 85)) %>% 
+    ungroup() %>% 
+    mutate(Age = as.integer(Age)) %>% 
+    
+    # do PCLM splitting
+    sort_input_data() %>% 
+    group_by(Country, Region, Code, Date, Sex, Measure) %>% 
+    do(harmonize_age(chunk = .data, 
+                     Offsets = Offsets, 
+                     N = N, 
+                     OAnew = 100)) %>% 
+    ungroup() %>% 
+    pivot_wider(names_from = Measure,
+                values_from = Value) 
+}
 
 # Separate harmonize_offsets() is better,
 # it saves multiple redundant
@@ -576,7 +633,7 @@ harmonize_offset_age <- function(chunk){
 
 
 # Age harmonization is the last step.
-harmonize_age <- function(chunk, Offsets, N = 5, OAnew = 100){
+harmonize_age <- function(chunk, Offsets = NULL, N = 5, OAnew = 100){
   Age     <- chunk %>% pull(Age)
   AgeInt  <- chunk %>% pull(AgeInt)
   Value   <- chunk %>% pull(Value) 
@@ -595,10 +652,15 @@ harmonize_age <- function(chunk, Offsets, N = 5, OAnew = 100){
   .Country <- chunk %>% pull(Country) %>% "["(1)
   .Region  <- chunk %>% pull(Region) %>% "["(1)
   .Sex     <- chunk %>% pull(Sex) %>% "["(1)
-  Offset   <- Offsets %>% 
-    filter(Country == .Country,
-           Region == .Region,
-           Sex == .Sex)
+  
+  if (!is.null(Offsets)){
+    Offset   <- Offsets %>% 
+      filter(Country == .Country,
+             Region == .Region,
+             Sex == .Sex)
+  } else {
+    Offsets <- tibble()
+  }
   
   if (nrow(Offset) == 105){
     pop     <- Offset %>% pull(Population)
@@ -610,15 +672,14 @@ harmonize_age <- function(chunk, Offsets, N = 5, OAnew = 100){
                   nlast = AgeInt[length(AgeInt)], 
                   offset = pop, 
                   control = list(lambda = 100, deg = 3))$fitted * pop
-  } else {
+  }  else {
     # if no offsets are available then run through without.
     V1      <- pclm(x = Age, 
                     y = Value, 
                     nlast = AgeInt[length(AgeInt)], 
                     control = list(lambda = 100, deg = 3))$fitted
   }
-  # plot(V1)
-  # lines(rescaleAgeGroups(V1, rep(1,length(V1)), Value, AgeInt,splitfun=graduate_uniform) )
+
   # Important to rescale
   V1      <- rescaleAgeGroups(Value1 = V1, 
                               AgeInt1 = rep(1,length(V1)), 
