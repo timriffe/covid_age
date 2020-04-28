@@ -137,13 +137,13 @@ if (check_db){
   # ---------------------------------------------------
   # # replace subset with new load after Date correction
   # NOTE THIS WILL FAIL FOR REGIONS!!
-  # ShortCode <- "ITbol"
-    #  X <- get_country_inputDB(ShortCode)
-    # inputDB <-
-    #   inputDB %>% 
-    #   filter(!grepl(ShortCode,Code)) %>% 
-    #   rbind(X) %>% 
-    #    sort_input_data()
+  # ShortCode <- "US"
+       X <- get_country_inputDB(ShortCode)
+      inputDB <-
+        inputDB %>% 
+        filter(!grepl(ShortCode,Code)) %>% 
+        rbind(X) %>% 
+         sort_input_data()
   # ----------------------------------------------------
   # check closeout ages:
   CloseoutCheck <- 
