@@ -2,7 +2,7 @@ library(shiny)
 library(dplyr)
 ## devtools::install_github("tidyverse/googlesheets4")
 library(googlesheets4)
-library(plotly)
+## library(plotly)
 source("./check_data.R")
 gs4_deauth()
 
