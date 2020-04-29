@@ -73,7 +73,7 @@ bulk_checks <- function(data) {
   
   # 1. can't have NAs in Value column
   test_true(
-    error_message = "Can't have NAs in Value column",
+    error_message = "Shouldn't have NAs in Value column. Should these be 0s?",
     test_expression = !any(is.na(d$Value)),
     anomaly_vals = which(is.na(d$Value)),
     value = FALSE
@@ -95,14 +95,14 @@ bulk_checks <- function(data) {
 
   # 3. Age variable must only have integer values between 0:105 and UNK or TOT
   test_true(
-    error_message = "Age (chr) can only have numbers between 0:105 or 'UNK' or 'TOT'. No NAs permitted",
+    error_message = "Age (chr) can only have integers 0:105 or 'UNK' or 'TOT'. No NAs permitted",
     test_expression = all(d$Age %in% c(as.character(age_range), "TOT", "UNK")),
     anomaly_vals = unique(setdiff(d$Age, c(as.character(age_range), "TOT", "UNK")))
   )
 
   # 4. AgeInt can only be coercible to integer or NA (maybe we should just read 
   # it in as integer?)
-  test_that("AgeInt can only have numbers or NA", {
+  test_that("AgeInt can only be integer or NA", {
     expect_true(
       is.integer(d$AgeInt)
     )
@@ -110,7 +110,7 @@ bulk_checks <- function(data) {
 
   # 5. Age can only be NA for when AgeInt is UNK or TOT
   test_true(
-    error_message = "Age can only be NA for when AgeInt is UNK or TOT",
+    error_message = "AgeInt can only be NA when Age is UNK or TOT",
     test_expression = all(is.na(d[d$Age %in% c("UNK", "TOT"), ]$AgeInt)),
     anomaly_vals = which(!is.na(d[d$Age %in% c("UNK", "TOT"), ]$AgeInt)),
     value = FALSE
@@ -140,13 +140,15 @@ bulk_checks <- function(data) {
   # 7. `Age` column must only have 10 year gaps for every Region-Date-Sex-Metric-Measure combination
   res <-
     d %>% 
-    filter(Age %in% 0:105) %>% 
+    filter(Age %in% 0:105,
+           Sex != "UNK") %>% # TR: UNK Sex doesn't need to pad 0s
     mutate(
       Age = as.integer(Age),
       AgeInt = as.integer(AgeInt),
       Age1 = Age + AgeInt
     )
 
+  # TR: Metric listed in message, not grouped on Metric however
   all_res <-
     res %>%
     group_by(Code, Sex, Measure) %>%
@@ -159,7 +161,7 @@ bulk_checks <- function(data) {
     pull(id)
 
   test_true(
-    error_message = "`Age` column must only have 10 year gaps for every Region-Date-Sex-Metric-Measure combination",
+    error_message = "`Age` + `AgeInt` must equal the next `Age`, no gaps or overlapping allowed (for each Region-Date-Sex-Metric-Measure combination)",
     test_expression = all(all_res$res),
     anomaly_vals = values_failed
   )
