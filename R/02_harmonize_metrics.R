@@ -26,17 +26,22 @@ inputCounts <-
   inputDB %>% 
   filter(!(Age == "TOT" & Metric == "Fraction")) %>% 
   group_by(Code, Sex, Measure) %>% 
-  do(convert_fractions(chunk = .data)) %>% 
+  # do_we_convert_fractions(chunk)
+  do(convert_fractions(chunk = .data)) %>%                  
+  # do_we_redistribute_unknown_age()
+  do(redistribute_unknown_age(chunk = .data)) %>% 
+  # do_we_rescale_to_total()
+  do(rescale_to_total(chunk = .data)) %>% 
   ungroup() %>% 
   group_by(Code, Sex) %>% 
   # TR: This step can be improved I think.
-  do(infer_cases_from_deaths_and_ascfr(chunk = .data)) %>% 
-  ungroup() %>% 
-  group_by(Code, Sex, Measure) %>% 
-  do(redistribute_unknown_age(chunk = .data)) %>% 
-  do(rescale_to_total(chunk = .data)) %>% 
+  # do_we_infer_cases_from_deaths_and_ascfr()
+  do(infer_cases_from_deaths_and_ascfr(chunk = .data)) %>%   
+  # do_we_infer_deaths_from_cases_and_ascfr()
+  do(infer_deaths_from_cases_and_ascfr(chunk = .data)) %>%  
   ungroup() %>% 
   group_by(Code, Age, Measure) %>% 
+  # do_we_redistribute_unknown_sex()
   do(redistribute_unknown_sex(chunk = .data)) %>% 
   ungroup() %>% 
   group_by(Code, Measure) %>% 

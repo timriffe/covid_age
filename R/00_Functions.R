@@ -170,21 +170,22 @@ push_inputDB <- function(inputDB = NULL){
 
 # 1) convert fraction. Should be on 
 # group_by(Code, Sex, Measure)
+
+do_we_convert_fractions <- function(chunk){
+  have_fracs <- "Fraction" %in% chunk$Metric 
+  scaleable  <- chunk %>% 
+    filter(Metric == "Count",
+           Age == "TOT")
+  (nrow(scaleable) == 1) & have_fracs
+}
+
 convert_fractions <- function(chunk){
   # subset should contain only Fractions and one Total Count
   
-  if (! "Fraction" %in% chunk$Metric){
+  do.this <- do_we_convert_fractions(chunk)
+  if (!do.this){
     return(chunk)
   }
-  
-  # Console message
-  cat("Fractions converted for", unique(chunk$Code),"\n")
-  # one way to check a subset is single is that there should be a unique
-  # Age for each row.
-  # stopifnot(nrow(chunk) == length(unique(chunk$Age)))
-  
-  
-  stopifnot(sum(chunk$Metric == "Count") == 1)
   
   TOT <- chunk %>% 
     filter(Metric == "Count")
@@ -197,15 +198,79 @@ convert_fractions <- function(chunk){
     mutate(Value = Value / sum(Value),
            Value = Value * TOT,
            Metric = "Count")
-  
   out
 }
+do_we_infer_deaths_from_cases_and_ascfr <- function(chunk){
+  have_ratios_counts <- setequal(chunk$Metric, c("Ratio","Count") )
+  ascfr_ratio <- chunk %>% 
+    filter(Metric == "Ratio") %>% 
+    pull(Measure) %>% 
+    `==`("ASCFR") %>% 
+    all()
+  cases_count <- chunk %>% 
+    filter(Metric == "Count") %>% 
+    pull(Measure) %>% 
+    `==`("Cases") %>% 
+    all()
+  have_ratios_counts & ascfr_ratio & deaths_count
+}
 
+infer_deaths_from_cases_and_ascfr <- function(chunk){
+  do_this <- do_we_infer_deaths_from_cases_and_ascfr(chunk)
+  if (!do_this){
+    return(chunk)
+  }
+  
+  TOT   <- chunk %>% filter(Age == "TOT")
+  chunk <- chunk %>% filter(Age != "TOT")
+  
+  ASCFR  <- chunk %>% filter(Metric == "Ratio")
+  stopifnot(all(ASCFR$Measure == "ASCFR"))
+  Cases <- chunk %>% filter(Metric == "Count")
+  stopifnot(all(Cases$Measure == "Cases"))
+  
+  if (nrow(Cases)!=nrow(ASCFR)){
+    cat(unique(chunk$Code),"\n")
+  }
+  stopifnot(nrow(Cases) == nrow(ASCFR))
+  Deaths  <- ASCFR
+  
+  # Console message
+  cat("ACSFR converted to deaths for",unique(chunk$Code),"\n")
+  
+  Deaths <-
+    Deaths %>% 
+    mutate(Value = Cases$Value * ASCFR$Value,
+           Measure = "Deaths",
+           Metric = "Count")
+  
+  rbind(Cases, Deaths, TOT)
+  
+}
+
+
+do_we_infer_cases_from_deaths_and_ascfr <- function(chunk){
+  have_ratios_counts <- setequal(chunk$Metric, c("Ratio","Count") )
+  ascfr_ratio <- chunk %>% 
+    filter(Metric == "Ratio") %>% 
+    pull(Measure) %>% 
+    `==`("ASCFR") %>% 
+    all()
+  
+  deaths_count <- chunk %>% 
+    filter(Metric == "Count") %>% 
+    pull(Measure) %>% 
+    `==`("Deaths") %>% 
+    all()
+  
+  have_ratios_counts & ascfr_ratio & deaths_count
+}
 # 2) convert infografica style data to counts
 # subset cannot include Metric or Measure as splitters
 # group_by(Code, Sex)
 infer_cases_from_deaths_and_ascfr <- function(chunk){
-  if (! setequal(chunk$Metric, c("Ratio","Count") )){
+  do_this <- do_we_infer_cases_from_deaths_and_ascfr(chunk)
+  if (!do_this){
     return(chunk)
   }
   
@@ -262,19 +327,39 @@ infer_cases_from_deaths_and_ascfr <- function(chunk){
 
 # Harmonization functions:
 
+do_we_redistribute_unknown_age <- function(chunk){
+  maybe <- "UNK" %in% chunk$Age & all(chunk$Metric != "Ratio")
+  if (maybe){
+  positive <- chunk %>% 
+                filter(Age == "UNK") %>% 
+                pull(Value) %>% 
+                `>`(0)
+  } else {
+    positive <- FALSE
+  }
+  maybe & positive
+}
+
 # 3)
 # 
 # group_by(Code, Sex, Measure)
 # redistribute_unknown_age()
 redistribute_unknown_age <- function(chunk){
   # this should happen after ratios turned to counts!
-  stopifnot(all(chunk$Metric != "Ratio"))
+  do_this <- do_we_redistribute_unknown_age(chunk)
+  if (!do_this){
+    # could be returning chunk with UNK value of 0,
+    # so remove just in case
+    chunk <- chunk %>% 
+      filter(Age != "UNK") 
+    return(chunk)
+  }
   
   # foresee TOT,
   TOT   <- chunk %>% filter(Age == "TOT")
   chunk <- chunk %>% filter(Age != "TOT")
   
-  if ("UNK" %in% chunk$Age){
+  if (do_this){
     UNK   <- chunk %>% filter(Age == "UNK")
     chunk <- chunk %>% 
       filter(Age != "UNK") %>% 
@@ -291,23 +376,42 @@ redistribute_unknown_age <- function(chunk){
   chunk
 }
 
+
+
+do_we_rescale_to_total <- function(chunk){
+  has_rows   <- nrow(chunk) > 1
+  has_TOT    <- any("TOT" %in% chunk$Age)
+  all_counts <- all(chunk$Metric == "Count")
+  
+
+  
+  maybe <- has_rows & has_TOT & all_counts
+  
+  if (maybe){
+    # is the TOT different from the marginal sum?
+    marginal_sum <- chunk %>% filter(Age != "TOT") %>% pull(Value) %>% sum()
+    TOT          <- chunk %>% filter(Age == "TOT") %>% pull(Value)
+    out <- abs(marginal_sum - TOT) < 1e-4
+  } else {
+    out <- FALSE
+  }
+  out
+}
 # This function to be run on a given Code * Sex subset.
 # This could be run before redistributing UNK, for example.
+
 rescale_to_total <- function(chunk){
-  hasTOT    <- any("TOT" %in% chunk$Age)
-  allCounts <- all(chunk$Metric == "Count")
-  if (!hasTOT | !allCounts){
+  do_this <- do_we_rescale_to_total(chunk)
+  if (!do_this){
+    # looks silly, but possibly subset contains only TOT,
+    # in which case we throw out moving forward. BUT
+    # we might want to keep both-sex TOT for scaling
+    # m and f ...
+    chunk <- chunk %>% 
+      filter((Age != "TOT") & (Sex != "b"))
     return(chunk)
   }
-  
-  # Also could be only TOT is given, in which
-  # case we return zero rows. Such cases
-  # can remain in the inputDB, but not used downstream
-  if (nrow(chunk) == 1){
-    chunk %>% 
-      filter(Age != "TOT") %>% 
-      return()
-  }
+
   
   TOT <- chunk %>% filter(Age == "TOT")
   # foresee this pathology
