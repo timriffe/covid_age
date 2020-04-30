@@ -12,11 +12,11 @@ Here's an overview of populations available in the `inputDB`
 - [x] Algeria
 - [x] Austria
 - [x] Belgium 
-- [ ] Brazil    
+- [x] Brazil    
   - [x] Rio de Janeiro
   - [ ] Brazilian regions
 - [x] Canada  
-  - [ ] Quebec
+  - [x] Quebec
   - [ ] Montreal
   - [x] Alberta
   - [x] British Columbia
@@ -38,7 +38,7 @@ Here's an overview of populations available in the `inputDB`
 - [x] Italy     
   - [ ] Italian regions
 - [x] Japan
-  - [ ] Japanese prefectures
+  - [x] Japanese prefectures
 - [x] Mexico     
   - [ ] Mexican states
 - [x] Netherlands 
@@ -57,22 +57,23 @@ Here's an overview of populations available in the `inputDB`
 - [x] Taiwan
 - [x] USA 
   - [x] New York City
+  - [x] Georgia
   - [x] Illinois
   - [x] Louisiana
+  - [x] Massachusetts
   - [x] Michigan
   - [x] New Jersey
+  - [x] Oklahoma
   - [x] Oregon
+  - [x] Virginia
   - [x] Washington state
   - [x] Wisconsin
+  - [ ] Atlanta
   - [ ] Chicago
   - [ ] Arizona
-  - [ ] Georgia
   - [ ] Indiana
   - [ ] Iowa
-  - [ ] Massachusetts
   - [ ] Ohio
-  - [ ] Oklahoma
-  - [ ] Virginia
   
 - [ ] Armenia
 - [ ] Australia
@@ -100,6 +101,7 @@ José Manuel Aburto, Enrique Acosta, Diego Alburez-Gutierrez, Anna Altová, Ugof
 (and a few more people at the moment have made commitments. )
 
 Maybe you too? (we could still use a hand!)
+
 
 
 
