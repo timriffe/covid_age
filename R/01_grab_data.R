@@ -20,10 +20,14 @@ check_db <- FALSE
 if (check_db){   
   tic()
   inputDB   <- compile_inputDB()
+  inputDB <- inputDB %>% 
+  filter(!(Sex == "UNK" & Value == 0),
+         !(Age == "UNK" & Value == 0)) 
+  saveRDS(inputDB,here::here("Data/inputDBhold.rds"))
   toc()
   standbyDB <- readRDS(here::here("Data/inputDB.rds"))
   
-  my_codes <- inputDB %>% pull(Short) %>% unique()
+  (my_codes <- inputDB %>% pull(Short) %>% unique())
   run_checks(inputDB, my_codes)
   
   
