@@ -30,6 +30,7 @@ Here's an overview of populations available in the `inputDB`
 - [x] Ecuador     
 - [x] Estonia
 - [x] Eswatini    
+- [x] Ethiopia
 - [x] France     
 - [x] Germany   
   - [x] German federal states
@@ -78,6 +79,7 @@ Here's an overview of populations available in the `inputDB`
 - [ ] Armenia
 - [ ] Australia
 - [ ] Czech Republic
+- [ ] Ghana
 - [ ] Great Britain / UK
 - [ ] Iceland
 - [ ] Israel
