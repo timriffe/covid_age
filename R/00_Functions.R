@@ -74,7 +74,7 @@ compile_inputDB <- function(){
                      col_types = "cccccciccd") %>% 
       mutate(Short = i)
     input_list[[i]] <- X
-    Sys.sleep(30)
+    Sys.sleep(60)
   }
   # bind and sort:
   inputDB <- 
@@ -212,7 +212,7 @@ do_we_infer_deaths_from_cases_and_ascfr <- function(chunk){
     pull(Measure) %>% 
     `==`("Cases") %>% 
     all()
-  have_ratios_counts & ascfr_ratio & deaths_count
+  have_ratios_counts & ascfr_ratio & cases_count
 }
 
 infer_deaths_from_cases_and_ascfr <- function(chunk){
@@ -437,49 +437,40 @@ rescale_to_total <- function(chunk){
   chunk
 }
 
-# step must precede sex rescaling, right?
-
-# this should happen within age, though
-# group_by(Code, Age, Measure)
-redistribute_unknown_sex <- function(chunk){
-  # this should happen after ratios turned to counts!
-  stopifnot(all(chunk$Metric != "Ratio"))
-  
-  if ("UNK" %in% chunk$Sex){
-    UNK   <- chunk %>% filter(Sex == "UNK")
-    chunk <- chunk %>% 
-      filter(Sex != "UNK") %>% 
-      mutate(Value = Value + (Value / sum(Value)) * UNK$Value,
-             Value = ifelse(is.nan(Value), UNK$Value / 2, Value))
-    
-    # Console message
-    cat("UNK Sex redistributed for",
-        unique(chunk$Code),
-        unique(chunk$Age),
-        unique(chunk$Measure),"\n")
+do_we_rescale_sexes <- function(chunk){
+  sexes  <- chunk %>% pull(Sex) %>% unique()
+  Counts <- all(chunk$Metric == "Count")
+  maybe  <- setequal(sexes,c("b","f","m")) & Counts
+  if (maybe){
+    # separate chunks
+    m    <- chunk %>% filter(Sex == "m")
+    f    <- chunk %>% filter(Sex == "f")
+    b    <- chunk %>% filter(Sex == "b")
+    if ("TOT" %in% m$Age){
+      MM   <- m %>% filter(Age=="TOT") %>% pull(Value)
+    } else {
+      MM   <- m %>% pull(Value) %>% sum()
+    }
+    if ("TOT" %in% f$Age){
+      FF   <- f %>% filter(Age=="TOT") %>% pull(Value)
+    } else {
+      FF   <- f %>% pull(Value) %>% sum()
+    }
+    if ("TOT" %in% b$Age){
+      BB   <- b %>% filter(Age=="TOT") %>% pull(Value)
+    } else {
+      BB   <- b %>% pull(Value) %>% sum()
+    }
+    out <- abs(MM + FF - BB) < 1e-4
+  } else {
+    out <- FALSE
   }
-
-  chunk
+  out
 }
-# inputDB %>%
-#   filter(Code == "US_IL14.04.2020") %>% 
-#   group_by(Code, Age, Measure) %>% 
-#   do(redistribute_unknown_sex(chunk = .data)) %>% 
-#   ungroup() %>% 
-#   group_by(Code, Sex, Measure) %>% 
-#   do(redistribute_unknown_age(chunk = .data)) %>% 
-#   View()
-
-# Here group_by(Country, Region, Code, Date, Measure).
-# AFTER all Measure == "Count", ergo at the end of the pipe.
-# this scales to totals (either stated or derived).
-# it doesn't scale within age groups. Hmmm.
-
 # This can produce NAs in early Belgium Deaths (presumably)
 rescale_sexes <- function(chunk){
-  sexes <- chunk %>% pull(Sex) %>% unique()
-  Counts <- all(chunk$Metric == "Count")
-  if (!setequal(sexes,c("b","f","m")) | ! Counts){
+  do_this <- do_we_rescale_sexes(chunk)
+  if (!do_this){
     return(chunk)
   }
   
@@ -526,20 +517,63 @@ rescale_sexes <- function(chunk){
   rbind(f,m,b)
 }
 
-infer_both_sex <- function(chunk){
+do_we_redistribute_unknown_sex <- function(chunk){
+  "UNK" %in% chunk$Sex
+}
+# this should happen within age, though
+# group_by(Code, Age, Measure)
+redistribute_unknown_sex <- function(chunk){
+  # this should happen after ratios turned to counts!
+  stopifnot(all(chunk$Metric != "Ratio"))
+  do_this <- do_we_redistribute_unknown_sex(chunk)
+  if (do_this){
+    UNK   <- chunk %>% filter(Sex == "UNK")
+    chunk <- chunk %>% 
+      filter(Sex != "UNK") %>% 
+      mutate(Value = Value + (Value / sum(Value)) * UNK$Value,
+             Value = ifelse(is.nan(Value), UNK$Value / 2, Value))
+    
+    # Console message
+    cat("UNK Sex redistributed for",
+        unique(chunk$Code),
+        unique(chunk$Age),
+        unique(chunk$Measure),"\n")
+  }
+
+  chunk
+}
+# inputDB %>%
+#   filter(Code == "US_IL14.04.2020") %>% 
+#   group_by(Code, Age, Measure) %>% 
+#   do(redistribute_unknown_sex(chunk = .data)) %>% 
+#   ungroup() %>% 
+#   group_by(Code, Sex, Measure) %>% 
+#   do(redistribute_unknown_age(chunk = .data)) %>% 
+#   View()
+
+# Here group_by(Country, Region, Code, Date, Measure).
+# AFTER all Measure == "Count", ergo at the end of the pipe.
+# this scales to totals (either stated or derived).
+# it doesn't scale within age groups. Hmmm.
+do_we_infer_both_sex <- function(chunk){
   sexes  <- chunk %>% pull(Sex) %>% unique()
   Counts <- all(chunk$Metric == "Count")
-  
-  
+  setequal(sexes,c("f","m")) & Counts
+}
+
+
+infer_both_sex <- function(chunk){
+  do_this <- do_we_infer_both_sex(chunk)
   # 2 things: 
   # 1) could be a both-sex total available, so far unused.
-  if (!setequal(sexes,c("f","m")) | ! Counts){
+  if (!do_this){
     return(chunk)
   }
   
   chunk %>% 
     pivot_wider(names_from = "Sex",
-                values_from = "Value") %>% 
+                values_from = "Value",
+                values_fill = list(m=0,f=0)) %>% 
     mutate(b = f + m) %>% 
     pivot_longer(cols = c(f,m,b),
                  values_to = "Value",
@@ -590,10 +624,13 @@ infer_both_sex <- function(chunk){
 # this is after all rescaling is done. Group OAG down to the 
 # highest age with a positive count.
 # group_by(Code, Sex, Measure) %>% 
-maybe_lower_closeout <- function(chunk, OAnew_min = 85){
-  if (!all(chunk$Metric == "Count")){
-    return(chunk)
+do_we_maybe_lower_closeout <- function(chunk, OAnew_min){
+
+  maybe1 <- all(chunk$Metric == "Count")
+  if (!maybe1){
+    return(FALSE)
   }
+  
   chunk <- chunk %>% 
     mutate(Age = as.integer(Age)) %>% 
     arrange(Age)
@@ -601,11 +638,35 @@ maybe_lower_closeout <- function(chunk, OAnew_min = 85){
   Value  <- chunk %>% pull(Value) 
   AgeInt <- chunk %>% pull(AgeInt)%>% as.integer()
   
-  if (max(Age) <= OAnew_min){
-    return(chunk)
+  maybe2 <- max(Age) >= OAnew_min
+  if (!maybe2){
+    return(FALSE)
   }
   
   n <- length(Age)
+  nm <- (Age >= OAnew_min) %>% which() %>% min()
+  for (i in n:nm){
+    if (Value[i] > 0){
+      break
+    }
+  }
+  i < n
+}
+maybe_lower_closeout <- function(chunk, OAnew_min = 85){
+
+  do_this <- do_we_maybe_lower_closeout(chunk, OAnew_min)
+  if (!do_this){
+    return(chunk)
+  }
+  
+  chunk <- chunk %>% 
+    mutate(Age = as.integer(Age)) %>% 
+    arrange(Age)
+  Age    <- chunk %>% pull(Age) %>% as.integer()
+  Value  <- chunk %>% pull(Value) 
+  AgeInt <- chunk %>% pull(AgeInt)%>% as.integer()
+
+  n  <- length(Age)
   nm <- (Age >= OAnew_min) %>% which() %>% min()
   for (i in n:nm){
     if (Value[i] > 0){
@@ -628,53 +689,65 @@ maybe_lower_closeout <- function(chunk, OAnew_min = 85){
   }
   chunk
 }
+                
 
+
+
+
+
+  #do_we_maybe_lower_closeout()
+  do(maybe_lower_closeout(chunk = .data, OAnew_min = 85)) %>% 
+  ungroup()
 process_counts <- function(inputDB, Offets = NULL, N = 10){
   inputDB %>% 
     filter(!(Age == "TOT" & Metric == "Fraction")) %>% 
     
-    # Multiply Fraction Metrics into stated total counts
+    # 1. Multiply Fraction Metrics into stated total counts
     group_by(Code, Sex, Measure) %>% 
     do(convert_fractions(chunk = .data)) %>% 
     ungroup() %>% 
     
-    # Infer cases as Deaths / ASCFR. This is a problem in young ages
-    # if there are cases but no deaths, or even if there are deaths
-    # it's a problem if there is rounding. Therefore we model it. The
-    # present model sucks and needs to be improved. This only affects
-    # CA_BC and ITinfo
-    group_by(Code, Sex) %>% 
-    do(infer_cases_from_deaths_and_ascfr(chunk = .data)) %>% 
-    ungroup() %>% 
-   
-    # Redistribute counts of unknown age proportional to counts 
+    # 2. Redistribute counts of unknown age proportional to counts 
     # of known age
     group_by(Code, Sex, Measure) %>% 
     do(redistribute_unknown_age(chunk = .data)) %>% 
     
-    # Age distribution should sum to total, if specified separately
+    # 3. Age distribution should sum to total, if specified separately
     do(rescale_to_total(chunk = .data)) %>% 
     ungroup() %>% 
     
-    # Counts of unknown sex redistributed with age
+    # 4. Infer cases as Deaths / ASCFR. This is a problem in young ages
+    # if there are cases but no deaths, or even if there are deaths
+    # it's a problem if there is rounding. Therefore we model it. The
+    # present model sucks and needs to be improved. This only affects
+    # ITinfo. Inferring Deaths from cases and ASCFR is straightforward,
+    # on the other hand.
+    group_by(Code, Sex) %>% 
+    do(infer_cases_from_deaths_and_ascfr(chunk = .data)) %>% 
+    do(infer_deaths_from_cases_and_ascfr(chunk = .data)) %>% 
+    ungroup() %>% 
+    
+    # 5. Counts of unknown sex redistributed with age
     group_by(Code, Age, Measure) %>% 
     do(redistribute_unknown_sex(chunk = .data)) %>% 
     ungroup() %>% 
     
-    # Rescale sexes to sum to same as both-sex margin total
+    # 6. Rescale sexes to sum to same as both-sex margin total
     group_by(Code, Measure) %>% 
     do(rescale_sexes(chunk = .data)) %>% 
     
-    # if sexes given but not both-sex, then generate it
+    # 7. if sexes given but not both-sex, then generate it
     do(infer_both_sex(chunk = .data)) %>% 
     ungroup() %>% 
     
-    # If upper tail in 0s then group down until there are positive counts,
+    # pre-step
+    mutate(Age = as.integer(Age)) %>% 
+    # 8. If upper tail in 0s then group down until there are positive counts,
     # but not lower than 85
     group_by(Code, Sex, Measure) %>% 
     do(maybe_lower_closeout(chunk = .data, OAnew_min = 85)) %>% 
     ungroup() %>% 
-    mutate(Age = as.integer(Age)) %>% 
+  
     
     # do PCLM splitting
     sort_input_data() %>% 

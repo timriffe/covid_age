@@ -46,16 +46,16 @@ inputCounts <-
   ungroup() %>% 
   group_by(Code, Measure) %>% 
   # TR: change this to happen within Age
+  # do_we_rescale_sexes()
   do(rescale_sexes(chunk = .data)) %>% 
+  # do_we_infer_both_sex()
   do(infer_both_sex(chunk = .data)) %>% 
   ungroup() %>% 
-  # Needs debugging
-  # Error in n:nm : result would be too long a vector
+  mutate(Age = as.integer(Age)) %>% 
   group_by(Code, Sex, Measure) %>% 
+  #do_we_maybe_lower_closeout()
   do(maybe_lower_closeout(chunk = .data, OAnew_min = 85)) %>% 
-  ungroup() %>% 
-  mutate(Age = as.integer(Age),
-         AgeInt = as.integer(AgeInt)) 
+  ungroup()
 
   # TR: add rescale_to_total() into the chain
 
