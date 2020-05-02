@@ -61,6 +61,18 @@ get_input_rubric <- function(tab = "input"){
   input_rubric
 }
 
+add_Short <- function(Code, Date){
+  mapply(function(Code, Date){
+    Short <- gsub(pattern = Date, replacement = "", Code)
+    last_char <- str_sub(Short,-1)
+    if (last_char %in% c("\\.","_","-")){
+      Short <- substr(Short,1,nchar(Short)-1)
+    }
+    Short
+  }, Code, Date)
+
+}
+
 compile_inputDB <- function(){
 
   rubric <- get_input_rubric(tab = "input")
@@ -68,13 +80,23 @@ compile_inputDB <- function(){
   input_list <- list()
   for (i in rubric$Short){
     ss_i           <- rubric %>% filter(Short == i) %>% pull(Sheet)
-    X <- read_sheet(ss_i, 
+    X <- try(read_sheet(ss_i, 
                      sheet = "database", 
                      na = "NA", 
-                     col_types = "cccccciccd") %>% 
-      mutate(Short = i)
+                     col_types = "cccccciccd"))
+    if (class(X) == "try-error"){
+      cat(i,"didn't load, waiting 2 min to try again")
+      Sys.sleep(120)
+      X <- try(read_sheet(ss_i, 
+                          sheet = "database", 
+                          na = "NA", 
+                          col_types = "cccccciccd"))
+    }
+    X <- 
+      X %>% 
+      mutate(Short = add_Short(Code, Date))
     input_list[[i]] <- X
-    Sys.sleep(60)
+    Sys.sleep(45) # this is getting absurd
   }
   # bind and sort:
   inputDB <- 

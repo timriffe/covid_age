@@ -55,4 +55,21 @@ saveRDS(inputDB, "Data/inputDB.rds")
 
 # Swap out ShortCode in Output5
 # ugh we don't have the same ShortCode. Need a nice lookup
-head(output5)
+# 
+# if (!"Tests" %in% colnames(harmonized5)){
+#   harmonized5 <- harmonized5 %>% mutate(Tests = NA)
+# }
+# 
+# head(output5)
+# output5 <- 
+#   output5 %>% 
+#   mutate(Short = add_Short(Code, Date)) %>% 
+#   filter(Short != ShortCode) %>% 
+#   select(!Short) %>% 
+#   rbind(harmonized5) %>% 
+#   sort_input_data()
+
+
+
+
+
