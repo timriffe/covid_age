@@ -5,10 +5,10 @@ source("R_checks/inputDB_check.R")
 inputDB <- readRDS("Data/inputDB.rds")
 
 # unrounded output files
-output5 <- readRDS("Data/Output_5.rds")
+output5  <- readRDS("Data/Output_5.rds")
 output10 <- readRDS("Data/Output_10.rds")
 # read in from Drive:
-ShortCode <- "IE"
+ShortCode <- "KR"
 incoming  <- get_country_inputDB(ShortCode)
 
 # slice off ShortCode
@@ -23,7 +23,7 @@ run_checks(incoming, ShortCode)
 
 # This uses no offsets. To be modified when we have
 # a general offsets object.
-harmonized5 <- process_counts(incoming, N = 5)
+harmonized5 <- process_counts(incoming, Offsets = NULL, N = 5)
 
 # Visualize ASCFR implied
 

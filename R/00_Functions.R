@@ -408,7 +408,8 @@ rescale_to_total <- function(chunk){
     # we might want to keep both-sex TOT for scaling
     # m and f ...
     chunk <- chunk %>% 
-      filter((Age != "TOT") & (Sex != "b"))
+    
+      filter(!(Age == "TOT" & Sex %in% c("m","f","UNK")))
     return(chunk)
   }
 
@@ -690,15 +691,9 @@ maybe_lower_closeout <- function(chunk, OAnew_min = 85){
   chunk
 }
                 
-
-
-
-
-
-  #do_we_maybe_lower_closeout()
-  do(maybe_lower_closeout(chunk = .data, OAnew_min = 85)) %>% 
-  ungroup()
-process_counts <- function(inputDB, Offets = NULL, N = 10){
+# This encapsulates the entire processing chain.
+process_counts <- function(inputDB, Offsets = NULL, N = 10){
+  A <- 
   inputDB %>% 
     filter(!(Age == "TOT" & Metric == "Fraction")) %>% 
     
@@ -746,9 +741,9 @@ process_counts <- function(inputDB, Offets = NULL, N = 10){
     # but not lower than 85
     group_by(Code, Sex, Measure) %>% 
     do(maybe_lower_closeout(chunk = .data, OAnew_min = 85)) %>% 
-    ungroup() %>% 
+    ungroup() 
   
-    
+    A %>% 
     # do PCLM splitting
     sort_input_data() %>% 
     group_by(Country, Region, Code, Date, Sex, Measure) %>% 
@@ -831,7 +826,7 @@ harmonize_age <- function(chunk, Offsets = NULL, N = 5, OAnew = 100){
   .Sex     <- chunk %>% pull(Sex) %>% "["(1)
   
   if (!is.null(Offsets)){
-    Offset   <- Offsets %>% 
+    Offsets   <- Offsets %>% 
       filter(Country == .Country,
              Region == .Region,
              Sex == .Sex)
@@ -839,10 +834,10 @@ harmonize_age <- function(chunk, Offsets = NULL, N = 5, OAnew = 100){
     Offsets <- tibble()
   }
   
-  if (nrow(Offset) == 105){
-    pop     <- Offset %>% pull(Population)
-    age_pop <- Offset %>% pull(Age)
-  # TR: I thought multiplying with offset would bring back to scale, but sum doesn't match.
+  if (nrow(Offsets) == 105){
+    pop     <- Offsets %>% pull(Population)
+    age_pop <- Offsets %>% pull(Age)
+
   # so need to rescale in next step (pattern looks OK)
     V1      <- pclm(x = Age, 
                   y = Value, 

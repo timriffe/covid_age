@@ -19,7 +19,7 @@ source("R_checks/inputDB_check.R")
 check_db <- FALSE
 if (check_db){   
   tic()
-  inputDB   <- compile_inputDB()
+  inputDB <- compile_inputDB()
   inputDB <- inputDB %>% 
   filter(!(Sex == "UNK" & Value == 0),
          !(Age == "UNK" & Value == 0)) 
