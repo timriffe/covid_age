@@ -61,7 +61,7 @@ NYCoffset <- tibble(Country = "USA",
                     Age = NYCage,
                     Sex = "b",
                     Population = NYCpop)
-
+# --------------------------------------
 CAN_both <- function(X){
   X %>% 
   pivot_wider(names_from = Sex,
@@ -82,28 +82,13 @@ CanadaOffsets <- read_csv("Data/CanadaOffsets.csv") %>%
 # ALso NEED Montreal!  #
 # -------------------- #
 
-# -------------------------------
-# Taiwan Offsets:
-TaiwanOffset <- 
-read_csv("Data/TaiwanOffset.csv") %>% 
-  pivot_longer(cols = 2:4,
-               names_to = "Sex",
-               values_to = "Population") %>% 
-  mutate(Country = "Taiwan",
-         Region = "All",
-         Year = 2020) %>% 
-  select(Country,Region, Year, Sex, Age, Population) %>% 
-  arrange(Sex, Age)
-
-
 
 # ---------------------------------------
 # HMD offsets:
 # ---------------------------------------
-hmdCountries <- c("KOR","FRATNP","DEUTNP","ITA","NLD","ESP","USA","BEL","CHE","SWE","DNK","PRT","JPN","AUS","GBR_NP","GBR_SCO","IRL")
-our_names    <- c("SouthKorea","France","Germany","Italy",
-               "Netherlands","Spain","USA","Belgium","Switzerland","Sweden",
-               "Denmark","Portugal","Japan","Australia","United Kingdom","Scotland","Ireland" )
+hmdCountries <- c("DNK","USA","CHE","SWE","PRT","AUS","GBR_NP","GBR_SCO","IRL")
+our_names    <- c("Denmark","USA","Switzerland","Sweden",
+               "Portugal","Australia","United Kingdom","Scotland","Ireland" )
 names(hmdCountries) <- our_names
 names(our_names)    <- hmdCountries
 

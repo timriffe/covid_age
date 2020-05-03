@@ -28,13 +28,14 @@ if (check_db){
   standbyDB <- readRDS(here::here("Data/inputDB.rds"))
   
   (my_codes <- inputDB %>% pull(Short) %>% unique())
-  run_checks(inputDB, "US_GA")
+  run_checks(inputDB, "JP")
   
   
-  # REMOVE DK UNTIL FURTHER NOTICE
+  # REMOVE DK Code selectively
   inputDB <- 
     inputDB %>% 
-    filter(Country !="Denmark")
+    filter(!Code %in% c("DK03.04.2020","DK04.04.2020","DK05.04.2020"),
+           !is.na(Country))
   
   # REMOVE Taiwan until inputs fixed
   inputDB <- 
@@ -54,26 +55,23 @@ if (check_db){
     mutate(date = dmy(Date)) %>% 
     pull(date) %>% 
     range()
-  # inputDB %>% 
-  #   mutate(date = dmy(Date)) %>% 
-  #   filter(date > today()) %>% 
-  #   pull(Code) %>% unique()
+
   # hunt down anything implausible
   # ----------------------
   inputDB %>% pull(Sex) %>% table()
   inputDB %>% filter(Sex %in% c("F","M","unk")) %>% View()
   
-  inputDB <-
-    inputDB %>% 
-    mutate(Sex = case_when(
-      Sex == "M" ~ "m",
-      Sex == "F" ~ "f",
-      Sex == "unk" ~ "UNK",
-      TRUE ~ Sex
-    ))
+  # inputDB <-
+  #   inputDB %>% 
+  #   mutate(Sex = case_when(
+  #     Sex == "M" ~ "m",
+  #     Sex == "F" ~ "f",
+  #     Sex == "unk" ~ "UNK",
+  #     TRUE ~ Sex
+  #   ))
   unique(inputDB$Age)
-  inputDB %>% 
-    filter(is.na(Age)) %>% View()
+  # inputDB %>% 
+  #   filter(is.na(Age)) %>% View()
 
   inputDB %>% filter(is.na(Code)) %>% View()
   # Remove blank subsets, where they coming from?
@@ -153,13 +151,13 @@ if (check_db){
   # ---------------------------------------------------
   # # replace subset with new load after Date correction
   # NOTE THIS WILL FAIL FOR REGIONS!!
-  #  ShortCode <- "ET"
-  # X <- get_country_inputDB(ShortCode)
-  #  inputDB <-
-  #    inputDB %>% 
-  #    filter(!grepl(ShortCode,Code)) %>% 
-  #    rbind(X) %>% 
-  #    sort_input_data()
+   # ShortCode <- "US_VT"
+   # X <- get_country_inputDB(ShortCode)
+   #  inputDB <-
+   #    inputDB %>% 
+   #    filter(!grepl(ShortCode,Code)) %>% 
+   #    rbind(X) %>% 
+   #    sort_input_data()
   # ----------------------------------------------------
   # check closeout ages:
   CloseoutCheck <- 

@@ -181,7 +181,8 @@ parse_log <- function(file = "Data/log.txt"){
 
 prep_data_check <- function(input_data, ShortCodes){
   input_data %>% 
-    filter(Short %in% ShortCodes) %>% 
+    filter(Short %in% ShortCodes,
+           Sex != "UNK") %>% 
     mutate(Date = as.Date(Date, format = "%d.%m.%Y"),
            Code = paste(Short, Region, Date, Sex, Metric, Measure, sep = "-"))
 }
