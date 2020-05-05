@@ -107,6 +107,43 @@ compile_inputDB <- function(){
   inputDB
 }
 
+compile_offsetsDB <- function(){
+  ss_offsets <- "https://docs.google.com/spreadsheets/d/1z9Dg7iQWPdIGRI3rvgd-Dx3rE5RPNd7B_paOP86FRzA/edit#gid=0"
+  offsets_rubric <- read_sheet(ss_offsets, sheet = 'checklist') %>% 
+    filter(!is.na(Sheet))
+  
+  off_list <- list()
+  for (i in offsets_rubric$Short){
+    ss_i           <- offsets_rubric %>% filter(Short == i) %>% pull(Sheet)
+    X <- try(read_sheet(ss_i, 
+                        sheet = "population", 
+                        na = "NA", 
+                        col_types = "ccccicd"))
+    if (class(X) == "try-error"){
+      cat(i,"didn't load, waiting 2 min to try again")
+      Sys.sleep(10)
+      X <- try(read_sheet(ss_i, 
+                          sheet = "population", 
+                          na = "NA", 
+                          col_types = "ccccicd"))
+    }
+    X <- 
+      X %>% 
+      mutate(Short = i)
+    off_list[[i]] <- X
+    Sys.sleep(5) # this is getting absurd
+  }
+  # bind and sort:
+  offsetsDB <- 
+    off_list %>% 
+    bind_rows() %>% 
+    arrange(Country, Region, Sex)
+  offsetsDB
+}
+
+
+
+
 # load just a single country
 get_country_inputDB <- function(ShortCode){
   rubric <- get_input_rubric(tab = "input")
@@ -414,7 +451,7 @@ do_we_rescale_to_total <- function(chunk){
     # is the TOT different from the marginal sum?
     marginal_sum <- chunk %>% filter(Age != "TOT") %>% pull(Value) %>% sum()
     TOT          <- chunk %>% filter(Age == "TOT") %>% pull(Value)
-    out <- abs(marginal_sum - TOT) < 1e-4
+    out <- abs(marginal_sum - TOT) > 1e-4
   } else {
     out <- FALSE
   }
