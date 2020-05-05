@@ -8,7 +8,7 @@ inputDB <- readRDS("Data/inputDB.rds")
 output5  <- readRDS("Data/Output_5.rds")
 output10 <- readRDS("Data/Output_10.rds")
 # read in from Drive:
-ShortCode <- "KR"
+ShortCode <- "DK"
 incoming  <- get_country_inputDB(ShortCode)
 
 # slice off ShortCode

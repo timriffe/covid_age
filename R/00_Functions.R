@@ -280,7 +280,8 @@ do_we_infer_cases_from_deaths_and_ascfr <- function(chunk){
     all()
   
   deaths_count <- chunk %>% 
-    filter(Metric == "Count") %>% 
+    filter(Metric == "Count",
+           Age != "TOT") %>% 
     pull(Measure) %>% 
     `==`("Deaths") %>% 
     all()
@@ -430,7 +431,6 @@ rescale_to_total <- function(chunk){
     # we might want to keep both-sex TOT for scaling
     # m and f ...
     chunk <- chunk %>% 
-    
       filter(!(Age == "TOT" & Sex %in% c("m","f","UNK")))
     return(chunk)
   }

@@ -35,7 +35,7 @@ inputCounts <-
   ungroup() %>% 
   group_by(Code, Sex) %>% 
   # TR: This step can be improved I think.
-  # do_we_infer_cases_from_deaths_and_ascfr()
+  # do_we_infer_cases_from_deaths_and_ascfr() "ITinfo15.04.2020"
   do(infer_cases_from_deaths_and_ascfr(chunk = .data)) %>%   
   # do_we_infer_deaths_from_cases_and_ascfr()
   do(infer_deaths_from_cases_and_ascfr(chunk = .data)) %>%  
