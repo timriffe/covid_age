@@ -1,6 +1,6 @@
-# COVID-19 cases and deaths by age and sex
+# COVerAGE-DB Comment end 
 
-What shall we name this database?
+## COVID-19 cases, deaths, and tests by age and sex
 
 This project is currently in development, stay tuned for documentation. You can get preliminary output in 5 and 10-year age groups in the `/Data` folder. This contains columns for `Cases`, `Deaths`, and `Tests` (presently only available by age for Denmark). There are more populations availale in the unharmonized input database (`inputDB.csv`) because they may be awaiting additional inputs needed to harmonize age groups.
 
