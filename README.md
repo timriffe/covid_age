@@ -1,4 +1,4 @@
-# COVerAGE-DB Comment end 
+# COVerAGE-DB 
 
 ## COVID-19 cases, deaths, and tests by age and sex
 
