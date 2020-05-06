@@ -43,6 +43,7 @@ sort_input_data <- function(X){
   X %>% 
   mutate(Date2 = dmy(Date)) %>% 
     arrange(Country,
+            Region,
             Date2,
             Code,
             Sex, 
@@ -119,9 +120,9 @@ compile_offsetsDB <- function(){
                         sheet = "population", 
                         na = "NA", 
                         col_types = "ccccicd"))
-    if (class(X) == "try-error"){
+    if (class(X)[1] == "try-error"){
       cat(i,"didn't load, waiting 2 min to try again")
-      Sys.sleep(10)
+      Sys.sleep(100)
       X <- try(read_sheet(ss_i, 
                           sheet = "population", 
                           na = "NA", 
@@ -131,7 +132,7 @@ compile_offsetsDB <- function(){
       X %>% 
       mutate(Short = i)
     off_list[[i]] <- X
-    Sys.sleep(5) # this is getting absurd
+    Sys.sleep(20) # this is getting absurd
   }
   # bind and sort:
   offsetsDB <- 

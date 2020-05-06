@@ -1,11 +1,11 @@
-
+source("R/00_Functions.R")
 # Once-off offsets
 
 Offsets <- compile_offsetsDB()
 
 Offsets %>% pull(Population)
 
-Offsets %>% filter(is.na(Population))
+Offsets %>% filter(is.na(Population)) %>% View()
 
 Offsets <- 
   Offsets %>% 
@@ -14,10 +14,15 @@ Offsets <-
   do(harmonize_offset_age(chunk = .data)) %>% 
   ungroup()
 
+# save out
+saveRDS(Offsets,"Data/Offsets.rds")
 
-
-
-
+# as csv
+header_msg <- paste("Population offsets used for splitting:",timestamp(prefix="",suffix=""))
+write_lines(header_msg, path = "Data/offsets.csv")
+Offsets %>% 
+  mutate(Population = round(Population)) %>% 
+write_csv(path = "Data/offsets.csv", append = TRUE, col_names = TRUE)
 
 
 

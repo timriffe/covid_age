@@ -17,19 +17,50 @@
  #  
 
 # inputCounts <- inputCounts %>% filter(Country !="Denmark")
-# iL <- split(inputCounts,
-#             list(inputCounts$Code,
-#                  inputCounts$Sex,
-#                  inputCounts$Measure),
-#             drop =TRUE)
-# iLout <- list()
-# for (i in 1:length(iL)){
-#   chunk <- iL[[i]]
-#   iLout[[i]] <- try(harmonize_age(chunk, Offsets = Offsets, N = 5, OAnew = 100))
-# }
-# n <- lapply(iLout,function(x){class(x)[1] == "try-error"}) %>% unlist() %>% which()
+# ID <- inputCounts %>% filter(Region == "Idaho")
+# inputCounts <- inputCounts %>% filter(Region != "Idaho") 
+# ID <- 
+# ID %>% mutate(AgeInt = ifelse(Age == 80, 25, AgeInt))
 
-
+# Offsets <- Offsets %>% filter(Country != "Colombia")
+# inputCounts <- inputCounts %>% 
+#   filter(Region != "Oregon")
+# 
+# inputCounts <- inputCounts %>% 
+#   bind_rows(ID) %>% 
+#   sort_input_data()
+# 
+ iL <- split(inputCounts,
+              list(inputCounts$Code,
+                   inputCounts$Sex,
+                   inputCounts$Measure),
+              drop =TRUE)
+ 
+ # make parallel wrapper with everything in try()
+ # remove try error elements, then bind and process.
+ 
+  iLout <- list()
+  for (i in 1:length(iL)){
+    chunk <- iL[[i]]
+    iLout[[i]] <- try(harmonize_age(chunk, Offsets = Offsets, N = 5, OAnew = 100))
+  }
+  n <- lapply(iLout,function(x){class(x)[1] == "try-error"}) %>% unlist() %>% which()
+ 
+  iL[[n[1]]] %>% View()
+  
+  errors <- list()
+ for (i in 1:length(n)){
+   chunk <- iL[[n[i]]] 
+  harmonize_age(chunk, Offsets = Offsets, N = 5, OAnew = 100)
+ } 
+  iLout <- iLout[-n]
+  outputCounts_5 <-
+    iLout <-
+    iLout %>% 
+    bind_rows() %>% 
+    pivot_wider(names_from = Measure,
+                values_from = Value) 
+  
 outputCounts_5 <- 
   inputCounts %>% 
   sort_input_data() %>% 
@@ -51,7 +82,10 @@ outputCounts_5_rounded <-
          Deaths = round(Deaths,1),
          Tests = round(Tests,1))
 
-write_csv(outputCounts_5_rounded, path = "Data/Output_5.csv")
+header_msg <- paste("Counts of Cases, Deaths, and Tests in harmonized 5-year age groups:",timestamp(prefix="",suffix=""))
+write_lines(header_msg, path = "Data/Output_5.csv")
+
+write_csv(outputCounts_5_rounded, path = "Data/Output_5.csv", append = TRUE, col_names = TRUE)
 saveRDS(outputCounts_5, "Data/Output_5.rds")
 
 

@@ -80,7 +80,10 @@ J <- I %>%
   do(maybe_lower_closeout(chunk = .data, OAnew_min = 85)) %>% 
   ungroup()
 
-inputCounts <- J
+inputCounts <- J %>% 
+  arrange(Country, Region, Sex, Measure, Age)
+
+saveRDS(inputCounts, file = "Data/inputCounts.rds")
   # TR: add rescale_to_total() into the chain
 
 # inputCounts %>% filter(is.na(Value)) %>% View()
