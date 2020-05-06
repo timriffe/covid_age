@@ -224,5 +224,5 @@ ohio_spreadsheet <-
 # Push dataframe ----------------------------------------------------------
 
 sheet_write(ohio_spreadsheet, 
-            ss = "https://docs.google.com/spreadsheets/d/1VUKJ9pugRNKPtwCqqmvUPyAi7VKzkSiPKUOFzsNbDZI/edit?ts=5e9e07d1#gid=937073600", 
+            ss = "https://docs.google.com/spreadsheets/blablabla_huge_ugly_link_goes_here", 
             sheet = "database")

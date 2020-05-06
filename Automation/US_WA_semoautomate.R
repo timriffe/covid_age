@@ -155,5 +155,5 @@ ws_spreadsheet <-
 # Push dataframe ----------------------------------------------------------
 
 sheet_write(ws_spreadsheet, 
-             ss = "https://docs.google.com/spreadsheets/d/1_RKIuspheldR30g-Kqa9WwVUi89abowLmmYDkpjAi44/edit?ts=5e8f8508&pli=1#gid=368328205", 
+             ss = "https://docs.google.com/spreadsheets/blablalba_huge_ugly_link_goes_here", 
              sheet = "database")
