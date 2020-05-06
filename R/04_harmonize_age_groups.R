@@ -64,7 +64,7 @@ Offsets     <- readRDS("Data/Offsets.rds")
  library(parallel)
  
 
- iLout <- mclapply(iL, 
+iLout <- mclapply(iL, 
           harmonize_age_p,
           Offsets = Offsets,
           N = 5,
@@ -78,33 +78,14 @@ Offsets     <- readRDS("Data/Offsets.rds")
   n <- lapply(iLout,function(x){length(x) == 1}) %>% unlist() %>% which()
  
   iLout[n]
-  
-  errors <- list()
- for (i in 1:length(n)){
-   chunk <- iL[[n[i]]] 
-  harmonize_age(chunk, Offsets = Offsets, N = 5, OAnew = 100)
- } 
-  iLout <- iLout[-n]
-  outputCounts_5 <-
-    iLout <-
-    iLout %>% 
+
+outputCounts_5 <-
+    iLout[-n] %>% 
     bind_rows() %>% 
+    mutate(Value = ifelse(is.nan(Value),0,Value)) %>% 
     pivot_wider(names_from = Measure,
                 values_from = Value) 
-  
-outputCounts_5 <- 
-  inputCounts %>% 
-  sort_input_data() %>% 
-  group_by(Country, Region, Code, Date, Sex, Measure) %>% 
-  do(harmonize_age(chunk = .data, Offsets, N = 5, OAnew = 100)) %>% 
-  ungroup() %>% 
-  pivot_wider(names_from = Measure,
-              values_from = Value) 
 
-outputCounts_5 <- outputCounts_5 %>% 
-  mutate(Cases = ifelse(is.nan(Cases),0, Cases),
-         Deaths = ifelse(is.nan(Deaths),0, Deaths),
-         Tests = ifelse(is.nan(Tests),0, Tests))
 
 # round output for csv
 outputCounts_5_rounded <- 
@@ -115,8 +96,8 @@ outputCounts_5_rounded <-
 
 header_msg <- paste("Counts of Cases, Deaths, and Tests in harmonized 5-year age groups:",timestamp(prefix="",suffix=""))
 write_lines(header_msg, path = "Data/Output_5.csv")
-
 write_csv(outputCounts_5_rounded, path = "Data/Output_5.csv", append = TRUE, col_names = TRUE)
+
 saveRDS(outputCounts_5, "Data/Output_5.rds")
 
 
@@ -139,7 +120,9 @@ outputCounts_10_rounded <-
          Deaths = round(Deaths,1),
          Tests = round(Tests,1))
 
-write_csv(outputCounts_10_rounded, path = "Data/Output_10.csv")
+header_msg <- paste("Counts of Cases, Deaths, and Tests in harmonized 10-year age groups:",timestamp(prefix="",suffix=""))
+write_lines(header_msg, path = "Data/Output_10.csv")
+write_csv(outputCounts_10_rounded, path = "Data/Output_10.csv", append = TRUE, col_names = TRUE)
 saveRDS(outputCounts_10, "Data/Output_10.rds")
 
 
