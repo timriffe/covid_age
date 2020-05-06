@@ -1,4 +1,4 @@
-
+source("R/00_Functions.R")
 # prelims to get offsets
 
 
@@ -30,23 +30,54 @@
 #   bind_rows(ID) %>% 
 #   sort_input_data()
 # 
+harmonize_age_p <- function(chunk, Offsets, N = 5, OAnew = 100){
+  .Country <- chunk %>% pull(Country) %>% "[["(1)
+  .Region  <- chunk %>% pull(Region) %>% "[["(1)
+  .Code    <- chunk %>% pull(Code) %>% "[["(1)
+  .Date    <- chunk %>% pull(Date) %>% "[["(1)
+  .Sex     <- chunk %>% pull(Sex) %>% "[["(1)
+  .Measure <- chunk %>% pull(Measure) %>% "[["(1)
+  
+  out <- try(harmonize_age(chunk, Offsets = Offsets, N = N, OAnew = OAnew))
+  if (class(out)[1] == "try-error"){
+    return(paste("Error in:",.Code))
+  } 
+  out <- out %>% mutate(Country = .Country,
+                        Region = .Region,
+                        Code = .Code,
+                        Date = .Date,
+                        Sex = .Sex,
+                        Measure = .Measure) %>% 
+    select(Country, Region, Code, Date, Sex, Measure, Age, AgeInt, Value)
+  out
+}
+
+inputCounts <- readRDS("Data/inputCounts.rds")
+Offsets     <- readRDS("Data/Offsets.rds")
+
  iL <- split(inputCounts,
               list(inputCounts$Code,
                    inputCounts$Sex,
                    inputCounts$Measure),
               drop =TRUE)
  
+ library(parallel)
+ 
+
+ iLout <- mclapply(iL, 
+          harmonize_age_p,
+          Offsets = Offsets,
+          N = 5,
+          OAnew = 100,
+          mc.cores = 6)
+
  # make parallel wrapper with everything in try()
  # remove try error elements, then bind and process.
  
-  iLout <- list()
-  for (i in 1:length(iL)){
-    chunk <- iL[[i]]
-    iLout[[i]] <- try(harmonize_age(chunk, Offsets = Offsets, N = 5, OAnew = 100))
-  }
-  n <- lapply(iLout,function(x){class(x)[1] == "try-error"}) %>% unlist() %>% which()
+
+  n <- lapply(iLout,function(x){length(x) == 1}) %>% unlist() %>% which()
  
-  iL[[n[1]]] %>% View()
+  iLout[n]
   
   errors <- list()
  for (i in 1:length(n)){
