@@ -753,57 +753,65 @@ maybe_lower_closeout <- function(chunk, OAnew_min = 85){
                 
 # This encapsulates the entire processing chain.
 process_counts <- function(inputDB, Offsets = NULL, N = 10){
-  A <- 
-  inputDB %>% 
-    filter(!(Age == "TOT" & Metric == "Fraction")) %>% 
-    
-    # 1. Multiply Fraction Metrics into stated total counts
+  
+  A <-
+    inputDB %>% 
+    filter(!(Age == "TOT" & Metric == "Fraction"),
+           !(Age == "UNK" & Value == 0),
+           !(Sex == "UNK" & Sex == 0)) %>% 
     group_by(Code, Sex, Measure) %>% 
-    do(convert_fractions(chunk = .data)) %>% 
-    ungroup() %>% 
-    
-    # 2. Redistribute counts of unknown age proportional to counts 
-    # of known age
-    group_by(Code, Sex, Measure) %>% 
-    do(redistribute_unknown_age(chunk = .data)) %>% 
-    
-    # 3. Age distribution should sum to total, if specified separately
+    # do_we_convert_fractions(chunk)
+    do(convert_fractions(chunk = .data))                
+  
+  B <- A  %>% 
+    # do_we_redistribute_unknown_age()
+    do(redistribute_unknown_age(chunk = .data))
+  
+  C <- B %>% 
+    # do_we_rescale_to_total()
     do(rescale_to_total(chunk = .data)) %>% 
-    ungroup() %>% 
-    
-    # 4. Infer cases as Deaths / ASCFR. This is a problem in young ages
-    # if there are cases but no deaths, or even if there are deaths
-    # it's a problem if there is rounding. Therefore we model it. The
-    # present model sucks and needs to be improved. This only affects
-    # ITinfo. Inferring Deaths from cases and ASCFR is straightforward,
-    # on the other hand.
-    group_by(Code, Sex) %>% 
-    do(infer_cases_from_deaths_and_ascfr(chunk = .data)) %>% 
-    do(infer_deaths_from_cases_and_ascfr(chunk = .data)) %>% 
-    ungroup() %>% 
-    
-    # 5. Counts of unknown sex redistributed with age
-    group_by(Code, Age, Measure) %>% 
-    do(redistribute_unknown_sex(chunk = .data)) %>% 
-    ungroup() %>% 
-    
-    # 6. Rescale sexes to sum to same as both-sex margin total
-    group_by(Code, Measure) %>% 
-    do(rescale_sexes(chunk = .data)) %>% 
-    
-    # 7. if sexes given but not both-sex, then generate it
-    do(infer_both_sex(chunk = .data)) %>% 
-    ungroup() %>% 
-    
-    # pre-step
-    mutate(Age = as.integer(Age)) %>% 
-    # 8. If upper tail in 0s then group down until there are positive counts,
-    # but not lower than 85
-    group_by(Code, Sex, Measure) %>% 
-    do(maybe_lower_closeout(chunk = .data, OAnew_min = 85)) %>% 
     ungroup() 
   
-    A %>% 
+  D <- C %>% 
+    group_by(Code, Sex) %>% 
+    # TR: This step can be improved I think.
+    # do_we_infer_cases_from_deaths_and_ascfr() "ITinfo15.04.2020"
+    do(infer_cases_from_deaths_and_ascfr(chunk = .data))
+  
+  E <- D %>% 
+    # do_we_infer_deaths_from_cases_and_ascfr()
+    do(infer_deaths_from_cases_and_ascfr(chunk = .data)) %>%  
+    ungroup() 
+  
+  G <- E %>% 
+    group_by(Code, Age, Measure) %>% 
+    # do_we_redistribute_unknown_sex()
+    do(redistribute_unknown_sex(chunk = .data)) %>% 
+    ungroup() 
+  
+  H <- G %>% 
+    group_by(Code, Measure) %>% 
+    # TR: change this to happen within Age
+    # do_we_rescale_sexes()
+    do(rescale_sexes(chunk = .data)) %>% 
+    # possibly there was a Sex = "b" Age = "TOT" left here.
+    # These would have made it this far if preserved to rescale sexes
+    filter(Age != "TOT")
+  
+  I <- H %>% 
+    # do_we_infer_both_sex()
+    do(infer_both_sex(chunk = .data)) %>% 
+    ungroup() 
+  
+  J <- I %>% 
+    mutate(Age = as.integer(Age)) %>% 
+    group_by(Code, Sex, Measure) %>% 
+    #do_we_maybe_lower_closeout()
+    do(maybe_lower_closeout(chunk = .data, OAnew_min = 85)) %>% 
+    ungroup() %>% 
+    arrange(Country, Region, Sex, Measure, Age)
+  
+  J %>% 
     # do PCLM splitting
     sort_input_data() %>% 
     group_by(Country, Region, Code, Date, Sex, Measure) %>% 
