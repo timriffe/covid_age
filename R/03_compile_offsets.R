@@ -1,6 +1,9 @@
 source("R/00_Functions.R")
 # Once-off offsets
 
+# this might take 5-10 minutes now,
+# but when we get more offsets collected it 
+# will have to slow down
 Offsets <- compile_offsetsDB()
 
 Offsets %>% pull(Population)
@@ -12,6 +15,10 @@ Offsets <-
   mutate(Age = as.integer(Age)) %>% 
   group_by(Country, Region, Sex) %>% 
   do(harmonize_offset_age(chunk = .data)) %>% 
+  # This is where date synchronization (projection) goes
+  # So, FR write a function that anticipates a chunk of data
+  # in standard single ages. We need to have Date as an attribute of
+  # the data moving forward. This goes here.
   ungroup()
 
 # save out
