@@ -1,5 +1,6 @@
 source("R/00_Functions.R")
-# Once-off offsets
+# Once-off offsets. This code can be run from time to time. It does not need to be run at each
+# database build.
 
 # this might take 5-10 minutes now,
 # but when we get more offsets collected it 
@@ -18,7 +19,7 @@ Offsets <-
   # This is where date synchronization (projection) goes
   # So, FR write a function that anticipates a chunk of data
   # in standard single ages. We need to have Date as an attribute of
-  # the data moving forward. This goes here.
+  # the data moving forward. This goes here.  
   ungroup()
 
 # save out
