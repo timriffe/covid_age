@@ -28,14 +28,14 @@ if (check_db){
   standbyDB <- readRDS(here::here("Data/inputDB.rds"))
   
   (my_codes <- inputDB %>% pull(Short) %>% unique())
-  run_checks(inputDB, "JP")
+  run_checks(inputDB, "DK")
   
   
-  # REMOVE DK Code selectively
-  inputDB <- 
-    inputDB %>% 
-    filter(!Code %in% c("DK03.04.2020","DK04.04.2020","DK05.04.2020"),
-           !is.na(Country))
+  # # REMOVE DK Code selectively
+  # inputDB <- 
+  #   inputDB %>% 
+  #   filter(!Code %in% c("DK03.04.2020","DK04.04.2020","DK05.04.2020"),
+  #          !is.na(Country))
   
   # REMOVE Taiwan until inputs fixed
   inputDB <- 
@@ -70,8 +70,9 @@ if (check_db){
   #     TRUE ~ Sex
   #   ))
   unique(inputDB$Age)
-  # inputDB %>% 
-  #   filter(is.na(Age)) %>% View()
+   inputDB %>% 
+     filter(is.na(Age)) %>% View()
+   
 
   inputDB %>% filter(is.na(Code)) %>% View()
   # Remove blank subsets, where they coming from?
@@ -132,7 +133,7 @@ if (check_db){
   # ---------------------------------- #
   # duplicates check:
   # -----------------------------------#
-   
+  
   n <- duplicated(inputDB[,c("Code","Sex","Age","Measure","Metric")])
   sum(n)
   # inputDB[n, ] %>% View()
@@ -145,19 +146,23 @@ if (check_db){
   # These are all aggressive pushes:
   # Save out the inputDB
   #push_inputDB(inputDB)
-  write_csv(inputDB, path = "Data/inputDB.csv")
+  
+  header_msg <- paste("COVerAGE-DB input database, filtered after some simple checks:",timestamp(prefix="",suffix=""))
+  write_lines(header_msg, path = "Data/inputDB.csv")
+  
+  write_csv(inputDB, path = "Data/inputDB.csv", append = TRUE, col_names = TRUE)
   saveRDS(inputDB, "Data/inputDB.rds")
   
   # ---------------------------------------------------
   # # replace subset with new load after Date correction
   # NOTE THIS WILL FAIL FOR REGIONS!!
-    # ShortCode <- "CA_AB"
-    # X <- get_country_inputDB(ShortCode)
-    #  inputDB <-
-    #    inputDB %>% 
-    #    filter(!grepl(ShortCode,Code)) %>% 
-    #    rbind(X) %>% 
-    #    sort_input_data()
+      # ShortCode <- "GB_NI"
+      # X <- get_country_inputDB(ShortCode)
+      #  inputDB <-
+      #    inputDB %>% 
+      #    filter(!grepl(ShortCode,Code)) %>% 
+      #    rbind(X) %>% 
+      #    sort_input_data()
   # ----------------------------------------------------
   # check closeout ages:
   CloseoutCheck <- 
