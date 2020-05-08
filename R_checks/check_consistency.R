@@ -28,14 +28,6 @@ check_consistency <- function(data) {
 
 
 
-  
-  
-  
-  
-  
-  
-  
-  
 
 
 
