@@ -15,8 +15,9 @@ Here's an overview of populations available in the `inputDB`
 - [x] Brazil    
   - [x] Rio de Janeiro
   - [ ] Brazilian regions
+- [x] Cameroon
 - [x] Canada  
-  - [x] Quebec
+  - [ ] Quebec
   - [ ] Montreal
   - [x] Alberta
   - [x] British Columbia
@@ -32,6 +33,8 @@ Here's an overview of populations available in the `inputDB`
 - [x] Eswatini    
 - [x] Ethiopia
 - [x] France     
+  - [x] Ile-de-France
+  - [x] Grand Est
 - [x] Germany   
   - [x] German federal states
 - [x] Greece
@@ -44,6 +47,7 @@ Here's an overview of populations available in the `inputDB`
   - [ ] Mexican states
 - [x] Netherlands 
 - [x] Nigeria
+- [x] Nothern Ireland
 - [x] Norway
 - [x] Portugal   
 - [x] Scotland  
@@ -52,29 +56,37 @@ Here's an overview of populations available in the `inputDB`
 - [x] Spain  
   - [x] Basque Country
   - [ ] Catalonia
-  - [x] Valencian Community
+  - [x] Valencia (community)
 - [x] Sweden     
 - [x] Switzerland
 - [x] Taiwan
+  - [x] Taiwan counties
 - [x] USA 
-  - [x] New York City
+  - [x] NYC
+  - [x] Arizona
+  - [x] California
+  - [x] Florida
   - [x] Georgia
+  - [x] Idaho
   - [x] Illinois
   - [x] Louisiana
   - [x] Massachusetts
   - [x] Michigan
   - [x] New Jersey
+  - [x] Ohio
   - [x] Oklahoma
   - [x] Oregon
+  - [x] Texas
+  - [x] Vermont
   - [x] Virginia
-  - [x] Washington state
+  - [x] Washington (state)
   - [x] Wisconsin
   - [ ] Atlanta
   - [ ] Chicago
-  - [ ] Arizona
+  - [ ] Cleveland
+  - [ ] Milwaukee
   - [ ] Indiana
   - [ ] Iowa
-  - [ ] Ohio
   
 - [ ] Armenia
 - [ ] Australia
@@ -83,7 +95,6 @@ Here's an overview of populations available in the `inputDB`
 - [ ] Great Britain / UK
 - [ ] Iceland
 - [ ] Israel
-- [ ] Nothern Ireland
 - [ ] Pakistan
 - [ ] Panama
 - [ ] Peru
