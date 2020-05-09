@@ -28,7 +28,7 @@ if (check_db){
   standbyDB <- readRDS(here::here("Data/inputDB.rds"))
   
   (my_codes <- inputDB %>% pull(Short) %>% unique())
-  run_checks(inputDB, "DK")
+  run_checks(inputDB, "US_VT")
   
   
   # # REMOVE DK Code selectively
@@ -118,7 +118,7 @@ if (check_db){
   # inputDB <- inputDB %>% 
   #   mutate(Value = ifelse(is.na(Value),0,Value))
   # 
-  inspect_code(inputDB, inspect[90])
+  # inspect_code(inputDB, inspect[90])
 
   # temp JP correction
   # unique(inputDB$Sex)
@@ -156,13 +156,13 @@ if (check_db){
   # ---------------------------------------------------
   # # replace subset with new load after Date correction
   # NOTE THIS WILL FAIL FOR REGIONS!!
-      # ShortCode <- "GB_NI"
-      # X <- get_country_inputDB(ShortCode)
-      #  inputDB <-
-      #    inputDB %>% 
-      #    filter(!grepl(ShortCode,Code)) %>% 
-      #    rbind(X) %>% 
-      #    sort_input_data()
+     # ShortCode <- "GB_NI"
+     # X <- get_country_inputDB(ShortCode)
+     #  inputDB <-
+     #    inputDB %>% 
+     #    filter(!grepl(ShortCode,Code)) %>% 
+     #    rbind(X) %>% 
+     #    sort_input_data()
   # ----------------------------------------------------
   # check closeout ages:
   CloseoutCheck <- 
