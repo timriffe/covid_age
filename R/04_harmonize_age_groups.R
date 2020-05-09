@@ -1,35 +1,6 @@
 source("R/00_Functions.R")
 # prelims to get offsets
-
-
- # # FOR NOW WE PROCESS INPUTS THAT HAVE OFFSETS, see step 3
- # (have_offsets <- Offsets %>% 
- #   mutate(code = paste(Country,Region,sep="-")) %>% 
- #   pull(code) %>% 
- #   unique())
- # 
- # 
- # inputs_to_split <- 
- #   inputCounts %>% 
- #   mutate(code = paste(Country,Region,sep="-")) %>% 
- #   filter(code %in% have_offsets, 
- #          Country != "Denmark")
- #  
-
-# inputCounts <- inputCounts %>% filter(Country !="Denmark")
-# ID <- inputCounts %>% filter(Region == "Idaho")
-# inputCounts <- inputCounts %>% filter(Region != "Idaho") 
-# ID <- 
-# ID %>% mutate(AgeInt = ifelse(Age == 80, 25, AgeInt))
-
-# Offsets <- Offsets %>% filter(Country != "Colombia")
-# inputCounts <- inputCounts %>% 
-#   filter(Region != "Oregon")
-# 
-# inputCounts <- inputCounts %>% 
-#   bind_rows(ID) %>% 
-#   sort_input_data()
-# 
+library(parallel)
 harmonize_age_p <- function(chunk, Offsets, N = 5, OAnew = 100){
   .Country <- chunk %>% pull(Country) %>% "[["(1)
   .Region  <- chunk %>% pull(Region) %>% "[["(1)
@@ -60,9 +31,6 @@ Offsets     <- readRDS("Data/Offsets.rds")
                    inputCounts$Sex,
                    inputCounts$Measure),
               drop =TRUE)
- 
- library(parallel)
- 
 
 iLout <- mclapply(iL, 
           harmonize_age_p,
@@ -153,7 +121,7 @@ outputCounts_5 %>%
     mutate(ASCFR = Deaths / Cases,
            ASCFR = na_if(ASCFR, Deaths == 0)) %>% 
     filter(!is.na(ASCFR),
-           Sex == "m",
+           Sex == "b",
            D >= 100) %>% 
   ggplot(aes(x=Age, y = ASCFR, group = interaction(Country, Region, Code))) + 
   geom_line(alpha=.1) + 
