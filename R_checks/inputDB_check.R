@@ -47,7 +47,7 @@ bulk_checks <- function(data) {
   
   test_that("AgeInt can only be coercible to integer or NA", {
     expect_true(
-      is.integer(d$AgeInt)
+      is.integer(d$AgeInt) | is.numeric(d$AgeInt)
     )
   })
   
