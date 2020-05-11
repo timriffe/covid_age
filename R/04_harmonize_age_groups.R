@@ -94,7 +94,6 @@ write_csv(outputCounts_10_rounded, path = "Data/Output_10.csv", append = TRUE, c
 saveRDS(outputCounts_10, "Data/Output_10.rds")
 
 
-
 spot_checks <- FALSE
 if (spot_checks){
 # Once-off diagnostic plot:

@@ -29,9 +29,13 @@ A <-
   filter(!(Age == "TOT" & Metric == "Fraction"),
          !(Age == "UNK" & Value == 0),
          !(Sex == "UNK" & Sex == 0)) %>% 
+  group_by(Code, Measure) %>%
+  # do_we_convert_fractions_all_sexes(chunk)
+  do(convert_fractions_all_sexes(chunk = .data)) %>% 
+  ungroup() %>% 
   group_by(Code, Sex, Measure) %>% 
-  # do_we_convert_fractions(chunk)
-  do(convert_fractions(chunk = .data))                
+  # do_we_convert_fractions_within_sex(chunk)
+  do(convert_fractions_within_sex(chunk = .data))                
  
 B <- A  %>% 
   # do_we_redistribute_unknown_age()
