@@ -522,7 +522,7 @@ do_we_rescale_sexes <- function(chunk){
     } else {
       BB   <- b %>% pull(Value) %>% sum()
     }
-    out <- abs(MM + FF - BB) < 1e-4
+    out <- abs(MM + FF - BB) > 1e-4
   } else {
     out <- FALSE
   }
