@@ -96,6 +96,7 @@ Here's an overview of populations available in the `inputDB`
 - [ ] Ghana
 - [ ] Great Britain / UK
 - [ ] Iceland
+- [ ] India
 - [ ] Israel
 - [ ] Panama
 - [ ] Peru
