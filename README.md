@@ -55,6 +55,7 @@ Here's an overview of populations available in the `inputDB`
 - [x] South Korea  
 - [x] Spain  
   - [x] Basque Country
+  - [ ] Castile and León
   - [ ] Catalonia
   - [x] Valencia (community)
 - [x] Sweden     
@@ -100,6 +101,7 @@ Here's an overview of populations available in the `inputDB`
 - [ ] Peru
 - [ ] Philippines
 - [ ] Romania
+- [ ] The Gambia
   
 
 Most populations in the database contain multiple time snapshots, and all are continually monitored for new data releases.  All statistics reported here are **cumulative**. 
