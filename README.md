@@ -49,6 +49,7 @@ Here's an overview of populations available in the `inputDB`
 - [x] Nigeria
 - [x] Nothern Ireland
 - [x] Norway
+- [x] Pakistan
 - [x] Portugal   
 - [x] Scotland  
 - [x] South Africa
@@ -77,7 +78,6 @@ Here's an overview of populations available in the `inputDB`
   - [x] Ohio
   - [x] Oklahoma
   - [x] Oregon
-  - [x] Pakistan
   - [x] Texas
   - [x] Vermont
   - [x] Virginia
