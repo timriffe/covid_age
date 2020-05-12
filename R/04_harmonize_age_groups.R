@@ -45,7 +45,7 @@ iLout <- mclapply(iL,
 
   n <- lapply(iLout,function(x){length(x) == 1}) %>% unlist() %>% which()
  
-  iLout[n]
+problem_codes <-  iLout[n]
 
 outputCounts_5 <-
     iLout[-n] %>% 
@@ -120,12 +120,25 @@ outputCounts_5 %>%
     mutate(ASCFR = Deaths / Cases,
            ASCFR = na_if(ASCFR, Deaths == 0)) %>% 
     filter(!is.na(ASCFR),
-           Sex == "b",
+           Sex == "m",
            D >= 100) %>% 
   ggplot(aes(x=Age, y = ASCFR, group = interaction(Country, Region, Code))) + 
   geom_line(alpha=.1) + 
  scale_y_log10() + 
-  xlim(40,100)
+  xlim(30,100)
+
+outputCounts_5 %>% 
+  group_by(Country, Region, Code, Sex) %>% 
+  mutate(D = sum(Deaths)) %>% 
+  ungroup() %>% 
+  mutate(ASCFR = Deaths / Cases,
+         ASCFR = na_if(ASCFR, Deaths == 0)) %>% 
+  filter(!is.na(ASCFR),
+         Sex == "m",
+         D >= 100,
+         Age >= 90,
+         Deaths ==0) 
+
 
 outputCounts_5 %>% 
   mutate(ASCFR = Deaths / Cases,

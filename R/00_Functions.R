@@ -818,14 +818,19 @@ maybe_lower_closeout <- function(chunk, OAnew_min = 85){
 # This encapsulates the entire processing chain.
 process_counts <- function(inputDB, Offsets = NULL, N = 10){
   
+  
   A <-
     inputDB %>% 
     filter(!(Age == "TOT" & Metric == "Fraction"),
            !(Age == "UNK" & Value == 0),
            !(Sex == "UNK" & Sex == 0)) %>% 
+    group_by(Code, Measure) %>%
+    # do_we_convert_fractions_all_sexes(chunk)
+    do(convert_fractions_all_sexes(chunk = .data)) %>% 
+    ungroup() %>% 
     group_by(Code, Sex, Measure) %>% 
-    # do_we_convert_fractions(chunk)
-    do(convert_fractions(chunk = .data))                
+    # do_we_convert_fractions_within_sex(chunk)
+    do(convert_fractions_within_sex(chunk = .data))                
   
   B <- A  %>% 
     # do_we_redistribute_unknown_age()
@@ -872,10 +877,13 @@ process_counts <- function(inputDB, Offsets = NULL, N = 10){
     group_by(Code, Sex, Measure) %>% 
     #do_we_maybe_lower_closeout()
     do(maybe_lower_closeout(chunk = .data, OAnew_min = 85)) %>% 
-    ungroup() %>% 
+    ungroup()
+  
+  K <- J %>% 
     arrange(Country, Region, Sex, Measure, Age)
   
-  J %>% 
+  
+  K %>% 
     # do PCLM splitting
     sort_input_data() %>% 
     group_by(Country, Region, Code, Date, Sex, Measure) %>% 

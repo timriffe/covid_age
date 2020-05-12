@@ -28,14 +28,16 @@ if (check_db){
   standbyDB <- readRDS(here::here("Data/inputDB.rds"))
   
   (my_codes <- inputDB %>% pull(Short) %>% unique())
-  run_checks(inputDB, "US_VT")
+  run_checks(inputDB, "JP")
   
   
-  # # REMOVE DK Code selectively
-  # inputDB <- 
-  #   inputDB %>% 
-  #   filter(!Code %in% c("DK03.04.2020","DK04.04.2020","DK05.04.2020"),
-  #          !is.na(Country))
+  # # REMOVE JP Dates start 24.04.2020
+  
+   # inputDB <- 
+   #   inputDB %>% 
+   #   mutate(date = dmy(Date)) %>% 
+   #   filter(!(Country == "Japan" & date > dmy("23.04.2020"))) %>% 
+   #   select(-date) 
   
   # REMOVE Taiwan until inputs fixed
   inputDB <- 
@@ -43,8 +45,8 @@ if (check_db){
     filter(Country !="Taiwan")
   
   # REMOVE JAPAN until inputs fixed
-  inputDB <- inputDB %>% 
-    filter(Country != "Japan")
+  # inputDB <- inputDB %>% 
+  #   filter(Country != "Japan")
 
   inputDB %>% 
     filter(is.na(Date)) %>% 
@@ -55,11 +57,17 @@ if (check_db){
     mutate(date = dmy(Date)) %>% 
     pull(date) %>% 
     range()
+  # inputDB <-
+  #   inputDB %>% 
+  #   mutate(date = dmy(Date)) %>% 
+  #   filter(!is.na(date)) %>% 
+  #   select(-date)
+  
 
   # hunt down anything implausible
   # ----------------------
   inputDB %>% pull(Sex) %>% table()
-  inputDB %>% filter(Sex %in% c("F","M","unk")) %>% View()
+  # inputDB %>% filter(Sex %in% c("F","M","unk")) %>% View()
   
   # inputDB <-
   #   inputDB %>% 
@@ -138,8 +146,8 @@ if (check_db){
   sum(n)
   # inputDB[n, ] %>% View()
   # inputDB <- inputDB[-n, ]
-  
-  
+  # inputDB <- inputDB %>% filter(!(Country == "South Korea" & Date == "09.05.2020"))
+  # 
   # DNK has too many pathological cases to include at the moment
   # inputDB <- inputDB %>% filter(!Country %in% c("Denmark"))
   # inputDB <- inputDB %>% filter(!Code %in% c("CA_BC17.04.2020"))
