@@ -47,12 +47,20 @@ iLout <- mclapply(iL,
  
 problem_codes <-  iLout[n]
 
+# TR: now include rescale
 outputCounts_5 <-
     iLout[-n] %>% 
     bind_rows() %>% 
     mutate(Value = ifelse(is.nan(Value),0,Value)) %>% 
+    group_by(Code, Measure) %>% 
+    # Newly added
+    do(rescale_sexes(chunk = .data)) %>% 
+    ungroup() %>%
     pivot_wider(names_from = Measure,
-                values_from = Value) 
+                values_from = Value) %>% 
+    mutate(date = dmy(Date)) %>% 
+    arrange(Country, Region, date, Sex, Age) %>% 
+    select(-date) 
 
 
 # round output for csv
