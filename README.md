@@ -35,9 +35,11 @@ Here's an overview of populations available in the `inputDB`
 - [x] France     
   - [x] Ile-de-France
   - [x] Grand Est
+- [x] The Gambia
 - [x] Germany   
   - [x] German federal states
 - [x] Greece
+- [x] India
 - [x] Ireland
 - [x] Italy     
   - [ ] Italian regions
@@ -96,7 +98,6 @@ Here's an overview of populations available in the `inputDB`
 - [ ] Ghana
 - [ ] Great Britain / UK
 - [ ] Iceland
-- [ ] India
 - [ ] Israel
 - [ ] Panama
 - [ ] Peru
