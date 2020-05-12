@@ -10,7 +10,7 @@ if (!require("pacman", character.only = TRUE)){
     stop("Package not found")
 }
 
-packages_CRAN <- c("tidyverse","lubridate","here","gargle","ungroup","HMDHFDplus","tictoc")
+packages_CRAN <- c("tidyverse","lubridate","here","gargle","ungroup","HMDHFDplus","tictoc","parallel")
 
 if(!sum(!p_isinstalled(packages_CRAN))==0){
   p_install(
@@ -35,9 +35,7 @@ p_load(packages_CRAN, character.only = TRUE)
 p_load(gphgs, character.only = TRUE)
 
 # --------------------------------
-
-
-
+# Custom functions used in DB production routine
 #--------------------------------------------------
 sort_input_data <- function(X){
   X %>% 
@@ -1010,12 +1008,54 @@ harmonize_age <- function(chunk, Offsets = NULL, N = 5, OAnew = 100){
 }
 
 
+harmonize_age_p <- function(chunk, Offsets, N = 5, OAnew = 100){
+  .Country <- chunk %>% pull(Country) %>% "[["(1)
+  .Region  <- chunk %>% pull(Region) %>% "[["(1)
+  .Code    <- chunk %>% pull(Code) %>% "[["(1)
+  .Date    <- chunk %>% pull(Date) %>% "[["(1)
+  .Sex     <- chunk %>% pull(Sex) %>% "[["(1)
+  .Measure <- chunk %>% pull(Measure) %>% "[["(1)
+  
+  out <- try(harmonize_age(chunk, Offsets = Offsets, N = N, OAnew = OAnew))
+  if (class(out)[1] == "try-error"){
+    return(paste("Error in:",.Code))
+  } 
+  out <- out %>% mutate(Country = .Country,
+                        Region = .Region,
+                        Code = .Code,
+                        Date = .Date,
+                        Sex = .Sex,
+                        Measure = .Measure) %>% 
+    select(Country, Region, Code, Date, Sex, Measure, Age, AgeInt, Value)
+  out
+}
 
 
-
-
-
-
+# this is similar to the other one, except
+# it's within age, so be done after age splitting
+rescale_sexes_post <- function(chunk){
+  sexes  <- chunk %>% pull(Sex) %>% unique()
+  maybe  <- setequal(sexes,c("b","f","m")) 
+  if (maybe){
+    chunk <-
+      chunk %>% 
+      arrange(Sex, Age) %>% 
+      pivot_wider(names_from = Sex,
+                  values_from = Value) %>% 
+      mutate(mf = m + f,
+             adj = b / mf,
+             adj = ifelse(mf == 0,1,adj),
+             m = adj * m,
+             f = adj * f) %>% 
+      select(-c(mf,adj)) %>% 
+      pivot_longer(cols = c("f","m","b") ,
+                   names_to = "Sex",
+                   values_to = "Value") %>% 
+      arrange(Sex,Age)
+    
+  } 
+  return(chunk)
+}
 
 
 

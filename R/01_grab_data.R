@@ -28,7 +28,7 @@ if (check_db){
   standbyDB <- readRDS(here::here("Data/inputDB.rds"))
   
   (my_codes <- inputDB %>% pull(Short) %>% unique())
-  run_checks(inputDB, "JP")
+  run_checks(inputDB, "TW")
   
   
   # # REMOVE JP Dates start 24.04.2020
@@ -45,12 +45,14 @@ if (check_db){
     filter(Country !="Taiwan")
   
   # REMOVE JAPAN until inputs fixed
-  # inputDB <- inputDB %>% 
-  #   filter(Country != "Japan")
+   # inputDB <- inputDB %>% 
+   #   filter(Country != "Japan")
 
   inputDB %>% 
     filter(is.na(Date)) %>% 
     View()
+  inputDB <- inputDB %>% filter(!is.na(Date))
+  inputDB <- inputDB %>% filter(Date != "NA.NA.NA")
 
   # Date range check:
   inputDB %>% 
@@ -67,6 +69,9 @@ if (check_db){
   # hunt down anything implausible
   # ----------------------
   inputDB %>% pull(Sex) %>% table()
+  inputDB %>% pull(Measure) %>% table()
+  inputDB %>% pull(Metric) %>% table()
+  inputDB %>% pull(Age) %>% table()
   # inputDB %>% filter(Sex %in% c("F","M","unk")) %>% View()
   
   # inputDB <-
@@ -81,8 +86,6 @@ if (check_db){
    inputDB %>% 
      filter(is.na(Age)) %>% View()
    
-
-  inputDB %>% filter(is.na(Code)) %>% View()
   # Remove blank subsets, where they coming from?
   inputDB <- inputDB %>% filter(!is.na(Country))
   
@@ -90,17 +93,7 @@ if (check_db){
   inputDB %>% filter(is.na(Value)) %>% View()
   inputDB <- inputDB %>% 
     filter(!is.na(Value)) 
-  # -------------------------------------
-  # Check Measure 
-  # Valid: Deaths, Cases, Tests, ASCFR
-  inputDB %>% pull(Measure) %>% unique()
-  
-  # inputDB %>% filter(Measure == "Death") %>% 
-  #   pull(Country) %>% 
-  #   unique() 
-  # just a few, nope
-  table(inputDB$Measure)
-  
+
   # inputDB <- inputDB %>% mutate(
   #   Measure = ifelse(Measure == "Death","Deaths",Measure)
   # )
@@ -109,12 +102,7 @@ if (check_db){
   inputDB %>% filter(Measure == "Probable deaths") %>% pull(Region) %>% unique()
   inputDB <- inputDB %>% filter(Measure != "Probable deaths")
   # -------------------------------------
-  
-  # -------------------------------------
-  # Check Metric
-  # Count, Fraction, Ratio
-  inputDB %>% pull(Metric) %>% unique()
-  
+
   # -------------------------------------
   # Check NA values
   # inputDB %>% pull(Value) %>% is.na() %>% sum()
