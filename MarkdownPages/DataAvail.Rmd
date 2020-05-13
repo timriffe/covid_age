@@ -1,0 +1,115 @@
+---
+title: "Data Availability"
+author: "Tim Riffe, Enrique Acosta"
+date: "5/13/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Data availability {.tabset}
+
+```{r, include = FALSE}
+library(tidyverse)
+library(lubridate)
+library(DT)
+library(here)
+
+# the most inclusive dataset:
+captured <- 
+  readRDS(here::here("Data/inputDBhold.rds")) %>% 
+  mutate(date = dmy(Date),
+         date = as.character(date)) %>% 
+  arrange(Country, Region, date) %>% 
+  group_by(Country, Region, date) %>% 
+    mutate(sex = all(c("m","f") %in% Sex)) %>% 
+    slice(1) %>% 
+  ungroup() %>% 
+  select(Country, Region, date, sex)
+
+# what has made it through to the end:
+
+processed <- 
+  readRDS(here::here("Data/Output_10.rds")) %>% 
+  mutate(date = dmy(Date),
+         date = as.character(date)) %>% 
+  arrange(Country, Region, date) %>% 
+  group_by(Country, Region, date) %>% 
+  mutate(sex = all(c("m","f") %in% Sex),
+         passing = TRUE) %>% 
+  slice(1) %>% 
+  ungroup() %>% 
+  select(Country, Region, date, sex, passing)
+
+available <-
+  left_join(captured,
+            processed) %>% 
+  mutate(passing = ifelse(is.na(passing), FALSE, TRUE))
+
+AvailabilityTableBig<-
+available %>% 
+  datatable(options = list(pageLength = 100)) %>% 
+  formatStyle(
+    'sex',
+    backgroundColor = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC'))
+  ) %>% 
+  formatStyle(
+    'passing',
+    backgroundColor = styleEqual(c(TRUE, FALSE), c('green', 'orange'))
+  )
+
+captured2 <- 
+  readRDS(here::here("Data/inputDBhold.rds")) %>% 
+  arrange(Country, Region) %>% 
+  group_by(Country, Region) %>% 
+    mutate(sex = all(c("m","f") %in% Sex)) %>% 
+    slice(1) %>% 
+  ungroup() %>% 
+  select(Country, Region, sex)
+
+processed2 <- 
+  readRDS(here::here("Data/Output_10.rds")) %>% 
+  arrange(Country, Region) %>% 
+  group_by(Country, Region) %>% 
+  mutate(sex = all(c("m","f") %in% Sex),
+         passing = TRUE) %>% 
+  slice(1) %>% 
+  ungroup() %>% 
+  select(Country, Region, sex, passing)
+
+available2 <-
+  left_join(captured2,
+            processed2) %>% 
+  mutate(passing = ifelse(is.na(passing), FALSE, TRUE))
+
+AvailabilityTableSmaller<-
+available2 %>% 
+  datatable(options = list(pageLength = 100)) %>% 
+  formatStyle(
+    'sex',
+    backgroundColor = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC'))
+  ) %>% 
+  formatStyle(
+    'passing',
+    backgroundColor = styleEqual(c(TRUE, FALSE), c('green', 'orange'))
+  )
+
+```
+
+## By Country, Region
+
+```{r, echo = FALSE}
+AvailabilityTableSmaller
+```
+```
+
+## By Country, Region, Date
+
+```{r, echo = FALSE}
+AvailabilityTableBig
+```
+
+## {-}
+
