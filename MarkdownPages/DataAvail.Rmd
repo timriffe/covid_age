@@ -1,6 +1,6 @@
 ---
 title: "Data Availability"
-author: "Tim Riffe, Enrique Acosta"
+author: "COVerAGE-DB"
 date: "5/13/2020"
 output: html_document
 ---
@@ -8,6 +8,9 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+# Overview
+These two data availability dashboards indicate which populations have data captured (all rows), which have data by sex (`sex`), and which are currently making it through the processing chain to output (`passing`). The columns are sortable, and there is a search box if you're looking for something in particular.
 
 # Data availability {.tabset}
 
