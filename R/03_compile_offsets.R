@@ -7,7 +7,7 @@ source("R/00_Functions.R")
 # will have to slow down
 Offsets <- compile_offsetsDB()
 
-Offsets %>% pull(Population)
+
 
 Offsets %>% filter(is.na(Population)) %>% View()
 
