@@ -46,7 +46,9 @@ processed <-
 available <-
   left_join(captured,
             processed) %>% 
-  mutate(passing = ifelse(is.na(passing), FALSE, TRUE))
+  mutate(passing = ifelse(is.na(passing), FALSE, TRUE)) %>% 
+  select(Country, Region, date, sex, passing) %>% 
+  arrange(Country, Region, date)
 
 AvailabilityTableBig<-
 available %>% 
@@ -60,29 +62,21 @@ available %>%
     backgroundColor = styleEqual(c(TRUE, FALSE), c('green', 'orange'))
   )
 
-captured2 <- 
-  readRDS(here::here("Data/inputDBhold.rds")) %>% 
-  arrange(Country, Region) %>% 
-  group_by(Country, Region) %>% 
-    mutate(sex = all(c("m","f") %in% Sex)) %>% 
-    slice(1) %>% 
-  ungroup() %>% 
-  select(Country, Region, sex)
-
-processed2 <- 
-  readRDS(here::here("Data/Output_10.rds")) %>% 
-  arrange(Country, Region) %>% 
-  group_by(Country, Region) %>% 
-  mutate(sex = all(c("m","f") %in% Sex),
-         passing = TRUE) %>% 
-  slice(1) %>% 
-  ungroup() %>% 
-  select(Country, Region, sex, passing)
+captured2  <-
+  captured %>% 
+  group_by(Region, Country) %>% 
+  summarize(sex = any(sex))
+processed2 <-
+  processed %>% 
+  group_by(Region, Country) %>% 
+  summarize(passing = any(passing))
 
 available2 <-
   left_join(captured2,
             processed2) %>% 
-  mutate(passing = ifelse(is.na(passing), FALSE, TRUE))
+  mutate(passing = ifelse(is.na(passing), FALSE, TRUE)) %>% 
+  select(Country, Region, sex, passing) %>% 
+  arrange(Country, Region)
 
 AvailabilityTableSmaller<-
 available2 %>% 
