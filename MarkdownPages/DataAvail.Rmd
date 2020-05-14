@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Overview
-These two data availability dashboards indicate which populations have data captured (all rows), which have data by sex (`sex`), and which are currently making it through the processing chain to output (`passing`). The columns are sortable, and there is a search box if you're looking for something in particular.
+These two data availability dashboards indicate which populations have data captured (all rows), which have data by sex (`sex`), and which are currently making it through the processing chain (possibly due to entry errors, or other problems) to output (`passing`). The columns are sortable, and there is a search box if you're looking for something in particular.
 
 # Data availability {.tabset}
 
