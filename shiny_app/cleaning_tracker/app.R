@@ -17,7 +17,8 @@ get_input_rubric <- function(tab = "input"){
   input_rubric
 }
 
-sheets_info <- get_input_rubric()
+sheets_info <- get_input_rubric() %>% 
+  arrange(Country, Region)
 ## output_csv <- read.csv("https://raw.githubusercontent.com/timriffe/covid_age/master/Data/Output_10.csv")
 
 # Define UI for application that draws a histogram
@@ -53,12 +54,15 @@ server <- function(input, output) {
     ## sheet_to_read <- "https://docs.google.com/spreadsheets/d/15kat5Qddi11WhUPBW3Kj3faAmhuWkgtQzioaHvAGZI0/edit?usp=sharing"
     ## sheet_to_read <- sheets_info %>% filter(Country == "Estonia") %>% pull(Sheet)
     ## sheet_to_read <- sheets_info %>% filter(Country == "Spain", Short == "ES") %>% pull(Sheet)
-    sheet_read <- read_sheet(sheet_to_read,
+    sheet_read <- suppressWarnings(read_sheet(sheet_to_read,
                              sheet = "database",
-                             col_types = "cccccciccn")
+                             col_types = "cccccciccn"))
 
-    final_error <- run_checks(sheet_read, "./log.txt")
-
+    if (nrow(sheet_read) > 0){
+      final_error <- run_checks(sheet_read, "./log.txt")
+    } else {
+      final_error <- "No data in database for this population. This probably means it's forthcoming"
+    }
     glue::glue(paste0(final_error, collapse = "\n"))
   })
 

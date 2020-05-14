@@ -1,48 +1,50 @@
-
+.rs.restartR()
+source("R/00_Functions.R")
 # prelims to get offsets
 
+inputCounts <- readRDS("Data/inputCounts.rds")
+Offsets     <- readRDS("Data/Offsets.rds")
 
- # # FOR NOW WE PROCESS INPUTS THAT HAVE OFFSETS, see step 3
- # (have_offsets <- Offsets %>% 
- #   mutate(code = paste(Country,Region,sep="-")) %>% 
- #   pull(code) %>% 
- #   unique())
- # 
- # 
- # inputs_to_split <- 
- #   inputCounts %>% 
- #   mutate(code = paste(Country,Region,sep="-")) %>% 
- #   filter(code %in% have_offsets, 
- #          Country != "Denmark")
- #  
-
-# inputCounts <- inputCounts %>% filter(Country !="Denmark")
-# iL <- split(inputCounts,
-#             list(inputCounts$Code,
-#                  inputCounts$Sex,
-#                  inputCounts$Measure),
-#             drop =TRUE)
-# iLout <- list()
-# for (i in 1:length(iL)){
-#   chunk <- iL[[i]]
-#   iLout[[i]] <- try(harmonize_age(chunk, Offsets = Offsets, N = 5, OAnew = 100))
-# }
-# n <- lapply(iLout,function(x){class(x)[1] == "try-error"}) %>% unlist() %>% which()
-
-
-outputCounts_5 <- 
+inputCounts <- 
   inputCounts %>% 
-  sort_input_data() %>% 
-  group_by(Country, Region, Code, Date, Sex, Measure) %>% 
-  do(harmonize_age(chunk = .data, Offsets, N = 5, OAnew = 100)) %>% 
-  ungroup() %>% 
-  pivot_wider(names_from = Measure,
-              values_from = Value) 
+  arrange(Country, Region, Measure, Sex, Age)
 
-outputCounts_5 <- outputCounts_5 %>% 
-  mutate(Cases = ifelse(is.nan(Cases),0, Cases),
-         Deaths = ifelse(is.nan(Deaths),0, Deaths),
-         Tests = ifelse(is.nan(Tests),0, Tests))
+ iL <- split(inputCounts,
+              list(inputCounts$Code,
+                   inputCounts$Sex,
+                   inputCounts$Measure),
+              drop =TRUE)
+
+iLout <- mclapply(iL, 
+          harmonize_age_p,
+          Offsets = Offsets,
+          N = 5,
+          OAnew = 100,
+          mc.cores = 6)
+
+ # make parallel wrapper with everything in try()
+ # remove try error elements, then bind and process.
+ 
+
+  n <- lapply(iLout,function(x){length(x) == 1}) %>% unlist() %>% which()
+ 
+(problem_codes <-  iLout[n])
+
+# TR: now include rescale
+outputCounts_5 <-
+    iLout[-n] %>% 
+    bind_rows() %>% 
+    mutate(Value = ifelse(is.nan(Value),0,Value)) %>% 
+    group_by(Code, Measure) %>% 
+    # Newly added
+    do(rescale_sexes_post(chunk = .data)) %>% 
+    ungroup() %>%
+    pivot_wider(names_from = Measure,
+                values_from = Value) %>% 
+    mutate(date = dmy(Date)) %>% 
+    arrange(Country, Region, date, Sex, Age) %>% 
+    select(-date) 
+
 
 # round output for csv
 outputCounts_5_rounded <- 
@@ -51,7 +53,10 @@ outputCounts_5_rounded <-
          Deaths = round(Deaths,1),
          Tests = round(Tests,1))
 
-write_csv(outputCounts_5_rounded, path = "Data/Output_5.csv")
+header_msg <- paste("Counts of Cases, Deaths, and Tests in harmonized 5-year age groups:",timestamp(prefix="",suffix=""))
+write_lines(header_msg, path = "Data/Output_5.csv")
+write_csv(outputCounts_5_rounded, path = "Data/Output_5.csv", append = TRUE, col_names = TRUE)
+
 saveRDS(outputCounts_5, "Data/Output_5.rds")
 
 
@@ -74,9 +79,10 @@ outputCounts_10_rounded <-
          Deaths = round(Deaths,1),
          Tests = round(Tests,1))
 
-write_csv(outputCounts_10_rounded, path = "Data/Output_10.csv")
+header_msg <- paste("Counts of Cases, Deaths, and Tests in harmonized 10-year age groups:",timestamp(prefix="",suffix=""))
+write_lines(header_msg, path = "Data/Output_10.csv")
+write_csv(outputCounts_10_rounded, path = "Data/Output_10.csv", append = TRUE, col_names = TRUE)
 saveRDS(outputCounts_10, "Data/Output_10.rds")
-
 
 
 spot_checks <- FALSE
@@ -97,7 +103,7 @@ if (spot_checks){
   outputCounts_10 %>% pull(Age) %>% table()
   outputCounts_10 %>% filter(is.na(Deaths)) %>% View()
   
-  
+ASCFR5 <- 
 outputCounts_5 %>% 
     group_by(Country, Region, Code, Sex) %>% 
     mutate(D = sum(Deaths)) %>% 
@@ -105,12 +111,34 @@ outputCounts_5 %>%
     mutate(ASCFR = Deaths / Cases,
            ASCFR = na_if(ASCFR, Deaths == 0)) %>% 
     filter(!is.na(ASCFR),
-           Sex == "m",
-           D >= 100) %>% 
+           Sex == "b",
+           D >= 100) 
+ASCFR5 %>% 
   ggplot(aes(x=Age, y = ASCFR, group = interaction(Country, Region, Code))) + 
-  geom_line(alpha=.1) + 
- scale_y_log10() + 
-  xlim(40,100)
+  geom_line(alpha=.05) + 
+  scale_y_log10() + 
+  xlim(30,100) + 
+  geom_quantile(ASCFR5,
+                mapping=aes(x=Age, y = ASCFR), 
+                method = "rqss",
+                quantiles=c(.025,.25,.5,.75,.975), 
+                lambda = 2,
+                inherit.aes = FALSE,
+                color = "tomato",
+                size = 1)
+
+outputCounts_5 %>% 
+  group_by(Country, Region, Code, Sex) %>% 
+  mutate(D = sum(Deaths)) %>% 
+  ungroup() %>% 
+  mutate(ASCFR = Deaths / Cases,
+         ASCFR = na_if(ASCFR, Deaths == 0)) %>% 
+  filter(!is.na(ASCFR),
+         Sex == "m",
+         D >= 100,
+         Age >= 90,
+         Deaths ==0) 
+
 
 outputCounts_5 %>% 
   mutate(ASCFR = Deaths / Cases,

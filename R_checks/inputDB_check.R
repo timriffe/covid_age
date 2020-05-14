@@ -47,7 +47,7 @@ bulk_checks <- function(data) {
   
   test_that("AgeInt can only be coercible to integer or NA", {
     expect_true(
-      is.integer(d$AgeInt)
+      is.integer(d$AgeInt) | is.numeric(d$AgeInt)
     )
   })
   
@@ -181,7 +181,8 @@ parse_log <- function(file = "Data/log.txt"){
 
 prep_data_check <- function(input_data, ShortCodes){
   input_data %>% 
-    filter(Short %in% ShortCodes) %>% 
+    filter(Short %in% ShortCodes,
+           Sex != "UNK") %>% 
     mutate(Date = as.Date(Date, format = "%d.%m.%Y"),
            Code = paste(Short, Region, Date, Sex, Metric, Measure, sep = "-"))
 }

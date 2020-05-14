@@ -1,6 +1,7 @@
 # --------------------------------------------------- #
 # Author: Marius D. Pascariu
-# Last update: Wed Apr 22 17:03:19 2020
+# Edited Tim Riffe, Jorge Cimentada
+# Last update: Tue May  5 22:17:06 2020
 # --------------------------------------------------- #
 # remove(list = ls())
 library(tidyverse)
@@ -121,7 +122,8 @@ bulk_checks <- function(data) {
     d %>%
     # Only when Age is not the total, for which AgeInt is empty and usualy
     # is just a row for male/female
-    filter(!is.na(AgeInt)) %>% 
+    filter(!is.na(AgeInt),
+           Sex != "UNK") %>% 
     group_by(Code) %>%
     summarize(res = sum(AgeInt, na.rm = TRUE) == 105)
 
