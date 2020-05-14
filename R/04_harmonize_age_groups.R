@@ -32,7 +32,8 @@ iLout <- mclapply(iL,
 
 # TR: now include rescale
 outputCounts_5 <-
-    iLout[-n] %>% 
+    iLout %>% 
+    #iLout[-n] %>% 
     bind_rows() %>% 
     mutate(Value = ifelse(is.nan(Value),0,Value)) %>% 
     group_by(Code, Measure) %>% 

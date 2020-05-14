@@ -31,7 +31,8 @@ TOT <- oh_cases_deaths %>% filter(`Age Range` == "Total")
 
 # Remove total to eliminate parsing issues
 oh_cases_deaths <- oh_cases_deaths %>% 
-  filter(`Age Range` != "Total")
+  filter(`Age Range` != "Total",
+         County != "Grand Total")
 # Manage cases ------------------------------------------------------------
 #oh_cases_deaths %>% pull(`Onset Date`) %>% unique() %>% sort()
 oh_cases_deaths %>% pull(`Age Range`) %>% unique()
