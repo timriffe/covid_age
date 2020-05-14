@@ -23,6 +23,8 @@ library(here)
 # the most inclusive dataset:
 captured <- 
   readRDS(here::here("Data/inputDBhold.rds")) %>% 
+  filter(Age != "TOT",
+         Age != "UNK") %>% 
   mutate(date = dmy(Date),
          date = as.character(date)) %>% 
   arrange(Country, Region, date) %>% 
