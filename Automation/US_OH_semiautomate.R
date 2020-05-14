@@ -17,11 +17,11 @@ oh_cases_deaths <- read_csv(file = "Data/COVIDSummaryData.csv",
                              replacement = "", 
                              `Case Count`),
          `Death Count` = gsub(pattern = ",",
-                             replacement = "", 
-                             `Death Count`),
+                              replacement = "", 
+                              `Death Count`),
          `Hospitalized Count` = gsub(pattern = ",",
-                                replacement = "", 
-                               `Hospitalized Count`),
+                                     replacement = "", 
+                                     `Hospitalized Count`),
          `Case Count` = as.double(`Case Count`),
          `Death Count` = as.double(`Death Count`), 
          `Hospitalized Count` = as.double(`Hospitalized Count`)) 
@@ -46,7 +46,7 @@ ohio_cases <-
                          Sex == "Total" ~ "b",
                          Sex == "Unknown" ~ "UNK",
                          TRUE ~ "NA" # leave a "catch" at the end
-                         ),
+         ),
          Age = case_when(`Age Range` == "0-19" ~ "0",
                          `Age Range` == "20-29" ~ "20",
                          `Age Range` == "30-39" ~ "30",
@@ -57,7 +57,7 @@ ohio_cases <-
                          `Age Range` == "80+" ~ "80",
                          `Age Range` == "Unknown" ~ "UNK",
                          TRUE ~ "NA" # leave a "catch" at the end
-                         ),
+         ),
          Day = mdy(`Onset Date`), # TR lubridate is cool
          Metric = "Count",
          Measure = "Cases",
@@ -93,7 +93,7 @@ ohio_cases_complete <-
   group_by(Sex, Age) %>% 
   mutate(Value = cumsum(Value)) %>% 
   ungroup()
-  
+
 #finalize data: google spreadsheet
 ohio_cases_spreadsheet <- 
   ohio_cases_complete %>%
@@ -116,30 +116,30 @@ TOT %>% pull(`Case Count`)
 # However, we know the onset date :-), and it's a Male aged 30-39.
 # Sooooo, let's add the mean time from onset to death?
 
-do.this <- FALSE
+do.this <- TRUE
 if (do.this){
-dlag <- 
-  oh_cases_deaths %>% 
-  filter(!is.na(`Date Of Death`),
-         !is.na(`Onset Date`),
-         `Age Range` == "30-39") %>% 
-  mutate(onset = mdy(`Onset Date`),
-         deathdate = mdy(`Date Of Death`),
-         meandur = deathdate - onset) %>% 
-  pull(meandur) %>% 
-  mean(na.rm = TRUE) %>% 
-  round()
-
-# So for this one unk death date just add 12 to onset...
-UNKddate <-
-  oh_cases_deaths %>% 
-  filter(`Date Of Death` == "Unknown") %>% 
-  mutate(`Date Of Death` = "5/9/2020")
-
-oh_cases_deaths <-
-oh_cases_deaths %>% 
-  filter(`Date Of Death` != "Unknown") %>% 
-  rbind(UNKddate)
+  dlag <- 
+    oh_cases_deaths %>% 
+    filter(!is.na(`Date Of Death`),
+           !is.na(`Onset Date`),
+           `Age Range` == "30-39") %>% 
+    mutate(onset = mdy(`Onset Date`),
+           deathdate = mdy(`Date Of Death`),
+           meandur = deathdate - onset) %>% 
+    pull(meandur) %>% 
+    mean(na.rm = TRUE) %>% 
+    round()
+  
+  # So for this one unk death date just add 12 to onset...
+  UNKddate <-
+    oh_cases_deaths %>% 
+    filter(`Date Of Death` == "Unknown") %>% 
+    mutate(`Date Of Death` = "5/9/2020")
+  
+  oh_cases_deaths <-
+    oh_cases_deaths %>% 
+    filter(`Date Of Death` != "Unknown") %>% 
+    rbind(UNKddate)
 }
 ##################################33
 
@@ -186,7 +186,10 @@ ohio_deaths_final <-
 ohio_deaths_complete <- 
   ohio_deaths_final %>% 
   # TR: neat trick, super useful!
-  complete(Day, Age, Sex, fill = list(Value = 0)) %>% 
+  complete(Day, 
+           Age = c("0","20","30","40","50","60","70","80","UNK"), 
+           Sex, 
+           fill = list(Value = 0)) %>% 
   # Can go straight to integer
   mutate( AgeInt = case_when(
     Age == "0" ~ 20,
@@ -213,7 +216,7 @@ ohio_deaths_spreadsheet <-
          Measure = "Deaths") %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value, Day2)
 
-  
+
 # Merge cases and deaths --------------------------------------------------
 
 ohio_spreadsheet <- 

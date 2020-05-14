@@ -1,4 +1,5 @@
-.rs.restartR()
+#.rs.restartR()
+rm(list=ls());gc()
 source("R/00_Functions.R")
 # prelims to get offsets
 

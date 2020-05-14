@@ -43,10 +43,6 @@ if (check_db){
   inputDB <- 
     inputDB %>% 
     filter(Country !="Taiwan")
-  # REMOVE Czechia until data are cumulative 
-  inputDB <- 
-    inputDB %>% 
-    filter(Country !="Czechia")
   # REMOVE Argentina until data are cumulative 
   inputDB <- 
     inputDB %>% 
@@ -54,7 +50,7 @@ if (check_db){
   # REMOVE sex-specific data from Romania:
   inputDB <- 
     inputDB %>% 
-    filter(!(Country =="Romania" & Sex %in% c("m","f")))
+    filter(!(Country =="Romania" & Sex %in% c("m","f") & Measure == "Cases"))
   
   # REMOVE selected JP codes until inputs fixed
   out <- c("JP_24.04.2020","JP_25.04.2020","JP_26.04.2020","JP_27.04.2020",
@@ -66,6 +62,9 @@ if (check_db){
     inputDB <- inputDB %>% 
       filter(!(Code %in% out))
 
+    inputDB <- inputDB %>% 
+      filter(!(Code %in% "KR09.05.2020"))
+    
   inputDB %>% 
     filter(is.na(Date)) %>% 
     View()
@@ -172,7 +171,7 @@ if (check_db){
   # NOTE THIS WILL FAIL FOR REGIONS!!
   do_this <-FALSE
   if(do_this){
-    swap_country_inputDB(inputDB, "US_OK")
+    inputDB <- swap_country_inputDB(inputDB, "TW")
   }
   # ----------------------------------------------------
 
@@ -236,5 +235,5 @@ if (check_db){
  #  
  #  
   
-  
+
   
