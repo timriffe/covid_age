@@ -10,7 +10,13 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Overview
-These two data availability dashboards indicate which populations have data captured (all rows), which have data by sex (`sex`), and which are currently making it through the processing chain (possibly due to entry errors, or other problems) to output (`passing`). The columns are sortable, and there is a search box if you're looking for something in particular.
+These two data availability dashboards indicate which populations have data captured (all rows)
+
+  - `sex` indicates whether some data (Cases, Deaths, Tests) were collected by both sex and age. If `false` then it's just both-sex data.
+  - `tests` indicates whether age-structured test counts were collected.
+  - `passing` indicates whether collected data makes it through the checks and processing. `false` values could be due to temporary data entry errors awaiting fixes.
+
+The columns are sortable, and there is a search box if you're looking for something in particular.
 
 # Data availability {.tabset}
 
@@ -26,7 +32,10 @@ captured <-
   filter(Age != "TOT",
          Age != "UNK") %>% 
   mutate(date = dmy(Date),
-         date = as.character(date)) %>% 
+         date = as.character(date),
+         Region = case_when(grepl("ITinfo", Code) ~ "All (infogr.)",
+                            grepl("ITbol", Code) ~ "All (Boll.)",
+                            TRUE ~ Region)) %>% 
   arrange(Country, Region, date) %>% 
   group_by(Country, Region, date) %>% 
     mutate(sex = all(c("m","f") %in% Sex)) %>% 
@@ -39,20 +48,25 @@ captured <-
 processed <- 
   readRDS(here::here("Data/Output_10.rds")) %>% 
   mutate(date = dmy(Date),
-         date = as.character(date)) %>% 
+         date = as.character(date),
+         Region = case_when(grepl("ITinfo", Code) ~ "All (infogr.)",
+                            grepl("ITbol", Code) ~ "All (Boll.)",
+                            TRUE ~ Region)) %>% 
   arrange(Country, Region, date) %>% 
   group_by(Country, Region, date) %>% 
   mutate(sex = all(c("m","f") %in% Sex),
+         tests = any(!is.na(Tests)),
          passing = TRUE) %>% 
   slice(1) %>% 
   ungroup() %>% 
-  select(Country, Region, date, sex, passing)
+  select(Country, Region, date, sex, tests, passing)
 
 available <-
   left_join(captured,
             processed) %>% 
-  mutate(passing = ifelse(is.na(passing), FALSE, TRUE)) %>% 
-  select(Country, Region, date, sex, passing) %>% 
+  mutate(passing = ifelse(is.na(passing), FALSE, TRUE),
+         tests = ifelse(is.na(tests), FALSE, tests)) %>% 
+  select(Country, Region, date, sex, tests, passing) %>% 
   arrange(Country, Region, date)
 
 AvailabilityTableBig<-
@@ -63,8 +77,12 @@ available %>%
     backgroundColor = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC'))
   ) %>% 
   formatStyle(
+    'tests',
+    backgroundColor = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC'))
+  ) %>% 
+  formatStyle(
     'passing',
-    backgroundColor = styleEqual(c(TRUE, FALSE), c('green', 'orange'))
+    backgroundColor = styleEqual(c(TRUE, FALSE), c('#84e3a5', '#e38227'))
   )
 
 captured2  <-
@@ -74,13 +92,16 @@ captured2  <-
 processed2 <-
   processed %>% 
   group_by(Region, Country) %>% 
-  summarize(passing = any(passing))
+  summarize(passing = any(passing),
+         tests = any(tests)
+      )
 
 available2 <-
   left_join(captured2,
             processed2) %>% 
-  mutate(passing = ifelse(is.na(passing), FALSE, TRUE)) %>% 
-  select(Country, Region, sex, passing) %>% 
+  mutate(passing = ifelse(is.na(passing), FALSE, TRUE),
+         tests = ifelse(is.na(tests), FALSE, tests)) %>% 
+  select(Country, Region, sex, tests, passing) %>% 
   arrange(Country, Region)
 
 AvailabilityTableSmaller<-
@@ -91,8 +112,12 @@ available2 %>%
     backgroundColor = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC'))
   ) %>% 
   formatStyle(
+    'tests',
+    backgroundColor = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC'))
+  ) %>% 
+  formatStyle(
     'passing',
-    backgroundColor = styleEqual(c(TRUE, FALSE), c('green', 'orange'))
+    backgroundColor = styleEqual(c(TRUE, FALSE), c('#84e3a5', '#e38227'))
   )
 
 ```
