@@ -28,7 +28,7 @@ if (check_db){
   standbyDB <- readRDS(here::here("Data/inputDB.rds"))
   
   (my_codes <- inputDB %>% pull(Short) %>% unique())
-  run_checks(inputDB, "TW")
+  run_checks(inputDB, my_codes)
   
   
   # # REMOVE JP Dates start 24.04.2020
@@ -43,16 +43,34 @@ if (check_db){
   inputDB <- 
     inputDB %>% 
     filter(Country !="Taiwan")
+  # REMOVE Czechia until data are cumulative 
+  inputDB <- 
+    inputDB %>% 
+    filter(Country !="Czechia")
+  # REMOVE Argentina until data are cumulative 
+  inputDB <- 
+    inputDB %>% 
+    filter(Country !="Argentina")
+  # REMOVE sex-specific data from Romania:
+  inputDB <- 
+    inputDB %>% 
+    filter(!(Country =="Romania" & Sex %in% c("m","f")))
   
-  # REMOVE JAPAN until inputs fixed
-   # inputDB <- inputDB %>% 
-   #   filter(Country != "Japan")
+  # REMOVE selected JP codes until inputs fixed
+  out <- c("JP_24.04.2020","JP_25.04.2020","JP_26.04.2020","JP_27.04.2020",
+          "JP_28.04.2020","JP_29.04.2020",
+          "JP_01_25.04.2020","JP_01_26.04.2020","JP_01_27.04.2020",
+          "JP_01_28.04.2020","JP_01_29.04.2020",
+          "JP_27_24.04.2020","JP_27_25.04.2020","JP_27_26.04.2020",
+          "JP_27_27.04.2020","JP_27_28.04.2020","JP_27_29.04.2020")
+    inputDB <- inputDB %>% 
+      filter(!(Code %in% out))
 
   inputDB %>% 
     filter(is.na(Date)) %>% 
     View()
   inputDB <- inputDB %>% filter(!is.na(Date))
-  inputDB <- inputDB %>% filter(Date != "NA.NA.NA")
+
 
   # Date range check:
   inputDB %>% 
@@ -68,10 +86,10 @@ if (check_db){
 
   # hunt down anything implausible
   # ----------------------
-  inputDB %>% pull(Sex) %>% table()
-  inputDB %>% pull(Measure) %>% table()
-  inputDB %>% pull(Metric) %>% table()
-  inputDB %>% pull(Age) %>% table()
+  inputDB %>% pull(Sex) %>% table(useNA = "ifany")
+  inputDB %>% pull(Measure) %>% table(useNA = "ifany")
+  inputDB %>% pull(Metric) %>% table(useNA = "ifany")
+  inputDB %>% pull(Age) %>% table(useNA = "ifany")
   # inputDB %>% filter(Sex %in% c("F","M","unk")) %>% View()
   
   # inputDB <-
@@ -152,28 +170,13 @@ if (check_db){
   # ---------------------------------------------------
   # # replace subset with new load after Date correction
   # NOTE THIS WILL FAIL FOR REGIONS!!
-     # ShortCode <- "GB_NI"
-     # X <- get_country_inputDB(ShortCode)
-     #  inputDB <-
-     #    inputDB %>% 
-     #    filter(!grepl(ShortCode,Code)) %>% 
-     #    rbind(X) %>% 
-     #    sort_input_data()
+  do_this <-FALSE
+  if(do_this){
+    swap_country_inputDB(inputDB, "US_OK")
+  }
   # ----------------------------------------------------
-  # check closeout ages:
-  CloseoutCheck <- 
-    inputDB %>% 
-    group_by(Code,Sex)  %>% 
-    filter(Age!="UNK",
-           Age!="TOT",
-           Sex!="UNK") %>% 
-    mutate(Age = as.integer(Age),
-           AgeInt = as.integer(AgeInt))  %>% 
-    slice(n()) %>% 
-    mutate(Closeout = Age + AgeInt) %>% 
-    filter(Closeout != 105)
-  
-  CloseoutCheck
+
+
 }
 
 # ---------------------------------------------------------------------------- #

@@ -2,7 +2,7 @@
 # CONSISTENCY CHECKS
 
 check_consistency <- function(data) {
-  
+
   test_that(
   paste("When sex-specific count data are given,",
         "'both' sex must be greater or higher than 'm' and 'f"), {

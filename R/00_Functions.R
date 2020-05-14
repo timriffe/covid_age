@@ -155,6 +155,19 @@ get_country_inputDB <- function(ShortCode){
   out
 }
   
+# ---------------------------------------------------
+# # replace subset with new load after Date correction
+swap_country_inputDB <- function(inputDB, ShortCode){
+  X <- get_country_inputDB(ShortCode)
+  inputDB <-
+    inputDB %>% 
+    filter(!grepl(ShortCode,Code)) %>% 
+    rbind(X) %>% 
+    sort_input_data()
+  inputDB
+}
+
+# ----------------------------------------------------
 
 
 get_standby_inputDB <- function(){
