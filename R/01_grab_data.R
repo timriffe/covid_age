@@ -39,10 +39,6 @@ if (check_db){
    #   filter(!(Country == "Japan" & date > dmy("23.04.2020"))) %>% 
    #   select(-date) 
   
-  # REMOVE Taiwan until inputs fixed
-  inputDB <- 
-    inputDB %>% 
-    filter(Country !="Taiwan")
   # REMOVE Argentina until data are cumulative 
   inputDB <- 
     inputDB %>% 
@@ -64,7 +60,8 @@ if (check_db){
 
     inputDB <- inputDB %>% 
       filter(!(Code %in% "KR09.05.2020"))
-    
+    inputDB <- inputDB %>% 
+      filter(!Code %in% "CA_BC15.05.2020")
   inputDB %>% 
     filter(is.na(Date)) %>% 
     View()

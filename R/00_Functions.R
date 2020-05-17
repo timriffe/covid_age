@@ -705,7 +705,10 @@ infer_both_sex <- function(chunk){
   if (!do_this){
     return(chunk)
   }
-  
+  Code    <- chunk %>% pull(Code) %>% '['(1)
+  Sex     <- chunk %>% pull(Sex) %>% '['(1)
+  Measure <- chunk %>% pull(Measure) %>% '['(1)
+  cat("Both sex counts created by summing sex-specific counts",Code,Sex,Measure)
   chunk %>% 
     pivot_wider(names_from = "Sex",
                 values_from = "Value",
