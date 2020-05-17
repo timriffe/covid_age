@@ -58,8 +58,8 @@ if (check_db){
     inputDB <- inputDB %>% 
       filter(!(Code %in% out))
 
-    inputDB <- inputDB %>% 
-      filter(!(Code %in% "KR09.05.2020"))
+    # inputDB <- inputDB %>% 
+    #   filter(!(Code %in% "KR09.05.2020"))
     inputDB <- inputDB %>% 
       filter(!Code %in% "CA_BC15.05.2020")
   inputDB %>% 
