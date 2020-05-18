@@ -5,7 +5,11 @@
 This project is currently in development, stay tuned for documentation. You can get preliminary output in 5 and 10-year age groups in the `/Data` folder. This contains columns for `Cases`, `Deaths`, and `Tests` (presently only available by age for Denmark). There are more populations availale in the unharmonized input database (`inputDB.csv`) because they may be awaiting additional inputs needed to harmonize age groups.
 
 # Data availability:
+You can get the data by downloading the `csv` files in the `Data/` folder of this repository, or from the `OSF` site that we mirror to: [https://osf.io/mpwjq/](https://osf.io/mpwjq/).
+
 A dashboard view of data availability can be found [here](https://timriffe.github.io/covid_age/DataAvail.html)
+
+A map of data availability is forthcoming...
 
 Most populations in the database contain multiple time snapshots, and all are continually monitored for new data releases.  All statistics reported here are **cumulative**. 
 
@@ -19,6 +23,20 @@ José Manuel Aburto, Enrique Acosta, Diego Alburez-Gutierrez, Anna Altová, Ugof
 (and a few more people at the moment have made commitments. )
 
 Maybe you too? (we could still use a hand!)
+
+## See also
+Some other databases relevant to this one:
+
+### Age-structured, also related to COVID-19 directly
+
+- INED database on COVID-19 deaths by age: [https://dc-covid.site.ined.fr/en/](https://dc-covid.site.ined.fr/en/)
+- The Short Term Mortality Fluctutions (STMF) database (all cause mortality) [link forthcoming]
+- Eurostat compiled data on all-cause mortality by weeks [demo_r_mweek3](https://appsso.eurostat.ec.europa.eu/nui/show.do?dataset=demo_r_mweek3&lang=en)
+
+### Total counts, interesting to relate or compare
+
+- Our World in Data testing data [https://ourworldindata.org/coronavirus-testing](https://ourworldindata.org/coronavirus-testing)
+- JHU total cases and deaths [https://github.com/CSSEGISandData/COVID-19](https://github.com/CSSEGISandData/COVID-19)
 
 
 
