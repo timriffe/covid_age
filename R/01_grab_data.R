@@ -48,6 +48,10 @@ if (check_db){
     inputDB %>% 
     filter(!(Country =="Romania" & Sex %in% c("m","f") & Measure == "Cases"))
   
+  inputDB <-
+    inputDB %>% 
+    filter(Short != "GB_SC")
+  
   # REMOVE selected JP codes until inputs fixed
   out <- c("JP_24.04.2020","JP_25.04.2020","JP_26.04.2020","JP_27.04.2020",
           "JP_28.04.2020","JP_29.04.2020",
@@ -58,6 +62,10 @@ if (check_db){
     inputDB <- inputDB %>% 
       filter(!(Code %in% out))
 
+    # NO SEX-SPECIFIC CASES IN ROMANIA:
+    inputDB <- inputDB %>% 
+      filter(!(Country == "Romania" & Sex %in% c("m","f") & Measure == "Cases"))
+    
     # inputDB <- inputDB %>% 
     #   filter(!(Code %in% "KR09.05.2020"))
     inputDB <- inputDB %>% 
@@ -67,6 +75,7 @@ if (check_db){
     View()
   inputDB <- inputDB %>% filter(!is.na(Date))
 
+  
 
   # Date range check:
   inputDB %>% 
@@ -168,7 +177,7 @@ if (check_db){
   # NOTE THIS WILL FAIL FOR REGIONS!!
   do_this <-FALSE
   if(do_this){
-    inputDB <- swap_country_inputDB(inputDB, "TW")
+    inputDB <- swap_country_inputDB(inputDB, "CA_MTL")
   }
   # ----------------------------------------------------
 

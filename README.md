@@ -37,7 +37,7 @@ Some other databases relevant to this one:
 
 - Our World in Data testing data [https://ourworldindata.org/coronavirus-testing](https://ourworldindata.org/coronavirus-testing)
 - JHU total cases and deaths [https://github.com/CSSEGISandData/COVID-19](https://github.com/CSSEGISandData/COVID-19)
-
+  
 
 
 
