@@ -120,13 +120,52 @@ available2 %>%
     backgroundColor = styleEqual(c(TRUE, FALSE), c('#84e3a5', '#e38227'))
   )
 
+# Make table just Country, All, with new column for most recent date.
+
+MaxDates <- 
+  processed %>% 
+  filter(Region == "All") %>% 
+  arrange(Country, date) %>% 
+  group_by(Country) %>% 
+  filter(row_number() == n()) %>% 
+  ungroup() %>% 
+  select(-Region, - sex, -passing, -tests)
+
+available3 <- 
+  available2 %>% 
+  filter(Region == "All") %>% 
+  select(-Region) %>% 
+  left_join(MaxDates, by = "Country") %>% 
+  select(Country, sex, tests, passing, date) %>% 
+  rename(`newest date` = date)
+  
+AvailabilityTableSmallest<-
+available3 %>% 
+  datatable(options = list(pageLength = 100)) %>% 
+  formatStyle(
+    'sex',
+    backgroundColor = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC'))
+  ) %>% 
+  formatStyle(
+    'tests',
+    backgroundColor = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC'))
+  ) %>% 
+  formatStyle(
+    'passing',
+    backgroundColor = styleEqual(c(TRUE, FALSE), c('#84e3a5', '#e38227'))
+  )
+```
+
+## By Country
+
+```{r, echo = FALSE}
+AvailabilityTableSmallest
 ```
 
 ## By Country, Region
 
 ```{r, echo = FALSE}
 AvailabilityTableSmaller
-```
 ```
 
 ## By Country, Region, Date
