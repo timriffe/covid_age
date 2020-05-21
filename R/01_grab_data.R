@@ -52,15 +52,15 @@ if (check_db){
     inputDB %>% 
     filter(Short != "GB_SC")
   
-  # REMOVE selected JP codes until inputs fixed
-  out <- c("JP_24.04.2020","JP_25.04.2020","JP_26.04.2020","JP_27.04.2020",
-          "JP_28.04.2020","JP_29.04.2020",
-          "JP_01_25.04.2020","JP_01_26.04.2020","JP_01_27.04.2020",
-          "JP_01_28.04.2020","JP_01_29.04.2020",
-          "JP_27_24.04.2020","JP_27_25.04.2020","JP_27_26.04.2020",
-          "JP_27_27.04.2020","JP_27_28.04.2020","JP_27_29.04.2020")
-    inputDB <- inputDB %>% 
-      filter(!(Code %in% out))
+  # # REMOVE selected JP codes until inputs fixed
+  # out <- c("JP_24.04.2020","JP_25.04.2020","JP_26.04.2020","JP_27.04.2020",
+  #         "JP_28.04.2020","JP_29.04.2020",
+  #         "JP_01_25.04.2020","JP_01_26.04.2020","JP_01_27.04.2020",
+  #         "JP_01_28.04.2020","JP_01_29.04.2020",
+  #         "JP_27_24.04.2020","JP_27_25.04.2020","JP_27_26.04.2020",
+  #         "JP_27_27.04.2020","JP_27_28.04.2020","JP_27_29.04.2020")
+  #   inputDB <- inputDB %>% 
+  #     filter(!(Code %in% out))
 
     # NO SEX-SPECIFIC CASES IN ROMANIA:
     inputDB <- inputDB %>% 
