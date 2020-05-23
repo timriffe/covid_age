@@ -21,7 +21,7 @@ iLout <- mclapply(iL,
           Offsets = Offsets,
           N = 5,
           OAnew = 100,
-          mc.cores = 6)
+          mc.cores = 8)
 
  # make parallel wrapper with everything in try()
  # remove try error elements, then bind and process.
@@ -33,8 +33,8 @@ iLout <- mclapply(iL,
 
 # TR: now include rescale
 outputCounts_5 <-
-    iLout %>% 
-   # iLout[-n] %>% 
+   # iLout %>% 
+    iLout[-n] %>% 
     bind_rows() %>% 
     mutate(Value = ifelse(is.nan(Value),0,Value)) %>% 
     group_by(Code, Measure) %>% 

@@ -6,6 +6,8 @@ inputDB <- readRDS("Data/inputDB.rds")
 # this script transforms the inputDB as required, and produces standardized measures and metrics
 
 inputDB %>% pull(Age) %>% is.na() %>% any()
+inputDB %>% pull(Value) %>% is.na() %>% any()
+
 
 A <-
   inputDB %>% 

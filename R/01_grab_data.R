@@ -48,28 +48,11 @@ if (check_db){
     inputDB %>% 
     filter(!(Country =="Romania" & Sex %in% c("m","f") & Measure == "Cases"))
   
-  inputDB <-
-    inputDB %>% 
-    filter(Short != "GB_SC")
   
-  # # REMOVE selected JP codes until inputs fixed
-  # out <- c("JP_24.04.2020","JP_25.04.2020","JP_26.04.2020","JP_27.04.2020",
-  #         "JP_28.04.2020","JP_29.04.2020",
-  #         "JP_01_25.04.2020","JP_01_26.04.2020","JP_01_27.04.2020",
-  #         "JP_01_28.04.2020","JP_01_29.04.2020",
-  #         "JP_27_24.04.2020","JP_27_25.04.2020","JP_27_26.04.2020",
-  #         "JP_27_27.04.2020","JP_27_28.04.2020","JP_27_29.04.2020")
-  #   inputDB <- inputDB %>% 
-  #     filter(!(Code %in% out))
-
-    # NO SEX-SPECIFIC CASES IN ROMANIA:
-    inputDB <- inputDB %>% 
-      filter(!(Country == "Romania" & Sex %in% c("m","f") & Measure == "Cases"))
-    
     # inputDB <- inputDB %>% 
     #   filter(!(Code %in% "KR09.05.2020"))
-    inputDB <- inputDB %>% 
-      filter(!Code %in% "CA_BC15.05.2020")
+     # inputDB <- inputDB %>% 
+     #   filter(!Code %in% "CA_BC22.05.2020")
   inputDB %>% 
     filter(is.na(Date)) %>% 
     View()
@@ -77,11 +60,15 @@ if (check_db){
 
   
 
-  # Date range check:
+  # Date range check:    filter(Country !="Argentina")    filter(Country !="Argentina")
   inputDB %>% 
     mutate(date = dmy(Date)) %>% 
     pull(date) %>% 
     range()
+  
+  inputDB %>% 
+    mutate(date = dmy(Date)) %>% 
+    filter(is.na(date)) %>% View()
   # inputDB <-
   #   inputDB %>% 
   #   mutate(date = dmy(Date)) %>% 
@@ -95,6 +82,11 @@ if (check_db){
   inputDB %>% pull(Measure) %>% table(useNA = "ifany")
   inputDB %>% pull(Metric) %>% table(useNA = "ifany")
   inputDB %>% pull(Age) %>% table(useNA = "ifany")
+  
+  # One day in NYC, but need denominators and functions
+  # to detect this and deal with it.
+  inputDB <- inputDB %>% filter(Metric != "Rate")
+  
   # inputDB %>% filter(Sex %in% c("F","M","unk")) %>% View()
   
   # inputDB <-
@@ -177,7 +169,7 @@ if (check_db){
   # NOTE THIS WILL FAIL FOR REGIONS!!
   do_this <-FALSE
   if(do_this){
-    inputDB <- swap_country_inputDB(inputDB, "CA_MTL")
+    inputDB <- swap_country_inputDB(inputDB, "NZ")
   }
   # ----------------------------------------------------
 
