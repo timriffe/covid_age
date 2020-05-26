@@ -959,7 +959,7 @@ harmonize_offset_age <- function(chunk){
 
 
 # Age harmonization is the last step.
-harmonize_age <- function(chunk, Offsets = NULL, N = 5, OAnew = 100){
+harmonize_age <- function(chunk, Offsets = NULL, N = 5, OAnew = 100, lambda = 100){
   Age     <- chunk %>% pull(Age)
   AgeInt  <- chunk %>% pull(AgeInt)
   Value   <- chunk %>% pull(Value) 
@@ -997,13 +997,13 @@ harmonize_age <- function(chunk, Offsets = NULL, N = 5, OAnew = 100){
                   y = Value, 
                   nlast = AgeInt[length(AgeInt)], 
                   offset = pop, 
-                  control = list(lambda = 100, deg = 3))$fitted * pop
+                  control = list(lambda = lambda, deg = 3))$fitted * pop
   }  else {
     # if no offsets are available then run through without.
     V1      <- pclm(x = Age, 
                     y = Value, 
                     nlast = AgeInt[length(AgeInt)], 
-                    control = list(lambda = 100, deg = 3))$fitted
+                    control = list(lambda = lambda, deg = 3))$fitted
   }
 
   # Important to rescale
@@ -1011,7 +1011,7 @@ harmonize_age <- function(chunk, Offsets = NULL, N = 5, OAnew = 100){
                               AgeInt1 = rep(1,length(V1)), 
                               Value2 = Value, 
                               AgeInt2 = AgeInt, 
-                              splitfun = graduate_uniform)
+                              splitfun = graduate_mono)
   
   # division by 0, it's a thing
   V1[is.nan(V1)] <- 0
@@ -1024,7 +1024,7 @@ harmonize_age <- function(chunk, Offsets = NULL, N = 5, OAnew = 100){
 }
 
 
-harmonize_age_p <- function(chunk, Offsets, N = 5, OAnew = 100){
+harmonize_age_p <- function(chunk, Offsets, N = 5, OAnew = 100, lambda = 100){
   .Country <- chunk %>% pull(Country) %>% "[["(1)
   .Region  <- chunk %>% pull(Region) %>% "[["(1)
   .Code    <- chunk %>% pull(Code) %>% "[["(1)
@@ -1032,7 +1032,7 @@ harmonize_age_p <- function(chunk, Offsets, N = 5, OAnew = 100){
   .Sex     <- chunk %>% pull(Sex) %>% "[["(1)
   .Measure <- chunk %>% pull(Measure) %>% "[["(1)
   
-  out <- try(harmonize_age(chunk, Offsets = Offsets, N = N, OAnew = OAnew))
+  out <- try(harmonize_age(chunk, Offsets = Offsets, N = N, OAnew = OAnew, lambda = lambda))
   if (class(out)[1] == "try-error"){
     return(paste("Error in:",.Code))
   } 
@@ -1077,9 +1077,40 @@ rescale_sexes_post <- function(chunk){
 
 
 
-
-
-
+# Slightly modified...
+rescaleAgeGroups <- function (Value1, AgeInt1, Value2, AgeInt2, splitfun = c(graduate_uniform, 
+                                                         graduate_mono), recursive = FALSE, tol = 0.001) 
+{
+  N1 <- length(Value1)
+  stopifnot(sum(AgeInt1) == sum(AgeInt2))
+  Age1 <- int2age(AgeInt1)
+  Age2 <- int2age(AgeInt2)
+  stopifnot(N1 == length(Age1))
+  AgeN <- rep(Age2, times = AgeInt2)
+  ValueS <- splitfun(Value1, AgeInt = AgeInt1, OAG = FALSE)
+  AgeS <- 0:104
+  AgeN2 <- rep(Age2, times = AgeInt2)
+  beforeN <- groupAges(ValueS, AgeS, AgeN = AgeN2)
+  beforeNint <- rep(beforeN, times = AgeInt2)
+  afterNint <- rep(Value2, times = AgeInt2)
+  ratio <- afterNint/beforeNint
+  SRescale <- ValueS * ratio
+  AgeN1 <- rep(Age1, times = AgeInt1)
+  out <- groupAges(SRescale, AgeS, AgeN = AgeN1)
+  if (!recursive) {
+    return(out)
+  }
+  newN <- splitfun(out, AgeInt = AgeInt1, OAG = FALSE)
+  check <- groupAges(newN, AgeS, AgeN = AgeN2)
+  if (max(abs(check - Value2)) < tol) {
+    return(out)
+  }
+  else {
+    rescaleAgeGroups(Value1 = out, AgeInt1 = AgeInt1, Value2 = Value2, 
+                     AgeInt2 = AgeInt2, splitfun = splitfun, tol = tol, 
+                     recursive = recursive)
+  }
+}
 
 
 

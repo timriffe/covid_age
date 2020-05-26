@@ -38,11 +38,19 @@ if (check_db){
    #   mutate(date = dmy(Date)) %>% 
    #   filter(!(Country == "Japan" & date > dmy("23.04.2020"))) %>% 
    #   select(-date) 
-  
+  inputDB <- 
+    inputDB %>% 
+    filter(Code == "CA_AB20.05.2020" & Measure == "Tests")
   # REMOVE Argentina until data are cumulative 
   inputDB <- 
     inputDB %>% 
     filter(Country !="Argentina")
+  inputDB <- 
+    inputDB %>% 
+    filter(Region !="Florida")
+  inputDB <- 
+    inputDB %>% 
+    filter(Country !="Finland")
   # REMOVE sex-specific data from Romania:
   inputDB <- 
     inputDB %>% 
