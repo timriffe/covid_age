@@ -22,3 +22,5 @@ VZ_tests.R
 PH_prep.R
 NZ_prep.R
 ECDC_scrape.R
+VWfig.R
+US_states_deaths.R
