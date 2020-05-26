@@ -1,28 +1,13 @@
+rm(list=ls());gc()
 source("R/00_Functions.R")
-#source("R/01_grab_data.R")
-# this script transforms the inputDB as required, and produces standardized age groups
-# and columns.
 
-# priorities: 
-# 1) convert Fractions to Counts
-# 2) calculate Cases from ASCFR and Deaths
-# 3) redistribute unknown Age
-# Careful to subset on the right things for each step.
+inputDB <- readRDS("Data/inputDB.rds")
 
-# Temp filter, can't include Ecuador just yet:
-# inputDB <- 
-#   inputDB %>% 
-#   filter(Country != "Ecuador")
-
-# inputDB <- readRDS("Data/inputDB.rds")
-
-# NYC <- inputDB %>% filter(Short == "US_NYC")
-# Some UNK Values in Chile coded as NA 
-#inputDB$Value[is.na(inputDB$Value)] <- 0
-
-# TR: add Short to group_by!
+# this script transforms the inputDB as required, and produces standardized measures and metrics
 
 inputDB %>% pull(Age) %>% is.na() %>% any()
+inputDB %>% pull(Value) %>% is.na() %>% any()
+
 
 A <-
   inputDB %>% 
@@ -88,7 +73,10 @@ inputCounts <- J %>%
   arrange(Country, Region, Sex, Measure, Age)
 
 saveRDS(inputCounts, file = "Data/inputCounts.rds")
-  # TR: add rescale_to_total() into the chain
+
+COMPONENTS <- list(inputDB, A, B, C, D, E, G, H, I, J)
+save(COMPONENTS, file = "Data/ProcessingSteps.Rdata")
+# TR: add rescale_to_total() into the chain
 
 # inputCounts %>% filter(is.na(Value)) %>% View()
 

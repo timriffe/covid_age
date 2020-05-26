@@ -4,107 +4,12 @@
 
 This project is currently in development, stay tuned for documentation. You can get preliminary output in 5 and 10-year age groups in the `/Data` folder. This contains columns for `Cases`, `Deaths`, and `Tests` (presently only available by age for Denmark). There are more populations availale in the unharmonized input database (`inputDB.csv`) because they may be awaiting additional inputs needed to harmonize age groups.
 
-Here's an overview of populations available in the `inputDB`. A dashboard view of data availability can be found [here](https://timriffe.github.io/covid_age/DataAvail.html)
-- [x] Presently in the database
-- [ ] Forthcoming
--------------------------------
+# Data availability:
+You can get the data by downloading the `csv` files in the `Data/` folder of this repository, or from the `OSF` site that we mirror to: [https://osf.io/mpwjq/](https://osf.io/mpwjq/).
 
-- [x] Algeria
-- [x] Austria
-- [x] Belgium 
-- [x] Brazil    
-  - [x] Rio de Janeiro
-  - [ ] Brazilian regions
-- [x] Cameroon
-- [x] Canada  
-  - [ ] Quebec
-  - [ ] Montreal
-  - [x] Alberta
-  - [x] British Columbia
-  - [x] Ontario
-- [x] Chile
-- [x] China    
-  - [x] Hong Kong
-- [x] Colombia   
-  - [x] Bogotá
-- [x] Denmark    
-- [x] Ecuador     
-- [x] Estonia
-- [x] Eswatini    
-- [x] Ethiopia
-- [x] France     
-  - [x] Ile-de-France
-  - [x] Grand Est
-- [x] The Gambia
-- [x] Germany   
-  - [x] German federal states
-- [x] Greece
-- [x] India
-- [x] Ireland
-- [x] Italy     
-  - [ ] Italian regions
-- [x] Japan
-  - [x] Japanese prefectures
-- [x] Mexico     
-  - [ ] Mexican states
-- [x] Netherlands 
-- [x] Nigeria
-- [x] Nothern Ireland
-- [x] Norway
-- [x] Pakistan
-- [x] Portugal   
-- [x] Scotland  
-- [x] South Africa
-- [x] South Korea  
-- [x] Spain  
-  - [x] Basque Country
-  - [ ] Castile and León
-  - [ ] Catalonia
-  - [x] Valencia (community)
-- [x] Sweden     
-- [x] Switzerland
-- [x] Taiwan
-  - [x] Taiwan counties
-- [x] USA 
-  - [x] NYC
-  - [x] Arizona
-  - [x] California
-  - [x] Florida
-  - [x] Georgia
-  - [x] Idaho
-  - [x] Illinois
-  - [x] Louisiana
-  - [x] Massachusetts
-  - [x] Michigan
-  - [x] New Jersey
-  - [x] Ohio
-  - [x] Oklahoma
-  - [x] Oregon
-  - [x] Texas
-  - [x] Vermont
-  - [x] Virginia
-  - [x] Washington (state)
-  - [x] Wisconsin
-  - [ ] Atlanta
-  - [ ] Chicago
-  - [ ] Cleveland
-  - [ ] Milwaukee
-  - [ ] Indiana
-  - [ ] Iowa
-  
-- [ ] Armenia
-- [ ] Australia
-- [ ] Czech Republic
-- [ ] Ghana
-- [ ] Great Britain / UK
-- [ ] Iceland
-- [ ] Israel
-- [ ] Panama
-- [ ] Peru
-- [ ] Philippines
-- [ ] Romania
-- [ ] The Gambia
-  
+A dashboard view of data availability can be found [here](https://timriffe.github.io/covid_age/DataAvail.html)
+
+A map of data availability is forthcoming...
 
 Most populations in the database contain multiple time snapshots, and all are continually monitored for new data releases.  All statistics reported here are **cumulative**. 
 
@@ -119,6 +24,20 @@ José Manuel Aburto, Enrique Acosta, Diego Alburez-Gutierrez, Anna Altová, Ugof
 
 Maybe you too? (we could still use a hand!)
 
+## See also
+Some other databases relevant to this one:
+
+### Age-structured, also related to COVID-19 directly
+
+- INED database on COVID-19 deaths by age: [https://dc-covid.site.ined.fr/en/](https://dc-covid.site.ined.fr/en/)
+- The Short Term Mortality Fluctutions (STMF) database (all cause mortality) [link forthcoming]
+- Eurostat compiled data on all-cause mortality by weeks [demo_r_mweek3](https://appsso.eurostat.ec.europa.eu/nui/show.do?dataset=demo_r_mweek3&lang=en)
+
+### Total counts, interesting to relate or compare
+
+- Our World in Data testing data [https://ourworldindata.org/coronavirus-testing](https://ourworldindata.org/coronavirus-testing)
+- JHU total cases and deaths [https://github.com/CSSEGISandData/COVID-19](https://github.com/CSSEGISandData/COVID-19)
+  
 
 
 

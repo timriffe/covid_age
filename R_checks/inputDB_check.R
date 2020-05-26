@@ -67,7 +67,7 @@ bulk_checks <- function(data) {
       expect_true(is.na(d$AgeInt))
     })
   } else {
-    
+    if (all(d$Sex %in% c("m","f","b"))){
     test_that("AgeInt must sum to 105", {
       expect_equal(
         sum(d$AgeInt, na.rm = TRUE),
@@ -89,7 +89,7 @@ bulk_checks <- function(data) {
         x
       )
     })
-
+    }
   }
   
   
@@ -183,10 +183,16 @@ prep_data_check <- function(input_data, ShortCodes){
   input_data %>% 
     filter(Short %in% ShortCodes,
            Sex != "UNK") %>% 
-    mutate(Date = as.Date(Date, format = "%d.%m.%Y"),
+    mutate(Date = dmy(Date),
            Code = paste(Short, Region, Date, Sex, Metric, Measure, sep = "-"))
 }
-
+prep_data_check_consistency <- function(input_data, ShortCodes){
+  input_data %>% 
+    filter(Short %in% ShortCodes,
+           Sex != "UNK") %>% 
+    mutate(Date = dmy(Date),
+           Code = paste(Short, Region, Date, Metric, Measure, sep = "-"))
+}
 run_checks <- function(inputDB, ShortCodes, logfile = "R_checks/log.txt"){
   test_data   <- prep_data_check(inputDB, ShortCodes)
   entry_codes <- as.character(unique(test_data$Code))
@@ -212,13 +218,21 @@ run_checks <- function(inputDB, ShortCodes, logfile = "R_checks/log.txt"){
     type = "message",
     append = TRUE
   )
-  
-  utils::capture.output(
-    check_consistency(inputDB),
-    file = logfile,
-    type = "message",
-    append = TRUE
-  )
+  test_data2    <- prep_data_check_consistency(inputDB, ShortCodes)
+  entry_codes2  <- as.character(unique(test_data2$Code))
+  for (k in entry_codes2) {
+    chunk <- test_data %>% 
+      filter(Code == k)
+    if (all(c("m","f","b")%in%chunk$Sex)){
+      utils::capture.output(
+        check_consistency(test_data %>% 
+                            filter(Code == k)),
+        file = logfile,
+        type = "message",
+        append = TRUE
+      )
+    }
+  }
   
   parse_log(logfile)
   
