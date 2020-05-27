@@ -49,14 +49,17 @@ if (check_db){
   inputDB <- 
     inputDB %>% 
     filter(!(Country =="Romania" & Sex %in% c("m","f") & Measure == "Cases"))
-  
-  
+  # TEMP: remove USA CASES 
   inputDB <- 
     inputDB %>% 
-    filter(Region !="Florida")
-  inputDB <- 
-    inputDB %>% 
-    filter(Country !="Finland")
+    filter(!(Country =="USA" & Region == "All" & Measure == "Cases"))
+  
+  # inputDB <- 
+  #   inputDB %>% 
+  #   filter(Region !="Florida")
+  # inputDB <- 
+  #   inputDB %>% 
+  #   filter(Country !="Finland")    filter(!(Country =="USA" & Region == "All" & Measure == "Cases"))
 
     # inputDB <- inputDB %>% 
     #   filter(!(Code %in% "KR09.05.2020"))
@@ -73,7 +76,7 @@ if (check_db){
   inputDB %>% 
     mutate(date = dmy(Date)) %>% 
     pull(date) %>% 
-    range()
+    range()    filter(!(Country =="USA" & Region == "All" & Measure == "Cases"))
   
   inputDB %>% 
     mutate(date = dmy(Date)) %>% 

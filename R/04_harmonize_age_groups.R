@@ -17,13 +17,13 @@ inputCounts <-
               drop =TRUE)
 
 # different lambdas
-iLout100 <- mclapply(iL, 
-                     harmonize_age_p,
-                     Offsets = Offsets,
-                     N = 5,
-                     OAnew = 100,
-                     lambda = 100,
-                     mc.cores = 6)
+# iLout100 <- mclapply(iL, 
+#                      harmonize_age_p,
+#                      Offsets = Offsets,
+#                      N = 5,
+#                      OAnew = 100,
+#                      lambda = 100,
+#                      mc.cores = 6)
 iLout1e5 <- mclapply(iL, 
                      harmonize_age_p,
                      Offsets = Offsets,
@@ -31,38 +31,38 @@ iLout1e5 <- mclapply(iL,
                      OAnew = 100,
                      lambda = 1e5,
                      mc.cores = 6)
-iLout1e6 <- mclapply(iL, 
-                     harmonize_age_p,
-                     Offsets = Offsets,
-                     N = 5,
-                     OAnew = 100,
-                     lambda = 1e6,
-                     mc.cores = 6)
+# iLout1e6 <- mclapply(iL, 
+#                      harmonize_age_p,
+#                      Offsets = Offsets,
+#                      N = 5,
+#                      OAnew = 100,
+#                      lambda = 1e6,
+#                      mc.cores = 6)
  # make parallel wrapper with everything in try()
  # remove try error elements, then bind and process.
  
-
-  n   <- lapply(iLout100,function(x){length(x) == 1}) %>% unlist() %>% which()
+# 
+#   n   <- lapply(iLout100,function(x){length(x) == 1}) %>% unlist() %>% which()
   nn  <- lapply(iLout1e5,function(x){length(x) == 1}) %>% unlist() %>% which()
-  nnn <- lapply(iLout1e6,function(x){length(x) == 1}) %>% unlist() %>% which()
-  
-(problem_codes <-  iLout[n])
+  # nnn <- lapply(iLout1e6,function(x){length(x) == 1}) %>% unlist() %>% which()
+  # 
+(problem_codes <-  iLout1e5[nn])
 
 # TR: now include rescale
-outputCounts_5_100 <-
-    iLout100 %>% 
-    #iLout[-n] %>% 
-    bind_rows() %>% 
-    mutate(Value = ifelse(is.nan(Value),0,Value)) %>% 
-    group_by(Code, Measure) %>% 
-    # Newly added
-    do(rescale_sexes_post(chunk = .data)) %>% 
-    ungroup() %>%
-    pivot_wider(names_from = Measure,
-                values_from = Value) %>% 
-    mutate(date = dmy(Date)) %>% 
-    arrange(Country, Region, date, Sex, Age) %>% 
-    select(-date) 
+# outputCounts_5_100 <-
+#     iLout100 %>% 
+#     #iLout[-n] %>% 
+#     bind_rows() %>% 
+#     mutate(Value = ifelse(is.nan(Value),0,Value)) %>% 
+#     group_by(Code, Measure) %>% 
+#     # Newly added
+#     do(rescale_sexes_post(chunk = .data)) %>% 
+#     ungroup() %>%
+#     pivot_wider(names_from = Measure,
+#                 values_from = Value) %>% 
+#     mutate(date = dmy(Date)) %>% 
+#     arrange(Country, Region, date, Sex, Age) %>% 
+#     select(-date) 
 
 outputCounts_5_1e5 <-
   iLout1e5 %>% 
@@ -79,27 +79,27 @@ outputCounts_5_1e5 <-
   arrange(Country, Region, date, Sex, Age) %>% 
   select(-date) 
 
-outputCounts_5_1e6 <-
-  iLout1e6 %>% 
-  #iLout[-n] %>% 
-  bind_rows() %>% 
-  mutate(Value = ifelse(is.nan(Value),0,Value)) %>% 
-  group_by(Code, Measure) %>% 
-  # Newly added
-  do(rescale_sexes_post(chunk = .data)) %>% 
-  ungroup() %>%
-  pivot_wider(names_from = Measure,
-              values_from = Value) %>% 
-  mutate(date = dmy(Date)) %>% 
-  arrange(Country, Region, date, Sex, Age) %>% 
-  select(-date) 
+# outputCounts_5_1e6 <-
+#   iLout1e6 %>% 
+#   #iLout[-n] %>% 
+#   bind_rows() %>% 
+#   mutate(Value = ifelse(is.nan(Value),0,Value)) %>% 
+#   group_by(Code, Measure) %>% 
+#   # Newly added
+#   do(rescale_sexes_post(chunk = .data)) %>% 
+#   ungroup() %>%
+#   pivot_wider(names_from = Measure,
+#               values_from = Value) %>% 
+#   mutate(date = dmy(Date)) %>% 
+#   arrange(Country, Region, date, Sex, Age) %>% 
+#   select(-date) 
 
 # round output for csv
-outputCounts_5_100_rounded <- 
-  outputCounts_5_100 %>% 
-  mutate(Cases = round(Cases,1),
-         Deaths = round(Deaths,1),
-         Tests = round(Tests,1))
+# outputCounts_5_100_rounded <- 
+#   outputCounts_5_100 %>% 
+#   mutate(Cases = round(Cases,1),
+#          Deaths = round(Deaths,1),
+#          Tests = round(Tests,1))
 
 outputCounts_5_1e5_rounded <- 
   outputCounts_5_1e5 %>% 
@@ -107,15 +107,15 @@ outputCounts_5_1e5_rounded <-
          Deaths = round(Deaths,1),
          Tests = round(Tests,1))
 
-outputCounts_5_1e6_rounded <- 
-  outputCounts_5_1e6 %>% 
-  mutate(Cases = round(Cases,1),
-         Deaths = round(Deaths,1),
-         Tests = round(Tests,1))
+# outputCounts_5_1e6_rounded <- 
+#   outputCounts_5_1e6 %>% 
+#   mutate(Cases = round(Cases,1),
+#          Deaths = round(Deaths,1),
+#          Tests = round(Tests,1))
 
-saveRDS(outputCounts_5_100, "Data/Output_5_100.rds")
+# saveRDS(outputCounts_5_100, "Data/Output_5_100.rds")
 saveRDS(outputCounts_5_1e5, "Data/Output_5_1e5.rds")
-saveRDS(outputCounts_5_1e6, "Data/Output_5_1e6.rds")
+# saveRDS(outputCounts_5_1e6, "Data/Output_5_1e6.rds")
 
 
 header_msg <- paste("Counts of Cases, Deaths, and Tests in harmonized 5-year age groups (PCLM lambda = 100000):",timestamp(prefix="",suffix=""))
@@ -135,7 +135,7 @@ saveRDS(outputCounts_5_1e5, "Data/Output_5.rds")
             Tests = sum(Tests)) %>% 
   ungroup() %>% 
   mutate(AgeInt = ifelse(Age == 100, 5, 10)) 
-outputCounts_10 <- outputCounts_10[, colnames(outputCounts_5)]
+outputCounts_10 <- outputCounts_10[, colnames(outputCounts_5_1e5)]
 
 # round output for csv
 outputCounts_10_rounded <- 
@@ -169,7 +169,7 @@ if (spot_checks){
   outputCounts_10 %>% filter(is.na(Deaths)) %>% View()
   
 ASCFR5 <- 
-outputCounts_5 %>% 
+outputCounts_5_1e5 %>% 
     group_by(Country, Region, Code, Sex) %>% 
     mutate(D = sum(Deaths)) %>% 
     ungroup() %>% 
