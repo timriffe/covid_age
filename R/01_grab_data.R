@@ -50,10 +50,10 @@ if (check_db){
     inputDB %>% 
     filter(!(Country =="Romania" & Sex %in% c("m","f") & Measure == "Cases"))
   # TEMP: remove USA CASES 
-  inputDB <- 
-    inputDB %>% 
-    filter(!(Country =="USA" & Region == "All" & Measure == "Cases"))
-  
+  # inputDB <- 
+  #   inputDB %>% 
+  #   filter(!(Country =="USA" & Region == "All" & Measure == "Cases"))
+  # 
   # inputDB <- 
   #   inputDB %>% 
   #   filter(Region !="Florida")
