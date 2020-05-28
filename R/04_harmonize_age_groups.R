@@ -43,7 +43,7 @@ iLout1e5 <- mclapply(iL,
  
 # 
 #   n   <- lapply(iLout100,function(x){length(x) == 1}) %>% unlist() %>% which()
-  nn  <- lapply(iLout1e5,function(x){length(x) == 1}) %>% unlist() %>% which()
+  (nn  <- lapply(iLout1e5,function(x){length(x) == 1}) %>% unlist() %>% which())
   # nnn <- lapply(iLout1e6,function(x){length(x) == 1}) %>% unlist() %>% which()
   # 
 (problem_codes <-  iLout1e5[nn])
@@ -63,9 +63,9 @@ iLout1e5 <- mclapply(iL,
 #     mutate(date = dmy(Date)) %>% 
 #     arrange(Country, Region, date, Sex, Age) %>% 
 #     select(-date) 
-
+ iLout <- iLout1e5[-nn]
 outputCounts_5_1e5 <-
-  iLout1e5 %>% 
+  iLout %>% 
   #iLout[-n] %>% 
   bind_rows() %>% 
   mutate(Value = ifelse(is.nan(Value),0,Value)) %>% 

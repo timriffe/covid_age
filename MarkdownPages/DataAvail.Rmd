@@ -55,18 +55,20 @@ processed <-
   arrange(Country, Region, date) %>% 
   group_by(Country, Region, date) %>% 
   mutate(sex = all(c("m","f") %in% Sex),
+         cases = any(!is.na(Cases)),
+         deaths = any(!is.na(Deaths)),
          tests = any(!is.na(Tests)),
          passing = TRUE) %>% 
   slice(1) %>% 
   ungroup() %>% 
-  select(Country, Region, date, sex, tests, passing)
+  select(Country, Region, date, sex, cases, deaths, tests, passing)
 
 available <-
   left_join(captured,
             processed) %>% 
   mutate(passing = ifelse(is.na(passing), FALSE, TRUE),
          tests = ifelse(is.na(tests), FALSE, tests)) %>% 
-  select(Country, Region, date, sex, tests, passing) %>% 
+  select(Country, Region, date, sex, cases, deaths, tests, passing) %>% 
   arrange(Country, Region, date)
 
 AvailabilityTableBig<-
@@ -76,6 +78,14 @@ available %>%
     'sex',
     backgroundColor = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC'))
   ) %>% 
+   formatStyle(
+    'cases',
+    backgroundColor = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC'))
+  ) %>%
+   formatStyle(
+    'deaths',
+    backgroundColor = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC'))
+  ) %>%
   formatStyle(
     'tests',
     backgroundColor = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC'))
@@ -94,8 +104,10 @@ captured2  <-
 processed2 <-
   processed %>% 
   group_by(Region, Country) %>% 
-  summarize(passing = any(passing),
-         tests = any(tests)
+  summarize(cases = any(cases),
+            deaths = any(deaths),
+            tests = any(tests),
+            passing = any(passing)
       ) %>% 
   ungroup()
 
@@ -105,24 +117,32 @@ MaxDates <-
   group_by(Country, Region) %>% 
   filter(row_number() == n()) %>% 
   ungroup() %>% 
-  select(-sex, -passing, -tests)
+  select(-sex, -passing, -cases, -deaths, -tests)
 
 available2 <-
   left_join(captured2,
             processed2) %>% 
   mutate(passing = ifelse(is.na(passing), FALSE, TRUE),
          tests = ifelse(is.na(tests), FALSE, tests)) %>% 
-  select(Country, Region, sex, tests, passing) %>% 
+  select(Country, Region, sex, cases, deaths, tests, passing) %>% 
   arrange(Country, Region)%>% 
   left_join(MaxDates, by = c("Country", "Region"))
 
 AvailabilityTableSmaller<-
-available2 %>% 
+  available2 %>% 
   datatable(options = list(pageLength = 100)) %>% 
   formatStyle(
     'sex',
     backgroundColor = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC'))
   ) %>% 
+   formatStyle(
+    'cases',
+    backgroundColor = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC'))
+  ) %>%
+   formatStyle(
+    'deaths',
+    backgroundColor = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC'))
+  ) %>%
   formatStyle(
     'tests',
     backgroundColor = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC'))
@@ -131,7 +151,6 @@ available2 %>%
     'passing',
     backgroundColor = styleEqual(c(TRUE, FALSE), c('#84e3a5', '#e38227'))
   )
-
 # Make table just Country, All, with new column for most recent date.
 
 
@@ -148,6 +167,14 @@ available3 %>%
     'sex',
     backgroundColor = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC'))
   ) %>% 
+   formatStyle(
+    'cases',
+    backgroundColor = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC'))
+  ) %>%
+   formatStyle(
+    'deaths',
+    backgroundColor = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC'))
+  ) %>%
   formatStyle(
     'tests',
     backgroundColor = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC'))
