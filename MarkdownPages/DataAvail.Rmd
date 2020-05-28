@@ -67,7 +67,9 @@ available <-
   left_join(captured,
             processed) %>% 
   mutate(passing = ifelse(is.na(passing), FALSE, TRUE),
-         tests = ifelse(is.na(tests), FALSE, tests)) %>% 
+         tests = ifelse(is.na(tests), FALSE, tests),
+         cases = ifelse(is.na(cases), FALSE, cases),
+         deaths = ifelse(is.na(deaths), FALSE, deaths)) %>% 
   select(Country, Region, date, sex, cases, deaths, tests, passing) %>% 
   arrange(Country, Region, date)
 
