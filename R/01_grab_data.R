@@ -25,7 +25,8 @@ if (check_db){
          !(Age == "UNK" & Value == 0)) 
   saveRDS(inputDB,here::here("Data/inputDBhold.rds"))
   toc()
-  standbyDB <- readRDS(here::here("Data/inputDB.rds"))
+  dim(inputDB)
+  #standbyDB <- readRDS(here::here("Data/inputDB.rds"))
   
   (my_codes <- inputDB %>% pull(Short) %>% unique())
   run_checks(inputDB, my_codes)
