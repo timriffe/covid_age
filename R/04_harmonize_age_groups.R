@@ -63,9 +63,9 @@ iLout1e5 <- mclapply(iL,
 #     mutate(date = dmy(Date)) %>% 
 #     arrange(Country, Region, date, Sex, Age) %>% 
 #     select(-date) 
- iLout <- iLout1e5[-nn]
+# iLout <- iLout1e5[-nn]
 outputCounts_5_1e5 <-
-  iLout %>% 
+  iLout1e5 %>% 
   #iLout[-n] %>% 
   bind_rows() %>% 
   mutate(Value = ifelse(is.nan(Value),0,Value)) %>% 
