@@ -1,3 +1,5 @@
+# TODO: make error trapping wrappers for parallelization of each step.
+
 rm(list=ls());gc()
 source("R/00_Functions.R")
 

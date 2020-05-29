@@ -31,7 +31,7 @@ if (check_db){
   (my_codes <- inputDB %>% pull(Short) %>% unique())
   run_checks(inputDB, my_codes)
   
-  
+  #inputDB <- inputDB %>% mutate(Country = ifelse(Country == "US","USA",Country))
   # # REMOVE JP Dates start 24.04.2020
   
    # inputDB <- 
