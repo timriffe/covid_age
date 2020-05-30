@@ -153,21 +153,7 @@ saveRDS(outputCounts_10, "Data/Output_10.rds")
 spot_checks <- FALSE
 if (spot_checks){
 # Once-off diagnostic plot:
-  
-  
-# populations with > 100 deaths,
-# but no deaths in ages > 70 is weird.
-  outputCounts_10 %>% 
-    group_by(Country, Region, Code, Sex) %>% 
-    mutate(D = sum(Deaths),
-           D70 = sum(Deaths[Age >=70])) %>% 
-    ungroup() %>% 
-    filter(D >= 100,
-           D70 == 0) %>%
-    View()
-  outputCounts_10 %>% pull(Age) %>% table()
-  outputCounts_10 %>% filter(is.na(Deaths)) %>% View()
-  
+
 ASCFR5 <- 
 outputCounts_5_1e5 %>% 
     group_by(Country, Region, Code, Sex) %>% 
@@ -192,17 +178,16 @@ ASCFR5 %>%
                 color = "tomato",
                 size = 1)
 
-outputCounts_5 %>% 
+outputCounts_5_1e5 %>% 
   group_by(Country, Region, Code, Sex) %>% 
   mutate(D = sum(Deaths)) %>% 
   ungroup() %>% 
   mutate(ASCFR = Deaths / Cases,
          ASCFR = na_if(ASCFR, Deaths == 0)) %>% 
   filter(!is.na(ASCFR),
-         Sex == "m",
          D >= 100,
-         Age >= 90,
-         Deaths ==0) 
+         Age == 25) %>% 
+  filter(ASCFR == max(ASCFR))
 
 
 outputCounts_5 %>% 
@@ -212,7 +197,7 @@ outputCounts_5 %>%
          !is.na(ASCFR),
          ASCFR > 1e-2)
 
-outputCounts_5 %>% 
+outputCounts_5_1e5 %>% 
   mutate(ASCFR = Deaths / Cases,
          ASCFR = na_if(ASCFR, Deaths == 0)) %>% 
   filter(!is.na(Deaths),
