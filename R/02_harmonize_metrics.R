@@ -42,7 +42,9 @@ D <- C %>%
 E <- D %>% 
   # do_we_infer_deaths_from_cases_and_ascfr()
   do(infer_deaths_from_cases_and_ascfr(chunk = .data)) %>%  
-  ungroup() 
+  ungroup() %>% 
+  # finally remove this
+  filter(Metric != "Ratio")
 
 G <- E %>% 
   group_by(Code, Age, Measure) %>% 
