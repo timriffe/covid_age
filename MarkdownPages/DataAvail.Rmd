@@ -12,7 +12,9 @@ knitr::opts_chunk$set(echo = TRUE)
 # Overview
 These two data availability dashboards indicate which populations have data captured (all rows)
 
-  - `sex` indicates whether some data (Cases, Deaths, Tests) were collected by both sex and age. If `false` then it's just both-sex data.
+  - `sex` indicates whether some data (Cases, Deaths, Tests) were collected by both sex and age. 
+  - `cases` do we have cases by age?
+  - `deaths` do we have deaths by age?
   - `tests` indicates whether age-structured test counts were collected.
   - `passing` indicates whether collected data makes it through the checks and processing. `false` values could be due to temporary data entry errors awaiting fixes.
 
@@ -77,19 +79,8 @@ AvailabilityTableBig<-
 available %>% 
   datatable(options = list(pageLength = 100)) %>% 
   formatStyle(
-    'sex',
-    backgroundColor = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC'))
-  ) %>% 
-   formatStyle(
-    'cases',
-    backgroundColor = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC'))
-  ) %>%
-   formatStyle(
-    'deaths',
-    backgroundColor = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC'))
-  ) %>%
-  formatStyle(
-    'tests',
+    c('sex',"cases","deaths","tests"),
+    color = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC')), 
     backgroundColor = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC'))
   ) %>% 
   formatStyle(
@@ -134,19 +125,8 @@ AvailabilityTableSmaller<-
   available2 %>% 
   datatable(options = list(pageLength = 100)) %>% 
   formatStyle(
-    'sex',
-    backgroundColor = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC'))
-  ) %>% 
-   formatStyle(
-    'cases',
-    backgroundColor = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC'))
-  ) %>%
-   formatStyle(
-    'deaths',
-    backgroundColor = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC'))
-  ) %>%
-  formatStyle(
-    'tests',
+    c('sex',"cases","deaths","tests"),
+    color = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC')), 
     backgroundColor = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC'))
   ) %>% 
   formatStyle(
@@ -166,19 +146,8 @@ AvailabilityTableSmallest<-
 available3 %>% 
   datatable(options = list(pageLength = 100)) %>% 
   formatStyle(
-    'sex',
-    backgroundColor = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC'))
-  ) %>% 
-   formatStyle(
-    'cases',
-    backgroundColor = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC'))
-  ) %>%
-   formatStyle(
-    'deaths',
-    backgroundColor = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC'))
-  ) %>%
-  formatStyle(
-    'tests',
+    c('sex',"cases","deaths","tests"),
+    color = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC')), 
     backgroundColor = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC'))
   ) %>% 
   formatStyle(

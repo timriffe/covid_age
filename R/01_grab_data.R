@@ -43,9 +43,9 @@ if (check_db){
   #   inputDB %>% 
   #   filter(Code == "CA_AB20.05.2020" & Measure == "Tests")
   # REMOVE Argentina until data are cumulative 
-  inputDB <- 
-    inputDB %>% 
-    filter(Country !="Argentina")
+  # inputDB <- 
+  #   inputDB %>% 
+  #   filter(Country !="Argentina")
   # REMOVE sex-specific data from Romania:
   inputDB <- 
     inputDB %>% 
