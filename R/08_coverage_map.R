@@ -17,7 +17,9 @@ World$name[World$name == "United States"]   <- "USA"
 World$name[World$name == "Dem. Rep. Korea"] <- "South Korea"
 World$name[World$name == "Dominican Rep."]  <- "Dominican Republic"
 World$name[World$name == "Czech Rep." ]     <- "Czechia"
-# Chnge Swazliand to Eswatini, United Kingdowm to UK, and United States to USA
+
+# remove Antarctica
+World <- World[!World$name == "Antarctica",]
 
 
 #changing to Robinson system; Tim´s request, hope this is what he expected
@@ -81,13 +83,14 @@ db_ctrs <- db_pops4 %>%
 
 map_joined <- left_join(world_rob, db_ctrs, 
                         by = c('name' = 'Country')) 
-map_joined <- map_joined[!map_joined$name == "Antarctica",]
+
 map_joined$coverage[is.na(map_joined$coverage)] <- "Not included"
+
 cols_data <- c("National and regional" = "black", "National" = "grey40", "Not included" = "grey90")
-tx <- 7
+tx        <- 7
 map_joined %>% 
   ggplot() + 
-  geom_sf(aes(fill = coverage)) +
+  geom_sf(aes(fill = coverage), col = "white", size = 0.2) +
   scale_x_continuous(expand=c(0.03,0.03)) +
   scale_y_continuous(expand=c(0.03,0.03)) +
   scale_fill_manual(values = cols_data, 
@@ -113,6 +116,8 @@ map_joined %>%
         axis.title.x=element_blank(),
         axis.title.y=element_blank(),
         panel.background=element_blank(),
-        panel.grid.major=element_blank(),
+        #panel.grid.major=element_blank(),
         panel.grid.minor=element_blank(),
         plot.background=element_blank())
+# proposal
+ggsave("assets/coveragemap.svg")
