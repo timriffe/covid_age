@@ -1,3 +1,8 @@
+# TODO: maybe switch to Natural Earth map source,
+# French Guiana presently included w France, but French
+# data don't include French Guiana. Need to use
+# https://cran.r-project.org/web/packages/rnaturalearth/vignettes/what-is-a-country.html
+
 library(googlesheets4)
 library(tidyverse)
 library(cartography)
@@ -20,7 +25,6 @@ World$name[World$name == "Czech Rep." ]     <- "Czechia"
 
 # remove Antarctica
 World <- World[!World$name == "Antarctica",]
-
 
 #changing to Robinson system; Tim´s request, hope this is what he expected
 world_rob<-st_transform(World, "+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
@@ -94,7 +98,7 @@ map_joined %>%
   scale_x_continuous(expand=c(0.03,0.03)) +
   scale_y_continuous(expand=c(0.03,0.03)) +
   scale_fill_manual(values = cols_data, 
-                    labels = c("National and regional", "National", "Not included"),
+                    labels = c( "National", "National and regional", "Not included"),
                     name = "Information\nCOVID-19") +
   guides(fill = guide_legend(title.position = "bottom",
                            keywidth = .5,
