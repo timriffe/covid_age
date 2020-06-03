@@ -20,11 +20,11 @@ check_db <- FALSE
 if (check_db){   
   tic()
   inputDB <- compile_inputDB()
-  inputDB <- inputDB %>% 
-  filter(!(Sex == "UNK" & Value == 0),
-         !(Age == "UNK" & Value == 0)) 
-  saveRDS(inputDB,here::here("Data/inputDBhold.rds"))
   toc()
+  inputDB <- inputDB %>% 
+    filter(!(Sex == "UNK" & Value == 0),
+           !(Age == "UNK" & Value == 0)) 
+  saveRDS(inputDB,here::here("Data/inputDBhold.rds"))
   dim(inputDB)
   #standbyDB <- readRDS(here::here("Data/inputDB.rds"))
   
