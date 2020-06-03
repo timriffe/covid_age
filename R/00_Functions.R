@@ -76,6 +76,9 @@ compile_inputDB <- function(){
 
   rubric <- get_input_rubric(tab = "input")
 
+  rubric <- rubric %>% 
+    filter(Rows > 0)
+  
   input_list <- list()
   for (i in rubric$Short){
     ss_i           <- rubric %>% filter(Short == i) %>% pull(Sheet)
