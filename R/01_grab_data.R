@@ -26,14 +26,21 @@ if (check_db){
            !(Age == "UNK" & Value == 0)) 
   saveRDS(inputDB,here::here("Data/inputDBhold.rds"))
   dim(inputDB)
+  inputDB <- inputDB %>% 
+    mutate(Country = ifelse(Country == "US","USA",Country))
   #standbyDB <- readRDS(here::here("Data/inputDB.rds"))
   
   (my_codes <- inputDB %>% pull(Short) %>% unique())
   run_checks(inputDB, my_codes)
   
   #inputDB <- inputDB %>% mutate(Country = ifelse(Country == "US","USA",Country))
-  # # REMOVE JP Dates start 24.04.2020
+  inputDB <-
+    inputDB %>% 
+    filter(Code != "CA_ON30.08.2019")
   
+  inputDB <-
+    inputDB %>% 
+    filter(Short != "IL")
    # inputDB <- 
    #   inputDB %>% 
    #   mutate(date = dmy(Date)) %>% 
@@ -182,7 +189,7 @@ if (check_db){
   # NOTE THIS WILL FAIL FOR REGIONS!!
   do_this <-FALSE
   if(do_this){
-    inputDB <- swap_country_inputDB(inputDB, "US")
+    inputDB <- swap_country_inputDB(inputDB, "PH")
   }
   # ----------------------------------------------------
 
