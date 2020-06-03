@@ -7,8 +7,6 @@ This project is currently in development, stay tuned for documentation. You can 
 ## Data availability
 You can get the data by downloading the `csv` files in the `Data/` folder of this repository, or from the `OSF` site that we mirror to: [https://osf.io/mpwjq/](https://osf.io/mpwjq/).
 ![coverage map](https://raw.githubusercontent.com/timriffe/covid_age/master/assets/coveragemap.svg)
-<img src="https://raw.githubusercontent.com/timriffe/covid_age/master/assets/coveragemap.svg">
-
 
 A detailed dashboard of data availability can be found [here](https://timriffe.github.io/covid_age/DataAvail.html).
 
