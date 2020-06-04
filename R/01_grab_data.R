@@ -11,7 +11,9 @@ saveRDS(rubric, "Data/rubric_old.rds")
 rubric_old <- rubric_old %>% select(Short, Rows)
 Updates    <- 
   left_join(rubric, rubric_old, by = "Short") %>% 
-  mutate(Change = Rows.x - Rows.y) %>% 
+  mutate(
+    Rows.y = ifelse(is.na(Rows.y),0,Rows.y),
+    Change = Rows.x - Rows.y) %>% 
   filter(Change > 0)
 
 #check_input_updates()
@@ -19,84 +21,74 @@ Updates    <-
 # gather all the inputDBs
 
 check_db <- FALSE
+full     <- FALSE
 if (check_db){   
-  tic()
-  inputDB <- compile_inputDB()
-  toc()
-  inputDB <- inputDB %>% 
-    filter(!(Sex == "UNK" & Value == 0),
-           !(Age == "UNK" & Value == 0)) 
-  saveRDS(inputDB,here::here("Data/inputDBhold.rds"))
-  dim(inputDB)
-  # inputDB <- inputDB %>% 
-  #   mutate(Country = ifelse(Country == "US","USA",Country))
-  # #standbyDB <- readRDS(here::here("Data/inputDB.rds"))
   
-  (my_codes <- inputDB %>% pull(Short) %>% unique())
-  run_checks(inputDB, my_codes)
-  
-    #inputDB <- inputDB %>% mutate(Country = ifelse(Country == "US","USA",Country))
+  # full build
+  if (full){
+     tic()
+     inputDB <- compile_inputDB()
+     toc()
+  } else {
+    Updates <-
+      Updates %>% 
+      select(Country, Region, Short, Rows = Rows.x, Sheet)
+      
+    # Otherwise, just the pieces that grew.
+    tic()
+    inputDB <- compile_inputDB(Updates)
+    toc()
+  }
+  #
+  if (!full){
+    new_codes <- inputDB %>% pull(Short) %>% unique()
+    holdDB <- readRDS("Data/inputDBhold.rds")
+    holdDB <-
+      holdDB %>% 
+      filter(!Short %in% new_codes) %>% 
+      bind_rows(inputDB) %>% 
+      filter(!(Sex == "UNK" & Value == 0),
+             !(Age == "UNK" & Value == 0)) 
+    saveRDS(holdDB,here::here("Data/inputDBhold.rds"))
+ 
+  } else {
+    inputDB <- inputDB %>% 
+      filter(!(Sex == "UNK" & Value == 0),
+             !(Age == "UNK" & Value == 0)) 
+    saveRDS(inputDB,here::here("Data/inputDBhold.rds"))
+  }
+  #
+
+  # Temporary filters
   inputDB <-
     inputDB %>% 
     filter(Code != "CA_ON30.08.2019")
   
+  # Israel has two problems:
+  # 1) <15 counts are NA
+  # 2) data are new counts, not cumulative, so there
+  # is presently no good way to accumulate. If the source
+  # could provide a snapshot of cumulative counts then we 
+  # could infer backwards somewhat, but for now we have no 
+  # procedure in place to deal with this.
   inputDB <-
     inputDB %>% 
     filter(Short != "IL")
-   # inputDB <- 
-   #   inputDB %>% 
-   #   mutate(date = dmy(Date)) %>% 
-   #   filter(!(Country == "Japan" & date > dmy("23.04.2020"))) %>% 
-   #   select(-date) 
-  # inputDB <- 
-  #   inputDB %>% 
-  #   filter(Code == "CA_AB20.05.2020" & Measure == "Tests")
-  # REMOVE Argentina until data are cumulative 
-  # inputDB <- 
-  #   inputDB %>% 
-  #   filter(Country !="Argentina")
-  # REMOVE sex-specific data from Romania:
+
+  # Entry error that the maintainer should fix
   inputDB <- 
     inputDB %>% 
     filter(!(Country =="Romania" & Sex %in% c("m","f") & Measure == "Cases"))
-  # TEMP: remove USA CASES 
-  # inputDB <- 
-  #   inputDB %>% 
-  #   filter(!(Country =="USA" & Region == "All" & Measure == "Cases"))
-  # 
-  # inputDB <- 
-  #   inputDB %>% 
-  #   filter(Region !="Florida")
-  # inputDB <- 
-  #   inputDB %>% 
-  #   filter(Country !="Finland")    filter(!(Country =="USA" & Region == "All" & Measure == "Cases"))
 
-    # inputDB <- inputDB %>% 
-    #   filter(!(Code %in% "KR09.05.2020"))
-     # inputDB <- inputDB %>% 
-     #   filter(!Code %in% "CA_BC22.05.2020")
-  inputDB %>% 
-    filter(is.na(Date)) %>% 
-    View()
-  inputDB <- inputDB %>% filter(!is.na(Date))
-
-  
-
-  # Date range check:    filter(Country !="Argentina")    filter(Country !="Argentina")
+  # Date range check: 
   inputDB %>% 
     mutate(date = dmy(Date)) %>% 
     pull(date) %>% 
-    range()    filter(!(Country =="USA" & Region == "All" & Measure == "Cases"))
+    range()    
   
-  inputDB %>% 
-    mutate(date = dmy(Date)) %>% 
-    filter(is.na(date)) %>% View()
-  # inputDB <-
-  #   inputDB %>% 
+  # inputDB %>% 
   #   mutate(date = dmy(Date)) %>% 
-  #   filter(!is.na(date)) %>% 
-  #   select(-date)
-  
+  #   filter(is.na(date)) %>% View()
 
   # hunt down anything implausible
   # ----------------------
@@ -108,81 +100,36 @@ if (check_db){
   # These are special cases that we would like to account for
   # eventually, but that we don't have a protocol for at this time.
   inputDB <- inputDB %>% filter(Measure != "Probable deaths")
+  # eventually, but that we don't have a protocol for at this time
   inputDB <- inputDB %>% filter(Measure != "Probable cases")
+  inputDB <- inputDB %>% filter(Measure != "Confirmed deaths")
+  inputDB <- inputDB %>% filter(Measure != "Confirmed cases")
   inputDB <- inputDB %>% filter(Metric != "Rate")
   inputDB <- inputDB %>% filter(Measure != "Tested")
-  inputDB <- inputDB %>% filter(Measure != "CasesProbable")
-  inputDB <- inputDB %>% filter(Measure != "CasesConfirmed")
-  inputDB <- inputDB %>% filter(Measure != "DeathsProbable")
-  inputDB <- inputDB %>% filter(Measure != "DeathsConfirmed")
   # inputDB %>% filter(Sex %in% c("F","M","unk")) %>% View()
-  
-  # inputDB <-
-  #   inputDB %>% 
-  #   mutate(Sex = case_when(
-  #     Sex == "M" ~ "m",
-  #     Sex == "F" ~ "f",
-  #     Sex == "unk" ~ "UNK",
-  #     TRUE ~ Sex
-  #   ))
-  unique(inputDB$Age)
-   inputDB %>% 
-     filter(is.na(Age)) %>% View()
-   
-  # Remove blank subsets, where they coming from?
-  inputDB <- inputDB %>% filter(!is.na(Country))
-  
-  # any remaining NAs in Value?
-  inputDB %>% filter(is.na(Value)) %>% View()
-  inputDB <- inputDB %>% 
-    filter(!is.na(Value)) 
 
-  # inputDB <- inputDB %>% mutate(
-  #   Measure = ifelse(Measure == "Death","Deaths",Measure)
-  # )
-  
-
-  # -------------------------------------
-
-  # -------------------------------------
-  # Check NA values
-  # inputDB %>% pull(Value) %>% is.na() %>% sum()
-  # inputDB %>%
-  #   filter(is.na(Value)) %>% 
-  #   View()
-  # inputDB <- inputDB %>% filter(!is.na(Value))
-  # inputDB %>% 
-  # inputDB <- inputDB %>% 
-  #   mutate(Value = ifelse(is.na(Value),0,Value))
-  # 
-  # inspect_code(inputDB, inspect[90])
-
-  # temp JP correction
-  # unique(inputDB$Sex)
-  # inputDB %>% filter(Sex == "t") %>% 
-  #   pull(Country) %>% 
-  #   unique()
-  # table(inputDB$Sex)
-  # 
-  #  inputDB <- inputDB %>% 
-  #    mutate(Sex = ifelse(Sex == "t","b",Sex))
-  
   # ---------------------------------- #
   # duplicates check:
   # -----------------------------------#
   
   n <- duplicated(inputDB[,c("Code","Sex","Age","Measure","Metric")])
   sum(n)
-  # inputDB[n, ] %>% View()
-  # inputDB <- inputDB[-n, ]
-  # inputDB <- inputDB %>% filter(!(Country == "South Korea" & Date == "09.05.2020"))
-  # 
-  # DNK has too many pathological cases to include at the moment
-  # inputDB <- inputDB %>% filter(!Country %in% c("Denmark"))
-  # inputDB <- inputDB %>% filter(!Code %in% c("CA_BC17.04.2020"))
-  # These are all aggressive pushes:
-  # Save out the inputDB
-  #push_inputDB(inputDB)
+
+  (my_codes <- inputDB %>% pull(Short) %>% unique())
+  run_checks(inputDB, my_codes)
+  
+  # If it's a partial build then swap out the data.
+  if (!full){
+    swap_codes  <- inputDB %>% pull(Short) %>% unique()
+    inputDB_old <- readRDS("Data/inputDB.rds")
+    inputDB_old <- inputDB_old %>% 
+      filter(!(Short %in% swap_codes))
+    inputDB <- 
+      bind_rows(inputDB_old,
+                inputDB) %>% 
+      sort_input_data()
+  }
+  
   
   header_msg <- paste("COVerAGE-DB input database, filtered after some simple checks:",timestamp(prefix="",suffix=""))
   write_lines(header_msg, path = "Data/inputDB.csv")
@@ -195,7 +142,7 @@ if (check_db){
   # NOTE THIS WILL FAIL FOR REGIONS!!
   do_this <-FALSE
   if(do_this){
-    inputDB <- swap_country_inputDB(inputDB, "PH")
+    inputDB <- swap_country_inputDB(inputDB, "BD")
   }
   # ----------------------------------------------------
 

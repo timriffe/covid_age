@@ -72,10 +72,11 @@ add_Short <- function(Code, Date){
 
 }
 
-compile_inputDB <- function(){
-
-  rubric <- get_input_rubric(tab = "input")
-
+# leave rubric as NULL for full build
+compile_inputDB <- function(rubric = NULL){
+  if (is.null(rubric)){
+    rubric <- get_input_rubric(tab = "input")
+  }
   rubric <- rubric %>% 
     filter(Rows > 0)
   
@@ -766,6 +767,11 @@ infer_both_sex <- function(chunk){
 # this is after all rescaling is done. Group OAG down to the 
 # highest age with a positive count.
 # group_by(Code, Sex, Measure) %>% 
+
+# TODO: maybe a general "patch zeros" function premised on 
+# intermediary grouping to 5 years, then detection of lone 0s,
+# then grouping to 10 (but not all ages, just the necessary ones).
+
 do_we_maybe_lower_closeout <- function(chunk, OAnew_min){
 
   maybe1 <- all(chunk$Metric == "Count")
