@@ -4,6 +4,10 @@
 
 This project is currently in development, stay tuned for documentation. You can get preliminary output in 5 and 10-year age groups in the `/Data` folder. This contains columns for `Cases`, `Deaths`, and `Tests`. There may be more populations availale in the unharmonized input database (`inputDB.csv`), because some are awaiting corrections or additional inputs .
 
+## Getting started
+
+A short guide to reading the data into `R` can be found [here](https://timriffe.github.io/covid_age/GettingStarted.html). We will add other basic scripts for common data operations, and we will add some `Stata` examples too.
+
 ## Data availability
 You can get the data by downloading the `csv` files in the `Data/` folder of this repository, or from the `OSF` site that we mirror to: [https://osf.io/mpwjq/](https://osf.io/mpwjq/).
 ![coverage map](https://raw.githubusercontent.com/timriffe/covid_age/master/assets/coveragemap.svg)
