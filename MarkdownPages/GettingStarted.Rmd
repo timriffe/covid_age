@@ -1,0 +1,56 @@
+---
+title: "Getting started with COVerAGE-DB datasets"
+author: "COVerAGE-DB"
+date: "6/4/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+COVerAGE-DB shares several files, ranging from untransformed inputs to fully harmonized outputs. Files have a similar structure, are all in `.csv` format, and ought to be staightforward to read in any common statistical package.
+
+The `inputDB` is quite diverse in terms of the measures, metrics, and age groups it includes. This file includes everythnig we collect except for subsets that we are unable to process for one reason or another. In other words this file contains all prima facie *valid* data that we've collected. This is a long structure, in that all data collected are in a single column `Value`. Aside from `Country`, `Region`, and `Date`, you can filter on `Metric` (`"Ratio"`, "`Count`", or `"Fraction"`) or `Measure` (`"Cases"`, `"Deaths"`, `"Tests"`,`"ASCFR"`). At some point we will incorporate `Rate` metrics, and we will find a way to differentiate between *probable* versus *confirmed* observations. The thing to note is that if you're interested in `Count` data, it may be included already as such, or you may need to calculate it from other data types. This is one of the things we take care of in the harmonization routines.
+
+The output files `Output_5` and `Output_10` are harmonized to `"Count"` metrics, and to 5 and 10-year age groups 0-100+. The columns are also different, as different Measures are, for the time being, in separate columns. These can be used as-is for many kinds of analyses, but you may also consider further smoothing, especially for the 5-year age group data, as it can contain stochastic 0s.
+
+We are considering moving toward measure-specific files, similar to what HMD does, so stay tuned.
+
+Details: commas are column separators, decimals are dots. When reading in, skip the first row. You can can typically read these in straight from the repository using the `raw` version. See examples.
+
+# R
+For `R`, we suggest using the `read_csv()` function from `readr` because it's easy to specify column classes using shorthand:
+
+## inputDB file
+```{r}
+library(tidyverse)
+library(readr)
+library(lubridate)
+library(ggplot2)
+# this is the "raw" url
+inputDB <- read_csv("https://raw.githubusercontent.com/timriffe/covid_age/master/Data/inputDB.csv",
+                    skip = 1,
+                    col_types = "cccccciccdc") # this gets the classes right
+glimpse(inputDB)
+```
+Notice, `Age` is character because it can contain `"TOT"` or `"UNK"` values. Therefore, if you sort, it will do so alphabetically, in which case `"10"` comes before `"5"`. This is the file from which we begin the harmonization routines. Maybe you have use for it?
+
+## Output files
+
+Output files are friendlier for several reasons. Since measures from like subsets are next to each other, it's easier to calculate things. Since age groups are uniform, it's easy to compare subsets. Since `Age` is a proper integer it's easy to plot it in the abscissa. However, you'll still want to convert the `Date` class to use it in plotting. These come as character strigngs following the format `"DD.MM.YYYY"`, and can be converted using `lubridate::dmy()` without further ado.
+```{r}
+# this is the "raw" url
+Output_10 <- read_csv("https://raw.githubusercontent.com/timriffe/covid_age/master/Data/Output_10.csv",
+                    skip = 1,
+                    col_types = "cccciicddd") # this gets the classes right
+glimpse(Output_10)
+
+# convert to date class
+Output_10 <- 
+  Output_10 %>% 
+  mutate(Date = dmy(Date))
+```
+
+# Stata
+Maybe someone can help out here?
