@@ -24,13 +24,13 @@ inputCounts <-
 #                      OAnew = 100,
 #                      lambda = 100,
 #                      mc.cores = 6)
-iLout1e5 <- mclapply(iL, 
-                     harmonize_age_p,
-                     Offsets = Offsets,
-                     N = 5,
-                     OAnew = 100,
-                     lambda = 1e5,
-                     mc.cores = 6)
+      iLout1e5 <- mclapply(iL, 
+                           harmonize_age_p,
+                           Offsets = Offsets,
+                           N = 5,
+                           OAnew = 100,
+                           lambda = 1e5,
+                           mc.cores = 6)
 # iLout1e6 <- mclapply(iL, 
 #                      harmonize_age_p,
 #                      Offsets = Offsets,
@@ -48,6 +48,10 @@ iLout1e5 <- mclapply(iL,
   # 
 (problem_codes <-  iLout1e5[nn])
 
+      if (length(problem_codes) > 0){
+        iLout1e5 <- iLout1e5[-nn]
+      }
+      
 # TR: now include rescale
 # outputCounts_5_100 <-
 #     iLout100 %>% 
