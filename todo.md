@@ -5,7 +5,7 @@
   - [ ] define projections approach
   - [ ] program projections
   - [ ] produce 2020 outputs
-  - [ ] define production setup (Drive? all files on github?)
+  - [x] define production setup 
 - [ ] Format changes
   - [ ] change output file names to something informative
   - [ ] add headers to output files
@@ -35,7 +35,7 @@
   - [ ] submit to IJE data resource
 - [ ] code examples in different languages 
   - [ ] reading in data and doing basic things
-    - [ ] R
+    - [x] R
     - [ ] Excel
     - [ ] Stata
     - [ ] Python
@@ -44,3 +44,5 @@
     - [ ] hopkins total counts
     - [ ] ?
 - [ ] list of papers citing database
+- [ ] Rselenium + wayback for US cases
+- [ ] Rselenium for ECDC data

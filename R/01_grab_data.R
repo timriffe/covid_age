@@ -11,7 +11,7 @@ saveRDS(rubric, "Data/rubric_old.rds")
 rubric_old <- rubric_old %>% select(Short, Rows)
 
 
-extra_keep <- c("BD")
+extra_keep <- c()
 
 Updates    <- 
   left_join(rubric, rubric_old, by = "Short") %>% 
@@ -80,9 +80,9 @@ if (check_db){
     filter(Short != "IL")
   # -----------------
   # Cuba has minor age group recording problem, remove for now
-  inputDB <-
-    inputDB %>% 
-    filter(Short != "CU")
+  # inputDB <-
+  #   inputDB %>% 
+  #   filter(Short != "CU")
   # Entry error that the maintainer should fix
   inputDB <- 
     inputDB %>% 
@@ -103,7 +103,7 @@ if (check_db){
   inputDB %>% pull(Sex) %>% table(useNA = "ifany")
   inputDB %>% pull(Measure) %>% table(useNA = "ifany")
   inputDB %>% pull(Metric) %>% table(useNA = "ifany")
-  inputDB %>% pull(Age) %>% table(useNA = "ifany")  (my_codes <- inputDB %>% pull(Short) %>% unique())
+  inputDB %>% pull(Age) %>% table(useNA = "ifany") 
 
   
   # These are special cases that we would like to account for
