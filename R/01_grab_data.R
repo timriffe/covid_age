@@ -9,12 +9,20 @@ rubric     <- get_input_rubric()
 saveRDS(rubric, "Data/rubric_old.rds")
 
 rubric_old <- rubric_old %>% select(Short, Rows)
+
+
+extra_keep <- c("BD")
+
 Updates    <- 
   left_join(rubric, rubric_old, by = "Short") %>% 
   mutate(
     Rows.y = ifelse(is.na(Rows.y),0,Rows.y),
     Change = Rows.x - Rows.y) %>% 
-  filter(Change > 0)
+  filter(Change > 0 | Short %in% extra_keep) %>% 
+  select(Country, Region, Short, Rows = Rows.x, Sheet)
+
+
+
 
 #check_input_updates()
 
@@ -30,11 +38,7 @@ if (check_db){
      inputDB <- compile_inputDB()
      toc()
   } else {
-    Updates <-
-      Updates %>% 
-      select(Country, Region, Short, Rows = Rows.x, Sheet)
-      
-    # Otherwise, just the pieces that grew.
+     # Otherwise, just the pieces that grew.
     tic()
     inputDB <- compile_inputDB(Updates)
     toc()
@@ -74,7 +78,11 @@ if (check_db){
   inputDB <-
     inputDB %>% 
     filter(Short != "IL")
-
+  # -----------------
+  # Cuba has minor age group recording problem, remove for now
+  inputDB <-
+    inputDB %>% 
+    filter(Short != "CU")
   # Entry error that the maintainer should fix
   inputDB <- 
     inputDB %>% 
@@ -95,7 +103,8 @@ if (check_db){
   inputDB %>% pull(Sex) %>% table(useNA = "ifany")
   inputDB %>% pull(Measure) %>% table(useNA = "ifany")
   inputDB %>% pull(Metric) %>% table(useNA = "ifany")
-  inputDB %>% pull(Age) %>% table(useNA = "ifany")
+  inputDB %>% pull(Age) %>% table(useNA = "ifany")  (my_codes <- inputDB %>% pull(Short) %>% unique())
+
   
   # These are special cases that we would like to account for
   # eventually, but that we don't have a protocol for at this time.
@@ -115,8 +124,7 @@ if (check_db){
   n <- duplicated(inputDB[,c("Code","Sex","Age","Measure","Metric")])
   sum(n)
 
-  (my_codes <- inputDB %>% pull(Short) %>% unique())
-  run_checks(inputDB, my_codes)
+  
   
   # If it's a partial build then swap out the data.
   if (!full){
@@ -142,7 +150,7 @@ if (check_db){
   # NOTE THIS WILL FAIL FOR REGIONS!!
   do_this <-FALSE
   if(do_this){
-    inputDB <- swap_country_inputDB(inputDB, "BD")
+    inputDB <- swap_country_inputDB(inputDB, "BO")
   }
   # ----------------------------------------------------
 

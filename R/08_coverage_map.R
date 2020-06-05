@@ -36,8 +36,7 @@ db_pops <- read_sheet("https://docs.google.com/spreadsheets/d/15kat5Qddi11WhUPBW
                       sheet = "input") %>% 
   drop_na(Country)
 
-db_input <- read_csv("https://github.com/timriffe/covid_age/raw/master/Data/inputDB.csv",
-                     skip = 1)
+db_input <- readRDS("Data/inputDB.rds")
 # 
 # db_10 <- read_csv("https://github.com/timriffe/covid_age/raw/master/Data/Output_10.csv",
 #                   skip = 1) 
@@ -70,7 +69,7 @@ db_alls <- db_pops3 %>%
 
 db_regs <- db_pops3 %>% 
   filter(Region != "All") %>% 
-  select(Country) %>% 
+  select(Country) %>%  
   distinct() %>% 
   mutate(regional = 1)
 
