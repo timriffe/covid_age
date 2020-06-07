@@ -11,7 +11,7 @@ saveRDS(rubric, "Data/rubric_old.rds")
 rubric_old <- rubric_old %>% select(Short, Rows)
 
 
-extra_keep <- c()
+extra_keep <- c("")
 
 Updates    <- 
   left_join(rubric, rubric_old, by = "Short") %>% 
@@ -96,6 +96,11 @@ if (check_db){
   
   # inputDB %>% 
   #   mutate(date = dmy(Date)) %>% 
+  #   filter(date > today()) %>% 
+  #   pull(Short) %>% unique()
+  
+  # inputDB %>% 
+  #   mutate(date = dmy(Date)) %>% 
   #   filter(is.na(date)) %>% View()
 
   # hunt down anything implausible
@@ -150,7 +155,7 @@ if (check_db){
   # NOTE THIS WILL FAIL FOR REGIONS!!
   do_this <-FALSE
   if(do_this){
-    inputDB <- swap_country_inputDB(inputDB, "BO")
+    inputDB <- swap_country_inputDB(inputDB, "GB_NIR")
   }
   # ----------------------------------------------------
 

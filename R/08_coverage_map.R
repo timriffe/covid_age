@@ -32,9 +32,7 @@ world_rob %>% ggplot() + geom_sf()
 
 
 
-db_pops <- read_sheet("https://docs.google.com/spreadsheets/d/15kat5Qddi11WhUPBW3Kj3faAmhuWkgtQzioaHvAGZI0/edit#gid=0",
-                      sheet = "input") %>% 
-  drop_na(Country)
+db_pops <- get_input_rubric("input")
 
 db_input <- readRDS("Data/inputDB.rds")
 # 
@@ -43,61 +41,55 @@ db_input <- readRDS("Data/inputDB.rds")
 
 #setwd("C:/Users/kikep/Dropbox/covid_age/vw/")
 
-db_pops2 <- db_pops %>% 
+have_in_idb <- 
+  db_input %>% 
   select(Country, Region) %>% 
-  bind_rows(db_input %>% 
-              filter(Country %in% c("Germany", "Colombia", "Japan"),
-                     Region != "All") %>% 
-              select(Country, Region)) %>% 
-  mutate(incl = 1) %>% 
+  distinct() %>% 
+  group_by(Country) %>% 
+  mutate(coverage = ifelse(n()>1,"National and regional","National"),
+         indb = TRUE) %>% 
+  ungroup() %>% 
+  select(Country, coverage) %>% 
   distinct()
 
-db_pops2 <- db_pops2 %>% 
-  filter(!Country %in% c("Northern Ireland", "Scotland","England","Wales"))
-##############################
-### Map plots ################
-##############################
+ctries <- have_in_idb %>% pull(Country)
 
-db_pops3 <- db_pops2 %>% 
-  mutate(status = "Included")
+forthcoming <-
+  db_pops %>% 
+  filter(! Country %in% ctries) %>% 
+  mutate(coverage = "Forthcoming") %>% 
+  select(Country, coverage)
 
-db_alls <- db_pops3 %>% 
-  filter(Region == "All" & status == "Included") %>% 
-  select(Country) %>% 
-  distinct() %>% 
-  mutate(all = 1)
+db_coverage <-
+  bind_rows(have_in_idb,
+            forthcoming) %>% 
+  # we do this because UK envelops them in map.
+  filter(!Country %in% c("Northern Ireland", "Scotland","England","Wales")) %>% 
+  mutate(coverage = ifelse(Country == "UK","National and regional",coverage)) %>% 
+  filter(Country != "Russia")
 
-db_regs <- db_pops3 %>% 
-  filter(Region != "All") %>% 
-  select(Country) %>%  
-  distinct() %>% 
-  mutate(regional = 1)
-
-db_pops4 <- db_pops3 %>% 
-  left_join(db_alls) %>% 
-  left_join(db_regs) %>% 
-  mutate(coverage = case_when(all == 1 & regional == 1 ~ "National and regional",
-                              all == 1 & is.na(regional) ~ "National"))
-
-db_ctrs <- db_pops4 %>% 
-  filter(Region == "All") %>% 
-  select(Country, status, coverage) %>% 
-  mutate(coverage = ifelse(Country == "UK", "National and regional",coverage))
-
-map_joined <- left_join(world_rob, db_ctrs, 
+map_joined <- left_join(world_rob, db_coverage, 
                         by = c('name' = 'Country')) 
 
-map_joined$coverage[is.na(map_joined$coverage)] <- "Not included"
+map_joined$coverage[is.na(map_joined$coverage)] <- "Not included yet"
 
-cols_data <- c("National and regional" = "black", "National" = "grey40", "Not included" = "grey90")
+cols_data <- c("National and regional" = "grey10", "National" = "grey30", "Forthcoming" = "grey70","Not included yet" = "grey90")
+
+# df <- data.frame(x = c("red", "black"))
+# 
+# ggplot(df, aes(x, 1, fill = x)) + 
+#   geom_col() +
+#   scale_fill_manual(breaks = c("red", "black"), values = c("red", "black"))
+
 tx        <- 7
 map_joined %>% 
   ggplot() + 
   geom_sf(aes(fill = coverage), col = "white", size = 0.2) +
   scale_x_continuous(expand=c(0.03,0.03)) +
   scale_y_continuous(expand=c(0.03,0.03)) +
-  scale_fill_manual(values = cols_data, 
-                    labels = c( "National", "National and regional", "Not included"),
+  scale_fill_manual(values = cols_data,
+                    breaks = cols_data, 
+                    labels = names(cols_data),
                     name = "Information\nCOVID-19") +
   guides(fill = guide_legend(title.position = "bottom",
                            keywidth = .5,
