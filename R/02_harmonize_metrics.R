@@ -2,7 +2,7 @@
 
 rm(list=ls());gc()
 source("R/00_Functions.R")
-
+  
 inputDB <- readRDS("Data/inputDB.rds")
 
 # this script transforms the inputDB as required, and produces standardized measures and metrics
@@ -10,7 +10,7 @@ inputDB <- readRDS("Data/inputDB.rds")
 inputDB %>% pull(Age) %>% is.na() %>% any()
 inputDB %>% pull(Value) %>% is.na() %>% any()
 
-
+  
 A <-
   inputDB %>% 
   filter(!(Age == "TOT" & Metric == "Fraction"),

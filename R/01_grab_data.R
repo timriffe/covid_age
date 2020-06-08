@@ -11,14 +11,14 @@ saveRDS(rubric, "Data/rubric_old.rds")
 rubric_old <- rubric_old %>% select(Short, Rows)
 
 
-extra_keep <- c("")
+extra_keep <- c("IL")
 
 Updates    <- 
   left_join(rubric, rubric_old, by = "Short") %>% 
   mutate(
     Rows.y = ifelse(is.na(Rows.y),0,Rows.y),
     Change = Rows.x - Rows.y) %>% 
-  filter(Change > 0 | Short %in% extra_keep) %>% 
+  filter(abs(Change) > 0 | Short %in% extra_keep) %>% 
   select(Country, Region, Short, Rows = Rows.x, Change, Sheet)
 
 
@@ -155,7 +155,7 @@ if (check_db){
   # NOTE THIS WILL FAIL FOR REGIONS!!
   do_this <-FALSE
   if(do_this){
-    inputDB <- swap_country_inputDB(inputDB, "HN")
+    inputDB <- swap_country_inputDB(inputDB, "IL")
   }
   # ----------------------------------------------------
 
