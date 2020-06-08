@@ -19,7 +19,7 @@ Updates    <-
     Rows.y = ifelse(is.na(Rows.y),0,Rows.y),
     Change = Rows.x - Rows.y) %>% 
   filter(Change > 0 | Short %in% extra_keep) %>% 
-  select(Country, Region, Short, Rows = Rows.x, Sheet)
+  select(Country, Region, Short, Rows = Rows.x, Change, Sheet)
 
 
 
@@ -64,9 +64,9 @@ if (check_db){
   #
 
   # Temporary filters
-  inputDB <-
-    inputDB %>% 
-    filter(Code != "CA_ON30.08.2019")
+  # inputDB <-
+  #   inputDB %>% 
+  #   filter(Code != "CA_ON30.08.2019")
   
   # Israel has two problems:
   # 1) <15 counts are NA
@@ -75,9 +75,9 @@ if (check_db){
   # could provide a snapshot of cumulative counts then we 
   # could infer backwards somewhat, but for now we have no 
   # procedure in place to deal with this.
-  inputDB <-
-    inputDB %>% 
-    filter(Short != "IL")
+  # inputDB <-
+  #   inputDB %>% 
+  #   filter(Short != "IL")
   # -----------------
   # Cuba has minor age group recording problem, remove for now
   # inputDB <-
@@ -129,7 +129,7 @@ if (check_db){
   n <- duplicated(inputDB[,c("Code","Sex","Age","Measure","Metric")])
   sum(n)
 
-  
+  run_checks(inputDB, ShortCodes = inputDB %>% pull(Short) %>% unique())
   
   # If it's a partial build then swap out the data.
   if (!full){
@@ -155,7 +155,7 @@ if (check_db){
   # NOTE THIS WILL FAIL FOR REGIONS!!
   do_this <-FALSE
   if(do_this){
-    inputDB <- swap_country_inputDB(inputDB, "GB_NIR")
+    inputDB <- swap_country_inputDB(inputDB, "HN")
   }
   # ----------------------------------------------------
 

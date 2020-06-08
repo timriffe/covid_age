@@ -19,7 +19,7 @@ World$name <- as.character(World$name)
 World$name[World$name == "Swaziland"]       <- "Eswatini"
 World$name[World$name == "United Kingdom"]  <- "UK"
 World$name[World$name == "United States"]   <- "USA" 
-World$name[World$name == "Dem. Rep. Korea"] <- "South Korea"
+World$name[World$name == "Korea"] <- "South Korea"
 World$name[World$name == "Dominican Rep."]  <- "Dominican Republic"
 World$name[World$name == "Czech Rep." ]     <- "Czechia"
 

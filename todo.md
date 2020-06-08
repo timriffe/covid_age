@@ -8,8 +8,7 @@
   - [x] define production setup 
 - [ ] Format changes
   - [ ] change output file names to something informative
-  - [ ] add headers to output files
-  - [ ] consider switching to tsv output?
+  - [x] add headers to output files
   - [ ] add population data to output
 - [ ] compile source metadata to markdown or html
   - [ ] R functions to parse drive fields

@@ -182,62 +182,6 @@ ASCFR5 %>%
                 color = "tomato",
                 size = 1)
 
-outputCounts_5_1e5 %>% 
-  group_by(Country, Region, Code, Sex) %>% 
-  mutate(D = sum(Deaths)) %>% 
-  ungroup() %>% 
-  mutate(ASCFR = Deaths / Cases,
-         ASCFR = na_if(ASCFR, Deaths == 0)) %>% 
-  filter(!is.na(ASCFR),
-         D >= 100,
-         Age == 25) %>% 
-  filter(ASCFR == max(ASCFR))
-
-
-outputCounts_5 %>% 
-  mutate(ASCFR = Deaths / Cases,
-         ASCFR = na_if(ASCFR, Deaths == 0)) %>% 
-  filter(Age == 40,
-         !is.na(ASCFR),
-         ASCFR > 1e-2)
-
-outputCounts_5_1e5 %>% 
-  mutate(ASCFR = Deaths / Cases,
-         ASCFR = na_if(ASCFR, Deaths == 0)) %>% 
-  filter(!is.na(Deaths),
-         Age == 90,
-         ASCFR < 1e-2) %>% View()
-
-outputCounts_5 %>% 
-  group_by(Country, Region, Code, Sex) %>% 
-  mutate(D = sum(Deaths)) %>% 
-  ungroup() %>% 
-  filter(D >= 100) %>% 
-  mutate(ASCFR = Deaths / Cases,
-         ASCFR = na_if(ASCFR, Deaths == 0)) %>% 
-  filter(!is.na(ASCFR),
-         Sex == "f",
-         D >= 100) %>% 
-  filter(Age==40,
-         ASCFR > .01)
-
-#####
-Test <- outputCounts_5 %>% 
-  pivot_longer(cols=c(Cases,Deaths),
-               names_to = "Measure",
-               values_to = "Value") %>% 
-  group_by(Country, Code, Date, Sex, Measure) %>% 
-  summarize(TOTout = sum(Value)) %>% 
-  ungroup()
-
-inputCounts %>% 
-  group_by(Country, Code, Date, Sex, Measure) %>% 
-  summarize(TOTin = sum(Value)) %>% 
-  ungroup() %>% 
-  left_join(Test) %>% 
-  mutate(Diff = TOTout - TOTin) %>% 
-  pull(Diff) %>% 
-  summary()
 }
 
 # 
