@@ -2,7 +2,7 @@
 # French Guiana presently included w France, but French
 # data don't include French Guiana. Need to use
 # https://cran.r-project.org/web/packages/rnaturalearth/vignettes/what-is-a-country.html
-
+source("R/00_Functions.R")
 library(googlesheets4)
 library(tidyverse)
 library(cartography)
@@ -70,6 +70,7 @@ db_coverage <-
 
 map_joined <- left_join(world_rob, db_coverage, 
                         by = c('name' = 'Country')) 
+
 
 map_joined$coverage[is.na(map_joined$coverage)] <- "Not included yet"
 
