@@ -74,13 +74,21 @@ map_joined <- left_join(world_rob, db_coverage,
 
 map_joined$coverage[is.na(map_joined$coverage)] <- "Not included yet"
 
-cols_data <- c("National and regional" = "grey10", "National" = "grey30", "Forthcoming" = "grey70","Not included yet" = "grey90")
+"#b3b3b3"
+cols_data <- c("National and regional" = "grey10", "National" = "grey30", "Forthcoming" = "#A3d3d3","Not included yet" = "grey90")
 
+map_joined<-
+  map_joined %>% 
+  mutate(coverage = factor(coverage, levels = names(cols_data)))
+
+#map_joined$coverage
 # df <- data.frame(x = c("red", "black"))
 # 
 # ggplot(df, aes(x, 1, fill = x)) + 
 #   geom_col() +
 #   scale_fill_manual(breaks = c("red", "black"), values = c("red", "black"))
+
+
 
 tx        <- 7
 map_joined %>% 
@@ -89,14 +97,14 @@ map_joined %>%
   scale_x_continuous(expand=c(0.03,0.03)) +
   scale_y_continuous(expand=c(0.03,0.03)) +
   scale_fill_manual(values = cols_data,
-                    breaks = cols_data, 
+                    #breaks = cols_data, 
                     labels = names(cols_data),
                     name = "Information\nCOVID-19") +
   guides(fill = guide_legend(title.position = "bottom",
                            keywidth = .5,
-                           keyheight = .2))+
-  theme(legend.text=element_text(size = tx - 1),
-        legend.key.size = unit(.5, "cm"),
+                           keyheight = .4))+
+  theme(legend.text=element_text(size = tx + 3),
+        legend.key.size = unit(1, "cm"),
         legend.title = element_blank(),
         # legend.position = c(0.1,.3),
         # legend.direction = "vertical",
