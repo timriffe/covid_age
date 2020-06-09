@@ -11,7 +11,7 @@ saveRDS(rubric, "Data/rubric_old.rds")
 rubric_old <- rubric_old %>% select(Short, Rows)
 
 
-extra_keep <- c("IL")
+extra_keep <- c("")
 
 Updates    <- 
   left_join(rubric, rubric_old, by = "Short") %>% 
@@ -21,7 +21,9 @@ Updates    <-
   filter(abs(Change) > 0 | Short %in% extra_keep) %>% 
   select(Country, Region, Short, Rows = Rows.x, Change, Sheet)
 
-
+Updates <-
+  Updates %>% 
+  filter(Country != "India")
 
 
 #check_input_updates()
@@ -52,7 +54,8 @@ if (check_db){
       filter(!Short %in% new_codes) %>% 
       bind_rows(inputDB) %>% 
       filter(!(Sex == "UNK" & Value == 0),
-             !(Age == "UNK" & Value == 0)) 
+             !(Age == "UNK" & Value == 0)) %>% 
+      sort_input_data()
     saveRDS(holdDB,here::here("Data/inputDBhold.rds"))
  
   } else {
@@ -155,7 +158,7 @@ if (check_db){
   # NOTE THIS WILL FAIL FOR REGIONS!!
   do_this <-FALSE
   if(do_this){
-    inputDB <- swap_country_inputDB(inputDB, "IL")
+    inputDB <- swap_country_inputDB(inputDB, "US_OK")
   }
   # ----------------------------------------------------
 
