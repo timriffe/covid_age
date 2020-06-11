@@ -53,8 +53,17 @@ sort_input_data <- function(X){
 
 # -------------------------------------------------
 
+# for coercing Date to "DD.MM.YYYY"
+date2dmy <- function(d){
+  paste(sprintf("%02d",day(d)),
+        sprintf("%02d",month(d)),
+        year(d),
+        sep = "."
+  )
+}
+
 get_input_rubric <- function(tab = "input"){
-  ss_rubric <- "https://docs.google.com/spreadsheets/d/15kat5Qddi11WhUPBW3Kj3faAmhuWkgtQzioaHvAGZI0/edit#gid=0"
+  ss_rubric <- "https://docs.google.com/spreadsheets/d/1IDQkit829LrUShH-NpeprDus20b6bso7FAOkpYvDHi4/edit#gid=0"
   input_rubric <- read_sheet(ss_rubric, sheet = tab) %>% 
     filter(!is.na(Sheet))
   input_rubric
@@ -95,10 +104,15 @@ compile_inputDB <- function(rubric = NULL){
                           na = "NA", 
                           col_types = "cccccciccd"))
     }
-    X <- 
-      X %>% 
-      mutate(Short = add_Short(Code, Date))
-    input_list[[i]] <- X
+    
+    if (class(X) == "try-error"){
+      cat(i,"failure\n")
+    } else {
+      X <- 
+        X %>% 
+        mutate(Short = add_Short(Code, Date))
+      input_list[[i]] <- X
+    }
     Sys.sleep(45) # this is getting absurd
   }
   # bind and sort:
@@ -111,7 +125,7 @@ compile_inputDB <- function(rubric = NULL){
 }
 
 compile_offsetsDB <- function(){
-  ss_offsets <- "https://docs.google.com/spreadsheets/d/1z9Dg7iQWPdIGRI3rvgd-Dx3rE5RPNd7B_paOP86FRzA/edit#gid=0"
+  ss_offsets <- "https://docs.google.com/spreadsheets/d/1IDQkit829LrUShH-NpeprDus20b6bso7FAOkpYvDHi4/edit#gid=0"
   offsets_rubric <- read_sheet(ss_offsets, sheet = 'checklist') %>% 
     filter(!is.na(Sheet))
   
@@ -136,6 +150,17 @@ compile_offsetsDB <- function(){
     off_list[[i]] <- X
     Sys.sleep(20) # this is getting absurd
   }
+  
+  # TR: added 10 June, 2020. Some sheets fail more often.
+  cat("\nEverything downloaded, or at least we tried")
+  errors <- lapply(off_list,function(x){length(x)==1}) %>% unlist()
+  
+  if (sum(errors) > 0){
+    prob_codes <- offsets_rubric$Short[errors]
+    cat("\nThe following code(s) did not read properly:\n",paste(prob_codes,collapse = "\n"))
+    off_list <- off_list[!errors]
+  }
+  
   # bind and sort:
   offsetsDB <- 
     off_list %>% 

@@ -74,7 +74,7 @@ map_joined <- left_join(world_rob, db_coverage,
 
 map_joined$coverage[is.na(map_joined$coverage)] <- "Not included yet"
 
-"#b3b3b3"
+
 cols_data <- c("National and regional" = "grey10", "National" = "grey30", "Forthcoming" = "#A3d3d3","Not included yet" = "grey90")
 
 map_joined<-

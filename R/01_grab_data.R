@@ -6,7 +6,6 @@ source("R_checks/inputDB_check.R")
 rubric_old <- readRDS("Data/rubric_old.rds")
 # check for new data:
 rubric     <- get_input_rubric()
-saveRDS(rubric, "Data/rubric_old.rds")
 
 rubric_old <- rubric_old %>% select(Short, Rows)
 
@@ -21,9 +20,11 @@ Updates    <-
   filter(abs(Change) > 0 | Short %in% extra_keep) %>% 
   select(Country, Region, Short, Rows = Rows.x, Change, Sheet)
 
-Updates <-
-  Updates %>% 
-  filter(Country != "India")
+saveRDS(rubric, "Data/rubric_old.rds")
+
+# Updates <-
+#   Updates %>% 
+#   filter(Country != "India")
 
 
 #check_input_updates()
@@ -131,7 +132,15 @@ if (check_db){
   
   n <- duplicated(inputDB[,c("Code","Sex","Age","Measure","Metric")])
   sum(n)
+  
+  rm.codes <- FALSE
+  if (sum(n) > 0 & rm.codes){
+    rmcodes <- inputDB[n,] %>% pull(Code) %>% unique()
+    inputDB <- inputDB %>% filter(!Code %in% rmcodes)
+  }
 
+  
+  
   run_checks(inputDB, ShortCodes = inputDB %>% pull(Short) %>% unique())
   
   # If it's a partial build then swap out the data.
@@ -158,7 +167,7 @@ if (check_db){
   # NOTE THIS WILL FAIL FOR REGIONS!!
   do_this <-FALSE
   if(do_this){
-    inputDB <- swap_country_inputDB(inputDB, "US_OK")
+    inputDB <- swap_country_inputDB(inputDB, "NL")
   }
   # ----------------------------------------------------
 
