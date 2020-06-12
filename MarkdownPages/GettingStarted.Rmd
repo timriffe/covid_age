@@ -29,7 +29,7 @@ library(readr)
 library(lubridate)
 library(ggplot2)
 # this is the "raw" url
-inputDB <- read_csv("https://raw.githubusercontent.com/timriffe/covid_age/master/Data/inputDB.csv",
+inputDB <- read_csv("https://media.githubusercontent.com/media/timriffe/covid_age/master/Data/inputDB.csv",
                     skip = 1,
                     col_types = "cccccciccdc") # this gets the classes right
 glimpse(inputDB)
@@ -41,7 +41,7 @@ Notice, `Age` is character because it can contain `"TOT"` or `"UNK"` values. The
 Output files are friendlier for several reasons. Since measures from like subsets are next to each other, it's easier to calculate things. Since age groups are uniform, it's easy to compare subsets. Since `Age` is a proper integer it's easy to plot it in the abscissa. However, you'll still want to convert the `Date` class to use it in plotting. These come as character strigngs following the format `"DD.MM.YYYY"`, and can be converted using `lubridate::dmy()` without further ado.
 ```{r}
 # this is the "raw" url
-Output_10 <- read_csv("https://raw.githubusercontent.com/timriffe/covid_age/master/Data/Output_10.csv",
+Output_10 <- read_csv("https://media.githubusercontent.com/media/timriffe/covid_age/master/Data/Output_10.csv",
                     skip = 1,
                     col_types = "cccciicddd") # this gets the classes right
 glimpse(Output_10)
