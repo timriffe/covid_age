@@ -1,6 +1,7 @@
 #.rs.restartR()
 rm(list=ls());gc()
 source("R/00_Functions.R")
+library(pbmclapply)
 # prelims to get offsets
 
 inputCounts <- readRDS("Data/inputCounts.rds")
@@ -24,7 +25,7 @@ inputCounts <-
 #                      OAnew = 100,
 #                      lambda = 100,
 #                      mc.cores = 6)
-      iLout1e5 <- mclapply(iL, 
+      iLout1e5 <- pbmclapply(iL, 
                            harmonize_age_p,
                            Offsets = Offsets,
                            N = 5,
