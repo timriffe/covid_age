@@ -1,146 +1,187 @@
-
+#.rs.restartR()
+rm(list=ls());gc()
+source("R/00_Functions.R")
 # prelims to get offsets
 
+inputCounts <- readRDS("Data/inputCounts.rds")
+Offsets     <- readRDS("Data/Offsets.rds")
 
-# FOR NOW WE PROCESS INPUTS THAT HAVE OFFSETS, see step 3
-(have_offsets <- Offsets %>% 
-  mutate(code = paste(Country,Region,sep="-")) %>% 
-  pull(code) %>% 
-  unique())
-
-
-inputs_to_split <- 
+inputCounts <- 
   inputCounts %>% 
-  mutate(code = paste(Country,Region,sep="-")) %>% 
-  filter(code %in% have_offsets, 
-         Country != "Denmark")
+  arrange(Country, Region, Measure, Sex, Age)
 
+ iL <- split(inputCounts,
+              list(inputCounts$Code,
+                   inputCounts$Sex,
+                   inputCounts$Measure),
+              drop =TRUE)
 
-# For detective work:
- #  iL<- split(inputs_to_split, list(inputs_to_split$Country, 
- #                                   inputs_to_split$Region,
- #                                   inputs_to_split$Code,
- #                                   inputs_to_split$Date,
- #                                   inputs_to_split$Sex,
- #                                   inputs_to_split$Measure),
- #             drop = TRUE)
- #  outTry5 <- list()
- #  for (i in 1:length(iL)){
- #    chunk <- iL[[i]]
- #    outTry5[[i]] <- try(harmonize_age(chunk, Offsets, N = 5, OAnew = 100))
- #  }
- #  outTry5[[1]]
- #  
- # (errors <- lapply(outTry5, function(x){
- #  length(x) == 1 
- # }) %>% unlist() %>% which())
- # 
+# different lambdas
+# iLout100 <- mclapply(iL, 
+#                      harmonize_age_p,
+#                      Offsets = Offsets,
+#                      N = 5,
+#                      OAnew = 100,
+#                      lambda = 100,
+#                      mc.cores = 6)
+      iLout1e5 <- mclapply(iL, 
+                           harmonize_age_p,
+                           Offsets = Offsets,
+                           N = 5,
+                           OAnew = 100,
+                           lambda = 1e5,
+                           mc.cores = 6)
+# iLout1e6 <- mclapply(iL, 
+#                      harmonize_age_p,
+#                      Offsets = Offsets,
+#                      N = 5,
+#                      OAnew = 100,
+#                      lambda = 1e6,
+#                      mc.cores = 6)
+ # make parallel wrapper with everything in try()
+ # remove try error elements, then bind and process.
+ 
+# 
+#   n   <- lapply(iLout100,function(x){length(x) == 1}) %>% unlist() %>% which()
+  (nn  <- lapply(iLout1e5,function(x){length(x) == 1}) %>% unlist() %>% which())
+  # nnn <- lapply(iLout1e6,function(x){length(x) == 1}) %>% unlist() %>% which()
+  # 
+(problem_codes <-  iLout1e5[nn])
 
-outputCounts_5 <- 
-  inputs_to_split %>% 
-  group_by(Country, Region, Code, Date, Sex, Measure) %>% 
-  do(harmonize_age(chunk = .data, Offsets, N = 5, OAnew = 100)) %>% 
-  ungroup() %>% 
+      if (length(problem_codes) > 0){
+        iLout1e5 <- iLout1e5[-nn]
+      }
+      
+# TR: now include rescale
+# outputCounts_5_100 <-
+#     iLout100 %>% 
+#     #iLout[-n] %>% 
+#     bind_rows() %>% 
+#     mutate(Value = ifelse(is.nan(Value),0,Value)) %>% 
+#     group_by(Code, Measure) %>% 
+#     # Newly added
+#     do(rescale_sexes_post(chunk = .data)) %>% 
+#     ungroup() %>%
+#     pivot_wider(names_from = Measure,
+#                 values_from = Value) %>% 
+#     mutate(date = dmy(Date)) %>% 
+#     arrange(Country, Region, date, Sex, Age) %>% 
+#     select(-date) 
+# iLout <- iLout1e5[-nn]
+outputCounts_5_1e5 <-
+  iLout1e5 %>% 
+  #iLout[-n] %>% 
+  bind_rows() %>% 
+  mutate(Value = ifelse(is.nan(Value),0,Value)) %>% 
+  group_by(Code, Measure) %>% 
+  # Newly added
+  do(rescale_sexes_post(chunk = .data)) %>% 
+  ungroup() %>%
   pivot_wider(names_from = Measure,
-              values_from = Value) 
+              values_from = Value) %>% 
+  mutate(date = dmy(Date)) %>% 
+  arrange(Country, Region, date, Sex, Age) %>% 
+  select(-date) 
+
+# outputCounts_5_1e6 <-
+#   iLout1e6 %>% 
+#   #iLout[-n] %>% 
+#   bind_rows() %>% 
+#   mutate(Value = ifelse(is.nan(Value),0,Value)) %>% 
+#   group_by(Code, Measure) %>% 
+#   # Newly added
+#   do(rescale_sexes_post(chunk = .data)) %>% 
+#   ungroup() %>%
+#   pivot_wider(names_from = Measure,
+#               values_from = Value) %>% 
+#   mutate(date = dmy(Date)) %>% 
+#   arrange(Country, Region, date, Sex, Age) %>% 
+#   select(-date) 
 
 # round output for csv
-outputCounts_5_rounded <- 
-  outputCounts_5 %>% 
-  mutate(Cases = round(Cases,1),
-         Deaths = round(Deaths,1))
+# outputCounts_5_100_rounded <- 
+#   outputCounts_5_100 %>% 
+#   mutate(Cases = round(Cases,1),
+#          Deaths = round(Deaths,1),
+#          Tests = round(Tests,1))
 
-write_csv(outputCounts_5_rounded, path = "Data/Output_5.csv")
-saveRDS(outputCounts_5, "Data/Output_5.rds")
+outputCounts_5_1e5_rounded <- 
+  outputCounts_5_1e5 %>% 
+  mutate(Cases = round(Cases,1),
+         Deaths = round(Deaths,1),
+         Tests = round(Tests,1))
+
+# outputCounts_5_1e6_rounded <- 
+#   outputCounts_5_1e6 %>% 
+#   mutate(Cases = round(Cases,1),
+#          Deaths = round(Deaths,1),
+#          Tests = round(Tests,1))
+
+# saveRDS(outputCounts_5_100, "Data/Output_5_100.rds")
+saveRDS(outputCounts_5_1e5, "Data/Output_5_1e5.rds")
+# saveRDS(outputCounts_5_1e6, "Data/Output_5_1e6.rds")
+
+
+header_msg <- paste("Counts of Cases, Deaths, and Tests in harmonized 5-year age groups (PCLM lambda = 100000):",timestamp(prefix="",suffix=""))
+write_lines(header_msg, path = "Data/Output_5.csv")
+write_csv(outputCounts_5_1e5_rounded, path = "Data/Output_5.csv", append = TRUE, col_names = TRUE)
+
+saveRDS(outputCounts_5_1e5, "Data/Output_5.rds")
 
 
 # Repeat for 10-year age groups
-outputCounts_10 <- 
-  inputs_to_split %>% 
-  group_by(Country, Region, Code, Date, Sex, Measure) %>% 
-  do(harmonize_age(chunk = .data, Offsets, N = 10, OAnew = 100)) %>% 
+ outputCounts_10 <- 
+  outputCounts_5_1e5 %>% 
+  mutate(Age = Age - Age %% 10) %>% 
+  group_by(Country, Region, Code, Date, Sex, Age) %>% 
+  summarize(Cases = sum(Cases),
+            Deaths = sum(Deaths),
+            Tests = sum(Tests)) %>% 
   ungroup() %>% 
-  pivot_wider(names_from = Measure,
-              values_from = Value) 
+  mutate(AgeInt = ifelse(Age == 100, 5, 10)) 
+outputCounts_10 <- outputCounts_10[, colnames(outputCounts_5_1e5)]
 
 # round output for csv
 outputCounts_10_rounded <- 
   outputCounts_10 %>% 
   mutate(Cases = round(Cases,1),
-         Deaths = round(Deaths,1))
+         Deaths = round(Deaths,1),
+         Tests = round(Tests,1))
 
-write_csv(outputCounts_10_rounded, path = "Data/Output_10.csv")
+header_msg <- paste("Counts of Cases, Deaths, and Tests in harmonized 10-year age groups (PCLM lambda = 100000):",timestamp(prefix="",suffix=""))
+write_lines(header_msg, path = "Data/Output_10.csv")
+write_csv(outputCounts_10_rounded, path = "Data/Output_10.csv", append = TRUE, col_names = TRUE)
 saveRDS(outputCounts_10, "Data/Output_10.rds")
 
 
-
-
-# 
-inputDB %>% pull(Measure) %>% unique()
 spot_checks <- FALSE
 if (spot_checks){
 # Once-off diagnostic plot:
-  
-  
-# populations with > 100 deaths,
-# but no deaths in ages > 70 is weird.
-  outputCounts_10 %>% 
-    group_by(Country, Region, Code, Sex) %>% 
-    mutate(D = sum(Deaths),
-           D70 = sum(Deaths[Age >=70])) %>% 
-    ungroup() %>% 
-    filter(D >= 100,
-           D70 == 0) %>%
-    View()
-  
-  
-  
-outputCounts_10 %>% 
+
+ASCFR5 <- 
+outputCounts_5_1e5 %>% 
     group_by(Country, Region, Code, Sex) %>% 
     mutate(D = sum(Deaths)) %>% 
     ungroup() %>% 
-    filter(D >= 100) %>% 
     mutate(ASCFR = Deaths / Cases,
            ASCFR = na_if(ASCFR, Deaths == 0)) %>% 
     filter(!is.na(ASCFR),
            Sex == "b",
-           D >= 100) %>% 
-  ggplot(aes(x=Age, y = ASCFR, color = Country, group = interaction(Country, Region, Code))) + 
-  geom_line(alpha=.4) + 
- scale_y_log10() + 
-  xlim(40,100)
+           D >= 100) 
+ASCFR5 %>% 
+  ggplot(aes(x=Age, y = ASCFR, group = interaction(Country, Region, Code))) + 
+  geom_line(alpha=.05) + 
+  scale_y_log10() + 
+  xlim(20,100) + 
+  geom_quantile(ASCFR5,
+                mapping=aes(x=Age, y = ASCFR), 
+                method = "rqss",
+                quantiles=c(.025,.25,.5,.75,.975), 
+                lambda = 2,
+                inherit.aes = FALSE,
+                color = "tomato",
+                size = 1)
 
-outputCounts_5 %>% 
-  mutate(ASCFR = Deaths / Cases,
-         ASCFR = na_if(ASCFR, Deaths == 0)) %>% 
-  filter(Age == 40,
-         !is.na(ASCFR),
-         ASCFR > 1e-2)
-outputCounts_5 %>% 
-  mutate(ASCFR = Deaths / Cases,
-         ASCFR = na_if(ASCFR, Deaths == 0)) %>% 
-  filter(Age == 60,
-         is.na(ASCFR))
-
-
-
-#####
-Test <- outputCounts_5 %>% 
-  pivot_longer(cols=c(Cases,Deaths),
-               names_to = "Measure",
-               values_to = "Value") %>% 
-  group_by(Country, Code, Date, Sex, Measure) %>% 
-  summarize(TOTout = sum(Value)) %>% 
-  ungroup()
-
-inputCounts %>% 
-  group_by(Country, Code, Date, Sex, Measure) %>% 
-  summarize(TOTin = sum(Value)) %>% 
-  ungroup() %>% 
-  left_join(Test) %>% 
-  mutate(Diff = TOTout - TOTin) %>% 
-  pull(Diff) %>% 
-  summary()
 }
 
 # 
@@ -175,4 +216,69 @@ inputCounts %>%
 
 # step 1: get single age offsets for each country.
 
-
+do.this <- FALSE
+if (do.this){
+  CodesToSample <-
+  outputCounts_5_100 %>% 
+    mutate(Short = paste(Country, 
+                         Region,
+                         Sex,
+                         Date,
+                         sep = "-")) %>%
+    group_by(Country, Region, Sex, Date) %>% 
+    mutate(N = sum(Deaths)) %>% 
+    filter(N >= 100) %>% 
+    pull(Short) %>% unique()
+  
+  SpotChecks <- sample(CodesToSample,500,replace=FALSE)
+  
+  compare_lambdas <- function(Short, X100, X1e5, X1e6){
+    X100 <-
+      X100 %>% 
+      mutate(.Short = paste(Country, 
+                           Region,
+                           Sex,
+                           Date,
+                           sep = "-"),
+             lambda = 100)
+    X1e5 <-
+      X1e5 %>% 
+      mutate(.Short = paste(Country, 
+                           Region,
+                           Sex,
+                           Date,
+                           sep = "-"),
+             lambda = 1e5)
+    
+    X1e6 <-
+      X1e6 %>% 
+      mutate(.Short = paste(Country, 
+                          Region,
+                          Sex,
+                          Date,
+                          sep = "-"),
+             lambda = 1e6)
+    
+    X100       <- X100 %>% filter(.Short == Short)
+    X1e5       <- X1e5 %>% filter(.Short == Short)
+    X1e6       <- X1e6 %>% filter(.Short == Short)
+    DatCompare <- list(X100,X1e5,X1e6) %>% bind_rows()
+  
+    DatCompare %>% 
+      mutate(CFR = Deaths / Cases) %>% 
+      ggplot(aes(x=Age, y = CFR, color = as.factor(lambda), group = lambda)) + 
+      geom_line()+
+      scale_y_log10()+
+      ggtitle(Short)
+    
+    }
+  for (i in 26:500){
+    cat(i,"\n")
+  print(compare_lambdas("Greece-All-b-11.05.2020",
+                  outputCounts_5_100,
+                  outputCounts_5_1e5,
+                  outputCounts_5_1e6))
+  Sys.sleep(1.5)
+  }
+  
+}
