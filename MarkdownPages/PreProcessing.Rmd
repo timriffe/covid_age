@@ -1,0 +1,223 @@
+---
+title: "Measure, Metric, and Scale harmonization"
+author: "COVerAGE-DB"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Processing steps
+
+Prior to age group harmonization, we perform a variety of operations where necessary so that all measures are expressed as counts of cases, deaths, tests, and so that marginal totals are constrained to more reliable or representative totals. Steps are performed sequentially, each triggered depending on the structure of the data. 
+
+The standardization steps are as follows:
+
+1. If `Metric` is `"Fraction"`, distribute totals to produce counts by age and/or sex.
+2. Redistribute any `Value` of unknown age proportional to `Value`s of known age.
+3. Rescale age-specific `Value`s to sum to any explicitly recorded total.
+4. Infer `"Cases"` from `"ASCFR"` (`"Ratio"`) and `"Deaths"` (`"Count"`).
+5. Infer `"Deaths"` from `"ASCFR"` (`"Ratio"`) and `"Cases"` (`"Count"`).
+6. Redistribute `"Count"`s of unknown `Sex`.
+7. Rescale sex-specific distributions to sum to explicitly recorded both-sex distributions.
+8. Infer both-sex distributions where only sex-specifc distributions are recorded.
+9. Lower closeout ages (to as low as age 85) when series close out with 0 counts.
+
+All of these steps are carried out sequentially in the `R` script named `02_harmonize_metrics.R`.
+
+```{r, include = FALSE}
+source(here::here("R/00_Functions.R"))
+Steps <- local(get(load(here::here("Data/ProcessingSteps.Rdata"))))
+
+Steps <- lapply(Steps, sort_input_data)
+names(Steps) <- c("a_inputDB","A","B","C","D","E","Ga","H","I","J")
+
+
+Steps$a_inputDB  <- Steps$a_inputDB  %>% 
+   filter(!(Age == "TOT" & Metric == "Fraction"),
+         !(Age == "UNK" & Value == 0),
+         !(Sex == "UNK" & Sex == 0))
+
+Steps[["Gb"]] <-  Steps[["Ga"]] %>% filter(Age != "TOT")
+Steps <- Steps[sort(names(Steps))]
+
+StepsS <- lapply(Steps, function(X){
+  split(X, X$Code)
+})
+
+StepsS %>% lapply(length) %>% unlist()
+# B->C lose one Code
+# Ga->Gb lose 46 Codes
+# which ones?
+
+Codes <- StepsS %>% lapply(names)
+JCodes <- Codes$J
+
+StepsS <- lapply(StepsS, function(X,JCodes){
+  X[JCodes]
+},JCodes=JCodes)
+
+StepsS %>% lapply(length) %>% unlist()
+
+# G should remove TOT before comparing with H
+
+did_code_change <- function(chunk1, chunk2){
+  chunk1 <- chunk1 %>% mutate(Age = as.character(Age))
+  chunk2 <- chunk2 %>% mutate(Age = as.character(Age))
+  # did nr rows change?
+  rowchg <- nrow(chunk1) != nrow(chunk2)
+  
+  # Metrics change?
+  met1   <- chunk1 %>% pull(Metric) %>% unique() 
+  met2   <- chunk2 %>% pull(Metric) %>% unique() 
+  metchg <- !setequal(met1,met2)
+  
+  # Measure change?
+  mea1   <- chunk1 %>% pull(Measure) %>% unique() 
+  mea2   <- chunk2 %>% pull(Measure) %>% unique() 
+  meachg <- !setequal(mea1,mea2)
+  
+  out <- rowchg | metchg | meachg
+  # 
+  if (!out){
+   out <- any(abs(chunk1$Value - chunk2$Value) > 1e-4)
+  }
+  out
+}
+
+chunk1s <- c("a_inputDB","A","B","C","D","E","Gb","H","I")
+chunk2s <- c("A","B","C","D","E","Ga","H","I","J")
+
+# we'll do this with a loop, sorry
+
+A <- mapply(did_code_change, 
+            StepsS$a_inputDB, 
+            StepsS$A)
+B <- mapply(did_code_change, 
+            StepsS$A, 
+            StepsS$B)
+C <- mapply(did_code_change, 
+            StepsS$B, 
+            StepsS$C)
+D <- mapply(did_code_change, 
+            StepsS$C, 
+            StepsS$D)
+E <- mapply(did_code_change, 
+            StepsS$D, 
+            StepsS$E)
+G <- mapply(did_code_change, 
+            StepsS$E, 
+            StepsS$Ga)
+H <- mapply(did_code_change, 
+            StepsS$Gb, 
+            StepsS$H)
+I <- mapply(did_code_change, 
+            StepsS$H, 
+            StepsS$I)
+J <- mapply(did_code_change, 
+            StepsS$I, 
+            StepsS$J)
+
+ StepMatAll <- tibble(Code = JCodes, 
+                      `1` = A, 
+                      `2` = B, 
+                      `3` = C,
+                      `4` = D,
+                      `5` = E,
+                      `6` = G,
+                      `7` = H,
+                      `8` = I,
+                      `9` = J)
+
+Ident <- Steps$J %>% 
+   select(Country, Region, Date, Code) %>% 
+   distinct()
+StepMatAll <- left_join(StepMatAll, Ident, by = "Code") %>% 
+  mutate(Date = dmy(Date)) %>% 
+  arrange(Country, Region, Date) %>% 
+  select(Country, Region, Date, '1','2','3','4','5','6','7','8','9')
+
+StepMatSmaller <-
+  StepMatAll %>% 
+  group_by(Country, Region) %>% 
+  summarize(`1` = any(`1`),
+            `2` = any(`2`),
+            `3` = any(`3`),
+            `4` = any(`4`),
+            `5` = any(`5`),
+            `6` = any(`6`),
+            `7` = any(`7`),
+            `8` = any(`8`),
+            `9` = any(`9`)
+      ) %>% 
+  ungroup()
+
+StepMatSmallest <-
+  StepMatAll %>% 
+  filter(Region == "All") %>% 
+  group_by(Country) %>% 
+  summarize(`1` = any(`1`),
+            `2` = any(`2`),
+            `3` = any(`3`),
+            `4` = any(`4`),
+            `5` = any(`5`),
+            `6` = any(`6`),
+            `7` = any(`7`),
+            `8` = any(`8`),
+            `9` = any(`9`)
+      ) %>% 
+  ungroup()
+
+StepMatCRD<-
+StepMatAll %>% 
+  datatable(options = list(pageLength = 100)) %>% 
+  formatStyle(
+    c('1','2','3','4','5','6','7','8','9'),
+    color = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC')),
+    backgroundColor = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC'))
+  ) 
+
+StepMatCR<-
+StepMatSmaller %>% 
+  datatable(options = list(pageLength = 100)) %>% 
+  formatStyle(
+    c('1','2','3','4','5','6','7','8','9'),
+    color = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC')),
+    backgroundColor = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC'))
+  ) 
+
+StepMatC<-
+StepMatSmallest %>% 
+  datatable(options = list(pageLength = 100)) %>% 
+  formatStyle(
+    c('1','2','3','4','5','6','7','8','9'),
+    color = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC')),
+    backgroundColor = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC'))
+  ) 
+```
+
+# Data processing steps {.tabset}
+
+The following searchable table shows which of the above steps are activated on which subsets of data.
+
+## By Country
+
+```{r, echo = FALSE}
+StepMatC
+```
+
+## By Country, Region
+
+```{r, echo = FALSE}
+StepMatCR
+```
+
+## By Country, Region, Date
+
+```{r, echo = FALSE}
+StepMatCRD
+```
+
+## {-}

@@ -1,0 +1,47 @@
+## big to-do list
+
+- [ ] gather and prepare population offsets
+  - [ ] compile metadata for sources we already have
+  - [ ] define projections approach
+  - [ ] program projections
+  - [ ] produce 2020 outputs
+  - [x] define production setup 
+- [ ] Format changes
+  - [ ] change output file names to something informative
+  - [x] add headers to output files
+  - [ ] add population data to output
+- [ ] compile source metadata to markdown or html
+  - [ ] R functions to parse drive fields
+  - [ ] object to markdown?
+  - [ ] use github docs folder for html. Easy way? pkgdown even tho it's not a package?
+- [ ] complete automatic data checking infrastructure
+  - [ ] graphical checks in shiny
+    - [ ] view ASCFR for source
+    - [ ] monotonicity checks, with flags
+    - [ ] compare with rest of database
+    - [ ] compare totals with hopkins
+    - [ ] visualize input structure in age * day Lexis rectangles
+- [ ] complete methods protocol
+  - [ ] finalize production chain
+  - [ ] formalize 2020 population structure operations
+  - [ ] describe pclm modification
+  - [ ] describe
+- [ ] draft database paper
+  - [ ] declare suggested citation for database
+  - [ ] complete first draft
+  - [ ] general commenting and editing
+  - [ ] post to medarxiv and socarxiv
+  - [ ] submit to IJE data resource
+- [ ] code examples in different languages 
+  - [ ] reading in data and doing basic things
+    - [x] R
+    - [ ] Excel
+    - [ ] Stata
+    - [ ] Python
+  - [ ] merging with other major sources
+    - [ ] testing data from our world in data
+    - [ ] hopkins total counts
+    - [ ] ?
+- [ ] list of papers citing database
+- [ ] Rselenium + wayback for US cases
+- [ ] Rselenium for ECDC data
