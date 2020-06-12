@@ -384,45 +384,45 @@ library(readr)
 library(lubridate)
 library(ggplot2)
 # this is the &quot;raw&quot; url
-inputDB &lt;- read_csv(&quot;https://raw.githubusercontent.com/timriffe/covid_age/master/Data/inputDB.csv&quot;,
+inputDB &lt;- read_csv(&quot;https://media.githubusercontent.com/media/timriffe/covid_age/master/Data/inputDB.csv&quot;,
                     skip = 1,
                     col_types = &quot;cccccciccdc&quot;) # this gets the classes right
 glimpse(inputDB)</code></pre>
-<pre><code>## Rows: 747,389
+<pre><code>## Rows: 776,263
 ## Columns: 11
-## $ Country &lt;chr&gt; &quot;Algeria&quot;, &quot;Algeria&quot;, &quot;Algeria&quot;, &quot;Algeria&quot;, &quot;Algeria&quot;, &quot;Algeria&quot;, &quot;Algeria&quot;, &quot;Al…
-## $ Region  &lt;chr&gt; &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;Al…
-## $ Code    &lt;chr&gt; &quot;DZ23.04.2020&quot;, &quot;DZ23.04.2020&quot;, &quot;DZ23.04.2020&quot;, &quot;DZ23.04.2020&quot;, &quot;DZ23.04.2020&quot;, …
-## $ Date    &lt;chr&gt; &quot;23.04.2020&quot;, &quot;23.04.2020&quot;, &quot;23.04.2020&quot;, &quot;23.04.2020&quot;, &quot;23.04.2020&quot;, &quot;23.04.202…
-## $ Sex     &lt;chr&gt; &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;f&quot;, …
-## $ Age     &lt;chr&gt; &quot;0&quot;, &quot;1&quot;, &quot;15&quot;, &quot;25&quot;, &quot;50&quot;, &quot;60&quot;, &quot;UNK&quot;, &quot;TOT&quot;, &quot;0&quot;, &quot;1&quot;, &quot;15&quot;, &quot;25&quot;, &quot;50&quot;, &quot;60&quot;…
-## $ AgeInt  &lt;int&gt; 1, 14, 10, 25, 10, 45, NA, NA, 1, 14, 10, 25, 10, 45, NA, NA, NA, 1, 14, 10, 25,…
-## $ Metric  &lt;chr&gt; &quot;Count&quot;, &quot;Count&quot;, &quot;Count&quot;, &quot;Count&quot;, &quot;Count&quot;, &quot;Count&quot;, &quot;Count&quot;, &quot;Count&quot;, &quot;Count&quot;,…
-## $ Measure &lt;chr&gt; &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Deaths&quot;…
-## $ Value   &lt;dbl&gt; 4, 55, 94, 1052, 636, 1071, 124, 2910, 0, 1, 1, 33, 73, 294, 402, 1234, 1676, 4,…
-## $ Short   &lt;chr&gt; &quot;DZ&quot;, &quot;DZ&quot;, &quot;DZ&quot;, &quot;DZ&quot;, &quot;DZ&quot;, &quot;DZ&quot;, &quot;DZ&quot;, &quot;DZ&quot;, &quot;DZ&quot;, &quot;DZ&quot;, &quot;DZ&quot;, &quot;DZ&quot;, &quot;DZ&quot;, &quot;D…</code></pre>
+## $ Country [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;Algeria&quot;, &quot;Algeria&quot;, &quot;Algeria&quot;, &quot;Alge…
+## $ Region  [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;Al…
+## $ Code    [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;DZ23.04.2020&quot;, &quot;DZ23.04.2020&quot;, &quot;DZ23.…
+## $ Date    [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;23.04.2020&quot;, &quot;23.04.2020&quot;, &quot;23.04.202…
+## $ Sex     [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;…
+## $ Age     [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;0&quot;, &quot;1&quot;, &quot;15&quot;, &quot;25&quot;, &quot;50&quot;, &quot;60&quot;, &quot;UNK…
+## $ AgeInt  [3m[38;5;246m&lt;int&gt;[39m[23m 1, 14, 10, 25, 10, 45, NA, NA, 1, 14, …
+## $ Metric  [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;Count&quot;, &quot;Count&quot;, &quot;Count&quot;, &quot;Count&quot;, &quot;C…
+## $ Measure [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;C…
+## $ Value   [3m[38;5;246m&lt;dbl&gt;[39m[23m 4, 55, 94, 1052, 636, 1071, 124, 2910,…
+## $ Short   [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;DZ&quot;, &quot;DZ&quot;, &quot;DZ&quot;, &quot;DZ&quot;, &quot;DZ&quot;, &quot;DZ&quot;, &quot;D…</code></pre>
 <p>Notice, <code>Age</code> is character because it can contain <code>&quot;TOT&quot;</code> or <code>&quot;UNK&quot;</code> values. Therefore, if you sort, it will do so alphabetically, in which case <code>&quot;10&quot;</code> comes before <code>&quot;5&quot;</code>. This is the file from which we begin the harmonization routines. Maybe you have use for it?</p>
 </div>
 <div id="output-files" class="section level2">
 <h2>Output files</h2>
 <p>Output files are friendlier for several reasons. Since measures from like subsets are next to each other, it’s easier to calculate things. Since age groups are uniform, it’s easy to compare subsets. Since <code>Age</code> is a proper integer it’s easy to plot it in the abscissa. However, you’ll still want to convert the <code>Date</code> class to use it in plotting. These come as character strigngs following the format <code>&quot;DD.MM.YYYY&quot;</code>, and can be converted using <code>lubridate::dmy()</code> without further ado.</p>
 <pre class="r"><code># this is the &quot;raw&quot; url
-Output_10 &lt;- read_csv(&quot;https://raw.githubusercontent.com/timriffe/covid_age/master/Data/Output_10.csv&quot;,
+Output_10 &lt;- read_csv(&quot;https://media.githubusercontent.com/media/timriffe/covid_age/master/Data/Output_10.csv&quot;,
                     skip = 1,
                     col_types = &quot;cccciicddd&quot;) # this gets the classes right
 glimpse(Output_10)</code></pre>
-<pre><code>## Rows: 293,238
+<pre><code>## Rows: 301,895
 ## Columns: 10
-## $ Country &lt;chr&gt; &quot;Algeria&quot;, &quot;Algeria&quot;, &quot;Algeria&quot;, &quot;Algeria&quot;, &quot;Algeria&quot;, &quot;Algeria&quot;, &quot;Algeria&quot;, &quot;Al…
-## $ Region  &lt;chr&gt; &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;Al…
-## $ Code    &lt;chr&gt; &quot;DZ01.05.2020&quot;, &quot;DZ01.05.2020&quot;, &quot;DZ01.05.2020&quot;, &quot;DZ01.05.2020&quot;, &quot;DZ01.05.2020&quot;, …
-## $ Date    &lt;chr&gt; &quot;01.05.2020&quot;, &quot;01.05.2020&quot;, &quot;01.05.2020&quot;, &quot;01.05.2020&quot;, &quot;01.05.2020&quot;, &quot;01.05.202…
-## $ Age     &lt;int&gt; 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 0, 10, 20, 30, 40, 50, 60, 70, 80, 9…
-## $ AgeInt  &lt;int&gt; 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 5, 10, 10, 10, 10, 10, 10, 10, 10, 10, 1…
-## $ Sex     &lt;chr&gt; &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, …
-## $ Deaths  &lt;dbl&gt; 0.5, 0.9, 2.3, 8.3, 27.1, 75.0, 115.8, 109.8, 70.2, 34.3, 8.8, 1.0, 1.4, 2.9, 11…
-## $ Cases   &lt;dbl&gt; 53.6, 99.5, 274.6, 620.1, 838.4, 768.8, 684.9, 492.4, 234.2, 75.0, 12.6, 168.0, …
-## $ Tests   &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …</code></pre>
+## $ Country [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;Algeria&quot;, &quot;Algeria&quot;, &quot;Algeria&quot;, &quot;Alge…
+## $ Region  [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;Al…
+## $ Code    [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;DZ01.05.2020&quot;, &quot;DZ01.05.2020&quot;, &quot;DZ01.…
+## $ Date    [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;01.05.2020&quot;, &quot;01.05.2020&quot;, &quot;01.05.202…
+## $ Age     [3m[38;5;246m&lt;int&gt;[39m[23m 0, 10, 20, 30, 40, 50, 60, 70, 80, 90,…
+## $ AgeInt  [3m[38;5;246m&lt;int&gt;[39m[23m 10, 10, 10, 10, 10, 10, 10, 10, 10, 10…
+## $ Sex     [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;…
+## $ Deaths  [3m[38;5;246m&lt;dbl&gt;[39m[23m 0.5, 0.9, 2.3, 8.3, 27.1, 75.0, 115.8,…
+## $ Cases   [3m[38;5;246m&lt;dbl&gt;[39m[23m 53.6, 99.5, 274.6, 620.1, 838.4, 768.8…
+## $ Tests   [3m[38;5;246m&lt;dbl&gt;[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…</code></pre>
 <pre class="r"><code># convert to date class
 Output_10 &lt;- 
   Output_10 %&gt;% 
