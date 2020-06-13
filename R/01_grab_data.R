@@ -193,7 +193,7 @@ if (check_db){
   # NOTE THIS WILL FAIL FOR REGIONS!!
   do_this <-FALSE
   if(do_this){
-    inputDB <- swap_country_inputDB(inputDB, "ID")
+    inputDB <- swap_country_inputDB(inputDB, "US_IA")
   }
   # ----------------------------------------------------
 
@@ -257,5 +257,8 @@ if (check_db){
  #  
  #  
   
-
+# 
+#   inputDB <-
+#     inputDB %>% 
+#     mutate(Code = ifelse(Short == "GB_ENG_PHE", paste0("GB_EN_PHE_",Date),Code))
   
