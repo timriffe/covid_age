@@ -10,7 +10,7 @@ rubric     <- get_input_rubric()
 rubric_old <- rubric_old %>% select(Short, Rows)
 
 
-extra_keep <- c("US_PA")
+extra_keep <- c("")
 
 Updates    <- 
   left_join(rubric, rubric_old, by = "Short") %>% 
@@ -113,10 +113,6 @@ if (check_db){
 
   # hunt down anything implausible
   # ----------------------
-  inputDB %>% pull(Sex) %>% table(useNA = "ifany")
-  inputDB %>% pull(Measure) %>% table(useNA = "ifany")
-  inputDB %>% pull(Metric) %>% table(useNA = "ifany")
-  inputDB %>% pull(Age) %>% table(useNA = "ifany") 
   sum(inputDB$Age ==  "üle 85")
   # Estonia coding mistake
   inputDB <-
@@ -151,6 +147,11 @@ if (check_db){
   inputDB <- inputDB %>% filter(Measure != "Tested")
   # inputDB %>% filter(Sex %in% c("F","M","unk")) %>% View()
 
+  
+  inputDB %>% pull(Sex) %>% table(useNA = "ifany")
+  inputDB %>% pull(Measure) %>% table(useNA = "ifany")
+  inputDB %>% pull(Metric) %>% table(useNA = "ifany")
+  inputDB %>% pull(Age) %>% table(useNA = "ifany") 
   # ---------------------------------- #
   # duplicates check:
   # -----------------------------------#
