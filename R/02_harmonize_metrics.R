@@ -1,6 +1,8 @@
+# TODO: make error trapping wrappers for parallelization of each step.
+
 rm(list=ls());gc()
 source("R/00_Functions.R")
-
+  
 inputDB <- readRDS("Data/inputDB.rds")
 
 # this script transforms the inputDB as required, and produces standardized measures and metrics
@@ -8,7 +10,7 @@ inputDB <- readRDS("Data/inputDB.rds")
 inputDB %>% pull(Age) %>% is.na() %>% any()
 inputDB %>% pull(Value) %>% is.na() %>% any()
 
-
+  
 A <-
   inputDB %>% 
   filter(!(Age == "TOT" & Metric == "Fraction"),
@@ -40,7 +42,9 @@ D <- C %>%
 E <- D %>% 
   # do_we_infer_deaths_from_cases_and_ascfr()
   do(infer_deaths_from_cases_and_ascfr(chunk = .data)) %>%  
-  ungroup() 
+  ungroup() %>% 
+  # finally remove this
+  filter(Metric != "Ratio")
 
 G <- E %>% 
   group_by(Code, Age, Measure) %>% 

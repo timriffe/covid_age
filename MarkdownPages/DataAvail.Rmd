@@ -12,7 +12,9 @@ knitr::opts_chunk$set(echo = TRUE)
 # Overview
 These two data availability dashboards indicate which populations have data captured (all rows)
 
-  - `sex` indicates whether some data (Cases, Deaths, Tests) were collected by both sex and age. If `false` then it's just both-sex data.
+  - `sex` indicates whether some data (Cases, Deaths, Tests) were collected by both sex and age. 
+  - `cases` do we have cases by age?
+  - `deaths` do we have deaths by age?
   - `tests` indicates whether age-structured test counts were collected.
   - `passing` indicates whether collected data makes it through the checks and processing. `false` values could be due to temporary data entry errors awaiting fixes.
 
@@ -55,29 +57,30 @@ processed <-
   arrange(Country, Region, date) %>% 
   group_by(Country, Region, date) %>% 
   mutate(sex = all(c("m","f") %in% Sex),
+         cases = any(!is.na(Cases)),
+         deaths = any(!is.na(Deaths)),
          tests = any(!is.na(Tests)),
          passing = TRUE) %>% 
   slice(1) %>% 
   ungroup() %>% 
-  select(Country, Region, date, sex, tests, passing)
+  select(Country, Region, date, sex, cases, deaths, tests, passing)
 
 available <-
   left_join(captured,
             processed) %>% 
   mutate(passing = ifelse(is.na(passing), FALSE, TRUE),
-         tests = ifelse(is.na(tests), FALSE, tests)) %>% 
-  select(Country, Region, date, sex, tests, passing) %>% 
+         tests = ifelse(is.na(tests), FALSE, tests),
+         cases = ifelse(is.na(cases), FALSE, cases),
+         deaths = ifelse(is.na(deaths), FALSE, deaths)) %>% 
+  select(Country, Region, date, sex, cases, deaths, tests, passing) %>% 
   arrange(Country, Region, date)
 
 AvailabilityTableBig<-
 available %>% 
   datatable(options = list(pageLength = 100)) %>% 
   formatStyle(
-    'sex',
-    backgroundColor = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC'))
-  ) %>% 
-  formatStyle(
-    'tests',
+    c('sex',"cases","deaths","tests"),
+    color = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC')), 
     backgroundColor = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC'))
   ) %>% 
   formatStyle(
@@ -94,8 +97,10 @@ captured2  <-
 processed2 <-
   processed %>% 
   group_by(Region, Country) %>% 
-  summarize(passing = any(passing),
-         tests = any(tests)
+  summarize(cases = any(cases),
+            deaths = any(deaths),
+            tests = any(tests),
+            passing = any(passing)
       ) %>% 
   ungroup()
 
@@ -105,33 +110,29 @@ MaxDates <-
   group_by(Country, Region) %>% 
   filter(row_number() == n()) %>% 
   ungroup() %>% 
-  select(-sex, -passing, -tests)
+  select(-sex, -passing, -cases, -deaths, -tests)
 
 available2 <-
   left_join(captured2,
             processed2) %>% 
   mutate(passing = ifelse(is.na(passing), FALSE, TRUE),
          tests = ifelse(is.na(tests), FALSE, tests)) %>% 
-  select(Country, Region, sex, tests, passing) %>% 
+  select(Country, Region, sex, cases, deaths, tests, passing) %>% 
   arrange(Country, Region)%>% 
   left_join(MaxDates, by = c("Country", "Region"))
 
 AvailabilityTableSmaller<-
-available2 %>% 
+  available2 %>% 
   datatable(options = list(pageLength = 100)) %>% 
   formatStyle(
-    'sex',
-    backgroundColor = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC'))
-  ) %>% 
-  formatStyle(
-    'tests',
+    c('sex',"cases","deaths","tests"),
+    color = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC')), 
     backgroundColor = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC'))
   ) %>% 
   formatStyle(
     'passing',
     backgroundColor = styleEqual(c(TRUE, FALSE), c('#84e3a5', '#e38227'))
   )
-
 # Make table just Country, All, with new column for most recent date.
 
 
@@ -145,11 +146,8 @@ AvailabilityTableSmallest<-
 available3 %>% 
   datatable(options = list(pageLength = 100)) %>% 
   formatStyle(
-    'sex',
-    backgroundColor = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC'))
-  ) %>% 
-  formatStyle(
-    'tests',
+    c('sex',"cases","deaths","tests"),
+    color = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC')), 
     backgroundColor = styleEqual(c(TRUE, FALSE), c('#bf85de', '#CCCCCC'))
   ) %>% 
   formatStyle(
