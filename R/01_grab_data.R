@@ -10,7 +10,7 @@ rubric     <- get_input_rubric()
 rubric_old <- rubric_old %>% select(Short, Rows)
 
 
-extra_keep <- c("")
+extra_keep <- c("US_PA")
 
 Updates    <- 
   left_join(rubric, rubric_old, by = "Short") %>% 
@@ -46,6 +46,8 @@ if (check_db){
     inputDB <- compile_inputDB(Updates)
     toc()
   }
+  
+  
   #
   if (!full){
     new_codes <- inputDB %>% pull(Short) %>% unique()
@@ -88,10 +90,12 @@ if (check_db){
   #   inputDB %>% 
   #   filter(Short != "CU")
   # Entry error that the maintainer should fix
-  inputDB <- 
-    inputDB %>% 
-    filter(!(Country =="Romania" & Sex %in% c("m","f") & Measure == "Cases"))
+  # inputDB <- 
+  #   inputDB %>% 
+  #   filter(!(Country =="Romania" & Sex %in% c("m","f") & Measure == "Cases"))
 
+  
+  
   # Date range check: 
   inputDB %>% 
     mutate(date = dmy(Date)) %>% 
@@ -113,7 +117,28 @@ if (check_db){
   inputDB %>% pull(Measure) %>% table(useNA = "ifany")
   inputDB %>% pull(Metric) %>% table(useNA = "ifany")
   inputDB %>% pull(Age) %>% table(useNA = "ifany") 
-
+  sum(inputDB$Age ==  "üle 85")
+  # Estonia coding mistake
+  inputDB <-
+    inputDB %>% 
+    mutate(Age = ifelse(Age == "üle 85","85",Age))
+  # inputDB <- inputDB %>% 
+  #   mutate(Short = ifelse(is.na(Short),"IN",Short))
+  
+  # once-off fix for Sweden input:
+  inputDB <- 
+    inputDB %>% 
+    mutate(AgeInt = ifelse(Age %in% c("UNK","TOT"),NA,AgeInt))
+  
+  inputDB <-
+  inputDB %>% 
+    mutate(date = dmy(Date)) %>% 
+    mutate(AgeInt = ifelse(Country == "Sweden" & date >= dmy("31.05.2020") & Age == "90",15,AgeInt))
+  inputDB <-
+    inputDB %>% 
+    mutate(date = dmy(Date)) %>% 
+    filter(!(Country == "Finland" & date >= dmy("22.05.2020"))) %>% 
+    select(-date)
   
   # These are special cases that we would like to account for
   # eventually, but that we don't have a protocol for at this time.
@@ -132,6 +157,9 @@ if (check_db){
   
   n <- duplicated(inputDB[,c("Code","Sex","Age","Measure","Metric")])
   sum(n)
+  # inputDB %>% filter(n) %>% pull(Code) %>% unique()
+ # inputDB <- inputDB %>%  filter(!(n & Country == "Sweden"))
+  inputDB <- inputDB %>% filter(!n)
   
   rm.codes <- FALSE
   if (sum(n) > 0 & rm.codes){
@@ -139,8 +167,6 @@ if (check_db){
     inputDB <- inputDB %>% filter(!Code %in% rmcodes)
   }
 
-  
-  
   run_checks(inputDB, ShortCodes = inputDB %>% pull(Short) %>% unique())
   
   # If it's a partial build then swap out the data.
@@ -167,7 +193,7 @@ if (check_db){
   # NOTE THIS WILL FAIL FOR REGIONS!!
   do_this <-FALSE
   if(do_this){
-    inputDB <- swap_country_inputDB(inputDB, "NL")
+    inputDB <- swap_country_inputDB(inputDB, "US_IA")
   }
   # ----------------------------------------------------
 
@@ -231,5 +257,8 @@ if (check_db){
  #  
  #  
   
-
+# 
+#   inputDB <-
+#     inputDB %>% 
+#     mutate(Code = ifelse(Short == "GB_ENG_PHE", paste0("GB_EN_PHE_",Date),Code))
   

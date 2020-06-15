@@ -384,11 +384,11 @@ library(readr)
 library(lubridate)
 library(ggplot2)
 # this is the &quot;raw&quot; url
-inputDB &lt;- read_csv(&quot;https://raw.githubusercontent.com/timriffe/covid_age/master/Data/inputDB.csv&quot;,
+inputDB &lt;- read_csv(&quot;https://media.githubusercontent.com/media/timriffe/covid_age/master/Data/inputDB.csv&quot;,
                     skip = 1,
                     col_types = &quot;cccccciccdc&quot;) # this gets the classes right
 glimpse(inputDB)</code></pre>
-<pre><code>## Rows: 747,389
+<pre><code>## Rows: 920,953
 ## Columns: 11
 ## $ Country &lt;chr&gt; &quot;Algeria&quot;, &quot;Algeria&quot;, &quot;Algeria&quot;, &quot;Algeria&quot;, &quot;Algeria&quot;, &quot;Algeria&quot;, &quot;Algeria&quot;, &quot;Al…
 ## $ Region  &lt;chr&gt; &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;Al…
@@ -407,11 +407,11 @@ glimpse(inputDB)</code></pre>
 <h2>Output files</h2>
 <p>Output files are friendlier for several reasons. Since measures from like subsets are next to each other, it’s easier to calculate things. Since age groups are uniform, it’s easy to compare subsets. Since <code>Age</code> is a proper integer it’s easy to plot it in the abscissa. However, you’ll still want to convert the <code>Date</code> class to use it in plotting. These come as character strigngs following the format <code>&quot;DD.MM.YYYY&quot;</code>, and can be converted using <code>lubridate::dmy()</code> without further ado.</p>
 <pre class="r"><code># this is the &quot;raw&quot; url
-Output_10 &lt;- read_csv(&quot;https://raw.githubusercontent.com/timriffe/covid_age/master/Data/Output_10.csv&quot;,
+Output_10 &lt;- read_csv(&quot;https://media.githubusercontent.com/media/timriffe/covid_age/master/Data/Output_10.csv&quot;,
                     skip = 1,
                     col_types = &quot;cccciicddd&quot;) # this gets the classes right
 glimpse(Output_10)</code></pre>
-<pre><code>## Rows: 293,238
+<pre><code>## Rows: 328,009
 ## Columns: 10
 ## $ Country &lt;chr&gt; &quot;Algeria&quot;, &quot;Algeria&quot;, &quot;Algeria&quot;, &quot;Algeria&quot;, &quot;Algeria&quot;, &quot;Algeria&quot;, &quot;Algeria&quot;, &quot;Al…
 ## $ Region  &lt;chr&gt; &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;Al…

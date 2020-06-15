@@ -11,6 +11,13 @@ library(tmap)
 library(sf)
 data(World)
 
+# DB objects
+db_pops  <- get_input_rubric("input")
+db_input <- readRDS("Data/inputDB.rds")
+db_input <- db_input %>% 
+  mutate(Country = ifelse(Country == "US","USA",Country))
+
+
 # checking coordinate system
 st_crs(World)
 
@@ -30,11 +37,6 @@ World <- World[!World$name == "Antarctica",]
 world_rob<-st_transform(World, "+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
 world_rob %>% ggplot() + geom_sf()
 
-
-
-db_pops <- get_input_rubric("input")
-
-db_input <- readRDS("Data/inputDB.rds")
 # 
 # db_10 <- read_csv("https://github.com/timriffe/covid_age/raw/master/Data/Output_10.csv",
 #                   skip = 1) 
@@ -67,6 +69,8 @@ db_coverage <-
   filter(!Country %in% c("Northern Ireland", "Scotland","England","Wales")) %>% 
   mutate(coverage = ifelse(Country == "UK","National and regional",coverage)) %>% 
   filter(Country != "Russia")
+
+db_coverage$Country[!db_coverage$Country %in% world_rob$name]
 
 map_joined <- left_join(world_rob, db_coverage, 
                         by = c('name' = 'Country')) 
