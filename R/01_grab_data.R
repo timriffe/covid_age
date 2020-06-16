@@ -118,6 +118,13 @@ if (check_db){
   inputDB <-
     inputDB %>% 
     mutate(Age = ifelse(Age == "üle 85","85",Age))
+  
+  inputDB <-
+    inputDB %>% 
+    mutate(AgeInt = ifelse(Short == "GB_ENW" & Age == "90",15,AgeInt))
+  inputDB <-
+    inputDB %>% 
+    mutate(AgeInt = ifelse(Short == "EE" & Age == "85",20,AgeInt))
   # inputDB <- inputDB %>% 
   #   mutate(Short = ifelse(is.na(Short),"IN",Short))
   
@@ -158,9 +165,12 @@ if (check_db){
   
   n <- duplicated(inputDB[,c("Code","Sex","Age","Measure","Metric")])
   sum(n)
-  # inputDB %>% filter(n) %>% pull(Code) %>% unique()
- # inputDB <- inputDB %>%  filter(!(n & Country == "Sweden"))
+  rmcodes <- inputDB %>% filter(n) %>% pull(Code) %>% unique()
+  inputDB <- inputDB %>% filter(!Code%in%rmcodes)
+  # inputDB <- inputDB %>%  filter(!(n & Country == "Sweden"))
   inputDB <- inputDB %>% filter(!n)
+  
+  inputDB <- inputDB %>% filter(!is.na(Value))
   
   rm.codes <- FALSE
   if (sum(n) > 0 & rm.codes){
@@ -194,7 +204,7 @@ if (check_db){
   # NOTE THIS WILL FAIL FOR REGIONS!!
   do_this <-FALSE
   if(do_this){
-    inputDB <- swap_country_inputDB(inputDB, "US_IA")
+    inputDB <- swap_country_inputDB(inputDB, "CA_QC")
   }
   # ----------------------------------------------------
 

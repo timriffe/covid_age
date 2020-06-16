@@ -10,7 +10,7 @@ if (!require("pacman", character.only = TRUE)){
     stop("Package not found")
 }
 
-packages_CRAN <- c("tidyverse","lubridate","here","gargle","ungroup","HMDHFDplus","tictoc","parallel")
+packages_CRAN <- c("tidyverse","lubridate","here","gargle","ungroup","HMDHFDplus","tictoc","parallel","pbmcapply")
 
 if(!sum(!p_isinstalled(packages_CRAN))==0){
   p_install(
@@ -195,71 +195,6 @@ swap_country_inputDB <- function(inputDB, ShortCode){
     sort_input_data()
   inputDB
 }
-
-# ----------------------------------------------------
-
-
-get_standby_inputDB <- function(){
-  rubric <- get_input_rubric(tab = "output")
-  inputDB_ss <- 
-    rubric %>% 
-    filter(tab == "inputDB") %>% 
-    pull(Sheet)
-  standbyDB <- read_sheet(inputDB_ss, sheet = "inputDB", na = "NA", col_types= "cccccciccdc")
-  standbyDB
-}
-
-check_input_updates <- function(inputDB  = NULL, standbyDB = NULL){
-
-  if (is.null(standbyDB)){
-    standbyDB <- get_standby_inputDB()
-  }
-  if (is.null(inputDB)){
-    inputDB <- compile_inputDB()
-  }
-  codes_have      <- standbyDB %>% pull(Code) %>% unique()
-  codes_collected <- inputDB %>% pull(Code) %>% unique()
-  
-  new_codes <- codes_collected[!codes_collected%in%codes_have]
-  if (length(new_codes)  > 0){
-    cat(new_codes)
-    nr <- nrow(standbyDB) - nrow(inputDB)
-    cat(nr, "total new values collected")
-  } else {
-    cat("no new updates to add")
-  }
-}
-
-
-# inspect_code(inputDB,"ES31.03.2020)
-inspect_code <- function(DB, .Code){
-  DB %>% 
-    filter(Code == .Code) %>% 
-    View()
-}
-
-# agressive push
-push_inputDB <- function(inputDB = NULL){
-
-  inputDB_ss <- 
-    get_input_rubric(tab="output") %>% 
-    filter(tab == "inputDB") %>% 
-    pull(Sheet)
-  
-  write_sheet(inputDB, ss = inputDB_ss, sheet = "inputDB")
-}
-
-
-# Output can live straight in github now
-# push_outputDB <- function(outputDB = NULL){
-# 
-#   inputDB_ss <- 
-#     get_input_rubric(tab="output") %>% 
-#     filter(tab == "outputDB") %>% 
-#     pull(Sheet)
-#   
-#   write_sheet(outputDB, ss = inputDB_ss, sheet = "outputDB")
-# }
 
 
 
@@ -862,8 +797,17 @@ maybe_lower_closeout <- function(chunk, OAnew_min = 85){
   }
   chunk
 }
-                
+      
+
+# inspect_code(inputDB,"ES31.03.2020)
+inspect_code <- function(DB, .Code){
+  DB %>% 
+    filter(Code == .Code) %>% 
+    View()
+}
+
 # This encapsulates the entire processing chain.
+# TODO: ensure match to current chain.
 process_counts <- function(inputDB, Offsets = NULL, N = 10){
   
   
@@ -1146,5 +1090,61 @@ rescaleAgeGroups <- function (Value1, AgeInt1, Value2, AgeInt2, splitfun = c(gra
   }
 }
 
+# ----------------------------------------------------
+
+
+# get_standby_inputDB <- function(){
+#   rubric <- get_input_rubric(tab = "output")
+#   inputDB_ss <- 
+#     rubric %>% 
+#     filter(tab == "inputDB") %>% 
+#     pull(Sheet)
+#   standbyDB <- read_sheet(inputDB_ss, sheet = "inputDB", na = "NA", col_types= "cccccciccdc")
+#   standbyDB
+# }
+
+# check_input_updates <- function(inputDB  = NULL, standbyDB = NULL){
+# 
+#   if (is.null(standbyDB)){
+#     standbyDB <- get_standby_inputDB()
+#   }
+#   if (is.null(inputDB)){
+#     inputDB <- compile_inputDB()
+#   }
+#   codes_have      <- standbyDB %>% pull(Code) %>% unique()
+#   codes_collected <- inputDB %>% pull(Code) %>% unique()
+#   
+#   new_codes <- codes_collected[!codes_collected%in%codes_have]
+#   if (length(new_codes)  > 0){
+#     cat(new_codes)
+#     nr <- nrow(standbyDB) - nrow(inputDB)
+#     cat(nr, "total new values collected")
+#   } else {
+#     cat("no new updates to add")
+#   }
+# }
+
+# agressive push
+# push_inputDB <- function(inputDB = NULL){
+# 
+#   inputDB_ss <- 
+#     get_input_rubric(tab="output") %>% 
+#     filter(tab == "inputDB") %>% 
+#     pull(Sheet)
+#   
+#   write_sheet(inputDB, ss = inputDB_ss, sheet = "inputDB")
+# }
+
+
+# Output can live straight in github now
+# push_outputDB <- function(outputDB = NULL){
+# 
+#   inputDB_ss <- 
+#     get_input_rubric(tab="output") %>% 
+#     filter(tab == "outputDB") %>% 
+#     pull(Sheet)
+#   
+#   write_sheet(outputDB, ss = inputDB_ss, sheet = "outputDB")
+# }
 
 

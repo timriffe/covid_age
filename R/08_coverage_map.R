@@ -66,7 +66,7 @@ db_coverage <-
   bind_rows(have_in_idb,
             forthcoming) %>% 
   # we do this because UK envelops them in map.
-  filter(!Country %in% c("Northern Ireland", "Scotland","England","Wales")) %>% 
+  filter(!Country %in% c("Northern Ireland", "Scotland","England","Wales","England and Wales")) %>% 
   mutate(coverage = ifelse(Country == "UK","National and regional",coverage)) %>% 
   filter(Country != "Russia")
 

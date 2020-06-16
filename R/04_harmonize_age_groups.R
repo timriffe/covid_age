@@ -1,7 +1,6 @@
 #.rs.restartR()
 rm(list=ls());gc()
-source("R/00_Functions.R")/
-library(pbmcapply)
+source("R/00_Functions.R")
 # prelims to get offsets
 
 inputCounts <- readRDS("Data/inputCounts.rds")
