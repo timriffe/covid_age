@@ -229,7 +229,7 @@ do_we_convert_fractions_all_sexes <- function(chunk){
   out
 }
 
-convert_fractions_all_sexes <- function(chunk){
+convert_fractions_all_sexes <- function(chunk, verbose = FALSE){
   do_this <- do_we_convert_fractions_all_sexes(chunk)
   if (!do_this){
     return(chunk)
@@ -245,7 +245,7 @@ convert_fractions_all_sexes <- function(chunk){
   stopifnot(all(rest$Metric == "Fraction"))
     
   # Console message
-  cat("Fractions converted to Counts for",unique(chunk$Code),"\n")
+  if (verbose) cat("Fractions converted to Counts for",unique(chunk$Code),"\n")
   if (any(b$Age == "TOT")){
     BB <- b %>% filter(Age == "TOT") %>% pull(Value)
   } else {
@@ -275,7 +275,7 @@ do_we_convert_fractions_within_sex <- function(chunk){
   (nrow(scaleable) == 1) & have_fracs
 }
 
-convert_fractions_within_sex <- function(chunk){
+convert_fractions_within_sex <- function(chunk, verbose = FALSE){
   # subset should contain only Fractions and one Total Count
   
   do.this <- do_we_convert_fractions_within_sex(chunk)
@@ -288,7 +288,7 @@ convert_fractions_within_sex <- function(chunk){
   
   stopifnot(TOT$Age == "TOT")
   # Console message
-  cat("Fractions converted to Counts for",unique(chunk$Code),"\n")
+  if (verbose) cat("Fractions converted to Counts for",unique(chunk$Code),"\n")
   
   TOT <- TOT %>% pull(Value)
   
@@ -314,7 +314,7 @@ do_we_infer_deaths_from_cases_and_ascfr <- function(chunk){
   have_ratios_counts & ascfr_ratio & cases_count
 }
 
-infer_deaths_from_cases_and_ascfr <- function(chunk){
+infer_deaths_from_cases_and_ascfr <- function(chunk, verbose = FALSE){
   do_this <- do_we_infer_deaths_from_cases_and_ascfr(chunk)
   if (!do_this){
     return(chunk)
@@ -335,7 +335,7 @@ infer_deaths_from_cases_and_ascfr <- function(chunk){
   Deaths  <- ASCFR
   
   # Console message
-  cat("ACSFR converted to deaths for",unique(chunk$Code),"\n")
+  if (verbose) cat("ACSFR converted to deaths for",unique(chunk$Code),"\n")
   
   Deaths <-
     Deaths %>% 
@@ -368,7 +368,7 @@ do_we_infer_cases_from_deaths_and_ascfr <- function(chunk){
 # 2) convert infografica style data to counts
 # subset cannot include Metric or Measure as splitters
 # group_by(Code, Sex)
-infer_cases_from_deaths_and_ascfr <- function(chunk){
+infer_cases_from_deaths_and_ascfr <- function(chunk, verbose = FALSE){
   do_this <- do_we_infer_cases_from_deaths_and_ascfr(chunk)
   if (!do_this){
     return(chunk)
@@ -411,7 +411,7 @@ infer_cases_from_deaths_and_ascfr <- function(chunk){
     ASCFR <- rbind(ASCFR,UNK)
   }
   # Console message
-  cat("ACSFR converted to counts for",unique(chunk$Code),"\n")
+  if (verbose) cat("ACSFR converted to counts for",unique(chunk$Code),"\n")
   
   Cases <-
     Cases %>% 
@@ -444,7 +444,7 @@ do_we_redistribute_unknown_age <- function(chunk){
 # 
 # group_by(Code, Sex, Measure)
 # redistribute_unknown_age()
-redistribute_unknown_age <- function(chunk){
+redistribute_unknown_age <- function(chunk, verbose = FALSE){
   # this should happen after ratios turned to counts!
   do_this <- do_we_redistribute_unknown_age(chunk)
   if (!do_this){
@@ -467,10 +467,12 @@ redistribute_unknown_age <- function(chunk){
              Value = ifelse(is.nan(Value),0,Value))
     
     # Console message
+    if (verbose){
     cat(paste("UNK Age redistributed for",
         unique(chunk$Code),
         unique(chunk$Sex),
         unique(chunk$Measure)),"\n")
+    }
   }
   chunk <- rbind(chunk, TOT)
   chunk
@@ -500,7 +502,7 @@ do_we_rescale_to_total <- function(chunk){
 # This function to be run on a given Code * Sex subset.
 # This could be run before redistributing UNK, for example.
 
-rescale_to_total <- function(chunk){
+rescale_to_total <- function(chunk, verbose = FALSE){
   do_this <- do_we_rescale_to_total(chunk)
   if (!do_this){
     # looks silly, but possibly subset contains only TOT,
@@ -529,10 +531,12 @@ rescale_to_total <- function(chunk){
            Value = ifelse(is.nan(Value),0,Value))
   
   # Console message
+  if (verbose){
   cat(paste("Counts rescaled to TOT for",
       unique(chunk$Code),
       unique(chunk$Sex),
       unique(chunk$Measure)),"\n")
+  }
   
   chunk
 }
@@ -568,16 +572,18 @@ do_we_rescale_sexes <- function(chunk){
   out
 }
 # This can produce NAs in early Belgium Deaths (presumably)
-rescale_sexes <- function(chunk){
+rescale_sexes <- function(chunk, verbose = FALSE){
   do_this <- do_we_rescale_sexes(chunk)
   if (!do_this){
     return(chunk)
   }
   
   # Console message
+  if (verbose){
   cat("Sex-specific estimates rescaled to both-sex Totals for",
       unique(chunk$Code),
       unique(chunk$Measure),"\n")
+  }
   
   # separate chunks
   m    <- chunk %>% filter(Sex == "m")
@@ -622,7 +628,7 @@ do_we_redistribute_unknown_sex <- function(chunk){
 }
 # this should happen within age, though
 # group_by(Code, Age, Measure)
-redistribute_unknown_sex <- function(chunk){
+redistribute_unknown_sex <- function(chunk, verbose = FALSE){
   # this should happen after ratios turned to counts!
   stopifnot(all(chunk$Metric != "Ratio"))
   do_this <- do_we_redistribute_unknown_sex(chunk)
@@ -634,10 +640,12 @@ redistribute_unknown_sex <- function(chunk){
              Value = ifelse(is.nan(Value), UNK$Value / 2, Value))
     
     # Console message
+    if (verbose){
     cat("UNK Sex redistributed for",
         unique(chunk$Code),
         unique(chunk$Age),
         unique(chunk$Measure),"\n")
+    }
   }
 
   chunk
@@ -662,7 +670,7 @@ do_we_infer_both_sex <- function(chunk){
 }
 
 
-infer_both_sex <- function(chunk){
+infer_both_sex <- function(chunk, verbose = FALSE){
   do_this <- do_we_infer_both_sex(chunk)
   # 2 things: 
   # 1) could be a both-sex total available, so far unused.
@@ -672,7 +680,7 @@ infer_both_sex <- function(chunk){
   Code    <- chunk %>% pull(Code) %>% '['(1)
   Sex     <- chunk %>% pull(Sex) %>% '['(1)
   Measure <- chunk %>% pull(Measure) %>% '['(1)
-  cat("Both sex counts created by summing sex-specific counts",Code,Sex,Measure,"\n")
+  if (verbose) cat("Both sex counts created by summing sex-specific counts",Code,Sex,Measure,"\n")
   chunk %>% 
     pivot_wider(names_from = "Sex",
                 values_from = "Value",
@@ -760,7 +768,7 @@ do_we_maybe_lower_closeout <- function(chunk, OAnew_min){
   }
   i < n
 }
-maybe_lower_closeout <- function(chunk, OAnew_min = 85){
+maybe_lower_closeout <- function(chunk, OAnew_min = 85, verbose = FALSE){
 
   do_this <- do_we_maybe_lower_closeout(chunk, OAnew_min)
   if (!do_this){
@@ -785,7 +793,7 @@ maybe_lower_closeout <- function(chunk, OAnew_min = 85){
     .Code    <- chunk %>% pull(Code) %>% '[['(1)
     .Sex     <- chunk %>% pull(Sex) %>% '[['(1)
     .Measure <- chunk %>% pull(Measure) %>% '[['(1)
-    cat("Open age group lowered from",Age[n],"to",Age[i],"for",.Code,.Sex,.Measure,"\n")
+    if (verbose) cat("Open age group lowered from",Age[n],"to",Age[i],"for",.Code,.Sex,.Measure,"\n")
     Value  <- c(Value[1:(i-1)],sum(Value[i:n]))
     Age    <- Age[1:i]
     AgeInt <- c(AgeInt[1:(i-1)], 105 - Age[i])
