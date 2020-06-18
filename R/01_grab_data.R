@@ -112,12 +112,12 @@ if (check_db){
   #   filter(is.na(date)) %>% View()
 
   # hunt down anything implausible
-  # ----------------------
-  sum(inputDB$Age ==  "üle 85")
-  # Estonia coding mistake
-  inputDB <-
-    inputDB %>% 
-    mutate(Age = ifelse(Age == "üle 85","85",Age))
+  # # ----------------------
+  # inputDB <-
+  #   inputDB %>% 
+  #   mutate(Age = ifelse(is.na(Age),"TOT",Age))
+  # sum(inputDB$Age ==  "üle 85")
+
   
   inputDB <-
     inputDB %>% 
@@ -137,12 +137,12 @@ if (check_db){
   inputDB %>% 
     mutate(date = dmy(Date)) %>% 
     mutate(AgeInt = ifelse(Country == "Sweden" & date >= dmy("31.05.2020") & Age == "90",15,AgeInt))
-  inputDB <-
-    inputDB %>% 
-    mutate(date = dmy(Date)) %>% 
-    filter(!(Country == "Finland" & date >= dmy("22.05.2020"))) %>% 
-    select(-date)
-  
+  # inputDB <-
+  #   inputDB %>% 
+  #   mutate(date = dmy(Date)) %>% 
+  #   filter(!(Country == "Finland" & date >= dmy("22.05.2020"))) %>% 
+  #   select(-date)
+  # 
   # These are special cases that we would like to account for
   # eventually, but that we don't have a protocol for at this time.
   inputDB <- inputDB %>% filter(Measure != "Probable deaths")
@@ -168,8 +168,9 @@ if (check_db){
   rmcodes <- inputDB %>% filter(n) %>% pull(Code) %>% unique()
   inputDB <- inputDB %>% filter(!Code%in%rmcodes)
   # inputDB <- inputDB %>%  filter(!(n & Country == "Sweden"))
-  inputDB <- inputDB %>% filter(!n)
+  # inputDB <- inputDB %>% filter(!n)
   
+  any(is.na(inputDB$Value))
   inputDB <- inputDB %>% filter(!is.na(Value))
   
   rm.codes <- FALSE

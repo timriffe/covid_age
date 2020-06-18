@@ -10,6 +10,31 @@ inputDB <- readRDS("Data/inputDB.rds")
 inputDB %>% pull(Age) %>% is.na() %>% any()
 inputDB %>% pull(Value) %>% is.na() %>% any()
 
+filter_try_errors_then_bind <- function(big_list){
+  probs <- lapply(big_list, function(x){
+    class(x)[1] == "try-error"
+  }) %>% unlist()
+  cat(paste("Failures:", probs, sep = "\n"))
+  big_list[!probs] %>% 
+    bind_rows()
+}
+
+A <-
+  inputDB %>% 
+  filter(!(Age == "TOT" & Metric == "Fraction"),
+         !(Age == "UNK" & Value == 0),
+         !(Sex == "UNK" & Sex == 0)) %>% 
+  split(list(Code, Measure)) %>% 
+  mclapply(try(convert_fractions_all_sexes), mc.cores = 6) %>% 
+  bind_rows() %>% 
+  split(list(Code, Sex, Measure)) %>% 
+  mclapply(try(convert_fractions_within_sex), mc.cores = 6) %>% 
+  lapply(function(x){
+    class(x)[1] == "try-error"
+  })
+  bind_rows() 
+
+
   
 A <-
   inputDB %>% 
