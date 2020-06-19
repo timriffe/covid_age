@@ -2,7 +2,9 @@
 
 rm(list=ls());gc()
 source("R/00_Functions.R")
-  
+  library(data.table)
+# mc.cores <- 6
+
 inputDB <- readRDS("Data/inputDB.rds")
 
 # this script transforms the inputDB as required, and produces standardized measures and metrics
@@ -10,93 +12,124 @@ inputDB <- readRDS("Data/inputDB.rds")
 inputDB %>% pull(Age) %>% is.na() %>% any()
 inputDB %>% pull(Value) %>% is.na() %>% any()
 
-filter_try_errors_then_bind <- function(big_list){
-  probs <- lapply(big_list, function(x){
-    class(x)[1] == "try-error"
-  }) %>% unlist()
-  cat(paste("Failures:", probs, sep = "\n"))
-  big_list[!probs] %>% 
-    bind_rows()
-}
+# filter_try_errors_then_bind <- function(big_list, mc.cores){
+#   probs <- mclapply(big_list, function(x){
+#     class(x)[1] == "try-error"
+#   }, mc.cores = mc.cores) %>% unlist()
+#   if (any(probs)) cat(paste("Failures:", probs[probs], sep = "\n"))
+#   big_list[!probs] %>% 
+#     bind_rows() %>% 
+#     sort_input_data()
+# }
 
+# tic()
+# A1 <-
+#   inputDB %>% 
+#   filter(!(Age == "TOT" & Metric == "Fraction"),
+#          !(Age == "UNK" & Value == 0),
+#          !(Sex == "UNK" & Sex == 0)) %>% 
+#   split(list(.$Code, .$Measure)) %>% 
+#   mclapply(try(convert_fractions_all_sexes), mc.cores = mc.cores) %>% 
+#   filter_try_errors_then_bind( mc.cores = mc.cores) %>% 
+#   split(list(.$Code, .$Sex, .$Measure)) %>% 
+#   mclapply(try(convert_fractions_within_sex), mc.cores = mc.cores) %>% 
+#   filter_try_errors_then_bind( mc.cores = mc.cores)
+# toc() # 873.79 (note, one thread hangs, possible randomizing order is best?)
+
+tic()
 A <-
   inputDB %>% 
   filter(!(Age == "TOT" & Metric == "Fraction"),
          !(Age == "UNK" & Value == 0),
          !(Sex == "UNK" & Sex == 0)) %>% 
-  split(list(Code, Measure)) %>% 
-  mclapply(try(convert_fractions_all_sexes), mc.cores = 6) %>% 
-  bind_rows() %>% 
-  split(list(Code, Sex, Measure)) %>% 
-  mclapply(try(convert_fractions_within_sex), mc.cores = 6) %>% 
-  lapply(function(x){
-    class(x)[1] == "try-error"
-  })
-  bind_rows() 
+  as.data.table()
+A <- A[,convert_fractions_all_sexes(.SD),by=list(Code, Measure)]
+A <- A[,convert_fractions_within_sex(.SD),by=list(Code, Sex, Measure)]
+toc() # 62.6 ...
 
 
-  
-A <-
-  inputDB %>% 
-  filter(!(Age == "TOT" & Metric == "Fraction"),
-         !(Age == "UNK" & Value == 0),
-         !(Sex == "UNK" & Sex == 0)) %>% 
-  group_by(Code, Measure) %>%
-  # do_we_convert_fractions_all_sexes(chunk)
-  do(convert_fractions_all_sexes(chunk = .data)) %>% 
-  ungroup() %>% 
-  group_by(Code, Sex, Measure) %>% 
-  # do_we_convert_fractions_within_sex(chunk)
-  do(convert_fractions_within_sex(chunk = .data))                
+# 
+# tic()
+# A <-
+#   inputDB %>% 
+#   filter(!(Age == "TOT" & Metric == "Fraction"),
+#          !(Age == "UNK" & Value == 0),
+#          !(Sex == "UNK" & Sex == 0)) %>% 
+#   group_by(Code, Measure) %>%
+#   # do_we_convert_fractions_all_sexes(chunk)
+#   do(convert_fractions_all_sexes(chunk = .data)) %>% 
+#   ungroup() %>% 
+#   group_by(Code, Sex, Measure) %>% 
+#   # do_we_convert_fractions_within_sex(chunk)
+#   do(convert_fractions_within_sex(chunk = .data)) %>% 
+#   as_tibble()
+#  toc() # 857 ...
  
-B <- A  %>% 
-  # do_we_redistribute_unknown_age()
-  do(redistribute_unknown_age(chunk = .data))
+# Need to check dims, make sure all columns maintained.
+B <- A[ , redistribute_unknown_age(.SD), by = list(Code, Sex, Measure)]
+C <- B[ , rescale_to_total(.SD), by = list(Code, Sex, Measure)]
+D <- C[ , infer_cases_from_deaths_and_ascfr(.SD), by = list(Code, Sex)]
+E <- D[ , infer_deaths_from_cases_and_ascfr(.SD), by = list(Code, Sex)]
+E <- E[Metric != "Ratio"]
+G <- E[ , redistribute_unknown_sex(.SD), by = list(Code, Age, Measure)]
+H <- G[ , rescale_sexes(.SD), by = list(Code, Measure)]
+H <- H[Age != "TOT"]
+I <- H[ , infer_both_sex(.SD), by = list(Code, Measure)]
+J <- I[ , Age = as.integer(Age), ]
+J <- J[ , maybe_lower_closeout(.SD,  OAnew_min = 85), 
+        by = list(Code, Sex, Measure)]
+# B <- A  %>% 
+#   # do_we_redistribute_unknown_age()
+#   do(redistribute_unknown_age(chunk = .data))
  
-C <- B %>% 
-  # do_we_rescale_to_total()
-  do(rescale_to_total(chunk = .data)) %>% 
-  ungroup() 
+# C <- B %>% 
+#   # do_we_rescale_to_total()
+#   do(rescale_to_total(chunk = .data)) %>% 
+#   ungroup() 
 
-D <- C %>% 
-  group_by(Code, Sex) %>% 
-  # TR: This step can be improved I think.
-  # do_we_infer_cases_from_deaths_and_ascfr() "ITinfo15.04.2020"
-  do(infer_cases_from_deaths_and_ascfr(chunk = .data))
+# D <- C %>% 
+#   group_by(Code, Sex) %>% 
+#   # TR: This step can be improved I think.
+#   # do_we_infer_cases_from_deaths_and_ascfr() "ITinfo15.04.2020"
+#   do(infer_cases_from_deaths_and_ascfr(chunk = .data))
 
-E <- D %>% 
-  # do_we_infer_deaths_from_cases_and_ascfr()
-  do(infer_deaths_from_cases_and_ascfr(chunk = .data)) %>%  
-  ungroup() %>% 
-  # finally remove this
-  filter(Metric != "Ratio")
+# E <- D %>% 
+#   # do_we_infer_deaths_from_cases_and_ascfr()
+#   do(infer_deaths_from_cases_and_ascfr(chunk = .data)) %>%  
+#   ungroup() %>% 
+#   # finally remove this
+#   filter(Metric != "Ratio")
 
-G <- E %>% 
-  group_by(Code, Age, Measure) %>% 
-  # do_we_redistribute_unknown_sex()
-  do(redistribute_unknown_sex(chunk = .data)) %>% 
-  ungroup() 
+# G <- E %>% 
+#   group_by(Code, Age, Measure) %>% 
+#   # do_we_redistribute_unknown_sex()
+#   do(redistribute_unknown_sex(chu# 
+# I <- H %>% 
+#   # do_we_infer_both_sex()
+#   do(infer_both_sex(chunk = .data)) %>% 
+#   ungroup() nk = .data)) %>% 
+#   ungroup() 
 
-H <- G %>% 
-  group_by(Code, Measure) %>% 
-  # TR: change this to happen within Age
-  # do_we_rescale_sexes()
-  do(rescale_sexes(chunk = .data)) %>% 
-  # possibly there was a Sex = "b" Age = "TOT" left here.
-  # These would have made it this far if preserved to rescale sexes
-  filter(Age != "TOT")
+# H <- G %>% 
+#   group_by(Code, Measure) %>% 
+#   # TR: change this to happen within Age
+#   # do_we_rescale_sexes()
+#   do(rescale_sexes(chunk = .data)) %>% 
+#   # possibly there was a Sex = "b" Age = "TOT" left here.
+#   # These would have made it this far if preserved to rescale sexes
+#   filter(Age != "TOT")
+# 
+# I <- H %>% 
+#   # do_we_infer_both_sex()
+#   do(infer_both_sex(chunk = .data)) %>% 
+#   ungroup() 
 
-I <- H %>% 
-  # do_we_infer_both_sex()
-  do(infer_both_sex(chunk = .data)) %>% 
-  ungroup() 
-
-J <- I %>% 
-  mutate(Age = as.integer(Age)) %>% 
-  group_by(Code, Sex, Measure) %>% 
-  #do_we_maybe_lower_closeout()
-  do(maybe_lower_closeout(chunk = .data, OAnew_min = 85)) %>% 
-  ungroup()
+# J <- I %>% 
+#   mutate(Age = as.integer(Age)) %>% 
+#   group_by(Code, Sex, Measure) %>% 
+#   #do_we_maybe_lower_closeout()
+#   do(maybe_lower_closeout(chunk = .data, OAnew_min = 85)) %>% 
+#   ungroup()
 
 inputCounts <- J %>% 
   arrange(Country, Region, Sex, Measure, Age)
