@@ -182,6 +182,10 @@ ASCFR5 %>%
                 color = "tomato",
                 size = 1)
 
+ASCFR5 %>% 
+  filter(
+         ASCFR > 1e3)
+
 }
 
 # 

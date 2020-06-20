@@ -118,13 +118,7 @@ if (check_db){
   #   mutate(Age = ifelse(is.na(Age),"TOT",Age))
   # sum(inputDB$Age ==  "üle 85")
 
-  
-  inputDB <-
-    inputDB %>% 
-    mutate(AgeInt = ifelse(Short == "GB_ENW" & Age == "90",15,AgeInt))
-  inputDB <-
-    inputDB %>% 
-    mutate(AgeInt = ifelse(Short == "EE" & Age == "85",20,AgeInt))
+
   # inputDB <- inputDB %>% 
   #   mutate(Short = ifelse(is.na(Short),"IN",Short))
   
@@ -133,10 +127,8 @@ if (check_db){
     inputDB %>% 
     mutate(AgeInt = ifelse(Age %in% c("UNK","TOT"),NA,AgeInt))
   
-  inputDB <-
-  inputDB %>% 
-    mutate(date = dmy(Date)) %>% 
-    mutate(AgeInt = ifelse(Country == "Sweden" & date >= dmy("31.05.2020") & Age == "90",15,AgeInt))
+
+
   # inputDB <-
   #   inputDB %>% 
   #   mutate(date = dmy(Date)) %>% 
@@ -205,7 +197,7 @@ if (check_db){
   # NOTE THIS WILL FAIL FOR REGIONS!!
   do_this <-FALSE
   if(do_this){
-    inputDB <- swap_country_inputDB(inputDB, "CA_QC")
+    inputDB <- swap_country_inputDB(inputDB, "US_MO")
   }
   # ----------------------------------------------------
 
