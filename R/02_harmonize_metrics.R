@@ -35,20 +35,136 @@ inputDB %>% pull(Value) %>% is.na() %>% any()
 #   mclapply(try(convert_fractions_within_sex), mc.cores = mc.cores) %>% 
 #   filter_try_errors_then_bind( mc.cores = mc.cores)
 # toc() # 873.79 (note, one thread hangs, possible randomizing order is best?)
-
+icols <- colnames(inputDB)
 tic()
+
+log_section("New build run!", append = FALSE)
+
 A <-
   inputDB %>% 
   filter(!(Age == "TOT" & Metric == "Fraction"),
          !(Age == "UNK" & Value == 0),
          !(Sex == "UNK" & Sex == 0)) %>% 
   as.data.table()
-A <- A[,convert_fractions_all_sexes(.SD),by=list(Code, Measure)]
-A <- A[,convert_fractions_within_sex(.SD),by=list(Code, Sex, Measure)]
-toc() # 62.6 ...
+
+# Fraction conversion, consider as single step
+log_section("A")
+A <- A[ , try_step(process_function = convert_fractions_all_sexes,
+                   chunk = .SD,
+                   byvars = c("Code","Measure")),
+        by = list(Code, Measure), 
+        .SDcols = icols][,..icols]
+
+A <- A[ , try_step(process_function = convert_fractions_within_sex,
+                   chunk = .SD,
+                   byvars = c("Code","Sex","Measure")),
+        by=list(Code, Sex, Measure), 
+        .SDcols = icols][,..icols]
+
+# Unk Age redist
+log_section("B")
+B <- A[ , try_step(process_function = redistribute_unknown_age,
+                   chunk = .SD,
+                   byvars = c("Code","Sex","Measure")), 
+        by = list(Code, Sex, Measure), 
+        .SDcols = icols][,..icols]
+
+# Scale to totals (within sex)
+log_section("C")
+C <- B[ , try_step(process_function = rescale_to_total,
+                   chunk = .SD,
+                   byvars = c("Code","Sex","Measure")), 
+        by = list(Code, Sex, Measure), 
+        .SDcols = icols][,..icols]
+
+# Deaths + ASCFR -> Cases (not so good)
+log_section("D")
+D <- C[ , try_step(process_function = infer_cases_from_deaths_and_ascfr,
+                   chunk = .SD,
+                   byvars = c("Code", "Sex")), 
+        by = list(Code, Sex), 
+        .SDcols = icols][,..icols]
+
+# Cases + ASCFR -> Deaths (not bad)
+log_section("E")
+E <- D[ , try_step(process_function = infer_deaths_from_cases_and_ascfr,
+                   chunk = .SD,
+                   byvars = c("Code", "Sex")), 
+        by = list(Code, Sex), 
+        .SDcols = icols][,..icols]
+E <- E[Metric != "Ratio"]
+
+# UNK Sex (within age)
+log_section("G")
+G <- E[ , try_step(process_function = redistribute_unknown_sex,
+                   chunk = .SD,
+                   byvars = c("Code", "Age", "Measure")), 
+        by = list(Code, Age, Measure), 
+        .SDcols = icols][,..icols]
+
+# sex-specific scaled to both-sex
+log_section("H")
+H <- G[ , try_step(process_function = rescale_sexes,
+                   chunk = .SD,
+                   byvars = c("Code", "Measure")), 
+        by = list(Code, Measure), 
+        .SDcols = icols][,..icols]
+H <- H[Age != "TOT"]
+
+# both-sex calculated as sum of sex-specific (when not collected seprarately)
+log_section("I")
+I <- H[ , try_step(process_function = infer_both_sex,
+                   chunk = .SD,
+                   byvars = c("Code", "Measure")), 
+        by = list(Code, Measure), 
+        .SDcols = icols][,..icols]
 
 
-# 
+# if closeout ends in 0s, lower the closeout age as far as 85+
+log_section("J")
+J <- I[ , Age := as.integer(Age), ][, ..icols]
+J <- J[ , try_step(process_function = maybe_lower_closeout,
+                   chunk = .SD, 
+                   byvars = c("Code", "Sex", "Measure"),
+                   OAnew_min = 85), 
+        by = list(Code, Sex, Measure),
+        .SDcols = icols][,..icols]
+
+toc()
+# output
+inputCounts <- J %>% 
+  arrange(Country, Region, Sex, Measure, Age) %>% 
+  as.data.frame()
+
+# n <- duplicated(inputCounts[,c("Code","Sex","Age","Measure","Metric")])
+# sum(n)
+saveRDS(inputCounts, file = "Data/inputCounts.rds")
+
+COMPONENTS <- list(inputDB = inputDB, 
+                   A = A, 
+                   B = B, 
+                   C = C, 
+                   D = D, 
+                   E = E, 
+                   G = G, 
+                   H = H, 
+                   I = I, 
+                   J = J)
+save(COMPONENTS, file = "Data/ProcessingSteps.Rdata")
+# TR: add rescale_to_total() into the chain
+
+# inputCounts %>% filter(is.na(Value)) %>% View()
+
+# inputCounts %>% filter(is.infinite(Value)) %>% View()
+# -------------------------------#
+# Next step harmonize age groups #
+# -------------------------------#
+
+# NOTE: add function to check that for subsets with m and f Sex there is also a b
+# and create it if necessary.
+
+
+# The previous dplyr chain
 # tic()
 # A <-
 #   inputDB %>% 
@@ -62,26 +178,12 @@ toc() # 62.6 ...
 #   group_by(Code, Sex, Measure) %>% 
 #   # do_we_convert_fractions_within_sex(chunk)
 #   do(convert_fractions_within_sex(chunk = .data)) %>% 
-#   as_tibble()
 #  toc() # 857 ...
- 
-# Need to check dims, make sure all columns maintained.
-B <- A[ , redistribute_unknown_age(.SD), by = list(Code, Sex, Measure)]
-C <- B[ , rescale_to_total(.SD), by = list(Code, Sex, Measure)]
-D <- C[ , infer_cases_from_deaths_and_ascfr(.SD), by = list(Code, Sex)]
-E <- D[ , infer_deaths_from_cases_and_ascfr(.SD), by = list(Code, Sex)]
-E <- E[Metric != "Ratio"]
-G <- E[ , redistribute_unknown_sex(.SD), by = list(Code, Age, Measure)]
-H <- G[ , rescale_sexes(.SD), by = list(Code, Measure)]
-H <- H[Age != "TOT"]
-I <- H[ , infer_both_sex(.SD), by = list(Code, Measure)]
-J <- I[ , Age = as.integer(Age), ]
-J <- J[ , maybe_lower_closeout(.SD,  OAnew_min = 85), 
-        by = list(Code, Sex, Measure)]
+
 # B <- A  %>% 
 #   # do_we_redistribute_unknown_age()
 #   do(redistribute_unknown_age(chunk = .data))
- 
+
 # C <- B %>% 
 #   # do_we_rescale_to_total()
 #   do(rescale_to_total(chunk = .data)) %>% 
@@ -131,27 +233,5 @@ J <- J[ , maybe_lower_closeout(.SD,  OAnew_min = 85),
 #   do(maybe_lower_closeout(chunk = .data, OAnew_min = 85)) %>% 
 #   ungroup()
 
-inputCounts <- J %>% 
-  arrange(Country, Region, Sex, Measure, Age)
-
-saveRDS(inputCounts, file = "Data/inputCounts.rds")
-
-COMPONENTS <- list(inputDB, A, B, C, D, E, G, H, I, J)
-save(COMPONENTS, file = "Data/ProcessingSteps.Rdata")
-# TR: add rescale_to_total() into the chain
-
-# inputCounts %>% filter(is.na(Value)) %>% View()
-
-# inputCounts %>% filter(is.infinite(Value)) %>% View()
-# -------------------------------#
-# Next step harmonize age groups #
-# -------------------------------#
-
-# NOTE: add function to check that for subsets with m and f Sex there is also a b
-# and create it if necessary.
-
-# inputCounts %>% pull(Age) %>% is.na() %>% sum()
-# inputCounts %>% 
-#   filter(is.na(Age))
 
 
