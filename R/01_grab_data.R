@@ -10,7 +10,7 @@ rubric     <- get_input_rubric()
 rubric_old <- rubric_old %>% select(Short, Rows)
 
 
-extra_keep <- c("")
+extra_keep <- c("AR")
 
 Updates    <- 
   left_join(rubric, rubric_old, by = "Short") %>% 
@@ -197,7 +197,7 @@ if (check_db){
   # NOTE THIS WILL FAIL FOR REGIONS!!
   do_this <-FALSE
   if(do_this){
-    inputDB <- swap_country_inputDB(inputDB, "US_MO")
+    inputDB <- swap_country_inputDB(inputDB, "VE")
   }
   # ----------------------------------------------------
 
