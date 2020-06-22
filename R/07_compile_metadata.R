@@ -4,17 +4,132 @@ source("R/00_Functions.R")
 library(googlesheets4)
 rubric <- get_input_rubric("input")
 
-sheet_tabs <- list()
+
+metadata_tabs <- list()
 for (i in 1:nrow(rubric)){
-  ss <- rubric %>% pull(Sheet) %>% '['(i)
-  sheet_tabs[[i]] <- gs4_get(ss)
+   ss <- rubric %>% pull(Sheet) %>% '['(i)
+   metadata_tabs[[i]] <- read_sheet(ss, sheet = "metadata", col_types = "ccc")
 }
 
+saveRDS(metadata_tabs,file = "Data/metadata_tabs.rds")
 
-has_source_metadata <- function(sheets_metadata){
-  tabs<- sheets_metadata %>% '[['("sheets") %>% pull(name)
-  "metadata" %in% tabs
-}
-names(sheet_tabs) <- rubric$Short
-metadata_sheets <- lapply(sheet_tabs, has_source_metadata) %>% unlist()
-metadata_sheets[metadata_sheets]
+# sheet_tabs <- list()
+# for (i in 1:nrow(rubric)){
+#   ss <- rubric %>% pull(Sheet) %>% '['(i)
+#   sheet_tabs[[i]] <- gs4_get(ss)
+# }
+# 
+# get_sheet_names <- function(sheets_metadata){
+#   sheets_metadata %>% '[['("sheets") %>% pull(name)
+# }
+# 
+# 
+# has_source_metadata <- function(sheets_metadata){
+#   tabs<- sheets_metadata %>% '[['("sheets") %>% pull(name)
+#   "metadata" %in% tabs
+# }
+# 
+# names(sheet_tabs) <- rubric$Short
+# metas <- lapply(sheet_tabs, get_sheet_names) %>% 
+#   lapply(grepl,pattern="meta") %>% 
+#   lapply(any) %>% unlist()
+# metas[!metas]
+# 
+# 
+# metadata_sheets <- lapply(sheet_tabs, has_source_metadata) %>% unlist()
+# metadata_sheets[metadata_sheets]
+
+
+# template_ss <- "https://docs.google.com/spreadsheets/d/15HktFkvdmxZ36nHzAfFqAa63rPWnbyP2BFjVsMNBVZs/edit#gid=889172199"
+
+# create_meta <- metas[!metas]
+# for (i in 1:length(create_meta)){
+#   # get destination ss
+#   ss <- rubric %>% 
+#     filter(Short == names(create_meta)[i]) %>%  
+#     pull(Sheet) 
+#   
+#   # any sheet named metadata?
+#   has_meta <- 
+#     gs4_get(ss) %>% 
+#     '[['("sheets") %>% 
+#     pull(name) %>% 
+#     '=='("metadata") %>% 
+#     any()
+#   
+#   if (!has_meta){
+#     sheet_copy(from_ss = template_ss,
+#                from_sheet = "metadata",
+#                to_ss = ss,
+#                to_sheet = "metadata")
+#   }
+# }
+# 
+# 
+# for (i in 1:nrow(rubric)){
+#   ss <- rubric %>% pull(Sheet) %>% '['(i)
+#   
+#   sheet_copy(from_ss = ss,
+#              from_sheet = "metadata",
+#              to_ss = ss,
+#              to_sheet = "metadata_old")
+# }
+# 
+
+
+# ss_v2 <- "https://docs.google.com/spreadsheets/d/15HktFkvdmxZ36nHzAfFqAa63rPWnbyP2BFjVsMNBVZs/edit#gid=575566620"
+# 
+# for (i in 1:nrow(rubric)){
+#   ss <- rubric %>% pull(Sheet) %>% '['(i)
+#   sheet_delete(ss, sheet = "metadata")
+#   sheet_copy(from_ss = ss_v2,
+#              from_sheet = "metadata",
+#              to_ss = ss,
+#              to_sheet = "metadata")
+# }
+
+
+
+
+
+
+# new_template_ss <- "https://docs.google.com/spreadsheets/d/1G9Fo2by_r7jLWfpge7XEAxKN7v9ckexZZOHLl52hbVQ/edit#gid=1301732609"
+# 
+# template <- read_sheet(new_template_ss, sheet = "metadata")
+# write_sheet(template, new_template_ss, sheet = "attempt2")
+# 
+# metadata_tabs <- list()
+# for (i in 1:nrow(rubric)){
+#   ss <- rubric %>% pull(Sheet) %>% '['(i)
+#   metadata_tabs[[i]] <- read_sheet(ss, sheet = "metadata_old")
+#   metadata_tabs[[i]]$Answer <- lapply(metadata_tabs[[i]]$Answer,
+#                                       function(x){
+#                                         if(is.null(x)){return(NA)} else {return(x)}
+#                                       })
+#   metadata_tabs[[i]]$Answer <- unlist( metadata_tabs[[i]]$Answer)
+#   basic   <- metadata_tabs[[i]]$Answer[1:3] 
+#   default <- unlist(rubric[i,c("Short","Country","Region")])
+#   impute  <- ifelse(is.na(basic),default,basic)
+#   metadata_tabs[[i]]$Answer[1:3] <- impute
+#   r16     <- data.frame(Answer=metadata_tabs[[i]]$Answer[1:15])
+#   range_write(ss,
+#               data = r16,
+#               sheet = "metadata",
+#               range = "B1:B16",
+#               reformat = FALSE)
+#   Sys.sleep(10)
+#   
+# }
+# names(metadata_tabs) <- rubric$Short
+# lapply(metadata_tabs,colnames)
+
+############################
+# Write loop that copies the first 16 Answer values from 
+# metadata_old to metadata.
+# also the last two values.
+
+
+
+
+
+
