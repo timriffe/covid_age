@@ -388,19 +388,19 @@ inputDB &lt;- read_csv(&quot;https://media.githubusercontent.com/media/timriffe/
                     skip = 1,
                     col_types = &quot;cccccciccdc&quot;) # this gets the classes right
 glimpse(inputDB)</code></pre>
-<pre><code>## Rows: 966,371
+<pre><code>## Rows: 989,422
 ## Columns: 11
-## $ Country [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;Albania&quot;, &quot;Albania&quot;, &quot;Albania&quot;, &quot;Albania&quot;, &quot;Albania&quot;, &quot;Albania&quot;, &quot;Albania&quot;, &quot;A…
-## $ Region  [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;A…
-## $ Code    [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;AL16.06.2020&quot;, &quot;AL16.06.2020&quot;, &quot;AL16.06.2020&quot;, &quot;AL16.06.2020&quot;, &quot;AL16.06.2020&quot;,…
-## $ Date    [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;16.06.2020&quot;, &quot;16.06.2020&quot;, &quot;16.06.2020&quot;, &quot;16.06.2020&quot;, &quot;16.06.2020&quot;, &quot;16.06.20…
-## $ Sex     [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;,…
-## $ Age     [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;TOT&quot;, &quot;0&quot;, &quot;10&quot;, &quot;20&quot;, &quot;30&quot;, &quot;40&quot;, &quot;50&quot;, &quot;60&quot;, &quot;70&quot;, &quot;TOT&quot;, &quot;0&quot;, &quot;10&quot;, &quot;20&quot;, &quot;…
-## $ AgeInt  [3m[38;5;246m&lt;int&gt;[39m[23m NA, 10, 10, 10, 10, 10, 10, 10, 35, NA, 10, 10, 10, 10, 10, 10, 10, 35, NA, NA,…
-## $ Metric  [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;Count&quot;, &quot;Fraction&quot;, &quot;Fraction&quot;, &quot;Fraction&quot;, &quot;Fraction&quot;, &quot;Fraction&quot;, &quot;Fraction&quot;…
-## $ Measure [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;…
-## $ Value   [3m[38;5;246m&lt;dbl&gt;[39m[23m 1722.00, 0.02, 0.05, 0.14, 0.19, 0.19, 0.19, 0.13, 0.08, 38.00, 0.00, 0.00, 0.0…
-## $ Short   [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;…</code></pre>
+## $ Country [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;Albania&quot;, &quot;Albania&quot;, &quot;Albania&quot;, &quot;Albania&quot;, &quot;Albania&quot;, &quot;Albania&quot;, &quot;Albania&quot;, &quot;Albania&quot;, &quot;Al…
+## $ Region  [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, …
+## $ Code    [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;AL16.06.2020&quot;, &quot;AL16.06.2020&quot;, &quot;AL16.06.2020&quot;, &quot;AL16.06.2020&quot;, &quot;AL16.06.2020&quot;, &quot;AL16.06.20…
+## $ Date    [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;16.06.2020&quot;, &quot;16.06.2020&quot;, &quot;16.06.2020&quot;, &quot;16.06.2020&quot;, &quot;16.06.2020&quot;, &quot;16.06.2020&quot;, &quot;16.06.…
+## $ Sex     [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;…
+## $ Age     [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;TOT&quot;, &quot;0&quot;, &quot;10&quot;, &quot;20&quot;, &quot;30&quot;, &quot;40&quot;, &quot;50&quot;, &quot;60&quot;, &quot;70&quot;, &quot;TOT&quot;, &quot;0&quot;, &quot;10&quot;, &quot;20&quot;, &quot;30&quot;, &quot;40&quot;, &quot;…
+## $ AgeInt  [3m[38;5;246m&lt;int&gt;[39m[23m NA, 10, 10, 10, 10, 10, 10, 10, 35, NA, 10, 10, 10, 10, 10, 10, 10, 35, NA, NA, NA, NA, NA,…
+## $ Metric  [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;Count&quot;, &quot;Fraction&quot;, &quot;Fraction&quot;, &quot;Fraction&quot;, &quot;Fraction&quot;, &quot;Fraction&quot;, &quot;Fraction&quot;, &quot;Fraction&quot;…
+## $ Measure [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Deaths&quot;, …
+## $ Value   [3m[38;5;246m&lt;dbl&gt;[39m[23m 1722.00, 0.02, 0.05, 0.14, 0.19, 0.19, 0.19, 0.13, 0.08, 38.00, 0.00, 0.00, 0.00, 0.00, 0.0…
+## $ Short   [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;…</code></pre>
 <p>Notice, <code>Age</code> is character because it can contain <code>&quot;TOT&quot;</code> or <code>&quot;UNK&quot;</code> values. Therefore, if you sort, it will do so alphabetically, in which case <code>&quot;10&quot;</code> comes before <code>&quot;5&quot;</code>. This is the file from which we begin the harmonization routines. Maybe you have use for it?</p>
 </div>
 <div id="output-files" class="section level2">
@@ -410,7 +410,7 @@ glimpse(inputDB)</code></pre>
 Output_10 &lt;- read_csv(&quot;https://media.githubusercontent.com/media/timriffe/covid_age/master/Data/Output_10.csv&quot;,
                     skip = 1,
                     col_types = &quot;cccciicddd&quot;) # this gets the classes right</code></pre>
-<pre><code>## Warning: 337381 parsing failures.
+<pre><code>## Warning: 337260 parsing failures.
 ## row col   expected actual                                                                                     file
 ##   1 Sex an integer      b 'https://media.githubusercontent.com/media/timriffe/covid_age/master/Data/Output_10.csv'
 ##   2 Sex an integer      b 'https://media.githubusercontent.com/media/timriffe/covid_age/master/Data/Output_10.csv'
@@ -420,18 +420,18 @@ Output_10 &lt;- read_csv(&quot;https://media.githubusercontent.com/media/timriff
 ## ... ... .......... ...... ........................................................................................
 ## See problems(...) for more details.</code></pre>
 <pre class="r"><code>glimpse(Output_10)</code></pre>
-<pre><code>## Rows: 337,381
+<pre><code>## Rows: 337,260
 ## Columns: 10
-## $ Country [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;Albania&quot;, &quot;Albania&quot;, &quot;Albania&quot;, &quot;Albania&quot;, &quot;Albania&quot;, &quot;Albania&quot;, &quot;Albania&quot;, &quot;A…
-## $ Region  [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;A…
-## $ Code    [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;AL16.06.2020&quot;, &quot;AL16.06.2020&quot;, &quot;AL16.06.2020&quot;, &quot;AL16.06.2020&quot;, &quot;AL16.06.2020&quot;,…
-## $ Date    [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;16.06.2020&quot;, &quot;16.06.2020&quot;, &quot;16.06.2020&quot;, &quot;16.06.2020&quot;, &quot;16.06.2020&quot;, &quot;16.06.20…
-## $ Sex     [3m[38;5;246m&lt;int&gt;[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
-## $ Age     [3m[38;5;246m&lt;int&gt;[39m[23m 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 0, 10, 20, 30, 40, 50, 60, 70, 80, …
-## $ AgeInt  [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;10&quot;, &quot;10&quot;, &quot;10&quot;, &quot;10&quot;, &quot;10&quot;, &quot;10&quot;, &quot;10&quot;, &quot;10&quot;, &quot;10&quot;, &quot;10&quot;, &quot;5&quot;, &quot;10&quot;, &quot;10&quot;, &quot;1…
-## $ Cases   [3m[38;5;246m&lt;dbl&gt;[39m[23m 34.8, 87.0, 243.5, 330.5, 330.5, 330.5, 226.1, 89.8, 32.4, 13.3, 3.7, 35.8, 89.…
-## $ Deaths  [3m[38;5;246m&lt;dbl&gt;[39m[23m 0.0, 0.0, 0.0, 0.0, 1.9, 1.9, 15.0, 8.3, 5.5, 3.8, 1.5, 0.0, 0.0, 0.0, 0.0, 2.0…
-## $ Tests   [3m[38;5;246m&lt;dbl&gt;[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</code></pre>
+## $ Country [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;Albania&quot;, &quot;Albania&quot;, &quot;Albania&quot;, &quot;Albania&quot;, &quot;Albania&quot;, &quot;Albania&quot;, &quot;Albania&quot;, &quot;Albania&quot;, &quot;Al…
+## $ Region  [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, …
+## $ Code    [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;AL16.06.2020&quot;, &quot;AL16.06.2020&quot;, &quot;AL16.06.2020&quot;, &quot;AL16.06.2020&quot;, &quot;AL16.06.2020&quot;, &quot;AL16.06.20…
+## $ Date    [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;16.06.2020&quot;, &quot;16.06.2020&quot;, &quot;16.06.2020&quot;, &quot;16.06.2020&quot;, &quot;16.06.2020&quot;, &quot;16.06.2020&quot;, &quot;16.06.…
+## $ Sex     [3m[38;5;246m&lt;int&gt;[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ Age     [3m[38;5;246m&lt;int&gt;[39m[23m 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 0, …
+## $ AgeInt  [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;10&quot;, &quot;10&quot;, &quot;10&quot;, &quot;10&quot;, &quot;10&quot;, &quot;10&quot;, &quot;10&quot;, &quot;10&quot;, &quot;10&quot;, &quot;10&quot;, &quot;5&quot;, &quot;10&quot;, &quot;10&quot;, &quot;10&quot;, &quot;10&quot;, &quot;1…
+## $ Cases   [3m[38;5;246m&lt;dbl&gt;[39m[23m 34.8, 87.0, 243.5, 330.5, 330.5, 330.5, 226.1, 89.8, 32.4, 13.3, 3.7, 35.8, 89.4, 250.3, 33…
+## $ Deaths  [3m[38;5;246m&lt;dbl&gt;[39m[23m 0.0, 0.0, 0.0, 0.0, 1.9, 1.9, 15.0, 8.3, 5.5, 3.8, 1.5, 0.0, 0.0, 0.0, 0.0, 2.0, 2.0, 16.0,…
+## $ Tests   [3m[38;5;246m&lt;dbl&gt;[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</code></pre>
 <pre class="r"><code># convert to date class
 Output_10 &lt;- 
   Output_10 %&gt;% 

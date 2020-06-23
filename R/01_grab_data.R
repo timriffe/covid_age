@@ -163,6 +163,7 @@ if (check_db){
   # inputDB <- inputDB %>% filter(!n)
   
   any(is.na(inputDB$Value))
+  #rmcodes <- inputDB %>% filter(is.na(Value)) %>% pull(Code) %>% unique()
   inputDB <- inputDB %>% filter(!is.na(Value))
   
   rm.codes <- FALSE

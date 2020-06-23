@@ -3,6 +3,13 @@ rm(list=ls());gc()
 source("R/00_Functions.R")
 # prelims to get offsets
 
+
+chunk <- iL[[1]]
+for (i in 1:10){
+try_step( process_function = harmonize_age_p,chunk=iL[[i]],Offsets=Offsets,OAnew=100,N=5,lambda=1e5,byvars=c("Code","Sex","Measure"))
+}
+harmonize_age_p(iL[[i]],Offsets=Offsets)
+
 inputCounts <- readRDS("Data/inputCounts.rds")
 Offsets     <- readRDS("Data/Offsets.rds")
 
@@ -75,7 +82,7 @@ iLout1e5 <- pbmclapply(iL,
 outputCounts_5_1e5 <-
   iLout1e5 %>% 
   #iLout[-n] %>% 
-  bind_rows() %>% 
+  rbindlist() %>% 
   mutate(Value = ifelse(is.nan(Value),0,Value)) %>% 
   group_by(Code, Measure) %>% 
   # Newly added

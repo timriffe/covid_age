@@ -10,7 +10,7 @@ if (!require("pacman", character.only = TRUE)){
     stop("Package not found")
 }
 
-packages_CRAN <- c("tidyverse","lubridate","here","gargle","ungroup","HMDHFDplus","tictoc","parallel","pbmcapply")
+packages_CRAN <- c("tidyverse","lubridate","here","gargle","ungroup","HMDHFDplus","tictoc","parallel","pbmcapply","osfr")
 
 if(!sum(!p_isinstalled(packages_CRAN))==0){
   p_install(
@@ -209,6 +209,7 @@ log_section <- function(step = "A", append = TRUE, logfile = "buildlog.md"){
 log_processing_error <- function(chunk,
                                  byvars = c("Code", "Sex", "Measure"),
                                  logfile = "buildlog.md"){
+  chunk  <- data.table(chunk)
   marker <- chunk[1, ..byvars]
   marker <- paste(paste(byvars, marker, sep = " == "),collapse=", ")
   marker <- c("filter(",marker,")\n")
