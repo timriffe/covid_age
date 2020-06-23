@@ -9,7 +9,7 @@ This project is currently in development, stay tuned for documentation. You can 
 A short guide to reading the data into `R` can be found [here](https://timriffe.github.io/covid_age/GettingStarted.html). We will add other basic scripts for common data operations, and we will add some `Stata` examples too.
 
 ## Data availability
-You can get the data by downloading the `csv` files in the `Data/` folder of this repository, or from the `OSF` site that we mirror to: [https://osf.io/mpwjq/](https://osf.io/mpwjq/). 
+You can get the most up-to-date data at the `OSF` site that we mirror to: [https://osf.io/mpwjq/](https://osf.io/mpwjq/). 
 
 Here's an overview of global coverage as of now. A country marked as *forthcoming* means we've identified a source, but that collection is pending for one reason or another. Are you from one of those countries? Please reach out, if so.
 ![coverage map](https://raw.githubusercontent.com/timriffe/covid_age/master/assets/coveragemap.svg)
