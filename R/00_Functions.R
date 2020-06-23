@@ -1023,10 +1023,7 @@ harmonize_age_p <- function(chunk, Offsets, N = 5, OAnew = 100, lambda = 100){
   .Sex     <- chunk %>% pull(Sex) %>% "[["(1)
   .Measure <- chunk %>% pull(Measure) %>% "[["(1)
   
-  out <- try(harmonize_age(chunk, Offsets = Offsets, N = N, OAnew = OAnew, lambda = lambda))
-  if (class(out)[1] == "try-error"){
-    return(paste("Error in:",.Code))
-  } 
+  out <- harmonize_age(chunk, Offsets = Offsets, N = N, OAnew = OAnew, lambda = lambda)
   out <- out %>% mutate(Country = .Country,
                         Region = .Region,
                         Code = .Code,

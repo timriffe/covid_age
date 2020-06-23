@@ -10,7 +10,7 @@ inputCounts <-
   inputCounts %>% 
   arrange(Country, Region, Measure, Sex, Age)
 
- iL <- split(inputCounts,
+iL <- split(inputCounts,
               list(inputCounts$Code,
                    inputCounts$Sex,
                    inputCounts$Measure),
@@ -24,13 +24,17 @@ inputCounts <-
 #                      OAnew = 100,
 #                      lambda = 100,
 #                      mc.cores = 6)
-      iLout1e5 <- pbmclapply(iL, 
-                           harmonize_age_p,
-                           Offsets = Offsets,
-                           N = 5,
-                           OAnew = 100,
-                           lambda = 1e5,
-                           mc.cores = 6)
+log_section("Age harmonization", append = TRUE)
+ 
+iLout1e5 <- pbmclapply(iL, 
+                      FUN = try_step,
+                      process_function = harmonize_age_p,
+                      byvars = c("Code","Sex","Measure"),
+                      Offsets = Offsets,
+                      N = 5,
+                      OAnew = 100,
+                      lambda = 1e5,
+                      mc.cores = 6)
 # iLout1e6 <- mclapply(iL, 
 #                      harmonize_age_p,
 #                      Offsets = Offsets,
@@ -122,7 +126,7 @@ saveRDS(outputCounts_5_1e5, "Data/Output_5_1e5.rds")
 # saveRDS(outputCounts_5_1e6, "Data/Output_5_1e6.rds")
 
 
-header_msg <- paste("Counts of Cases, Deaths, and Tests in harmonized 5-year age groups (PCLM lambda = 100000):",timestamp(prefix="",suffix=""))
+header_msg <- paste("Counts of Cases, Deaths, and Tests in harmonized 5-year age groups\nBuilt:",timestamp(prefix="",suffix=""),"\nReproducible with: ",paste0("https://github.com/timriffe/covid_age/commit/",system("git rev-parse HEAD", intern=TRUE)))
 write_lines(header_msg, path = "Data/Output_5.csv")
 write_csv(outputCounts_5_1e5_rounded, path = "Data/Output_5.csv", append = TRUE, col_names = TRUE)
 
@@ -148,7 +152,7 @@ outputCounts_10_rounded <-
          Deaths = round(Deaths,1),
          Tests = round(Tests,1))
 
-header_msg <- paste("Counts of Cases, Deaths, and Tests in harmonized 10-year age groups (PCLM lambda = 100000):",timestamp(prefix="",suffix=""))
+header_msg <- paste("Counts of Cases, Deaths, and Tests in harmonized 10-year age groups\nBuilt:",timestamp(prefix="",suffix=""),"\nReproducible with: ",paste0("https://github.com/timriffe/covid_age/commit/",system("git rev-parse HEAD", intern=TRUE)))
 write_lines(header_msg, path = "Data/Output_10.csv")
 write_csv(outputCounts_10_rounded, path = "Data/Output_10.csv", append = TRUE, col_names = TRUE)
 saveRDS(outputCounts_10, "Data/Output_10.rds")
