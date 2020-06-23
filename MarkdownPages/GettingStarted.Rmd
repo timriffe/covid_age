@@ -19,6 +19,9 @@ We are considering moving toward measure-specific files, similar to what HMD doe
 
 Details: commas are column separators, decimals are dots. When reading in, skip the first row. You can can typically read these in straight from the repository using the `raw` version. See examples.
 
+# NOTE
+File storage for this database in the middle of shifting from github to OSF exclusively. The following code works, but it refers to earlier versions of files, rather than the most up to date versions. This code will be updated soon to show how to read directly from OSF to R.
+
 # R
 For `R`, we suggest using the `read_csv()` function from `readr` because it's easy to specify column classes using shorthand:
 
