@@ -5,7 +5,7 @@ gs4_auth(email = "tim.riffe@gmail.com")
 
 log_section("New build run!", append = FALSE)
 
-log_section("Compile inputDB from Drive", append = FALSE)
+log_section("Compile inputDB from Drive", append = TRUE)
 inputDB  <- compile_inputDB()
 
 # --------------------- #
