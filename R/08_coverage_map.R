@@ -2,7 +2,7 @@
 # French Guiana presently included w France, but French
 # data don't include French Guiana. Need to use
 # https://cran.r-project.org/web/packages/rnaturalearth/vignettes/what-is-a-country.html
-source("R/00_Functions.R")
+source(here("R","00_Functions.R"))
 library(googlesheets4)
 library(tidyverse)
 library(cartography)
@@ -13,7 +13,7 @@ data(World)
 
 # DB objects
 db_pops  <- get_input_rubric("input")
-db_input <- readRDS("Data/inputDB.rds")
+db_input <- readRDS(here("Data","inputDB.rds"))
 db_input <- db_input %>% 
   mutate(Country = ifelse(Country == "US","USA",Country))
 
@@ -33,15 +33,11 @@ World$name[World$name == "Central African Rep." ]     <- "Central African Republ
 # remove Antarctica
 World <- World[!World$name == "Antarctica",]
 
-#changing to Robinson system; Tim´s request, hope this is what he expected
+# add Robinson projection
 world_rob<-st_transform(World, "+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
 world_rob %>% ggplot() + geom_sf()
 
-# 
-# db_10 <- read_csv("https://github.com/timriffe/covid_age/raw/master/Data/Output_10.csv",
-#                   skip = 1) 
 
-#setwd("C:/Users/kikep/Dropbox/covid_age/vw/")
 
 have_in_idb <- 
   db_input %>% 
@@ -128,4 +124,4 @@ map_joined %>%
         panel.grid.minor=element_blank(),
         plot.background=element_blank())
 # proposal
-ggsave("assets/coveragemap.svg")
+ggsave(here("assets","coveragemap.svg"))

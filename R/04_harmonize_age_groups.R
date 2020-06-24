@@ -1,12 +1,12 @@
 #.rs.restartR()
 rm(list=ls());gc()
-source("R/00_Functions.R")
+source(here("R","00_Functions.R"))
 # prelims to get offsets
 
 n.cores     <- round(6 + (detectCores() - 8)/8)
 
-inputCounts <- readRDS("Data/inputCounts.rds")
-Offsets     <- readRDS("Data/Offsets.rds")
+inputCounts <- readRDS(here("Data","inputCounts.rds"))
+Offsets     <- readRDS(here("Data","Offsets.rds"))
 
 inputCounts <- 
   inputCounts %>% 
@@ -62,11 +62,11 @@ outputCounts_5_1e5_rounded <-
 # Write output, public file
 
 header_msg <- paste("Counts of Cases, Deaths, and Tests in harmonized 5-year age groups\nBuilt:",timestamp(prefix="",suffix=""),"\nReproducible with: ",paste0("https://github.com/timriffe/covid_age/commit/",system("git rev-parse HEAD", intern=TRUE)))
-write_lines(header_msg, path = "Data/Output_5.csv")
-write_csv(outputCounts_5_1e5_rounded, path = "Data/Output_5.csv", append = TRUE, col_names = TRUE)
+write_lines(header_msg, path = here("Data","Output_5.csv"))
+write_csv(outputCounts_5_1e5_rounded, path = here("Data","Output_5.csv"), append = TRUE, col_names = TRUE)
 
 # Binary
-saveRDS(outputCounts_5_1e5, "Data/Output_5.rds")
+saveRDS(outputCounts_5_1e5, here("Data","Output_5.rds"))
 
 
 # Repeat for 10-year age groups

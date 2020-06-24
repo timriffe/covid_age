@@ -1,4 +1,4 @@
-source("R/00_Functions.R")
+source(here("R","00_Functions.R"))
 # Once-off offsets. This code can be run from time to time. It does not need to be run at each
 # database build.
 
@@ -23,14 +23,14 @@ Offsets <-
   ungroup()
 
 # save out
-saveRDS(Offsets,"Data/Offsets.rds")
+saveRDS(Offsets,here("Data","Offsets.rds"))
 
 # as csv
 header_msg <- paste("Population offsets used for splitting:",timestamp(prefix="",suffix=""))
-write_lines(header_msg, path = "Data/offsets.csv")
+write_lines(header_msg, path = here("Data","offsets.csv"))
 Offsets %>% 
   mutate(Population = round(Population)) %>% 
-write_csv(path = "Data/offsets.csv", append = TRUE, col_names = TRUE)
+write_csv(path = here("Data","offsets.csv"), append = TRUE, col_names = TRUE)
 
 
 

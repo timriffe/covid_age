@@ -1,6 +1,6 @@
 
 #install.packages("osfr")
-source("R/00_Functions.R")
+source(here("R","00_Functions.R"))
 library(osfr)
 library(here)
 library(lubridate)
@@ -16,7 +16,7 @@ osf_retrieve_node("mpwjq")
 target_dir <- osf_retrieve_node("mpwjq") %>% 
     osf_ls_files(pattern = "Data") 
   
-files <- here("Data/Current",dir("Data/Current"))
+files <- here("Data/Current",dir(here("Data","Current")))
 osf_upload(target_dir,
              path = files,
              conflicts = "overwrite")

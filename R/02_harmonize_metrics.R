@@ -4,7 +4,7 @@ rm(list=ls());gc()
 source("R/00_Functions.R")
 # mc.cores <- 6
 
-inputDB <- readRDS("Data/inputDB.rds")
+inputDB <- readRDS(here("Data","inputDB.rds"))
 
 # this script transforms the inputDB as required, and produces standardized measures and metrics
 
@@ -135,7 +135,7 @@ inputCounts <- J %>%
 
 # n <- duplicated(inputCounts[,c("Code","Sex","Age","Measure","Metric")])
 # sum(n)
-saveRDS(inputCounts, file = "Data/inputCounts.rds")
+saveRDS(inputCounts, file = here("Data","inputCounts.rds"))
 
 COMPONENTS <- list(inputDB = inputDB, 
                    A = A, 
@@ -147,7 +147,7 @@ COMPONENTS <- list(inputDB = inputDB,
                    H = H, 
                    I = I, 
                    J = J)
-save(COMPONENTS, file = "Data/ProcessingSteps.Rdata")
+save(COMPONENTS, file = here("Data","ProcessingSteps.Rdata"))
 # TR: add rescale_to_total() into the chain
 
 # inputCounts %>% filter(is.na(Value)) %>% View()

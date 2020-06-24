@@ -1,6 +1,6 @@
 
 # 1) which files have metadata tab.
-source("R/00_Functions.R")
+source(here("R","00_Functions.R"))
 library(googlesheets4)
 rubric <- get_input_rubric("input")
 
@@ -11,7 +11,7 @@ for (i in 1:nrow(rubric)){
    metadata_tabs[[i]] <- read_sheet(ss, sheet = "metadata", col_types = "ccc")
 }
 
-saveRDS(metadata_tabs,file = "Data/metadata_tabs.rds")
+saveRDS(metadata_tabs,file = here("Data","metadata_tabs.rds"))
 
 # sheet_tabs <- list()
 # for (i in 1:nrow(rubric)){

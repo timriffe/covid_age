@@ -10,7 +10,9 @@ if (!require("pacman", character.only = TRUE)){
     stop("Package not found")
 }
 library(pacman)
-packages_CRAN <- c("tidyverse","lubridate","here","gargle","ungroup","HMDHFDplus","tictoc","parallel","osfr","data.table","git2r","usethis","remotes")
+packages_CRAN <- c("tidyverse","lubridate","gargle","ungroup","HMDHFDplus",
+                   "tictoc","parallel","osfr","data.table","git2r","usethis",
+                   "remotes","here")
 
 if(!sum(!p_isinstalled(packages_CRAN))==0){
   p_install(
@@ -53,7 +55,7 @@ push_current <- function(){
   target_dir <- osf_retrieve_node("mpwjq") %>% 
     osf_ls_files(path = "Data", pattern = "Current") 
   
-  files <- here("Data/Current",dir("Data/Current"))
+  files <- here("Data","Current",dir("Data","Current"))
   osf_upload(target_dir,
              path = files,
              conflicts = "overwrite")

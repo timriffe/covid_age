@@ -1,5 +1,5 @@
 
-source("R/00_Functions.R")
+source(here("R","00_Functions.R"))
 
 gs4_auth(email = "tim.riffe@gmail.com")
 
@@ -78,8 +78,8 @@ if (nrow(BadRange) > 0){
 
 # public file, full precision.
 header_msg <- paste("COVerAGE-DB input database, filtered after some simple checks:",timestamp(prefix = "", suffix = ""))
-write_lines(header_msg, path = "Data/inputDB.csv")
-write_csv(inputDB, path = "Data/inputDB.csv", append = TRUE, col_names = TRUE)
+write_lines(header_msg, path = here("Data","inputDB.csv"))
+write_csv(inputDB, path = here("Data","inputDB.csv"), append = TRUE, col_names = TRUE)
 
 # localy binary
 saveRDS(inputDB, "Data/inputDB.rds")
