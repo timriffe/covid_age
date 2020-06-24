@@ -3,6 +3,7 @@ rm(list=ls());gc()
 source("R/00_Functions.R")
 # prelims to get offsets
 
+n.cores     <- round(6 + (detectCores() - 8)/8)
 
 inputCounts <- readRDS("Data/inputCounts.rds")
 Offsets     <- readRDS("Data/Offsets.rds")
