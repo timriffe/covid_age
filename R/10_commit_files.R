@@ -11,8 +11,7 @@ git2r::pull(credentials = creds)
 
 commit(repo, 
        message = "global commit", 
-       all = TRUE,
-       committer = paste("COVerAGE-DB auto builder",timestamp()))
+       all = TRUE)
 
 push(credentials = creds)
 
