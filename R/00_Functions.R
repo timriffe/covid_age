@@ -9,7 +9,7 @@ if (!require("pacman", character.only = TRUE)){
   if (!require("pacman", character.only = TRUE))
     stop("Package not found")
 }
-
+library(pacman)
 packages_CRAN <- c("tidyverse","lubridate","here","gargle","ungroup","HMDHFDplus","tictoc","parallel","osfr","data.table","git2r","usethis","remotes")
 
 if(!sum(!p_isinstalled(packages_CRAN))==0){
