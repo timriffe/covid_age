@@ -110,15 +110,19 @@ source("R/06_data_dashes.R")
 # ---------------------- #
 
 # Coverage Map
-source("R/06_data_dashes.R")
+source("R/08_coverage_map.R")
 
 # ---------------------- #
 
 # push to OSF
 
+# Coverage Map
+source("R/09_push_osf.R")
 
+# ---------------------- #
 
-
+# Coverage Map
+source("R/10_commit_files.R")
 
 
 

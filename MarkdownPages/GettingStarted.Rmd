@@ -31,10 +31,17 @@ library(tidyverse)
 library(readr)
 library(lubridate)
 library(ggplot2)
-# this is the "raw" url
-inputDB <- read_csv("https://media.githubusercontent.com/media/timriffe/covid_age/master/Data/inputDB.csv",
-                    skip = 1,
-                    col_types = "cccccciccdc") # this gets the classes right
+library(osfr)
+
+# This downloads the file, preserving the name inputDB.csv
+osf_retrieve_file("f43sv") %>%
+  osf_download(conflicts = "overwrite") 
+
+# This reads it in
+inputDB <-  read_csv("inputDB.csv",
+                     skip = 1,
+                     col_types = "cccccciccdc")
+
 glimpse(inputDB)
 ```
 Notice, `Age` is character because it can contain `"TOT"` or `"UNK"` values. Therefore, if you sort, it will do so alphabetically, in which case `"10"` comes before `"5"`. This is the file from which we begin the harmonization routines. Maybe you have use for it?

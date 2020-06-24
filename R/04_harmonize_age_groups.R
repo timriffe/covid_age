@@ -27,7 +27,7 @@ iL <- split(inputCounts,
 #                      mc.cores = 6)
 log_section("Age harmonization", append = TRUE)
  
-iLout1e5 <- pbmclapply(iL, 
+iLout1e5 <- mclapply(iL, 
                       FUN = try_step,
                       process_function = harmonize_age_p,
                       byvars = c("Code","Sex","Measure"),

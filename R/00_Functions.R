@@ -10,7 +10,7 @@ if (!require("pacman", character.only = TRUE)){
     stop("Package not found")
 }
 
-packages_CRAN <- c("tidyverse","lubridate","here","gargle","ungroup","HMDHFDplus","tictoc","parallel","pbmcapply","osfr","data.table")
+packages_CRAN <- c("tidyverse","lubridate","here","gargle","ungroup","HMDHFDplus","tictoc","parallel","osfr","data.table","git2r","usethis","remotes")
 
 if(!sum(!p_isinstalled(packages_CRAN))==0){
   p_install(
@@ -19,7 +19,7 @@ if(!sum(!p_isinstalled(packages_CRAN))==0){
   )
 }
 
-gphgs <- c("googlesheets4","DemoTools")
+gphgs <- c("googlesheets4","DemoTools","parallelsugar")
 # install from github if necessary
 if (!p_isinstalled("googlesheets4")){
   library(remotes)
@@ -28,6 +28,10 @@ if (!p_isinstalled("googlesheets4")){
 if (!p_isinstalled("DemoTools")){
   library(remotes)
   install_github("timriffe/DemoTools")
+}
+if (!p_isinstalled("parallelsugar")){
+  library(remotes)
+  install_github("nathanvan/parallelsugar")
 }
 
 # load the packages
@@ -39,11 +43,11 @@ p_load(gphgs, character.only = TRUE)
 #--------------------------------------------------
 
 # Storage management functions:
-move_to_current <- function(){
-  files_new = here("Data",c("offsets.csv","inputDB.csv","Output_5.csv","Output_10.csv"))
-  files_to_current =  here("Data","Current",c("offsets.csv","inputDB.csv","Output_5.csv","Output_10.csv"))
-  file.copy(from = files_new, to = files_to_current, overwrite = TRUE)
-}
+# move_to_current <- function(){
+#   files_new = here("Data",c("offsets.csv","inputDB.csv","Output_5.csv","Output_10.csv"))
+#   files_to_current =  here("Data","Current",c("offsets.csv","inputDB.csv","Output_5.csv","Output_10.csv"))
+#   file.copy(from = files_new, to = files_to_current, overwrite = TRUE)
+# }
 
 push_current <- function(){
   target_dir <- osf_retrieve_node("mpwjq") %>% 
@@ -57,19 +61,19 @@ push_current <- function(){
 
 # This takes a few minutes.
 # just do this every week or so.
-archive_current <- function(){
-  new_folder <- today() %>% as.character() %>% paste0("DB",.)
-  utils::zip(here("Data","Archive",new_folder), 
-             files = here("Data/Current",dir("Data/Current")))
-  
-  target_dir <- osf_retrieve_node("mpwjq") %>% 
-    osf_ls_files(path = "Data", pattern = "Archive")
-  
-  osf_upload(target_dir,
-             path = here("Data/Archive",paste0(new_folder,".zip")),
-             conflicts = "overwrite")
-  
-}
+# archive_current <- function(){
+#   new_folder <- today() %>% as.character() %>% paste0("DB",.)
+#   utils::zip(here("Data","Archive",new_folder), 
+#              files = here("Data/Current",dir("Data/Current")))
+#   
+#   target_dir <- osf_retrieve_node("mpwjq") %>% 
+#     osf_ls_files(path = "Data", pattern = "Archive")
+#   
+#   osf_upload(target_dir,
+#              path = here("Data/Archive",paste0(new_folder,".zip")),
+#              conflicts = "overwrite")
+#   
+# }
 
 # ----------------------------------- #
 
