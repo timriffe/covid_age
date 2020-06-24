@@ -2,7 +2,6 @@
 
 rm(list=ls());gc()
 source("R/00_Functions.R")
-  library(data.table)
 # mc.cores <- 6
 
 inputDB <- readRDS("Data/inputDB.rds")
@@ -36,7 +35,6 @@ inputDB %>% pull(Value) %>% is.na() %>% any()
 #   filter_try_errors_then_bind( mc.cores = mc.cores)
 # toc() # 873.79 (note, one thread hangs, possible randomizing order is best?)
 icols <- colnames(inputDB)
-tic()
 
 log_section("New build run!", append = FALSE)
 
@@ -130,7 +128,6 @@ J <- J[ , try_step(process_function = maybe_lower_closeout,
         by = list(Code, Sex, Measure),
         .SDcols = icols][,..icols]
 
-toc()
 # output
 inputCounts <- J %>% 
   arrange(Country, Region, Sex, Measure, Age) %>% 

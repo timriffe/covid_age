@@ -3,6 +3,8 @@ source("R/00_Functions.R")
 source("R_checks/inputDB_check.R")
 # for writing to the master input
 
+gs4_auth(email = "tim.riffe@gmail.com")
+
 rubric_old <- readRDS("Data/rubric_old.rds")
 # check for new data:
 rubric     <- get_input_rubric()
@@ -46,8 +48,7 @@ if (check_db){
     inputDB <- compile_inputDB(Updates)
     toc()
   }
-  
-  
+
   #
   if (!full){
     new_codes <- inputDB %>% pull(Short) %>% unique()
@@ -166,11 +167,11 @@ if (check_db){
   #rmcodes <- inputDB %>% filter(is.na(Value)) %>% pull(Code) %>% unique()
   inputDB <- inputDB %>% filter(!is.na(Value))
   
-  rm.codes <- FALSE
-  if (sum(n) > 0 & rm.codes){
-    rmcodes <- inputDB[n,] %>% pull(Code) %>% unique()
-    inputDB <- inputDB %>% filter(!Code %in% rmcodes)
-  }
+  # rm.codes <- FALSE
+  # if (sum(n) > 0 & rm.codes){
+  #   rmcodes <- inputDB[n,] %>% pull(Code) %>% unique()
+  #   inputDB <- inputDB %>% filter(!Code %in% rmcodes)
+  # }
 
   run_checks(inputDB, ShortCodes = inputDB %>% pull(Short) %>% unique())
   

@@ -4,12 +4,6 @@ source("R/00_Functions.R")
 # prelims to get offsets
 
 
-chunk <- iL[[1]]
-for (i in 1:10){
-try_step( process_function = harmonize_age_p,chunk=iL[[i]],Offsets=Offsets,OAnew=100,N=5,lambda=1e5,byvars=c("Code","Sex","Measure"))
-}
-harmonize_age_p(iL[[i]],Offsets=Offsets)
-
 inputCounts <- readRDS("Data/inputCounts.rds")
 Offsets     <- readRDS("Data/Offsets.rds")
 
@@ -42,43 +36,7 @@ iLout1e5 <- pbmclapply(iL,
                       OAnew = 100,
                       lambda = 1e5,
                       mc.cores = 6)
-# iLout1e6 <- mclapply(iL, 
-#                      harmonize_age_p,
-#                      Offsets = Offsets,
-#                      N = 5,
-#                      OAnew = 100,
-#                      lambda = 1e6,
-#                      mc.cores = 6)
- # make parallel wrapper with everything in try()
- # remove try error elements, then bind and process.
- 
-# 
-#   n   <- lapply(iLout100,function(x){length(x) == 1}) %>% unlist() %>% which()
-  (nn  <- lapply(iLout1e5,function(x){length(x) == 1}) %>% unlist() %>% which())
-  # nnn <- lapply(iLout1e6,function(x){length(x) == 1}) %>% unlist() %>% which()
-  # 
-(problem_codes <-  iLout1e5[nn])
 
-      if (length(problem_codes) > 0){
-        iLout1e5 <- iLout1e5[-nn]
-      }
-      
-# TR: now include rescale
-# outputCounts_5_100 <-
-#     iLout100 %>% 
-#     #iLout[-n] %>% 
-#     bind_rows() %>% 
-#     mutate(Value = ifelse(is.nan(Value),0,Value)) %>% 
-#     group_by(Code, Measure) %>% 
-#     # Newly added
-#     do(rescale_sexes_post(chunk = .data)) %>% 
-#     ungroup() %>%
-#     pivot_wider(names_from = Measure,
-#                 values_from = Value) %>% 
-#     mutate(date = dmy(Date)) %>% 
-#     arrange(Country, Region, date, Sex, Age) %>% 
-#     select(-date) 
-# iLout <- iLout1e5[-nn]
 outputCounts_5_1e5 <-
   iLout1e5 %>% 
   #iLout[-n] %>% 
@@ -94,49 +52,19 @@ outputCounts_5_1e5 <-
   arrange(Country, Region, date, Sex, Age) %>% 
   select(-date) 
 
-# outputCounts_5_1e6 <-
-#   iLout1e6 %>% 
-#   #iLout[-n] %>% 
-#   bind_rows() %>% 
-#   mutate(Value = ifelse(is.nan(Value),0,Value)) %>% 
-#   group_by(Code, Measure) %>% 
-#   # Newly added
-#   do(rescale_sexes_post(chunk = .data)) %>% 
-#   ungroup() %>%
-#   pivot_wider(names_from = Measure,
-#               values_from = Value) %>% 
-#   mutate(date = dmy(Date)) %>% 
-#   arrange(Country, Region, date, Sex, Age) %>% 
-#   select(-date) 
-
-# round output for csv
-# outputCounts_5_100_rounded <- 
-#   outputCounts_5_100 %>% 
-#   mutate(Cases = round(Cases,1),
-#          Deaths = round(Deaths,1),
-#          Tests = round(Tests,1))
-
 outputCounts_5_1e5_rounded <- 
   outputCounts_5_1e5 %>% 
   mutate(Cases = round(Cases,1),
          Deaths = round(Deaths,1),
          Tests = round(Tests,1))
 
-# outputCounts_5_1e6_rounded <- 
-#   outputCounts_5_1e6 %>% 
-#   mutate(Cases = round(Cases,1),
-#          Deaths = round(Deaths,1),
-#          Tests = round(Tests,1))
-
-# saveRDS(outputCounts_5_100, "Data/Output_5_100.rds")
-saveRDS(outputCounts_5_1e5, "Data/Output_5_1e5.rds")
-# saveRDS(outputCounts_5_1e6, "Data/Output_5_1e6.rds")
-
+# Write output, public file
 
 header_msg <- paste("Counts of Cases, Deaths, and Tests in harmonized 5-year age groups\nBuilt:",timestamp(prefix="",suffix=""),"\nReproducible with: ",paste0("https://github.com/timriffe/covid_age/commit/",system("git rev-parse HEAD", intern=TRUE)))
 write_lines(header_msg, path = "Data/Output_5.csv")
 write_csv(outputCounts_5_1e5_rounded, path = "Data/Output_5.csv", append = TRUE, col_names = TRUE)
 
+# Binary
 saveRDS(outputCounts_5_1e5, "Data/Output_5.rds")
 
 
@@ -162,6 +90,7 @@ outputCounts_10_rounded <-
 header_msg <- paste("Counts of Cases, Deaths, and Tests in harmonized 10-year age groups\nBuilt:",timestamp(prefix="",suffix=""),"\nReproducible with: ",paste0("https://github.com/timriffe/covid_age/commit/",system("git rev-parse HEAD", intern=TRUE)))
 write_lines(header_msg, path = "Data/Output_10.csv")
 write_csv(outputCounts_10_rounded, path = "Data/Output_10.csv", append = TRUE, col_names = TRUE)
+
 saveRDS(outputCounts_10, "Data/Output_10.rds")
 
 

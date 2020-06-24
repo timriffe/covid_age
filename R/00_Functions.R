@@ -10,7 +10,7 @@ if (!require("pacman", character.only = TRUE)){
     stop("Package not found")
 }
 
-packages_CRAN <- c("tidyverse","lubridate","here","gargle","ungroup","HMDHFDplus","tictoc","parallel","pbmcapply","osfr")
+packages_CRAN <- c("tidyverse","lubridate","here","gargle","ungroup","HMDHFDplus","tictoc","parallel","pbmcapply","osfr","data.table")
 
 if(!sum(!p_isinstalled(packages_CRAN))==0){
   p_install(
@@ -37,6 +37,42 @@ p_load(gphgs, character.only = TRUE)
 # --------------------------------
 # Custom functions used in DB production routine
 #--------------------------------------------------
+
+# Storage management functions:
+move_to_current <- function(){
+  files_new = here("Data",c("offsets.csv","inputDB.csv","Output_5.csv","Output_10.csv"))
+  files_to_current =  here("Data","Current",c("offsets.csv","inputDB.csv","Output_5.csv","Output_10.csv"))
+  file.copy(from = files_new, to = files_to_current, overwrite = TRUE)
+}
+
+push_current <- function(){
+  target_dir <- osf_retrieve_node("mpwjq") %>% 
+    osf_ls_files(path = "Data", pattern = "Current") 
+  
+  files <- here("Data/Current",dir("Data/Current"))
+  osf_upload(target_dir,
+             path = files,
+             conflicts = "overwrite")
+}
+
+# This takes a few minutes.
+# just do this every week or so.
+archive_current <- function(){
+  new_folder <- today() %>% as.character() %>% paste0("DB",.)
+  utils::zip(here("Data","Archive",new_folder), 
+             files = here("Data/Current",dir("Data/Current")))
+  
+  target_dir <- osf_retrieve_node("mpwjq") %>% 
+    osf_ls_files(path = "Data", pattern = "Archive")
+  
+  osf_upload(target_dir,
+             path = here("Data/Archive",paste0(new_folder,".zip")),
+             conflicts = "overwrite")
+  
+}
+
+# ----------------------------------- #
+
 sort_input_data <- function(X){
   X %>% 
   mutate(Date2 = dmy(Date)) %>% 
