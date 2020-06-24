@@ -1,4 +1,4 @@
-
+library(here)
 source(here("R","00_Functions.R"))
 
 gs4_auth(email = "tim.riffe@gmail.com")
@@ -9,18 +9,6 @@ log_section("Compile inputDB from Drive", append = TRUE)
 inputDB  <- compile_inputDB()
 
 # --------------------- #
-
-# filters: remove any code that has a duplicate entry
-n <- duplicated(inputDB[,c("Code","Sex","Age","Measure","Metric")])
-# sum(n)
-if (sum(n) > 0){
-  rmcodes <- inputDB %>% filter(n) %>% pull(Code) %>% unique()
-  inputDB <- inputDB %>% filter(!Code%in%rmcodes)
-  if (length(rmcodes)>0){
-    log_section("Duplicates detected. Following `Code`s removed:", append = TRUE)
-    cat(paste(rmcodes, collapse = "\n"), file = "buildlog.md", append = TRUE)
-  }
-}
 
 # remove non-standard Measure:
 # filters: remove any code that has a duplicate entry
@@ -53,6 +41,19 @@ if (sum(n) > 0){
   inputDB <- inputDB %>% filter(!Code%in%rmcodes)
   log_section("Unaccounted-for Sex entries removed from:", append = TRUE)
   cat(paste(rmcodes, collapse = "\n"), file = "buildlog.md", append = TRUE)
+}
+
+
+# filters: remove any code that has a duplicate entry
+n <- duplicated(inputDB[,c("Code","Sex","Age","Measure","Metric")])
+# sum(n)
+if (sum(n) > 0){
+  rmcodes <- inputDB %>% filter(n) %>% pull(Code) %>% unique()
+  inputDB <- inputDB %>% filter(!Code%in%rmcodes)
+  if (length(rmcodes)>0){
+    log_section("Duplicates detected. Following `Code`s removed:", append = TRUE)
+    cat(paste(rmcodes, collapse = "\n"), file = "buildlog.md", append = TRUE)
+  }
 }
 
 # does AgeInt add up to 105?
