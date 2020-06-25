@@ -254,7 +254,7 @@ log_processing_error <- function(chunk,
   chunk  <- data.table(chunk)
   marker <- chunk[1, ..byvars]
   # single quotes around char byvars: (only age isn't char..)
-  marker <- ifelse(byvars == "Age",marker,paste0("'",marker,"."))
+  marker <- ifelse(byvars == "Age",marker,paste0("'",marker,"'"))
   
   marker <- paste(paste(byvars, marker, sep = " == "),collapse=", ")
   marker <- c("filter(",marker,")\n")
