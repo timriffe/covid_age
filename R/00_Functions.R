@@ -167,8 +167,8 @@ compile_inputDB <- function(rubric = NULL){
 }
 
 compile_offsetsDB <- function(){
-  ss_offsets <- "https://docs.google.com/spreadsheets/d/1IDQkit829LrUShH-NpeprDus20b6bso7FAOkpYvDHi4/edit#gid=0"
-  offsets_rubric <- read_sheet(ss_offsets, sheet = 'input') %>% 
+  ss_offsets <- "https://docs.google.com/spreadsheets/d/1z9Dg7iQWPdIGRI3rvgd-Dx3rE5RPNd7B_paOP86FRzA/edit#gid=0"
+  offsets_rubric <- read_sheet(ss_offsets, sheet = 'checklist') %>% 
     filter(!is.na(Sheet))
   
   off_list <- list()
