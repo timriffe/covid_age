@@ -36,7 +36,7 @@ inputDB %>% pull(Value) %>% is.na() %>% any()
 # toc() # 873.79 (note, one thread hangs, possible randomizing order is best?)
 icols <- colnames(inputDB)
 
-log_section("New build run!", append = FALSE)
+#log_section("New build run!", append = FALSE)
 
 A <-
   inputDB %>% 
