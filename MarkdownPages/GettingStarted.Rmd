@@ -26,6 +26,11 @@ File storage for this database in the middle of shifting from github to OSF excl
 For `R`, we suggest using the `read_csv()` function from `readr` because it's easy to specify column classes using shorthand:
 
 ## inputDB file
+
+```{r,include = FALSE}
+gs4_auth(email = "tim.riffe@gmail.com")
+```
+
 ```{r}
 library(tidyverse)
 library(readr)

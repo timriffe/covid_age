@@ -13,33 +13,38 @@ saveRDS(inputDB,here("Data","inputDBhold.rds"))
 
 # remove non-standard Measure:
 # filters: remove any code that has a duplicate entry
-n <- inputDB %>% pull(Measure) %>% `%in%`(c("Cases","Deaths","Tests","ASCFR"))
+Measures <- c("Cases","Deaths","Tests","ASCFR")
+n <- inputDB %>% pull(Measure) %>% `%in%`(Measures)
 # sum(n)
-if (sum(n) > 0){
-  rmcodes <- inputDB %>% filter(n) %>% pull(Code) %>% unique()
-  inputDB <- inputDB %>% filter(!Code%in%rmcodes)
-  log_section("Unaccounted-for Measure entries removed from:", append = TRUE)
-  cat(paste(rmcodes, collapse = "\n"), file = "buildlog.md", append = TRUE)
+if (sum(!n) > 0){
+  inputDB <- inputDB %>% filter(n) 
+  log_section("Filter valid Measure entries:", append = TRUE)
+  cat("Valid Measures include:",paste(Measures,collapse=","), file = "buildlog.md", append = TRUE)
+  cat("\n",sum(!n),"rows removed", file = "buildlog.md", append = TRUE)
 }
 
 # remove non-standard Metric:
 # filters: remove any code that has a duplicate entry
-n <- inputDB %>% pull(Metric) %>% `%in%`(c("Count","Fraction","Ratio"))
+Metrics <- c("Count","Fraction","Ratio")
+n <- inputDB %>% pull(Metric) %>% `%in%`(Metrics)
 # sum(n)
 if (sum(!n) > 0){
   inputDB <- inputDB %>% filter(n)
-  # log_section("Unaccounted-for Metric entries removed from:", append = TRUE)
-  # cat(paste(rmcodes, collapse = "\n"), file = "buildlog.md", append = TRUE)
+  log_section("Filter valid Metric entries:", append = TRUE)
+  cat("Valid Metrics include:",paste(Metrics,collapse=","), file = "buildlog.md", append = TRUE)
+  cat("\n",sum(!n),"rows removed", file = "buildlog.md", append = TRUE)
 }
 
 # remove non-standard Sex:
 # filters: remove any code that has a duplicate entry
-n <- inputDB %>% pull(Sex) %>% `%in%`(c("m","f","b","UNK"))
+Sexes <- c("m","f","b","UNK")
+n <- inputDB %>% pull(Sex) %>% `%in%`(Sexes)
 # sum(n)
 if (sum(!n) > 0){
   inputDB <- inputDB %>% filter(n)
-  # log_section("Unaccounted-for Sex entries removed from:", append = TRUE)
-  # cat(paste(rmcodes, collapse = "\n"), file = "buildlog.md", append = TRUE)
+  log_section("Filter valid Sex entries:", append = TRUE)
+  cat("Valid Sex values include:",paste(Sexes,collapse=","), file = "buildlog.md", append = TRUE)
+  cat("\n",sum(!n),"rows removed", file = "buildlog.md", append = TRUE)
 }
 
 
@@ -110,18 +115,20 @@ source("R/06_data_dashes.R")
 # ---------------------- #
 
 # Coverage Map
-source("R/08_coverage_map.R")
+# need to properly install some packages on hydra first
+#source("R/08_coverage_map.R")
 
 # ---------------------- #
 
 # push to OSF
 
 # Coverage Map
-source("R/09_push_osf.R")
+# getting 401 errors
+#source("R/09_push_osf.R")
 
 # ---------------------- #
 
-# Coverage Map
+# git commit artifacts
 source("R/10_commit_files.R")
 
 

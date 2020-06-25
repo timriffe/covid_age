@@ -1,6 +1,24 @@
 source(here("R","00_Functions.R"))
 # Once-off offsets. This code can be run from time to time. It does not need to be run at each
 # database build.
+n.cores     <- round(6 + (detectCores() - 8)/8)
+
+harmonize_offset_age_p <- function(chunk){
+  .Country <- chunk %>% pull(Country) %>% '['(1)
+  .Region  <- chunk %>% pull(Region) %>% '['(1)
+  .Sex     <- chunk %>% pull(Sex) %>% '['(1)
+  out <- harmonize_offset_age(chunk)
+  out <-
+    out %>% 
+    mutate(Country = .Country,
+           Region = .Region,
+           Sex = .Sex)
+  out
+}
+
+
+log_section("Compile offsets from Drive")
+
 
 # this might take 5-10 minutes now,
 # but when we get more offsets collected it 
@@ -8,19 +26,41 @@ source(here("R","00_Functions.R"))
 Offsets <- compile_offsetsDB()
 
 
+log_section("Harmonize offsets")
 
-Offsets %>% filter(is.na(Population)) %>% View()
+Offsets <-
+  Offsets %>% 
+  mutate(AgeInt = ifelse(AgeInt == 0, 1, AgeInt))
 
+# Offsets %>% filter(is.na(Population)) %>% View()
 Offsets <- 
   Offsets %>% 
-  mutate(Age = as.integer(Age)) %>% 
-  group_by(Country, Region, Sex) %>% 
-  do(harmonize_offset_age(chunk = .data)) %>% 
-  # This is where date synchronization (projection) goes
-  # So, FR write a function that anticipates a chunk of data
-  # in standard single ages. We need to have Date as an attribute of
-  # the data moving forward. This goes here.  
-  ungroup()
+  mutate(Age = as.integer(Age))
+oL <-split(Offsets, list(Offsets$Country,Offsets$Region,Offsets$Sex), drop = TRUE)
+
+
+oL1 <- mclapply(
+         oL,
+         try_step,
+         process_function = harmonize_offset_age_p,
+         byvars = c("Country","Region","Sex"),
+         mc.cores=n.cores )
+
+# Offsets <- 
+#   Offsets %>% 
+#   mutate(Age = as.integer(Age)) %>% 
+#   group_by(Country, Region, Sex) %>% 
+#   do(harmonize_offset_age(chunk = .data)) %>% 
+#   # This is where date synchronization (projection) goes
+#   # So, FR write a function that anticipates a chunk of data
+#   # in standard single ages. We need to have Date as an attribute of
+#   # the data moving forward. This goes here.  
+#   ungroup()
+
+Offsets <-
+  oL1 %>% 
+  rbindlist() %>% 
+  as.data.frame()
 
 # save out
 saveRDS(Offsets,here("Data","Offsets.rds"))
@@ -32,6 +72,9 @@ Offsets %>%
   mutate(Population = round(Population)) %>% 
 write_csv(path = here("Data","offsets.csv"), append = TRUE, col_names = TRUE)
 
+# clean up:
+rm(Offsets, oL, OL1)
+gc()
 
 
 
