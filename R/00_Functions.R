@@ -55,7 +55,8 @@ push_current <- function(){
   target_dir <- osf_retrieve_node("mpwjq") %>% 
     osf_ls_files(pattern = "Data") 
   
-  files <- here("Data",dir("Data"))
+  files <- here("Data",
+                c("offsets.csv","inputDB.csv","Output_5.csv","Output_10.csv"))
   osf_upload(target_dir,
              path = files,
              conflicts = "overwrite")
