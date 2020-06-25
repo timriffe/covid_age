@@ -138,7 +138,7 @@ compile_inputDB <- function(rubric = NULL){
                      sheet = "database", 
                      na = "NA", 
                      col_types = "cccccciccd"))
-    if (class(X) == "try-error"){
+    if (class(X)[1] == "try-error"){
       cat(i,"didn't load, waiting 2 min to try again")
       Sys.sleep(120)
       X <- try(read_sheet(ss_i, 
@@ -147,7 +147,7 @@ compile_inputDB <- function(rubric = NULL){
                           col_types = "cccccciccd"))
     }
     
-    if (class(X) == "try-error"){
+    if (class(X)[1] == "try-error"){
       cat(i,"failure\n")
     } else {
       X <- 
