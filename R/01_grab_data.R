@@ -199,7 +199,7 @@ if (check_db){
   # NOTE THIS WILL FAIL FOR REGIONS!!
   do_this <-FALSE
   if(do_this){
-    inputDB <- swap_country_inputDB(inputDB, "VE")
+    inputDB <- swap_country_inputDB(inputDB, "ML")
   }
   # ----------------------------------------------------
 

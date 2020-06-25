@@ -8,6 +8,7 @@ log_section("New build run!", append = FALSE)
 log_section("Compile inputDB from Drive", append = TRUE)
 inputDB  <- compile_inputDB()
 
+saveRDS(inputDB,here("Data","inputDBhold.rds"))
 # --------------------- #
 
 # remove non-standard Measure:
@@ -25,22 +26,20 @@ if (sum(n) > 0){
 # filters: remove any code that has a duplicate entry
 n <- inputDB %>% pull(Metric) %>% `%in%`(c("Count","Fraction","Ratio"))
 # sum(n)
-if (sum(n) > 0){
-  rmcodes <- inputDB %>% filter(n) %>% pull(Code) %>% unique()
-  inputDB <- inputDB %>% filter(!Code%in%rmcodes)
-  log_section("Unaccounted-for Metric entries removed from:", append = TRUE)
-  cat(paste(rmcodes, collapse = "\n"), file = "buildlog.md", append = TRUE)
+if (sum(!n) > 0){
+  inputDB <- inputDB %>% filter(n)
+  # log_section("Unaccounted-for Metric entries removed from:", append = TRUE)
+  # cat(paste(rmcodes, collapse = "\n"), file = "buildlog.md", append = TRUE)
 }
 
 # remove non-standard Sex:
 # filters: remove any code that has a duplicate entry
 n <- inputDB %>% pull(Sex) %>% `%in%`(c("m","f","b","UNK"))
 # sum(n)
-if (sum(n) > 0){
-  rmcodes <- inputDB %>% filter(n) %>% pull(Code) %>% unique()
-  inputDB <- inputDB %>% filter(!Code%in%rmcodes)
-  log_section("Unaccounted-for Sex entries removed from:", append = TRUE)
-  cat(paste(rmcodes, collapse = "\n"), file = "buildlog.md", append = TRUE)
+if (sum(!n) > 0){
+  inputDB <- inputDB %>% filter(n)
+  # log_section("Unaccounted-for Sex entries removed from:", append = TRUE)
+  # cat(paste(rmcodes, collapse = "\n"), file = "buildlog.md", append = TRUE)
 }
 
 
@@ -83,7 +82,7 @@ write_lines(header_msg, path = here("Data","inputDB.csv"))
 write_csv(inputDB, path = here("Data","inputDB.csv"), append = TRUE, col_names = TRUE)
 
 # localy binary
-saveRDS(inputDB, "Data/inputDB.rds")
+saveRDS(inputDB, here("Data","inputDB.rds"))
 
 # ---------------------- #
 
