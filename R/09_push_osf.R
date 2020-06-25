@@ -5,8 +5,7 @@ library(osfr)
 library(here)
 library(lubridate)
 
-
-# files_new = here("Data",c("offsets.csv","inputDB.csv","Output_5.csv","Output_10.csv"))
+files_new = here("Data",c("offsets.csv","inputDB.csv","Output_5.csv","Output_10.csv"))
 # files_to_current =  here("Data","Current",c("offsets.csv","inputDB.csv","Output_5.csv","Output_10.csv"))
 # file.copy(from = files_new, to = files_to_current)
 
@@ -16,9 +15,8 @@ osf_retrieve_node("mpwjq")
 target_dir <- osf_retrieve_node("mpwjq") %>% 
     osf_ls_files(pattern = "Data") 
   
-files <- here("Data/Current",dir(here("Data","Current")))
 osf_upload(target_dir,
-             path = files,
+             path = files_new,
              conflicts = "overwrite")
 
 
