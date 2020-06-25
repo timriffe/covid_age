@@ -53,9 +53,9 @@ p_load(gphgs, character.only = TRUE)
 
 push_current <- function(){
   target_dir <- osf_retrieve_node("mpwjq") %>% 
-    osf_ls_files(path = "Data", pattern = "Current") 
+    osf_ls_files(pattern = "Data") 
   
-  files <- here("Data","Current",dir("Data","Current"))
+  files <- here("Data",dir("Data"))
   osf_upload(target_dir,
              path = files,
              conflicts = "overwrite")
@@ -168,7 +168,7 @@ compile_inputDB <- function(rubric = NULL){
 
 compile_offsetsDB <- function(){
   ss_offsets <- "https://docs.google.com/spreadsheets/d/1IDQkit829LrUShH-NpeprDus20b6bso7FAOkpYvDHi4/edit#gid=0"
-  offsets_rubric <- read_sheet(ss_offsets, sheet = 'checklist') %>% 
+  offsets_rubric <- read_sheet(ss_offsets, sheet = 'input') %>% 
     filter(!is.na(Sheet))
   
   off_list <- list()
