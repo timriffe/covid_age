@@ -20,7 +20,7 @@ We are considering moving toward measure-specific files, similar to what HMD doe
 Details: commas are column separators, decimals are dots. When reading in, skip the first row. You can can typically read these in straight from the repository using the `raw` version. See examples.
 
 # NOTE
-File storage for this database in the middle of shifting from github to OSF exclusively. The following code works, but it refers to earlier versions of files, rather than the most up to date versions. This code will be updated soon to show how to read directly from OSF to R.
+File storage for this database in the middle of shifting from github to OSF exclusively. The following code works (or at least it will as soon as our OSF repo is unflagged as spam...), but it's not as slick as reading the file directly into an R `data.frame` or similar. We'll keep tinkering to figure out a better way.
 
 # R
 For `R`, we suggest using the `read_csv()` function from `readr` because it's easy to specify column classes using shorthand:
@@ -50,17 +50,26 @@ Notice, `Age` is character because it can contain `"TOT"` or `"UNK"` values. The
 
 Output files are friendlier for several reasons. Since measures from like subsets are next to each other, it's easier to calculate things. Since age groups are uniform, it's easy to compare subsets. Since `Age` is a proper integer it's easy to plot it in the abscissa. However, you'll still want to convert the `Date` class to use it in plotting. These come as character strigngs following the format `"DD.MM.YYYY"`, and can be converted using `lubridate::dmy()` without further ado.
 ```{r}
-# this is the "raw" url
-Output_10 <- read_csv("https://media.githubusercontent.com/media/timriffe/covid_age/master/Data/Output_10.csv",
-                    skip = 1,
-                    col_types = "cccciicddd") # this gets the classes right
-glimpse(Output_10)
 
+osf_retrieve_file("wu5ve") %>%
+  osf_download(conflicts = "overwrite") 
+
+# This reads it in
+Output_10 <-  read_csv("Output_10.csv",
+                     skip = 3,
+                     col_types = "ccccciiddd")
 # convert to date class
 Output_10 <- 
   Output_10 %>% 
   mutate(Date = dmy(Date))
 ```
+
+```{r, include = FALSE}
+# cleanup
+file.remove("inputDB.csv")
+file.remove("Output_10.csv")
+```
+
 
 # Stata
 Maybe someone can help out here?
