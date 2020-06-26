@@ -2,7 +2,18 @@
 # 1) which files have metadata tab.
 source(here("R","00_Functions.R"))
 library(googlesheets4)
-rubric <- get_input_rubric("input")
+
+# we get this to extract which Metrics are captured for each source.
+inputDB <- readRDS(here("Data","inputDB.rds"))
+
+gs4_auth(email = "tim.riffe@gmail.com")
+
+ss_rubric <- "https://docs.google.com/spreadsheets/d/1IDQkit829LrUShH-NpeprDus20b6bso7FAOkpYvDHi4/edit#gid=0"
+rubric <- read_sheet(ss_rubric, sheet = "input") %>% 
+  filter(!is.na(Sheet),
+         Rows > 0)
+
+
 
 
 metadata_tabs <- list()
@@ -11,7 +22,100 @@ for (i in 1:nrow(rubric)){
    metadata_tabs[[i]] <- read_sheet(ss, sheet = "metadata", col_types = "ccc")
 }
 
+rm.zeros      <- rubric$Rows == 0
+metadata_tabs <- metadata_tabs[!rm.zeros]
+
+
+# TODO: make sure that the Short Codes collected in the metadata tabs match the Short
+# codes used in the database.
+
+vars.dash <- c( "Country", 
+               "Region(s)",
+               "Author",
+               "Main website",
+               "Retrospective corrections",
+               "Date of start of data series (data captured for this project)",
+               "Date of end of data series",
+               "CASES - Definition",
+               "CASES - Coverage",
+               "CASES - Date of events",
+               "DEATHS - Definition",
+               "DEATHS - Coverage",
+               "DEATHS - Date of events"
+               )
+
+
+metadata_table <- lapply(metadata_tabs, function(X, vars.dash){
+  dash.vars <-
+    X %>% 
+    filter(Field %in% vars.dash) %>% 
+    select(Answer)
+  
+  this.row <- as.matrix(dash.vars) %>% t() %>% as.data.frame(stringsAsFactors = FALSE)
+  colanmes(this.row) <- vars.dash
+  this.row
+},vars.dash=vars.dash) %>% 
+  rbind_rows() %>% 
+  arrange(Country, `Region(s)`)
+
+tab1 <- metadata_table %>% 
+  select(Country, 
+         `Region(s)`,
+         Author, 
+         `Main website`,
+         Corrected = `Retrospective corrections`,
+         `Series start` = `Date of start of data series (data captured for this project)`,
+         `Series end` = `Date of end of data series`)
+
+
+# TODO:
+# add new field, Metrics that contains the unique metrics captured for cases and for deaths.
+# for CA_BC ASCFR go to DEATHS, but for ITinfo ASCFR (Ratios) go to Cases.
+
+# TODO:
+# for Fraction and Ratio metrics, is the collected data rounded or not?
+
+tab2 <- metadata_table %>% 
+  select(Country, 
+         `Region(s)`,
+         Definition = `CASES - Definition`,
+         Coverage = `CASES - Covetab3rage`,
+         `Date of events` = `CASES - Date of events`)
+
+tab3 <- metadata_table %>% 
+  select(Country, 
+         `Region(s)`,
+         Definition = `DEATHS - Definition`,
+         Coverage = `DEATHS - Coverage`,
+         `Date of events` = `DEATHS - Date of events`)
+
+
 saveRDS(metadata_tabs,file = here("Data","metadata_tabs.rds"))
+saveRDS(metadata_table,file = here("Data","metadata_table.rds"))
+saveRDS(tab1,file = here("Data","tab1.rds"))
+saveRDS(tab2,file = here("Data","tab2.rds"))
+saveRDS(tab3,file = here("Data","tab3.rds"))
+
+
+
+
+
+
+
+
+metadata_tabs 
+
+
+
+# Note:
+
+# Shiny App:
+
+# select countries and metadata variables.
+
+
+
+
 
 # sheet_tabs <- list()
 # for (i in 1:nrow(rubric)){
