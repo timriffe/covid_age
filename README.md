@@ -16,9 +16,6 @@ Here's an overview of global coverage as of now. A country marked as *forthcomin
 
 A detailed dashboard of data availability can be found [here](https://timriffe.github.io/covid_age/DataAvail.html).
 
-### NOTE
-Due to large file sizes, we will soon switch to only providing data via OSF. We will give instructions when this change is made.
-
 ## Data processing steps
 
 A (preliminary) description of data processing steps, and dash overview of which steps are applied to each country-region-date subset of data can be found [here](https://timriffe.github.io/covid_age/DataSteps.html).

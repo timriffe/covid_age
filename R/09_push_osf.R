@@ -22,3 +22,16 @@ push_current()
 #   archive_current()
 # }
 
+test.osf <- FALSE
+if (test.osf){
+  target_dir <- osf_retrieve_node("mpwjq") %>% 
+    osf_ls_files(pattern = "Data") 
+  
+  write.csv(subset(iris, Species != "setosa"), file = "test.csv")
+  
+  target_dir %>%
+    osf_upload("test.csv", conflicts = "overwrite")
+  
+  target_dir %>%
+    osf_upload("test.csv", conflicts = "overwrite")
+}
