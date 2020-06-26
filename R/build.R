@@ -115,8 +115,8 @@ source("R/06_data_dashes.R")
 # ---------------------- #
 
 # Coverage Map
-# need to properly install some packages on hydra first
-#source("R/08_coverage_map.R")
+
+source("R/08_coverage_map.R")
 
 # ---------------------- #
 

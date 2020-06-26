@@ -12,6 +12,7 @@ library(sf)
 data(World)
 
 # DB objects
+gs4_auth(email = "tim.riffe@gmail.com")
 db_pops  <- get_input_rubric("input")
 db_input <- readRDS(here("Data","inputDB.rds"))
 db_input <- db_input %>% 
