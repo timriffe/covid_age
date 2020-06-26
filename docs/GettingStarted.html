@@ -374,6 +374,10 @@ summary {
 <p>The output files <code>Output_5</code> and <code>Output_10</code> are harmonized to <code>&quot;Count&quot;</code> metrics, and to 5 and 10-year age groups 0-100+. The columns are also different, as different Measures are, for the time being, in separate columns. These can be used as-is for many kinds of analyses, but you may also consider further smoothing, especially for the 5-year age group data, as it can contain stochastic 0s.</p>
 <p>We are considering moving toward measure-specific files, similar to what HMD does, so stay tuned.</p>
 <p>Details: commas are column separators, decimals are dots. When reading in, skip the first row. You can can typically read these in straight from the repository using the <code>raw</code> version. See examples.</p>
+<div id="note" class="section level1">
+<h1>NOTE</h1>
+<p>File storage for this database in the middle of shifting from github to OSF exclusively. The following code works (or at least it will as soon as our OSF repo is unflagged as spam…), but it’s not as slick as reading the file directly into an R <code>data.frame</code> or similar. We’ll keep tinkering to figure out a better way.</p>
+</div>
 <div id="r" class="section level1">
 <h1>R</h1>
 <p>For <code>R</code>, we suggest using the <code>read_csv()</code> function from <code>readr</code> because it’s easy to specify column classes using shorthand:</p>
@@ -383,56 +387,50 @@ summary {
 library(readr)
 library(lubridate)
 library(ggplot2)
-# this is the &quot;raw&quot; url
-inputDB &lt;- read_csv(&quot;https://media.githubusercontent.com/media/timriffe/covid_age/master/Data/inputDB.csv&quot;,
-                    skip = 1,
-                    col_types = &quot;cccccciccdc&quot;) # this gets the classes right
+library(osfr)
+
+# This downloads the file, preserving the name inputDB.csv
+osf_retrieve_file(&quot;8uk9n&quot;) %&gt;%
+  osf_download(conflicts = &quot;overwrite&quot;) </code></pre>
+<pre><code>## # A tibble: 1 x 4
+##   name        id                     local_path   meta          
+##   &lt;chr&gt;       &lt;chr&gt;                  &lt;chr&gt;        &lt;list&gt;        
+## 1 inputDB.csv 5ef371e765982802b2cf2… ./inputDB.c… &lt;named list […</code></pre>
+<pre class="r"><code># This reads it in
+inputDB &lt;-  read_csv(&quot;inputDB.csv&quot;,
+                     skip = 1,
+                     col_types = &quot;cccccciccdc&quot;)
+
 glimpse(inputDB)</code></pre>
-<pre><code>## Rows: 989,422
+<pre><code>## Rows: 997,889
 ## Columns: 11
-## $ Country [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;Albania&quot;, &quot;Albania&quot;, &quot;Albania&quot;, &quot;Albania&quot;, &quot;Albania&quot;, &quot;Albania&quot;, &quot;Albania&quot;, &quot;Albania&quot;, &quot;Al…
-## $ Region  [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, …
-## $ Code    [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;AL16.06.2020&quot;, &quot;AL16.06.2020&quot;, &quot;AL16.06.2020&quot;, &quot;AL16.06.2020&quot;, &quot;AL16.06.2020&quot;, &quot;AL16.06.20…
-## $ Date    [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;16.06.2020&quot;, &quot;16.06.2020&quot;, &quot;16.06.2020&quot;, &quot;16.06.2020&quot;, &quot;16.06.2020&quot;, &quot;16.06.2020&quot;, &quot;16.06.…
-## $ Sex     [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;…
-## $ Age     [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;TOT&quot;, &quot;0&quot;, &quot;10&quot;, &quot;20&quot;, &quot;30&quot;, &quot;40&quot;, &quot;50&quot;, &quot;60&quot;, &quot;70&quot;, &quot;TOT&quot;, &quot;0&quot;, &quot;10&quot;, &quot;20&quot;, &quot;30&quot;, &quot;40&quot;, &quot;…
-## $ AgeInt  [3m[38;5;246m&lt;int&gt;[39m[23m NA, 10, 10, 10, 10, 10, 10, 10, 35, NA, 10, 10, 10, 10, 10, 10, 10, 35, NA, NA, NA, NA, NA,…
-## $ Metric  [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;Count&quot;, &quot;Fraction&quot;, &quot;Fraction&quot;, &quot;Fraction&quot;, &quot;Fraction&quot;, &quot;Fraction&quot;, &quot;Fraction&quot;, &quot;Fraction&quot;…
-## $ Measure [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Deaths&quot;, …
-## $ Value   [3m[38;5;246m&lt;dbl&gt;[39m[23m 1722.00, 0.02, 0.05, 0.14, 0.19, 0.19, 0.19, 0.13, 0.08, 38.00, 0.00, 0.00, 0.00, 0.00, 0.0…
-## $ Short   [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;…</code></pre>
+## $ Country &lt;chr&gt; &quot;Albania&quot;, &quot;Albania&quot;, &quot;Albania&quot;, &quot;Albania&quot;, &quot;…
+## $ Region  &lt;chr&gt; &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;Al…
+## $ Code    &lt;chr&gt; &quot;AL16.06.2020&quot;, &quot;AL16.06.2020&quot;, &quot;AL16.06.2020…
+## $ Date    &lt;chr&gt; &quot;16.06.2020&quot;, &quot;16.06.2020&quot;, &quot;16.06.2020&quot;, &quot;16…
+## $ Sex     &lt;chr&gt; &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, …
+## $ Age     &lt;chr&gt; &quot;TOT&quot;, &quot;0&quot;, &quot;10&quot;, &quot;20&quot;, &quot;30&quot;, &quot;40&quot;, &quot;50&quot;, &quot;60…
+## $ AgeInt  &lt;int&gt; NA, 10, 10, 10, 10, 10, 10, 10, 35, NA, 10, 1…
+## $ Metric  &lt;chr&gt; &quot;Count&quot;, &quot;Fraction&quot;, &quot;Fraction&quot;, &quot;Fraction&quot;, …
+## $ Measure &lt;chr&gt; &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, …
+## $ Value   &lt;dbl&gt; 1722.00, 0.02, 0.05, 0.14, 0.19, 0.19, 0.19, …
+## $ Short   &lt;chr&gt; &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL&quot;, &quot;AL…</code></pre>
 <p>Notice, <code>Age</code> is character because it can contain <code>&quot;TOT&quot;</code> or <code>&quot;UNK&quot;</code> values. Therefore, if you sort, it will do so alphabetically, in which case <code>&quot;10&quot;</code> comes before <code>&quot;5&quot;</code>. This is the file from which we begin the harmonization routines. Maybe you have use for it?</p>
 </div>
 <div id="output-files" class="section level2">
 <h2>Output files</h2>
 <p>Output files are friendlier for several reasons. Since measures from like subsets are next to each other, it’s easier to calculate things. Since age groups are uniform, it’s easy to compare subsets. Since <code>Age</code> is a proper integer it’s easy to plot it in the abscissa. However, you’ll still want to convert the <code>Date</code> class to use it in plotting. These come as character strigngs following the format <code>&quot;DD.MM.YYYY&quot;</code>, and can be converted using <code>lubridate::dmy()</code> without further ado.</p>
-<pre class="r"><code># this is the &quot;raw&quot; url
-Output_10 &lt;- read_csv(&quot;https://media.githubusercontent.com/media/timriffe/covid_age/master/Data/Output_10.csv&quot;,
-                    skip = 1,
-                    col_types = &quot;cccciicddd&quot;) # this gets the classes right</code></pre>
-<pre><code>## Warning: 337260 parsing failures.
-## row col   expected actual                                                                                     file
-##   1 Sex an integer      b 'https://media.githubusercontent.com/media/timriffe/covid_age/master/Data/Output_10.csv'
-##   2 Sex an integer      b 'https://media.githubusercontent.com/media/timriffe/covid_age/master/Data/Output_10.csv'
-##   3 Sex an integer      b 'https://media.githubusercontent.com/media/timriffe/covid_age/master/Data/Output_10.csv'
-##   4 Sex an integer      b 'https://media.githubusercontent.com/media/timriffe/covid_age/master/Data/Output_10.csv'
-##   5 Sex an integer      b 'https://media.githubusercontent.com/media/timriffe/covid_age/master/Data/Output_10.csv'
-## ... ... .......... ...... ........................................................................................
-## See problems(...) for more details.</code></pre>
-<pre class="r"><code>glimpse(Output_10)</code></pre>
-<pre><code>## Rows: 337,260
-## Columns: 10
-## $ Country [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;Albania&quot;, &quot;Albania&quot;, &quot;Albania&quot;, &quot;Albania&quot;, &quot;Albania&quot;, &quot;Albania&quot;, &quot;Albania&quot;, &quot;Albania&quot;, &quot;Al…
-## $ Region  [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, …
-## $ Code    [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;AL16.06.2020&quot;, &quot;AL16.06.2020&quot;, &quot;AL16.06.2020&quot;, &quot;AL16.06.2020&quot;, &quot;AL16.06.2020&quot;, &quot;AL16.06.20…
-## $ Date    [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;16.06.2020&quot;, &quot;16.06.2020&quot;, &quot;16.06.2020&quot;, &quot;16.06.2020&quot;, &quot;16.06.2020&quot;, &quot;16.06.2020&quot;, &quot;16.06.…
-## $ Sex     [3m[38;5;246m&lt;int&gt;[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
-## $ Age     [3m[38;5;246m&lt;int&gt;[39m[23m 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 0, …
-## $ AgeInt  [3m[38;5;246m&lt;chr&gt;[39m[23m &quot;10&quot;, &quot;10&quot;, &quot;10&quot;, &quot;10&quot;, &quot;10&quot;, &quot;10&quot;, &quot;10&quot;, &quot;10&quot;, &quot;10&quot;, &quot;10&quot;, &quot;5&quot;, &quot;10&quot;, &quot;10&quot;, &quot;10&quot;, &quot;10&quot;, &quot;1…
-## $ Cases   [3m[38;5;246m&lt;dbl&gt;[39m[23m 34.8, 87.0, 243.5, 330.5, 330.5, 330.5, 226.1, 89.8, 32.4, 13.3, 3.7, 35.8, 89.4, 250.3, 33…
-## $ Deaths  [3m[38;5;246m&lt;dbl&gt;[39m[23m 0.0, 0.0, 0.0, 0.0, 1.9, 1.9, 15.0, 8.3, 5.5, 3.8, 1.5, 0.0, 0.0, 0.0, 0.0, 2.0, 2.0, 16.0,…
-## $ Tests   [3m[38;5;246m&lt;dbl&gt;[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</code></pre>
-<pre class="r"><code># convert to date class
+<pre class="r"><code>osf_retrieve_file(&quot;wu5ve&quot;) %&gt;%
+  osf_download(conflicts = &quot;overwrite&quot;) </code></pre>
+<pre><code>## # A tibble: 1 x 4
+##   name         id                    local_path    meta         
+##   &lt;chr&gt;        &lt;chr&gt;                 &lt;chr&gt;         &lt;list&gt;       
+## 1 Output_10.c… 5ef3720276ebd802b4cd… ./Output_10.… &lt;named list …</code></pre>
+<pre class="r"><code># This reads it in
+Output_10 &lt;-  read_csv(&quot;Output_10.csv&quot;,
+                     skip = 3,
+                     col_types = &quot;ccccciiddd&quot;)
+# convert to date class
 Output_10 &lt;- 
   Output_10 %&gt;% 
   mutate(Date = dmy(Date))</code></pre>

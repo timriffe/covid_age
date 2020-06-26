@@ -27,9 +27,6 @@ For `R`, we suggest using the `read_csv()` function from `readr` because it's ea
 
 ## inputDB file
 
-```{r,include = FALSE}
-gs4_auth(email = "tim.riffe@gmail.com")
-```
 
 ```{r}
 library(tidyverse)
@@ -39,7 +36,7 @@ library(ggplot2)
 library(osfr)
 
 # This downloads the file, preserving the name inputDB.csv
-osf_retrieve_file("f43sv") %>%
+osf_retrieve_file("8uk9n") %>%
   osf_download(conflicts = "overwrite") 
 
 # This reads it in

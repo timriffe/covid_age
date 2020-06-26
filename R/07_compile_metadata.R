@@ -1,5 +1,6 @@
 
 # 1) which files have metadata tab.
+library(here)
 source(here("R","00_Functions.R"))
 library(googlesheets4)
 
@@ -13,17 +14,13 @@ rubric <- read_sheet(ss_rubric, sheet = "input") %>%
   filter(!is.na(Sheet),
          Rows > 0)
 
-
-
-
 metadata_tabs <- list()
 for (i in 1:nrow(rubric)){
    ss <- rubric %>% pull(Sheet) %>% '['(i)
    metadata_tabs[[i]] <- read_sheet(ss, sheet = "metadata", col_types = "ccc")
 }
 
-rm.zeros      <- rubric$Rows == 0
-metadata_tabs <- metadata_tabs[!rm.zeros]
+
 
 
 # TODO: make sure that the Short Codes collected in the metadata tabs match the Short
