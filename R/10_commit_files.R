@@ -1,4 +1,4 @@
-
+.rs.restartR()
 
 log_section("Commit dashboards and buildlog", append = TRUE)
 
