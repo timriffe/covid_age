@@ -40,7 +40,7 @@ vars.dash <- c( "Country",
                "DEATHS - Coverage",
                "DEATHS - Date of events"
                )
-
+metadata_tabs <- readRDS(here("Data","metadata_tabs.rds"))
 
 metadata_table <- lapply(metadata_tabs, function(X, vars.dash){
   dash.vars <-
@@ -49,10 +49,10 @@ metadata_table <- lapply(metadata_tabs, function(X, vars.dash){
     select(Answer)
   
   this.row <- as.matrix(dash.vars) %>% t() %>% as.data.frame(stringsAsFactors = FALSE)
-  colanmes(this.row) <- vars.dash
+  colnames(this.row) <- vars.dash
   this.row
 },vars.dash=vars.dash) %>% 
-  rbind_rows() %>% 
+  bind_rows() %>% 
   arrange(Country, `Region(s)`)
 
 tab1 <- metadata_table %>% 
@@ -76,7 +76,7 @@ tab2 <- metadata_table %>%
   select(Country, 
          `Region(s)`,
          Definition = `CASES - Definition`,
-         Coverage = `CASES - Covetab3rage`,
+         Coverage = `CASES - Coverage`,
          `Date of events` = `CASES - Date of events`)
 
 tab3 <- metadata_table %>% 
