@@ -1,7 +1,7 @@
 #.rs.restartR()
 
 log_section("Commit dashboards and buildlog", append = TRUE)
-
+startup::startup()
 library(usethis)
 library(git2r)
 
@@ -18,4 +18,4 @@ push(credentials = creds)
 
 rm(list=ls())
 gc()
-.rs.restartR()
+
