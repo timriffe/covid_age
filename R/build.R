@@ -1,6 +1,21 @@
 library(here)
 source(here("R","00_Functions.R"))
 
+
+# --------------------- #
+# pull from github first, in case there has been a fix
+# or change.
+startup::startup()
+library(usethis)
+library(git2r)
+
+repo <- init()
+
+git2r::pull(credentials = creds)
+
+# --------------------- #
+
+
 gs4_auth(email = "tim.riffe@gmail.com")
 
 log_section("New build run!", append = FALSE)
