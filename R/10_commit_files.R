@@ -1,4 +1,4 @@
-.rs.restartR()
+#.rs.restartR()
 
 log_section("Commit dashboards and buildlog", append = TRUE)
 
@@ -16,3 +16,6 @@ commit(repo,
 push(credentials = creds)
 
 
+rm(list=ls())
+gc()
+.rs.restartR()
