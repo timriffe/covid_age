@@ -1,0 +1,20 @@
+---
+title: "Metadata"
+author: "COVerAGE-DB"
+date: "6/26/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##
+
+```{r, include = FALSE}
+library(DT)
+
+tab1 <- readRDS(here("Data","tab1.rds"))
+tab2 <- readRDS(here("Data","tab2.rds"))
+tab3 <- readRDS(here("Data","tab3.rds"))
+```
