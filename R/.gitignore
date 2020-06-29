@@ -32,3 +32,4 @@ IN_fix.R
 build.log
 test.R
 test.log
+.Rprofile
