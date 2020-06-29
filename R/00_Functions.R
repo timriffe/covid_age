@@ -51,6 +51,15 @@ p_load(gphgs, character.only = TRUE)
 #   file.copy(from = files_new, to = files_to_current, overwrite = TRUE)
 # }
 
+# needed this for batch timed batch processing...
+change_here <- function(new_path){
+  new_root <- here:::.root_env
+  
+  new_root$f <- function(...){file.path(new_path, ...)}
+  
+  assignInNamespace(".root_env", new_root, ns = "here")
+}
+
 push_current <- function(){
   target_dir <- osf_retrieve_node("mpwjq") %>% 
     osf_ls_files(pattern = "Data") 
