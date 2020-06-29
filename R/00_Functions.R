@@ -1,97 +1,392 @@
+### Dependency preamble #############################################
 
-
-# ----------------------------------------------
-# dependency preamble
-# ----------------------------------------------
 # install pacman to streamline further package installation
-if (!require("pacman", character.only = TRUE)){
+if(!require("pacman", character.only = TRUE)) {
   install.packages("pacman", dep = TRUE)
   if (!require("pacman", character.only = TRUE))
-    stop("Package not found")
+    stop("Package pacman not found")
 }
-library(pacman)
-packages_CRAN <- c("tidyverse","lubridate","gargle","ungroup","HMDHFDplus",
-                   "tictoc","parallel","osfr","data.table","git2r","usethis",
-                   "remotes","here")
 
-if(!sum(!p_isinstalled(packages_CRAN))==0){
+library(pacman)
+
+# Required CRAN packages
+packages_CRAN <- c("tidyverse","lubridate","gargle","ungroup",
+                   "HMDHFDplus","tictoc","parallel","osfr",
+                   "data.table","git2r","usethis","remotes","here")
+
+# Install required CRAN packages if not available yet
+if(!sum(!p_isinstalled(packages_CRAN))==0) {
   p_install(
     package = packages_CRAN[!p_isinstalled(packages_CRAN)], 
     character.only = TRUE
   )
 }
 
-gphgs <- c("googlesheets4","DemoTools","parallelsugar")
+# Reuired github packages
+packages_git <- c("googlesheets4","DemoTools","parallelsugar")
+
 # install from github if necessary
-if (!p_isinstalled("googlesheets4")){
+if (!p_isinstalled("googlesheets4")) {
   library(remotes)
   install_github("tidyverse/googlesheets4")
 }
-if (!p_isinstalled("DemoTools")){
+
+if (!p_isinstalled("DemoTools")) {
   library(remotes)
   install_github("timriffe/DemoTools")
 }
+
 if (!p_isinstalled("parallelsugar")){
   library(remotes)
   install_github("nathanvan/parallelsugar")
 }
 
-# load the packages
+# Load the required CRAN/github packages
 p_load(packages_CRAN, character.only = TRUE)
-p_load(gphgs, character.only = TRUE)
+p_load(packages_git, character.only = TRUE)
 
-# --------------------------------
-# Custom functions used in DB production routine
-#--------------------------------------------------
 
-# Storage management functions:
-# move_to_current <- function(){
-#   files_new = here("Data",c("offsets.csv","inputDB.csv","Output_5.csv","Output_10.csv"))
-#   files_to_current =  here("Data","Current",c("offsets.csv","inputDB.csv","Output_5.csv","Output_10.csv"))
-#   file.copy(from = files_new, to = files_to_current, overwrite = TRUE)
-# }
 
-# needed this for batch timed batch processing...
-change_here <- function(new_path){
+### Functions used in production routine ############################
+
+### change_here
+# Required for timed batch processing, changes output of here()
+# @param new_path character. New directory
+
+change_here <- function(new_path) {
+  
+  # Get current root 
   new_root <- here:::.root_env
   
+  # Set new root
   new_root$f <- function(...){file.path(new_path, ...)}
-  
   assignInNamespace(".root_env", new_root, ns = "here")
+  
 }
 
-push_current <- function(){
+
+### push_current
+# Pushes compiled files to OSF
+
+push_current <- function() {
+  
+  # Get directory on OSF
   target_dir <- osf_retrieve_node("mpwjq") %>% 
     osf_ls_files(pattern = "Data") 
   
-  files <- here("Data",
-                c("offsets.csv","inputDB.csv","Output_5.csv","Output_10.csv"))
+  # Complete paths for CSV files
+  files_data <- c("offsets.csv","inputDB.csv",
+                  "Output_5.csv","Output_10.csv")
+  files <- here("Data",files_data)
+  
+  # Push to OSF
   osf_upload(target_dir,
              path = files,
              conflicts = "overwrite")
+  
 }
 
-# This takes a few minutes.
-# just do this every week or so.
-# archive_current <- function(){
-#   new_folder <- today() %>% as.character() %>% paste0("DB",.)
-#   utils::zip(here("Data","Archive",new_folder), 
-#              files = here("Data/Current",dir("Data/Current")))
-#   
-#   target_dir <- osf_retrieve_node("mpwjq") %>% 
-#     osf_ls_files(path = "Data", pattern = "Archive")
-#   
-#   osf_upload(target_dir,
-#              path = here("Data/Archive",paste0(new_folder,".zip")),
-#              conflicts = "overwrite")
-#   
-# }
 
-# ----------------------------------- #
+### log_section
+# Write on error log: Name of step and timestap
+# @param step character Name/description of step
+# @param append logical Append to existing log file
+# @param logfile character Name of the log file
 
-sort_input_data <- function(X){
+log_section <- function(step = "A", append = TRUE, 
+                        logfile = "buildlog.md") {
+  
+  # Paste step and timestamp
+  header <- paste("\n#", 
+                  step, 
+                  "Build error log\n",
+                  timestamp(prefix="",suffix=""),
+                  "\n\n")
+  
+  cat(header,file=logfile,append=append)   
+  
+}
+
+
+### try_step
+# Try function on data and if error capture in log
+# @param process_function function Name of function to apply
+# @param chunk tibble Name of data
+# @param byvars character Names of grouping variables
+# @param logfile Name of log file
+
+try_step <- function(process_function, 
+                     chunk, 
+                     byvars = c("Code","Sex"),
+                     logfile = "buildlog.md", 
+                     ...) {
+  
+  # Try function on chunc
+  out <- try(process_function(chunk = chunk, ...))
+  
+  # If error happens...
+  if (class(out)[1] == "try-error"){
+    
+    # ...write error to log
+    log_processing_error(chunk = chunk, 
+                         byvars = byvars,
+                         logfile = logfile)
+    
+    # ... return empty chunk
+    out <- chunk[0]
+  }
+  
+  # Return result (potentially empty chunk)
+  return(out)
+  
+}
+
+
+
+### Main compile functions ##########################################
+
+### compile_inputDB
+# Compiles database
+# @param rubric Main spreadsheet
+
+# leave rubric as NULL for full build
+compile_inputDB <- function(rubric = NULL) {
+  
+  # Get spreadsheet
+  if (is.null(rubric)){
+    rubric <- get_input_rubric(tab = "input")
+  }
+  
+  # Only get countries with at least one row of data
+  rubric <- rubric %>% 
+    filter(Rows > 0)
+  
+  # Empty list for results
+  input_list <- list()
+  
+  # Loop over countries
+  for (i in rubric$Short) {
+    
+    # Get spreadsheet address
+    ss_i <- rubric %>% filter(Short == i) %>% pull(Sheet)
+    
+    # Try to read spreadsheet
+    X <- try(read_sheet(ss_i, 
+                        sheet = "database", 
+                        na = "NA", 
+                        col_types = "cccccciccd"))
+    
+    # If error
+    if (class(X)[1] == "try-error") {
+      
+      # Wait two minutes
+      cat(i,"didn't load, waiting 2 min to try again")
+      Sys.sleep(120)
+      
+      # Try to load again
+      X <- try(read_sheet(ss_i, 
+                          sheet = "database", 
+                          na = "NA", 
+                          col_types = "cccccciccd"))
+      
+    }
+    
+    # If again error
+    if (class(X)[1] == "try-error") {
+      
+      cat(i,"failure\n")
+      
+    } else {
+      
+      # If data loaded get code
+      X <- 
+        X %>% 
+        mutate(Short = add_Short(Code, Date))
+      
+      # Add to result list
+      input_list[[i]] <- X
+      
+    }
+    
+    # Wait a moment
+    Sys.sleep(45) 
+    
+  }
+  
+  # Bind and sort
+  inputDB <- 
+    input_list %>% 
+    bind_rows() %>% 
+    sort_input_data()
+  
+  # Return data base
+  inputDB
+  
+}
+
+
+### compile_offsetsDB
+# Compile offsets for splitting of age intervals
+
+compile_offsetsDB <- function() {
+  
+  # Load offset overview spreadsheet
+  ss_offsets <- "https://docs.google.com/spreadsheets/d/1z9Dg7iQWPdIGRI3rvgd-Dx3rE5RPNd7B_paOP86FRzA/edit#gid=0"
+  offsets_rubric <- read_sheet(ss_offsets, sheet = 'checklist') %>% 
+    filter(!is.na(Sheet))
+  
+  # Empty list for results
+  off_list <- list()
+  
+  # Loop over countries
+  for (i in offsets_rubric$Short){
+    
+    # Get spreadsheet for country
+    ss_i <- offsets_rubric %>% filter(Short == i) %>% pull(Sheet)
+    
+    # Try reading spreadhseet
+    X <- try(read_sheet(ss_i, 
+                        sheet = "population", 
+                        na = "NA", 
+                        col_types = "ccccicd"))
+    
+    # If error
+    if (class(X)[1] == "try-error") {
+      
+      # Wait two minutes to try again
+      cat(i,"didn't load, waiting 2 min to try again")
+      Sys.sleep(120)
+      
+      # Try again
+      X <- try(read_sheet(ss_i, 
+                          sheet = "population", 
+                          na = "NA", 
+                          col_types = "ccccicd"))
+      
+    }
+    
+    # Set Short label
+    X <-  X %>% 
+      mutate(Short = i)
+    
+    # Add country to list for results
+    off_list[[i]] <- X
+    
+    # Wait a bit
+    Sys.sleep(20) 
+    
+  }
+  
+  # Catch additional errors
+  errors <- lapply(off_list,function(x){length(x)==1}) %>% unlist()
+  
+  # Show countries with additional errors
+  if (sum(errors) > 0){
+    prob_codes <- offsets_rubric$Short[errors]
+    cat("\nThe following code(s) did not read properly:\n",paste(prob_codes,collapse = "\n"))
+    off_list <- off_list[!errors]
+  }
+  
+  # Bind and sort
+  offsetsDB <- 
+    off_list %>% 
+    bind_rows() %>% 
+    arrange(Country, Region, Sex)
+  
+  # Output
+  offsetsDB
+  
+}
+
+
+
+### Functions for loading/getting data ##############################
+
+### get_input_rubric
+# Get overview spreadsheet with input data sources
+# @param tab character, which sheet to get
+
+get_input_rubric <- function(tab = "input") {
+  
+  # Spreadsheet on Google Docs
+  ss_rubric <- "https://docs.google.com/spreadsheets/d/1IDQkit829LrUShH-NpeprDus20b6bso7FAOkpYvDHi4/edit#gid=0"
+  
+  # Read spreadsheet
+  input_rubric <- read_sheet(ss_rubric, sheet = tab) %>% 
+    # Drop if no source spreadsheet
+    filter(!is.na(Sheet))
+  
+  # Return tibble
+  input_rubric
+  
+}
+
+
+### get_country_inputDB
+# Load just a single country
+# @param ShortCode character specifying country to load
+
+get_country_inputDB <- function(ShortCode) {
+  
+  # Get spreadsheet
+  rubric <- get_input_rubric(tab = "input")
+  
+  # Find spreadsheet for country
+  ss_i   <- rubric %>% filter(Short == ShortCode) %>% pull(Sheet)
+  
+  # Load spreadsheet
+  out <- read_sheet(ss_i, 
+                    sheet = "database", 
+                    na = "NA", 
+                    col_types= "cccccciccd")
+  
+  # Assign short code
+  out$Short <- ShortCode
+  
+  # Output
+  out
+  
+}
+
+
+### swap_country_inputDB
+# Replace subset with new load after Date correction
+# @param inputDB tibble Input data with data to be replaced
+# @param ShortCode character Code of country 
+
+swap_country_inputDB <- function(inputDB, ShortCode) {
+  
+  # Get data for country
+  X <- get_country_inputDB(ShortCode)
+  
+  # Filter old data out
+  inputDB <-
+    inputDB %>% 
+    filter(!grepl(ShortCode,Code)) %>% 
+    # Attach new data
+    rbind(X) %>% 
+    # Sort
+    sort_input_data()
+  
+  # Output
+  inputDB
+  
+}
+
+
+
+### Functions for editing data ######################################
+
+### sort_input_data
+# Sorts input data nicely
+# @param X 
+
+sort_input_data <- function(X) {
+  
   X %>% 
-  mutate(Date2 = dmy(Date)) %>% 
+    # Date to DDMMYYYY
+    mutate(Date2 = dmy(Date)) %>% 
+    # Sort data
     arrange(Country,
             Region,
             Date2,
@@ -100,191 +395,46 @@ sort_input_data <- function(X){
             Measure,
             Metric,
             suppressWarnings(as.integer(Age))) %>% 
+    # Drop extra date variable
     select(-Date2)
+  
 }
 
-# -------------------------------------------------
 
-# for coercing Date to "DD.MM.YYYY"
-date2dmy <- function(d){
-  paste(sprintf("%02d",day(d)),
-        sprintf("%02d",month(d)),
-        year(d),
-        sep = "."
-  )
-}
+### add_short
+# Create short labels from long labels
+# @param Code Character vector of long labels
+# @param Date Vector of dates
 
-get_input_rubric <- function(tab = "input"){
-  ss_rubric <- "https://docs.google.com/spreadsheets/d/1IDQkit829LrUShH-NpeprDus20b6bso7FAOkpYvDHi4/edit#gid=0"
-  input_rubric <- read_sheet(ss_rubric, sheet = tab) %>% 
-    filter(!is.na(Sheet))
-  input_rubric
-}
-
-add_Short <- function(Code, Date){
+add_Short <- function(Code, Date) {
+  
+  # Apply elementwise
   mapply(function(Code, Date){
+    
+    # Remove date
     Short <- gsub(pattern = Date, replacement = "", Code)
+    
+    # Remove last character if not a letter
     last_char <- str_sub(Short,-1)
     if (last_char %in% c("\\.","_","-")){
       Short <- substr(Short,1,nchar(Short)-1)
     }
-    Short
-  }, Code, Date)
-
-}
-
-# leave rubric as NULL for full build
-compile_inputDB <- function(rubric = NULL){
-  if (is.null(rubric)){
-    rubric <- get_input_rubric(tab = "input")
-  }
-  rubric <- rubric %>% 
-    filter(Rows > 0)
-  
-  input_list <- list()
-  for (i in rubric$Short){
-    ss_i           <- rubric %>% filter(Short == i) %>% pull(Sheet)
-    X <- try(read_sheet(ss_i, 
-                     sheet = "database", 
-                     na = "NA", 
-                     col_types = "cccccciccd"))
-    if (class(X)[1] == "try-error"){
-      cat(i,"didn't load, waiting 2 min to try again")
-      Sys.sleep(120)
-      X <- try(read_sheet(ss_i, 
-                          sheet = "database", 
-                          na = "NA", 
-                          col_types = "cccccciccd"))
-    }
     
-    if (class(X)[1] == "try-error"){
-      cat(i,"failure\n")
-    } else {
-      X <- 
-        X %>% 
-        mutate(Short = add_Short(Code, Date))
-      input_list[[i]] <- X
-    }
-    Sys.sleep(45) # this is getting absurd
-  }
-  # bind and sort:
-  inputDB <- 
-    input_list %>% 
-    bind_rows() %>% 
-    sort_input_data()
+    # Return short label
+    Short
+    
+  }, Code, Date)
   
-  inputDB
-}
-
-compile_offsetsDB <- function(){
-  ss_offsets <- "https://docs.google.com/spreadsheets/d/1z9Dg7iQWPdIGRI3rvgd-Dx3rE5RPNd7B_paOP86FRzA/edit#gid=0"
-  offsets_rubric <- read_sheet(ss_offsets, sheet = 'checklist') %>% 
-    filter(!is.na(Sheet))
-  
-  off_list <- list()
-  for (i in offsets_rubric$Short){
-    ss_i           <- offsets_rubric %>% filter(Short == i) %>% pull(Sheet)
-    X <- try(read_sheet(ss_i, 
-                        sheet = "population", 
-                        na = "NA", 
-                        col_types = "ccccicd"))
-    if (class(X)[1] == "try-error"){
-      cat(i,"didn't load, waiting 2 min to try again")
-      Sys.sleep(100)
-      X <- try(read_sheet(ss_i, 
-                          sheet = "population", 
-                          na = "NA", 
-                          col_types = "ccccicd"))
-    }
-    X <- 
-      X %>% 
-      mutate(Short = i)
-    off_list[[i]] <- X
-    Sys.sleep(20) # this is getting absurd
-  }
-  
-  # TR: added 10 June, 2020. Some sheets fail more often.
-  cat("\nEverything downloaded, or at least we tried")
-  errors <- lapply(off_list,function(x){length(x)==1}) %>% unlist()
-  
-  if (sum(errors) > 0){
-    prob_codes <- offsets_rubric$Short[errors]
-    cat("\nThe following code(s) did not read properly:\n",paste(prob_codes,collapse = "\n"))
-    off_list <- off_list[!errors]
-  }
-  
-  # bind and sort:
-  offsetsDB <- 
-    off_list %>% 
-    bind_rows() %>% 
-    arrange(Country, Region, Sex)
-  offsetsDB
 }
 
 
 
+# -------------------------------------------------
+# -------------------------------------------------
+# -------------------------------------------------
 
-# load just a single country
-get_country_inputDB <- function(ShortCode){
-  rubric <- get_input_rubric(tab = "input")
-  ss_i   <- rubric %>% filter(Short == ShortCode) %>% pull(Sheet)
-  out <- read_sheet(ss_i, 
-                     sheet = "database", 
-                     na = "NA", 
-                     col_types= "cccccciccd")
-  out$Short <- ShortCode
-  out
-}
-  
-# ---------------------------------------------------
-# # replace subset with new load after Date correction
-swap_country_inputDB <- function(inputDB, ShortCode){
-  X <- get_country_inputDB(ShortCode)
-  inputDB <-
-    inputDB %>% 
-    filter(!grepl(ShortCode,Code)) %>% 
-    rbind(X) %>% 
-    sort_input_data()
-  inputDB
-}
 
-log_section <- function(step = "A", append = TRUE, logfile = "buildlog.md"){
-  
-  header <- paste("\n#", 
-                  step, 
-                  "Build error log\n",
-                  timestamp(prefix="",suffix=""),
-                  "\n\n")
-  cat(header,file=logfile,append=append)   
-}
 
-log_processing_error <- function(chunk,
-                                 byvars = c("Code", "Sex", "Measure"),
-                                 logfile = "buildlog.md"){
-  chunk  <- data.table(chunk)
-  marker <- chunk[1, ..byvars]
-  # single quotes around char byvars: (only age isn't char..)
-  marker <- ifelse(byvars == "Age",marker,paste0("'",marker,"'"))
-  
-  marker <- paste(paste(byvars, marker, sep = " == "),collapse=", ")
-  marker <- c("filter(",marker,")\n")
-  cat(marker, file = logfile, append = TRUE)
-}
-
-try_step <- function(process_function, 
-                     chunk, 
-                     byvars = c("Code","Sex"),
-                     logfile = "buildlog.md", 
-                     ...){
-  out <- try(process_function(chunk = chunk, ...))
-  if (class(out)[1] == "try-error"){
-    log_processing_error(chunk = chunk, 
-                         byvars = byvars,
-                         logfile = logfile)
-    out <- chunk[0]
-  }
-  return(out)
-}
 # TODO: write validation functions
 # group_by(Code, Measure)
 do_we_convert_fractions_all_sexes <- function(chunk, logfile = "buildlog.md"){
@@ -1156,61 +1306,6 @@ rescaleAgeGroups <- function (Value1, AgeInt1, Value2, AgeInt2, splitfun = c(gra
   }
 }
 
-# ----------------------------------------------------
 
-
-# get_standby_inputDB <- function(){
-#   rubric <- get_input_rubric(tab = "output")
-#   inputDB_ss <- 
-#     rubric %>% 
-#     filter(tab == "inputDB") %>% 
-#     pull(Sheet)
-#   standbyDB <- read_sheet(inputDB_ss, sheet = "inputDB", na = "NA", col_types= "cccccciccdc")
-#   standbyDB
-# }
-
-# check_input_updates <- function(inputDB  = NULL, standbyDB = NULL){
-# 
-#   if (is.null(standbyDB)){
-#     standbyDB <- get_standby_inputDB()
-#   }
-#   if (is.null(inputDB)){
-#     inputDB <- compile_inputDB()
-#   }
-#   codes_have      <- standbyDB %>% pull(Code) %>% unique()
-#   codes_collected <- inputDB %>% pull(Code) %>% unique()
-#   
-#   new_codes <- codes_collected[!codes_collected%in%codes_have]
-#   if (length(new_codes)  > 0){
-#     cat(new_codes)
-#     nr <- nrow(standbyDB) - nrow(inputDB)
-#     cat(nr, "total new values collected")
-#   } else {
-#     cat("no new updates to add")
-#   }
-# }
-
-# agressive push
-# push_inputDB <- function(inputDB = NULL){
-# 
-#   inputDB_ss <- 
-#     get_input_rubric(tab="output") %>% 
-#     filter(tab == "inputDB") %>% 
-#     pull(Sheet)
-#   
-#   write_sheet(inputDB, ss = inputDB_ss, sheet = "inputDB")
-# }
-
-
-# Output can live straight in github now
-# push_outputDB <- function(outputDB = NULL){
-# 
-#   inputDB_ss <- 
-#     get_input_rubric(tab="output") %>% 
-#     filter(tab == "outputDB") %>% 
-#     pull(Sheet)
-#   
-#   write_sheet(outputDB, ss = inputDB_ss, sheet = "outputDB")
-# }
 
 

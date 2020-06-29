@@ -14,13 +14,9 @@ if (schedule_this){
 
 # Have to do this on Hydra because otherwise
 if (Sys.info()["user"] == "riffe"){
-  change_here <- function(new_path){
-    new_root <- here:::.root_env
-    new_root$f <- function(...){file.path(new_path, ...)}
-    assignInNamespace(".root_env", new_root, ns = "here")
-  }
 
   change_here("C:/Users/riffe/Documents/covid_age")
+  
 }
 
 
