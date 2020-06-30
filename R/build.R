@@ -1,44 +1,8 @@
 library(here)
 
 # -------------------------------------- #
-# This block just for the automatic scheduler
-schedule_this <- FALSE
-if (schedule_this){
-  library(taskscheduleR)
-  taskscheduler_create(taskname = "COVerAGE-DB-automatic-daily-build", 
-                       rscript = "C:/Users/riffe/Documents/covid_age/R/build.R", 
-                       schedule = "DAILY", 
-                       starttime = "02:00",
-                       startdate = format(Sys.Date() + 1, "%d/%m/%Y"))
-}
-
-# Have to do this on Hydra because otherwise
-if (Sys.info()["user"] == "riffe"){
-  change_here <- function(new_path){
-    new_root <- here:::.root_env
-    new_root$f <- function(...){file.path(new_path, ...)}
-    assignInNamespace(".root_env", new_root, ns = "here")
-  }
-
-  change_here("C:/Users/riffe/Documents/covid_age")
-}
-
-
-# -------------------------------------- #
 
 source(here("R","00_Functions.R"))
-
-
-# --------------------- #
-# pull from github first, in case there has been a fix
-# or change.
-startup::startup()
-#library(usethis)
-#library(git2r)
-
-#repo <- init()
-
-#git2r::pull(credentials = creds)
 
 # --------------------- #
 
