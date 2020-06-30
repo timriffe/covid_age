@@ -137,5 +137,8 @@ source("R/08_coverage_map.R")
 # git commit artifacts
 source("R/10_commit_files.R")
 
+# ---------------------- #
 
+# update build log / comminucations
+source("R/11_email_and_tweet.R")
 
