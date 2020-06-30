@@ -5,15 +5,15 @@ startup::startup()
 library(usethis)
 library(git2r)
 
-repo <- init()
-
-git2r::pull(credentials = creds)
+repo <- git2r::repository(here())
+#init()
+git2r::pull(repo,credentials = creds)
 
 commit(repo, 
        message = "global commit", 
        all = TRUE)
 
-push(credentials = creds)
+git2r::push(repo,credentials = creds)
 
 
 rm(list=ls())

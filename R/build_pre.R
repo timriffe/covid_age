@@ -10,7 +10,7 @@ change_here <- function(new_path){
 
 change_here("C:/Users/riffe/Documents/covid_age")
 startup::startup()
-repo <- git2r::repository("C:/Users/riffe/Documents/covid_age")
+repo <- git2r::repository(here())
 #init()
 git2r::pull(repo,credentials = creds)
 
