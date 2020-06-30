@@ -28,7 +28,7 @@ inputDB %>% pull(Value) %>% is.na() %>% any()
 #          !(Age == "UNK" & Value == 0),
 #          !(Sex == "UNK" & Sex == 0)) %>% 
 #   split(list(.$Code, .$Measure)) %>% 
-#   mclapply(try(convert_fractions_all_sexes), mc.cores = mc.cores) %>% 
+#   mclapply(try(convert_fractions_sexes), mc.cores = mc.cores) %>% 
 #   filter_try_errors_then_bind( mc.cores = mc.cores) %>% 
 #   split(list(.$Code, .$Sex, .$Measure)) %>% 
 #   mclapply(try(convert_fractions_within_sex), mc.cores = mc.cores) %>% 
@@ -47,7 +47,7 @@ A <-
 
 # Fraction conversion, consider as single step
 log_section("A")
-A <- A[ , try_step(process_function = convert_fractions_all_sexes,
+A <- A[ , try_step(process_function = convert_fractions_sexes,
                    chunk = .SD,
                    byvars = c("Code","Measure")),
         by = list(Code, Measure), 
@@ -169,8 +169,8 @@ save(COMPONENTS, file = here("Data","ProcessingSteps.Rdata"))
 #          !(Age == "UNK" & Value == 0),
 #          !(Sex == "UNK" & Sex == 0)) %>% 
 #   group_by(Code, Measure) %>%
-#   # do_we_convert_fractions_all_sexes(chunk)
-#   do(convert_fractions_all_sexes(chunk = .data)) %>% 
+#   # do_we_convert_fractions_sexes(chunk)
+#   do(convert_fractions_sexes(chunk = .data)) %>% 
 #   ungroup() %>% 
 #   group_by(Code, Sex, Measure) %>% 
 #   # do_we_convert_fractions_within_sex(chunk)
