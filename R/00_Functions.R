@@ -1236,100 +1236,135 @@ infer_both_sex <- function(chunk, verbose = FALSE){
 
 
 ### do_we_maybe_lower_closeout()
-#
-# @param chunk
-# param OAnew_min
+# Check if close out age needs to be lowered 
+# @param chunk Data chunk
+# param OAnew_min numeric Minimum close out age
 
-do_we_maybe_lower_closeout <- function(chunk, OAnew_min){
+do_we_maybe_lower_closeout <- function(chunk, OAnew_min) {
   
+  # Check if chunk only has count data...
   maybe1 <- all(chunk[["Metric"]] == "Count")
-  if (!maybe1){
+  
+  # ...if not return FALSE
+  if(!maybe1){
+    
     return(FALSE)
+    
   }
   
+  # Sort chunk by age
   chunk  <- chunk[order(Age)]
+  
+  # Get variables
   Age    <- chunk[["Age"]] 
   Value  <- chunk[["Value"]]
   AgeInt <- chunk[["AgeInt"]]
   
+  # Check maximum age above new min...
   maybe2 <- max(Age) >= OAnew_min
-  if (!maybe2){
+  
+  # ... if not return F
+  if(!maybe2) {
     return(FALSE)
   }
   
+  # Number of age groups
   n <- length(Age)
+  
+  # Find smallest age equal to OAnew_min
   nm <- (Age >= OAnew_min) %>% which() %>% min()
+  
+  # For ages above closeout age find largest with counts > 0
   for (i in n:nm){
     if (Value[i] > 0){
       break
     }
   }
+  
+  # Output
   i < n
 }
 
 
-# -------------------------------------------------
-# -------------------------------------------------
-# -------------------------------------------------
-
-# Here group_by(Country, Region, Code, Date, Measure).
-# AFTER all Measure == "Count", ergo at the end of the pipe.
-# this scales to totals (either stated or derived).
-# it doesn't scale within age groups. Hmmm.
-
-
-
-
-
-# Standardize closeout.
-# closing out with 0 counts is pretty bad.
-# closing out with known single ages that 
-# don't go cleanly to 105 is also a pain for processing.
-# age ranges that don't start at 0 are a pain for processing.
-# need to standardize these things. What shall it be?
-# on the lower end, if there are 0s
-
-# TODO: maybe a general "patch zeros" function premised on 
-# intermediary grouping to 5 years, then detection of lone 0s,
-# then grouping to 10 (but not all ages, just the necessary ones).
-
-
-
+### maybe_lower_closeout()
+# Lower closeout age
+# @param chunk Data chunk
+# @param OAnew_min Minimum closeout age
+# @param verbose logical Print console message
 
 maybe_lower_closeout <- function(chunk, OAnew_min = 85, verbose = FALSE){
-
+  
+  # Check if lower clouseout is needed...
   do_this <- do_we_maybe_lower_closeout(chunk, OAnew_min)
-  if (!do_this){
+  
+  # ... if no...
+  if(!do_this) {
+    
+    # ... return unchanged chunk
     return(chunk)
+    
   }
   
+  # Order chunk
   chunk  <- chunk[order(Age)]
+  
+  # Get variables, in right format (integer)
   Age    <- chunk[["Age"]] %>% as.integer()
   Value  <- chunk[["Value"]] 
   AgeInt <- chunk[["AgeInt"]] %>% as.integer()
-
+  
+  # Get number of age groups
   n  <- length(Age)
+  
+  # Get youngest age group above min closeout age
   nm <- (Age >= OAnew_min) %>% which() %>% min()
+  
+  # Get oldest age above closeout with more than 0 cases
   for (i in n:nm){
     if (Value[i] > 0){
       break
     }
   }
+  
+  # If oldest age is not max age ein data
   if (i < n){
+    
+    # Get code, sex, measure
     .Code    <- chunk[["Code"]][1]
     .Sex     <- chunk[["Sex"]][1]
     .Measure <- chunk[["Measure"]][1]
+    
+    # Console message
     if (verbose) cat("Open age group lowered from",Age[n],"to",Age[i],"for",.Code,.Sex,.Measure,"\n")
+    
+    # Get new values
     .Value  <- c(Value[1:(i-1)],sum(Value[i:n]))
+    
+    # Get new ages
     .Age    <- Age[1:i]
+    
+    # Turn to integer
     .AgeInt <- c(AgeInt[1:(i-1)], 105 - Age[i]) %>% as.integer()
     
+    # Get chunk with ages up to open age group
     chunk <- chunk[1:i, ]
     chunk[,c("Age","AgeInt","Value") := .(.Age, .AgeInt, .Value)]
+    
   }
+  
+  # Output
   chunk
 }
-      
+
+
+# -------------------------------------------------
+# -------------------------------------------------
+# -------------------------------------------------
+
+
+# TODO: maybe a general "patch zeros" function premised on 
+# intermediary grouping to 5 years, then detection of lone 0s,
+# then grouping to 10 (but not all ages, just the necessary ones).
 
 # inspect_code(inputDB,"ES31.03.2020)
 inspect_code <- function(DB, .Code){
