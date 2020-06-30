@@ -8,3 +8,5 @@ test.csv
 .here
 FR_Regions28.06.2020_deaths
 FR_Regions28.06.2020_tests&cases
+.Rprofile
+.Renviron
