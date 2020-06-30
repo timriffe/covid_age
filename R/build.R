@@ -33,12 +33,12 @@ source(here("R","00_Functions.R"))
 # pull from github first, in case there has been a fix
 # or change.
 startup::startup()
-library(usethis)
-library(git2r)
+#library(usethis)
+#library(git2r)
 
-repo <- init()
+#repo <- init()
 
-git2r::pull(credentials = creds)
+#git2r::pull(credentials = creds)
 
 # --------------------- #
 
