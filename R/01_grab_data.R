@@ -61,17 +61,28 @@ if (check_db){
     toc()
   }
 
-  # 
+  # If no full build
   if (!full){
-    new_codes <- inputDB %>% pull(Short) %>% unique()
+    
+    # Get codes of new rows
+    new_codes <- inputDB %>% '$'(Short) %>% unique()
+    
+    # Read old DB
     holdDB <- readRDS("Data/inputDBhold.rds")
+    
     holdDB <-
       holdDB %>% 
+      # Drop rows with new codes
       filter(!Short %in% new_codes) %>% 
+      # Combine with new data
       bind_rows(inputDB) %>% 
+      # Drop rows with 0 cases and unknown age/sex
       filter(!(Sex == "UNK" & Value == 0),
              !(Age == "UNK" & Value == 0)) %>% 
+      # Sort
       sort_input_data()
+    
+    # Save
     saveRDS(holdDB,here::here("Data/inputDBhold.rds"))
  
   } else {
@@ -86,61 +97,48 @@ if (check_db){
     
   }
   
-  # Date range check: 
+  # Date range check
   inputDB %>% 
     mutate(date = dmy(Date)) %>% 
-    pull(date) %>% 
+    '$'(date) %>% 
     range()    
   
-
   # once-off fix for Sweden input:
   inputDB <- 
     inputDB %>% 
     mutate(AgeInt = ifelse(Age %in% c("UNK","TOT"),NA,AgeInt))
   
-
   # These are special cases that we would like to account for
   # eventually, but that we don't have a protocol for at this time.
   inputDB <- inputDB %>% filter(Measure != "Probable deaths")
-  # eventually, but that we don't have a protocol for at this time
   inputDB <- inputDB %>% filter(Measure != "Probable cases")
   inputDB <- inputDB %>% filter(Measure != "Confirmed deaths")
   inputDB <- inputDB %>% filter(Measure != "Confirmed cases")
   inputDB <- inputDB %>% filter(Metric != "Rate")
   inputDB <- inputDB %>% filter(Measure != "Tested")
-  # inputDB %>% filter(Sex %in% c("F","M","unk")) %>% View()
 
-  
-  inputDB %>% pull(Sex) %>% table(useNA = "ifany")
-  inputDB %>% pull(Measure) %>% table(useNA = "ifany")
-  inputDB %>% pull(Metric) %>% table(useNA = "ifany")
-  inputDB %>% pull(Age) %>% table(useNA = "ifany") 
-  # ---------------------------------- #
-  # duplicates check:
-  # -----------------------------------#
-  
+  # Some tables
+  inputDB %>% '$'(Sex) %>% table(useNA = "ifany")
+  inputDB %>% '$'(Measure) %>% table(useNA = "ifany")
+  inputDB %>% '$'(Metric) %>% table(useNA = "ifany")
+  inputDB %>% '$'(Age) %>% table(useNA = "ifany") 
+ 
+  # Remove duplicates
   n <- duplicated(inputDB[,c("Code","Sex","Age","Measure","Metric")])
   sum(n)
-  rmcodes <- inputDB %>% filter(n) %>% pull(Code) %>% unique()
+  rmcodes <- inputDB %>% filter(n) %>% '$'(Code) %>% unique()
   inputDB <- inputDB %>% filter(!Code%in%rmcodes)
-  # inputDB <- inputDB %>%  filter(!(n & Country == "Sweden"))
-  # inputDB <- inputDB %>% filter(!n)
-  
+
+  # Drop NAs
   any(is.na(inputDB$Value))
-  #rmcodes <- inputDB %>% filter(is.na(Value)) %>% pull(Code) %>% unique()
   inputDB <- inputDB %>% filter(!is.na(Value))
   
-  # rm.codes <- FALSE
-  # if (sum(n) > 0 & rm.codes){
-  #   rmcodes <- inputDB[n,] %>% pull(Code) %>% unique()
-  #   inputDB <- inputDB %>% filter(!Code %in% rmcodes)
-  # }
-
-  run_checks(inputDB, ShortCodes = inputDB %>% pull(Short) %>% unique())
+  # Run checks
+  run_checks(inputDB, ShortCodes = inputDB %>% '$'(Short) %>% unique())
   
   # If it's a partial build then swap out the data.
   if (!full){
-    swap_codes  <- inputDB %>% pull(Short) %>% unique()
+    swap_codes  <- inputDB %>% '$'(Short) %>% unique()
     inputDB_old <- readRDS("Data/inputDB.rds")
     inputDB_old <- inputDB_old %>% 
       filter(!(Short %in% swap_codes))
@@ -150,11 +148,12 @@ if (check_db){
       sort_input_data()
   }
   
-  
+  # Save CSV
   header_msg <- paste("COVerAGE-DB input database, filtered after some simple checks:",timestamp(prefix="",suffix=""))
   write_lines(header_msg, path = "Data/inputDB.csv")
-  
   write_csv(inputDB, path = "Data/inputDB.csv", append = TRUE, col_names = TRUE)
+  
+  # Save rds
   saveRDS(inputDB, "Data/inputDB.rds")
   
   # ---------------------------------------------------

@@ -90,3 +90,14 @@ filter( Code == 'US_LA24.06.2020', Sex == 'b', Measure == 'Deaths' )
 # Commit dashboards and buildlog Build error log
  Sun Jun 28 18:36:31 2020 
 
+
+# Compile offsets from Drive Build error log
+ Wed Jul 01 12:28:31 2020 
+
+
+# Harmonize offsets Build error log
+ Wed Jul 01 13:08:03 2020 
+
+filter( Country == 'UK', Region == 'All', Sex == 'm' )
+filter( Country == 'UK', Region == 'All', Sex == 'f' )
+filter( Country == 'UK', Region == 'All', Sex == 'b' )

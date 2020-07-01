@@ -108,6 +108,36 @@ log_section <- function(step = "A", append = TRUE,
 }
 
 
+### log_processing_error()
+# Write error to log for chunk
+# @param chunk Data chunk
+# @param byvars character List of variables
+# logfile character Name of log file
+
+log_processing_error <- function(chunk,
+                                 byvars = c("Code", "Sex", "Measure"),
+                                 logfile = "buildlog.md"){
+  
+  # Get as data table
+  chunk  <- data.table(chunk)
+  
+  # Get values
+  marker <- chunk[1, ..byvars]
+  
+  # single quotes around char byvars: (only age isn't char..)
+  marker <- ifelse(byvars == "Age",marker,paste0("'",marker,"'"))
+  
+  # List of variables
+  marker <- paste(paste(byvars, marker, sep = " == "),collapse=", ")
+  
+  # Format
+  marker <- c("filter(",marker,")\n")
+  
+  # Write to logfile
+  cat(marker, file = logfile, append = TRUE)
+}
+
+
 ### try_step()
 # Try function on data and if error capture in log
 # @param process_function function Name of function to apply
@@ -1437,6 +1467,33 @@ harmonize_offset_age <- function(chunk){
   
   out <- tibble(Age = 0:104,
                 Population = p1)
+  
+  # Output
+  out
+  
+}
+
+
+### harmonize_offset_age_p()
+# Wrapper for harmonizing age offset
+# @param chunk Data chunk
+
+harmonize_offset_age_p <- function(chunk) {
+  
+  # Get current country region sex
+  .Country <- chunk %>% pull(Country) %>% '['(1)
+  .Region  <- chunk %>% pull(Region) %>% '['(1)
+  .Sex     <- chunk %>% pull(Sex) %>% '['(1)
+  
+  # Harmonize
+  out <- harmonize_offset_age(chunk)
+  
+  # Add country region sex back
+  out <-
+    out %>% 
+    mutate(Country = .Country,
+           Region = .Region,
+           Sex = .Sex)
   
   # Output
   out
