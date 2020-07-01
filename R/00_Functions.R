@@ -168,7 +168,7 @@ compile_inputDB <- function(rubric = NULL) {
   for (i in rubric$Short) {
     
     # Get spreadsheet address
-    ss_i <- rubric %>% filter(Short == i) %>% pull(Sheet)
+    ss_i <- rubric %>% filter(Short == i) %>% '$'(Sheet)
     
     # Try to read spreadsheet
     X <- try(read_sheet(ss_i, 
@@ -242,7 +242,7 @@ compile_offsetsDB <- function() {
   for (i in offsets_rubric$Short){
     
     # Get spreadsheet for country
-    ss_i <- offsets_rubric %>% filter(Short == i) %>% pull(Sheet)
+    ss_i <- offsets_rubric %>% filter(Short == i) %>% '$'(Sheet)
     
     # Try reading spreadhseet
     X <- try(read_sheet(ss_i, 
@@ -332,7 +332,7 @@ get_country_inputDB <- function(ShortCode) {
   rubric <- get_input_rubric(tab = "input")
   
   # Find spreadsheet for country
-  ss_i   <- rubric %>% filter(Short == ShortCode) %>% pull(Sheet)
+  ss_i   <- rubric %>% filter(Short == ShortCode) %>% '$'(Sheet)
   
   # Load spreadsheet
   out <- read_sheet(ss_i, 
@@ -370,6 +370,22 @@ swap_country_inputDB <- function(inputDB, ShortCode) {
   
   # Output
   inputDB
+  
+}
+
+
+### inspect_code()
+# Views database entry
+# @param DB Database
+# @param .Code Country/day code
+# inspect_code(inputDB,"ES31.03.2020)
+
+inspect_code <- function(DB, .Code) {
+  
+  DB %>% 
+    # Select rows with .Code
+    filter(Code == .Code) %>% 
+    View()
   
 }
 
@@ -505,7 +521,8 @@ convert_fractions_sexes <- function(chunk, verbose = FALSE) {
   stopifnot(all(rest[["Metric"]] == "Fraction"))
   
   # Console message
-  if(verbose) cat("Fractions converted to Counts for",unique(chunk$Code),"\n")
+  if(verbose) cat("Fractions converted to Counts for",
+                  unique(chunk$Code),"\n")
   
   # Get totals for combined-sex data
   if(any(b[["Age"]] == "TOT")) {
@@ -576,7 +593,8 @@ convert_fractions_within_sex <- function(chunk, verbose = FALSE) {
   stopifnot(TOT[["Age"]] == "TOT")
   
   # Console message
-  if(verbose) cat("Fractions converted to Counts for",unique(chunk[["Code"]]),"\n")
+  if(verbose) cat("Fractions converted to Counts for",
+                  unique(chunk[["Code"]]),"\n")
   
   # Get total count
   TOT <- TOT[["Value"]]
@@ -660,14 +678,16 @@ infer_deaths_from_cases_and_ascfr <- function(chunk, verbose=FALSE) {
   stopifnot(nrow(Cases) == nrow(ASCFR))
   
   # Console message
-  if (verbose) cat("ACSFR converted to deaths for",unique(chunk[["Code"]]),"\n")
+  if (verbose) cat("ACSFR converted to deaths for",
+                   unique(chunk[["Code"]]),"\n")
   
   # Object for death counts
   Deaths  <- ASCFR
   
   # Calculate deaths
   Deaths <-
-    Deaths[, c("Value", "Measure", "Metric") := .(Cases[["Value"]] * ASCFR[["Value"]],"Deaths","Count")] 
+    Deaths[, c("Value", "Measure", "Metric") := 
+             .(Cases[["Value"]] * ASCFR[["Value"]],"Deaths","Count")]
   
   # Output
   rbind(Cases, Deaths, TOT)
@@ -781,7 +801,8 @@ infer_cases_from_deaths_and_ascfr <- function(chunk, verbose= FALSE){
   }
   
   # Console message
-  if (verbose) cat("ACSFR converted to counts for",unique(zunk[["Code"]]),"\n")
+  if (verbose) cat("ACSFR converted to counts for",
+                   unique(zunk[["Code"]]),"\n")
   
   # Calculate case counts
   cases <- Deaths[["Value"]] / ASCFR[["Value"]]
@@ -790,8 +811,9 @@ infer_cases_from_deaths_and_ascfr <- function(chunk, verbose= FALSE){
   cases <- ifelse(is.nan(cases),0,cases)
   
   # Format for output
-  Cases  <- ASCFR
-  Cases <- Cases[, c("Value","Measure", "Metric") := .(cases,"Cases","Count")]
+  Cases <- ASCFR
+  Cases <- Cases[, c("Value","Measure", "Metric") := 
+                   .(cases,"Cases","Count")]
   
   # Output
   rbind(Cases, Deaths, TOT)
@@ -858,7 +880,8 @@ redistribute_unknown_age <- function(chunk, verbose = FALSE) {
   chunk <- chunk[Age != "UNK"]
   
   # Redistribute unknown age
-  v2    <- chunk[, Value] + (chunk[, Value] / sum(chunk[, Value])) * UNK[, Value]
+  v2    <- chunk[, Value] + 
+          (chunk[, Value] / sum(chunk[, Value])) * UNK[, Value]
   
   # Replace NaN with 0
   v2    <- ifelse(is.nan(v2),0,v2)
@@ -1292,7 +1315,8 @@ do_we_maybe_lower_closeout <- function(chunk, OAnew_min) {
 # @param OAnew_min Minimum closeout age
 # @param verbose logical Print console message
 
-maybe_lower_closeout <- function(chunk, OAnew_min = 85, verbose = FALSE){
+maybe_lower_closeout <- function(chunk, OAnew_min = 85, 
+                                 verbose = FALSE){
   
   # Check if lower clouseout is needed...
   do_this <- do_we_maybe_lower_closeout(chunk, OAnew_min)
@@ -1335,7 +1359,8 @@ maybe_lower_closeout <- function(chunk, OAnew_min = 85, verbose = FALSE){
     .Measure <- chunk[["Measure"]][1]
     
     # Console message
-    if (verbose) cat("Open age group lowered from",Age[n],"to",Age[i],"for",.Code,.Sex,.Measure,"\n")
+    if (verbose) cat("Open age group lowered from",Age[n],
+                     "to",Age[i],"for",.Code,.Sex,.Measure,"\n")
     
     # Get new values
     .Value  <- c(Value[1:(i-1)],sum(Value[i:n]))
@@ -1354,6 +1379,322 @@ maybe_lower_closeout <- function(chunk, OAnew_min = 85, verbose = FALSE){
   
   # Output
   chunk
+  
+}
+
+
+### harmonize_offset_age()
+# Harmonize highest age
+# @param chunk Data chunk
+
+harmonize_offset_age <- function(chunk){
+  
+  # Get age and population data
+  Age     <- chunk %>% '$'(Age)
+  Pop     <- chunk %>% '$'(Population) 
+  
+  # If already in shape, then skip it
+  if(is_single(Age) & max(Age) == 104) {
+    
+    return(chunk[,"Age","Population"])
+    
+  }
+  
+  # if single, but high open age, then drop it:
+  if(is_single(Age) & max(Age) > 104) {
+    
+    p1 <- groupOAG(Pop,Age,OAnew = 104)
+    out <- tibble(Age = 0:104,
+                  Population = p1)
+    return(out)
+    
+  }
+  
+  # WIdth of current open interval
+  nlast <- max(105 - max(Age), 5)
+  
+  # Widths of all age intervals
+  AgeInt<- DemoTools::age2int(Age, OAvalue = nlast)
+  
+  # Split last age interval using PCLM
+  p1 <- pclm(y = Pop, 
+             x = Age, 
+             nlast = nlast, 
+             control = list(lambda = 10, deg = 3))$fitted
+  
+  # Rescale age groups
+  p1  <- rescaleAgeGroups(Value1 = p1, 
+                          AgeInt1 = rep(1,length(p1)), 
+                          Value2 = Pop, 
+                          AgeInt2 = AgeInt, 
+                          splitfun = graduate_uniform)
+  
+  # Ages
+  a1 <- 1:length(p1)-1
+  
+  # Group to new open age
+  p1 <- groupOAG(p1, a1, OAnew = 104)
+  
+  out <- tibble(Age = 0:104,
+                Population = p1)
+  
+  # Output
+  out
+  
+}
+
+
+### harmonize_age()
+# Age harmonization
+# @param chunk Data chunk
+# @param Offsets Tibble/data frame with offsets
+# @param N integer Age interval width
+# @param OAnew integer Open age interval
+# @param lambda Lambda value for PCLM
+
+harmonize_age <- function(chunk, Offsets = NULL, N = 5, OAnew = 100, 
+                          lambda = 100) {
+  
+  # Get age, interval width, counts
+  Age     <- chunk %>% '$'(Age)
+  AgeInt  <- chunk %>% '$'(AgeInt)
+  Value   <- chunk %>% '$'(Value) 
+  
+  # Maybe we don't need to do anything but lower the OAG?
+  if(all(AgeInt == N) & max(Age) >= OAnew) {
+    
+    # Lower open age group: Combine values
+    Value   <- groupOAG(Value, Age, OAnew = OAnew)
+    
+    # Reduce ages and interval width
+    Age     <- Age[1:length(Value)]
+    AgeInt  <- AgeInt[1:length(Value)]
+    
+    # Output
+    return(select(chunk, Age, AgeInt, Value))
+    
+  }
+  
+  # Get country, region, sex
+  .Country <- chunk %>% '$'(Country) %>% "["(1)
+  .Region  <- chunk %>% '$'(Region) %>% "["(1)
+  .Sex     <- chunk %>% '$'(Sex) %>% "["(1)
+  
+  # If offsets available...
+  if(!is.null(Offsets)) {
+    
+    # ...get offset for country/region/sex
+    Offsets   <- Offsets %>% 
+      filter(Country == .Country,
+             Region == .Region,
+             Sex == .Sex)
+    
+  } else {
+    
+    # Empty tibble if no offsets
+    Offsets <- tibble()
+    
+  }
+  
+  # If offsets available...
+  if (nrow(Offsets) == 105){
+    
+    # ... get offsets
+    pop     <- Offsets %>% '$'(Population)
+    age_pop <- Offsets %>% '$'(Age)
+    
+    # Apply PCLM with offsets
+    V1 <- pclm(x = Age, 
+               y = Value, 
+               nlast = AgeInt[length(AgeInt)], 
+               offset = pop, 
+               control = list(lambda = lambda, deg = 3))$fitted * pop
+  }  else {
+    
+    # If no offsets are available then run through without.
+    V1 <- pclm(x = Age, 
+               y = Value, 
+               nlast = AgeInt[length(AgeInt)], 
+               control = list(lambda = lambda, deg = 3))$fitted
+  }
+  
+  # Rescale age groups
+  V1      <- rescaleAgeGroups(Value1 = V1, 
+                              AgeInt1 = rep(1,length(V1)), 
+                              Value2 = Value, 
+                              AgeInt2 = AgeInt, 
+                              splitfun = graduate_mono)
+  
+  # Replace NaN with zero
+  V1[is.nan(V1)] <- 0
+  
+  # Group to age intervals
+  VN      <- groupAges(V1, 0:104, N = N, OAnew = OAnew)
+  
+  # First age of each age interval
+  Age     <- names2age(VN)
+  
+  # Interval widths
+  AgeInt  <- rep(N, length(VN))
+  
+  # Output
+  tibble(Age = Age, AgeInt = AgeInt, Value = VN)
+  
+}
+
+
+### harmonize_age_p()
+# Age harmonization keeping format
+# @param chunk Data chunk
+# @param Offsets Tibble/data frame with offsets
+# @param N integer Age interval width
+# @param OAnew integer Open age interval
+# @param lambda Lambda value for PCLM
+
+harmonize_age_p <- function(chunk, Offsets, N = 5, 
+                            OAnew = 100, lambda = 100){
+  
+  # Get country, region, etc.
+  .Country <- chunk %>% '$'(Country) %>% "[["(1)
+  .Region  <- chunk %>% '$'(Region) %>% "[["(1)
+  .Code    <- chunk %>% '$'(Code) %>% "[["(1)
+  .Date    <- chunk %>% '$'(Date) %>% "[["(1)
+  .Sex     <- chunk %>% '$'(Sex) %>% "[["(1)
+  .Measure <- chunk %>% '$'(Measure) %>% "[["(1)
+  
+  # Harmonize age
+  out <- harmonize_age(chunk, Offsets = Offsets, N = N, 
+                       OAnew = OAnew, lambda = lambda)
+  
+  # Add country, region, etc. information back
+  out <- out %>% mutate(Country = .Country,
+                        Region = .Region,
+                        Code = .Code,
+                        Date = .Date,
+                        Sex = .Sex,
+                        Measure = .Measure) %>% 
+        select(Country, Region, Code, Date, Sex, 
+               Measure, Age, AgeInt, Value)
+  
+  # Output
+  out
+}
+
+
+### rescale_sexes_post()
+# Rescales sex-specific counts to match combined-sex values
+# @param chunk Data chunk
+
+rescale_sexes_post <- function(chunk) {
+  
+  # Get sexes in data
+  sexes  <- chunk %>% '$'(Sex) %>% unique()
+  
+  # Data includes b, m, f?
+  maybe  <- setequal(sexes,c("b","f","m")) 
+  
+  # If so,
+  if (maybe){
+    
+    chunk <- chunk %>% 
+             # Sort by Sex and Age
+             arrange(Sex, Age) %>% 
+             # Reshape to wide
+             pivot_wider(names_from = Sex,
+                  values_from = Value) %>% 
+             # Calculate/apply adjustment
+             mutate(mf = m + f,
+              adj = b / mf,
+              adj = ifelse(mf == 0,1,adj),
+              m = adj * m,
+              f = adj * f) %>% 
+             # Drop intermediate steps
+             select(-c(mf,adj)) %>% 
+             # Reshape back to long
+             pivot_longer(cols = c("f","m","b") ,
+                   names_to = "Sex",
+                   values_to = "Value") %>% 
+             # Sort 
+             arrange(Sex,Age)
+    
+  } 
+  
+  # Output
+  return(chunk)
+  
+}
+
+
+### rescaleAgeGroups()
+# Rescale counts in age groups to match counts in different age groups
+# @param See help(rescaleAgeGroups)
+
+rescaleAgeGroups <- function (Value1, AgeInt1, Value2, AgeInt2,
+                              splitfun = c(graduate_uniform,graduate_mono),
+                              recursive = FALSE, tol = 0.001) {
+  
+  # Number of counts
+  N1 <- length(Value1)
+  
+  # Stop if total number of ages does not match
+  stopifnot(sum(AgeInt1) == sum(AgeInt2))
+  
+  # Lower bounds of age classes
+  Age1 <- int2age(AgeInt1)
+  Age2 <- int2age(AgeInt2)
+  
+  # Stop if counts do not match number of age classes
+  stopifnot(N1 == length(Age1))
+  
+  # Duplicate lowe bounds
+  AgeN <- rep(Age2, times = AgeInt2)
+  
+  # Split counts
+  ValueS <- splitfun(Value1, AgeInt = AgeInt1, OAG = FALSE)
+  
+  # Single ages
+  AgeS <- 0:104
+  
+  # Duplicate lower bounds
+  AgeN2 <- rep(Age2, times = AgeInt2)
+  
+  # Group into age groups
+  beforeN <- groupAges(ValueS, AgeS, AgeN = AgeN2)
+  
+  # Duplicate values
+  beforeNint <- rep(beforeN, times = AgeInt2)
+  afterNint <- rep(Value2, times = AgeInt2)
+  
+  # Calculate ratios
+  ratio <- afterNint/beforeNint
+  
+  # Rescale
+  SRescale <- ValueS * ratio
+  AgeN1 <- rep(Age1, times = AgeInt1)
+  
+  # Output
+  out <- groupAges(SRescale, AgeS, AgeN = AgeN1)
+  
+  # If not recursive...
+  if(!recursive) {
+    return(out)
+  }
+  
+  # Split and regroup
+  newN <- splitfun(out, AgeInt = AgeInt1, OAG = FALSE)
+  check <- groupAges(newN, AgeS, AgeN = AgeN2)
+  
+  # If recursive and match within tolerance return...
+  if(max(abs(check - Value2)) < tol) {
+    return(out)
+  }
+  # ... otherwise repeat
+  else {
+    rescaleAgeGroups(Value1 = out, AgeInt1 = AgeInt1, Value2 = Value2, 
+                     AgeInt2 = AgeInt2, splitfun = splitfun, tol = tol, 
+                     recursive = recursive)
+  }
+  
 }
 
 
@@ -1361,22 +1702,12 @@ maybe_lower_closeout <- function(chunk, OAnew_min = 85, verbose = FALSE){
 # -------------------------------------------------
 # -------------------------------------------------
 
-
-# TODO: maybe a general "patch zeros" function premised on 
-# intermediary grouping to 5 years, then detection of lone 0s,
-# then grouping to 10 (but not all ages, just the necessary ones).
-
-# inspect_code(inputDB,"ES31.03.2020)
-inspect_code <- function(DB, .Code){
-  DB %>% 
-    filter(Code == .Code) %>% 
-    View()
-}
-
+### process_counts()
 # This encapsulates the entire processing chain.
 # TODO: ensure match to current chain.
+# TODO: Document properly
+
 process_counts <- function(inputDB, Offsets = NULL, N = 10){
-  
   
   A <-
     inputDB %>% 
@@ -1454,206 +1785,3 @@ process_counts <- function(inputDB, Offsets = NULL, N = 10){
     pivot_wider(names_from = Measure,
                 values_from = Value) 
 }
-
-# Separate harmonize_offsets() is better,
-# it saves multiple redundant
-
-harmonize_offset_age <- function(chunk){
-  Age     <- chunk %>% pull(Age)
-  Pop     <- chunk %>% pull(Population) 
-  
-  # if already in shape, then skip it
-  if (is_single(Age) & max(Age) == 104){
-    return(chunk[,"Age","Population"])
-  }
-  
-  # if single, but high open age, then drop it:
-  if (is_single(Age) & max(Age) > 104){
-    p1 <- groupOAG(Pop,Age,OAnew = 104)
-    out <- tibble(Age = 0:104,
-                  Population = p1)
-    return(out)
-  }
-  
-  nlast <- max(105 - max(Age), 5)
-  AgeInt<- DemoTools::age2int(Age, OAvalue = nlast)
-  p1 <- pclm(y = Pop, 
-             x = Age, 
-             nlast = nlast, 
-             control = list(lambda = 10, deg = 3))$fitted
-  
-  p1      <- rescaleAgeGroups(Value1 = p1, 
-                              AgeInt1 = rep(1,length(p1)), 
-                              Value2 = Pop, 
-                              AgeInt2 = AgeInt, 
-                              splitfun = graduate_uniform)
-  
-  a1 <- 1:length(p1)-1
-  p1 <- groupOAG(p1, a1, OAnew = 104)
-  
-  out <- tibble(Age = 0:104,
-                Population = p1)
-  out
-}
-
-
-
-
-
-
-
-
-# Age harmonization is the last step.
-harmonize_age <- function(chunk, Offsets = NULL, N = 5, OAnew = 100, lambda = 100){
-  Age     <- chunk %>% pull(Age)
-  AgeInt  <- chunk %>% pull(AgeInt)
-  Value   <- chunk %>% pull(Value) 
-  
-   # maybe we don't need to do anything but lower the OAG?
-  if (all(AgeInt == N) & max(Age) >= OAnew){
-    Value   <- groupOAG(Value, Age, OAnew = OAnew)
-    Age     <- Age[1:length(Value)]
-    AgeInt  <- AgeInt[1:length(Value)]
-    return(select(chunk, Age, AgeInt, Value))
-  }
-  # --------------------------------- #
-  # otherwise get offset sorted out.  #
-  # Offsets now handled in advance    #
-  # --------------------------------- #
-  .Country <- chunk %>% pull(Country) %>% "["(1)
-  .Region  <- chunk %>% pull(Region) %>% "["(1)
-  .Sex     <- chunk %>% pull(Sex) %>% "["(1)
-  
-  if (!is.null(Offsets)){
-    Offsets   <- Offsets %>% 
-      filter(Country == .Country,
-             Region == .Region,
-             Sex == .Sex)
-  } else {
-    Offsets <- tibble()
-  }
-  
-  if (nrow(Offsets) == 105){
-    pop     <- Offsets %>% pull(Population)
-    age_pop <- Offsets %>% pull(Age)
-
-  # so need to rescale in next step (pattern looks OK)
-    V1      <- pclm(x = Age, 
-                  y = Value, 
-                  nlast = AgeInt[length(AgeInt)], 
-                  offset = pop, 
-                  control = list(lambda = lambda, deg = 3))$fitted * pop
-  }  else {
-    # if no offsets are available then run through without.
-    V1      <- pclm(x = Age, 
-                    y = Value, 
-                    nlast = AgeInt[length(AgeInt)], 
-                    control = list(lambda = lambda, deg = 3))$fitted
-  }
-
-  # Important to rescale
-  V1      <- rescaleAgeGroups(Value1 = V1, 
-                              AgeInt1 = rep(1,length(V1)), 
-                              Value2 = Value, 
-                              AgeInt2 = AgeInt, 
-                              splitfun = graduate_mono)
-  
-  # division by 0, it's a thing
-  V1[is.nan(V1)] <- 0
-  
-  VN      <- groupAges(V1, 0:104, N = N, OAnew = OAnew)
-  Age     <- names2age(VN)
-  AgeInt  <- rep(N, length(VN))
-  
-  tibble(Age = Age, AgeInt = AgeInt, Value = VN)
-}
-
-
-harmonize_age_p <- function(chunk, Offsets, N = 5, OAnew = 100, lambda = 100){
-  .Country <- chunk %>% pull(Country) %>% "[["(1)
-  .Region  <- chunk %>% pull(Region) %>% "[["(1)
-  .Code    <- chunk %>% pull(Code) %>% "[["(1)
-  .Date    <- chunk %>% pull(Date) %>% "[["(1)
-  .Sex     <- chunk %>% pull(Sex) %>% "[["(1)
-  .Measure <- chunk %>% pull(Measure) %>% "[["(1)
-  
-  out <- harmonize_age(chunk, Offsets = Offsets, N = N, OAnew = OAnew, lambda = lambda)
-  out <- out %>% mutate(Country = .Country,
-                        Region = .Region,
-                        Code = .Code,
-                        Date = .Date,
-                        Sex = .Sex,
-                        Measure = .Measure) %>% 
-    select(Country, Region, Code, Date, Sex, Measure, Age, AgeInt, Value)
-  out
-}
-
-
-# this is similar to the other one, except
-# it's within age, so be done after age splitting
-rescale_sexes_post <- function(chunk){
-  sexes  <- chunk %>% pull(Sex) %>% unique()
-  maybe  <- setequal(sexes,c("b","f","m")) 
-  if (maybe){
-    chunk <-
-      chunk %>% 
-      arrange(Sex, Age) %>% 
-      pivot_wider(names_from = Sex,
-                  values_from = Value) %>% 
-      mutate(mf = m + f,
-             adj = b / mf,
-             adj = ifelse(mf == 0,1,adj),
-             m = adj * m,
-             f = adj * f) %>% 
-      select(-c(mf,adj)) %>% 
-      pivot_longer(cols = c("f","m","b") ,
-                   names_to = "Sex",
-                   values_to = "Value") %>% 
-      arrange(Sex,Age)
-    
-  } 
-  return(chunk)
-}
-
-
-
-
-
-# Slightly modified...
-rescaleAgeGroups <- function (Value1, AgeInt1, Value2, AgeInt2, splitfun = c(graduate_uniform, 
-                                                         graduate_mono), recursive = FALSE, tol = 0.001) 
-{
-  N1 <- length(Value1)
-  stopifnot(sum(AgeInt1) == sum(AgeInt2))
-  Age1 <- int2age(AgeInt1)
-  Age2 <- int2age(AgeInt2)
-  stopifnot(N1 == length(Age1))
-  AgeN <- rep(Age2, times = AgeInt2)
-  ValueS <- splitfun(Value1, AgeInt = AgeInt1, OAG = FALSE)
-  AgeS <- 0:104
-  AgeN2 <- rep(Age2, times = AgeInt2)
-  beforeN <- groupAges(ValueS, AgeS, AgeN = AgeN2)
-  beforeNint <- rep(beforeN, times = AgeInt2)
-  afterNint <- rep(Value2, times = AgeInt2)
-  ratio <- afterNint/beforeNint
-  SRescale <- ValueS * ratio
-  AgeN1 <- rep(Age1, times = AgeInt1)
-  out <- groupAges(SRescale, AgeS, AgeN = AgeN1)
-  if (!recursive) {
-    return(out)
-  }
-  newN <- splitfun(out, AgeInt = AgeInt1, OAG = FALSE)
-  check <- groupAges(newN, AgeS, AgeN = AgeN2)
-  if (max(abs(check - Value2)) < tol) {
-    return(out)
-  }
-  else {
-    rescaleAgeGroups(Value1 = out, AgeInt1 = AgeInt1, Value2 = Value2, 
-                     AgeInt2 = AgeInt2, splitfun = splitfun, tol = tol, 
-                     recursive = recursive)
-  }
-}
-
-
-
-
