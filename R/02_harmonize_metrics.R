@@ -1,7 +1,7 @@
 # TODO: make error trapping wrappers for parallelization of each step.
 
 rm(list=ls());gc()
-source("R/00_Functions.R")
+source(here("R","00_Functions.R"))
 # mc.cores <- 6
 
 inputDB <- readRDS(here("Data","inputDB.rds"))
@@ -11,29 +11,6 @@ inputDB <- readRDS(here("Data","inputDB.rds"))
 inputDB %>% pull(Age) %>% is.na() %>% any()
 inputDB %>% pull(Value) %>% is.na() %>% any()
 
-# filter_try_errors_then_bind <- function(big_list, mc.cores){
-#   probs <- mclapply(big_list, function(x){
-#     class(x)[1] == "try-error"
-#   }, mc.cores = mc.cores) %>% unlist()
-#   if (any(probs)) cat(paste("Failures:", probs[probs], sep = "\n"))
-#   big_list[!probs] %>% 
-#     bind_rows() %>% 
-#     sort_input_data()
-# }
-
-# tic()
-# A1 <-
-#   inputDB %>% 
-#   filter(!(Age == "TOT" & Metric == "Fraction"),
-#          !(Age == "UNK" & Value == 0),
-#          !(Sex == "UNK" & Sex == 0)) %>% 
-#   split(list(.$Code, .$Measure)) %>% 
-#   mclapply(try(convert_fractions_all_sexes), mc.cores = mc.cores) %>% 
-#   filter_try_errors_then_bind( mc.cores = mc.cores) %>% 
-#   split(list(.$Code, .$Sex, .$Measure)) %>% 
-#   mclapply(try(convert_fractions_within_sex), mc.cores = mc.cores) %>% 
-#   filter_try_errors_then_bind( mc.cores = mc.cores)
-# toc() # 873.79 (note, one thread hangs, possible randomizing order is best?)
 icols <- colnames(inputDB)
 
 #log_section("New build run!", append = FALSE)
@@ -46,7 +23,7 @@ A <-
   as.data.table()
 
 # Fraction conversion, consider as single step
-log_section("A")
+log_section("A", logfile = logfile)
 A <- A[ , try_step(process_function = convert_fractions_all_sexes,
                    chunk = .SD,
                    byvars = c("Code","Measure")),
@@ -60,7 +37,7 @@ A <- A[ , try_step(process_function = convert_fractions_within_sex,
         .SDcols = icols][,..icols]
 
 # Unk Age redist
-log_section("B")
+log_section("B", logfile = logfile)
 B <- A[ , try_step(process_function = redistribute_unknown_age,
                    chunk = .SD,
                    byvars = c("Code","Sex","Measure")), 
@@ -68,7 +45,7 @@ B <- A[ , try_step(process_function = redistribute_unknown_age,
         .SDcols = icols][,..icols]
 
 # Scale to totals (within sex)
-log_section("C")
+log_section("C", logfile = logfile)
 C <- B[ , try_step(process_function = rescale_to_total,
                    chunk = .SD,
                    byvars = c("Code","Sex","Measure")), 
@@ -76,7 +53,7 @@ C <- B[ , try_step(process_function = rescale_to_total,
         .SDcols = icols][,..icols]
 
 # Deaths + ASCFR -> Cases (not so good)
-log_section("D")
+log_section("D", logfile = logfile)
 D <- C[ , try_step(process_function = infer_cases_from_deaths_and_ascfr,
                    chunk = .SD,
                    byvars = c("Code", "Sex")), 
@@ -84,7 +61,7 @@ D <- C[ , try_step(process_function = infer_cases_from_deaths_and_ascfr,
         .SDcols = icols][,..icols]
 
 # Cases + ASCFR -> Deaths (not bad)
-log_section("E")
+log_section("E", logfile = logfile)
 E <- D[ , try_step(process_function = infer_deaths_from_cases_and_ascfr,
                    chunk = .SD,
                    byvars = c("Code", "Sex")), 
@@ -93,7 +70,7 @@ E <- D[ , try_step(process_function = infer_deaths_from_cases_and_ascfr,
 E <- E[Metric != "Ratio"]
 
 # UNK Sex (within age)
-log_section("G")
+log_section("G", logfile = logfile)
 G <- E[ , try_step(process_function = redistribute_unknown_sex,
                    chunk = .SD,
                    byvars = c("Code", "Age", "Measure")), 
@@ -101,7 +78,7 @@ G <- E[ , try_step(process_function = redistribute_unknown_sex,
         .SDcols = icols][,..icols]
 
 # sex-specific scaled to both-sex
-log_section("H")
+log_section("H", logfile = logfile)
 H <- G[ , try_step(process_function = rescale_sexes,
                    chunk = .SD,
                    byvars = c("Code", "Measure")), 
@@ -110,7 +87,7 @@ H <- G[ , try_step(process_function = rescale_sexes,
 H <- H[Age != "TOT"]
 
 # both-sex calculated as sum of sex-specific (when not collected seprarately)
-log_section("I")
+log_section("I", logfile = logfile)
 I <- H[ , try_step(process_function = infer_both_sex,
                    chunk = .SD,
                    byvars = c("Code", "Measure")), 
@@ -119,7 +96,7 @@ I <- H[ , try_step(process_function = infer_both_sex,
 
 
 # if closeout ends in 0s, lower the closeout age as far as 85+
-log_section("J")
+log_section("J", logfile = logfile)
 J <- I[ , Age := as.integer(Age), ][, ..icols]
 J <- J[ , try_step(process_function = maybe_lower_closeout,
                    chunk = .SD, 
@@ -148,6 +125,8 @@ COMPONENTS <- list(inputDB = inputDB,
                    I = I, 
                    J = J)
 save(COMPONENTS, file = here("Data","ProcessingSteps.Rdata"))
+
+rm(list=setdiff(ls(), c("logfile","creds")))
 # TR: add rescale_to_total() into the chain
 
 # inputCounts %>% filter(is.na(Value)) %>% View()

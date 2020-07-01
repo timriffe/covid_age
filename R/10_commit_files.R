@@ -1,6 +1,6 @@
 #.rs.restartR()
 
-log_section("Commit dashboards and buildlog", append = TRUE)
+log_section("Commit dashboards and buildlog", append = TRUE, logfile = logfile)
 startup::startup()
 library(usethis)
 library(git2r)

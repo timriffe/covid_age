@@ -1,5 +1,5 @@
 #.rs.restartR()
-rm(list=ls());gc()
+#rm(list=ls());gc()
 source(here("R","00_Functions.R"))
 # prelims to get offsets
 
@@ -18,15 +18,10 @@ iL <- split(inputCounts,
                    inputCounts$Measure),
               drop =TRUE)
 
-# different lambdas
-# iLout100 <- mclapply(iL, 
-#                      harmonize_age_p,
-#                      Offsets = Offsets,
-#                      N = 5,
-#                      OAnew = 100,
-#                      lambda = 100,
-#                      mc.cores = 6)
-log_section("Age harmonization", append = TRUE)
+
+log_section("Age harmonization", 
+            append = TRUE, 
+            logfile = logfile)
  
 iLout1e5 <- mclapply(iL, 
                       FUN = try_step,
@@ -89,10 +84,10 @@ outputCounts_10_rounded <-
          Tests = round(Tests,1))
 
 header_msg <- paste("Counts of Cases, Deaths, and Tests in harmonized 10-year age groups\nBuilt:",timestamp(prefix="",suffix=""),"\nReproducible with: ",paste0("https://github.com/timriffe/covid_age/commit/",system("git rev-parse HEAD", intern=TRUE)))
-write_lines(header_msg, path = "Data/Output_10.csv")
-write_csv(outputCounts_10_rounded, path = "Data/Output_10.csv", append = TRUE, col_names = TRUE)
+write_lines(header_msg, path = here("Data","Output_10.csv"))
+write_csv(outputCounts_10_rounded, path = here("Data","Output_10.csv"), append = TRUE, col_names = TRUE)
 
-saveRDS(outputCounts_10, "Data/Output_10.rds")
+saveRDS(outputCounts_10, here("Data","Output_10.rds"))
 
 
 spot_checks <- FALSE
@@ -227,3 +222,5 @@ if (do.this){
   }
   
 }
+
+rm(list=setdiff(ls(), c("logfile","creds")))

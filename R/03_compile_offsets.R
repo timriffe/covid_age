@@ -17,7 +17,7 @@ harmonize_offset_age_p <- function(chunk){
 }
 
 
-log_section("Compile offsets from Drive")
+log_section("Compile offsets from Drive",logfile=logfile)
 
 
 # this might take 5-10 minutes now,
@@ -26,7 +26,7 @@ log_section("Compile offsets from Drive")
 Offsets <- compile_offsetsDB()
 
 
-log_section("Harmonize offsets")
+log_section("Harmonize offsets",logfile=logfile)
 
 Offsets <-
   Offsets %>% 
@@ -73,8 +73,7 @@ Offsets %>%
 write_csv(path = here("Data","offsets.csv"), append = TRUE, col_names = TRUE)
 
 # clean up:
-rm(Offsets, oL, OL1)
-gc()
+rm(list=setdiff(ls(), c("logfile","creds")))
 
 
 
