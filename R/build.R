@@ -130,7 +130,7 @@ saveRDS(inputDB, here("Data","inputDB.rds"))
 # ---------------------- #
 
 # Harmonize Measure, Metric, and Scaling
-source("R/02_harmonize_metrics.R")
+source(here("R","02_harmonize_metrics.R"))
 
 # ---------------------- #
 
@@ -139,7 +139,7 @@ source("R/02_harmonize_metrics.R")
 # ---------------------- #
 
 # Harmonize Age groups
-source("R/04_harmonize_age_groups.R")
+source(here("R","04_harmonize_age_groups.R"))
 
 # ---------------------- #
 
@@ -148,13 +148,13 @@ source("R/04_harmonize_age_groups.R")
 # ---------------------- #
 
 # Build dashboards
-source("R/06_data_dashes.R")
+source(here("R","06_data_dashes.R"))
 
 # ---------------------- #
 
 # Coverage Map
 
-source("R/08_coverage_map.R")
+source(here("R","08_coverage_map.R"))
 
 # ---------------------- #
 
@@ -162,15 +162,15 @@ source("R/08_coverage_map.R")
 
 # Coverage Map
 # getting 401 errors
-#source("R/09_push_osf.R")
+#source(here("R","09_push_osf.R"))
 
 # ---------------------- #
 
 # git commit artifacts
-source("R/10_commit_files.R")
+source(here("R","10_commit_files.R"))
 
 # ---------------------- #
 
 # update build log / comminucations
-source("R/11_email_and_tweet.R")
+source(here("R","11_email_and_tweet.R"))
 
