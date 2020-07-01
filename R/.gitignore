@@ -33,3 +33,4 @@ build.log
 test.R
 test.log
 .Rprofile
+build_pre.log
