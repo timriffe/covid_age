@@ -18,7 +18,7 @@ library(git2r)
 
 repo <- git2r::repository(here())
 #init()
-git2r::pull(repo,credentials = creds)
+git2r::pull(repo,credentials = creds) # possibly creds not making it this far?
 
 commit(repo, 
        message = "global commit", 
@@ -27,6 +27,6 @@ commit(repo,
 git2r::push(repo,credentials = creds)
 
 
-rm(list=ls())
+#rm(list=ls())
 gc()
 
