@@ -27,7 +27,16 @@ if (schedule_this){
                        startdate = format(Sys.Date() + 1, "%d/%m/%Y"))
 }
 
+test_schedule_build <- FALSE
+if (test_schedule_build){
+  library(taskscheduleR)
+  taskscheduler_create(taskname = "COVerAGE-DB-automatic-build-test", 
+                       rscript = "C:/Users/riffe/Documents/covid_age/R/build_pre.R", 
+                       schedule = "ONCE", 
+                       starttime = format(Sys.time() + 61, "%H:%M"))
+}
 
+#taskscheduler_delete("COVerAGE-DB-automatic-build-test")
 
 
 
