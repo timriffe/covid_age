@@ -1150,7 +1150,7 @@ rescale_sexes <- function(chunk, verbose = FALSE) {
   Madj   <- (PM * BB) / MM
   Fadj   <- ((1 - PM) * BB) / FF
   
-  # Replace NaN with zero
+  # Replace NaN with 1
   Madj <- ifelse(is.nan(Madj),1,Madj)
   Fadj <- ifelse(is.nan(Fadj),1,Fadj)
   

@@ -101,3 +101,55 @@ filter( Code == 'US_LA24.06.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Country == 'UK', Region == 'All', Sex == 'm' )
 filter( Country == 'UK', Region == 'All', Sex == 'f' )
 filter( Country == 'UK', Region == 'All', Sex == 'b' )
+
+# A Build error log
+ Wed Jul 01 16:17:10 2020 
+
+
+# B Build error log
+ Wed Jul 01 16:18:38 2020 
+
+
+# C Build error log
+ Wed Jul 01 16:22:16 2020 
+
+
+# D Build error log
+ Wed Jul 01 16:24:41 2020 
+
+
+# E Build error log
+ Wed Jul 01 16:26:50 2020 
+
+
+# G Build error log
+ Wed Jul 01 16:33:35 2020 
+
+
+# H Build error log
+ Wed Jul 01 16:35:11 2020 
+
+filter( Code == 'PK10.03.2020', Measure == 'Deaths' )
+filter( Code == 'PK11.03.2020', Measure == 'Deaths' )
+filter( Code == 'PK12.03.2020', Measure == 'Deaths' )
+filter( Code == 'PK13.03.2020', Measure == 'Deaths' )
+filter( Code == 'PK14.03.2020', Measure == 'Deaths' )
+filter( Code == 'PK15.03.2020', Measure == 'Deaths' )
+filter( Code == 'PK16.03.2020', Measure == 'Deaths' )
+filter( Code == 'PK17.03.2020', Measure == 'Deaths' )
+filter( Code == 'PK10.03.2020', Measure == 'Deaths' )
+filter( Code == 'PK11.03.2020', Measure == 'Deaths' )
+filter( Code == 'PK12.03.2020', Measure == 'Deaths' )
+filter( Code == 'PK13.03.2020', Measure == 'Deaths' )
+filter( Code == 'PK14.03.2020', Measure == 'Deaths' )
+filter( Code == 'PK15.03.2020', Measure == 'Deaths' )
+filter( Code == 'PK16.03.2020', Measure == 'Deaths' )
+filter( Code == 'PK17.03.2020', Measure == 'Deaths' )
+
+# I Build error log
+ Wed Jul 01 17:04:57 2020 
+
+
+# J Build error log
+ Wed Jul 01 17:07:46 2020 
+
