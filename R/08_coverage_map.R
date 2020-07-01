@@ -126,3 +126,7 @@ map_joined %>%
         plot.background=element_blank())
 # proposal
 ggsave(here("assets","coveragemap.svg"))
+
+
+
+rm(list=setdiff(ls(), c("logfile","creds")))
