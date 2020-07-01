@@ -1,3 +1,4 @@
+source(here("R","00_Functions.R"))
 # availability dash
 log_section("Building dashboards", append = TRUE, logfile = logfile)
 

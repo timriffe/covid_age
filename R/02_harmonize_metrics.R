@@ -1,6 +1,5 @@
 # TODO: make error trapping wrappers for parallelization of each step.
 
-rm(list=ls());gc()
 source(here("R","00_Functions.R"))
 # mc.cores <- 6
 
@@ -20,7 +19,8 @@ A <-
   filter(!(Age == "TOT" & Metric == "Fraction"),
          !(Age == "UNK" & Value == 0),
          !(Sex == "UNK" & Sex == 0)) %>% 
-  as.data.table()
+  as.data.table() %>% 
+  mutate(AgeInt = as.integer(AgeInt))
 
 # Fraction conversion, consider as single step
 log_section("A", logfile = logfile)
