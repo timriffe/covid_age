@@ -153,3 +153,58 @@ filter( Code == 'PK17.03.2020', Measure == 'Deaths' )
 # J Build error log
  Wed Jul 01 17:07:46 2020 
 
+
+# A Build error log
+ Wed Jul 01 17:22:56 2020 
+
+
+# B Build error log
+ Wed Jul 01 17:23:51 2020 
+
+
+# C Build error log
+ Wed Jul 01 17:26:52 2020 
+
+
+# D Build error log
+ Wed Jul 01 17:28:17 2020 
+
+
+# E Build error log
+ Wed Jul 01 17:29:11 2020 
+
+
+# G Build error log
+ Wed Jul 01 17:30:04 2020 
+
+
+# H Build error log
+ Wed Jul 01 17:31:00 2020 
+
+filter( Code == 'PK10.03.2020', Measure == 'Deaths' )
+filter( Code == 'PK11.03.2020', Measure == 'Deaths' )
+filter( Code == 'PK12.03.2020', Measure == 'Deaths' )
+filter( Code == 'PK13.03.2020', Measure == 'Deaths' )
+filter( Code == 'PK14.03.2020', Measure == 'Deaths' )
+filter( Code == 'PK15.03.2020', Measure == 'Deaths' )
+filter( Code == 'PK16.03.2020', Measure == 'Deaths' )
+filter( Code == 'PK17.03.2020', Measure == 'Deaths' )
+
+# I Build error log
+ Wed Jul 01 17:32:17 2020 
+
+
+# J Build error log
+ Wed Jul 01 17:33:11 2020 
+
+
+# Age harmonization Build error log
+ Thu Jul 02 10:10:18 2020 
+
+filter( Code == 'US_VA30.06.2020', Sex == 'b', Measure == 'Cases' )
+filter( Code == 'DO18.06.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'DO16.06.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'DO17.06.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'DO18.06.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'DO19.06.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'US_VA30.06.2020', Sex == 'b', Measure == 'Deaths' )
