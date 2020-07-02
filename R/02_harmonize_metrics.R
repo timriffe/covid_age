@@ -26,13 +26,15 @@ A <-
 log_section("A", logfile = logfile)
 A <- A[ , try_step(process_function = convert_fractions_all_sexes,
                    chunk = .SD,
-                   byvars = c("Code","Measure")),
+                   byvars = c("Code","Measure"),
+                   logfile = logfile),
         by = list(Code, Measure), 
         .SDcols = icols][,..icols]
 
 A <- A[ , try_step(process_function = convert_fractions_within_sex,
                    chunk = .SD,
-                   byvars = c("Code","Sex","Measure")),
+                   byvars = c("Code","Sex","Measure"),
+                   logfile = logfile),
         by=list(Code, Sex, Measure), 
         .SDcols = icols][,..icols]
 
@@ -40,7 +42,8 @@ A <- A[ , try_step(process_function = convert_fractions_within_sex,
 log_section("B", logfile = logfile)
 B <- A[ , try_step(process_function = redistribute_unknown_age,
                    chunk = .SD,
-                   byvars = c("Code","Sex","Measure")), 
+                   byvars = c("Code","Sex","Measure"),
+                   logfile = logfile), 
         by = list(Code, Sex, Measure), 
         .SDcols = icols][,..icols]
 
@@ -48,7 +51,8 @@ B <- A[ , try_step(process_function = redistribute_unknown_age,
 log_section("C", logfile = logfile)
 C <- B[ , try_step(process_function = rescale_to_total,
                    chunk = .SD,
-                   byvars = c("Code","Sex","Measure")), 
+                   byvars = c("Code","Sex","Measure"),
+                   logfile = logfile), 
         by = list(Code, Sex, Measure), 
         .SDcols = icols][,..icols]
 
@@ -56,7 +60,8 @@ C <- B[ , try_step(process_function = rescale_to_total,
 log_section("D", logfile = logfile)
 D <- C[ , try_step(process_function = infer_cases_from_deaths_and_ascfr,
                    chunk = .SD,
-                   byvars = c("Code", "Sex")), 
+                   byvars = c("Code", "Sex"),
+                   logfile = logfile), 
         by = list(Code, Sex), 
         .SDcols = icols][,..icols]
 
@@ -64,7 +69,8 @@ D <- C[ , try_step(process_function = infer_cases_from_deaths_and_ascfr,
 log_section("E", logfile = logfile)
 E <- D[ , try_step(process_function = infer_deaths_from_cases_and_ascfr,
                    chunk = .SD,
-                   byvars = c("Code", "Sex")), 
+                   byvars = c("Code", "Sex"),
+                   logfile = logfile), 
         by = list(Code, Sex), 
         .SDcols = icols][,..icols]
 E <- E[Metric != "Ratio"]
@@ -73,7 +79,8 @@ E <- E[Metric != "Ratio"]
 log_section("G", logfile = logfile)
 G <- E[ , try_step(process_function = redistribute_unknown_sex,
                    chunk = .SD,
-                   byvars = c("Code", "Age", "Measure")), 
+                   byvars = c("Code", "Age", "Measure"),
+                   logfile = logfile), 
         by = list(Code, Age, Measure), 
         .SDcols = icols][,..icols]
 
@@ -81,7 +88,8 @@ G <- E[ , try_step(process_function = redistribute_unknown_sex,
 log_section("H", logfile = logfile)
 H <- G[ , try_step(process_function = rescale_sexes,
                    chunk = .SD,
-                   byvars = c("Code", "Measure")), 
+                   byvars = c("Code", "Measure"),
+                   logfile = logfile), 
         by = list(Code, Measure), 
         .SDcols = icols][,..icols]
 H <- H[Age != "TOT"]
@@ -90,7 +98,8 @@ H <- H[Age != "TOT"]
 log_section("I", logfile = logfile)
 I <- H[ , try_step(process_function = infer_both_sex,
                    chunk = .SD,
-                   byvars = c("Code", "Measure")), 
+                   byvars = c("Code", "Measure"),
+                   logfile = logfile), 
         by = list(Code, Measure), 
         .SDcols = icols][,..icols]
 
@@ -101,7 +110,8 @@ J <- I[ , Age := as.integer(Age), ][, ..icols]
 J <- J[ , try_step(process_function = maybe_lower_closeout,
                    chunk = .SD, 
                    byvars = c("Code", "Sex", "Measure"),
-                   OAnew_min = 85), 
+                   OAnew_min = 85,
+                   logfile = logfile), 
         by = list(Code, Sex, Measure),
         .SDcols = icols][,..icols]
 

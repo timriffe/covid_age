@@ -31,6 +31,7 @@ iLout1e5 <- mclapply(iL,
                       N = 5,
                       OAnew = 100,
                       lambda = 1e5,
+                      logfile = logfile,
                       mc.cores = 6)
 
 outputCounts_5_1e5 <-
