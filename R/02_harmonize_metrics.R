@@ -2,7 +2,7 @@
 
 source(here("R","00_Functions.R"))
 # mc.cores <- 6
-
+logfile <- here("buildlog.md")
 inputDB <- readRDS(here("Data","inputDB.rds"))
 
 # this script transforms the inputDB as required, and produces standardized measures and metrics
