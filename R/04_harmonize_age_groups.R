@@ -1,6 +1,7 @@
 #.rs.restartR()
 #rm(list=ls());gc()
 source(here("R","00_Functions.R"))
+logfile <- here("buildlog.md")
 # prelims to get offsets
 
 n.cores     <- round(6 + (detectCores() - 8)/8)

@@ -1,4 +1,5 @@
 source(here("R","00_Functions.R"))
+logfile <- here("buildlog.md")
 # availability dash
 log_section("Building dashboards", append = TRUE, logfile = logfile)
 
