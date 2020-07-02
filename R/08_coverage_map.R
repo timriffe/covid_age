@@ -2,6 +2,10 @@
 # French Guiana presently included w France, but French
 # data don't include French Guiana. Need to use
 # https://cran.r-project.org/web/packages/rnaturalearth/vignettes/what-is-a-country.html
+library(here)
+source(here("R","00_Functions.R"))
+logfile <- here("buildlog.md")
+
 source(here("R","00_Functions.R"))
 library(googlesheets4)
 library(tidyverse)
