@@ -36,7 +36,7 @@ if (test_schedule_build){
                        starttime = format(Sys.time() + 61, "%H:%M"))
 }
 
-#taskscheduler_delete("COVerAGE-DB-automatic-build-test")
+#taskscheduleR::taskscheduler_delete("COVerAGE-DB-automatic-build-test")
 
 
 

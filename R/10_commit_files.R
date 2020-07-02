@@ -12,6 +12,7 @@ change_here <- function(new_path){
 change_here("C:/Users/riffe/Documents/covid_age")
 startup::startup()
 source(here("R","00_Functions.R"))
+logfile <- here("buildlog.md")
 log_section("Commit dashboards and buildlog", append = TRUE, logfile = logfile)
 library(usethis)
 library(git2r)
