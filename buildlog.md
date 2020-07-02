@@ -208,3 +208,69 @@ filter( Code == 'DO17.06.2020', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'DO18.06.2020', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'DO19.06.2020', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'US_VA30.06.2020', Sex == 'b', Measure == 'Deaths' )
+
+# A Build error log
+ Thu Jul 02 11:44:53 2020 
+
+
+# B Build error log
+ Thu Jul 02 11:45:49 2020 
+
+
+# C Build error log
+ Thu Jul 02 11:48:53 2020 
+
+
+# D Build error log
+ Thu Jul 02 11:50:22 2020 
+
+
+# E Build error log
+ Thu Jul 02 11:51:16 2020 
+
+
+# G Build error log
+ Thu Jul 02 11:52:10 2020 
+
+
+# H Build error log
+ Thu Jul 02 11:53:07 2020 
+
+filter( Code == 'PK10.03.2020', Measure == 'Deaths' )
+filter( Code == 'PK11.03.2020', Measure == 'Deaths' )
+filter( Code == 'PK12.03.2020', Measure == 'Deaths' )
+filter( Code == 'PK13.03.2020', Measure == 'Deaths' )
+filter( Code == 'PK14.03.2020', Measure == 'Deaths' )
+filter( Code == 'PK15.03.2020', Measure == 'Deaths' )
+filter( Code == 'PK16.03.2020', Measure == 'Deaths' )
+filter( Code == 'PK17.03.2020', Measure == 'Deaths' )
+
+# I Build error log
+ Thu Jul 02 11:54:27 2020 
+
+
+# J Build error log
+ Thu Jul 02 11:55:23 2020 
+
+
+# Compile offsets from Drive Build error log
+ Thu Jul 02 11:59:00 2020 
+
+
+# Harmonize offsets Build error log
+ Thu Jul 02 12:14:02 2020 
+
+filter( Country == 'UK', Region == 'All', Sex == 'm' )
+filter( Country == 'UK', Region == 'All', Sex == 'f' )
+filter( Country == 'UK', Region == 'All', Sex == 'b' )
+
+# Age harmonization Build error log
+ Thu Jul 02 12:31:11 2020 
+
+filter( Code == 'US_VA30.06.2020', Sex == 'b', Measure == 'Cases' )
+filter( Code == 'DO18.06.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'DO16.06.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'DO17.06.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'DO18.06.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'DO19.06.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'US_VA30.06.2020', Sex == 'b', Measure == 'Deaths' )
