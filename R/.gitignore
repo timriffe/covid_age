@@ -34,3 +34,5 @@ test.R
 test.log
 .Rprofile
 build_pre.log
+test_dash.R
+test_dash.log
