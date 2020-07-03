@@ -12,7 +12,7 @@ if (!require("pacman", character.only = TRUE)){
 library(pacman)
 packages_CRAN <- c("tidyverse","lubridate","gargle","ungroup","HMDHFDplus",
                    "tictoc","parallel","osfr","data.table","git2r","usethis",
-                   "remotes","here")
+                   "remotes","here","knitr","rmarkdown")
 
 if(!sum(!p_isinstalled(packages_CRAN))==0){
   p_install(
