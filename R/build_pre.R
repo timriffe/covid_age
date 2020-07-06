@@ -27,6 +27,7 @@ if (schedule_this){
                        startdate = format(Sys.Date() + 1, "%d/%m/%Y"))
 }
 
+#taskscheduleR::taskscheduler_delete("COVerAGE-DB-automatic-daily-build")
 test_schedule_build <- FALSE
 if (test_schedule_build){
   library(taskscheduleR)
