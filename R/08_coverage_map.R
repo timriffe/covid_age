@@ -108,7 +108,7 @@ map_joined %>%
   guides(fill = guide_legend(title.position = "bottom",
                            keywidth = .5,
                            keyheight = .4))+
-  theme(legend.text=element_text(size = tx + 3),
+  theme(legend.text=element_text(size = tx + 2),
         legend.key.size = unit(1, "cm"),
         legend.title = element_blank(),
         # legend.position = c(0.1,.3),
