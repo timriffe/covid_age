@@ -252,7 +252,7 @@ log_section <- function(step = "A", append = TRUE, logfile = "buildlog.md"){
   
   header <- paste("\n#", 
                   step, 
-                  "Build error log\n",
+                  "\n",
                   timestamp(prefix="",suffix=""),
                   "\n\n")
   cat(header,file=logfile,append=append)   
