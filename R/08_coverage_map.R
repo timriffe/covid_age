@@ -96,7 +96,9 @@ map_joined<-
 
 
 tx        <- 7
-map_joined %>% 
+
+map_out <-
+  map_joined %>% 
   ggplot() + 
   geom_sf(aes(fill = coverage), col = "white", size = 0.2) +
   scale_x_continuous(expand=c(0.03,0.03)) +
@@ -129,7 +131,8 @@ map_joined %>%
         panel.grid.minor=element_blank(),
         plot.background=element_blank())
 # proposal
-ggsave(here("assets","coveragemap.svg"), width = 30, height = 20, units = "cm")
+ggsave(here("assets","coveragemap.svg"), map_out, width = 30, height = 20, units = "cm")
+ggsave(here("assets","coveragemap.png"), width = 30, height = 20, units = "cm", dpi=300)
 
 
 
