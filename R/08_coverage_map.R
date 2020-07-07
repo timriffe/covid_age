@@ -132,7 +132,7 @@ map_out <-
         plot.background=element_blank())
 # proposal
 ggsave(here("assets","coveragemap.svg"), map_out, width = 30, height = 20, units = "cm")
-ggsave(here("assets","coveragemap.png"), width = 30, height = 20, units = "cm", dpi=300)
+ggsave(here("assets","coveragemap.png"), map_out, width = 30, height = 20, units = "cm", dpi=300)
 
 
 
