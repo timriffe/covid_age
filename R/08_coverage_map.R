@@ -129,7 +129,7 @@ map_joined %>%
         panel.grid.minor=element_blank(),
         plot.background=element_blank())
 # proposal
-ggsave(here("assets","coveragemap.svg"), width = 12, height = 9, units = "cm")
+ggsave(here("assets","coveragemap.svg"), width = 30, height = 20, units = "cm")
 
 
 
