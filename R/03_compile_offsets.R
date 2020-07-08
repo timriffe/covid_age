@@ -6,11 +6,11 @@ source("R/00_Functions.R")
 n.cores     <- round(6 + (detectCores() - 8)/8)
 
 
-
 ### Compile offsets #################################################
 
 # Log
-log_section("Compile offsets from Drive")
+log_section("Compile offsets from Drive",logfile=logfile)
+
 
 # Compile
 Offsets <- compile_offsetsDB()
@@ -20,7 +20,7 @@ Offsets <- compile_offsetsDB()
 ### Harmonize offsets ###############################################
 
 # Log
-log_section("Harmonize offsets")
+log_section("Harmonize offsets",logfile=logfile)
 
 # AgeInt has to be 1 or larger
 Offsets <-
@@ -67,5 +67,3 @@ Offsets %>%
 write_csv(path = here("Data","offsets.csv"), append = TRUE, col_names = TRUE)
 
 # clean up:
-rm(Offsets, oL, oL1)
-gc()

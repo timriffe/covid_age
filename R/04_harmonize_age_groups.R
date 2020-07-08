@@ -1,10 +1,9 @@
+
 ### Clean up & functions ############################################
 
-# Better safe than sorry
-rm(list=ls());gc()
-source("R/00_Functions.R")
+source(here("R","00_Functions.R"))
+logfile <- here("buildlog.md")
 n.cores <- round(6 + (detectCores() - 8)/8)
-
 
 
 ### Load data #######################################################
@@ -28,11 +27,12 @@ iL <- split(inputCounts,
               drop =TRUE)
 
 
-
 ### Age harmonization: 5-year age groups ############################
 
 # Log
-log_section("Age harmonization", append = TRUE)
+log_section("Age harmonization", 
+            append = TRUE, 
+            logfile = logfile)
  
 # Apply PCLM to split into 5-year age groups
 iLout1e5 <- mclapply(iL, 
@@ -43,6 +43,7 @@ iLout1e5 <- mclapply(iL,
                       N = 5,
                       OAnew = 100,
                       lambda = 1e5,
+                      logfile = logfile,
                       mc.cores = 6)
 
 # Edit results
@@ -109,11 +110,12 @@ outputCounts_10_rounded <-
 
 # Save CSV
 header_msg <- paste("Counts of Cases, Deaths, and Tests in harmonized 10-year age groups\nBuilt:",timestamp(prefix="",suffix=""),"\nReproducible with: ",paste0("https://github.com/timriffe/covid_age/commit/",system("git rev-parse HEAD", intern=TRUE)))
-write_lines(header_msg, path = "Data/Output_10.csv")
-write_csv(outputCounts_10_rounded, path = "Data/Output_10.csv", append = TRUE, col_names = TRUE)
+write_lines(header_msg, path = here("Data","Output_10.csv"))
+write_csv(outputCounts_10_rounded, path = here("Data","Output_10.csv"), append = TRUE, col_names = TRUE)
 
 # Save binary
-saveRDS(outputCounts_10, "Data/Output_10.rds")
+
+saveRDS(outputCounts_10, here("Data","Output_10.rds"))
 
 
 
@@ -151,7 +153,3 @@ ASCFR5 %>%
                 color = "tomato",
                 size = 1)
 
-# Check for too high values
-ASCFR5 %>% filter(ASCFR > 1e3)
-
-}

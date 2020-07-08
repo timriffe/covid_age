@@ -10,9 +10,9 @@ if(!require("pacman", character.only = TRUE)) {
 library(pacman)
 
 # Required CRAN packages
-packages_CRAN <- c("tidyverse","lubridate","gargle","ungroup",
-                   "HMDHFDplus","tictoc","parallel","osfr",
-                   "data.table","git2r","usethis","remotes","here")
+packages_CRAN <- c("tidyverse","lubridate","gargle","ungroup","HMDHFDplus",
+                   "tictoc","parallel","osfr","data.table","git2r","usethis",
+                   "remotes","here","knitr","rmarkdown")
 
 # Install required CRAN packages if not available yet
 if(!sum(!p_isinstalled(packages_CRAN))==0) {

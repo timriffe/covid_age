@@ -2,22 +2,16 @@
 
 ### Functions & settings ############################################
 
-# Better safe than sorry
-rm(list=ls());gc()
-source("R/00_Functions.R")
-
-
+source(here("R","00_Functions.R"))
+logfile <- here("buildlog.md")
 
 ### Get data ########################################################
 
-# Load
 inputDB <- readRDS(here("Data","inputDB.rds"))
 
-# Any NAs in data?
-inputDB %>% '$'(Age) %>% is.na() %>% any()
-inputDB %>% '$'(Value) %>% is.na() %>% any()
+# this script transforms the inputDB as required, and produces standardized measures and metrics
 
-# Column names
+
 icols <- colnames(inputDB)
 
 
@@ -29,130 +23,117 @@ Z <-
   filter(!(Age == "TOT" & Metric == "Fraction"),
          !(Age == "UNK" & Value == 0),
          !(Sex == "UNK" & Sex == 0)) %>% 
-  as.data.table()
-
+  as.data.table() %>% 
+  mutate(AgeInt = as.integer(AgeInt))
 
 
 ### Convert fractions ###############################################
 
-# Log entry
-log_section("A")
+# Log 
+log_section("A", logfile = logfile)
 
 # Convert sex-specific fractions to counts
 A <- Z[ , try_step(process_function = convert_fractions_sexes,
                    chunk = .SD,
-                   byvars = c("Code","Measure")),
+                   byvars = c("Code","Measure"),
+                   logfile = logfile),
         by = list(Code, Measure), 
         .SDcols = icols][,..icols]
 
 # Convert fractions within sexes to counts
 A <- A[ , try_step(process_function = convert_fractions_within_sex,
                    chunk = .SD,
-                   byvars = c("Code","Sex","Measure")),
+                   byvars = c("Code","Sex","Measure"),
+                   logfile = logfile),
         by=list(Code, Sex, Measure), 
         .SDcols = icols][,..icols]
-
-
 
 ### Distribute counts with unknown age ##############################
 
 # Log
-log_section("B")
+log_section("B", logfile = logfile)
 
-# Distribute
 B <- A[ , try_step(process_function = redistribute_unknown_age,
                    chunk = .SD,
-                   byvars = c("Code","Sex","Measure")), 
+                   byvars = c("Code","Sex","Measure"),
+                   logfile = logfile), 
         by = list(Code, Sex, Measure), 
         .SDcols = icols][,..icols]
-
-
 
 ### Scale to totals (within sex) ####################################
 
 # Log
-log_section("C")
+log_section("C", logfile = logfile)
 
-# Scale
 C <- B[ , try_step(process_function = rescale_to_total,
                    chunk = .SD,
-                   byvars = c("Code","Sex","Measure")), 
+                   byvars = c("Code","Sex","Measure"),
+                   logfile = logfile), 
         by = list(Code, Sex, Measure), 
         .SDcols = icols][,..icols]
-
-
 
 ### Derive counts from deaths and CFRs ##############################
 
 # Log
-log_section("D")
+log_section("D", logfile = logfile)
 
-# Infer
 D <- C[ , try_step(process_function = infer_cases_from_deaths_and_ascfr,
                    chunk = .SD,
-                   byvars = c("Code", "Sex")), 
+                   byvars = c("Code", "Sex"),
+                   logfile = logfile), 
         by = list(Code, Sex), 
         .SDcols = icols][,..icols]
-
-
 
 # Infer deaths from cases and CFRs ##################################
 
 # Log
-log_section("E")
+log_section("E", logfile = logfile)
 
-# Infer
 E <- D[ , try_step(process_function = infer_deaths_from_cases_and_ascfr,
                    chunk = .SD,
-                   byvars = c("Code", "Sex")), 
+                   byvars = c("Code", "Sex"),
+                   logfile = logfile), 
         by = list(Code, Sex), 
         .SDcols = icols][,..icols]
 
 # Drop ratio (just to be sure, above call probably did that)
 E <- E[Metric != "Ratio"]
 
-
-
 ### Distribute cases with unkown sex ################################
 
-# Log
-log_section("G")
+log_section("G", logfile = logfile)
 
-# Redistribute
 G <- E[ , try_step(process_function = redistribute_unknown_sex,
                    chunk = .SD,
-                   byvars = c("Code", "Age", "Measure")), 
+                   byvars = c("Code", "Age", "Measure"),
+                   logfile = logfile), 
         by = list(Code, Age, Measure), 
         .SDcols = icols][,..icols]
-
-
 
 ### Scale sex-specific data to match combined sex data ##############
 
 # Log
-log_section("H")
+log_section("H", logfile = logfile)
 
-# Rescale
 H <- G[ , try_step(process_function = rescale_sexes,
                    chunk = .SD,
-                   byvars = c("Code", "Measure")), 
+                   byvars = c("Code", "Measure"),
+                   logfile = logfile), 
         by = list(Code, Measure), 
         .SDcols = icols][,..icols]
 
 # Remove sex totals
 H <- H[Age != "TOT"]
 
-
-
 ### Both sexes combined calculated from sex-specifc #################
 
 # Log
-log_section("I")
+log_section("I", logfile = logfile)
 
-# Calculate
 I <- H[ , try_step(process_function = infer_both_sex,
                    chunk = .SD,
-                   byvars = c("Code", "Measure")), 
+                   byvars = c("Code", "Measure"),
+                   logfile = logfile), 
         by = list(Code, Measure), 
         .SDcols = icols][,..icols]
 
@@ -160,16 +141,16 @@ I <- H[ , try_step(process_function = infer_both_sex,
 ### Adjust closeout age #############################################
 
 # Log
-log_section("J")
+log_section("J", logfile = logfile)
 
-# Make sure age is integer
 J <- I[ , Age := as.integer(Age), ][, ..icols]
 
 # Adjust
 J <- J[ , try_step(process_function = maybe_lower_closeout,
                    chunk = .SD, 
                    byvars = c("Code", "Sex", "Measure"),
-                   OAnew_min = 85), 
+                   OAnew_min = 85,
+                   logfile = logfile), 
         by = list(Code, Sex, Measure),
         .SDcols = icols][,..icols]
 

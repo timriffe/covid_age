@@ -2,6 +2,10 @@
 # French Guiana presently included w France, but French
 # data don't include French Guiana. Need to use
 # https://cran.r-project.org/web/packages/rnaturalearth/vignettes/what-is-a-country.html
+library(here)
+source(here("R","00_Functions.R"))
+logfile <- here("buildlog.md")
+
 source(here("R","00_Functions.R"))
 library(googlesheets4)
 library(tidyverse)
@@ -92,7 +96,9 @@ map_joined<-
 
 
 tx        <- 7
-map_joined %>% 
+
+map_out <-
+  map_joined %>% 
   ggplot() + 
   geom_sf(aes(fill = coverage), col = "white", size = 0.2) +
   scale_x_continuous(expand=c(0.03,0.03)) +
@@ -104,7 +110,7 @@ map_joined %>%
   guides(fill = guide_legend(title.position = "bottom",
                            keywidth = .5,
                            keyheight = .4))+
-  theme(legend.text=element_text(size = tx + 3),
+  theme(legend.text=element_text(size = tx + 2),
         legend.key.size = unit(1, "cm"),
         legend.title = element_blank(),
         # legend.position = c(0.1,.3),
@@ -125,4 +131,9 @@ map_joined %>%
         panel.grid.minor=element_blank(),
         plot.background=element_blank())
 # proposal
-ggsave(here("assets","coveragemap.svg"))
+ggsave(here("assets","coveragemap.svg"), map_out, width = 30, height = 20, units = "cm")
+ggsave(here("assets","coveragemap.png"), map_out, width = 30, height = 20, units = "cm", dpi=300)
+
+
+
+rm(list=setdiff(ls(), c("logfile","creds")))

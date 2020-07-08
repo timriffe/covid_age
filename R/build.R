@@ -1,49 +1,22 @@
 library(here)
 
 # -------------------------------------- #
-# This block just for the automatic scheduler
-schedule_this <- FALSE
-if (schedule_this){
-  library(taskscheduleR)
-  taskscheduler_create(taskname = "COVerAGE-DB-automatic-daily-build", 
-                       rscript = "C:/Users/riffe/Documents/covid_age/R/build.R", 
-                       schedule = "DAILY", 
-                       starttime = "02:00",
-                       startdate = format(Sys.Date() + 1, "%d/%m/%Y"))
-}
-
-# Have to do this on Hydra because otherwise
-if (Sys.info()["user"] == "riffe"){
-
-  change_here("C:/Users/riffe/Documents/covid_age")
-  
-}
-
-
-# -------------------------------------- #
-
 source(here("R","00_Functions.R"))
 
-
+# ----------------------#
+logfile <- here("buildlog.md")
 # --------------------- #
-# pull from github first, in case there has been a fix
-# or change.
-startup::startup()
-library(usethis)
-library(git2r)
-
-repo <- init()
-
-git2r::pull(credentials = creds)
-
-# --------------------- #
-
+# logfile = here("buildlog.md")
 
 gs4_auth(email = "tim.riffe@gmail.com")
 
-log_section("New build run!", append = FALSE)
+log_section("New build run!", 
+            append = FALSE, 
+            logfile = logfile)
 
-log_section("Compile inputDB from Drive", append = TRUE)
+log_section("Compile inputDB from Drive", 
+            append = TRUE,
+            logfile = logfile)
 inputDB  <- compile_inputDB()
 
 saveRDS(inputDB,here("Data","inputDBhold.rds"))
@@ -56,9 +29,15 @@ n <- inputDB %>% pull(Measure) %>% `%in%`(Measures)
 # sum(n)
 if (sum(!n) > 0){
   inputDB <- inputDB %>% filter(n) 
-  log_section("Filter valid Measure entries:", append = TRUE)
-  cat("Valid Measures include:",paste(Measures,collapse=","), file = "buildlog.md", append = TRUE)
-  cat("\n",sum(!n),"rows removed", file = "buildlog.md", append = TRUE)
+  log_section("Filter valid Measure entries:", 
+              append = TRUE, 
+              logfile = logfile)
+  cat("Valid Measures include:", paste(Measures, collapse = ","), 
+      file = logfile, 
+      append = TRUE)
+  cat("\n",sum(!n),"rows removed", 
+      file = logfile, 
+      append = TRUE)
 }
 
 # remove non-standard Metric:
@@ -68,9 +47,15 @@ n <- inputDB %>% pull(Metric) %>% `%in%`(Metrics)
 # sum(n)
 if (sum(!n) > 0){
   inputDB <- inputDB %>% filter(n)
-  log_section("Filter valid Metric entries:", append = TRUE)
-  cat("Valid Metrics include:",paste(Metrics,collapse=","), file = "buildlog.md", append = TRUE)
-  cat("\n",sum(!n),"rows removed", file = "buildlog.md", append = TRUE)
+  log_section("Filter valid Metric entries:", 
+              append = TRUE, 
+              logfile = logfile)
+  cat("Valid Metrics include:",paste(Metrics,collapse=","), 
+      file = logfile, 
+      append = TRUE)
+  cat("\n",sum(!n),"rows removed", 
+      file = logfile, 
+      append = TRUE)
 }
 
 # remove non-standard Sex:
@@ -80,9 +65,15 @@ n <- inputDB %>% pull(Sex) %>% `%in%`(Sexes)
 # sum(n)
 if (sum(!n) > 0){
   inputDB <- inputDB %>% filter(n)
-  log_section("Filter valid Sex entries:", append = TRUE)
-  cat("Valid Sex values include:",paste(Sexes,collapse=","), file = "buildlog.md", append = TRUE)
-  cat("\n",sum(!n),"rows removed", file = "buildlog.md", append = TRUE)
+  log_section("Filter valid Sex entries:", 
+              append = TRUE, 
+              logfile = logfile)
+  cat("Valid Sex values include:",paste(Sexes,collapse=","), 
+      file = logfile, 
+      append = TRUE)
+  cat("\n",sum(!n),"rows removed", 
+      file = logfile, 
+      append = TRUE)
 }
 
 
@@ -93,8 +84,12 @@ if (sum(n) > 0){
   rmcodes <- inputDB %>% filter(n) %>% pull(Code) %>% unique()
   inputDB <- inputDB %>% filter(!Code%in%rmcodes)
   if (length(rmcodes)>0){
-    log_section("Duplicates detected. Following `Code`s removed:", append = TRUE)
-    cat(paste(rmcodes, collapse = "\n"), file = "buildlog.md", append = TRUE)
+    log_section("Duplicates detected. Following `Code`s removed:", 
+                append = TRUE, 
+                logfile = logfile)
+    cat(paste(rmcodes, collapse = "\n"), 
+        file = logfile, 
+        append = TRUE)
   }
 }
 
@@ -111,8 +106,12 @@ BadRange <-
 if (nrow(BadRange) > 0){
   rmcodes <- BadRange %>% pull(Code) %>% unique()
   inputDB <- inputDB %>% filter(!Code%in%rmcodes)
-  log_section("Following codes removed for ill-formed AgeInt entries (must sum to 105):", append = TRUE)
-  cat(paste(rmcodes, collapse = "\n"), file = "buildlog.md", append = TRUE)
+  log_section("Following codes removed for ill-formed AgeInt entries (must sum to 105):", 
+              append = TRUE, 
+              logfile = logfile)
+  cat(paste(rmcodes, collapse = "\n"), 
+      file = logfile, 
+      append = TRUE)
 }
 
 
@@ -130,7 +129,7 @@ saveRDS(inputDB, here("Data","inputDB.rds"))
 # ---------------------- #
 
 # Harmonize Measure, Metric, and Scaling
-source("R/02_harmonize_metrics.R")
+source(here("R","02_harmonize_metrics.R"))
 
 # ---------------------- #
 
@@ -139,7 +138,7 @@ source("R/02_harmonize_metrics.R")
 # ---------------------- #
 
 # Harmonize Age groups
-source("R/04_harmonize_age_groups.R")
+source(here("R","04_harmonize_age_groups.R"))
 
 # ---------------------- #
 
@@ -148,13 +147,15 @@ source("R/04_harmonize_age_groups.R")
 # ---------------------- #
 
 # Build dashboards
-source("R/06_data_dashes.R")
+# Temporarily disabled on hydra because default run
+# doesn't have pandoc?
+#source(here("R","06_data_dashes.R"))
 
 # ---------------------- #
 
 # Coverage Map
 
-source("R/08_coverage_map.R")
+source(here("R","08_coverage_map.R"))
 
 # ---------------------- #
 
@@ -162,12 +163,15 @@ source("R/08_coverage_map.R")
 
 # Coverage Map
 # getting 401 errors
-#source("R/09_push_osf.R")
+#source(here("R","09_push_osf.R"))
 
 # ---------------------- #
 
 # git commit artifacts
-source("R/10_commit_files.R")
+source(here("R","10_commit_files.R"))
 
+# ---------------------- #
 
+# update build log / comminucations
+source(here("R","11_email_and_tweet.R"))
 
