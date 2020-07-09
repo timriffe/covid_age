@@ -21,6 +21,8 @@
   inputDB <- inputDB %>% filter(Metric=="Count")
   
   # Prepare data
+  # TR: this will overwrite the above-filtered inputDB...
+  # making inputCounts the full one?
   source("R/02_harmonize_metrics.R")
   
 

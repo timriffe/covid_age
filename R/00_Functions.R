@@ -194,6 +194,7 @@ compile_inputDB <- function(rubric = NULL) {
   # Empty list for results
   input_list <- list()
   
+  failures <- rep(NA,nrow(rubric))
   # Loop over countries
   for (i in rubric$Short) {
     
@@ -225,7 +226,7 @@ compile_inputDB <- function(rubric = NULL) {
     if (class(X)[1] == "try-error") {
       
       cat(i,"failure\n")
-      
+      failures[i] <- i
     } else {
       
       # If data loaded get code
@@ -241,6 +242,27 @@ compile_inputDB <- function(rubric = NULL) {
     # Wait a moment
     Sys.sleep(45) 
     
+  }
+  
+  
+  # One last chance to pick up the failed loads...
+  failures <- failures[!is.na(failures)]
+  if (length(failures)>0){
+    
+    for (i in failures){
+      Sys.sleep(200)
+      # Get spreadsheet address
+      ss_i <- rubric %>% filter(Short == i) %>% '$'(Sheet)
+      X <- try(read_sheet(ss_i, 
+                          sheet = "database", 
+                          na = "NA", 
+                          col_types = "cccccciccd"))
+      if (class(X)[1] == "try-error"){
+        cat(i, "on 3rd try still didn't load\n")
+      } else {
+        input_list[[i]] <- X
+      }
+    }
   }
   
   # Bind and sort
