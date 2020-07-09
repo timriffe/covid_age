@@ -4,8 +4,7 @@ This repository now only houses code used to harmonize data.
 
 Data is now available in an OSF repository: [https://osf.io/mpwjq/](https://osf.io/mpwjq/)
 
-In OSF, the folder `/Data` always contains the most recent build
-Weekly snapshots are archived as well.
+In OSF, the folder `/Data` always contains the most recent build.
 
 Each build contains
  - `inputDB.csv`, the compiled and lightly filtered input database
