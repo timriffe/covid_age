@@ -1,24 +1,24 @@
 
 # New build run! Build error log
- Sat Jul 11 02:00:08 2020 
+ Sun Jul 12 02:00:08 2020 
 
 
 # Compile inputDB from Drive Build error log
- Sat Jul 11 02:00:08 2020 
+ Sun Jul 12 02:00:08 2020 
 
 
 # Filter valid Measure entries: Build error log
- Sat Jul 11 04:53:35 2020 
+ Sun Jul 12 04:45:01 2020 
 
 Valid Measures include: Cases,Deaths,Tests,ASCFR
- 750 rows removed
+ 756 rows removed
 # Filter valid Metric entries: Build error log
- Sat Jul 11 04:53:36 2020 
+ Sun Jul 12 04:45:01 2020 
 
 Valid Metrics include: Count,Fraction,Ratio
  14 rows removed
 # Duplicates detected. Following `Code`s removed: Build error log
- Sat Jul 11 04:53:42 2020 
+ Sun Jul 12 04:45:06 2020 
 
 CA_AB13.06.2020
 CA_AB22.06.2020
@@ -29,67 +29,40 @@ GT03.07.2020
 IN07.07.2020
 IN08.07.2020
 IN09.07.2020
-VE09.07.2020
+IN10.07.2020
+VE10.07.2020
 # Following codes removed for ill-formed AgeInt entries (must sum to 105): Build error log
- Sat Jul 11 04:53:44 2020 
+ Sun Jul 12 04:45:08 2020 
 
 CA_QC23.04.2020
-MZ01.07.2020
-MZ02.07.2020
-MZ03.07.2020
-MZ04.07.2020
-MZ05.07.2020
-MZ06.07.2020
-MZ09.06.2020
-MZ10.06.2020
-MZ11.06.2020
-MZ12.06.2020
-MZ13.06.2020
-MZ14.06.2020
-MZ15.06.2020
-MZ16.06.2020
-MZ17.06.2020
-MZ18.06.2020
-MZ19.06.2020
-MZ20.06.2020
-MZ21.06.2020
-MZ22.06.2020
-MZ23.06.2020
-MZ24.06.2020
-MZ25.06.2020
-MZ26.06.2020
-MZ27.06.2020
-MZ28.06.2020
-MZ29.06.2020
-MZ30.06.2020
 # A Build error log
- Sat Jul 11 04:53:59 2020 
+ Sun Jul 12 04:45:22 2020 
 
 
 # B Build error log
- Sat Jul 11 04:55:02 2020 
+ Sun Jul 12 04:46:28 2020 
 
 
 # C Build error log
- Sat Jul 11 04:58:18 2020 
+ Sun Jul 12 04:49:42 2020 
 
 filter( Code == 'PA7.06.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'PA7.06.2020', Sex == 'm', Measure == 'Cases' )
 
 # D Build error log
- Sat Jul 11 05:00:04 2020 
+ Sun Jul 12 04:51:31 2020 
 
 
 # E Build error log
- Sat Jul 11 05:01:04 2020 
+ Sun Jul 12 04:52:32 2020 
 
 
 # G Build error log
- Sat Jul 11 05:02:01 2020 
+ Sun Jul 12 04:53:31 2020 
 
 
 # H Build error log
- Sat Jul 11 05:05:17 2020 
+ Sun Jul 12 04:56:37 2020 
 
 filter( Code == 'PK10.03.2020', Measure == 'Deaths' )
 filter( Code == 'PK11.03.2020', Measure == 'Deaths' )
@@ -101,11 +74,11 @@ filter( Code == 'PK16.03.2020', Measure == 'Deaths' )
 filter( Code == 'PK17.03.2020', Measure == 'Deaths' )
 
 # I Build error log
- Sat Jul 11 05:06:45 2020 
+ Sun Jul 12 04:58:15 2020 
 
 
 # J Build error log
- Sat Jul 11 05:07:32 2020 
+ Sun Jul 12 04:59:00 2020 
 
 filter( Code == 'CA_QC10.05.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'CA_QC10.05.2020', Sex == 'b', Measure == 'Deaths' )
@@ -119,7 +92,7 @@ filter( Code == 'CA_QC23.05.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'CA_QC23.05.2020', Sex == 'b', Measure == 'Deaths' )
 
 # Age harmonization Build error log
- Sat Jul 11 05:12:01 2020 
+ Sun Jul 12 05:03:18 2020 
 
 filter( Code == 'DO18.06.2020', Sex == 'm', Measure == 'Deaths' )
 filter( Code == 'DO16.06.2020', Sex == 'f', Measure == 'Deaths' )
@@ -128,13 +101,5 @@ filter( Code == 'DO18.06.2020', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'DO19.06.2020', Sex == 'f', Measure == 'Deaths' )
 
 # Commit dashboards and buildlog Build error log
- Sat Jul 11 06:12:19 2020 
-
-
-# Building dashboards Build error log
- Sat Jul 11 09:18:53 2020 
-
-
-# Commit dashboards and buildlog Build error log
- Sat Jul 11 09:50:58 2020 
+ Sun Jul 12 06:08:11 2020 
 
