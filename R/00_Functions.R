@@ -318,9 +318,9 @@ compile_offsetsDB <- function() {
     }
     
     # Set Short label
-    X <-  X %>% 
-      mutate(Short = i)
-    
+    # X <-  X %>% 
+    #   mutate(Short = i)
+    # 
     # Add country to list for results
     off_list[[i]] <- X
     
