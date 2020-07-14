@@ -334,7 +334,9 @@ compile_offsetsDB <- function() {
   
   # Show countries with additional errors
   if (sum(errors) > 0){
-    prob_codes <- offsets_rubric$Short[errors]
+    
+    
+    prob_codes <- offsets_rubric %>% mutate(Code=paste(Country,Region)) %>% pull(Code) %>% '['(errors)
     cat("\nThe following code(s) did not read properly:\n",paste(prob_codes,collapse = "\n"))
     off_list <- off_list[!errors]
   }

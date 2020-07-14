@@ -5,7 +5,7 @@ source("R/00_Functions.R")
 # Detect cores
 n.cores     <- round(6 + (detectCores() - 8)/8)
 
-
+source(here("R","00_Functions.R"))
 ### Compile offsets #################################################
 
 # Log
