@@ -101,7 +101,7 @@ rm_this <- inputDB[consistent == FALSE]
 if (nrow(rm_this)>0){
   rmcodes <- rm_this %>% pull(Code) %>% unique()
   inputDB <- inputDB[consistent := NULL]
-  inputDB$consistent <- NULL
+
   log_section("Inconsistent Age, AgeInt detected. Following `Code`s removed:", 
               append = TRUE, 
               logfile = logfile)
