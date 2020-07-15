@@ -95,24 +95,24 @@ if (sum(n) > 0){
 
 # does AgeInt add up to 105?
 
-BadRange <-
-  inputDB %>% 
-  filter(!Age %in% c("TOT","UNK"),
-         Sex != "UNK") %>% 
-  group_by(Code, Sex, Metric, Measure) %>% 
-  summarize(Range = sum(AgeInt)) %>% 
-  filter(Range != 105)
-
-if (nrow(BadRange) > 0){
-  rmcodes <- BadRange %>% pull(Code) %>% unique()
-  inputDB <- inputDB %>% filter(!Code%in%rmcodes)
-  log_section("Following codes removed for ill-formed AgeInt entries (must sum to 105):", 
-              append = TRUE, 
-              logfile = logfile)
-  cat(paste(rmcodes, collapse = "\n"), 
-      file = logfile, 
-      append = TRUE)
-}
+# BadRange <-
+#   inputDB %>% 
+#   filter(!Age %in% c("TOT","UNK"),
+#          Sex != "UNK") %>% 
+#   group_by(Code, Sex, Metric, Measure) %>% 
+#   summarize(Range = sum(AgeInt)) %>% 
+#   filter(Range != 105)
+# 
+# if (nrow(BadRange) > 0){
+#   rmcodes <- BadRange %>% pull(Code) %>% unique()
+#   inputDB <- inputDB %>% filter(!Code%in%rmcodes)
+#   log_section("Following codes removed for ill-formed AgeInt entries (must sum to 105):", 
+#               append = TRUE, 
+#               logfile = logfile)
+#   cat(paste(rmcodes, collapse = "\n"), 
+#       file = logfile, 
+#       append = TRUE)
+# }
 
 
 
