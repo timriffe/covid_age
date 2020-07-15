@@ -1317,7 +1317,7 @@ infer_both_sex <- function(chunk, verbose = FALSE){
 # @param chunk Data chunk
 # param OAnew_min numeric Minimum close out age
 
-do_we_maybe_lower_closeout <- function(chunk, OAnew_min) {
+do_we_maybe_lower_closeout <- function(chunk, OAnew_min, Amax) {
   
   # Check if chunk only has count data...
   maybe1 <- all(chunk[["Metric"]] == "Count")
@@ -1345,6 +1345,12 @@ do_we_maybe_lower_closeout <- function(chunk, OAnew_min) {
     return(FALSE)
   }
   
+  # also need to group down if top age too high
+  maybe3 <- max(Age) > Amax
+  if (maybe3){
+    return(TRUE)
+  }
+  
   # Number of age groups
   n <- length(Age)
   
@@ -1369,11 +1375,13 @@ do_we_maybe_lower_closeout <- function(chunk, OAnew_min) {
 # @param OAnew_min Minimum closeout age
 # @param verbose logical Print console message
 
-maybe_lower_closeout <- function(chunk, OAnew_min = 85, 
+maybe_lower_closeout <- function(chunk, 
+                                 OAnew_min = 85, 
+                                 Amax = 104,
                                  verbose = FALSE){
   
   # Check if lower clouseout is needed...
-  do_this <- do_we_maybe_lower_closeout(chunk, OAnew_min)
+  do_this <- do_we_maybe_lower_closeout(chunk, OAnew_min, Amax) 
   
   # ... if no...
   if(!do_this) {
@@ -1394,17 +1402,48 @@ maybe_lower_closeout <- function(chunk, OAnew_min = 85,
   # Get number of age groups
   n  <- length(Age)
   
+  # Get oldest age group under max closeout age
+  nmax <- (Age <= Amax) %>% which() %>% max()
+  
+  if (nmax < n){
+    # Get code, sex, measure
+    .Code    <- chunk[["Code"]][1]
+    .Sex     <- chunk[["Sex"]][1]
+    .Measure <- chunk[["Measure"]][1]
+    
+    # Console message
+    if (verbose) cat("Open age group lowered from",Age[n],
+                     "to",maxA,"for",.Code,.Sex,.Measure,"\n")
+    
+    # Get new values
+    .Value  <- c(Value[1:(nmax-1)],sum(Value[nmax:n]))
+    
+    # Get new ages
+    .Age    <- Age[1:nmax]
+    
+    # Turn to integer
+    .AgeInt <- c(AgeInt[1:(nmax-1)], 105 - Age[nmax]) %>% as.integer()
+    
+    # Get chunk with ages up to open age group
+    chunk <- chunk[1:nmax, ]
+    chunk[,c("Age","AgeInt","Value") := .(.Age, .AgeInt, .Value)]
+    
+    # reform parameter to pass on
+    n <- length(.Age)
+  }
+  
+  
   # Get youngest age group above min closeout age
-  nm <- (Age >= OAnew_min) %>% which() %>% min()
+  nmin <- (Age >= OAnew_min) %>% which() %>% min()
   
   # Get oldest age above closeout with more than 0 cases
-  for (i in n:nm){
+  for (i in n:nmin){
     if (Value[i] > 0){
       break
     }
   }
   
-  # If oldest age is not max age ein data
+  # If oldest age is not max age in data
   if (i < n){
     
     # Get code, sex, measure

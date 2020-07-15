@@ -150,6 +150,7 @@ J <- J[ , try_step(process_function = maybe_lower_closeout,
                    chunk = .SD, 
                    byvars = c("Code", "Sex", "Measure"),
                    OAnew_min = 85,
+                   Amax = 104,
                    logfile = logfile), 
         by = list(Code, Sex, Measure),
         .SDcols = icols][,..icols]
