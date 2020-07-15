@@ -498,6 +498,29 @@ add_Short <- function(Code, Date) {
 }
 
 
+### a modularized check on Age AgeInt consistency
+# @param chunk data chunk consisting in unique combo of Code, Sex, Measure, Metric
+check_age_seq <- function(chunk){
+  chunki <- copy(chunk)
+  chunki <- chunki[!Age%in%c("TOT","UNK")]
+  
+  if (nrow(chunki) == 0){
+    return(TRUE)
+  }
+  
+  keep   <- chunki$Sex != "UNK"
+  chunki <- chunki[keep]
+  if (nrow(chunki) == 0){
+    return(TRUE)
+  }
+  chunki[, Age := as.integer(Age)]
+  chunki <- chunki[order(Age)]
+  chunki[, Age2 := Age + AgeInt]
+  chunki[, Age2 := lag(Age2)]
+  
+  all(chunki[["Age"]] == chunki[["Age2"]], na.rm=TRUE) & min(chunki[["Age"]]) == 0
+}
+
 ### do_we_convert_fractions_sexes()
 # Checks if fractions shoudl be converted to case counts
 # @param chunk Data chunk
