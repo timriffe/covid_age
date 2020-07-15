@@ -306,7 +306,7 @@ compile_offsetsDB <- function() {
     if (class(X)[1] == "try-error") {
       
       # Wait two minutes to try again
-      cat(i,"didn't load, waiting 2 min to try again")
+      cat(i,"didn't load, waiting 2 min to try again\n")
       Sys.sleep(120)
       
       # Try again
