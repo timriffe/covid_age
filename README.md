@@ -30,6 +30,19 @@ Most populations in the database contain multiple time snapshots, and all are co
 
 If you know of sources for other populations, please either email, Tweet, or leave an *Issue* in this repository, and we'll look into it. If you would like to assist this project in gathering data, or other tasks, please let us know and I'm sure we can find a task!
 
+## Citation
+
+Please cite using the OSF repository, which has a doi. All collaborators are coauthors (see full list below), but this short form is preferred:
+
+### APA
+Riffe, T., Acosta, E., et. al. (DATE). COVerAGE-DB: A database of COVID-19 cases and deaths by age . https://doi.org/10.17605/OSF.IO/MPWJQ
+
+### MLA
+Riffe, Tim, Enrique Acosta, et. al. “COVerAGE-DB: A Database of COVID-19 Cases and Deaths by Age .” OSF, DATE. Web.
+
+### Chicago
+Riffe, Tim, Enrique Acosta, et. al. 2020. “COVerAGE-DB: A Database of COVID-19 Cases and Deaths by Age .” OSF. DATE. doi:10.17605/OSF.IO/MPWJQ.
+
 ## The team (so far), alphabetical by last name
 José Manuel Aburto, Enrique Acosta, Diego Alburez-Gutierrez, Anna Altová, Lateef Amusa, Ugofilippo Baselini, Simona Bignami, Didier Breton, Jorge Cimentada, Gonzalo De Armas, Emanuele del Fava, Viorela Diaconu, Jessica Donzowa, Christian Dudel, Toni Froehlich, Alain Gagnon, Mariana Garcia Cristómo, Victor M. Garcia-Guerrero, Armando González, Irwin Hecker, Eric Koba, Marina Kolobova, Mine Kühn, Chia Liu, Andrea Lozer, Mădălina Manea, Muntasir Masun, Ryohei Mogi, Saskia Morwinsky, Mikko Myrskylä, Marilia Nepomuceno, Michelle Nickel, Natalie Nitsche, Anna Oksuzyan, Samuel Oladele, Emmanuel Olamijuwon, Soumaila Ouedraogo, Mariana Paredes, Marius Pascariu, Manuel Piriz, Raquel Pollero, Federico Rehermann, Filipe Ribeiro, Tim Riffe, Silvia Rizzi, Francisco Rowe, Isaac Sasson, Jiaxin Shi, Rafael Silva, Cosmo Strozza, Catalina Torres, Sergi Trias-Llimos, Fumiya Uchikoshi, Alyson van Raalte, Paola Vasquez, Estevão Vilela, Iván Williams, Virginia Zarulli
 
