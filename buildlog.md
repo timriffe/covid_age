@@ -107,3 +107,11 @@ filter( Code == 'DO19.06.2020', Sex == 'f', Measure == 'Deaths' )
 # Commit dashboards and buildlog Build error log
  Fri Jul 24 06:32:17 2020 
 
+
+# Building dashboards Build error log
+ Fri Jul 24 09:00:14 2020 
+
+
+# Commit dashboards and buildlog Build error log
+ Fri Jul 24 09:35:35 2020 
+
