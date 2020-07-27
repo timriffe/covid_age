@@ -1,24 +1,24 @@
 
 # New build run! Build error log
- Sun Jul 26 06:30:43 2020 
+ Mon Jul 27 05:49:18 2020 
 
 
 # Compile inputDB from Drive Build error log
- Sun Jul 26 06:30:43 2020 
+ Mon Jul 27 05:49:18 2020 
 
 
 # Filter valid Measure entries: Build error log
- Sun Jul 26 09:36:49 2020 
+ Mon Jul 27 08:56:42 2020 
 
 Valid Measures include: Cases,Deaths,Tests,ASCFR
- 2957 rows removed
+ 2963 rows removed
 # Filter valid Metric entries: Build error log
- Sun Jul 26 09:36:49 2020 
+ Mon Jul 27 08:56:42 2020 
 
 Valid Metrics include: Count,Fraction,Ratio
  14 rows removed
 # Duplicates detected. Following `Code`s removed: Build error log
- Sun Jul 26 09:36:58 2020 
+ Mon Jul 27 08:56:50 2020 
 
 AL16.07.2020
 CF03.07.2020
@@ -35,6 +35,7 @@ IN22.07.2020
 IN23.07.2020
 IN24.07.2020
 IN25.07.2020
+IN26.07.2020
 SI24.05.2020
 SI25.05.2020
 SI28.05.2020
@@ -85,33 +86,33 @@ SI23.07.2020
 SI24.07.2020
 US_TX19.07.2020
 # A Build error log
- Sun Jul 26 09:44:20 2020 
+ Mon Jul 27 09:04:15 2020 
 
 
 # B Build error log
- Sun Jul 26 09:45:47 2020 
+ Mon Jul 27 09:05:43 2020 
 
 
 # C Build error log
- Sun Jul 26 09:49:47 2020 
+ Mon Jul 27 09:09:43 2020 
 
 filter( Code == 'PA7.06.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'PA7.06.2020', Sex == 'm', Measure == 'Cases' )
 
 # D Build error log
- Sun Jul 26 09:52:05 2020 
+ Mon Jul 27 09:12:04 2020 
 
 
 # E Build error log
- Sun Jul 26 09:53:16 2020 
+ Mon Jul 27 09:13:16 2020 
 
 
 # G Build error log
- Sun Jul 26 09:54:25 2020 
+ Mon Jul 27 09:14:26 2020 
 
 
 # H Build error log
- Sun Jul 26 09:58:22 2020 
+ Mon Jul 27 09:18:26 2020 
 
 filter( Code == 'PK10.03.2020', Measure == 'Deaths' )
 filter( Code == 'PK11.03.2020', Measure == 'Deaths' )
@@ -123,11 +124,11 @@ filter( Code == 'PK16.03.2020', Measure == 'Deaths' )
 filter( Code == 'PK17.03.2020', Measure == 'Deaths' )
 
 # I Build error log
- Sun Jul 26 10:00:25 2020 
+ Mon Jul 27 09:20:31 2020 
 
 
 # J Build error log
- Sun Jul 26 10:01:15 2020 
+ Mon Jul 27 09:21:23 2020 
 
 filter( Code == 'CA_QC10.05.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'CA_QC10.05.2020', Sex == 'b', Measure == 'Deaths' )
@@ -141,7 +142,7 @@ filter( Code == 'CA_QC23.05.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'CA_QC23.05.2020', Sex == 'b', Measure == 'Deaths' )
 
 # Age harmonization Build error log
- Sun Jul 26 10:06:27 2020 
+ Mon Jul 27 09:26:35 2020 
 
 filter( Code == 'DO18.06.2020', Sex == 'm', Measure == 'Deaths' )
 filter( Code == 'DO16.06.2020', Sex == 'f', Measure == 'Deaths' )
@@ -150,9 +151,9 @@ filter( Code == 'DO18.06.2020', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'DO19.06.2020', Sex == 'f', Measure == 'Deaths' )
 
 # Building dashboards Build error log
- Sun Jul 26 11:18:19 2020 
+ Mon Jul 27 10:38:08 2020 
 
 
 # Commit dashboards and buildlog Build error log
- Sun Jul 26 11:58:39 2020 
+ Mon Jul 27 11:18:30 2020 
 
