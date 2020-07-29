@@ -198,3 +198,67 @@ filter( Code == 'PA7.06.2020', Sex == 'm', Measure == 'Cases' )
 # Commit dashboards and buildlog Build error log
  Wed Jul 29 05:32:36 2020 
 
+filter( Code == 'PK10.03.2020', Measure == 'Deaths' )
+filter( Code == 'PK11.03.2020', Measure == 'Deaths' )
+filter( Code == 'PK12.03.2020', Measure == 'Deaths' )
+filter( Code == 'PK13.03.2020', Measure == 'Deaths' )
+filter( Code == 'PK14.03.2020', Measure == 'Deaths' )
+filter( Code == 'PK15.03.2020', Measure == 'Deaths' )
+filter( Code == 'PK16.03.2020', Measure == 'Deaths' )
+filter( Code == 'PK17.03.2020', Measure == 'Deaths' )
+
+# I Build error log
+ Wed Jul 29 05:33:37 2020 
+
+
+# J Build error log
+ Wed Jul 29 05:34:27 2020 
+
+filter( Code == 'CA_QC10.05.2020', Sex == 'b', Measure == 'Cases' )
+filter( Code == 'CA_QC10.05.2020', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'CA_QC16.05.2020', Sex == 'b', Measure == 'Cases' )
+filter( Code == 'CA_QC16.05.2020', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'CA_QC19.05.2020', Sex == 'b', Measure == 'Cases' )
+filter( Code == 'CA_QC19.05.2020', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'CA_QC21.05.2020', Sex == 'b', Measure == 'Cases' )
+filter( Code == 'CA_QC21.05.2020', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'CA_QC23.05.2020', Sex == 'b', Measure == 'Cases' )
+filter( Code == 'CA_QC23.05.2020', Sex == 'b', Measure == 'Deaths' )
+
+# Age harmonization Build error log
+ Wed Jul 29 05:39:42 2020 
+
+filter( Code == 'DO18.06.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'DO16.06.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'DO17.06.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'DO18.06.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'DO19.06.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'US_IL26.07.2020', Sex == 'b', Measure == 'Cases' )
+filter( Code == 'US_IL26.07.2021', Sex == 'b', Measure == 'Cases' )
+filter( Code == 'US_IL26.07.2022', Sex == 'b', Measure == 'Cases' )
+filter( Code == 'US_IL26.07.2023', Sex == 'b', Measure == 'Cases' )
+filter( Code == 'US_IL26.07.2024', Sex == 'b', Measure == 'Cases' )
+filter( Code == 'US_IL26.07.2025', Sex == 'b', Measure == 'Cases' )
+filter( Code == 'US_IL26.07.2026', Sex == 'b', Measure == 'Cases' )
+filter( Code == 'US_IL26.07.2027', Sex == 'b', Measure == 'Cases' )
+filter( Code == 'US_IL26.07.2044', Sex == 'b', Measure == 'Tests' )
+filter( Code == 'US_IL26.07.2045', Sex == 'b', Measure == 'Tests' )
+filter( Code == 'US_IL26.07.2046', Sex == 'b', Measure == 'Tests' )
+filter( Code == 'US_IL26.07.2047', Sex == 'b', Measure == 'Tests' )
+filter( Code == 'US_IL26.07.2048', Sex == 'b', Measure == 'Tests' )
+filter( Code == 'US_IL26.07.2049', Sex == 'b', Measure == 'Tests' )
+filter( Code == 'US_IL26.07.2050', Sex == 'b', Measure == 'Tests' )
+filter( Code == 'US_IL26.07.2051', Sex == 'b', Measure == 'Tests' )
+filter( Code == 'NL28.07.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'US_IL26.07.2032', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'US_IL26.07.2033', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'US_IL26.07.2034', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'US_IL26.07.2035', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'US_IL26.07.2036', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'US_IL26.07.2037', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'US_IL26.07.2038', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'US_IL26.07.2039', Sex == 'b', Measure == 'Deaths' )
+
+# Commit dashboards and buildlog Build error log
+ Wed Jul 29 06:49:13 2020 
+
