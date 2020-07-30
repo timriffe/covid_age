@@ -1,8 +1,10 @@
 rm(list=ls())
 library(taskscheduleR)
 
+local_path <- "U:/nextcloud/Projects/COVID_19/COVerAGE-DB/covid_age/Automation/00_hydra/"
+
 sched <- function(pp = "CA_montreal", tm = "06:00"){
-  script <- paste0("U:/nextcloud/Projects/COVID_19/COVerAge-DB/automated_COVerAge-DB/00_hydra/", pp, ".R")  
+  script <- paste0(local_path, pp, ".R")  
   tskname <- paste0("coverage_db_", pp, "_daily")
   
   try(taskscheduler_delete(taskname = tskname))
@@ -44,25 +46,29 @@ sched("Estonia", "16:15")
 
 taskscheduler_ls()
 
-# scripts <- c(
-#   "Colombia",
-#   "Germany",
-#   "US_Massachusetts",
-#   "Austria",
-#   "US_Virginia",
-#   "US_NYC",
-#   "USA_all_deaths",
-#   "CA_Montreal", 
-#   "US_Texas", 
-#   "US_Wisconsin",
-#   "US_Michigan", 
-#   "Sweden",
-#   "Netherlands",
-#   "Venezuela",
-#   "New_Zeland"
-# )
-# 
-### Delete all 
+scripts <- c(
+  "US_New_Jersey",
+  "Slovenia",
+  "Colombia",
+  "Germany",
+  "US_Massachusetts",
+  "Austria",
+  "US_Virginia",
+  "US_NYC",
+  "USA_all_deaths",
+  "CA_Montreal",
+  "US_Texas",
+  "US_Wisconsin",
+  "US_Michigan",
+  "Sweden",
+  "Netherlands",
+  "Venezuela",
+  "New_Zeland",
+  "Estonia"
+)
+
+
+# ## Delete all
 # for (sc in scripts){
 #   print(sc)
 #   delete_sched(sc)
