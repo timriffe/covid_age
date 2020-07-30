@@ -1,0 +1,3189 @@
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+Warnung: 381301 parsing failures.
+row      col               expected             actual                                                                           file
+  1 GEO      a double               State              'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 NAME     a double               WI                 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 LoadDttm no trailing characters /03/15 19:00:00+00 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 DATE     no trailing characters /03/15 14:00:00+00 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  2 GEO      a double               County             'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+... ........ ...................... .................. ..............................................................................
+See problems(...) for more details.
+
+cols(
+  .default = col_double(),
+  OBJECTID = col_double(),
+  GEOID = col_double(),
+  GEO = col_double(),
+  NAME = col_double(),
+  LoadDttm = col_double(),
+  NEGATIVE = col_double(),
+  POSITIVE = col_double(),
+  HOSP_YES = col_double(),
+  HOSP_NO = col_double(),
+  HOSP_UNK = col_double(),
+  POS_FEM = col_double(),
+  POS_MALE = col_double(),
+  POS_OTH = col_double(),
+  POS_0_9 = col_double(),
+  POS_10_19 = col_double(),
+  POS_20_29 = col_double(),
+  POS_30_39 = col_double(),
+  POS_40_49 = col_double(),
+  POS_50_59 = col_double(),
+  POS_60_69 = col_double(),
+  POS_70_79 = col_double(),
+  POS_80_89 = col_double(),
+  POS_90 = col_double(),
+  DEATHS = col_double(),
+  DTHS_FEM = col_double(),
+  DTHS_MALE = col_double(),
+  DTHS_OTH = col_double(),
+  DTHS_0_9 = col_double(),
+  DTHS_10_19 = col_double(),
+  DTHS_20_29 = col_double(),
+  DTHS_30_39 = col_double(),
+  DTHS_40_49 = col_double(),
+  DTHS_50_59 = col_double(),
+  DTHS_60_69 = col_double(),
+  DTHS_70_79 = col_double(),
+  DTHS_80_89 = col_double(),
+  DTHS_90 = col_double(),
+  IP_Y_0_9 = col_double(),
+  IP_Y_10_19 = col_double(),
+  IP_Y_20_29 = col_double(),
+  IP_Y_30_39 = col_double(),
+  IP_Y_40_49 = col_double(),
+  IP_Y_50_59 = col_double(),
+  IP_Y_60_69 = col_double(),
+  IP_Y_70_79 = col_double(),
+  IP_Y_80_89 = col_double(),
+  IP_Y_90 = col_double(),
+  IP_N_0_9 = col_double(),
+  IP_N_10_19 = col_double(),
+  IP_N_20_29 = col_double(),
+  IP_N_30_39 = col_double(),
+  IP_N_40_49 = col_double(),
+  IP_N_50_59 = col_double(),
+  IP_N_60_69 = col_double(),
+  IP_N_70_79 = col_double(),
+  IP_N_80_89 = col_double(),
+  IP_N_90 = col_double(),
+  IP_U_0_9 = col_double(),
+  IP_U_10_19 = col_double(),
+  IP_U_20_29 = col_double(),
+  IP_U_30_39 = col_double(),
+  IP_U_40_49 = col_double(),
+  IP_U_50_59 = col_double(),
+  IP_U_60_69 = col_double(),
+  IP_U_70_79 = col_double(),
+  IP_U_80_89 = col_double(),
+  IP_U_90 = col_double(),
+  IC_YES = col_double(),
+  IC_Y_0_9 = col_double(),
+  IC_Y_10_19 = col_double(),
+  IC_Y_20_29 = col_double(),
+  IC_Y_30_39 = col_double(),
+  IC_Y_40_49 = col_double(),
+  IC_Y_50_59 = col_double(),
+  IC_Y_60_69 = col_double(),
+  IC_Y_70_79 = col_double(),
+  IC_Y_80_89 = col_double(),
+  IC_Y_90 = col_double(),
+  POS_AIAN = col_double(),
+  POS_ASN = col_double(),
+  POS_BLK = col_double(),
+  POS_WHT = col_double(),
+  POS_MLTOTH = col_double(),
+  POS_UNK = col_double(),
+  POS_E_HSP = col_double(),
+  POS_E_NHSP = col_double(),
+  POS_E_UNK = col_double(),
+  DTH_AIAN = col_double(),
+  DTH_ASN = col_double(),
+  DTH_BLK = col_double(),
+  DTH_WHT = col_double(),
+  DTH_MLTOTH = col_double(),
+  DTH_UNK = col_double(),
+  DTH_E_HSP = col_double(),
+  DTH_E_NHSP = col_double(),
+  DTH_E_UNK = col_double(),
+  POS_HC_Y = col_double(),
+  POS_HC_N = col_double(),
+  POS_HC_UNK = col_double(),
+  DTH_NEW = col_double(),
+  POS_NEW = col_double(),
+  NEG_NEW = col_double(),
+  TEST_NEW = col_double(),
+  DATE = col_double()
+)
+Writing to "Wisconsin input template"
+Writing to sheet "database"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * US_WI02.07.2020cases&deaths: 1yTQIVG-aJ2e-QImt3q51cn7VmYdVbba-t6T0ii1Am7U
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "US_WI02.07.2020cases&deaths"
+Writing to sheet "cases&deaths"
+Deleting these sheet(s) from "US_WI02.07.2020cases&deaths":
+* Sheet1
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+Warnung: 385800 parsing failures.
+row      col               expected             actual                                                                           file
+  1 GEO      a double               State              'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 NAME     a double               WI                 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 LoadDttm no trailing characters /03/15 19:00:00+00 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 DATE     no trailing characters /03/15 14:00:00+00 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  2 GEO      a double               County             'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+... ........ ...................... .................. ..............................................................................
+See problems(...) for more details.
+
+cols(
+  .default = col_double(),
+  OBJECTID = col_double(),
+  GEOID = col_double(),
+  GEO = col_double(),
+  NAME = col_double(),
+  LoadDttm = col_double(),
+  NEGATIVE = col_double(),
+  POSITIVE = col_double(),
+  HOSP_YES = col_double(),
+  HOSP_NO = col_double(),
+  HOSP_UNK = col_double(),
+  POS_FEM = col_double(),
+  POS_MALE = col_double(),
+  POS_OTH = col_double(),
+  POS_0_9 = col_double(),
+  POS_10_19 = col_double(),
+  POS_20_29 = col_double(),
+  POS_30_39 = col_double(),
+  POS_40_49 = col_double(),
+  POS_50_59 = col_double(),
+  POS_60_69 = col_double(),
+  POS_70_79 = col_double(),
+  POS_80_89 = col_double(),
+  POS_90 = col_double(),
+  DEATHS = col_double(),
+  DTHS_FEM = col_double(),
+  DTHS_MALE = col_double(),
+  DTHS_OTH = col_double(),
+  DTHS_0_9 = col_double(),
+  DTHS_10_19 = col_double(),
+  DTHS_20_29 = col_double(),
+  DTHS_30_39 = col_double(),
+  DTHS_40_49 = col_double(),
+  DTHS_50_59 = col_double(),
+  DTHS_60_69 = col_double(),
+  DTHS_70_79 = col_double(),
+  DTHS_80_89 = col_double(),
+  DTHS_90 = col_double(),
+  IP_Y_0_9 = col_double(),
+  IP_Y_10_19 = col_double(),
+  IP_Y_20_29 = col_double(),
+  IP_Y_30_39 = col_double(),
+  IP_Y_40_49 = col_double(),
+  IP_Y_50_59 = col_double(),
+  IP_Y_60_69 = col_double(),
+  IP_Y_70_79 = col_double(),
+  IP_Y_80_89 = col_double(),
+  IP_Y_90 = col_double(),
+  IP_N_0_9 = col_double(),
+  IP_N_10_19 = col_double(),
+  IP_N_20_29 = col_double(),
+  IP_N_30_39 = col_double(),
+  IP_N_40_49 = col_double(),
+  IP_N_50_59 = col_double(),
+  IP_N_60_69 = col_double(),
+  IP_N_70_79 = col_double(),
+  IP_N_80_89 = col_double(),
+  IP_N_90 = col_double(),
+  IP_U_0_9 = col_double(),
+  IP_U_10_19 = col_double(),
+  IP_U_20_29 = col_double(),
+  IP_U_30_39 = col_double(),
+  IP_U_40_49 = col_double(),
+  IP_U_50_59 = col_double(),
+  IP_U_60_69 = col_double(),
+  IP_U_70_79 = col_double(),
+  IP_U_80_89 = col_double(),
+  IP_U_90 = col_double(),
+  IC_YES = col_double(),
+  IC_Y_0_9 = col_double(),
+  IC_Y_10_19 = col_double(),
+  IC_Y_20_29 = col_double(),
+  IC_Y_30_39 = col_double(),
+  IC_Y_40_49 = col_double(),
+  IC_Y_50_59 = col_double(),
+  IC_Y_60_69 = col_double(),
+  IC_Y_70_79 = col_double(),
+  IC_Y_80_89 = col_double(),
+  IC_Y_90 = col_double(),
+  POS_AIAN = col_double(),
+  POS_ASN = col_double(),
+  POS_BLK = col_double(),
+  POS_WHT = col_double(),
+  POS_MLTOTH = col_double(),
+  POS_UNK = col_double(),
+  POS_E_HSP = col_double(),
+  POS_E_NHSP = col_double(),
+  POS_E_UNK = col_double(),
+  DTH_AIAN = col_double(),
+  DTH_ASN = col_double(),
+  DTH_BLK = col_double(),
+  DTH_WHT = col_double(),
+  DTH_MLTOTH = col_double(),
+  DTH_UNK = col_double(),
+  DTH_E_HSP = col_double(),
+  DTH_E_NHSP = col_double(),
+  DTH_E_UNK = col_double(),
+  POS_HC_Y = col_double(),
+  POS_HC_N = col_double(),
+  POS_HC_UNK = col_double(),
+  DTH_NEW = col_double(),
+  POS_NEW = col_double(),
+  NEG_NEW = col_double(),
+  TEST_NEW = col_double(),
+  DATE = col_double()
+)
+Writing to "Wisconsin input template"
+Writing to sheet "database"
+Created Drive file:
+  * US_WI03.07.2020cases&deaths: 1TsYlDhAnITT0wVIB9ZVTeff5jKopbYRQQQUDiU9LG5U
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "US_WI03.07.2020cases&deaths"
+Writing to sheet "cases&deaths"
+Deleting these sheet(s) from "US_WI03.07.2020cases&deaths":
+* Sheet1
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+Warnung: 390299 parsing failures.
+row      col               expected             actual                                                                           file
+  1 GEO      a double               State              'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 NAME     a double               WI                 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 LoadDttm no trailing characters /03/15 19:00:00+00 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 DATE     no trailing characters /03/15 14:00:00+00 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  2 GEO      a double               County             'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+... ........ ...................... .................. ..............................................................................
+See problems(...) for more details.
+
+cols(
+  .default = col_double(),
+  OBJECTID = col_double(),
+  GEOID = col_double(),
+  GEO = col_double(),
+  NAME = col_double(),
+  LoadDttm = col_double(),
+  NEGATIVE = col_double(),
+  POSITIVE = col_double(),
+  HOSP_YES = col_double(),
+  HOSP_NO = col_double(),
+  HOSP_UNK = col_double(),
+  POS_FEM = col_double(),
+  POS_MALE = col_double(),
+  POS_OTH = col_double(),
+  POS_0_9 = col_double(),
+  POS_10_19 = col_double(),
+  POS_20_29 = col_double(),
+  POS_30_39 = col_double(),
+  POS_40_49 = col_double(),
+  POS_50_59 = col_double(),
+  POS_60_69 = col_double(),
+  POS_70_79 = col_double(),
+  POS_80_89 = col_double(),
+  POS_90 = col_double(),
+  DEATHS = col_double(),
+  DTHS_FEM = col_double(),
+  DTHS_MALE = col_double(),
+  DTHS_OTH = col_double(),
+  DTHS_0_9 = col_double(),
+  DTHS_10_19 = col_double(),
+  DTHS_20_29 = col_double(),
+  DTHS_30_39 = col_double(),
+  DTHS_40_49 = col_double(),
+  DTHS_50_59 = col_double(),
+  DTHS_60_69 = col_double(),
+  DTHS_70_79 = col_double(),
+  DTHS_80_89 = col_double(),
+  DTHS_90 = col_double(),
+  IP_Y_0_9 = col_double(),
+  IP_Y_10_19 = col_double(),
+  IP_Y_20_29 = col_double(),
+  IP_Y_30_39 = col_double(),
+  IP_Y_40_49 = col_double(),
+  IP_Y_50_59 = col_double(),
+  IP_Y_60_69 = col_double(),
+  IP_Y_70_79 = col_double(),
+  IP_Y_80_89 = col_double(),
+  IP_Y_90 = col_double(),
+  IP_N_0_9 = col_double(),
+  IP_N_10_19 = col_double(),
+  IP_N_20_29 = col_double(),
+  IP_N_30_39 = col_double(),
+  IP_N_40_49 = col_double(),
+  IP_N_50_59 = col_double(),
+  IP_N_60_69 = col_double(),
+  IP_N_70_79 = col_double(),
+  IP_N_80_89 = col_double(),
+  IP_N_90 = col_double(),
+  IP_U_0_9 = col_double(),
+  IP_U_10_19 = col_double(),
+  IP_U_20_29 = col_double(),
+  IP_U_30_39 = col_double(),
+  IP_U_40_49 = col_double(),
+  IP_U_50_59 = col_double(),
+  IP_U_60_69 = col_double(),
+  IP_U_70_79 = col_double(),
+  IP_U_80_89 = col_double(),
+  IP_U_90 = col_double(),
+  IC_YES = col_double(),
+  IC_Y_0_9 = col_double(),
+  IC_Y_10_19 = col_double(),
+  IC_Y_20_29 = col_double(),
+  IC_Y_30_39 = col_double(),
+  IC_Y_40_49 = col_double(),
+  IC_Y_50_59 = col_double(),
+  IC_Y_60_69 = col_double(),
+  IC_Y_70_79 = col_double(),
+  IC_Y_80_89 = col_double(),
+  IC_Y_90 = col_double(),
+  POS_AIAN = col_double(),
+  POS_ASN = col_double(),
+  POS_BLK = col_double(),
+  POS_WHT = col_double(),
+  POS_MLTOTH = col_double(),
+  POS_UNK = col_double(),
+  POS_E_HSP = col_double(),
+  POS_E_NHSP = col_double(),
+  POS_E_UNK = col_double(),
+  DTH_AIAN = col_double(),
+  DTH_ASN = col_double(),
+  DTH_BLK = col_double(),
+  DTH_WHT = col_double(),
+  DTH_MLTOTH = col_double(),
+  DTH_UNK = col_double(),
+  DTH_E_HSP = col_double(),
+  DTH_E_NHSP = col_double(),
+  DTH_E_UNK = col_double(),
+  POS_HC_Y = col_double(),
+  POS_HC_N = col_double(),
+  POS_HC_UNK = col_double(),
+  DTH_NEW = col_double(),
+  POS_NEW = col_double(),
+  NEG_NEW = col_double(),
+  TEST_NEW = col_double(),
+  DATE = col_double()
+)
+Writing to "Wisconsin input template"
+Writing to sheet "database"
+Created Drive file:
+  * US_WI04.07.2020cases&deaths: 1dQ5jK7MICAaYtGCoeD6kZQefRqTUMSSmbgc8mOf7BiU
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "US_WI04.07.2020cases&deaths"
+Writing to sheet "cases&deaths"
+Deleting these sheet(s) from "US_WI04.07.2020cases&deaths":
+* Sheet1
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+Warnung: 394798 parsing failures.
+row      col               expected             actual                                                                           file
+  1 GEO      a double               State              'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 NAME     a double               WI                 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 LoadDttm no trailing characters /03/15 19:00:00+00 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 DATE     no trailing characters /03/15 14:00:00+00 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  2 GEO      a double               County             'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+... ........ ...................... .................. ..............................................................................
+See problems(...) for more details.
+
+cols(
+  .default = col_double(),
+  OBJECTID = col_double(),
+  GEOID = col_double(),
+  GEO = col_double(),
+  NAME = col_double(),
+  LoadDttm = col_double(),
+  NEGATIVE = col_double(),
+  POSITIVE = col_double(),
+  HOSP_YES = col_double(),
+  HOSP_NO = col_double(),
+  HOSP_UNK = col_double(),
+  POS_FEM = col_double(),
+  POS_MALE = col_double(),
+  POS_OTH = col_double(),
+  POS_0_9 = col_double(),
+  POS_10_19 = col_double(),
+  POS_20_29 = col_double(),
+  POS_30_39 = col_double(),
+  POS_40_49 = col_double(),
+  POS_50_59 = col_double(),
+  POS_60_69 = col_double(),
+  POS_70_79 = col_double(),
+  POS_80_89 = col_double(),
+  POS_90 = col_double(),
+  DEATHS = col_double(),
+  DTHS_FEM = col_double(),
+  DTHS_MALE = col_double(),
+  DTHS_OTH = col_double(),
+  DTHS_0_9 = col_double(),
+  DTHS_10_19 = col_double(),
+  DTHS_20_29 = col_double(),
+  DTHS_30_39 = col_double(),
+  DTHS_40_49 = col_double(),
+  DTHS_50_59 = col_double(),
+  DTHS_60_69 = col_double(),
+  DTHS_70_79 = col_double(),
+  DTHS_80_89 = col_double(),
+  DTHS_90 = col_double(),
+  IP_Y_0_9 = col_double(),
+  IP_Y_10_19 = col_double(),
+  IP_Y_20_29 = col_double(),
+  IP_Y_30_39 = col_double(),
+  IP_Y_40_49 = col_double(),
+  IP_Y_50_59 = col_double(),
+  IP_Y_60_69 = col_double(),
+  IP_Y_70_79 = col_double(),
+  IP_Y_80_89 = col_double(),
+  IP_Y_90 = col_double(),
+  IP_N_0_9 = col_double(),
+  IP_N_10_19 = col_double(),
+  IP_N_20_29 = col_double(),
+  IP_N_30_39 = col_double(),
+  IP_N_40_49 = col_double(),
+  IP_N_50_59 = col_double(),
+  IP_N_60_69 = col_double(),
+  IP_N_70_79 = col_double(),
+  IP_N_80_89 = col_double(),
+  IP_N_90 = col_double(),
+  IP_U_0_9 = col_double(),
+  IP_U_10_19 = col_double(),
+  IP_U_20_29 = col_double(),
+  IP_U_30_39 = col_double(),
+  IP_U_40_49 = col_double(),
+  IP_U_50_59 = col_double(),
+  IP_U_60_69 = col_double(),
+  IP_U_70_79 = col_double(),
+  IP_U_80_89 = col_double(),
+  IP_U_90 = col_double(),
+  IC_YES = col_double(),
+  IC_Y_0_9 = col_double(),
+  IC_Y_10_19 = col_double(),
+  IC_Y_20_29 = col_double(),
+  IC_Y_30_39 = col_double(),
+  IC_Y_40_49 = col_double(),
+  IC_Y_50_59 = col_double(),
+  IC_Y_60_69 = col_double(),
+  IC_Y_70_79 = col_double(),
+  IC_Y_80_89 = col_double(),
+  IC_Y_90 = col_double(),
+  POS_AIAN = col_double(),
+  POS_ASN = col_double(),
+  POS_BLK = col_double(),
+  POS_WHT = col_double(),
+  POS_MLTOTH = col_double(),
+  POS_UNK = col_double(),
+  POS_E_HSP = col_double(),
+  POS_E_NHSP = col_double(),
+  POS_E_UNK = col_double(),
+  DTH_AIAN = col_double(),
+  DTH_ASN = col_double(),
+  DTH_BLK = col_double(),
+  DTH_WHT = col_double(),
+  DTH_MLTOTH = col_double(),
+  DTH_UNK = col_double(),
+  DTH_E_HSP = col_double(),
+  DTH_E_NHSP = col_double(),
+  DTH_E_UNK = col_double(),
+  POS_HC_Y = col_double(),
+  POS_HC_N = col_double(),
+  POS_HC_UNK = col_double(),
+  DTH_NEW = col_double(),
+  POS_NEW = col_double(),
+  NEG_NEW = col_double(),
+  TEST_NEW = col_double(),
+  DATE = col_double()
+)
+Writing to "Wisconsin input template"
+Writing to sheet "database"
+Created Drive file:
+  * US_WI05.07.2020cases&deaths: 1y9jy8gcStl6jDi9qniNaGqPyDvYtCINabcDnumF5wHQ
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "US_WI05.07.2020cases&deaths"
+Writing to sheet "cases&deaths"
+Deleting these sheet(s) from "US_WI05.07.2020cases&deaths":
+* Sheet1
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+Warnung: 399297 parsing failures.
+row      col               expected             actual                                                                           file
+  1 GEO      a double               State              'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 NAME     a double               WI                 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 LoadDttm no trailing characters /03/15 19:00:00+00 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 DATE     no trailing characters /03/15 14:00:00+00 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  2 GEO      a double               County             'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+... ........ ...................... .................. ..............................................................................
+See problems(...) for more details.
+
+cols(
+  .default = col_double(),
+  OBJECTID = col_double(),
+  GEOID = col_double(),
+  GEO = col_double(),
+  NAME = col_double(),
+  LoadDttm = col_double(),
+  NEGATIVE = col_double(),
+  POSITIVE = col_double(),
+  HOSP_YES = col_double(),
+  HOSP_NO = col_double(),
+  HOSP_UNK = col_double(),
+  POS_FEM = col_double(),
+  POS_MALE = col_double(),
+  POS_OTH = col_double(),
+  POS_0_9 = col_double(),
+  POS_10_19 = col_double(),
+  POS_20_29 = col_double(),
+  POS_30_39 = col_double(),
+  POS_40_49 = col_double(),
+  POS_50_59 = col_double(),
+  POS_60_69 = col_double(),
+  POS_70_79 = col_double(),
+  POS_80_89 = col_double(),
+  POS_90 = col_double(),
+  DEATHS = col_double(),
+  DTHS_FEM = col_double(),
+  DTHS_MALE = col_double(),
+  DTHS_OTH = col_double(),
+  DTHS_0_9 = col_double(),
+  DTHS_10_19 = col_double(),
+  DTHS_20_29 = col_double(),
+  DTHS_30_39 = col_double(),
+  DTHS_40_49 = col_double(),
+  DTHS_50_59 = col_double(),
+  DTHS_60_69 = col_double(),
+  DTHS_70_79 = col_double(),
+  DTHS_80_89 = col_double(),
+  DTHS_90 = col_double(),
+  IP_Y_0_9 = col_double(),
+  IP_Y_10_19 = col_double(),
+  IP_Y_20_29 = col_double(),
+  IP_Y_30_39 = col_double(),
+  IP_Y_40_49 = col_double(),
+  IP_Y_50_59 = col_double(),
+  IP_Y_60_69 = col_double(),
+  IP_Y_70_79 = col_double(),
+  IP_Y_80_89 = col_double(),
+  IP_Y_90 = col_double(),
+  IP_N_0_9 = col_double(),
+  IP_N_10_19 = col_double(),
+  IP_N_20_29 = col_double(),
+  IP_N_30_39 = col_double(),
+  IP_N_40_49 = col_double(),
+  IP_N_50_59 = col_double(),
+  IP_N_60_69 = col_double(),
+  IP_N_70_79 = col_double(),
+  IP_N_80_89 = col_double(),
+  IP_N_90 = col_double(),
+  IP_U_0_9 = col_double(),
+  IP_U_10_19 = col_double(),
+  IP_U_20_29 = col_double(),
+  IP_U_30_39 = col_double(),
+  IP_U_40_49 = col_double(),
+  IP_U_50_59 = col_double(),
+  IP_U_60_69 = col_double(),
+  IP_U_70_79 = col_double(),
+  IP_U_80_89 = col_double(),
+  IP_U_90 = col_double(),
+  IC_YES = col_double(),
+  IC_Y_0_9 = col_double(),
+  IC_Y_10_19 = col_double(),
+  IC_Y_20_29 = col_double(),
+  IC_Y_30_39 = col_double(),
+  IC_Y_40_49 = col_double(),
+  IC_Y_50_59 = col_double(),
+  IC_Y_60_69 = col_double(),
+  IC_Y_70_79 = col_double(),
+  IC_Y_80_89 = col_double(),
+  IC_Y_90 = col_double(),
+  POS_AIAN = col_double(),
+  POS_ASN = col_double(),
+  POS_BLK = col_double(),
+  POS_WHT = col_double(),
+  POS_MLTOTH = col_double(),
+  POS_UNK = col_double(),
+  POS_E_HSP = col_double(),
+  POS_E_NHSP = col_double(),
+  POS_E_UNK = col_double(),
+  DTH_AIAN = col_double(),
+  DTH_ASN = col_double(),
+  DTH_BLK = col_double(),
+  DTH_WHT = col_double(),
+  DTH_MLTOTH = col_double(),
+  DTH_UNK = col_double(),
+  DTH_E_HSP = col_double(),
+  DTH_E_NHSP = col_double(),
+  DTH_E_UNK = col_double(),
+  POS_HC_Y = col_double(),
+  POS_HC_N = col_double(),
+  POS_HC_UNK = col_double(),
+  DTH_NEW = col_double(),
+  POS_NEW = col_double(),
+  NEG_NEW = col_double(),
+  TEST_NEW = col_double(),
+  DATE = col_double()
+)
+Writing to "Wisconsin input template"
+Writing to sheet "database"
+Created Drive file:
+  * US_WI06.07.2020cases&deaths: 14sFcf0SNCrsqYG25E_e1uT3VeHIfcZqw8gv4SE7cGuk
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "US_WI06.07.2020cases&deaths"
+Writing to sheet "cases&deaths"
+Deleting these sheet(s) from "US_WI06.07.2020cases&deaths":
+* Sheet1
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+Warnung: 403796 parsing failures.
+row      col               expected             actual                                                                           file
+  1 GEO      a double               State              'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 NAME     a double               WI                 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 LoadDttm no trailing characters /03/15 19:00:00+00 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 DATE     no trailing characters /03/15 14:00:00+00 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  2 GEO      a double               County             'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+... ........ ...................... .................. ..............................................................................
+See problems(...) for more details.
+
+cols(
+  .default = col_double(),
+  OBJECTID = col_double(),
+  GEOID = col_double(),
+  GEO = col_double(),
+  NAME = col_double(),
+  LoadDttm = col_double(),
+  NEGATIVE = col_double(),
+  POSITIVE = col_double(),
+  HOSP_YES = col_double(),
+  HOSP_NO = col_double(),
+  HOSP_UNK = col_double(),
+  POS_FEM = col_double(),
+  POS_MALE = col_double(),
+  POS_OTH = col_double(),
+  POS_0_9 = col_double(),
+  POS_10_19 = col_double(),
+  POS_20_29 = col_double(),
+  POS_30_39 = col_double(),
+  POS_40_49 = col_double(),
+  POS_50_59 = col_double(),
+  POS_60_69 = col_double(),
+  POS_70_79 = col_double(),
+  POS_80_89 = col_double(),
+  POS_90 = col_double(),
+  DEATHS = col_double(),
+  DTHS_FEM = col_double(),
+  DTHS_MALE = col_double(),
+  DTHS_OTH = col_double(),
+  DTHS_0_9 = col_double(),
+  DTHS_10_19 = col_double(),
+  DTHS_20_29 = col_double(),
+  DTHS_30_39 = col_double(),
+  DTHS_40_49 = col_double(),
+  DTHS_50_59 = col_double(),
+  DTHS_60_69 = col_double(),
+  DTHS_70_79 = col_double(),
+  DTHS_80_89 = col_double(),
+  DTHS_90 = col_double(),
+  IP_Y_0_9 = col_double(),
+  IP_Y_10_19 = col_double(),
+  IP_Y_20_29 = col_double(),
+  IP_Y_30_39 = col_double(),
+  IP_Y_40_49 = col_double(),
+  IP_Y_50_59 = col_double(),
+  IP_Y_60_69 = col_double(),
+  IP_Y_70_79 = col_double(),
+  IP_Y_80_89 = col_double(),
+  IP_Y_90 = col_double(),
+  IP_N_0_9 = col_double(),
+  IP_N_10_19 = col_double(),
+  IP_N_20_29 = col_double(),
+  IP_N_30_39 = col_double(),
+  IP_N_40_49 = col_double(),
+  IP_N_50_59 = col_double(),
+  IP_N_60_69 = col_double(),
+  IP_N_70_79 = col_double(),
+  IP_N_80_89 = col_double(),
+  IP_N_90 = col_double(),
+  IP_U_0_9 = col_double(),
+  IP_U_10_19 = col_double(),
+  IP_U_20_29 = col_double(),
+  IP_U_30_39 = col_double(),
+  IP_U_40_49 = col_double(),
+  IP_U_50_59 = col_double(),
+  IP_U_60_69 = col_double(),
+  IP_U_70_79 = col_double(),
+  IP_U_80_89 = col_double(),
+  IP_U_90 = col_double(),
+  IC_YES = col_double(),
+  IC_Y_0_9 = col_double(),
+  IC_Y_10_19 = col_double(),
+  IC_Y_20_29 = col_double(),
+  IC_Y_30_39 = col_double(),
+  IC_Y_40_49 = col_double(),
+  IC_Y_50_59 = col_double(),
+  IC_Y_60_69 = col_double(),
+  IC_Y_70_79 = col_double(),
+  IC_Y_80_89 = col_double(),
+  IC_Y_90 = col_double(),
+  POS_AIAN = col_double(),
+  POS_ASN = col_double(),
+  POS_BLK = col_double(),
+  POS_WHT = col_double(),
+  POS_MLTOTH = col_double(),
+  POS_UNK = col_double(),
+  POS_E_HSP = col_double(),
+  POS_E_NHSP = col_double(),
+  POS_E_UNK = col_double(),
+  DTH_AIAN = col_double(),
+  DTH_ASN = col_double(),
+  DTH_BLK = col_double(),
+  DTH_WHT = col_double(),
+  DTH_MLTOTH = col_double(),
+  DTH_UNK = col_double(),
+  DTH_E_HSP = col_double(),
+  DTH_E_NHSP = col_double(),
+  DTH_E_UNK = col_double(),
+  POS_HC_Y = col_double(),
+  POS_HC_N = col_double(),
+  POS_HC_UNK = col_double(),
+  DTH_NEW = col_double(),
+  POS_NEW = col_double(),
+  NEG_NEW = col_double(),
+  TEST_NEW = col_double(),
+  DATE = col_double()
+)
+Writing to "Wisconsin input template"
+Writing to sheet "database"
+Created Drive file:
+  * US_WI07.07.2020cases&deaths: 1i7zaPig9zx9pfGomTlcq36Ug6brkncSV1DQeZvY53NY
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "US_WI07.07.2020cases&deaths"
+Writing to sheet "cases&deaths"
+Deleting these sheet(s) from "US_WI07.07.2020cases&deaths":
+* Sheet1
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+Warnung: 408295 parsing failures.
+row      col               expected             actual                                                                           file
+  1 GEO      a double               State              'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 NAME     a double               WI                 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 LoadDttm no trailing characters /03/15 19:00:00+00 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 DATE     no trailing characters /03/15 14:00:00+00 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  2 GEO      a double               County             'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+... ........ ...................... .................. ..............................................................................
+See problems(...) for more details.
+
+cols(
+  .default = col_double(),
+  OBJECTID = col_double(),
+  GEOID = col_double(),
+  GEO = col_double(),
+  NAME = col_double(),
+  LoadDttm = col_double(),
+  NEGATIVE = col_double(),
+  POSITIVE = col_double(),
+  HOSP_YES = col_double(),
+  HOSP_NO = col_double(),
+  HOSP_UNK = col_double(),
+  POS_FEM = col_double(),
+  POS_MALE = col_double(),
+  POS_OTH = col_double(),
+  POS_0_9 = col_double(),
+  POS_10_19 = col_double(),
+  POS_20_29 = col_double(),
+  POS_30_39 = col_double(),
+  POS_40_49 = col_double(),
+  POS_50_59 = col_double(),
+  POS_60_69 = col_double(),
+  POS_70_79 = col_double(),
+  POS_80_89 = col_double(),
+  POS_90 = col_double(),
+  DEATHS = col_double(),
+  DTHS_FEM = col_double(),
+  DTHS_MALE = col_double(),
+  DTHS_OTH = col_double(),
+  DTHS_0_9 = col_double(),
+  DTHS_10_19 = col_double(),
+  DTHS_20_29 = col_double(),
+  DTHS_30_39 = col_double(),
+  DTHS_40_49 = col_double(),
+  DTHS_50_59 = col_double(),
+  DTHS_60_69 = col_double(),
+  DTHS_70_79 = col_double(),
+  DTHS_80_89 = col_double(),
+  DTHS_90 = col_double(),
+  IP_Y_0_9 = col_double(),
+  IP_Y_10_19 = col_double(),
+  IP_Y_20_29 = col_double(),
+  IP_Y_30_39 = col_double(),
+  IP_Y_40_49 = col_double(),
+  IP_Y_50_59 = col_double(),
+  IP_Y_60_69 = col_double(),
+  IP_Y_70_79 = col_double(),
+  IP_Y_80_89 = col_double(),
+  IP_Y_90 = col_double(),
+  IP_N_0_9 = col_double(),
+  IP_N_10_19 = col_double(),
+  IP_N_20_29 = col_double(),
+  IP_N_30_39 = col_double(),
+  IP_N_40_49 = col_double(),
+  IP_N_50_59 = col_double(),
+  IP_N_60_69 = col_double(),
+  IP_N_70_79 = col_double(),
+  IP_N_80_89 = col_double(),
+  IP_N_90 = col_double(),
+  IP_U_0_9 = col_double(),
+  IP_U_10_19 = col_double(),
+  IP_U_20_29 = col_double(),
+  IP_U_30_39 = col_double(),
+  IP_U_40_49 = col_double(),
+  IP_U_50_59 = col_double(),
+  IP_U_60_69 = col_double(),
+  IP_U_70_79 = col_double(),
+  IP_U_80_89 = col_double(),
+  IP_U_90 = col_double(),
+  IC_YES = col_double(),
+  IC_Y_0_9 = col_double(),
+  IC_Y_10_19 = col_double(),
+  IC_Y_20_29 = col_double(),
+  IC_Y_30_39 = col_double(),
+  IC_Y_40_49 = col_double(),
+  IC_Y_50_59 = col_double(),
+  IC_Y_60_69 = col_double(),
+  IC_Y_70_79 = col_double(),
+  IC_Y_80_89 = col_double(),
+  IC_Y_90 = col_double(),
+  POS_AIAN = col_double(),
+  POS_ASN = col_double(),
+  POS_BLK = col_double(),
+  POS_WHT = col_double(),
+  POS_MLTOTH = col_double(),
+  POS_UNK = col_double(),
+  POS_E_HSP = col_double(),
+  POS_E_NHSP = col_double(),
+  POS_E_UNK = col_double(),
+  DTH_AIAN = col_double(),
+  DTH_ASN = col_double(),
+  DTH_BLK = col_double(),
+  DTH_WHT = col_double(),
+  DTH_MLTOTH = col_double(),
+  DTH_UNK = col_double(),
+  DTH_E_HSP = col_double(),
+  DTH_E_NHSP = col_double(),
+  DTH_E_UNK = col_double(),
+  POS_HC_Y = col_double(),
+  POS_HC_N = col_double(),
+  POS_HC_UNK = col_double(),
+  DTH_NEW = col_double(),
+  POS_NEW = col_double(),
+  NEG_NEW = col_double(),
+  TEST_NEW = col_double(),
+  DATE = col_double()
+)
+Writing to "Wisconsin input template"
+Writing to sheet "database"
+Created Drive file:
+  * US_WI08.07.2020cases&deaths: 1ISTF2tfiaK8Wi81gXKD51TokWrUGiEtilWYw8CmyDpo
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "US_WI08.07.2020cases&deaths"
+Writing to sheet "cases&deaths"
+Deleting these sheet(s) from "US_WI08.07.2020cases&deaths":
+* Sheet1
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+Warnung: 412794 parsing failures.
+row      col               expected             actual                                                                           file
+  1 GEO      a double               State              'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 NAME     a double               WI                 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 LoadDttm no trailing characters /03/15 19:00:00+00 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 DATE     no trailing characters /03/15 14:00:00+00 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  2 GEO      a double               County             'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+... ........ ...................... .................. ..............................................................................
+See problems(...) for more details.
+
+cols(
+  .default = col_double(),
+  OBJECTID = col_double(),
+  GEOID = col_double(),
+  GEO = col_double(),
+  NAME = col_double(),
+  LoadDttm = col_double(),
+  NEGATIVE = col_double(),
+  POSITIVE = col_double(),
+  HOSP_YES = col_double(),
+  HOSP_NO = col_double(),
+  HOSP_UNK = col_double(),
+  POS_FEM = col_double(),
+  POS_MALE = col_double(),
+  POS_OTH = col_double(),
+  POS_0_9 = col_double(),
+  POS_10_19 = col_double(),
+  POS_20_29 = col_double(),
+  POS_30_39 = col_double(),
+  POS_40_49 = col_double(),
+  POS_50_59 = col_double(),
+  POS_60_69 = col_double(),
+  POS_70_79 = col_double(),
+  POS_80_89 = col_double(),
+  POS_90 = col_double(),
+  DEATHS = col_double(),
+  DTHS_FEM = col_double(),
+  DTHS_MALE = col_double(),
+  DTHS_OTH = col_double(),
+  DTHS_0_9 = col_double(),
+  DTHS_10_19 = col_double(),
+  DTHS_20_29 = col_double(),
+  DTHS_30_39 = col_double(),
+  DTHS_40_49 = col_double(),
+  DTHS_50_59 = col_double(),
+  DTHS_60_69 = col_double(),
+  DTHS_70_79 = col_double(),
+  DTHS_80_89 = col_double(),
+  DTHS_90 = col_double(),
+  IP_Y_0_9 = col_double(),
+  IP_Y_10_19 = col_double(),
+  IP_Y_20_29 = col_double(),
+  IP_Y_30_39 = col_double(),
+  IP_Y_40_49 = col_double(),
+  IP_Y_50_59 = col_double(),
+  IP_Y_60_69 = col_double(),
+  IP_Y_70_79 = col_double(),
+  IP_Y_80_89 = col_double(),
+  IP_Y_90 = col_double(),
+  IP_N_0_9 = col_double(),
+  IP_N_10_19 = col_double(),
+  IP_N_20_29 = col_double(),
+  IP_N_30_39 = col_double(),
+  IP_N_40_49 = col_double(),
+  IP_N_50_59 = col_double(),
+  IP_N_60_69 = col_double(),
+  IP_N_70_79 = col_double(),
+  IP_N_80_89 = col_double(),
+  IP_N_90 = col_double(),
+  IP_U_0_9 = col_double(),
+  IP_U_10_19 = col_double(),
+  IP_U_20_29 = col_double(),
+  IP_U_30_39 = col_double(),
+  IP_U_40_49 = col_double(),
+  IP_U_50_59 = col_double(),
+  IP_U_60_69 = col_double(),
+  IP_U_70_79 = col_double(),
+  IP_U_80_89 = col_double(),
+  IP_U_90 = col_double(),
+  IC_YES = col_double(),
+  IC_Y_0_9 = col_double(),
+  IC_Y_10_19 = col_double(),
+  IC_Y_20_29 = col_double(),
+  IC_Y_30_39 = col_double(),
+  IC_Y_40_49 = col_double(),
+  IC_Y_50_59 = col_double(),
+  IC_Y_60_69 = col_double(),
+  IC_Y_70_79 = col_double(),
+  IC_Y_80_89 = col_double(),
+  IC_Y_90 = col_double(),
+  POS_AIAN = col_double(),
+  POS_ASN = col_double(),
+  POS_BLK = col_double(),
+  POS_WHT = col_double(),
+  POS_MLTOTH = col_double(),
+  POS_UNK = col_double(),
+  POS_E_HSP = col_double(),
+  POS_E_NHSP = col_double(),
+  POS_E_UNK = col_double(),
+  DTH_AIAN = col_double(),
+  DTH_ASN = col_double(),
+  DTH_BLK = col_double(),
+  DTH_WHT = col_double(),
+  DTH_MLTOTH = col_double(),
+  DTH_UNK = col_double(),
+  DTH_E_HSP = col_double(),
+  DTH_E_NHSP = col_double(),
+  DTH_E_UNK = col_double(),
+  POS_HC_Y = col_double(),
+  POS_HC_N = col_double(),
+  POS_HC_UNK = col_double(),
+  DTH_NEW = col_double(),
+  POS_NEW = col_double(),
+  NEG_NEW = col_double(),
+  TEST_NEW = col_double(),
+  DATE = col_double()
+)
+Writing to "Wisconsin input template"
+Writing to sheet "database"
+Created Drive file:
+  * US_WI09.07.2020cases&deaths: 1XgrdbxkhDum4YBwBFYiqWqpOMzM9jmZVx3SzOTh0ZIo
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "US_WI09.07.2020cases&deaths"
+Writing to sheet "cases&deaths"
+Deleting these sheet(s) from "US_WI09.07.2020cases&deaths":
+* Sheet1
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+Warnung: 417293 parsing failures.
+row      col               expected             actual                                                                           file
+  1 GEO      a double               State              'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 NAME     a double               WI                 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 LoadDttm no trailing characters /03/15 19:00:00+00 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 DATE     no trailing characters /03/15 14:00:00+00 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  2 GEO      a double               County             'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+... ........ ...................... .................. ..............................................................................
+See problems(...) for more details.
+
+cols(
+  .default = col_double(),
+  OBJECTID = col_double(),
+  GEOID = col_double(),
+  GEO = col_double(),
+  NAME = col_double(),
+  LoadDttm = col_double(),
+  NEGATIVE = col_double(),
+  POSITIVE = col_double(),
+  HOSP_YES = col_double(),
+  HOSP_NO = col_double(),
+  HOSP_UNK = col_double(),
+  POS_FEM = col_double(),
+  POS_MALE = col_double(),
+  POS_OTH = col_double(),
+  POS_0_9 = col_double(),
+  POS_10_19 = col_double(),
+  POS_20_29 = col_double(),
+  POS_30_39 = col_double(),
+  POS_40_49 = col_double(),
+  POS_50_59 = col_double(),
+  POS_60_69 = col_double(),
+  POS_70_79 = col_double(),
+  POS_80_89 = col_double(),
+  POS_90 = col_double(),
+  DEATHS = col_double(),
+  DTHS_FEM = col_double(),
+  DTHS_MALE = col_double(),
+  DTHS_OTH = col_double(),
+  DTHS_0_9 = col_double(),
+  DTHS_10_19 = col_double(),
+  DTHS_20_29 = col_double(),
+  DTHS_30_39 = col_double(),
+  DTHS_40_49 = col_double(),
+  DTHS_50_59 = col_double(),
+  DTHS_60_69 = col_double(),
+  DTHS_70_79 = col_double(),
+  DTHS_80_89 = col_double(),
+  DTHS_90 = col_double(),
+  IP_Y_0_9 = col_double(),
+  IP_Y_10_19 = col_double(),
+  IP_Y_20_29 = col_double(),
+  IP_Y_30_39 = col_double(),
+  IP_Y_40_49 = col_double(),
+  IP_Y_50_59 = col_double(),
+  IP_Y_60_69 = col_double(),
+  IP_Y_70_79 = col_double(),
+  IP_Y_80_89 = col_double(),
+  IP_Y_90 = col_double(),
+  IP_N_0_9 = col_double(),
+  IP_N_10_19 = col_double(),
+  IP_N_20_29 = col_double(),
+  IP_N_30_39 = col_double(),
+  IP_N_40_49 = col_double(),
+  IP_N_50_59 = col_double(),
+  IP_N_60_69 = col_double(),
+  IP_N_70_79 = col_double(),
+  IP_N_80_89 = col_double(),
+  IP_N_90 = col_double(),
+  IP_U_0_9 = col_double(),
+  IP_U_10_19 = col_double(),
+  IP_U_20_29 = col_double(),
+  IP_U_30_39 = col_double(),
+  IP_U_40_49 = col_double(),
+  IP_U_50_59 = col_double(),
+  IP_U_60_69 = col_double(),
+  IP_U_70_79 = col_double(),
+  IP_U_80_89 = col_double(),
+  IP_U_90 = col_double(),
+  IC_YES = col_double(),
+  IC_Y_0_9 = col_double(),
+  IC_Y_10_19 = col_double(),
+  IC_Y_20_29 = col_double(),
+  IC_Y_30_39 = col_double(),
+  IC_Y_40_49 = col_double(),
+  IC_Y_50_59 = col_double(),
+  IC_Y_60_69 = col_double(),
+  IC_Y_70_79 = col_double(),
+  IC_Y_80_89 = col_double(),
+  IC_Y_90 = col_double(),
+  POS_AIAN = col_double(),
+  POS_ASN = col_double(),
+  POS_BLK = col_double(),
+  POS_WHT = col_double(),
+  POS_MLTOTH = col_double(),
+  POS_UNK = col_double(),
+  POS_E_HSP = col_double(),
+  POS_E_NHSP = col_double(),
+  POS_E_UNK = col_double(),
+  DTH_AIAN = col_double(),
+  DTH_ASN = col_double(),
+  DTH_BLK = col_double(),
+  DTH_WHT = col_double(),
+  DTH_MLTOTH = col_double(),
+  DTH_UNK = col_double(),
+  DTH_E_HSP = col_double(),
+  DTH_E_NHSP = col_double(),
+  DTH_E_UNK = col_double(),
+  POS_HC_Y = col_double(),
+  POS_HC_N = col_double(),
+  POS_HC_UNK = col_double(),
+  DTH_NEW = col_double(),
+  POS_NEW = col_double(),
+  NEG_NEW = col_double(),
+  TEST_NEW = col_double(),
+  DATE = col_double()
+)
+Writing to "Wisconsin input template"
+Writing to sheet "database"
+Created Drive file:
+  * US_WI10.07.2020cases&deaths: 1Ou7ykoUQDiGNZ970_Xay82c-AgXJGPSU6QNe4WHoc_w
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "US_WI10.07.2020cases&deaths"
+Writing to sheet "cases&deaths"
+Deleting these sheet(s) from "US_WI10.07.2020cases&deaths":
+* Sheet1
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+Warnung: 421792 parsing failures.
+row      col               expected             actual                                                                           file
+  1 GEO      a double               State              'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 NAME     a double               WI                 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 LoadDttm no trailing characters /03/15 19:00:00+00 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 DATE     no trailing characters /03/15 14:00:00+00 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  2 GEO      a double               County             'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+... ........ ...................... .................. ..............................................................................
+See problems(...) for more details.
+
+cols(
+  .default = col_double(),
+  OBJECTID = col_double(),
+  GEOID = col_double(),
+  GEO = col_double(),
+  NAME = col_double(),
+  LoadDttm = col_double(),
+  NEGATIVE = col_double(),
+  POSITIVE = col_double(),
+  HOSP_YES = col_double(),
+  HOSP_NO = col_double(),
+  HOSP_UNK = col_double(),
+  POS_FEM = col_double(),
+  POS_MALE = col_double(),
+  POS_OTH = col_double(),
+  POS_0_9 = col_double(),
+  POS_10_19 = col_double(),
+  POS_20_29 = col_double(),
+  POS_30_39 = col_double(),
+  POS_40_49 = col_double(),
+  POS_50_59 = col_double(),
+  POS_60_69 = col_double(),
+  POS_70_79 = col_double(),
+  POS_80_89 = col_double(),
+  POS_90 = col_double(),
+  DEATHS = col_double(),
+  DTHS_FEM = col_double(),
+  DTHS_MALE = col_double(),
+  DTHS_OTH = col_double(),
+  DTHS_0_9 = col_double(),
+  DTHS_10_19 = col_double(),
+  DTHS_20_29 = col_double(),
+  DTHS_30_39 = col_double(),
+  DTHS_40_49 = col_double(),
+  DTHS_50_59 = col_double(),
+  DTHS_60_69 = col_double(),
+  DTHS_70_79 = col_double(),
+  DTHS_80_89 = col_double(),
+  DTHS_90 = col_double(),
+  IP_Y_0_9 = col_double(),
+  IP_Y_10_19 = col_double(),
+  IP_Y_20_29 = col_double(),
+  IP_Y_30_39 = col_double(),
+  IP_Y_40_49 = col_double(),
+  IP_Y_50_59 = col_double(),
+  IP_Y_60_69 = col_double(),
+  IP_Y_70_79 = col_double(),
+  IP_Y_80_89 = col_double(),
+  IP_Y_90 = col_double(),
+  IP_N_0_9 = col_double(),
+  IP_N_10_19 = col_double(),
+  IP_N_20_29 = col_double(),
+  IP_N_30_39 = col_double(),
+  IP_N_40_49 = col_double(),
+  IP_N_50_59 = col_double(),
+  IP_N_60_69 = col_double(),
+  IP_N_70_79 = col_double(),
+  IP_N_80_89 = col_double(),
+  IP_N_90 = col_double(),
+  IP_U_0_9 = col_double(),
+  IP_U_10_19 = col_double(),
+  IP_U_20_29 = col_double(),
+  IP_U_30_39 = col_double(),
+  IP_U_40_49 = col_double(),
+  IP_U_50_59 = col_double(),
+  IP_U_60_69 = col_double(),
+  IP_U_70_79 = col_double(),
+  IP_U_80_89 = col_double(),
+  IP_U_90 = col_double(),
+  IC_YES = col_double(),
+  IC_Y_0_9 = col_double(),
+  IC_Y_10_19 = col_double(),
+  IC_Y_20_29 = col_double(),
+  IC_Y_30_39 = col_double(),
+  IC_Y_40_49 = col_double(),
+  IC_Y_50_59 = col_double(),
+  IC_Y_60_69 = col_double(),
+  IC_Y_70_79 = col_double(),
+  IC_Y_80_89 = col_double(),
+  IC_Y_90 = col_double(),
+  POS_AIAN = col_double(),
+  POS_ASN = col_double(),
+  POS_BLK = col_double(),
+  POS_WHT = col_double(),
+  POS_MLTOTH = col_double(),
+  POS_UNK = col_double(),
+  POS_E_HSP = col_double(),
+  POS_E_NHSP = col_double(),
+  POS_E_UNK = col_double(),
+  DTH_AIAN = col_double(),
+  DTH_ASN = col_double(),
+  DTH_BLK = col_double(),
+  DTH_WHT = col_double(),
+  DTH_MLTOTH = col_double(),
+  DTH_UNK = col_double(),
+  DTH_E_HSP = col_double(),
+  DTH_E_NHSP = col_double(),
+  DTH_E_UNK = col_double(),
+  POS_HC_Y = col_double(),
+  POS_HC_N = col_double(),
+  POS_HC_UNK = col_double(),
+  DTH_NEW = col_double(),
+  POS_NEW = col_double(),
+  NEG_NEW = col_double(),
+  TEST_NEW = col_double(),
+  DATE = col_double()
+)
+Writing to "Wisconsin input template"
+Writing to sheet "database"
+Created Drive file:
+  * US_WI11.07.2020cases&deaths: 1aqoJFCVUZggNfWPpw26JqUSudHHB3cNrw7xZPHEVOXI
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "US_WI11.07.2020cases&deaths"
+Writing to sheet "cases&deaths"
+Deleting these sheet(s) from "US_WI11.07.2020cases&deaths":
+* Sheet1
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+Warnung: 426291 parsing failures.
+row      col               expected             actual                                                                           file
+  1 GEO      a double               State              'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 NAME     a double               WI                 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 LoadDttm no trailing characters /03/15 19:00:00+00 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 DATE     no trailing characters /03/15 14:00:00+00 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  2 GEO      a double               County             'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+... ........ ...................... .................. ..............................................................................
+See problems(...) for more details.
+
+cols(
+  .default = col_double(),
+  OBJECTID = col_double(),
+  GEOID = col_double(),
+  GEO = col_double(),
+  NAME = col_double(),
+  LoadDttm = col_double(),
+  NEGATIVE = col_double(),
+  POSITIVE = col_double(),
+  HOSP_YES = col_double(),
+  HOSP_NO = col_double(),
+  HOSP_UNK = col_double(),
+  POS_FEM = col_double(),
+  POS_MALE = col_double(),
+  POS_OTH = col_double(),
+  POS_0_9 = col_double(),
+  POS_10_19 = col_double(),
+  POS_20_29 = col_double(),
+  POS_30_39 = col_double(),
+  POS_40_49 = col_double(),
+  POS_50_59 = col_double(),
+  POS_60_69 = col_double(),
+  POS_70_79 = col_double(),
+  POS_80_89 = col_double(),
+  POS_90 = col_double(),
+  DEATHS = col_double(),
+  DTHS_FEM = col_double(),
+  DTHS_MALE = col_double(),
+  DTHS_OTH = col_double(),
+  DTHS_0_9 = col_double(),
+  DTHS_10_19 = col_double(),
+  DTHS_20_29 = col_double(),
+  DTHS_30_39 = col_double(),
+  DTHS_40_49 = col_double(),
+  DTHS_50_59 = col_double(),
+  DTHS_60_69 = col_double(),
+  DTHS_70_79 = col_double(),
+  DTHS_80_89 = col_double(),
+  DTHS_90 = col_double(),
+  IP_Y_0_9 = col_double(),
+  IP_Y_10_19 = col_double(),
+  IP_Y_20_29 = col_double(),
+  IP_Y_30_39 = col_double(),
+  IP_Y_40_49 = col_double(),
+  IP_Y_50_59 = col_double(),
+  IP_Y_60_69 = col_double(),
+  IP_Y_70_79 = col_double(),
+  IP_Y_80_89 = col_double(),
+  IP_Y_90 = col_double(),
+  IP_N_0_9 = col_double(),
+  IP_N_10_19 = col_double(),
+  IP_N_20_29 = col_double(),
+  IP_N_30_39 = col_double(),
+  IP_N_40_49 = col_double(),
+  IP_N_50_59 = col_double(),
+  IP_N_60_69 = col_double(),
+  IP_N_70_79 = col_double(),
+  IP_N_80_89 = col_double(),
+  IP_N_90 = col_double(),
+  IP_U_0_9 = col_double(),
+  IP_U_10_19 = col_double(),
+  IP_U_20_29 = col_double(),
+  IP_U_30_39 = col_double(),
+  IP_U_40_49 = col_double(),
+  IP_U_50_59 = col_double(),
+  IP_U_60_69 = col_double(),
+  IP_U_70_79 = col_double(),
+  IP_U_80_89 = col_double(),
+  IP_U_90 = col_double(),
+  IC_YES = col_double(),
+  IC_Y_0_9 = col_double(),
+  IC_Y_10_19 = col_double(),
+  IC_Y_20_29 = col_double(),
+  IC_Y_30_39 = col_double(),
+  IC_Y_40_49 = col_double(),
+  IC_Y_50_59 = col_double(),
+  IC_Y_60_69 = col_double(),
+  IC_Y_70_79 = col_double(),
+  IC_Y_80_89 = col_double(),
+  IC_Y_90 = col_double(),
+  POS_AIAN = col_double(),
+  POS_ASN = col_double(),
+  POS_BLK = col_double(),
+  POS_WHT = col_double(),
+  POS_MLTOTH = col_double(),
+  POS_UNK = col_double(),
+  POS_E_HSP = col_double(),
+  POS_E_NHSP = col_double(),
+  POS_E_UNK = col_double(),
+  DTH_AIAN = col_double(),
+  DTH_ASN = col_double(),
+  DTH_BLK = col_double(),
+  DTH_WHT = col_double(),
+  DTH_MLTOTH = col_double(),
+  DTH_UNK = col_double(),
+  DTH_E_HSP = col_double(),
+  DTH_E_NHSP = col_double(),
+  DTH_E_UNK = col_double(),
+  POS_HC_Y = col_double(),
+  POS_HC_N = col_double(),
+  POS_HC_UNK = col_double(),
+  DTH_NEW = col_double(),
+  POS_NEW = col_double(),
+  NEG_NEW = col_double(),
+  TEST_NEW = col_double(),
+  DATE = col_double()
+)
+Writing to "Wisconsin input template"
+Writing to sheet "database"
+Created Drive file:
+  * US_WI12.07.2020cases&deaths: 1GHvCi6p6alDYIPvIReESO_Ru8YncLnreDmFoSJ4MO-o
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "US_WI12.07.2020cases&deaths"
+Writing to sheet "cases&deaths"
+Deleting these sheet(s) from "US_WI12.07.2020cases&deaths":
+* Sheet1
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+Warnung: 430790 parsing failures.
+row      col               expected             actual                                                                           file
+  1 GEO      a double               State              'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 NAME     a double               WI                 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 LoadDttm no trailing characters /03/15 19:00:00+00 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 DATE     no trailing characters /03/15 14:00:00+00 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  2 GEO      a double               County             'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+... ........ ...................... .................. ..............................................................................
+See problems(...) for more details.
+
+cols(
+  .default = col_double(),
+  OBJECTID = col_double(),
+  GEOID = col_double(),
+  GEO = col_double(),
+  NAME = col_double(),
+  LoadDttm = col_double(),
+  NEGATIVE = col_double(),
+  POSITIVE = col_double(),
+  HOSP_YES = col_double(),
+  HOSP_NO = col_double(),
+  HOSP_UNK = col_double(),
+  POS_FEM = col_double(),
+  POS_MALE = col_double(),
+  POS_OTH = col_double(),
+  POS_0_9 = col_double(),
+  POS_10_19 = col_double(),
+  POS_20_29 = col_double(),
+  POS_30_39 = col_double(),
+  POS_40_49 = col_double(),
+  POS_50_59 = col_double(),
+  POS_60_69 = col_double(),
+  POS_70_79 = col_double(),
+  POS_80_89 = col_double(),
+  POS_90 = col_double(),
+  DEATHS = col_double(),
+  DTHS_FEM = col_double(),
+  DTHS_MALE = col_double(),
+  DTHS_OTH = col_double(),
+  DTHS_0_9 = col_double(),
+  DTHS_10_19 = col_double(),
+  DTHS_20_29 = col_double(),
+  DTHS_30_39 = col_double(),
+  DTHS_40_49 = col_double(),
+  DTHS_50_59 = col_double(),
+  DTHS_60_69 = col_double(),
+  DTHS_70_79 = col_double(),
+  DTHS_80_89 = col_double(),
+  DTHS_90 = col_double(),
+  IP_Y_0_9 = col_double(),
+  IP_Y_10_19 = col_double(),
+  IP_Y_20_29 = col_double(),
+  IP_Y_30_39 = col_double(),
+  IP_Y_40_49 = col_double(),
+  IP_Y_50_59 = col_double(),
+  IP_Y_60_69 = col_double(),
+  IP_Y_70_79 = col_double(),
+  IP_Y_80_89 = col_double(),
+  IP_Y_90 = col_double(),
+  IP_N_0_9 = col_double(),
+  IP_N_10_19 = col_double(),
+  IP_N_20_29 = col_double(),
+  IP_N_30_39 = col_double(),
+  IP_N_40_49 = col_double(),
+  IP_N_50_59 = col_double(),
+  IP_N_60_69 = col_double(),
+  IP_N_70_79 = col_double(),
+  IP_N_80_89 = col_double(),
+  IP_N_90 = col_double(),
+  IP_U_0_9 = col_double(),
+  IP_U_10_19 = col_double(),
+  IP_U_20_29 = col_double(),
+  IP_U_30_39 = col_double(),
+  IP_U_40_49 = col_double(),
+  IP_U_50_59 = col_double(),
+  IP_U_60_69 = col_double(),
+  IP_U_70_79 = col_double(),
+  IP_U_80_89 = col_double(),
+  IP_U_90 = col_double(),
+  IC_YES = col_double(),
+  IC_Y_0_9 = col_double(),
+  IC_Y_10_19 = col_double(),
+  IC_Y_20_29 = col_double(),
+  IC_Y_30_39 = col_double(),
+  IC_Y_40_49 = col_double(),
+  IC_Y_50_59 = col_double(),
+  IC_Y_60_69 = col_double(),
+  IC_Y_70_79 = col_double(),
+  IC_Y_80_89 = col_double(),
+  IC_Y_90 = col_double(),
+  POS_AIAN = col_double(),
+  POS_ASN = col_double(),
+  POS_BLK = col_double(),
+  POS_WHT = col_double(),
+  POS_MLTOTH = col_double(),
+  POS_UNK = col_double(),
+  POS_E_HSP = col_double(),
+  POS_E_NHSP = col_double(),
+  POS_E_UNK = col_double(),
+  DTH_AIAN = col_double(),
+  DTH_ASN = col_double(),
+  DTH_BLK = col_double(),
+  DTH_WHT = col_double(),
+  DTH_MLTOTH = col_double(),
+  DTH_UNK = col_double(),
+  DTH_E_HSP = col_double(),
+  DTH_E_NHSP = col_double(),
+  DTH_E_UNK = col_double(),
+  POS_HC_Y = col_double(),
+  POS_HC_N = col_double(),
+  POS_HC_UNK = col_double(),
+  DTH_NEW = col_double(),
+  POS_NEW = col_double(),
+  NEG_NEW = col_double(),
+  TEST_NEW = col_double(),
+  DATE = col_double()
+)
+Writing to "Wisconsin input template"
+Writing to sheet "database"
+Created Drive file:
+  * US_WI13.07.2020cases&deaths: 1WdlK0re5569CVeQTC_vNsRTPsUKvkgwgYITiBrIxB6w
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "US_WI13.07.2020cases&deaths"
+Writing to sheet "cases&deaths"
+Deleting these sheet(s) from "US_WI13.07.2020cases&deaths":
+* Sheet1
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+Warnung: 435289 parsing failures.
+row      col               expected             actual                                                                           file
+  1 GEO      a double               State              'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 NAME     a double               WI                 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 LoadDttm no trailing characters /03/15 19:00:00+00 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 DATE     no trailing characters /03/15 14:00:00+00 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  2 GEO      a double               County             'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+... ........ ...................... .................. ..............................................................................
+See problems(...) for more details.
+
+cols(
+  .default = col_double(),
+  OBJECTID = col_double(),
+  GEOID = col_double(),
+  GEO = col_double(),
+  NAME = col_double(),
+  LoadDttm = col_double(),
+  NEGATIVE = col_double(),
+  POSITIVE = col_double(),
+  HOSP_YES = col_double(),
+  HOSP_NO = col_double(),
+  HOSP_UNK = col_double(),
+  POS_FEM = col_double(),
+  POS_MALE = col_double(),
+  POS_OTH = col_double(),
+  POS_0_9 = col_double(),
+  POS_10_19 = col_double(),
+  POS_20_29 = col_double(),
+  POS_30_39 = col_double(),
+  POS_40_49 = col_double(),
+  POS_50_59 = col_double(),
+  POS_60_69 = col_double(),
+  POS_70_79 = col_double(),
+  POS_80_89 = col_double(),
+  POS_90 = col_double(),
+  DEATHS = col_double(),
+  DTHS_FEM = col_double(),
+  DTHS_MALE = col_double(),
+  DTHS_OTH = col_double(),
+  DTHS_0_9 = col_double(),
+  DTHS_10_19 = col_double(),
+  DTHS_20_29 = col_double(),
+  DTHS_30_39 = col_double(),
+  DTHS_40_49 = col_double(),
+  DTHS_50_59 = col_double(),
+  DTHS_60_69 = col_double(),
+  DTHS_70_79 = col_double(),
+  DTHS_80_89 = col_double(),
+  DTHS_90 = col_double(),
+  IP_Y_0_9 = col_double(),
+  IP_Y_10_19 = col_double(),
+  IP_Y_20_29 = col_double(),
+  IP_Y_30_39 = col_double(),
+  IP_Y_40_49 = col_double(),
+  IP_Y_50_59 = col_double(),
+  IP_Y_60_69 = col_double(),
+  IP_Y_70_79 = col_double(),
+  IP_Y_80_89 = col_double(),
+  IP_Y_90 = col_double(),
+  IP_N_0_9 = col_double(),
+  IP_N_10_19 = col_double(),
+  IP_N_20_29 = col_double(),
+  IP_N_30_39 = col_double(),
+  IP_N_40_49 = col_double(),
+  IP_N_50_59 = col_double(),
+  IP_N_60_69 = col_double(),
+  IP_N_70_79 = col_double(),
+  IP_N_80_89 = col_double(),
+  IP_N_90 = col_double(),
+  IP_U_0_9 = col_double(),
+  IP_U_10_19 = col_double(),
+  IP_U_20_29 = col_double(),
+  IP_U_30_39 = col_double(),
+  IP_U_40_49 = col_double(),
+  IP_U_50_59 = col_double(),
+  IP_U_60_69 = col_double(),
+  IP_U_70_79 = col_double(),
+  IP_U_80_89 = col_double(),
+  IP_U_90 = col_double(),
+  IC_YES = col_double(),
+  IC_Y_0_9 = col_double(),
+  IC_Y_10_19 = col_double(),
+  IC_Y_20_29 = col_double(),
+  IC_Y_30_39 = col_double(),
+  IC_Y_40_49 = col_double(),
+  IC_Y_50_59 = col_double(),
+  IC_Y_60_69 = col_double(),
+  IC_Y_70_79 = col_double(),
+  IC_Y_80_89 = col_double(),
+  IC_Y_90 = col_double(),
+  POS_AIAN = col_double(),
+  POS_ASN = col_double(),
+  POS_BLK = col_double(),
+  POS_WHT = col_double(),
+  POS_MLTOTH = col_double(),
+  POS_UNK = col_double(),
+  POS_E_HSP = col_double(),
+  POS_E_NHSP = col_double(),
+  POS_E_UNK = col_double(),
+  DTH_AIAN = col_double(),
+  DTH_ASN = col_double(),
+  DTH_BLK = col_double(),
+  DTH_WHT = col_double(),
+  DTH_MLTOTH = col_double(),
+  DTH_UNK = col_double(),
+  DTH_E_HSP = col_double(),
+  DTH_E_NHSP = col_double(),
+  DTH_E_UNK = col_double(),
+  POS_HC_Y = col_double(),
+  POS_HC_N = col_double(),
+  POS_HC_UNK = col_double(),
+  DTH_NEW = col_double(),
+  POS_NEW = col_double(),
+  NEG_NEW = col_double(),
+  TEST_NEW = col_double(),
+  DATE = col_double()
+)
+Writing to "Wisconsin input template"
+Writing to sheet "database"
+Created Drive file:
+  * US_WI14.07.2020cases&deaths: 1_LIn2KecQrlgyEftyc-_RHsaltcol6z2t3H3jmOTO6k
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "US_WI14.07.2020cases&deaths"
+Writing to sheet "cases&deaths"
+Deleting these sheet(s) from "US_WI14.07.2020cases&deaths":
+* Sheet1
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.3     v dplyr   1.0.0
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+Warnung: 439788 parsing failures.
+row      col               expected             actual                                                                           file
+  1 GEO      a double               State              'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 NAME     a double               WI                 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 LoadDttm no trailing characters /03/15 19:00:00+00 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 DATE     no trailing characters /03/15 14:00:00+00 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  2 GEO      a double               County             'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+... ........ ...................... .................. ..............................................................................
+See problems(...) for more details.
+
+cols(
+  .default = col_double(),
+  OBJECTID = col_double(),
+  GEOID = col_double(),
+  GEO = col_double(),
+  NAME = col_double(),
+  LoadDttm = col_double(),
+  NEGATIVE = col_double(),
+  POSITIVE = col_double(),
+  HOSP_YES = col_double(),
+  HOSP_NO = col_double(),
+  HOSP_UNK = col_double(),
+  POS_FEM = col_double(),
+  POS_MALE = col_double(),
+  POS_OTH = col_double(),
+  POS_0_9 = col_double(),
+  POS_10_19 = col_double(),
+  POS_20_29 = col_double(),
+  POS_30_39 = col_double(),
+  POS_40_49 = col_double(),
+  POS_50_59 = col_double(),
+  POS_60_69 = col_double(),
+  POS_70_79 = col_double(),
+  POS_80_89 = col_double(),
+  POS_90 = col_double(),
+  DEATHS = col_double(),
+  DTHS_FEM = col_double(),
+  DTHS_MALE = col_double(),
+  DTHS_OTH = col_double(),
+  DTHS_0_9 = col_double(),
+  DTHS_10_19 = col_double(),
+  DTHS_20_29 = col_double(),
+  DTHS_30_39 = col_double(),
+  DTHS_40_49 = col_double(),
+  DTHS_50_59 = col_double(),
+  DTHS_60_69 = col_double(),
+  DTHS_70_79 = col_double(),
+  DTHS_80_89 = col_double(),
+  DTHS_90 = col_double(),
+  IP_Y_0_9 = col_double(),
+  IP_Y_10_19 = col_double(),
+  IP_Y_20_29 = col_double(),
+  IP_Y_30_39 = col_double(),
+  IP_Y_40_49 = col_double(),
+  IP_Y_50_59 = col_double(),
+  IP_Y_60_69 = col_double(),
+  IP_Y_70_79 = col_double(),
+  IP_Y_80_89 = col_double(),
+  IP_Y_90 = col_double(),
+  IP_N_0_9 = col_double(),
+  IP_N_10_19 = col_double(),
+  IP_N_20_29 = col_double(),
+  IP_N_30_39 = col_double(),
+  IP_N_40_49 = col_double(),
+  IP_N_50_59 = col_double(),
+  IP_N_60_69 = col_double(),
+  IP_N_70_79 = col_double(),
+  IP_N_80_89 = col_double(),
+  IP_N_90 = col_double(),
+  IP_U_0_9 = col_double(),
+  IP_U_10_19 = col_double(),
+  IP_U_20_29 = col_double(),
+  IP_U_30_39 = col_double(),
+  IP_U_40_49 = col_double(),
+  IP_U_50_59 = col_double(),
+  IP_U_60_69 = col_double(),
+  IP_U_70_79 = col_double(),
+  IP_U_80_89 = col_double(),
+  IP_U_90 = col_double(),
+  IC_YES = col_double(),
+  IC_Y_0_9 = col_double(),
+  IC_Y_10_19 = col_double(),
+  IC_Y_20_29 = col_double(),
+  IC_Y_30_39 = col_double(),
+  IC_Y_40_49 = col_double(),
+  IC_Y_50_59 = col_double(),
+  IC_Y_60_69 = col_double(),
+  IC_Y_70_79 = col_double(),
+  IC_Y_80_89 = col_double(),
+  IC_Y_90 = col_double(),
+  POS_AIAN = col_double(),
+  POS_ASN = col_double(),
+  POS_BLK = col_double(),
+  POS_WHT = col_double(),
+  POS_MLTOTH = col_double(),
+  POS_UNK = col_double(),
+  POS_E_HSP = col_double(),
+  POS_E_NHSP = col_double(),
+  POS_E_UNK = col_double(),
+  DTH_AIAN = col_double(),
+  DTH_ASN = col_double(),
+  DTH_BLK = col_double(),
+  DTH_WHT = col_double(),
+  DTH_MLTOTH = col_double(),
+  DTH_UNK = col_double(),
+  DTH_E_HSP = col_double(),
+  DTH_E_NHSP = col_double(),
+  DTH_E_UNK = col_double(),
+  POS_HC_Y = col_double(),
+  POS_HC_N = col_double(),
+  POS_HC_UNK = col_double(),
+  DTH_NEW = col_double(),
+  POS_NEW = col_double(),
+  NEG_NEW = col_double(),
+  TEST_NEW = col_double(),
+  DATE = col_double()
+)
+Writing to "Wisconsin input template"
+Writing to sheet "database"
+Created Drive file:
+  * US_WI15.07.2020cases&deaths: 1kP-zyLmFh4Q-Z7gL32jtd9sMZVpZF_VBN5OUCn7_wHg
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "US_WI15.07.2020cases&deaths"
+Writing to sheet "cases&deaths"
+Deleting these sheet(s) from "US_WI15.07.2020cases&deaths":
+* Sheet1
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.3     v dplyr   1.0.0
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+Warnung: 462283 parsing failures.
+row      col               expected             actual                                                                           file
+  1 GEO      a double               State              'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 NAME     a double               WI                 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 LoadDttm no trailing characters /03/15 19:00:00+00 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 DATE     no trailing characters /03/15 14:00:00+00 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  2 GEO      a double               County             'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+... ........ ...................... .................. ..............................................................................
+See problems(...) for more details.
+
+cols(
+  .default = col_double(),
+  OBJECTID = col_double(),
+  GEOID = col_double(),
+  GEO = col_double(),
+  NAME = col_double(),
+  LoadDttm = col_double(),
+  NEGATIVE = col_double(),
+  POSITIVE = col_double(),
+  HOSP_YES = col_double(),
+  HOSP_NO = col_double(),
+  HOSP_UNK = col_double(),
+  POS_FEM = col_double(),
+  POS_MALE = col_double(),
+  POS_OTH = col_double(),
+  POS_0_9 = col_double(),
+  POS_10_19 = col_double(),
+  POS_20_29 = col_double(),
+  POS_30_39 = col_double(),
+  POS_40_49 = col_double(),
+  POS_50_59 = col_double(),
+  POS_60_69 = col_double(),
+  POS_70_79 = col_double(),
+  POS_80_89 = col_double(),
+  POS_90 = col_double(),
+  DEATHS = col_double(),
+  DTHS_FEM = col_double(),
+  DTHS_MALE = col_double(),
+  DTHS_OTH = col_double(),
+  DTHS_0_9 = col_double(),
+  DTHS_10_19 = col_double(),
+  DTHS_20_29 = col_double(),
+  DTHS_30_39 = col_double(),
+  DTHS_40_49 = col_double(),
+  DTHS_50_59 = col_double(),
+  DTHS_60_69 = col_double(),
+  DTHS_70_79 = col_double(),
+  DTHS_80_89 = col_double(),
+  DTHS_90 = col_double(),
+  IP_Y_0_9 = col_double(),
+  IP_Y_10_19 = col_double(),
+  IP_Y_20_29 = col_double(),
+  IP_Y_30_39 = col_double(),
+  IP_Y_40_49 = col_double(),
+  IP_Y_50_59 = col_double(),
+  IP_Y_60_69 = col_double(),
+  IP_Y_70_79 = col_double(),
+  IP_Y_80_89 = col_double(),
+  IP_Y_90 = col_double(),
+  IP_N_0_9 = col_double(),
+  IP_N_10_19 = col_double(),
+  IP_N_20_29 = col_double(),
+  IP_N_30_39 = col_double(),
+  IP_N_40_49 = col_double(),
+  IP_N_50_59 = col_double(),
+  IP_N_60_69 = col_double(),
+  IP_N_70_79 = col_double(),
+  IP_N_80_89 = col_double(),
+  IP_N_90 = col_double(),
+  IP_U_0_9 = col_double(),
+  IP_U_10_19 = col_double(),
+  IP_U_20_29 = col_double(),
+  IP_U_30_39 = col_double(),
+  IP_U_40_49 = col_double(),
+  IP_U_50_59 = col_double(),
+  IP_U_60_69 = col_double(),
+  IP_U_70_79 = col_double(),
+  IP_U_80_89 = col_double(),
+  IP_U_90 = col_double(),
+  IC_YES = col_double(),
+  IC_Y_0_9 = col_double(),
+  IC_Y_10_19 = col_double(),
+  IC_Y_20_29 = col_double(),
+  IC_Y_30_39 = col_double(),
+  IC_Y_40_49 = col_double(),
+  IC_Y_50_59 = col_double(),
+  IC_Y_60_69 = col_double(),
+  IC_Y_70_79 = col_double(),
+  IC_Y_80_89 = col_double(),
+  IC_Y_90 = col_double(),
+  POS_AIAN = col_double(),
+  POS_ASN = col_double(),
+  POS_BLK = col_double(),
+  POS_WHT = col_double(),
+  POS_MLTOTH = col_double(),
+  POS_UNK = col_double(),
+  POS_E_HSP = col_double(),
+  POS_E_NHSP = col_double(),
+  POS_E_UNK = col_double(),
+  DTH_AIAN = col_double(),
+  DTH_ASN = col_double(),
+  DTH_BLK = col_double(),
+  DTH_WHT = col_double(),
+  DTH_MLTOTH = col_double(),
+  DTH_UNK = col_double(),
+  DTH_E_HSP = col_double(),
+  DTH_E_NHSP = col_double(),
+  DTH_E_UNK = col_double(),
+  POS_HC_Y = col_double(),
+  POS_HC_N = col_double(),
+  POS_HC_UNK = col_double(),
+  DTH_NEW = col_double(),
+  POS_NEW = col_double(),
+  NEG_NEW = col_double(),
+  TEST_NEW = col_double(),
+  DATE = col_double()
+)
+Writing to "Wisconsin input template"
+Writing to sheet "database"
+Created Drive file:
+  * US_WI20.07.2020cases&deaths: 12RFuNus38kW-UmkwYM1MMxAP0xIHI0AJ3jJrFLMQrMw
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "US_WI20.07.2020cases&deaths"
+Writing to sheet "cases&deaths"
+Deleting these sheet(s) from "US_WI20.07.2020cases&deaths":
+* Sheet1
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.3     v dplyr   1.0.0
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+Warnung: 466782 parsing failures.
+row      col               expected             actual                                                                           file
+  1 GEO      a double               State              'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 NAME     a double               WI                 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 LoadDttm no trailing characters /03/15 19:00:00+00 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 DATE     no trailing characters /03/15 14:00:00+00 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  2 GEO      a double               County             'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+... ........ ...................... .................. ..............................................................................
+See problems(...) for more details.
+
+cols(
+  .default = col_double(),
+  OBJECTID = col_double(),
+  GEOID = col_double(),
+  GEO = col_double(),
+  NAME = col_double(),
+  LoadDttm = col_double(),
+  NEGATIVE = col_double(),
+  POSITIVE = col_double(),
+  HOSP_YES = col_double(),
+  HOSP_NO = col_double(),
+  HOSP_UNK = col_double(),
+  POS_FEM = col_double(),
+  POS_MALE = col_double(),
+  POS_OTH = col_double(),
+  POS_0_9 = col_double(),
+  POS_10_19 = col_double(),
+  POS_20_29 = col_double(),
+  POS_30_39 = col_double(),
+  POS_40_49 = col_double(),
+  POS_50_59 = col_double(),
+  POS_60_69 = col_double(),
+  POS_70_79 = col_double(),
+  POS_80_89 = col_double(),
+  POS_90 = col_double(),
+  DEATHS = col_double(),
+  DTHS_FEM = col_double(),
+  DTHS_MALE = col_double(),
+  DTHS_OTH = col_double(),
+  DTHS_0_9 = col_double(),
+  DTHS_10_19 = col_double(),
+  DTHS_20_29 = col_double(),
+  DTHS_30_39 = col_double(),
+  DTHS_40_49 = col_double(),
+  DTHS_50_59 = col_double(),
+  DTHS_60_69 = col_double(),
+  DTHS_70_79 = col_double(),
+  DTHS_80_89 = col_double(),
+  DTHS_90 = col_double(),
+  IP_Y_0_9 = col_double(),
+  IP_Y_10_19 = col_double(),
+  IP_Y_20_29 = col_double(),
+  IP_Y_30_39 = col_double(),
+  IP_Y_40_49 = col_double(),
+  IP_Y_50_59 = col_double(),
+  IP_Y_60_69 = col_double(),
+  IP_Y_70_79 = col_double(),
+  IP_Y_80_89 = col_double(),
+  IP_Y_90 = col_double(),
+  IP_N_0_9 = col_double(),
+  IP_N_10_19 = col_double(),
+  IP_N_20_29 = col_double(),
+  IP_N_30_39 = col_double(),
+  IP_N_40_49 = col_double(),
+  IP_N_50_59 = col_double(),
+  IP_N_60_69 = col_double(),
+  IP_N_70_79 = col_double(),
+  IP_N_80_89 = col_double(),
+  IP_N_90 = col_double(),
+  IP_U_0_9 = col_double(),
+  IP_U_10_19 = col_double(),
+  IP_U_20_29 = col_double(),
+  IP_U_30_39 = col_double(),
+  IP_U_40_49 = col_double(),
+  IP_U_50_59 = col_double(),
+  IP_U_60_69 = col_double(),
+  IP_U_70_79 = col_double(),
+  IP_U_80_89 = col_double(),
+  IP_U_90 = col_double(),
+  IC_YES = col_double(),
+  IC_Y_0_9 = col_double(),
+  IC_Y_10_19 = col_double(),
+  IC_Y_20_29 = col_double(),
+  IC_Y_30_39 = col_double(),
+  IC_Y_40_49 = col_double(),
+  IC_Y_50_59 = col_double(),
+  IC_Y_60_69 = col_double(),
+  IC_Y_70_79 = col_double(),
+  IC_Y_80_89 = col_double(),
+  IC_Y_90 = col_double(),
+  POS_AIAN = col_double(),
+  POS_ASN = col_double(),
+  POS_BLK = col_double(),
+  POS_WHT = col_double(),
+  POS_MLTOTH = col_double(),
+  POS_UNK = col_double(),
+  POS_E_HSP = col_double(),
+  POS_E_NHSP = col_double(),
+  POS_E_UNK = col_double(),
+  DTH_AIAN = col_double(),
+  DTH_ASN = col_double(),
+  DTH_BLK = col_double(),
+  DTH_WHT = col_double(),
+  DTH_MLTOTH = col_double(),
+  DTH_UNK = col_double(),
+  DTH_E_HSP = col_double(),
+  DTH_E_NHSP = col_double(),
+  DTH_E_UNK = col_double(),
+  POS_HC_Y = col_double(),
+  POS_HC_N = col_double(),
+  POS_HC_UNK = col_double(),
+  DTH_NEW = col_double(),
+  POS_NEW = col_double(),
+  NEG_NEW = col_double(),
+  TEST_NEW = col_double(),
+  DATE = col_double()
+)
+Writing to "Wisconsin input template"
+Writing to sheet "database"
+Created Drive file:
+  * US_WI21.07.2020cases&deaths: 1w1esqnPQaeCjx-kJCX-kHDYs_nfJJHgJfN2tlhwnSWk
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "US_WI21.07.2020cases&deaths"
+Writing to sheet "cases&deaths"
+Deleting these sheet(s) from "US_WI21.07.2020cases&deaths":
+* Sheet1
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.3     v dplyr   1.0.0
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+Warnung: 471281 parsing failures.
+row      col               expected             actual                                                                           file
+  1 GEO      a double               State              'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 NAME     a double               WI                 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 LoadDttm no trailing characters /03/15 19:00:00+00 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 DATE     no trailing characters /03/15 14:00:00+00 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  2 GEO      a double               County             'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+... ........ ...................... .................. ..............................................................................
+See problems(...) for more details.
+
+cols(
+  .default = col_double(),
+  OBJECTID = col_double(),
+  GEOID = col_double(),
+  GEO = col_double(),
+  NAME = col_double(),
+  LoadDttm = col_double(),
+  NEGATIVE = col_double(),
+  POSITIVE = col_double(),
+  HOSP_YES = col_double(),
+  HOSP_NO = col_double(),
+  HOSP_UNK = col_double(),
+  POS_FEM = col_double(),
+  POS_MALE = col_double(),
+  POS_OTH = col_double(),
+  POS_0_9 = col_double(),
+  POS_10_19 = col_double(),
+  POS_20_29 = col_double(),
+  POS_30_39 = col_double(),
+  POS_40_49 = col_double(),
+  POS_50_59 = col_double(),
+  POS_60_69 = col_double(),
+  POS_70_79 = col_double(),
+  POS_80_89 = col_double(),
+  POS_90 = col_double(),
+  DEATHS = col_double(),
+  DTHS_FEM = col_double(),
+  DTHS_MALE = col_double(),
+  DTHS_OTH = col_double(),
+  DTHS_0_9 = col_double(),
+  DTHS_10_19 = col_double(),
+  DTHS_20_29 = col_double(),
+  DTHS_30_39 = col_double(),
+  DTHS_40_49 = col_double(),
+  DTHS_50_59 = col_double(),
+  DTHS_60_69 = col_double(),
+  DTHS_70_79 = col_double(),
+  DTHS_80_89 = col_double(),
+  DTHS_90 = col_double(),
+  IP_Y_0_9 = col_double(),
+  IP_Y_10_19 = col_double(),
+  IP_Y_20_29 = col_double(),
+  IP_Y_30_39 = col_double(),
+  IP_Y_40_49 = col_double(),
+  IP_Y_50_59 = col_double(),
+  IP_Y_60_69 = col_double(),
+  IP_Y_70_79 = col_double(),
+  IP_Y_80_89 = col_double(),
+  IP_Y_90 = col_double(),
+  IP_N_0_9 = col_double(),
+  IP_N_10_19 = col_double(),
+  IP_N_20_29 = col_double(),
+  IP_N_30_39 = col_double(),
+  IP_N_40_49 = col_double(),
+  IP_N_50_59 = col_double(),
+  IP_N_60_69 = col_double(),
+  IP_N_70_79 = col_double(),
+  IP_N_80_89 = col_double(),
+  IP_N_90 = col_double(),
+  IP_U_0_9 = col_double(),
+  IP_U_10_19 = col_double(),
+  IP_U_20_29 = col_double(),
+  IP_U_30_39 = col_double(),
+  IP_U_40_49 = col_double(),
+  IP_U_50_59 = col_double(),
+  IP_U_60_69 = col_double(),
+  IP_U_70_79 = col_double(),
+  IP_U_80_89 = col_double(),
+  IP_U_90 = col_double(),
+  IC_YES = col_double(),
+  IC_Y_0_9 = col_double(),
+  IC_Y_10_19 = col_double(),
+  IC_Y_20_29 = col_double(),
+  IC_Y_30_39 = col_double(),
+  IC_Y_40_49 = col_double(),
+  IC_Y_50_59 = col_double(),
+  IC_Y_60_69 = col_double(),
+  IC_Y_70_79 = col_double(),
+  IC_Y_80_89 = col_double(),
+  IC_Y_90 = col_double(),
+  POS_AIAN = col_double(),
+  POS_ASN = col_double(),
+  POS_BLK = col_double(),
+  POS_WHT = col_double(),
+  POS_MLTOTH = col_double(),
+  POS_UNK = col_double(),
+  POS_E_HSP = col_double(),
+  POS_E_NHSP = col_double(),
+  POS_E_UNK = col_double(),
+  DTH_AIAN = col_double(),
+  DTH_ASN = col_double(),
+  DTH_BLK = col_double(),
+  DTH_WHT = col_double(),
+  DTH_MLTOTH = col_double(),
+  DTH_UNK = col_double(),
+  DTH_E_HSP = col_double(),
+  DTH_E_NHSP = col_double(),
+  DTH_E_UNK = col_double(),
+  POS_HC_Y = col_double(),
+  POS_HC_N = col_double(),
+  POS_HC_UNK = col_double(),
+  DTH_NEW = col_double(),
+  POS_NEW = col_double(),
+  NEG_NEW = col_double(),
+  TEST_NEW = col_double(),
+  DATE = col_double()
+)
+Writing to "Wisconsin input template"
+Writing to sheet "database"
+Created Drive file:
+  * US_WI22.07.2020cases&deaths: 1o4EC_vJYcP14cuos3hl2LcSTPnG2aSazso-aSgfY06E
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "US_WI22.07.2020cases&deaths"
+Writing to sheet "cases&deaths"
+Deleting these sheet(s) from "US_WI22.07.2020cases&deaths":
+* Sheet1
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.3     v dplyr   1.0.0
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+Warnung: 493776 parsing failures.
+row      col               expected             actual                                                                           file
+  1 GEO      a double               State              'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 NAME     a double               WI                 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 LoadDttm no trailing characters /03/15 19:00:00+00 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 DATE     no trailing characters /03/15 14:00:00+00 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  2 GEO      a double               County             'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+... ........ ...................... .................. ..............................................................................
+See problems(...) for more details.
+
+cols(
+  .default = col_double(),
+  OBJECTID = col_double(),
+  GEOID = col_double(),
+  GEO = col_double(),
+  NAME = col_double(),
+  LoadDttm = col_double(),
+  NEGATIVE = col_double(),
+  POSITIVE = col_double(),
+  HOSP_YES = col_double(),
+  HOSP_NO = col_double(),
+  HOSP_UNK = col_double(),
+  POS_FEM = col_double(),
+  POS_MALE = col_double(),
+  POS_OTH = col_double(),
+  POS_0_9 = col_double(),
+  POS_10_19 = col_double(),
+  POS_20_29 = col_double(),
+  POS_30_39 = col_double(),
+  POS_40_49 = col_double(),
+  POS_50_59 = col_double(),
+  POS_60_69 = col_double(),
+  POS_70_79 = col_double(),
+  POS_80_89 = col_double(),
+  POS_90 = col_double(),
+  DEATHS = col_double(),
+  DTHS_FEM = col_double(),
+  DTHS_MALE = col_double(),
+  DTHS_OTH = col_double(),
+  DTHS_0_9 = col_double(),
+  DTHS_10_19 = col_double(),
+  DTHS_20_29 = col_double(),
+  DTHS_30_39 = col_double(),
+  DTHS_40_49 = col_double(),
+  DTHS_50_59 = col_double(),
+  DTHS_60_69 = col_double(),
+  DTHS_70_79 = col_double(),
+  DTHS_80_89 = col_double(),
+  DTHS_90 = col_double(),
+  IP_Y_0_9 = col_double(),
+  IP_Y_10_19 = col_double(),
+  IP_Y_20_29 = col_double(),
+  IP_Y_30_39 = col_double(),
+  IP_Y_40_49 = col_double(),
+  IP_Y_50_59 = col_double(),
+  IP_Y_60_69 = col_double(),
+  IP_Y_70_79 = col_double(),
+  IP_Y_80_89 = col_double(),
+  IP_Y_90 = col_double(),
+  IP_N_0_9 = col_double(),
+  IP_N_10_19 = col_double(),
+  IP_N_20_29 = col_double(),
+  IP_N_30_39 = col_double(),
+  IP_N_40_49 = col_double(),
+  IP_N_50_59 = col_double(),
+  IP_N_60_69 = col_double(),
+  IP_N_70_79 = col_double(),
+  IP_N_80_89 = col_double(),
+  IP_N_90 = col_double(),
+  IP_U_0_9 = col_double(),
+  IP_U_10_19 = col_double(),
+  IP_U_20_29 = col_double(),
+  IP_U_30_39 = col_double(),
+  IP_U_40_49 = col_double(),
+  IP_U_50_59 = col_double(),
+  IP_U_60_69 = col_double(),
+  IP_U_70_79 = col_double(),
+  IP_U_80_89 = col_double(),
+  IP_U_90 = col_double(),
+  IC_YES = col_double(),
+  IC_Y_0_9 = col_double(),
+  IC_Y_10_19 = col_double(),
+  IC_Y_20_29 = col_double(),
+  IC_Y_30_39 = col_double(),
+  IC_Y_40_49 = col_double(),
+  IC_Y_50_59 = col_double(),
+  IC_Y_60_69 = col_double(),
+  IC_Y_70_79 = col_double(),
+  IC_Y_80_89 = col_double(),
+  IC_Y_90 = col_double(),
+  POS_AIAN = col_double(),
+  POS_ASN = col_double(),
+  POS_BLK = col_double(),
+  POS_WHT = col_double(),
+  POS_MLTOTH = col_double(),
+  POS_UNK = col_double(),
+  POS_E_HSP = col_double(),
+  POS_E_NHSP = col_double(),
+  POS_E_UNK = col_double(),
+  DTH_AIAN = col_double(),
+  DTH_ASN = col_double(),
+  DTH_BLK = col_double(),
+  DTH_WHT = col_double(),
+  DTH_MLTOTH = col_double(),
+  DTH_UNK = col_double(),
+  DTH_E_HSP = col_double(),
+  DTH_E_NHSP = col_double(),
+  DTH_E_UNK = col_double(),
+  POS_HC_Y = col_double(),
+  POS_HC_N = col_double(),
+  POS_HC_UNK = col_double(),
+  DTH_NEW = col_double(),
+  POS_NEW = col_double(),
+  NEG_NEW = col_double(),
+  TEST_NEW = col_double(),
+  DATE = col_double()
+)
+Writing to "Wisconsin input template"
+Writing to sheet "database"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * US_WI27.07.2020cases&deaths: 18FKnD16tYXcKL0SeH5hr9RIGzRejpO0eFWcDavvdluw
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "US_WI27.07.2020cases&deaths"
+Writing to sheet "cases&deaths"
+Deleting these sheet(s) from "US_WI27.07.2020cases&deaths":
+* Sheet1
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.3     v dplyr   1.0.0
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+Warnung: 498275 parsing failures.
+row      col               expected             actual                                                                           file
+  1 GEO      a double               State              'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 NAME     a double               WI                 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 LoadDttm no trailing characters /03/15 19:00:00+00 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  1 DATE     no trailing characters /03/15 14:00:00+00 'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+  2 GEO      a double               County             'https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv'
+... ........ ...................... .................. ..............................................................................
+See problems(...) for more details.
+
+cols(
+  .default = col_double(),
+  OBJECTID = col_double(),
+  GEOID = col_double(),
+  GEO = col_double(),
+  NAME = col_double(),
+  LoadDttm = col_double(),
+  NEGATIVE = col_double(),
+  POSITIVE = col_double(),
+  HOSP_YES = col_double(),
+  HOSP_NO = col_double(),
+  HOSP_UNK = col_double(),
+  POS_FEM = col_double(),
+  POS_MALE = col_double(),
+  POS_OTH = col_double(),
+  POS_0_9 = col_double(),
+  POS_10_19 = col_double(),
+  POS_20_29 = col_double(),
+  POS_30_39 = col_double(),
+  POS_40_49 = col_double(),
+  POS_50_59 = col_double(),
+  POS_60_69 = col_double(),
+  POS_70_79 = col_double(),
+  POS_80_89 = col_double(),
+  POS_90 = col_double(),
+  DEATHS = col_double(),
+  DTHS_FEM = col_double(),
+  DTHS_MALE = col_double(),
+  DTHS_OTH = col_double(),
+  DTHS_0_9 = col_double(),
+  DTHS_10_19 = col_double(),
+  DTHS_20_29 = col_double(),
+  DTHS_30_39 = col_double(),
+  DTHS_40_49 = col_double(),
+  DTHS_50_59 = col_double(),
+  DTHS_60_69 = col_double(),
+  DTHS_70_79 = col_double(),
+  DTHS_80_89 = col_double(),
+  DTHS_90 = col_double(),
+  IP_Y_0_9 = col_double(),
+  IP_Y_10_19 = col_double(),
+  IP_Y_20_29 = col_double(),
+  IP_Y_30_39 = col_double(),
+  IP_Y_40_49 = col_double(),
+  IP_Y_50_59 = col_double(),
+  IP_Y_60_69 = col_double(),
+  IP_Y_70_79 = col_double(),
+  IP_Y_80_89 = col_double(),
+  IP_Y_90 = col_double(),
+  IP_N_0_9 = col_double(),
+  IP_N_10_19 = col_double(),
+  IP_N_20_29 = col_double(),
+  IP_N_30_39 = col_double(),
+  IP_N_40_49 = col_double(),
+  IP_N_50_59 = col_double(),
+  IP_N_60_69 = col_double(),
+  IP_N_70_79 = col_double(),
+  IP_N_80_89 = col_double(),
+  IP_N_90 = col_double(),
+  IP_U_0_9 = col_double(),
+  IP_U_10_19 = col_double(),
+  IP_U_20_29 = col_double(),
+  IP_U_30_39 = col_double(),
+  IP_U_40_49 = col_double(),
+  IP_U_50_59 = col_double(),
+  IP_U_60_69 = col_double(),
+  IP_U_70_79 = col_double(),
+  IP_U_80_89 = col_double(),
+  IP_U_90 = col_double(),
+  IC_YES = col_double(),
+  IC_Y_0_9 = col_double(),
+  IC_Y_10_19 = col_double(),
+  IC_Y_20_29 = col_double(),
+  IC_Y_30_39 = col_double(),
+  IC_Y_40_49 = col_double(),
+  IC_Y_50_59 = col_double(),
+  IC_Y_60_69 = col_double(),
+  IC_Y_70_79 = col_double(),
+  IC_Y_80_89 = col_double(),
+  IC_Y_90 = col_double(),
+  POS_AIAN = col_double(),
+  POS_ASN = col_double(),
+  POS_BLK = col_double(),
+  POS_WHT = col_double(),
+  POS_MLTOTH = col_double(),
+  POS_UNK = col_double(),
+  POS_E_HSP = col_double(),
+  POS_E_NHSP = col_double(),
+  POS_E_UNK = col_double(),
+  DTH_AIAN = col_double(),
+  DTH_ASN = col_double(),
+  DTH_BLK = col_double(),
+  DTH_WHT = col_double(),
+  DTH_MLTOTH = col_double(),
+  DTH_UNK = col_double(),
+  DTH_E_HSP = col_double(),
+  DTH_E_NHSP = col_double(),
+  DTH_E_UNK = col_double(),
+  POS_HC_Y = col_double(),
+  POS_HC_N = col_double(),
+  POS_HC_UNK = col_double(),
+  DTH_NEW = col_double(),
+  POS_NEW = col_double(),
+  NEG_NEW = col_double(),
+  TEST_NEW = col_double(),
+  DATE = col_double()
+)
+Writing to "Wisconsin input template"
+Writing to sheet "database"
+Created Drive file:
+  * US_WI28.07.2020cases&deaths: 1naxR6dzE4V_D5kLCAWMC-O1OH8i1TK3BOJM-joCMsdM
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "US_WI28.07.2020cases&deaths"
+Writing to sheet "cases&deaths"
+Deleting these sheet(s) from "US_WI28.07.2020cases&deaths":
+* Sheet1

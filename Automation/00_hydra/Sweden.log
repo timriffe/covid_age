@@ -1,0 +1,1292 @@
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'readxl' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'httr' wurde unter R Version 3.6.3 erstellt 
+[1] "Starting data retrieval for Sweden..."
+Response [https://ago-item-storage.s3.us-east-1.amazonaws.com/b5e7488e117749c19881cce45db13f7e/Folkhalsomyndigheten_Covid19.xlsx?X-Amz-Security-Token=IQoJb3JpZ2luX2VjENv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJHMEUCIFIScbSfmyTi3gK47PKy3fLURFmgmbwOmttgPgWqvq2OAiEAkmPqMeccCWxaVtEJ7bboYnd7uusmqUWHeQDUQvcpqUYqtAMIdBAAGgw2MDQ3NTgxMDI2NjUiDGm7kJD%2FK2umY%2FSD4iqRA6lMWzIwYZuXqNkGVj2cr6He75rsXgp3S8drj6xfcrR%2B9Mesa9aG%2FthW5ew2MKGE5ccT8V3osAu0qQ1hmuGt7QjzTe6Aa7woVX%2FVztTrvuqckKUrQ00lxzffvj00puO3tpXx%2BKMib%2FdcxiNUEfZZW42yeTBlqvqbLJtaf0rq4H7dAq9a5Euq6j9D9WEdLOwKGm7hTkYD3vG6Q9b3CN79yrWnuIXDoShnvpGpBDXxzngVeicLN5BxlaS2ylf5vZ0Kp%2F7JZUyyBTKOcGEUfbtw3A5qLpUDnpu5Qgz6qdOfJ9aJ5cgIO5KM%2Bg3ShohkUkdCvILUi3HtaGV80k0M7NCCuqIilS8XPsWuLxGYhbS%2BaQ%2B3HKD9HVoZAG2HokKESIdm91SdKEtvRMyPfwfRlSan25J8uAJpwxy4LzRRULl%2Fnx%2F1SE2UHOB6SZA7X0RfXylKwrfiREt2Nb3rgA0aBq%2FdhX%2F5w3HpMo6o966tM9k98DvC6HQ5fOwsam2Rd5fnl4aPeE2%2BlmNvMrmOM3McS3gjGN1jMLGT%2FPcFOusBaXiWguHSF0iZoslUDYSjouPr2KilLngHMaBGOrXvnSwWznUVZW9XS8Ksq36BTyglkh7oXm9Mmm75kuDTINSOJ4ldNY%2Fj%2FvUmfOHlkC1%2BtJFc0xfAPX6qUO4Zu%2BMeH3Nt8GKD58O38WFhwyyVin%2F0TY%2F0AJ0Xw8WetmtU88ydzZcAmdZGsDHY7YX7n0n0YuPnZk3GOuHUqbMVe30ckS3%2B424OKbFcPfQX4RhPIGnrE1NOntEtQsMxWQfUoo4MAHo%2BN6WgzytZhn6AF%2B1N01OMytaOxRpKzR2kJXIWutDj34zpqkVCWBSG%2BYPkdw%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20200703T120037Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Credential=ASIAYZTTEKKE47ZEMXMR%2F20200703%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=1d9d31ddc35652f47323cdc82f17b5718d67ef1d704d59d0bebbc30d9511547a]
+  Date: 2020-07-03 12:00
+  Status: 200
+  Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+  Size: 348 kB
+<ON DISK>  C:\Users\acosta\AppData\Local\Temp\RtmpIdha2t\file11a78202a5a.xlsxReading from "Sweden input template"
+Range "'database'"
+Writing to "Sweden input template"
+Appending 28 row(s) to "database"
+Fehler in is_string(name) : Objekt 'sheet_name' nicht gefunden
+Ruft auf: drive_create -> stopifnot -> is_string
+Ausführung angehalten
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'readxl' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'httr' wurde unter R Version 3.6.3 erstellt 
+[1] "Starting data retrieval for Sweden..."
+Response [https://ago-item-storage.s3.us-east-1.amazonaws.com/b5e7488e117749c19881cce45db13f7e/Folkhalsomyndigheten_Covid19.xlsx?X-Amz-Security-Token=IQoJb3JpZ2luX2VjENz%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJIMEYCIQCjXogYulehSLA8WNgPRC2OsK4MIUKD77T0GhdF2uYkdAIhANb9Gobv4okUZ0sNlr3gfuRbDYmeHaM9vKbEbtTb51SjKrQDCHUQABoMNjA0NzU4MTAyNjY1IgxqoNiI8oDUdMB6rs0qkQPVOaoPJfeNJ7EEEuHZSOG9RVEYGNWbrU6mAXm2ojJWwPLF3C6VbfQTRc2uhUazQOeZFZmgORr6XXtvAhQYIihIWAsiVOwGiSP3AzWjz3vMQTb0HcsaYEdi4p4t%2BP2e6NYHkXuij3Lvqe15SztOX%2BKb4ejLeWvmvhj7Ze8hWso7JHRsfJtKdMQrnRUdbMcaMuvsVbYxXHBvf79q2a3%2FIW%2BSrqRk2fRD0s5cQZj97KX4I6SYNCXsYSEcKsEbEFSqaAj7ddSBgR8wllEBRTgUAnnvSEhHh8hbxlS4q4ScROWbMgXsAKRcY0Aw0%2FmQrtUABAmtgY2FaQhHF3oxy5sOoFN08cEmKL4eLnq3SuEnqqmPCzGa%2B6rnOw%2F0WPyD0ajysjFsVHpfx0D7YhxXzcLQg8P2V2OzSixER7eO0pHPrxb56pa2%2BRxcwegSrzjx2hsv1rJshV6ocawUhacFKLo7GZumf4HQ7U8CA1gUXVN%2FjR7q3AjjGGDjdkEcWKTFw5LTrOzaVsOL3Yp0XIg7C6O2B%2BdHrzDDr%2Fz3BTrqAZJC2frZXPfpk2yEqXiDwb03Ldw7bAyETdHjBnFATiOS%2Fm%2F94HnuZ%2B28OEFC1LiFe36pyXVjBSyEyaLT5x%2BvOoCFvAnuUWqFRSwdadGDmb4vDFH9FR0%2BH7dtbfnngVUNJsmZdzggh2alS8uYlcfl0A95OgqF6LTl%2BgPnFTYZHAXpl7mG49IQejneXwyK%2FchPVsN2lZvovk6g%2BMkOYgKfEJ8uw0DaMQ5j4TAIJtjQofh4MW4bVJJUbQB0F66hYxH9r0Ri71HoLg7Tsr0mUCgxAxp7%2BzufUxVUnzJWNV9Ssqy8qcw24MPcFw96kQ%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20200703T122935Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Credential=ASIAYZTTEKKE3YYW6M7H%2F20200703%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=befbc6ba3522dc5e9b0f81052115a8a782acb2f89493559dd797d7dd6e78bd94]
+  Date: 2020-07-03 12:29
+  Status: 200
+  Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+  Size: 348 kB
+<ON DISK>  C:\Users\acosta\AppData\Local\Temp\RtmpWkjjCh\file11dd82bc51685.xlsxAuto-refreshing stale OAuth token.
+Reading from "Sweden input template"
+Range "'database'"
+no new updates so far, last date: 2020-07-03-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'readxl' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'httr' wurde unter R Version 3.6.3 erstellt 
+[1] "Starting data retrieval for Sweden..."
+Response [https://ago-item-storage.s3.us-east-1.amazonaws.com/b5e7488e117749c19881cce45db13f7e/Folkhalsomyndigheten_Covid19.xlsx?X-Amz-Security-Token=IQoJb3JpZ2luX2VjEPX%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJHMEUCIFEBBPuL3%2F6wlVdyvxbV8QoHU4u6OEgttHL4rVjxvjJIAiEAuYlNwE8ePZ5V7h4UwpO4HsB%2Fcmkr%2F5pLskbI2P%2B6A14qvQMIjv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2MDQ3NTgxMDI2NjUiDHbCbZearoylpHj6GSqRA0OoM1l2VZzj7twR78j0VlaNk9vXX9HYNuIsG%2BFgJDa1AmaK8iA9c6yZuwV4hzwuYY%2BVnYtl%2Brxl3%2BM%2BNKCDxpWsahAxDbnhswgtUNhtAow1RGSPlSLOkHJ5v9KEbNkRomxyia2L%2BiNfSgsg%2FmkyMHHLVQMd%2BCgegVzrr23UqafGwN6BFNFnNTO6oFoE4KMyDMH45GW2gZo9D%2FE3CmHJVAqUQITTvB5ueYgzBYrjdsXkGjavyHJtdOkEVRO%2BpFkBDJJS0YSvek4IkGfldUyCWUkZ5Lfu1UCPeoocW7FvtIBhs4ATV%2F3aDSb0CaZl15SqT0NPiSXM56%2FtcNPbqeiccqVd2F6e3pM0QyeTKCPFPrQYO7AXU7BRGux3OmQo5WmMc79Qkh3qGqJfa1hhlwudztGNvGFLlnxKOK2l5NogwQjkswakaKzeY%2FSPVfdYAyOVnv%2BwYAx67poUhErLauFoiMR9luT3e%2F8tZmFJOc8IYC8O521OEBmunq9LUikxVJKo%2BJvilhPpyD1o74PBaHuDpWiUMPrwgfgFOusBFhuhA8u6qisRbF9IL%2BcyRFuDfitlhny0nQpXAefmHTe3axlrFcBpk7k1TKx3%2FoGfEhb%2BBnOlyGXxAwMTzHcbZZMqRWn%2BTC%2Bb2nq48QxG9sXU5IC6yX7YIj%2FnQ5Ev9ANk74%2BjA4J%2FSQ20JtGWTP6d5tpbwLmtCPENl12lvbQ1xur75yN8S6VK9mp%2FAdzr%2F6MMDySECCu1Y%2F7i9wos1fePGxifyXtqeGeJo5TvLHqivZzMkDlYFJ4Ei%2BH2lSspU%2BYTk1Eh6%2FuAEh8ft88xs6b8RUOsD%2BCcp8RaDbhqTItVjV9MAXmG5XBtXPPijQ%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20200704T135536Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Credential=ASIAYZTTEKKE4PHE3X4W%2F20200704%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=c5811b9e56ef6db9f8a8e9c2e027ea7cda2b27a1cafb670a95dc281c05a74b41]
+  Date: 2020-07-04 13:55
+  Status: 200
+  Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+  Size: 348 kB
+<ON DISK>  C:\Users\acosta\AppData\Local\Temp\Rtmpu4NfT2\file46a8607a267d.xlsxReading from "Sweden input template"
+Range "'database'"
+no new updates so far, last date: 2020-07-03
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'readxl' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'httr' wurde unter R Version 3.6.3 erstellt 
+[1] "Starting data retrieval for Sweden..."
+Response [https://ago-item-storage.s3.us-east-1.amazonaws.com/b5e7488e117749c19881cce45db13f7e/Folkhalsomyndigheten_Covid19.xlsx?X-Amz-Security-Token=IQoJb3JpZ2luX2VjEA0aCXVzLWVhc3QtMSJHMEUCIG6uqlJuagInWg8YKv8ay18yQ%2B9ub%2FO0OiFf1p6VcatZAiEA%2Bsrkvl0034giMSiCtF8bmwy%2BbErC1jQSHjPBMcayvEoqvQMIpf%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2MDQ3NTgxMDI2NjUiDOqQJM%2FEV%2B4q3G0%2FjCqRA%2FLVYfscqLbiG1VjHcSiP3JTbOBRoaBq29s%2Bdn9%2BifLyOP5QkEdFFyNstdxgUuK3SDD07BGGvxI4Ze7adQzb34W40HOvGstbFEU3zeF98%2BuMFdTaRhqwFZWocqZcdo68DvwT%2F3WbRj48nghutXL%2FzvQ9BhDMj27zIPN%2BqIBq0HiCcNuX%2Fvheomq7wNR05Q%2Fow8QC7UZ1CVey8xiT%2B7hbq89SvTicYuVbGRHWxWLq9iqmkUUvu8jREsF7FAgQVnEc9dfysY7H1pymI1HizYMcCaieHIMYOSZys7GFiLmRrCPvO81l%2Fkx8IXQpObz4w%2ByxiuOSOQBhGRViLiLOOJpJhxTs7mU3l8NjjoKkFZCrVRtBwixHYiEsgURnFU9zimM%2BibMhiKV8lhPawJr8WypSAjqftgb0QqyWSs3Fqj00Hq1kRlSNsXYyAgM4HJQ1shPqqgMNUzAPjl37SY7WMy4hv1UatreP%2BfTJ58MTeZK2016%2FbHBSr9emrEFiZ0H5xA9DGR1fOHYf3MgVLmorwxd5xQD9MLGKh%2FgFOusBkquiQsoFG%2BfISkQS0miZXDk60iu7LxFzwi5SFxiK4NzbgxHDvdE19MmzTXAaTcPvLAhH3ftQNkBnOtWTgkPn%2BZU%2B8sEQs1t579ERVpjbRhfyO%2BXxB%2Fqn0jwiX56BAcVceLmvEG0maI7ya1ZHCXgORuiybIBUvyh9Uph8w8RzhwGMOtzf87%2FrzJZoARCultDJ4OKi1NSc1DwZ8AJi4nIcfGxRLosrVbbCBuNG650HcWlzd4k5qFWjICIu61ji94bqUTXrdD%2BH%2F0UePGtvQ8%2Fd8tYNiEWzvMKjqwoF2MsO9kvN8k3VW4HTSe6rLA%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20200705T135537Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Credential=ASIAYZTTEKKEXT6DUYHX%2F20200705%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=0952b87c38c0884eb7a6d031b92dc087318176ee61a8fc4a713807259061209a]
+  Date: 2020-07-05 13:55
+  Status: 200
+  Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+  Size: 348 kB
+<ON DISK>  C:\Users\acosta\AppData\Local\Temp\RtmpwZvUty\fileee8423a2749f.xlsxReading from "Sweden input template"
+Range "'database'"
+no new updates so far, last date: 2020-07-03
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'readxl' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'httr' wurde unter R Version 3.6.3 erstellt 
+[1] "Starting data retrieval for Sweden..."
+Response [https://ago-item-storage.s3.us-east-1.amazonaws.com/b5e7488e117749c19881cce45db13f7e/Folkhalsomyndigheten_Covid19.xlsx?X-Amz-Security-Token=IQoJb3JpZ2luX2VjECUaCXVzLWVhc3QtMSJIMEYCIQCDSAgweIuOx6sHXvkUBUXG6jqcbfxUBZvxOjf5iZW2wwIhAJRJGWt8n%2B7YhdrNWRnznQ9tNzDiS1dLwkD0eZA4TNLtKr0DCL7%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjA0NzU4MTAyNjY1Igye%2FYnC572zs85q8ZAqkQMu38JNQtUUquUJIVq9SHvbxIufpa0zFvdczPoWfwKhuuUUeXPX%2FXqqMwRqZ6a0iV1Nxb0U%2F9kvopA4YO9EbOV1pOib34twyLhv96LHZZhYiczKtLL7jT3C1GRaw0SdG%2BmnPctMq1s8KR9nDo9t8DZQsW1B2jsv4I4veyssucLUHMc5nHFvqcJKgUtbQE8Y6lMF%2FhTyZo8TmJEJLz59K4IeQNuXz77Q6ggvUwNdOCaR0dTyJE6FvfgnKPpaWpsUc33WW8OZPuxEfEX9%2BOLfiKZOD68sGiRIrMdvczJMZ6KWfPfr4UKwsgIqG9W8NmAD5PGonwHAwzP8ziAoHJ2peICOHsBSirauldyeIyadNU7WV7eCIqgpXE7325Oag0yr1MWY9HrJY3XQu7R9ixLB0ug39ZV%2F4gDkvPU3ibggsK8mNEY1b0%2Fj6LgHmdoGOLQ2g2%2BqdgI3UPYZS7JvwMf75PgMvI9IJ%2BoAF7ysEjTkD7XX0ewGVTr%2FrxDEgNs5zelnCoFpxtYtBeLnWv49nVg1RxxRLTDXvYz4BTrqAeOrXQwk7g6uT8k%2BBNJplYwRcOXabib92irtlF0th2ISe1DbwKeQk7AaNuGyno8V5pcFDwUznD1J2MkjJ8EfNxM9uVAHn8oX4Aioevftsfn51ykEPjIEEO81v1yjvM2iah0krxjlEb4SX%2FQHjV0IzwNGbpDwU7LbtwUrDtgiKJl8YC0%2B8Iq58QyglKXFZfBSi69wZLDZfSGrNzOTgrxOPkv7xl2FpcvVUVnuFCR307jGSra2WtsMF2dQxd6U9SUPiAH%2BIVepTdheSHRRf%2BO3nTZ%2B5rCFb4KihFTXkUh8aaXKc6THIfxReRxJ1A%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20200706T135537Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Credential=ASIAYZTTEKKEQ3SZVEBZ%2F20200706%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=e80c270215407b2efe832994c44efdf8ad73341ba48efb66eb7e34fcff043cc0]
+  Date: 2020-07-06 13:55
+  Status: 200
+  Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+  Size: 348 kB
+<ON DISK>  C:\Users\acosta\AppData\Local\Temp\RtmpKE8ASu\file79c866ca42c1.xlsxReading from "Sweden input template"
+Range "'database'"
+Writing to "Sweden input template"
+Appending 28 row(s) to "database"
+Created Drive file:
+  * SE06.07.2020cases&deaths: 15Jx7QSY48pCnm0kP_uxnCIt8iKX4KvOh2WkXeVCdkBM
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SE06.07.2020cases&deaths"
+Writing to sheet "cases&deaths_age"
+Writing to "SE06.07.2020cases&deaths"
+Writing to sheet "cases&deaths_sex"
+Deleting these sheet(s) from "SE06.07.2020cases&deaths":
+* Sheet1
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'readxl' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'httr' wurde unter R Version 3.6.3 erstellt 
+[1] "Starting data retrieval for Sweden..."
+Response [https://ago-item-storage.s3.us-east-1.amazonaws.com/b5e7488e117749c19881cce45db13f7e/Folkhalsomyndigheten_Covid19.xlsx?X-Amz-Security-Token=IQoJb3JpZ2luX2VjED4aCXVzLWVhc3QtMSJGMEQCIGd6aE3satzIQCELIqD%2FCJ3fHR8XFmxd7o%2Fzby2hH0nrAiAxvgwL0Cs%2BhwjnxvvDT6MRVkxhrtoO1TXXfgJd55ERyCq9AwjW%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAAaDDYwNDc1ODEwMjY2NSIMMpsz%2FZ8JgR7mnLthKpEDFkcIs1cZALZp6Uuy%2BPyUlSF1PvWkJuzpc0SmubNZvqQjbcLwQ5DocTVd1ek4PSzGaUlY7vj%2FsfTqmrCoxiaSJv1sAOwyefUsjlViXWjk9b%2Bh%2FubqGc8FuU3oLYECCd0JqQ1F1P2ZQH2exBdVt0tGFUHwmIpX6gpIzKpEL8Dr6%2B83N92wZ6%2BJivSNQ9suqMrj29ztSAnM9%2BEfKrr1H7FZYxgNzDB3AWrycQMUmxD6QEGNTW8JEriKsdNRCcTID9Klkho%2BAyzjiPeKHBiArOlSssqLuX0cXwSQivXVpi1JqvFC%2BRWzrQ1FxCPwjkqdlHGyP9%2BdURf9buHxyseAo5M%2FSUo54ftGqJoWN%2F8GAbPNp8F7GOL4vnNy7YUs3kSmrxB3gPDq%2FxQn9%2F31thXFmhrg1Pd%2FZpNwA9m7QfUfJcOHpfTDu3UKI28RRVJQoxQhIZR4e5SAv9Sclj6FqV%2Biefkt2RmEiu%2BqyGy4SNQyKsHXP8OP7r5ykQnCOgGUiPzy5CfmsMnqCgcQWAtDbpCauZVPyAcw2%2BWR%2BAU67AF33ui8DF4u6V8gN%2BKhbBPwXzH5eBMdf%2F9i%2F7GpgIjMEmjJP1NOC7RL6r7V%2B4ENXHZPOXtLAEPW%2BxQbbo4cc90EmNfBhY%2FET%2BMmgo6rr6JqqYPiM92hItAitRAOdPKVB8RajM8LKcSnJItGsq2dYzj8usn4COWTf1mJk4Pwk4EZ%2FUfx90GuSyd8TyF29zzzgsUlK8Q796eaf9UW2Dx9cPoxey2lFDUanxZEXHi5CIDXrTI2IwUILgosVsLRe3ohQ7inX0nKflyXYC2xI9AnYxMegCGOggUa%2FUGctN8OGoKkq8KgWdmfTrpMhEvyhA%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20200707T135538Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Credential=ASIAYZTTEKKEXSOIASQY%2F20200707%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=f5f93df510caf16a5aacef9e0958322dbe86c5d62afe989c4424ba6f6c1597cc]
+  Date: 2020-07-07 13:55
+  Status: 200
+  Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+  Size: 348 kB
+<ON DISK>  C:\Users\acosta\AppData\Local\Temp\RtmpQPVGZa\file1028429f110e3.xlsxReading from "Sweden input template"
+Range "'database'"
+Writing to "Sweden input template"
+Appending 28 row(s) to "database"
+Created Drive file:
+  * SE07.07.2020cases&deaths: 1qkN_nkhUTe9vFTFKt5zudPeo5OAYCRsUloa8G6IjwM0
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SE07.07.2020cases&deaths"
+Writing to sheet "cases&deaths_age"
+Writing to "SE07.07.2020cases&deaths"
+Writing to sheet "cases&deaths_sex"
+Deleting these sheet(s) from "SE07.07.2020cases&deaths":
+* Sheet1
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'readxl' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'httr' wurde unter R Version 3.6.3 erstellt 
+[1] "Starting data retrieval for Sweden..."
+Response [https://ago-item-storage.s3.us-east-1.amazonaws.com/b5e7488e117749c19881cce45db13f7e/Folkhalsomyndigheten_Covid19.xlsx?X-Amz-Security-Token=IQoJb3JpZ2luX2VjEFUaCXVzLWVhc3QtMSJIMEYCIQCH5926nlDO4LeJnHWb%2B5Uyh4t6pMxXuDw5iqOl%2BOIiOwIhAJEJcifSqvBJzFOvaMRAZZ%2FImn7kzg5aXOd5gt1OlXs4Kr0DCO7%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjA0NzU4MTAyNjY1IgybzNwYBJurQcrBGxYqkQOAl4EC5FGtUVMY5HnyeFtRriqqF5wfJbIOYmQZT29%2B%2Fj3XMG8AOVRMGjHv7YmFFm9DJNA9tAe%2Fo9fhmyOevnm3ffxT70VWGUUnFPOzMMeGv1VQCvopcrsDSRpSUpTOWiTnWxVLeQYZht5%2FrJSEQNXQCkZ7ykYPfVk7X4UaYyL6T3K3gQhTlcpqhg6kKNblPHz6VLp4xyr2hmh%2FvhBMnKFVJgTj7sRT0zXrKQtyFs5YTvA%2Bnj8sICmzZJ1krDvi5WJTkvk7naXrRtmwg6ZA9uD7Vd%2F8kvHdgWYDdbylhZQI6XA%2FEyXLb6xL7H5hV9Fi9mqj0TeD6ichXkuz1jyR%2BVIBpdIWWtc%2BsT1l8Gf8%2B1e%2F41NbFskjj%2BSuWSNSEb962kwWQPLxpBqRCNNfW4UrF%2FSTuktc00f%2B5ucdUCVoYtHPHPaDPM%2BzVXIb7EeDi7n8DLSuosiPDLLKJ3LDgkIrP3dKxTJWqi%2FQ4FaTp3VPgAcHlVUIHccxZVQMyBD%2FrqBaHXyco8hHq3pd7DniqpFfy8WeRzCqhZf4BTrqAVirSxgNZ%2FFSgcvo7A6GoAwoqqeXok0OVv%2FkMAQQCqOoKK7eEZdstUb9xLwnDheErugolHnfnpoa6ED%2BrydKKyC7hvbKD6tbZ4Wm9JGY72uPFkvSQJJrD5dXU8j3RLWReVgrxqEyu8VgHxyp8Mp%2FzOGKxn02vohDiqOk1uMmFFY7X%2F5htNnwSaZ0s%2BsfFJOykNRYbmVpUtoZxduLaJ9QUJzqHG9YYIlFckMp8%2FW7WdbMisWiKzFtEuZd1NFl%2FKjJEWbLLEd8y%2BwT%2BzN3V25RRSGYY3DCReel6UKxfexi3gcecSl6bMgG5Bp29Q%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20200708T135539Z&X-Amz-SignedHeaders=host&X-Amz-Expires=299&X-Amz-Credential=ASIAYZTTEKKE5GZJOL5O%2F20200708%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=a8d546318ff608117ef90b184a4915f579bef517c90c7bfba22bb94387c7bf24]
+  Date: 2020-07-08 13:55
+  Status: 200
+  Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+  Size: 348 kB
+<ON DISK>  C:\Users\acosta\AppData\Local\Temp\RtmpiW7A0g\filedd446d195f05.xlsxReading from "Sweden input template"
+Range "'database'"
+Writing to "Sweden input template"
+Appending 28 row(s) to "database"
+Created Drive file:
+  * SE08.07.2020cases&deaths: 15VLQ8wAJYlgpEGS_cBR4ogVcMNEv-gh-IdEfpdkUl48
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SE08.07.2020cases&deaths"
+Writing to sheet "cases&deaths_age"
+Writing to "SE08.07.2020cases&deaths"
+Writing to sheet "cases&deaths_sex"
+Deleting these sheet(s) from "SE08.07.2020cases&deaths":
+* Sheet1
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'readxl' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'httr' wurde unter R Version 3.6.3 erstellt 
+[1] "Starting data retrieval for Sweden..."
+Response [https://ago-item-storage.s3.us-east-1.amazonaws.com/b5e7488e117749c19881cce45db13f7e/Folkhalsomyndigheten_Covid19.xlsx?X-Amz-Security-Token=IQoJb3JpZ2luX2VjEG4aCXVzLWVhc3QtMSJHMEUCIA3o7UZXntL0ltFjyzQFnPNnxKa5Ge%2FBEIUirblDzOcsAiEAu27Gzp3bPiWN7kSgMZSGynMPkwa%2FyWanEte7iFIn6xcqtAMIFhAAGgw2MDQ3NTgxMDI2NjUiDJr%2BdIOtwiy0swgX4CqRAzl0Y6BY3YxYcvLzqj%2FdHEXu1d9zW6QrucmO%2Bv9EqeYOm77JvQr%2BY2%2FSqBiSF4ySFY1aSxi7hbkPO%2BAxF3nzDfRZpClz%2BZWaRk9tbVkdc5tM0cXnyFIwnFnYRvKfm5Yi3qq7XhgODE2iL%2BigXd6iyDkIQ0ehuYcXUk7BHXq85PyNbscBRsDmTRzs1YTjm7mnipjqyLeE%2F%2FbJBSLf16EyePllTPrzlps7TfpKMiWNQY6oWv%2Bc9gLlC7bY43kEkD2avO3tUb31h%2Bw%2Bfo3VJsvE1buktDTsm9P%2FViEI7HeErj7sctHec%2FvZDhmL99alcA97N%2BPiYu2%2FduxGV16KhP2sSA0lnjsLO2hrESoV6XTZd4y7BC9cnyT2EMntzVYyRRmDY8Y%2Fn7V7a8D1ZWGb9Q9MqTAYpm6hG0BTIUzGR%2FibKJcJ7SJV39poKa1lkAQPwved1LpF5QNdc%2F9Kk5aQCx39gsRFHwLIJuSGdsmsf3mcrfC6BsTZ4XlelPdHQmustrn%2B7epVd8VYToo27cEd0TWh3BJaMMesnPgFOusBeXSxOdR6yYFOOKNFNw7LG9Lk9Z6VLKS1QBrt2ZY3fBpN5ngc19O2%2BkyjSOxDQkMqNQqV61t%2F19wMCOac8TQVNinZxa0RIRF625ttkGtLvB13ZpqCt0pqyTd5BR3sj%2BuvmtCw%2F7kE%2BSjkC1%2Bplt9k1wmUf5fklyzSAteyFyJWIVt4ddRnMg3lMFHo9eO0qPeZeVg4%2Bj%2FEGJTYS4paA1TIWzl1oIliKcgd8og%2FBAth9sPq9%2BuNiN3YYXyKCwxVB9vuk9ZnV7wvscv81z6BfZ49CsXoInhV%2Bl2FIh3bFXaRnPtbUO9TtRFT0%2BSGTQ%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20200709T135538Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Credential=ASIAYZTTEKKEQ33W3Q55%2F20200709%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=e7c36ccdd9d990ffd433054e6fda56d0595450a9b2dbd8c6ed9856749e01e7e0]
+  Date: 2020-07-09 13:55
+  Status: 200
+  Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+  Size: 365 kB
+<ON DISK>  C:\Users\acosta\AppData\Local\Temp\RtmpmSCCoT\file304430412d27.xlsxReading from "Sweden input template"
+Range "'database'"
+Writing to "Sweden input template"
+Appending 28 row(s) to "database"
+Created Drive file:
+  * SE09.07.2020cases&deaths: 1_0UG24MhPlLuMgYBuHR_JRubMXcOfX2no97V2zTxGGk
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SE09.07.2020cases&deaths"
+Writing to sheet "cases&deaths_age"
+Writing to "SE09.07.2020cases&deaths"
+Writing to sheet "cases&deaths_sex"
+Deleting these sheet(s) from "SE09.07.2020cases&deaths":
+* Sheet1
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'readxl' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'httr' wurde unter R Version 3.6.3 erstellt 
+[1] "Starting data retrieval for Sweden..."
+Response [https://ago-item-storage.s3.us-east-1.amazonaws.com/b5e7488e117749c19881cce45db13f7e/Folkhalsomyndigheten_Covid19.xlsx?X-Amz-Security-Token=IQoJb3JpZ2luX2VjEIb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJIMEYCIQDL6tYlIAf9R75OHXPPJdx0rMC2arQC8ncwY%2BfrflgMKAIhAKbaKJv5ewb7kJh2ylaGFedg3Ey9%2BtLr%2BTz1pkqH3y2DKrQDCC8QABoMNjA0NzU4MTAyNjY1IgzuHvO%2FR%2Fl9aZ9m2oUqkQNdWFeR5lG0T96BFY1G3wSTNwkOmzu0qua87OMUou3v2U%2BiLvdZxpxq4UnPgcDzDMJCWwcyeLT7ePy10Vsk6u1RIU1DuO7Ed%2Bagl4sK0oxOOmrSp3zvQq8b3rW2bAWo6BDvKYoTXk3924hXK8tL1DQKmW%2BGHSXzfj4vAC3ojAwCz2YmAk%2FgKJNcZIlrGpgxlPxsHsp%2B0MiTh0riOcgfFDY%2BpjxiAZGrZctNO%2ByNvjEz3zGohoTr%2BSaQdQQm5Dh2W3axvCnm1Ao4f5F5EnCksbyXFudsNstESKftoq3PSZxS5UfFKGNt%2FxI%2Br1zmcNOO7I3nYgRGWbE2%2FcMMH2ybIvfvWo%2BwRm0yUYcSlTxbdg%2BGpng514WIayTBu9BcacyidOJiBSYDf9oqmyoZzx4oSXElrNfRyeleInX1mFgU%2FFp12tnjq81Fq4N71Dm1EyVYUeuaYhtqbBslHOU8Ll5Bzm61e84pzeqzeSrn1tbxVJUPNzbn6d3eLqIwhfvzJpgIdN5rfs0v4p%2BWGj6x6Jzr4ENy7TD93qH4BTrqAXRFde7sTRo%2BZpsvhxHkquoKviIvaIX%2BibZGtJsFIQv3mbaVguhhV64uc9LPVFTSvvJueWsR0UnBL9w7rP7CPqM0x50aEXwbyhjYgRMogBbyUY26fdbu4z8IVAi4zjJJjNol%2BIc%2BuSxkpBpePIcEjzIh098oixTI4AHbiIggPR0Te30eBuPk9x3cMJFM0t%2BGknYQvPo58NPNcKAQze7xhNRiCjwKJUBdj7xdFNwh1MmLm5%2FD8nIolEreugGDxHwQTFjieUvuYe9%2FplYRBH%2FJRJB%2F%2FYYHDA0TZoHgDURhBWEXYVkca0w1BPaCCg%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20200710T135539Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Credential=ASIAYZTTEKKEYWUJUBML%2F20200710%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=0ee9af961a918c7175d27f84361fa9ccf77fb40483fb1eea62e890afaae24ca6]
+  Date: 2020-07-10 13:55
+  Status: 200
+  Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+  Size: 363 kB
+<ON DISK>  C:\Users\acosta\AppData\Local\Temp\Rtmp8SI691\filef40c73697b49.xlsxReading from "Sweden input template"
+Range "'database'"
+Writing to "Sweden input template"
+Appending 28 row(s) to "database"
+Created Drive file:
+  * SE10.07.2020cases&deaths: 1zm67bcvgqKlHojDt7T5r82iIsj-s_Kif2dgforF4ZlY
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SE10.07.2020cases&deaths"
+Writing to sheet "cases&deaths_age"
+Writing to "SE10.07.2020cases&deaths"
+Writing to sheet "cases&deaths_sex"
+Deleting these sheet(s) from "SE10.07.2020cases&deaths":
+* Sheet1
+Local file:
+  * C:\Users\acosta\AppData\Local\Temp\Rtmp8SI691\filef40c73697b49.xlsx
+uploaded into Drive file:
+  * SE10.07.2020cases&deaths.xlsx: 1Xy6wjnho1NhZYEWgu-SKmicxIleSdEfw
+with MIME type:
+  * application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'readxl' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'httr' wurde unter R Version 3.6.3 erstellt 
+[1] "Starting data retrieval for Sweden..."
+Response [https://ago-item-storage.s3.us-east-1.amazonaws.com/b5e7488e117749c19881cce45db13f7e/Folkhalsomyndigheten_Covid19.xlsx?X-Amz-Security-Token=IQoJb3JpZ2luX2VjEJ3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJIMEYCIQCjlipYe54kZqlopRHNHNgUGYpve8FksF7TB7LeTk05MgIhAKYpVnp6nZ0uo8maOCgsOxThwX%2B6HXIfhGODAdiF0n5xKrQDCEYQABoMNjA0NzU4MTAyNjY1IgxnPkV3lp9zgyCSRE4qkQOFoe%2B%2BySRTkTmccm96JC1xCHAf26XInmIZyUJ1qUv8%2Bis2gwM20MYdjauv2fY8egFhCXXOz9AcTKsWMQzqB8EhffsWCFsMYvjuVGVABO1hj88HVzfMuXSGA1vcCOnTN6xffKb0xJMnfKzrB%2FeNHY%2BTq9BSD7a6tifQZBLGu41ltED8dscE0hRotJy%2BvvzEBegEX3Hyr%2BIqRYh6zXKHL%2FMwgWdGi88T3mzCHQL%2FlUkWIUxfmLRIm5dgJiF5tjEgxIiOW5wdAgI3YTXEanpT47MneWPlEIV8E9FcgUe6HcfTGLkFe3puRuonBoQwXNT8v%2B3Y3gB5w97CtlwuTxokUjq2WPc2vuTi3HhwLAbOHJ77YIviy3O8ASbwHjrahYJ3tssyV73ZWMXNhQRPX1oF1oflBWdJAyr5Xk4yAb9jqyKBlHg8VVJDA97zIV8%2F%2F29SImf39ECTtpD0KJ3cSH8FfvjX9tcoDnxnUJigU%2Fh%2FndNeKPG6ElyfKNy65rVMZuhdRsun9xsSjOPwT07PWk3jj8k8ZTDF6Kb4BTrqAeJ3%2FKoYjfD3PsLZSfQ8qB79QCT41RqH5i16kp51Si3SgAfiUTZFgLHteGda8lKpre68YsJgwLKr%2BIKxjlBusc1wP38NHNv6WB0mS5Q5tIHRzNDFxdLONC15k9Djt%2BxoEbipW2FuoG4WVCrS2wXdQLC1ISFTX7f922eg2jSV3kwoqu0eivggqblgn0XqztISrEL8F2UZ7HhJwIJkcGLHFN4bhtnBL0XtcdTT8guJSnY71fdkBVM1xdz0ScYn6AgrrNwmdQW63TcFZHoUf4JYgPPYTnlAnMZKE2HflQIbhEKiqauTSTupvJRzcQ%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20200711T135540Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Credential=ASIAYZTTEKKEYLYRYYUR%2F20200711%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=0f8520e0dd512c41870732cd0419c13ba5a218ecbe7282a0e1a31f1647f0b367]
+  Date: 2020-07-11 13:55
+  Status: 200
+  Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+  Size: 363 kB
+<ON DISK>  C:\Users\acosta\AppData\Local\Temp\RtmpSgbdS7\filec5ec3691496b.xlsxReading from "Sweden input template"
+Range "'database'"
+no new updates so far, last date: 2020-07-10-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'readxl' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'httr' wurde unter R Version 3.6.3 erstellt 
+[1] "Starting data retrieval for Sweden..."
+Response [https://ago-item-storage.s3.us-east-1.amazonaws.com/b5e7488e117749c19881cce45db13f7e/Folkhalsomyndigheten_Covid19.xlsx?X-Amz-Security-Token=IQoJb3JpZ2luX2VjELb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJHMEUCIQDz%2B6YiQeZZylcoZbv9IX5nOclv6TF2SxYLcn2boN52ZQIgWIgPi3%2F9kzY%2F1dr%2FYIyrBgSoGBY8NEyqax9XABTp55kqtAMIXhAAGgw2MDQ3NTgxMDI2NjUiDAcqKEs%2FrBbyHyA3hSqRA2ZaCyB2VYS6ILeLnpPWJVNYgw0rNrMhcdfdTXcAcc46DL4UrjqQRyixDjf0Mej4p1uf%2Fip00kEM4bQh9RkEeA%2Fo4BQoSyTtEBpzVK8ov6sHQyU7%2BKAjsREGYhe%2Bc%2BLM9aQ6O2HktzlIkEwBwBpqCh4z6o%2BU0DVxfsfxMF%2B5uF4bW0%2B9p0iLvDhlnKnZxnPK0hKTjiaYfd3Oz9SxUD3uXCfxpMDBxnmWB0eDMo%2FvFibuWNEKnYqU8%2F11RKPdc0qUsEiQozwqU0RtzUFUkmAH2cpWFW2cqEZLGN2nZlA7Ks6wXFeCh2QXQL1eltVACbnkRkHXFKnmQTee5QksdT0wUdGsZo8DNrX26FYlWdgnFKHDezDyL0aTsH8IMPtn3%2BSvlWvvM7%2FTJjx7eGImDSd3Dk1oHaveMvSrwLy7d8q1dw0zaMHyL1yKqKSfhcyB3kdOtuUEpd2qmfdN1zlyqkD3fweL9p6x3B0A2PuSvgUsYyHXAKRWiE95GIWwwPko1KUR23WwGgu49PM1MG0SV5%2F26iQsMOmbrPgFOusBQgw3jibIZ7RWqBwqUbvmE2COME2OfAJfnb6kE%2BzPpgFLrt1JOuhLZYc4%2BJ0hBsu%2BkNnmHJ0bvrHerskOo1IKGsR5EPA4QlXx8FwLwYkfSBK48lmBpfYj4b41f1PM3IMGMDdIfOay7hATaMHLQeKAw03H%2Bzv8qrJ6ovsyioiae9POUtvPC6koljywh61nOVKTXofD%2Fx5RYH71SqwOFcgngE6H%2Bm6AmttrSGPa123Kt2bZueRiXrLjsDITnuLh%2F7tcljl%2FpbQtpv%2F%2BdDUJOFp%2BrwlFHBrhdh9nvGkn%2Feg1chEt0jB4iIqK3idu7w%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20200712T135539Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Credential=ASIAYZTTEKKEVKSOZUWJ%2F20200712%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=c16419ff6aa8cfd23a4e7efd897fdd2fdd9ba568e6a46377e759f424e436f805]
+  Date: 2020-07-12 13:55
+  Status: 200
+  Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+  Size: 363 kB
+<ON DISK>  C:\Users\acosta\AppData\Local\Temp\Rtmp8ochAN\file643079b9178d.xlsxReading from "Sweden input template"
+Range "'database'"
+no new updates so far, last date: 2020-07-10-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'readxl' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'httr' wurde unter R Version 3.6.3 erstellt 
+[1] "Starting data retrieval for Sweden..."
+Response [https://ago-item-storage.s3.us-east-1.amazonaws.com/b5e7488e117749c19881cce45db13f7e/Folkhalsomyndigheten_Covid19.xlsx?X-Amz-Security-Token=IQoJb3JpZ2luX2VjEM3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJHMEUCIQDs4mAozMf%2FX%2FcBF%2BxDxGy2pRO7FVwRa1vXwJMaHGLlcAIgCmai3ylX7z7y%2B3V8fY5YSxfTwaeSc31cU3f9ysN2jPgqtAMIdRAAGgw2MDQ3NTgxMDI2NjUiDDm4XkXDdJzvg3G2CiqRA0dhdJqrmEaJ%2BMqgupV0dKI83eaBSvn%2FX7gVFlK6z7E6EKdUdZBg4Xqd2pTBwPOqM4YUzW6oKK%2FuVCdmOKAwAfz5YDEYrguOgG%2BjTn5KX0K%2F3Zwy25udfYCl6I1HkLZvWKE0KZYNcoCheYmtRTsKqDv15l04iT0bb22BvnzkqG715RU5f4oQBxRsHdFatdk%2Bc7YEbyaDNw3iOxHcdMl7jeUBCUY2Zy9GRGQrNjKZC7wAYGei3WsQEvAcOKGgZD64bn3F9D8InTWlB2ojoWSsP7vvDj9qHwPzq4oHMCljD579ZdCddtmaOxppTnSdZ6yDZudre%2Bs%2B5YYlRt5wRAPHKMPF%2F8O0Gmzt4V19lGvnQZ%2FZAl%2BVmghVAPStyKUd3i2OymA7F%2Fr8PMDwpDrMUxq1u7PE1FfgvBidQGouLRIFWFsrgZYXbyg3xf3wCCWSiFD2tplg1eqrjgNmVSn6oNMWh1KG2mYq1seEFLzwpOnhf9k6WJFu02Gci7LWsDO4ugoroct%2Fzp%2BEq4A32ZYSKRsiVwjNMOiesfgFOusBOh3%2FhlatHE3qypC5rtraUVUppuen95pguYpzP7Pb1CJXPVVHpTs65X8wWFW%2FSYp2jgx8QZat%2FqI1eje6tLYF8Aghaegr7b9vCoSYJaJcmn9FWBZetOG4A%2BsJtT%2FkmGTPIwJG%2BHmU%2BZbKYtX7%2B2l2cIdtSEsATbszhMBGawLhkgR7GeimOheZFbNKED2HAd0D7eNU5iia5ER20uHOnZ%2FsyURmdfkPTO%2F2NEnJeRTlX9NRaDtvIDgeOVDgOw5TOjCfI8bHVOJRyqR0dgVSWm%2BKshM4EJ%2BRUi4LhkTIIjdUyXMm57jQ0sHnSvc%2BbA%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20200713T135540Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Credential=ASIAYZTTEKKEWUUWUUX4%2F20200713%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=3f42a8a00b01f6375467846b51b9422c586d93d76d068add415878317af00456]
+  Date: 2020-07-13 13:55
+  Status: 200
+  Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+  Size: 364 kB
+<ON DISK>  C:\Users\acosta\AppData\Local\Temp\RtmpQPaXyJ\filedc703ce165af.xlsxReading from "Sweden input template"
+Range "'database'"
+Writing to "Sweden input template"
+Appending 28 row(s) to "database"
+Created Drive file:
+  * SE13.07.2020cases&deaths: 1Ub7QD8iPFTIHyc6SOyIKSfHgc3JYrMDKG0nh7ZxE8_w
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SE13.07.2020cases&deaths"
+Writing to sheet "cases&deaths_age"
+Writing to "SE13.07.2020cases&deaths"
+Writing to sheet "cases&deaths_sex"
+Deleting these sheet(s) from "SE13.07.2020cases&deaths":
+* Sheet1
+Local file:
+  * C:\Users\acosta\AppData\Local\Temp\RtmpQPaXyJ\filedc703ce165af.xlsx
+uploaded into Drive file:
+  * SE13.07.2020cases&deaths.xlsx: 1T-FHNbUsnmQuMlAWk-OwISg0nDzG8QjQ
+with MIME type:
+  * application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'readxl' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'httr' wurde unter R Version 3.6.3 erstellt 
+[1] "Starting data retrieval for Sweden..."
+Response [https://ago-item-storage.s3.us-east-1.amazonaws.com/b5e7488e117749c19881cce45db13f7e/Folkhalsomyndigheten_Covid19.xlsx?X-Amz-Security-Token=IQoJb3JpZ2luX2VjEOX%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJIMEYCIQC1KcVmDN4pXUBu7wcFesfE7NjnnNfO43atX88pir3f4QIhAKU5Cwu65mGPN2tTISPpkakLSHi13ElWkhAwTyN95f2qKr0DCI7%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNjA0NzU4MTAyNjY1Igx1XZ2AgJXC6C3YDUEqkQNJNOgOXzFWmkPoUHOEtxh4WX7crWqmddYPBN7YksYHo8aRs%2FvtPwTNySbzxUEMY0VzWd1WHIfjhsrLIPBiJ0qYobtc%2By0BGSTDM2TMvSYlxSlcRTJ2v%2BeA%2F3GEZ2KdHzpEaFNg4rCpUqVpk9mbB9GQu%2BuXiSaEnB1uM9V0SXiV5b5W6lRgIsuIs4S%2B2RUGZf23F7fUWNrgd7Mi%2FGu1NhisgouomtmDO9E7nxX%2Bj0CGZcdZUOmO0pPQASr74GC5kCIuumN98bPXc2or%2BrdgTQgfXmGT8tAS621ix9QQTv8I0hnmeHAWWDQqS4EfPu12ZrVdzRhTo2LsEeYYBFZxmAeXHkt4fCJKvuhUGHXHHE%2FfAItlHCh%2Blw8%2FhnYVr4fa7dDh2adJUuEBJI2knkQLtCSsbJtDpxXul%2FjFfUyjAkvEXsqcvQVwtTziKrAl7tBxDt1dnHSdhqiN7CoMTZt3aD0Un%2Faao0TATDEoobzVHj28j0r9FssCSy6z%2FauetxBjEMqGks5s%2B%2BEfGABmccua5eeYKjCNzLb4BTrqARsZxNqxmkZhw%2FFPRrqrA2kbf17PXANtAdv3bwFDFq79Re2FBcz7ofxF4lKYUBA%2BpWgFgo9Shmc2chZLgNhlzopqJgbQc6Fh0q3TXBLWeiyAGxLbjnoqu0N%2FwxWMxq2bIbdU1DNfnqg2bR4cOW9lJLiMzzik4S61LhPGqzue7ec0tEzbceF4ap76OVxgCc93gzMxi3Ja%2B8o%2FNRnFXRn6Njj6NNQ1blulT1HDwTk1Pis38ApNLMiS%2FRV3%2BuJSW%2FpE1zDNnVnbR%2B20hEp3FnF%2B5CEzjQiR85BU%2Fkg0mO%2BJUohR5aC3KcuEf%2F%2B%2B%2BA%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20200714T135546Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Credential=ASIAYZTTEKKE37TOJAE6%2F20200714%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=5e00b374bfb581a476efcfbfdd415561667bf7cea1c619e0fe863c86ed03a12d]
+  Date: 2020-07-14 13:55
+  Status: 200
+  Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+  Size: 364 kB
+<ON DISK>  C:\Users\acosta\AppData\Local\Temp\Rtmpgv2kKR\file11f047dfe33db.xlsxReading from "Sweden input template"
+Range "'database'"
+Writing to "Sweden input template"
+Appending 28 row(s) to "database"
+Created Drive file:
+  * SE14.07.2020cases&deaths: 1E57yebb9_uQ6P8w-qnmSxHJx27f9UvSwjRXj46I9UW0
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SE14.07.2020cases&deaths"
+Writing to sheet "cases&deaths_age"
+Writing to "SE14.07.2020cases&deaths"
+Writing to sheet "cases&deaths_sex"
+Deleting these sheet(s) from "SE14.07.2020cases&deaths":
+* Sheet1
+Local file:
+  * C:\Users\acosta\AppData\Local\Temp\Rtmpgv2kKR\file11f047dfe33db.xlsx
+uploaded into Drive file:
+  * SE14.07.2020cases&deaths.xlsx: 1LVSlUEkUAQulWwvMOwLHZ0gR1Nm3dmYG
+with MIME type:
+  * application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'readxl' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'httr' wurde unter R Version 3.6.3 erstellt 
+[1] "Starting data retrieval for Sweden..."
+Response [https://ago-item-storage.s3.us-east-1.amazonaws.com/b5e7488e117749c19881cce45db13f7e/Folkhalsomyndigheten_Covid19.xlsx?X-Amz-Security-Token=IQoJb3JpZ2luX2VjEP7%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJHMEUCIBe7zkrhs5tQsDXdK%2F9cQyr91fEKzv3Bnp%2FaIiT2HGvJAiEAiH7ZVW71aIvDa8PougTqMmR6%2BKaH%2FTo0IGSGvya91Y4qvQMIpv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2MDQ3NTgxMDI2NjUiDIXjsmZXfNSVfwZRkiqRAyuxzUPGoMgBRZ8tEEGBw%2BR8obTDu0ZVgpsv66d6j%2FerGxIyx5U6TMRJbioBFp6bxEkWrNfh2fDeAjyhi4xLjFo%2FyNfrgY5k%2BFUoZiaiyjfSuNFcGR70PQSvqWh16dAtF%2Fun6fLutvnXCNDP4OVJMVQAPnWWNJwBrbaEGyYcdK9aA0jzXwnHHKjxNkdAFx7r2zMKho1xlHI2tAUdcmOjrnhrb%2BC%2Br2I59cc5zTyRUJLCZ%2FcOWXloF4l%2Bb%2FhhbCtrck3GEenDLk%2FzZ4Iw5Lp4lxUEsTFVGEr%2BBqinUH%2BabKsLQ94t9M7d75UM48JjjOaO58yM1%2F%2F0fAIcwlmGDXdNQYqV5hL7aPR0jxWmu0gQsr%2FKqRxrNaqqOYQqOxYKIcmCcALiwKgAi7cEXiW3dOEXLKQ0UCINO%2F%2BTcgeyfiX1143EtkKAnj5m6rR0wmALVl9nKUxas0tRnREVXSgbPBTOvo9DFCLWW%2F%2Bh01a0J4uWyTaTuMwcIC%2BLXntzAmhpVNGBE0Yy%2BxmiBBsLcFdPUNsvzZXcMNOLvPgFOusBGVyc7qy2dXKKmOumgrke6nmUnY9x9xlJbL9%2BhyHgJhtHWAxX1hacIqFI2z4AOTevsY702pRTQ1DaHL3nCd2NYzIKmajHfccfjmu9wpKHFQl0bMunXJBpzEcRM3S%2FfPpSiTQ9lofNCSigpVNzA9IZuX7F5ajknQXPdCUmmUb%2F90qXOPfnRcQF0WVgbXDY3RSYOzKbbGGNl4ZlriuB5L5fsat93kuuUAUwlwtqNR3v0JCoPd3kN6%2B5tXfmeobDc4kQ4C0EMCRteqFA12%2FiKn7kKu5KPad5Keqcf%2F%2BoEZnsuwiWAR8BcOhnOLes0w%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20200715T135541Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Credential=ASIAYZTTEKKEQN55N5WN%2F20200715%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=710a1870d0467a6b6ebb5c1bcc812e6c140dda5647e2d54ddf36ae07586d80f2]
+  Date: 2020-07-15 13:55
+  Status: 200
+  Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+  Size: 364 kB
+<ON DISK>  C:\Users\acosta\AppData\Local\Temp\Rtmp0IbJYv\file1311c43301f3.xlsxReading from "Sweden input template"
+Range "'database'"
+Writing to "Sweden input template"
+Appending 28 row(s) to "database"
+Created Drive file:
+  * SE15.07.2020cases&deaths: 1u00SSbhgIp06XISzlopehypivGB_fT40Qb2C1MYp3lk
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SE15.07.2020cases&deaths"
+Writing to sheet "cases&deaths_age"
+Writing to "SE15.07.2020cases&deaths"
+Writing to sheet "cases&deaths_sex"
+Deleting these sheet(s) from "SE15.07.2020cases&deaths":
+* Sheet1
+Local file:
+  * C:\Users\acosta\AppData\Local\Temp\Rtmp0IbJYv\file1311c43301f3.xlsx
+uploaded into Drive file:
+  * SE15.07.2020cases&deaths.xlsx: 1ThJfus4Ck4uNeioKJQ0FB4lhQ1cNIS2d
+with MIME type:
+  * application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.3     v dplyr   1.0.0
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'readxl' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'httr' wurde unter R Version 3.6.3 erstellt 
+[1] "Starting data retrieval for Sweden..."
+Response [https://ago-item-storage.s3.us-east-1.amazonaws.com/b5e7488e117749c19881cce45db13f7e/Folkhalsomyndigheten_Covid19.xlsx?X-Amz-Security-Token=IQoJb3JpZ2luX2VjEBYaCXVzLWVhc3QtMSJHMEUCIQDPhHD6n%2Bl%2BwQ1KaCBFFIQjRv8I1ndy9glyGgl54%2FmEwAIgHBqmkqKl7ji16HRRjOqwrQTtYG7R2DLKe24oVOQYRQAqvQMIvv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2MDQ3NTgxMDI2NjUiDMtnxkZXANCWl5l%2F9yqRAznZ0LCOFSsB1lxp0v93yP1A9QvlXGiTIHKitdCw7HbX3rrlbiGLREw7Jeck0kqdlQjMtnbtZ8JkEjfmcLoKYJN5O0Fc22AAIJ%2FudxDFvqmrIT2ylsYQVVp910uPU0%2B%2FLMOFwqRqAzyxm%2F9zWB0%2F6kHWqiLrME6XIF5J0THna4tGf7Zi%2B9gIvVpv907oE7abEjdAh1hlOMobghhTeVwpM8oEIoIA4F2K317h%2FsPglwr2w0M4lhRyCfbzCDhRnYVAksenMy3n36kZoSLOm1xyRbNoysRjTrG8HWKhGFJjAlaNSBcZxh%2FaN%2Bg4qpbkuVCnsrc235%2BgQZRUBK2thHFpT7n9ZlPXhl2icEIInEbvU5DT3WS5HnvPOigj%2B9sTj8aSAl3DBnYJfWWlIsekvZCcMm51xL4O%2FfF09%2FOri56DXG7phpn7BRQNMuc0EAwP5pGiaYW8hsoo%2FB%2FNHGjqzjLaKG4sBbpOgzFDWTQXC4p9naUC7FHA86hCPOTFTywhz1S9YWGIQKn1ohhjI060VGqfxVzdMLqiwfgFOusBPL%2FasGKc2IWx9LH5F3uH3gqdGqfKtBSZEvZ%2BbPxVwjkd%2F2sGCdDWoTCV2OB0hDr59iACsf4b0qpct6%2F561JtfnGMscwt0RMdPLdEHHiqrpE1vobX9LURLwv4kJG2si3OdiJV50puQhvgRzvBuNFj%2BJqFd3CT6DHIeGCZlWef1R%2FEtX6CjSK9UXilYmDQv3HJ5j1sKXtuHP%2FcTeoU9zkRO85QppSF8ITPxiL5486ISP9lekcBQcXw%2F%2Fg5JSsTZtpbHZ0P47Ivrd2zn0ok8mfrI4WBrr9GPjANQrpGukC1U9PNm%2FPWvvFAgaucWw%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20200716T135541Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Credential=ASIAYZTTEKKESVCNKBHS%2F20200716%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=61f31a19660e9c4ae3c662afb62d8145c28a68f81062c8ffa7c6bda06868af74]
+  Date: 2020-07-16 13:55
+  Status: 200
+  Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+  Size: 381 kB
+<ON DISK>  C:\Users\acosta\AppData\Local\Temp\Rtmp04qHNi\file996c6585015.xlsxReading from "Sweden input template"
+Range "'database'"
+Writing to "Sweden input template"
+Appending 28 row(s) to "database"
+Created Drive file:
+  * SE16.07.2020cases&deaths: 1lhjmxLEH8zVl218dqFlDpNzyc51Y8-peCs4MFv9gCs4
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SE16.07.2020cases&deaths"
+Writing to sheet "cases&deaths_age"
+Writing to "SE16.07.2020cases&deaths"
+Writing to sheet "cases&deaths_sex"
+Deleting these sheet(s) from "SE16.07.2020cases&deaths":
+* Sheet1
+Local file:
+  * C:\Users\acosta\AppData\Local\Temp\Rtmp04qHNi\file996c6585015.xlsx
+uploaded into Drive file:
+  * SE16.07.2020cases&deaths.xlsx: 1WMS1J28oLTGLeNy8xAAs_WxagX4vjIiK
+with MIME type:
+  * application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.3     v dplyr   1.0.0
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'readxl' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'httr' wurde unter R Version 3.6.3 erstellt 
+[1] "Starting data retrieval for Sweden..."
+Response [https://ago-item-storage.s3.us-east-1.amazonaws.com/b5e7488e117749c19881cce45db13f7e/Folkhalsomyndigheten_Covid19.xlsx?X-Amz-Security-Token=IQoJb3JpZ2luX2VjEI7%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJHMEUCIH3%2B4KMmKaMgypDba%2B3Lnwxfpj6yIIdAzbNF34VntDTAAiEA7pQ%2FdfDCTrTkNzqZ2%2BCftCXsFMeYqLzQf%2FacunDF4SUqtAMIRxAAGgw2MDQ3NTgxMDI2NjUiDNsuSFEY7uR2OGCf8SqRAzLxcbxmRXeRZkD%2FsCmILyLi7nGfMzZ0vTMUYz%2Bi8BQRHhmdL2Bfqi%2BAX4R717IOI72CSOMAM0ktB3279P%2BsIGvuOMpWpSv2ukskvIL4WSqbNldlcufYzYmINY1BUetVe7Lsqc1qfwnoCkO5ytHTjHhRa5KaL2kSX%2BcgVsGmyfXwmY1UhgDwhsvJ%2F%2Fm%2B%2BM3e0dUc6Y5QEVRTiAcy03DgcNf%2BEwDZ9Cy86OOY3RjrItEObSMiNKcto1v39DOOx%2B3FCB4chkiTtDHU6kOScfLuJqJzKZWVu0Hof%2FhDjH2UxYe0%2F7%2BLZTeDf1miqJe5TfI9SkotWBoLbIhCt%2FFhcej%2FrfFI04c7xYrzBC7AqbbEFh4uL9hAeXP6aDcICs4KsQtrsa69BqFfvSj94YlQVJ4eaJTZjtJp7e60f5NsGXbNi%2Fs09pAz2PIfhdGtFRRVliy0hMop8MFOIDvPpxa1LqDUFEaENDR8rX0pUs8kMmJkzJszvRzG%2BRStf%2FsqFLD93Bx%2BYWX0Y8rDCheaZRfNzjX63haqMPHb2%2FgFOusBhiNPQFYay%2Ba8NuLrvfRNonun4CpmjAOD0APovnm8SibZOb5l7hkorOy%2FwQnN%2FlCVrKOpnVu2xnCdnkFJzTTWkeiof2sBmHX1M0H2G5FyfZmVyhr2j05wHuU48mrYYGAYt6F76vBDAANp0yzPceQGH8UVdInc2%2FtDRHizOVX4fF1Ny0rUhj9ITbnpCbjLF1r%2BVOjQ33fUMptFp6E%2FM%2B4rOVg%2FhA4SACRnM0FfVbVoLrGiaGPJtr2fxZ6TBVxYn%2BQQqqcz9Pj1HTgPd4fvdOBPXpx%2BIAH6R1TOPDmTGAprCmdY8Of7ouTRCC0I2A%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20200721T135543Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Credential=ASIAYZTTEKKET6DK4UVK%2F20200721%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=1fea224dda2a7a7cf5bf74f92e60509f90786b33df67b8289b8dfc40dcf23158]
+  Date: 2020-07-21 13:55
+  Status: 200
+  Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+  Size: 382 kB
+<ON DISK>  C:\Users\acosta\AppData\Local\Temp\RtmpcXJz3X\fileaaf4562056c0.xlsxReading from "Sweden input template"
+Range "'database'"
+Writing to "Sweden input template"
+Appending 28 row(s) to "database"
+Created Drive file:
+  * SE21.07.2020cases&deaths: 1RscssRDCibQa4hlCjiy3Ej8EMdT9hF5WCFrMC9l71aI
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SE21.07.2020cases&deaths"
+Writing to sheet "cases&deaths_age"
+Writing to "SE21.07.2020cases&deaths"
+Writing to sheet "cases&deaths_sex"
+Deleting these sheet(s) from "SE21.07.2020cases&deaths":
+* Sheet1
+Local file:
+  * C:\Users\acosta\AppData\Local\Temp\RtmpcXJz3X\fileaaf4562056c0.xlsx
+uploaded into Drive file:
+  * SE21.07.2020cases&deaths.xlsx: 1ZfTbvHM90-3mhGgAhHuD2QyQiANQctPc
+with MIME type:
+  * application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.3     v dplyr   1.0.0
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'readxl' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'httr' wurde unter R Version 3.6.3 erstellt 
+[1] "Starting data retrieval for Sweden..."
+Response [https://ago-item-storage.s3.us-east-1.amazonaws.com/b5e7488e117749c19881cce45db13f7e/Folkhalsomyndigheten_Covid19.xlsx?X-Amz-Security-Token=IQoJb3JpZ2luX2VjEKb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJHMEUCIQCGx%2BE9jf3ghAQDet5jjNqPC6n7LMTtkbkb4EOtonzKpgIgH8DodSahe0D5FDeHK9C78yuM7BoVc%2Fg%2B10OecUkzMwgqtAMIXxAAGgw2MDQ3NTgxMDI2NjUiDGJ03nR5ix%2BE0X%2BFmyqRAww09OlNENukXbhDR4cdxmE10%2Bja2EaaXU2IYJlSCcdyN9q8vpWEsTItP4I044ZQ4HtiN%2FS9LR3XTSGFxMjT8Vnc0TaviKUgvJokLhE8i2sJLJ5%2FSHK5RfNnKQY2n2NAHzOWLsU8SGnSHTcFWNIP%2B34dU0U7z81W0vhieg4sjAG7wAWg9GxJLGqjWJ8f6uOmdzv6fdvS0nhQ5jb3gkw%2BJZbHb30ssRzW04DOsbw2GKD3%2BbQhjfm3y7xFKyzd0EkdTLLfzv1W6v4q4%2BK4PHQhMi%2BtkYJBnVWNXrjdd5C6Q%2FWMIUKg08Fo%2B82AlUsXo4uZMFoa%2F%2BAr4ZE4T3hIA6Y355pfbHvi0rIwOUsMMnFcDJGOPK%2Bo1RlGC5ehe9unQlp4XT%2BtOQuOPdP%2F5hwzj60kb58IJrHcjxAifum%2BAJnaqKqWwWH%2BHx%2FGPhYcfcD8hAAX%2FijFMgcRuCTz0CwUtwGDK%2BJmnJn67t%2F%2BiRrzN11b5mkxaF0B2d5%2B%2FCcuzm8MVtpI6FUMIxOruBBnbYNpTZEzO7sOMIX%2F4PgFOusB%2FlSM7ab4l2NpBqTVhdsFHuz81UiJ8hP4TPrYTxq9Z7p84y4LIuMfKkBELz6OmsBvipe3QO9SjeB15e31EJvA4jAv4aBG%2BfoEAlSpnFOPLY%2F70zPh8WD0sMRuoUUnRfgD2vEspuDK5gIPwtxZZvnVUi%2B1fyw3PTKy%2BxcbXWqQjYbxdut72vQ1zJPnFQ9MQOpf1Ann7dLEklVJigc7H3iidC8OnTTWUq0vp93UWatK48qgc3fI9XEFQ%2FIEpu2VrdPnqdZiF6n2OTiskCeGmSWd4NrIh8U6tjBSAIi4RpuN%2BOy6XA0O86ws8Xx6DQ%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20200722T135543Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Credential=ASIAYZTTEKKE52LBY74Q%2F20200722%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=6403e3768e8ccf9af7e2cfed141a3f123c77eec9f7880bb49a2aeb46b2e5533b]
+  Date: 2020-07-22 13:55
+  Status: 200
+  Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+  Size: 382 kB
+<ON DISK>  C:\Users\acosta\AppData\Local\Temp\RtmpWw3yKU\filee8a0194724e2.xlsxReading from "Sweden input template"
+Range "'database'"
+Writing to "Sweden input template"
+Appending 28 row(s) to "database"
+Created Drive file:
+  * SE22.07.2020cases&deaths: 1GsQn2TqswyH5DzDV31psLccq_vAxyFquL071qTb-SjA
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SE22.07.2020cases&deaths"
+Writing to sheet "cases&deaths_age"
+Writing to "SE22.07.2020cases&deaths"
+Writing to sheet "cases&deaths_sex"
+Deleting these sheet(s) from "SE22.07.2020cases&deaths":
+* Sheet1
+Local file:
+  * C:\Users\acosta\AppData\Local\Temp\RtmpWw3yKU\filee8a0194724e2.xlsx
+uploaded into Drive file:
+  * SE22.07.2020cases&deaths.xlsx: 1TwrENPc4SOaH9nk_o-9rhWVEos7ip486
+with MIME type:
+  * application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.3     v dplyr   1.0.0
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'readxl' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'httr' wurde unter R Version 3.6.3 erstellt 
+[1] "Starting data retrieval for Sweden..."
+Response [https://ago-item-storage.s3.us-east-1.amazonaws.com/b5e7488e117749c19881cce45db13f7e/Folkhalsomyndigheten_Covid19.xlsx?X-Amz-Security-Token=IQoJb3JpZ2luX2VjEL3%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJGMEQCIC1EJnXvPpFsatYbGK3l7GGxqGTACgLnBwHWnCYfI7fgAiBPh5gu%2Fev%2Fidmm6PKs7xzlxecOQsaKCg%2Bn4KMQRv9tTCq0Awh2EAAaDDYwNDc1ODEwMjY2NSIMfo%2BVmvneudro57p6KpEDg4ubxS1%2FxySQMFOS6%2BxccJMQ52LtEGUDndNQ%2BeB25dqeAlaKtQCl9lgd0vxjd3T306zGH%2B8gfuO0EPgw8u9tnqb3OfX4HROSnnk1tvvybrFm1MjJDo%2BlDa3j1c%2BvIu5Zns9Y4Du0%2FMQq0UAIipsBUpZ7OdFswOBBlqhyKE2WDVCR5PHB5l9g4TFzevRAvylkt7YN5iRvF6WaCMi1kvS8%2FB8HS%2Bq9nx6J%2FnbeAhrXGVQYQRYk3nR0hek7%2BSIUoLf3niFm2kY%2BRZaSBFzW9M2AS2N0GRAvv1utsFv2zdz86IqYHt4FRdmw72WvUBYMCPRmGig7jZnwtIMK1TZHk2FlJja8xe3KqWHkZaOIAoFLFvAzAx29SbqGGFTQYQ6QeycjFcBG%2BRRLtbeXYn6wyoH%2BdRVL1rbW53gTD%2FEYAobbXfJwcWvnPyM6kWBOfqu%2F2ZkpknyNr3XmQ6j1wpwa5RiNgdENowAvHkrhsb26uG38yjOmOVEJUW8I5zJHtkxpg3TzQF%2Fizc7hgYTwhK0%2BdFEyOE8wr5Hm%2BAU67AG6PKUeI%2Bk6pQ9%2FXBUU1asMmeNStnBLnsYQaGDeW3aWOqjCT1tqRNN00MzpNOq%2FHnwSJe3r20nRBoE7BYYDTVcopxq9wY7DzXrZjX4FRIpwS18Qh5fmW2rR8osrpoBbyHb5lcvgWDSQVpR2bTQkqXN14AUSM6LvUhy%2BAe2uf04PVkM6vgFZrv2ZOtsLYTYwSzPO8l4Xzi92JcZDIA8JJssyY3MtilaSWBUrripgSULnAoUbyWLwJfigo2sllGOLmpZuo7sgi821W26rvmBTM9azskyFQgKF74EoTaJ6VryNhTz%2FubcSjBm8x3W3cw%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20200723T135544Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Credential=ASIAYZTTEKKEXPAS64GM%2F20200723%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=e19dd5c996d87441163aa5c9664021185ae334f8e1b859c0d046c2dbc3c4ddd6]
+  Date: 2020-07-23 13:55
+  Status: 200
+  Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+  Size: 398 kB
+<ON DISK>  C:\Users\acosta\AppData\Local\Temp\RtmpcLzFEB\file12fa45c6f7304.xlsxReading from "Sweden input template"
+Range "'database'"
+Writing to "Sweden input template"
+Appending 28 row(s) to "database"
+Created Drive file:
+  * SE23.07.2020cases&deaths: 1UmxAmuUcqOG2UR-tL4llaR0G0Rux6-mU2Fgif9Am3AY
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SE23.07.2020cases&deaths"
+Writing to sheet "cases&deaths_age"
+Writing to "SE23.07.2020cases&deaths"
+Writing to sheet "cases&deaths_sex"
+Deleting these sheet(s) from "SE23.07.2020cases&deaths":
+* Sheet1
+Local file:
+  * C:\Users\acosta\AppData\Local\Temp\RtmpcLzFEB\file12fa45c6f7304.xlsx
+uploaded into Drive file:
+  * SE23.07.2020cases&deaths.xlsx: 1TOfJEEsIfWPMibf-9HaFn0LFGhNjIbDd
+with MIME type:
+  * application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.3     v dplyr   1.0.0
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'readxl' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'httr' wurde unter R Version 3.6.3 erstellt 
+[1] "Starting data retrieval for Sweden..."
+Response [https://ago-item-storage.s3.us-east-1.amazonaws.com/b5e7488e117749c19881cce45db13f7e/Folkhalsomyndigheten_Covid19.xlsx?X-Amz-Security-Token=IQoJb3JpZ2luX2VjEDYaCXVzLWVhc3QtMSJHMEUCIDy1nUp7KI1wGYa7dW5XF%2FGXwR09VJnuBhm6D9hb08M7AiEArG8BDWXlVgOeTDmyraNiuMh3pkkr%2B2SkKq2W0n%2BPKxEqvQMI7v%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2MDQ3NTgxMDI2NjUiDAdQms40fTJihkrFiiqRA1vX8KQo%2FQQtyDcq8ZvH5HUkzYb6YpCo3c4r%2FOJw7Ql96Od6pzXYfHwEqjHnZKoU6SJaH50CeUJ%2BfLT3Yqe8s9fHCWQeWfD%2FNUvCZ6pPEQiYCGBPQLKnBqJomSp4mpOUhUOYedurviep8rFlSJUurYFU0ys5fr0TQz92vI%2FUfEttQnjCjX0tldt%2BYsZqnUpwaI6lydjeakfcotLl8CL5CO8E4%2FVkuerr80X6qa5NFo6JGkHQEPhHTp8kimCWCqyxQlAqYhwob%2FKq5cjnKSwcrCy6Mq23f1swc98QdzkbARf%2FO%2FoKen%2FCfI8Lr1L9Z%2FOHkkUv0zsqqwmrqdrHKZi%2FpycZwU%2F7UntUMPlyGHdn1Np1m9gFwY%2BA3GQPdyY9gN8cCWbcgP2ITy2ObuKVesLdLGOvH4DvKjiOrK%2Bc5KP7kNVCXLu48RQYUNdrvW%2BPFzKi5YAk838%2F5PwLfWVIhoWlYA6EtI8NYCbingmuJemv%2BLwgagBnrfdOxdYzvcAj396xzIKDshs2vg%2FHk%2BVfPIhi2xMfMJDHgPkFOusBpCpUW0umrPy5MTHWGeNMVxsXvmuXFEdErLugcdcKXKTu2Hq7Wc7QbtkULZMSpj9KBdpukbR4CwIO47EZiuR4DyGkF9g1dtMZ0HDVG%2FiZ8udG5z82koCmh37DnbdU5VdLs5nT8pAJybVa%2FedplLjlQk%2F0aiJfjCWBfv7wZykGLox8Nkm%2BPLRPOKm8Gcj2ehUEKZ7HrNWuLCZy06ra%2FEV4K6tJ12MyxQcAtHqRFrFBvX%2FJkotmAC5%2F9EC1XVofnAfFCkORZ%2BQFcCjOHQqkbQkkN%2FNPYALb%2BT8yE3d6bFflxnxv2AAM5pmI4Kev5g%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20200728T135546Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Credential=ASIAYZTTEKKE2T4XO6BE%2F20200728%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=0672daa5699bf2d1cc8610a75407c4fa2ea82eba440066258f02f36da198cc5d]
+  Date: 2020-07-28 13:55
+  Status: 200
+  Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+  Size: 399 kB
+<ON DISK>  C:\Users\acosta\AppData\Local\Temp\RtmpyssSnn\file1448c2c3779ae.xlsxReading from "Sweden input template"
+Range "'database'"
+Writing to "Sweden input template"
+Appending 28 row(s) to "database"
+Created Drive file:
+  * SE28.07.2020cases&deaths: 19Zo8Em0NYfIO7CzusPyak0AwLbyxhnG_gEPY2zN-xrM
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SE28.07.2020cases&deaths"
+Writing to sheet "cases&deaths_age"
+Writing to "SE28.07.2020cases&deaths"
+Writing to sheet "cases&deaths_sex"
+Deleting these sheet(s) from "SE28.07.2020cases&deaths":
+* Sheet1
+Local file:
+  * C:\Users\acosta\AppData\Local\Temp\RtmpyssSnn\file1448c2c3779ae.xlsx
+uploaded into Drive file:
+  * SE28.07.2020cases&deaths.xlsx: 1kWANnhEWnmYH3E1uH7DXe1HjqzEzIGe8
+with MIME type:
+  * application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.3     v dplyr   1.0.0
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'readxl' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'httr' wurde unter R Version 3.6.3 erstellt 
+[1] "Starting data retrieval for Sweden..."
+Response [https://ago-item-storage.s3.us-east-1.amazonaws.com/b5e7488e117749c19881cce45db13f7e/Folkhalsomyndigheten_Covid19.xlsx?X-Amz-Security-Token=IQoJb3JpZ2luX2VjEE0aCXVzLWVhc3QtMSJIMEYCIQD41jlU3Fqvxf98ixeV4GH3oZ9AlgnmRMvTcGd0Gn6c9AIhAMAF3ri8xdHZreWH0kWEC6EL6eYLEWe1a98QdPCeI%2BgQKrQDCBUQABoMNjA0NzU4MTAyNjY1IgyuWe6djZx77dUm9oEqkQOf2HGnRv3oz6hUnhHWqJ%2Fig79fWcXXJmrn9FN1mJ%2BDVIhyoQ7gvIQS%2BWMXTCSJycyos3lKCGj16UQtk7pnyUmi%2B3h9THzCznUfgXLGVX6DOcFrNByJH15GRabgzkGdfm3Nbxvo8l%2Fno30KSwptdGgrgpv2WPbZPXe5%2Fb4acnoxSVScW5RyYHhzPyt9YydSw6Wji6y%2FuyPMZ%2FvTd8tOQPWFvTK11GtmAd%2BJxfwylHcu0srTzL2ehTcDA4imZYnE24spB4QGYOS2ulH%2FLFeKnnEb6AUbqahw2IRGits4oRKEsNdMU%2BqC345XWP1aAW49%2FAaQg%2BbndDe5M8QSvKPoUbh%2BdFujylKL2K9%2BxyeL%2BET0ajUt%2Bsy92bSrp34rCew2yEAaGnDi55L9bgU3HneoX59q%2FnpmuRZ9GBlTAKpT7U%2BhpQSOM%2F5tM6Y8%2BGMrdGSwIG8ZrzVLgcXXBOnhsxVNvGz%2B%2F2Fbd69p%2FJX2%2BIBoKQh354sDYT9W0Kq9ewxhvu9moF1CV4JThoLtjLlpSqb4AB9BWjC014X5BTrqAU57UF65nsNRru6cftoMSNlZRQ4LXnGzv1%2BCwFymFZ1K60mto2OvnwwvWU1tACvG683tqXbOjN1F5UkqL1koMGi88n%2FTJNDw5MvMO3Ze9sj8QAjnM99cyVF%2B%2Bj2tWcVziaps0oy8P6nftX65XX1KIKvBzcziq%2BmHU57PDXDe6hS1FhXhdKcVeVUqRfhRU9EWR9ZzRI9PeLG2DRcgAD0%2BbwUPjvTuglslTl5atxY75LeJdPJqjlExzXkM%2FouUgt7Y5HeMGhOdpbNDUmjGCcXqt7CO7WwTSUoC6QCLR4NlgS17lJ0P%2FKvg5sYrLg%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20200729T135546Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Credential=ASIAYZTTEKKE22RH3MPQ%2F20200729%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=ef7324b7729f622a95bb329230427399575ff4aa2ff24c5efdf51d1df071a920]
+  Date: 2020-07-29 13:55
+  Status: 200
+  Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+  Size: 399 kB
+<ON DISK>  C:\Users\acosta\AppData\Local\Temp\Rtmp00lH4z\file10c90456247cd.xlsxReading from "Sweden input template"
+Range "'database'"
+Writing to "Sweden input template"
+Appending 28 row(s) to "database"
+Created Drive file:
+  * SE29.07.2020cases&deaths: 124VOihrroHdE5S780Ay63IK_X6duE0AZDYhTHBjezXM
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SE29.07.2020cases&deaths"
+Writing to sheet "cases&deaths_age"
+Writing to "SE29.07.2020cases&deaths"
+Writing to sheet "cases&deaths_sex"
+Deleting these sheet(s) from "SE29.07.2020cases&deaths":
+* Sheet1
+Local file:
+  * C:\Users\acosta\AppData\Local\Temp\Rtmp00lH4z\file10c90456247cd.xlsx
+uploaded into Drive file:
+  * SE29.07.2020cases&deaths.xlsx: 1ukDttHQacZo0I_dMdeixw-yNgAJd5e7X
+with MIME type:
+  * application/vnd.openxmlformats-officedocument.spreadsheetml.sheet

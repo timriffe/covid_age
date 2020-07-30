@@ -1,0 +1,2949 @@
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+Reading from "Austria input template"
+Range "'database'"
+versuche URL 'https://info.gesundheitsministerium.at/data/data.zip'
+Content type 'application/zip' length 8629 bytes
+==================================================
+downloaded 8629 bytes
+
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  AktuelleErkrankungen = col_double(),
+  PositivGetestet = col_double(),
+  Genesen = col_double(),
+  TotBestaetigt = col_double(),
+  TotGemeldet = col_double(),
+  GesTestungen = col_double(),
+  GesBesFaelle = col_double(),
+  GesNBVerf = col_double(),
+  GesIBVerf = col_double(),
+  GesNBBel = col_double(),
+  GesIBBel = col_double(),
+  BFNH = col_double(),
+  Erkrankungen = col_double(),
+  LetzteAktualisierung = col_character(),
+  Timestamp = col_datetime(format = "")
+)
+Writing to "Austria input template"
+Appending 25 row(s) to "database"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * AT03.07.2020cases&deaths: 1WOyw_SEUbm2xd4NKq7IwjlJoLGouMSu2oxlokzjOOcE
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "AT03.07.2020cases&deaths"
+Writing to sheet "cases_age"
+Writing to "AT03.07.2020cases&deaths"
+Writing to sheet "cases_sex"
+Writing to "AT03.07.2020cases&deaths"
+Writing to sheet "deaths_age"
+Writing to "AT03.07.2020cases&deaths"
+Writing to sheet "deaths_sex"
+Fehler: Client error: (429) RESOURCE_EXHAUSTED
+  * Either out of resource quota or reaching rate limiting. The client should look for google.rpc.QuotaFailure error detail for more information.
+  * Quota exceeded for quota group 'ReadGroup' and limit 'Read requests per user per 100 seconds' of service 'sheets.googleapis.com' for consumer 'project_number:603366585132'.
+
+Error details:
+  * Error details of type 'google.rpc.Help' are not implemented yet.
+  * Workaround: use `tryCatch()` and inspect error payload yourself.
+  * Please open an issue at https://github.com/r-lib/gargle/issues, so we can fix.
+Backtrace:
+    x
+ 1. \-googlesheets4::write_sheet(db_tests, ss = meta$id, sheet = "tests")
+ 2.   \-googlesheets4::gs4_get(ssid)
+ 3.     \-googlesheets4:::gs4_get_impl_(as_sheets_id(ss))
+ 4.       \-gargle::response_process(raw_resp)
+ 5.         \-gargle:::stop_request_failed(error_message(resp), resp)
+Zusätzlich: Warnmeldungen:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+Ausführung angehalten
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+Reading from "Austria input template"
+Range "'database'"
+versuche URL 'https://info.gesundheitsministerium.at/data/data.zip'
+Content type 'application/zip' length 8632 bytes
+==================================================
+downloaded 8632 bytes
+
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  AktuelleErkrankungen = col_double(),
+  PositivGetestet = col_double(),
+  Genesen = col_double(),
+  TotBestaetigt = col_double(),
+  TotGemeldet = col_double(),
+  GesTestungen = col_double(),
+  GesBesFaelle = col_double(),
+  GesNBVerf = col_double(),
+  GesIBVerf = col_double(),
+  GesNBBel = col_double(),
+  GesIBBel = col_double(),
+  BFNH = col_double(),
+  Erkrankungen = col_double(),
+  LetzteAktualisierung = col_character(),
+  Timestamp = col_datetime(format = "")
+)
+Writing to "Austria input template"
+Appending 25 row(s) to "database"
+Files trashed:
+  * AT03.07.2020cases&deaths: 1WOyw_SEUbm2xd4NKq7IwjlJoLGouMSu2oxlokzjOOcE
+Created Drive file:
+  * AT03.07.2020cases&deaths: 1G-bL5kLF0e8rQQefDbJXgEty8mpBKQ38VguneCjOLpg
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "AT03.07.2020cases&deaths"
+Writing to sheet "cases_age"
+Writing to "AT03.07.2020cases&deaths"
+Writing to sheet "cases_sex"
+Writing to "AT03.07.2020cases&deaths"
+Writing to sheet "deaths_age"
+Writing to "AT03.07.2020cases&deaths"
+Writing to sheet "deaths_sex"
+Writing to "AT03.07.2020cases&deaths"
+Writing to sheet "tests"
+Deleting these sheet(s) from "AT03.07.2020cases&deaths":
+* Sheet1
+Warnmeldungen:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+Reading from "Austria input template"
+Range "'database'"
+versuche URL 'https://info.gesundheitsministerium.at/data/data.zip'
+Content type 'application/zip' length 8645 bytes
+==================================================
+downloaded 8645 bytes
+
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  AktuelleErkrankungen = col_double(),
+  PositivGetestet = col_double(),
+  Genesen = col_double(),
+  TotBestaetigt = col_double(),
+  TotGemeldet = col_double(),
+  GesTestungen = col_double(),
+  GesBesFaelle = col_double(),
+  GesNBVerf = col_double(),
+  GesIBVerf = col_double(),
+  GesNBBel = col_double(),
+  GesIBBel = col_double(),
+  BFNH = col_double(),
+  Erkrankungen = col_double(),
+  LetzteAktualisierung = col_character(),
+  Timestamp = col_datetime(format = "")
+)
+Writing to "Austria input template"
+Appending 25 row(s) to "database"
+Created Drive file:
+  * AT04.07.2020cases&deaths: 1qWc1LbZEk5-Ufd60uNosxdSFG33FKqiyC0eqcDIEUsw
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "AT04.07.2020cases&deaths"
+Writing to sheet "cases_age"
+Writing to "AT04.07.2020cases&deaths"
+Writing to sheet "cases_sex"
+Writing to "AT04.07.2020cases&deaths"
+Writing to sheet "deaths_age"
+Auto-refreshing stale OAuth token.
+Writing to "AT04.07.2020cases&deaths"
+Writing to sheet "deaths_sex"
+Writing to "AT04.07.2020cases&deaths"
+Writing to sheet "tests"
+Deleting these sheet(s) from "AT04.07.2020cases&deaths":
+* Sheet1
+Warnmeldungen:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+Reading from "Austria input template"
+Range "'database'"
+versuche URL 'https://info.gesundheitsministerium.at/data/data.zip'
+Content type 'application/zip' length 8659 bytes
+==================================================
+downloaded 8659 bytes
+
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  AktuelleErkrankungen = col_double(),
+  PositivGetestet = col_double(),
+  Genesen = col_double(),
+  TotBestaetigt = col_double(),
+  TotGemeldet = col_double(),
+  GesTestungen = col_double(),
+  GesBesFaelle = col_double(),
+  GesNBVerf = col_double(),
+  GesIBVerf = col_double(),
+  GesNBBel = col_double(),
+  GesIBBel = col_double(),
+  BFNH = col_double(),
+  Erkrankungen = col_double(),
+  LetzteAktualisierung = col_character(),
+  Timestamp = col_datetime(format = "")
+)
+Writing to "Austria input template"
+Appending 25 row(s) to "database"
+Created Drive file:
+  * AT05.07.2020cases&deaths: 16Cr8FNcrO35M1688NJH7BUpu2ivpWHIrPWiPVVi4Ojs
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "AT05.07.2020cases&deaths"
+Writing to sheet "cases_age"
+Writing to "AT05.07.2020cases&deaths"
+Writing to sheet "cases_sex"
+Writing to "AT05.07.2020cases&deaths"
+Writing to sheet "deaths_age"
+Auto-refreshing stale OAuth token.
+Writing to "AT05.07.2020cases&deaths"
+Writing to sheet "deaths_sex"
+Writing to "AT05.07.2020cases&deaths"
+Writing to sheet "tests"
+Deleting these sheet(s) from "AT05.07.2020cases&deaths":
+* Sheet1
+Warnmeldungen:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+Reading from "Austria input template"
+Range "'database'"
+versuche URL 'https://info.gesundheitsministerium.at/data/data.zip'
+Content type 'application/zip' length 8680 bytes
+==================================================
+downloaded 8680 bytes
+
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  AktuelleErkrankungen = col_double(),
+  PositivGetestet = col_double(),
+  Genesen = col_double(),
+  TotBestaetigt = col_double(),
+  TotGemeldet = col_double(),
+  GesTestungen = col_double(),
+  GesBesFaelle = col_double(),
+  GesNBVerf = col_double(),
+  GesIBVerf = col_double(),
+  GesNBBel = col_double(),
+  GesIBBel = col_double(),
+  BFNH = col_double(),
+  Erkrankungen = col_double(),
+  LetzteAktualisierung = col_character(),
+  Timestamp = col_datetime(format = "")
+)
+Writing to "Austria input template"
+Appending 25 row(s) to "database"
+Created Drive file:
+  * AT06.07.2020cases&deaths: 1lzV6YeM94-XovXE80YmeQBsb-1DsnxDK6O43fCkXaBY
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "AT06.07.2020cases&deaths"
+Writing to sheet "cases_age"
+Writing to "AT06.07.2020cases&deaths"
+Writing to sheet "cases_sex"
+Writing to "AT06.07.2020cases&deaths"
+Writing to sheet "deaths_age"
+Auto-refreshing stale OAuth token.
+Fehler: Client error: (429) RESOURCE_EXHAUSTED
+  * Either out of resource quota or reaching rate limiting. The client should look for google.rpc.QuotaFailure error detail for more information.
+  * Quota exceeded for quota group 'ReadGroup' and limit 'Read requests per 100 seconds' of service 'sheets.googleapis.com' for consumer 'project_number:603366585132'.
+
+Error details:
+  * Error details of type 'google.rpc.Help' are not implemented yet.
+  * Workaround: use `tryCatch()` and inspect error payload yourself.
+  * Please open an issue at https://github.com/r-lib/gargle/issues, so we can fix.
+Backtrace:
+    x
+ 1. \-googlesheets4::write_sheet(db_d_sex, ss = meta$id, sheet = "deaths_sex")
+ 2.   \-googlesheets4::gs4_get(ssid)
+ 3.     \-googlesheets4:::gs4_get_impl_(as_sheets_id(ss))
+ 4.       \-gargle::response_process(raw_resp)
+ 5.         \-gargle:::stop_request_failed(error_message(resp), resp)
+Zusätzlich: Warnmeldungen:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+Ausführung angehalten
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+Reading from "Austria input template"
+Range "'database'"
+versuche URL 'https://info.gesundheitsministerium.at/data/data.zip'
+Content type 'application/zip' length 8692 bytes
+==================================================
+downloaded 8692 bytes
+
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  AktuelleErkrankungen = col_double(),
+  PositivGetestet = col_double(),
+  Genesen = col_double(),
+  TotBestaetigt = col_double(),
+  TotGemeldet = col_double(),
+  GesTestungen = col_double(),
+  GesBesFaelle = col_double(),
+  GesNBVerf = col_double(),
+  GesIBVerf = col_double(),
+  GesNBBel = col_double(),
+  GesIBBel = col_double(),
+  BFNH = col_double(),
+  Erkrankungen = col_double(),
+  LetzteAktualisierung = col_character(),
+  Timestamp = col_datetime(format = "")
+)
+Writing to "Austria input template"
+Appending 25 row(s) to "database"
+Created Drive file:
+  * AT07.07.2020cases&deaths: 1e2LgBcOEmNQNz-m2avEiHY9o_M3s3ybKcpGdbms7Ys4
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "AT07.07.2020cases&deaths"
+Writing to sheet "cases_age"
+Writing to "AT07.07.2020cases&deaths"
+Writing to sheet "cases_sex"
+Writing to "AT07.07.2020cases&deaths"
+Writing to sheet "deaths_age"
+Auto-refreshing stale OAuth token.
+Writing to "AT07.07.2020cases&deaths"
+Writing to sheet "deaths_sex"
+Writing to "AT07.07.2020cases&deaths"
+Writing to sheet "tests"
+Deleting these sheet(s) from "AT07.07.2020cases&deaths":
+* Sheet1
+Warnmeldungen:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+Reading from "Austria input template"
+Range "'database'"
+versuche URL 'https://info.gesundheitsministerium.at/data/data.zip'
+Content type 'application/zip' length 8725 bytes
+==================================================
+downloaded 8725 bytes
+
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  AktuelleErkrankungen = col_double(),
+  PositivGetestet = col_double(),
+  Genesen = col_double(),
+  TotBestaetigt = col_double(),
+  TotGemeldet = col_double(),
+  GesTestungen = col_double(),
+  GesBesFaelle = col_double(),
+  GesNBVerf = col_double(),
+  GesIBVerf = col_double(),
+  GesNBBel = col_double(),
+  GesIBBel = col_double(),
+  BFNH = col_double(),
+  Erkrankungen = col_double(),
+  LetzteAktualisierung = col_character(),
+  Timestamp = col_datetime(format = "")
+)
+Writing to "Austria input template"
+Appending 25 row(s) to "database"
+Created Drive file:
+  * AT08.07.2020cases&deaths: 105djgRlz64O_WESaQEc93QRC-cXk7ew9lKyE53pfQ-c
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "AT08.07.2020cases&deaths"
+Writing to sheet "cases_age"
+Writing to "AT08.07.2020cases&deaths"
+Writing to sheet "cases_sex"
+Writing to "AT08.07.2020cases&deaths"
+Writing to sheet "deaths_age"
+Auto-refreshing stale OAuth token.
+Writing to "AT08.07.2020cases&deaths"
+Writing to sheet "deaths_sex"
+Writing to "AT08.07.2020cases&deaths"
+Writing to sheet "tests"
+Deleting these sheet(s) from "AT08.07.2020cases&deaths":
+* Sheet1
+Warnmeldungen:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+Reading from "Austria input template"
+Range "'database'"
+versuche URL 'https://info.gesundheitsministerium.at/data/data.zip'
+Content type 'application/zip' length 8748 bytes
+==================================================
+downloaded 8748 bytes
+
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  AktuelleErkrankungen = col_double(),
+  PositivGetestet = col_double(),
+  Genesen = col_double(),
+  TotBestaetigt = col_double(),
+  TotGemeldet = col_double(),
+  GesTestungen = col_double(),
+  GesBesFaelle = col_double(),
+  GesNBVerf = col_double(),
+  GesIBVerf = col_double(),
+  GesNBBel = col_double(),
+  GesIBBel = col_double(),
+  BFNH = col_double(),
+  Erkrankungen = col_double(),
+  LetzteAktualisierung = col_character(),
+  Timestamp = col_datetime(format = "")
+)
+Writing to "Austria input template"
+Appending 25 row(s) to "database"
+Created Drive file:
+  * AT09.07.2020cases&deaths: 1QAvujItmJjqHEylzptGo5PpkHelV5dMXmY_nC6x83Ys
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "AT09.07.2020cases&deaths"
+Writing to sheet "cases_age"
+Writing to "AT09.07.2020cases&deaths"
+Writing to sheet "cases_sex"
+Writing to "AT09.07.2020cases&deaths"
+Writing to sheet "deaths_age"
+Auto-refreshing stale OAuth token.
+Writing to "AT09.07.2020cases&deaths"
+Writing to sheet "deaths_sex"
+Writing to "AT09.07.2020cases&deaths"
+Writing to sheet "tests"
+Deleting these sheet(s) from "AT09.07.2020cases&deaths":
+* Sheet1
+Warnmeldungen:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+Reading from "Austria input template"
+Range "'database'"
+versuche URL 'https://info.gesundheitsministerium.at/data/data.zip'
+Content type 'application/zip' length 8777 bytes
+==================================================
+downloaded 8777 bytes
+
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  AktuelleErkrankungen = col_double(),
+  PositivGetestet = col_double(),
+  Genesen = col_double(),
+  TotBestaetigt = col_double(),
+  TotGemeldet = col_double(),
+  GesTestungen = col_double(),
+  GesBesFaelle = col_double(),
+  GesNBVerf = col_double(),
+  GesIBVerf = col_double(),
+  GesNBBel = col_double(),
+  GesIBBel = col_double(),
+  BFNH = col_double(),
+  Erkrankungen = col_double(),
+  LetzteAktualisierung = col_character(),
+  Timestamp = col_datetime(format = "")
+)
+Writing to "Austria input template"
+Appending 25 row(s) to "database"
+Created Drive file:
+  * AT10.07.2020cases&deaths: 14-xMv9ABwgRHv5XSlTmsxka6uSHf7umOm5WTOvsAxOs
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "AT10.07.2020cases&deaths"
+Writing to sheet "cases_age"
+Writing to "AT10.07.2020cases&deaths"
+Writing to sheet "cases_sex"
+Writing to "AT10.07.2020cases&deaths"
+Writing to sheet "deaths_age"
+Auto-refreshing stale OAuth token.
+Writing to "AT10.07.2020cases&deaths"
+Writing to sheet "deaths_sex"
+Writing to "AT10.07.2020cases&deaths"
+Writing to sheet "tests"
+Deleting these sheet(s) from "AT10.07.2020cases&deaths":
+* Sheet1
+Warnmeldungen:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+Reading from "Austria input template"
+Range "'database'"
+versuche URL 'https://info.gesundheitsministerium.at/data/data.zip'
+Content type 'application/zip' length 8798 bytes
+==================================================
+downloaded 8798 bytes
+
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  AktuelleErkrankungen = col_double(),
+  PositivGetestet = col_double(),
+  Genesen = col_double(),
+  TotBestaetigt = col_double(),
+  TotGemeldet = col_double(),
+  GesTestungen = col_double(),
+  GesBesFaelle = col_double(),
+  GesNBVerf = col_double(),
+  GesIBVerf = col_double(),
+  GesNBBel = col_double(),
+  GesIBBel = col_double(),
+  BFNH = col_double(),
+  Erkrankungen = col_double(),
+  LetzteAktualisierung = col_character(),
+  Timestamp = col_datetime(format = "")
+)
+Writing to "Austria input template"
+Appending 25 row(s) to "database"
+Created Drive file:
+  * AT11.07.2020cases&deaths: 18uRymlG3WOZRkaCqHD2vpbLdjFmXf5tsiBuM0v1IYSQ
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "AT11.07.2020cases&deaths"
+Writing to sheet "cases_age"
+Writing to "AT11.07.2020cases&deaths"
+Writing to sheet "cases_sex"
+Writing to "AT11.07.2020cases&deaths"
+Writing to sheet "deaths_age"
+Auto-refreshing stale OAuth token.
+Writing to "AT11.07.2020cases&deaths"
+Writing to sheet "deaths_sex"
+Writing to "AT11.07.2020cases&deaths"
+Writing to sheet "tests"
+Deleting these sheet(s) from "AT11.07.2020cases&deaths":
+* Sheet1
+Warnmeldungen:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+Reading from "Austria input template"
+Range "'database'"
+versuche URL 'https://info.gesundheitsministerium.at/data/data.zip'
+Content type 'application/zip' length 8826 bytes
+==================================================
+downloaded 8826 bytes
+
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  AktuelleErkrankungen = col_double(),
+  PositivGetestet = col_double(),
+  Genesen = col_double(),
+  TotBestaetigt = col_double(),
+  TotGemeldet = col_double(),
+  GesTestungen = col_double(),
+  GesBesFaelle = col_double(),
+  GesNBVerf = col_double(),
+  GesIBVerf = col_double(),
+  GesNBBel = col_double(),
+  GesIBBel = col_double(),
+  BFNH = col_double(),
+  Erkrankungen = col_double(),
+  LetzteAktualisierung = col_character(),
+  Timestamp = col_datetime(format = "")
+)
+Writing to "Austria input template"
+Appending 25 row(s) to "database"
+Created Drive file:
+  * AT12.07.2020cases&deaths: 1K-JEGcyys5eNz9hyZs9aRPROLj2hJ92NSe_rtzzBvoQ
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "AT12.07.2020cases&deaths"
+Writing to sheet "cases_age"
+Writing to "AT12.07.2020cases&deaths"
+Writing to sheet "cases_sex"
+Writing to "AT12.07.2020cases&deaths"
+Writing to sheet "deaths_age"
+Auto-refreshing stale OAuth token.
+Writing to "AT12.07.2020cases&deaths"
+Writing to sheet "deaths_sex"
+Writing to "AT12.07.2020cases&deaths"
+Writing to sheet "tests"
+Deleting these sheet(s) from "AT12.07.2020cases&deaths":
+* Sheet1
+Warnmeldungen:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+Reading from "Austria input template"
+Range "'database'"
+versuche URL 'https://info.gesundheitsministerium.at/data/data.zip'
+Content type 'application/zip' length 8853 bytes
+==================================================
+downloaded 8853 bytes
+
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  AktuelleErkrankungen = col_double(),
+  PositivGetestet = col_double(),
+  Genesen = col_double(),
+  TotBestaetigt = col_double(),
+  TotGemeldet = col_double(),
+  GesTestungen = col_double(),
+  GesBesFaelle = col_double(),
+  GesNBVerf = col_double(),
+  GesIBVerf = col_double(),
+  GesNBBel = col_double(),
+  GesIBBel = col_double(),
+  BFNH = col_double(),
+  Erkrankungen = col_double(),
+  LetzteAktualisierung = col_character(),
+  Timestamp = col_datetime(format = "")
+)
+Writing to "Austria input template"
+Appending 25 row(s) to "database"
+Created Drive file:
+  * AT13.07.2020cases&deaths: 1Fxpl7-IdO58riNzQ-kv0OW2dN_Vas42z1-sNbMLGC_8
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "AT13.07.2020cases&deaths"
+Writing to sheet "cases_age"
+Writing to "AT13.07.2020cases&deaths"
+Writing to sheet "cases_sex"
+Writing to "AT13.07.2020cases&deaths"
+Writing to sheet "deaths_age"
+Auto-refreshing stale OAuth token.
+Writing to "AT13.07.2020cases&deaths"
+Writing to sheet "deaths_sex"
+Writing to "AT13.07.2020cases&deaths"
+Writing to sheet "tests"
+Deleting these sheet(s) from "AT13.07.2020cases&deaths":
+* Sheet1
+Warnmeldungen:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+Reading from "Austria input template"
+Range "'database'"
+versuche URL 'https://info.gesundheitsministerium.at/data/data.zip'
+Content type 'application/zip' length 8875 bytes
+==================================================
+downloaded 8875 bytes
+
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  AktuelleErkrankungen = col_double(),
+  PositivGetestet = col_double(),
+  Genesen = col_double(),
+  TotBestaetigt = col_double(),
+  TotGemeldet = col_double(),
+  GesTestungen = col_double(),
+  GesBesFaelle = col_double(),
+  GesNBVerf = col_double(),
+  GesIBVerf = col_double(),
+  GesNBBel = col_double(),
+  GesIBBel = col_double(),
+  BFNH = col_double(),
+  Erkrankungen = col_double(),
+  LetzteAktualisierung = col_character(),
+  Timestamp = col_datetime(format = "")
+)
+Writing to "Austria input template"
+Appending 25 row(s) to "database"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * AT14.07.2020cases&deaths: 1vWRHbQvu5Gagvke9QbTuYVPGKB-kEkDtg4j6SCE-rWM
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "AT14.07.2020cases&deaths"
+Writing to sheet "cases_age"
+Writing to "AT14.07.2020cases&deaths"
+Writing to sheet "cases_sex"
+Writing to "AT14.07.2020cases&deaths"
+Writing to sheet "deaths_age"
+Writing to "AT14.07.2020cases&deaths"
+Writing to sheet "deaths_sex"
+Writing to "AT14.07.2020cases&deaths"
+Writing to sheet "tests"
+Deleting these sheet(s) from "AT14.07.2020cases&deaths":
+* Sheet1
+Warnmeldungen:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+Reading from "Austria input template"
+Range "'database'"
+versuche URL 'https://info.gesundheitsministerium.at/data/data.zip'
+Content type 'application/zip' length 8882 bytes
+==================================================
+downloaded 8882 bytes
+
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  AktuelleErkrankungen = col_double(),
+  PositivGetestet = col_double(),
+  Genesen = col_double(),
+  TotBestaetigt = col_double(),
+  TotGemeldet = col_double(),
+  GesTestungen = col_double(),
+  GesBesFaelle = col_double(),
+  GesNBVerf = col_double(),
+  GesIBVerf = col_double(),
+  GesNBBel = col_double(),
+  GesIBBel = col_double(),
+  BFNH = col_double(),
+  Erkrankungen = col_double(),
+  LetzteAktualisierung = col_character(),
+  Timestamp = col_datetime(format = "")
+)
+Writing to "Austria input template"
+Appending 25 row(s) to "database"
+Created Drive file:
+  * AT15.07.2020cases&deaths: 1B9Qudu4Uni0arO9-ztKiuBqqhqUCM7Hyiu3e1nmqV48
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "AT15.07.2020cases&deaths"
+Writing to sheet "cases_age"
+Writing to "AT15.07.2020cases&deaths"
+Writing to sheet "cases_sex"
+Writing to "AT15.07.2020cases&deaths"
+Writing to sheet "deaths_age"
+Auto-refreshing stale OAuth token.
+Writing to "AT15.07.2020cases&deaths"
+Writing to sheet "deaths_sex"
+Writing to "AT15.07.2020cases&deaths"
+Writing to sheet "tests"
+Deleting these sheet(s) from "AT15.07.2020cases&deaths":
+* Sheet1
+Warnmeldungen:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.3     v dplyr   1.0.0
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+Reading from "Austria input template"
+Range "'database'"
+versuche URL 'https://info.gesundheitsministerium.at/data/data.zip'
+Content type 'application/zip' length 8900 bytes
+==================================================
+downloaded 8900 bytes
+
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  AktuelleErkrankungen = col_double(),
+  PositivGetestet = col_double(),
+  Genesen = col_double(),
+  TotBestaetigt = col_double(),
+  TotGemeldet = col_double(),
+  GesTestungen = col_double(),
+  GesBesFaelle = col_double(),
+  GesNBVerf = col_double(),
+  GesIBVerf = col_double(),
+  GesNBBel = col_double(),
+  GesIBBel = col_double(),
+  BFNH = col_double(),
+  Erkrankungen = col_double(),
+  LetzteAktualisierung = col_character(),
+  Timestamp = col_datetime(format = "")
+)
+Writing to "Austria input template"
+Appending 25 row(s) to "database"
+Created Drive file:
+  * AT16.07.2020cases&deaths: 1Y9VJtP9JoIeam5cuyuqOyMvTzWjRteD8zhjhVih1dh0
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Fehler: Client error: (429) RESOURCE_EXHAUSTED
+  * Either out of resource quota or reaching rate limiting. The client should look for google.rpc.QuotaFailure error detail for more information.
+  * Quota exceeded for quota group 'ReadGroup' and limit 'Read requests per 100 seconds' of service 'sheets.googleapis.com' for consumer 'project_number:603366585132'.
+
+Error details:
+  * Error details of type 'google.rpc.Help' are not implemented yet.
+  * Workaround: use `tryCatch()` and inspect error payload yourself.
+  * Please open an issue at https://github.com/r-lib/gargle/issues, so we can fix.
+Backtrace:
+    x
+ 1. \-googlesheets4::write_sheet(db_c_age, ss = meta$id, sheet = "cases_age")
+ 2.   \-googlesheets4::gs4_get(ssid)
+ 3.     \-googlesheets4:::gs4_get_impl_(as_sheets_id(ss))
+ 4.       \-gargle::response_process(raw_resp)
+ 5.         \-gargle:::stop_request_failed(error_message(resp), resp)
+Zusätzlich: Warnmeldungen:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+Ausführung angehalten
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.3     v dplyr   1.0.0
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+Reading from "Austria input template"
+Range "'database'"
+versuche URL 'https://info.gesundheitsministerium.at/data/data.zip'
+Content type 'application/zip' length 9006 bytes
+==================================================
+downloaded 9006 bytes
+
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  AktuelleErkrankungen = col_double(),
+  PositivGetestet = col_double(),
+  Genesen = col_double(),
+  TotBestaetigt = col_double(),
+  TotGemeldet = col_double(),
+  GesTestungen = col_double(),
+  GesBesFaelle = col_double(),
+  GesNBVerf = col_double(),
+  GesIBVerf = col_double(),
+  GesNBBel = col_double(),
+  GesIBBel = col_double(),
+  BFNH = col_double(),
+  Erkrankungen = col_double(),
+  LetzteAktualisierung = col_character(),
+  Timestamp = col_datetime(format = "")
+)
+Writing to "Austria input template"
+Appending 25 row(s) to "database"
+Created Drive file:
+  * AT21.07.2020cases&deaths: 1UbptwgQ2uyefXqXt-fyfZI83UtGAf_yPdmh-iN7mLHs
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Fehler: Client error: (429) RESOURCE_EXHAUSTED
+  * Either out of resource quota or reaching rate limiting. The client should look for google.rpc.QuotaFailure error detail for more information.
+  * Quota exceeded for quota group 'ReadGroup' and limit 'Read requests per 100 seconds' of service 'sheets.googleapis.com' for consumer 'project_number:603366585132'.
+
+Error details:
+  * Error details of type 'google.rpc.Help' are not implemented yet.
+  * Workaround: use `tryCatch()` and inspect error payload yourself.
+  * Please open an issue at https://github.com/r-lib/gargle/issues, so we can fix.
+Backtrace:
+    x
+ 1. \-googlesheets4::write_sheet(db_c_age, ss = meta$id, sheet = "cases_age")
+ 2.   \-googlesheets4::gs4_get(ssid)
+ 3.     \-googlesheets4:::gs4_get_impl_(as_sheets_id(ss))
+ 4.       \-gargle::response_process(raw_resp)
+ 5.         \-gargle:::stop_request_failed(error_message(resp), resp)
+Zusätzlich: Warnmeldungen:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+Ausführung angehalten
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.3     v dplyr   1.0.0
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+Reading from "Austria input template"
+Range "'database'"
+versuche URL 'https://info.gesundheitsministerium.at/data/data.zip'
+Content type 'application/zip' length 9023 bytes
+==================================================
+downloaded 9023 bytes
+
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  AktuelleErkrankungen = col_double(),
+  PositivGetestet = col_double(),
+  Genesen = col_double(),
+  TotBestaetigt = col_double(),
+  TotGemeldet = col_double(),
+  GesTestungen = col_double(),
+  GesBesFaelle = col_double(),
+  GesNBVerf = col_double(),
+  GesIBVerf = col_double(),
+  GesNBBel = col_double(),
+  GesIBBel = col_double(),
+  BFNH = col_double(),
+  Erkrankungen = col_double(),
+  LetzteAktualisierung = col_character(),
+  Timestamp = col_datetime(format = "")
+)
+Writing to "Austria input template"
+Appending 25 row(s) to "database"
+Created Drive file:
+  * AT22.07.2020cases&deaths: 1hSgpOVw8xAlmlqniKz3VmMdMserOuP6Tte2JKg2Lp0w
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "AT22.07.2020cases&deaths"
+Writing to sheet "cases_age"
+Writing to "AT22.07.2020cases&deaths"
+Writing to sheet "cases_sex"
+Writing to "AT22.07.2020cases&deaths"
+Writing to sheet "deaths_age"
+Auto-refreshing stale OAuth token.
+Writing to "AT22.07.2020cases&deaths"
+Writing to sheet "deaths_sex"
+Writing to "AT22.07.2020cases&deaths"
+Writing to sheet "tests"
+Deleting these sheet(s) from "AT22.07.2020cases&deaths":
+* Sheet1
+Warnmeldungen:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.3     v dplyr   1.0.0
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+Auto-refreshing stale OAuth token.
+Reading from "Austria input template"
+Range "'database'"
+versuche URL 'https://info.gesundheitsministerium.at/data/data.zip'
+Content type 'application/zip' length 9042 bytes
+==================================================
+downloaded 9042 bytes
+
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  AktuelleErkrankungen = col_double(),
+  PositivGetestet = col_double(),
+  Genesen = col_double(),
+  TotBestaetigt = col_double(),
+  TotGemeldet = col_double(),
+  GesTestungen = col_double(),
+  GesBesFaelle = col_double(),
+  GesNBVerf = col_double(),
+  GesIBVerf = col_double(),
+  GesNBBel = col_double(),
+  GesIBBel = col_double(),
+  BFNH = col_double(),
+  Erkrankungen = col_double(),
+  LetzteAktualisierung = col_character(),
+  Timestamp = col_datetime(format = "")
+)
+Writing to "Austria input template"
+Appending 25 row(s) to "database"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * AT23.07.2020cases&deaths: 1YkikYhan6xE3CjysKg59mhf56q2c5erE2xHb9zWUVCg
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "AT23.07.2020cases&deaths"
+Writing to sheet "cases_age"
+Writing to "AT23.07.2020cases&deaths"
+Writing to sheet "cases_sex"
+Writing to "AT23.07.2020cases&deaths"
+Writing to sheet "deaths_age"
+Writing to "AT23.07.2020cases&deaths"
+Writing to sheet "deaths_sex"
+Writing to "AT23.07.2020cases&deaths"
+Writing to sheet "tests"
+Deleting these sheet(s) from "AT23.07.2020cases&deaths":
+* Sheet1
+Warnmeldungen:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.3     v dplyr   1.0.0
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+Reading from "Austria input template"
+Range "'database'"
+versuche URL 'https://info.gesundheitsministerium.at/data/data.zip'
+Content type 'application/zip' length 9068 bytes
+==================================================
+downloaded 9068 bytes
+
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  AktuelleErkrankungen = col_double(),
+  PositivGetestet = col_double(),
+  Genesen = col_double(),
+  TotBestaetigt = col_double(),
+  TotGemeldet = col_double(),
+  GesTestungen = col_double(),
+  GesBesFaelle = col_double(),
+  GesNBVerf = col_double(),
+  GesIBVerf = col_double(),
+  GesNBBel = col_double(),
+  GesIBBel = col_double(),
+  BFNH = col_double(),
+  Erkrankungen = col_double(),
+  LetzteAktualisierung = col_character(),
+  Timestamp = col_datetime(format = "")
+)
+Writing to "Austria input template"
+Appending 25 row(s) to "database"
+Created Drive file:
+  * AT24.07.2020cases&deaths: 1gP_nt2vvgXFEfxfCA8NeaoIIgd4PHfuktr99vVKOmX4
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "AT24.07.2020cases&deaths"
+Writing to sheet "cases_age"
+Writing to "AT24.07.2020cases&deaths"
+Writing to sheet "cases_sex"
+Writing to "AT24.07.2020cases&deaths"
+Writing to sheet "deaths_age"
+Auto-refreshing stale OAuth token.
+Writing to "AT24.07.2020cases&deaths"
+Writing to sheet "deaths_sex"
+Writing to "AT24.07.2020cases&deaths"
+Writing to sheet "tests"
+Deleting these sheet(s) from "AT24.07.2020cases&deaths":
+* Sheet1
+Warnmeldungen:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.3     v dplyr   1.0.0
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+Reading from "Austria input template"
+Range "'database'"
+versuche URL 'https://info.gesundheitsministerium.at/data/data.zip'
+Content type 'application/zip' length 9084 bytes
+==================================================
+downloaded 9084 bytes
+
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  AktuelleErkrankungen = col_double(),
+  PositivGetestet = col_double(),
+  Genesen = col_double(),
+  TotBestaetigt = col_double(),
+  TotGemeldet = col_double(),
+  GesTestungen = col_double(),
+  GesBesFaelle = col_double(),
+  GesNBVerf = col_double(),
+  GesIBVerf = col_double(),
+  GesNBBel = col_double(),
+  GesIBBel = col_double(),
+  BFNH = col_double(),
+  Erkrankungen = col_double(),
+  LetzteAktualisierung = col_character(),
+  Timestamp = col_datetime(format = "")
+)
+Writing to "Austria input template"
+Appending 25 row(s) to "database"
+Created Drive file:
+  * AT25.07.2020cases&deaths: 1tUKNWN11zYw0X3SDhVH4i8tOQoLtx-NnZuORJ6arVYE
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "AT25.07.2020cases&deaths"
+Writing to sheet "cases_age"
+Writing to "AT25.07.2020cases&deaths"
+Writing to sheet "cases_sex"
+Writing to "AT25.07.2020cases&deaths"
+Writing to sheet "deaths_age"
+Auto-refreshing stale OAuth token.
+Writing to "AT25.07.2020cases&deaths"
+Writing to sheet "deaths_sex"
+Writing to "AT25.07.2020cases&deaths"
+Writing to sheet "tests"
+Deleting these sheet(s) from "AT25.07.2020cases&deaths":
+* Sheet1
+Warnmeldungen:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.3     v dplyr   1.0.0
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+Reading from "Austria input template"
+Range "'database'"
+versuche URL 'https://info.gesundheitsministerium.at/data/data.zip'
+Content type 'application/zip' length 9117 bytes
+==================================================
+downloaded 9117 bytes
+
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  AktuelleErkrankungen = col_double(),
+  PositivGetestet = col_double(),
+  Genesen = col_double(),
+  TotBestaetigt = col_double(),
+  TotGemeldet = col_double(),
+  GesTestungen = col_double(),
+  GesBesFaelle = col_double(),
+  GesNBVerf = col_double(),
+  GesIBVerf = col_double(),
+  GesNBBel = col_double(),
+  GesIBBel = col_double(),
+  BFNH = col_double(),
+  Erkrankungen = col_double(),
+  LetzteAktualisierung = col_character(),
+  Timestamp = col_datetime(format = "")
+)
+Writing to "Austria input template"
+Appending 25 row(s) to "database"
+Created Drive file:
+  * AT26.07.2020cases&deaths: 1FBMH5UohUmcPfiA1axQ0izHWmxc7fa_plr_zqU9yZ_U
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "AT26.07.2020cases&deaths"
+Writing to sheet "cases_age"
+Writing to "AT26.07.2020cases&deaths"
+Writing to sheet "cases_sex"
+Writing to "AT26.07.2020cases&deaths"
+Writing to sheet "deaths_age"
+Auto-refreshing stale OAuth token.
+Writing to "AT26.07.2020cases&deaths"
+Writing to sheet "deaths_sex"
+Writing to "AT26.07.2020cases&deaths"
+Writing to sheet "tests"
+Deleting these sheet(s) from "AT26.07.2020cases&deaths":
+* Sheet1
+Warnmeldungen:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.3     v dplyr   1.0.0
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+Reading from "Austria input template"
+Range "'database'"
+versuche URL 'https://info.gesundheitsministerium.at/data/data.zip'
+Content type 'application/zip' length 9136 bytes
+==================================================
+downloaded 9136 bytes
+
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  AktuelleErkrankungen = col_double(),
+  PositivGetestet = col_double(),
+  Genesen = col_double(),
+  TotBestaetigt = col_double(),
+  TotGemeldet = col_double(),
+  GesTestungen = col_double(),
+  GesBesFaelle = col_double(),
+  GesNBVerf = col_double(),
+  GesIBVerf = col_double(),
+  GesNBBel = col_double(),
+  GesIBBel = col_double(),
+  BFNH = col_double(),
+  Erkrankungen = col_double(),
+  LetzteAktualisierung = col_character(),
+  Timestamp = col_datetime(format = "")
+)
+Writing to "Austria input template"
+Appending 25 row(s) to "database"
+Created Drive file:
+  * AT27.07.2020cases&deaths: 1Njq7zdsMtaBVEO_B_kHRBLWt1cCPILb5L6JBbmCEqd4
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Fehler: Client error: (429) RESOURCE_EXHAUSTED
+  * Either out of resource quota or reaching rate limiting. The client should look for google.rpc.QuotaFailure error detail for more information.
+  * Quota exceeded for quota group 'ReadGroup' and limit 'Read requests per 100 seconds' of service 'sheets.googleapis.com' for consumer 'project_number:603366585132'.
+
+Error details:
+  * Error details of type 'google.rpc.Help' are not implemented yet.
+  * Workaround: use `tryCatch()` and inspect error payload yourself.
+  * Please open an issue at https://github.com/r-lib/gargle/issues, so we can fix.
+Backtrace:
+    x
+ 1. \-googlesheets4::write_sheet(db_c_age, ss = meta$id, sheet = "cases_age")
+ 2.   \-googlesheets4::gs4_get(ssid)
+ 3.     \-googlesheets4:::gs4_get_impl_(as_sheets_id(ss))
+ 4.       \-gargle::response_process(raw_resp)
+ 5.         \-gargle:::stop_request_failed(error_message(resp), resp)
+Zusätzlich: Warnmeldungen:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+Ausführung angehalten
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.3     v dplyr   1.0.0
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+Auto-refreshing stale OAuth token.
+Reading from "Austria input template"
+Range "'database'"
+versuche URL 'https://info.gesundheitsministerium.at/data/data.zip'
+Content type 'application/zip' length 9151 bytes
+==================================================
+downloaded 9151 bytes
+
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  AktuelleErkrankungen = col_double(),
+  PositivGetestet = col_double(),
+  Genesen = col_double(),
+  TotBestaetigt = col_double(),
+  TotGemeldet = col_double(),
+  GesTestungen = col_double(),
+  GesBesFaelle = col_double(),
+  GesNBVerf = col_double(),
+  GesIBVerf = col_double(),
+  GesNBBel = col_double(),
+  GesIBBel = col_double(),
+  BFNH = col_double(),
+  Erkrankungen = col_double(),
+  LetzteAktualisierung = col_character(),
+  Timestamp = col_datetime(format = "")
+)
+Writing to "Austria input template"
+Appending 25 row(s) to "database"
+Created Drive file:
+  * AT28.07.2020cases&deaths: 1_x-dLJofPEuEOWhAFQC_bDFtU71W0_EF2J073TzmeFg
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "AT28.07.2020cases&deaths"
+Writing to sheet "cases_age"
+Writing to "AT28.07.2020cases&deaths"
+Writing to sheet "cases_sex"
+Writing to "AT28.07.2020cases&deaths"
+Writing to sheet "deaths_age"
+Fehler: Client error: (429) RESOURCE_EXHAUSTED
+  * Either out of resource quota or reaching rate limiting. The client should look for google.rpc.QuotaFailure error detail for more information.
+  * Quota exceeded for quota group 'ReadGroup' and limit 'Read requests per 100 seconds' of service 'sheets.googleapis.com' for consumer 'project_number:603366585132'.
+
+Error details:
+  * Error details of type 'google.rpc.Help' are not implemented yet.
+  * Workaround: use `tryCatch()` and inspect error payload yourself.
+  * Please open an issue at https://github.com/r-lib/gargle/issues, so we can fix.
+Backtrace:
+    x
+ 1. \-googlesheets4::write_sheet(db_d_sex, ss = meta$id, sheet = "deaths_sex")
+ 2.   \-googlesheets4::gs4_get(ssid)
+ 3.     \-googlesheets4:::gs4_get_impl_(as_sheets_id(ss))
+ 4.       \-gargle::response_process(raw_resp)
+ 5.         \-gargle:::stop_request_failed(error_message(resp), resp)
+Zusätzlich: Warnmeldungen:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+Ausführung angehalten
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.3     v dplyr   1.0.0
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+Auto-refreshing stale OAuth token.
+Reading from "Austria input template"
+Range "'database'"
+versuche URL 'https://info.gesundheitsministerium.at/data/data.zip'
+Content type 'application/zip' length 9215 bytes
+==================================================
+downloaded 9215 bytes
+
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  AktuelleErkrankungen = col_double(),
+  PositivGetestet = col_double(),
+  Genesen = col_double(),
+  TotBestaetigt = col_double(),
+  TotGemeldet = col_double(),
+  GesTestungen = col_double(),
+  GesBesFaelle = col_double(),
+  GesNBVerf = col_double(),
+  GesIBVerf = col_double(),
+  GesNBBel = col_double(),
+  GesIBBel = col_double(),
+  BFNH = col_double(),
+  Erkrankungen = col_double(),
+  LetzteAktualisierung = col_character(),
+  Timestamp = col_datetime(format = "")
+)
+Writing to "Austria input template"
+Appending 25 row(s) to "database"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * AT29.07.2020cases&deaths: 1tD6GUj1C6D9PQVyv02nPJKoua_UCxJIDNZ5CwR1ytWE
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "AT29.07.2020cases&deaths"
+Writing to sheet "cases_age"
+Writing to "AT29.07.2020cases&deaths"
+Writing to sheet "cases_sex"
+Writing to "AT29.07.2020cases&deaths"
+Writing to sheet "deaths_age"
+Writing to "AT29.07.2020cases&deaths"
+Writing to sheet "deaths_sex"
+Writing to "AT29.07.2020cases&deaths"
+Writing to sheet "tests"
+Deleting these sheet(s) from "AT29.07.2020cases&deaths":
+* Sheet1
+Warnmeldungen:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.3     v dplyr   1.0.0
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+Reading from "Austria input template"
+Range "'database'"
+versuche URL 'https://info.gesundheitsministerium.at/data/data.zip'
+Content type 'application/zip' length 9228 bytes
+==================================================
+downloaded 9228 bytes
+
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Altersgruppe = col_character(),
+  Anzahl = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  Geschlecht = col_character(),
+  `Anzahl in %` = col_double(),
+  Timestamp = col_datetime(format = "")
+)
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  AktuelleErkrankungen = col_double(),
+  PositivGetestet = col_double(),
+  Genesen = col_double(),
+  TotBestaetigt = col_double(),
+  TotGemeldet = col_double(),
+  GesTestungen = col_double(),
+  GesBesFaelle = col_double(),
+  GesNBVerf = col_double(),
+  GesIBVerf = col_double(),
+  GesNBBel = col_double(),
+  GesIBBel = col_double(),
+  BFNH = col_double(),
+  Erkrankungen = col_double(),
+  LetzteAktualisierung = col_character(),
+  Timestamp = col_datetime(format = "")
+)
+Writing to "Austria input template"
+Appending 25 row(s) to "database"
+Created Drive file:
+  * AT30.07.2020cases&deaths: 1dFNeXLOasKXOp13t0nm-lFup8UhX76TKYbUhGA-E9jA
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "AT30.07.2020cases&deaths"
+Writing to sheet "cases_age"
+Writing to "AT30.07.2020cases&deaths"
+Writing to sheet "cases_sex"
+Writing to "AT30.07.2020cases&deaths"
+Writing to sheet "deaths_age"
+Writing to "AT30.07.2020cases&deaths"
+Writing to sheet "deaths_sex"
+Writing to "AT30.07.2020cases&deaths"
+Writing to sheet "tests"
+Deleting these sheet(s) from "AT30.07.2020cases&deaths":
+* Sheet1
+Warnmeldungen:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 10]. 

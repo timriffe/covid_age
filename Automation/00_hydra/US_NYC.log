@@ -1,0 +1,1963 @@
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+[1] "Starting data retrieval for NYC..."
+Reading from "NYC input template"
+Range "'database'"
+Warnmeldung:
+In .Primitive("as.double")(x, ...) : NAs durch Umwandlung erzeugt
+Parsed with column specification:
+cols(
+  AGE_GROUP = col_character(),
+  CASE_RATE = col_double(),
+  HOSPITALIZED_RATE = col_double(),
+  DEATH_RATE = col_double(),
+  CASE_COUNT = col_double(),
+  HOSPITALIZED_COUNT = col_double(),
+  DEATH_COUNT = col_double()
+)
+Parsed with column specification:
+cols(
+  SEX_GROUP = col_character(),
+  CASE_RATE = col_double(),
+  HOSPITALIZED_RATE = col_double(),
+  DEATH_RATE = col_double(),
+  CASE_COUNT = col_double(),
+  HOSPITALIZED_COUNT = col_double(),
+  DEATH_COUNT = col_double()
+)
+Parsed with column specification:
+cols(
+  X1 = col_character(),
+  X2 = col_character()
+)
+Parsed with column specification:
+cols(
+  DATE = col_character(),
+  TOTAL_TESTS = col_double(),
+  POSITIVE_TESTS = col_double(),
+  PERCENT_POSITIVE = col_double(),
+  PERCENT_POSITIVE_3DAYS_AGG = col_double()
+)
+Parsed with column specification:
+cols(
+  modzcta = col_double(),
+  Positive = col_double(),
+  Total = col_double(),
+  modzcta_cum_perc_pos = col_double()
+)
+Warnmeldung:
+Expected 2 pieces. Additional pieces discarded in 1 rows [1]. 
+Writing to "NYC input template"
+Appending 19 row(s) to "database"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * US_NYC03.07.2020cases&deaths: 14NRvLXHJ2KEBE4gxy9juAW5vnP6eKcoC__KyO6NxGNE
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "US_NYC03.07.2020cases&deaths"
+Writing to sheet "cases_deaths_age"
+Writing to "US_NYC03.07.2020cases&deaths"
+Writing to sheet "cases_deaths_sex"
+Writing to "US_NYC03.07.2020cases&deaths"
+Writing to sheet "tests"
+Writing to "US_NYC03.07.2020cases&deaths"
+Writing to sheet "tested"
+Deleting these sheet(s) from "US_NYC03.07.2020cases&deaths":
+* Sheet1
+Fehler in paste(country, "data saved!", Sys.Date()) : 
+  Objekt 'country' nicht gefunden
+Ruft auf: print -> paste
+Ausführung angehalten
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+[1] "Starting data retrieval for NYC..."
+Reading from "NYC input template"
+Range "'database'"
+Warnmeldung:
+In .Primitive("as.double")(x, ...) : NAs durch Umwandlung erzeugt
+Parsed with column specification:
+cols(
+  AGE_GROUP = col_character(),
+  CASE_RATE = col_double(),
+  HOSPITALIZED_RATE = col_double(),
+  DEATH_RATE = col_double(),
+  CASE_COUNT = col_double(),
+  HOSPITALIZED_COUNT = col_double(),
+  DEATH_COUNT = col_double()
+)
+Parsed with column specification:
+cols(
+  SEX_GROUP = col_character(),
+  CASE_RATE = col_double(),
+  HOSPITALIZED_RATE = col_double(),
+  DEATH_RATE = col_double(),
+  CASE_COUNT = col_double(),
+  HOSPITALIZED_COUNT = col_double(),
+  DEATH_COUNT = col_double()
+)
+Parsed with column specification:
+cols(
+  X1 = col_character(),
+  X2 = col_character()
+)
+Parsed with column specification:
+cols(
+  DATE = col_character(),
+  TOTAL_TESTS = col_double(),
+  POSITIVE_TESTS = col_double(),
+  PERCENT_POSITIVE = col_double(),
+  PERCENT_POSITIVE_3DAYS_AGG = col_double()
+)
+Parsed with column specification:
+cols(
+  modzcta = col_double(),
+  Positive = col_double(),
+  Total = col_double(),
+  modzcta_cum_perc_pos = col_double()
+)
+Warnmeldung:
+Expected 2 pieces. Additional pieces discarded in 1 rows [1]. 
+no new updates so far, last date: 2020-07-04-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+[1] "Starting data retrieval for NYC..."
+Reading from "NYC input template"
+Range "'database'"
+Warnmeldung:
+In .Primitive("as.double")(x, ...) : NAs durch Umwandlung erzeugt
+Parsed with column specification:
+cols(
+  AGE_GROUP = col_character(),
+  CASE_RATE = col_double(),
+  HOSPITALIZED_RATE = col_double(),
+  DEATH_RATE = col_double(),
+  CASE_COUNT = col_double(),
+  HOSPITALIZED_COUNT = col_double(),
+  DEATH_COUNT = col_double()
+)
+Parsed with column specification:
+cols(
+  SEX_GROUP = col_character(),
+  CASE_RATE = col_double(),
+  HOSPITALIZED_RATE = col_double(),
+  DEATH_RATE = col_double(),
+  CASE_COUNT = col_double(),
+  HOSPITALIZED_COUNT = col_double(),
+  DEATH_COUNT = col_double()
+)
+Parsed with column specification:
+cols(
+  X1 = col_character(),
+  X2 = col_character()
+)
+Parsed with column specification:
+cols(
+  DATE = col_character(),
+  TOTAL_TESTS = col_double(),
+  POSITIVE_TESTS = col_double(),
+  PERCENT_POSITIVE = col_double(),
+  PERCENT_POSITIVE_3DAYS_AGG = col_double()
+)
+Parsed with column specification:
+cols(
+  modzcta = col_double(),
+  Positive = col_double(),
+  Total = col_double(),
+  modzcta_cum_perc_pos = col_double()
+)
+Warnmeldung:
+Expected 2 pieces. Additional pieces discarded in 1 rows [1]. 
+Writing to "NYC input template"
+Appending 19 row(s) to "database"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * US_NYC05.07.2020cases&deaths: 1OezzIHVA-mKLmqellxQQPBR58_S3xqyyx5R2KoR0dF4
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "US_NYC05.07.2020cases&deaths"
+Writing to sheet "cases_deaths_age"
+Writing to "US_NYC05.07.2020cases&deaths"
+Writing to sheet "cases_deaths_sex"
+Writing to "US_NYC05.07.2020cases&deaths"
+Writing to sheet "tests"
+Writing to "US_NYC05.07.2020cases&deaths"
+Writing to sheet "tested"
+Deleting these sheet(s) from "US_NYC05.07.2020cases&deaths":
+* Sheet1
+Fehler in paste(Country, "data saved!", Sys.Date()) : 
+  Objekt 'Country' nicht gefunden
+Ruft auf: print -> paste
+Ausführung angehalten
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+[1] "Starting data retrieval for NYC..."
+Reading from "NYC input template"
+Range "'database'"
+Warnmeldung:
+In .Primitive("as.double")(x, ...) : NAs durch Umwandlung erzeugt
+Parsed with column specification:
+cols(
+  AGE_GROUP = col_character(),
+  CASE_RATE = col_double(),
+  HOSPITALIZED_RATE = col_double(),
+  DEATH_RATE = col_double(),
+  CASE_COUNT = col_double(),
+  HOSPITALIZED_COUNT = col_double(),
+  DEATH_COUNT = col_double()
+)
+Parsed with column specification:
+cols(
+  SEX_GROUP = col_character(),
+  CASE_RATE = col_double(),
+  HOSPITALIZED_RATE = col_double(),
+  DEATH_RATE = col_double(),
+  CASE_COUNT = col_double(),
+  HOSPITALIZED_COUNT = col_double(),
+  DEATH_COUNT = col_double()
+)
+Parsed with column specification:
+cols(
+  X1 = col_character(),
+  X2 = col_character()
+)
+Parsed with column specification:
+cols(
+  DATE = col_character(),
+  TOTAL_TESTS = col_double(),
+  POSITIVE_TESTS = col_double(),
+  PERCENT_POSITIVE = col_double(),
+  PERCENT_POSITIVE_3DAYS_AGG = col_double()
+)
+Parsed with column specification:
+cols(
+  modzcta = col_double(),
+  Positive = col_double(),
+  Total = col_double(),
+  modzcta_cum_perc_pos = col_double()
+)
+Warnmeldung:
+Expected 2 pieces. Additional pieces discarded in 1 rows [1]. 
+Writing to "NYC input template"
+Appending 19 row(s) to "database"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * US_NYC06.07.2020cases&deaths: 1mY6H8gUdZs-_tIgEAoxg2vlIBUFzBJ60l-Ad3QR8ZdA
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "US_NYC06.07.2020cases&deaths"
+Writing to sheet "cases_deaths_age"
+Writing to "US_NYC06.07.2020cases&deaths"
+Writing to sheet "cases_deaths_sex"
+Writing to "US_NYC06.07.2020cases&deaths"
+Writing to sheet "tests"
+Writing to "US_NYC06.07.2020cases&deaths"
+Writing to sheet "tested"
+Deleting these sheet(s) from "US_NYC06.07.2020cases&deaths":
+* Sheet1
+Fehler in paste(Country, "data saved!", Sys.Date()) : 
+  Objekt 'Country' nicht gefunden
+Ruft auf: print -> paste
+Ausführung angehalten
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+[1] "Starting data retrieval for NYC..."
+Reading from "NYC input template"
+Range "'database'"
+Warnmeldung:
+In .Primitive("as.double")(x, ...) : NAs durch Umwandlung erzeugt
+Parsed with column specification:
+cols(
+  AGE_GROUP = col_character(),
+  CASE_RATE = col_double(),
+  HOSPITALIZED_RATE = col_double(),
+  DEATH_RATE = col_double(),
+  CASE_COUNT = col_double(),
+  HOSPITALIZED_COUNT = col_double(),
+  DEATH_COUNT = col_double()
+)
+Parsed with column specification:
+cols(
+  SEX_GROUP = col_character(),
+  CASE_RATE = col_double(),
+  HOSPITALIZED_RATE = col_double(),
+  DEATH_RATE = col_double(),
+  CASE_COUNT = col_double(),
+  HOSPITALIZED_COUNT = col_double(),
+  DEATH_COUNT = col_double()
+)
+Parsed with column specification:
+cols(
+  X1 = col_character(),
+  X2 = col_character()
+)
+Parsed with column specification:
+cols(
+  DATE = col_character(),
+  TOTAL_TESTS = col_double(),
+  POSITIVE_TESTS = col_double(),
+  PERCENT_POSITIVE = col_double(),
+  PERCENT_POSITIVE_3DAYS_AGG = col_double()
+)
+Parsed with column specification:
+cols(
+  modzcta = col_double(),
+  Positive = col_double(),
+  Total = col_double(),
+  modzcta_cum_perc_pos = col_double()
+)
+Warnmeldung:
+Expected 2 pieces. Additional pieces discarded in 1 rows [1]. 
+Writing to "NYC input template"
+Appending 19 row(s) to "database"
+Created Drive file:
+  * US_NYC07.07.2020cases&deaths: 13kqkO98i2GzSn3On3i_waKeXfDnd6tJTulZt_0vKZgE
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "US_NYC07.07.2020cases&deaths"
+Writing to sheet "cases_deaths_age"
+Writing to "US_NYC07.07.2020cases&deaths"
+Writing to sheet "cases_deaths_sex"
+Writing to "US_NYC07.07.2020cases&deaths"
+Writing to sheet "tests"
+Writing to "US_NYC07.07.2020cases&deaths"
+Writing to sheet "tested"
+Deleting these sheet(s) from "US_NYC07.07.2020cases&deaths":
+* Sheet1
+Fehler in paste(Country, "data saved!", Sys.Date()) : 
+  Objekt 'Country' nicht gefunden
+Ruft auf: print -> paste
+Ausführung angehalten
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+[1] "Starting data retrieval for NYC..."
+Reading from "NYC input template"
+Range "'database'"
+Warnmeldung:
+In .Primitive("as.double")(x, ...) : NAs durch Umwandlung erzeugt
+Parsed with column specification:
+cols(
+  AGE_GROUP = col_character(),
+  CASE_RATE = col_double(),
+  HOSPITALIZED_RATE = col_double(),
+  DEATH_RATE = col_double(),
+  CASE_COUNT = col_double(),
+  HOSPITALIZED_COUNT = col_double(),
+  DEATH_COUNT = col_double()
+)
+Parsed with column specification:
+cols(
+  SEX_GROUP = col_character(),
+  CASE_RATE = col_double(),
+  HOSPITALIZED_RATE = col_double(),
+  DEATH_RATE = col_double(),
+  CASE_COUNT = col_double(),
+  HOSPITALIZED_COUNT = col_double(),
+  DEATH_COUNT = col_double()
+)
+Parsed with column specification:
+cols(
+  X1 = col_character(),
+  X2 = col_character()
+)
+Parsed with column specification:
+cols(
+  DATE = col_character(),
+  TOTAL_TESTS = col_double(),
+  POSITIVE_TESTS = col_double(),
+  PERCENT_POSITIVE = col_double(),
+  PERCENT_POSITIVE_3DAYS_AGG = col_double()
+)
+Parsed with column specification:
+cols(
+  modzcta = col_double(),
+  Positive = col_double(),
+  Total = col_double(),
+  modzcta_cum_perc_pos = col_double()
+)
+Warnmeldung:
+Expected 2 pieces. Additional pieces discarded in 1 rows [1]. 
+Writing to "NYC input template"
+Appending 19 row(s) to "database"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * US_NYC08.07.2020cases&deaths: 1TdconLtVF6mKqR128n5QG_iTPNy6uP4w67NR_AQ4ugs
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "US_NYC08.07.2020cases&deaths"
+Writing to sheet "cases_deaths_age"
+Writing to "US_NYC08.07.2020cases&deaths"
+Writing to sheet "cases_deaths_sex"
+Writing to "US_NYC08.07.2020cases&deaths"
+Writing to sheet "tests"
+Writing to "US_NYC08.07.2020cases&deaths"
+Writing to sheet "tested"
+Deleting these sheet(s) from "US_NYC08.07.2020cases&deaths":
+* Sheet1
+[1] "NC data saved! 2020-07-09"
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+[1] "Starting data retrieval for NYC..."
+Reading from "NYC input template"
+Range "'database'"
+Parsed with column specification:
+cols(
+  AGE_GROUP = col_character(),
+  CASE_RATE = col_double(),
+  HOSPITALIZED_RATE = col_double(),
+  DEATH_RATE = col_double(),
+  CASE_COUNT = col_double(),
+  HOSPITALIZED_COUNT = col_double(),
+  DEATH_COUNT = col_double()
+)
+Parsed with column specification:
+cols(
+  SEX_GROUP = col_character(),
+  CASE_RATE = col_double(),
+  HOSPITALIZED_RATE = col_double(),
+  DEATH_RATE = col_double(),
+  CASE_COUNT = col_double(),
+  HOSPITALIZED_COUNT = col_double(),
+  DEATH_COUNT = col_double()
+)
+Parsed with column specification:
+cols(
+  X1 = col_character(),
+  X2 = col_character()
+)
+Parsed with column specification:
+cols(
+  DATE = col_character(),
+  TOTAL_TESTS = col_double(),
+  POSITIVE_TESTS = col_double(),
+  PERCENT_POSITIVE = col_double(),
+  PERCENT_POSITIVE_3DAYS_AGG = col_double()
+)
+Parsed with column specification:
+cols(
+  modzcta = col_double(),
+  Positive = col_double(),
+  Total = col_double(),
+  modzcta_cum_perc_pos = col_double()
+)
+Warnmeldung:
+Expected 2 pieces. Additional pieces discarded in 1 rows [1]. 
+Writing to "NYC input template"
+Appending 19 row(s) to "database"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * US_NYC09.07.2020cases&deaths: 1K2Nkr9sYXzMhYrYJ4HGxCkzpCxUeJaboqwCzc2yiTMs
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "US_NYC09.07.2020cases&deaths"
+Writing to sheet "cases_deaths_age"
+Writing to "US_NYC09.07.2020cases&deaths"
+Writing to sheet "cases_deaths_sex"
+Writing to "US_NYC09.07.2020cases&deaths"
+Writing to sheet "tests"
+Writing to "US_NYC09.07.2020cases&deaths"
+Writing to sheet "tested"
+Deleting these sheet(s) from "US_NYC09.07.2020cases&deaths":
+* Sheet1
+[1] "NC data saved! 2020-07-10"
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+[1] "Starting data retrieval for NYC..."
+Reading from "NYC input template"
+Range "'database'"
+Parsed with column specification:
+cols(
+  AGE_GROUP = col_character(),
+  CASE_RATE = col_double(),
+  HOSPITALIZED_RATE = col_double(),
+  DEATH_RATE = col_double(),
+  CASE_COUNT = col_double(),
+  HOSPITALIZED_COUNT = col_double(),
+  DEATH_COUNT = col_double()
+)
+Parsed with column specification:
+cols(
+  SEX_GROUP = col_character(),
+  CASE_RATE = col_double(),
+  HOSPITALIZED_RATE = col_double(),
+  DEATH_RATE = col_double(),
+  CASE_COUNT = col_double(),
+  HOSPITALIZED_COUNT = col_double(),
+  DEATH_COUNT = col_double()
+)
+Parsed with column specification:
+cols(
+  X1 = col_character(),
+  X2 = col_character()
+)
+Parsed with column specification:
+cols(
+  DATE = col_character(),
+  TOTAL_TESTS = col_double(),
+  POSITIVE_TESTS = col_double(),
+  PERCENT_POSITIVE = col_double(),
+  PERCENT_POSITIVE_3DAYS_AGG = col_double()
+)
+Parsed with column specification:
+cols(
+  modzcta = col_double(),
+  Positive = col_double(),
+  Total = col_double(),
+  modzcta_cum_perc_pos = col_double()
+)
+Warnmeldung:
+Expected 2 pieces. Additional pieces discarded in 1 rows [1]. 
+Writing to "NYC input template"
+Appending 19 row(s) to "database"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * US_NYC10.07.2020cases&deaths: 1USSa3_Pl_07tCy1fMi7LN3brx8j-t7qOfuUobJeINyY
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "US_NYC10.07.2020cases&deaths"
+Writing to sheet "cases_deaths_age"
+Writing to "US_NYC10.07.2020cases&deaths"
+Writing to sheet "cases_deaths_sex"
+Writing to "US_NYC10.07.2020cases&deaths"
+Writing to sheet "tests"
+Writing to "US_NYC10.07.2020cases&deaths"
+Writing to sheet "tested"
+Deleting these sheet(s) from "US_NYC10.07.2020cases&deaths":
+* Sheet1
+[1] "NC data saved! 2020-07-11"
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+[1] "Starting data retrieval for NYC..."
+Reading from "NYC input template"
+Range "'database'"
+Parsed with column specification:
+cols(
+  AGE_GROUP = col_character(),
+  CASE_RATE = col_double(),
+  HOSPITALIZED_RATE = col_double(),
+  DEATH_RATE = col_double(),
+  CASE_COUNT = col_double(),
+  HOSPITALIZED_COUNT = col_double(),
+  DEATH_COUNT = col_double()
+)
+Parsed with column specification:
+cols(
+  SEX_GROUP = col_character(),
+  CASE_RATE = col_double(),
+  HOSPITALIZED_RATE = col_double(),
+  DEATH_RATE = col_double(),
+  CASE_COUNT = col_double(),
+  HOSPITALIZED_COUNT = col_double(),
+  DEATH_COUNT = col_double()
+)
+Parsed with column specification:
+cols(
+  X1 = col_character(),
+  X2 = col_character()
+)
+Parsed with column specification:
+cols(
+  DATE = col_character(),
+  TOTAL_TESTS = col_double(),
+  POSITIVE_TESTS = col_double(),
+  PERCENT_POSITIVE = col_double(),
+  PERCENT_POSITIVE_3DAYS_AGG = col_double()
+)
+Parsed with column specification:
+cols(
+  modzcta = col_double(),
+  Positive = col_double(),
+  Total = col_double(),
+  modzcta_cum_perc_pos = col_double()
+)
+Warnmeldung:
+Expected 2 pieces. Additional pieces discarded in 1 rows [1]. 
+Writing to "NYC input template"
+Appending 19 row(s) to "database"
+Created Drive file:
+  * US_NYC11.07.2020cases&deaths: 10DO_ZulGKKACNwWK_pbxVpa4CVCTjSg0V9piD6T21fg
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "US_NYC11.07.2020cases&deaths"
+Writing to sheet "cases_deaths_age"
+Writing to "US_NYC11.07.2020cases&deaths"
+Writing to sheet "cases_deaths_sex"
+Writing to "US_NYC11.07.2020cases&deaths"
+Writing to sheet "tests"
+Writing to "US_NYC11.07.2020cases&deaths"
+Writing to sheet "tested"
+Deleting these sheet(s) from "US_NYC11.07.2020cases&deaths":
+* Sheet1
+[1] "NC data saved! 2020-07-12"
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+[1] "Starting data retrieval for NYC..."
+Reading from "NYC input template"
+Range "'database'"
+Parsed with column specification:
+cols(
+  AGE_GROUP = col_character(),
+  CASE_RATE = col_double(),
+  HOSPITALIZED_RATE = col_double(),
+  DEATH_RATE = col_double(),
+  CASE_COUNT = col_double(),
+  HOSPITALIZED_COUNT = col_double(),
+  DEATH_COUNT = col_double()
+)
+Parsed with column specification:
+cols(
+  SEX_GROUP = col_character(),
+  CASE_RATE = col_double(),
+  HOSPITALIZED_RATE = col_double(),
+  DEATH_RATE = col_double(),
+  CASE_COUNT = col_double(),
+  HOSPITALIZED_COUNT = col_double(),
+  DEATH_COUNT = col_double()
+)
+Parsed with column specification:
+cols(
+  X1 = col_character(),
+  X2 = col_character()
+)
+Parsed with column specification:
+cols(
+  DATE = col_character(),
+  TOTAL_TESTS = col_double(),
+  POSITIVE_TESTS = col_double(),
+  PERCENT_POSITIVE = col_double(),
+  PERCENT_POSITIVE_3DAYS_AGG = col_double()
+)
+Parsed with column specification:
+cols(
+  modzcta = col_double(),
+  Positive = col_double(),
+  Total = col_double(),
+  modzcta_cum_perc_pos = col_double()
+)
+Warnmeldung:
+Expected 2 pieces. Additional pieces discarded in 1 rows [1]. 
+Writing to "NYC input template"
+Appending 19 row(s) to "database"
+Created Drive file:
+  * US_NYC12.07.2020cases&deaths: 12yfUdOjr2ued0tD80bPwytHRH2va9Zc3BEoK9CPsSeE
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "US_NYC12.07.2020cases&deaths"
+Writing to sheet "cases_deaths_age"
+Writing to "US_NYC12.07.2020cases&deaths"
+Writing to sheet "cases_deaths_sex"
+Writing to "US_NYC12.07.2020cases&deaths"
+Writing to sheet "tests"
+Writing to "US_NYC12.07.2020cases&deaths"
+Writing to sheet "tested"
+Deleting these sheet(s) from "US_NYC12.07.2020cases&deaths":
+* Sheet1
+[1] "NC data saved! 2020-07-13"
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+[1] "Starting data retrieval for NYC..."
+Reading from "NYC input template"
+Range "'database'"
+Parsed with column specification:
+cols(
+  AGE_GROUP = col_character(),
+  CASE_RATE = col_double(),
+  HOSPITALIZED_RATE = col_double(),
+  DEATH_RATE = col_double(),
+  CASE_COUNT = col_double(),
+  HOSPITALIZED_COUNT = col_double(),
+  DEATH_COUNT = col_double()
+)
+Parsed with column specification:
+cols(
+  SEX_GROUP = col_character(),
+  CASE_RATE = col_double(),
+  HOSPITALIZED_RATE = col_double(),
+  DEATH_RATE = col_double(),
+  CASE_COUNT = col_double(),
+  HOSPITALIZED_COUNT = col_double(),
+  DEATH_COUNT = col_double()
+)
+Parsed with column specification:
+cols(
+  X1 = col_character(),
+  X2 = col_character()
+)
+Parsed with column specification:
+cols(
+  DATE = col_character(),
+  TOTAL_TESTS = col_double(),
+  POSITIVE_TESTS = col_double(),
+  PERCENT_POSITIVE = col_double(),
+  PERCENT_POSITIVE_3DAYS_AGG = col_double()
+)
+Parsed with column specification:
+cols(
+  modzcta = col_double(),
+  Positive = col_double(),
+  Total = col_double(),
+  modzcta_cum_perc_pos = col_double()
+)
+Warnmeldung:
+Expected 2 pieces. Additional pieces discarded in 1 rows [1]. 
+Writing to "NYC input template"
+Appending 19 row(s) to "database"
+Created Drive file:
+  * US_NYC13.07.2020cases&deaths: 1yTqdvkeMZ_CeIXPtIK6tz8c-h5lsFXQ9jg1o0tNddc0
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "US_NYC13.07.2020cases&deaths"
+Writing to sheet "cases_deaths_age"
+Writing to "US_NYC13.07.2020cases&deaths"
+Writing to sheet "cases_deaths_sex"
+Writing to "US_NYC13.07.2020cases&deaths"
+Writing to sheet "tests"
+Writing to "US_NYC13.07.2020cases&deaths"
+Writing to sheet "tested"
+Deleting these sheet(s) from "US_NYC13.07.2020cases&deaths":
+* Sheet1
+[1] "NC data saved! 2020-07-14"
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.1     v dplyr   0.8.5
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:dplyr':
+
+    intersect, setdiff, union
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+[1] "Starting data retrieval for NYC..."
+Reading from "NYC input template"
+Range "'database'"
+Parsed with column specification:
+cols(
+  AGE_GROUP = col_character(),
+  CASE_RATE = col_double(),
+  HOSPITALIZED_RATE = col_double(),
+  DEATH_RATE = col_double(),
+  CASE_COUNT = col_double(),
+  HOSPITALIZED_COUNT = col_double(),
+  DEATH_COUNT = col_double()
+)
+Parsed with column specification:
+cols(
+  SEX_GROUP = col_character(),
+  CASE_RATE = col_double(),
+  HOSPITALIZED_RATE = col_double(),
+  DEATH_RATE = col_double(),
+  CASE_COUNT = col_double(),
+  HOSPITALIZED_COUNT = col_double(),
+  DEATH_COUNT = col_double()
+)
+Parsed with column specification:
+cols(
+  X1 = col_character(),
+  X2 = col_character()
+)
+Parsed with column specification:
+cols(
+  DATE = col_character(),
+  TOTAL_TESTS = col_double(),
+  POSITIVE_TESTS = col_double(),
+  PERCENT_POSITIVE = col_double(),
+  PERCENT_POSITIVE_3DAYS_AGG = col_double()
+)
+Parsed with column specification:
+cols(
+  modzcta = col_double(),
+  Positive = col_double(),
+  Total = col_double(),
+  modzcta_cum_perc_pos = col_double()
+)
+Warnmeldung:
+Expected 2 pieces. Additional pieces discarded in 1 rows [1]. 
+Writing to "NYC input template"
+Appending 19 row(s) to "database"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * US_NYC14.07.2020cases&deaths: 1NskuKdMmYo2TFO0Jh0f4lBdkym6fr7jkLl6575qVqhE
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "US_NYC14.07.2020cases&deaths"
+Writing to sheet "cases_deaths_age"
+Writing to "US_NYC14.07.2020cases&deaths"
+Writing to sheet "cases_deaths_sex"
+Writing to "US_NYC14.07.2020cases&deaths"
+Writing to sheet "tests"
+Writing to "US_NYC14.07.2020cases&deaths"
+Writing to sheet "tested"
+Deleting these sheet(s) from "US_NYC14.07.2020cases&deaths":
+* Sheet1
+[1] "NC data saved! 2020-07-15"
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.3     v dplyr   1.0.0
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+[1] "Starting data retrieval for NYC..."
+Reading from "NYC input template"
+Range "'database'"
+Parsed with column specification:
+cols(
+  AGE_GROUP = col_character(),
+  CASE_RATE = col_double(),
+  HOSPITALIZED_RATE = col_double(),
+  DEATH_RATE = col_double(),
+  CASE_COUNT = col_double(),
+  HOSPITALIZED_COUNT = col_double(),
+  DEATH_COUNT = col_double()
+)
+Parsed with column specification:
+cols(
+  SEX_GROUP = col_character(),
+  CASE_RATE = col_double(),
+  HOSPITALIZED_RATE = col_double(),
+  DEATH_RATE = col_double(),
+  CASE_COUNT = col_double(),
+  HOSPITALIZED_COUNT = col_double(),
+  DEATH_COUNT = col_double()
+)
+Parsed with column specification:
+cols(
+  X1 = col_character(),
+  X2 = col_character()
+)
+Parsed with column specification:
+cols(
+  DATE = col_character(),
+  TOTAL_TESTS = col_double(),
+  POSITIVE_TESTS = col_double(),
+  PERCENT_POSITIVE = col_double(),
+  PERCENT_POSITIVE_3DAYS_AGG = col_double()
+)
+Parsed with column specification:
+cols(
+  modzcta = col_double(),
+  Positive = col_double(),
+  Total = col_double(),
+  modzcta_cum_perc_pos = col_double()
+)
+Warnmeldung:
+Expected 2 pieces. Additional pieces discarded in 1 rows [1]. 
+Writing to "NYC input template"
+Appending 19 row(s) to "database"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * US_NYC15.07.2020cases&deaths: 1Qk_gGA6VS1LL3hh0jitE6OXFZt2MZWVCJpTg8gXBqnA
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "US_NYC15.07.2020cases&deaths"
+Writing to sheet "cases_deaths_age"
+Writing to "US_NYC15.07.2020cases&deaths"
+Writing to sheet "cases_deaths_sex"
+Writing to "US_NYC15.07.2020cases&deaths"
+Writing to sheet "tests"
+Writing to "US_NYC15.07.2020cases&deaths"
+Writing to sheet "tested"
+Deleting these sheet(s) from "US_NYC15.07.2020cases&deaths":
+* Sheet1
+[1] "NC data saved! 2020-07-16"
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.3     v dplyr   1.0.0
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+[1] "Starting data retrieval for NYC..."
+Reading from "NYC input template"
+Range "'database'"
+Parsed with column specification:
+cols(
+  AGE_GROUP = col_character(),
+  CASE_RATE = col_double(),
+  HOSPITALIZED_RATE = col_double(),
+  DEATH_RATE = col_double(),
+  CASE_COUNT = col_double(),
+  HOSPITALIZED_COUNT = col_double(),
+  DEATH_COUNT = col_double()
+)
+Parsed with column specification:
+cols(
+  SEX_GROUP = col_character(),
+  CASE_RATE = col_double(),
+  HOSPITALIZED_RATE = col_double(),
+  DEATH_RATE = col_double(),
+  CASE_COUNT = col_double(),
+  HOSPITALIZED_COUNT = col_double(),
+  DEATH_COUNT = col_double()
+)
+Parsed with column specification:
+cols(
+  X1 = col_character(),
+  X2 = col_character()
+)
+Parsed with column specification:
+cols(
+  DATE = col_character(),
+  TOTAL_TESTS = col_double(),
+  POSITIVE_TESTS = col_double(),
+  PERCENT_POSITIVE = col_double(),
+  PERCENT_POSITIVE_3DAYS_AGG = col_double()
+)
+Parsed with column specification:
+cols(
+  modzcta = col_double(),
+  Positive = col_double(),
+  Total = col_double(),
+  modzcta_cum_perc_pos = col_double()
+)
+Warnmeldung:
+Expected 2 pieces. Additional pieces discarded in 1 rows [1]. 
+Writing to "NYC input template"
+Appending 19 row(s) to "database"
+Created Drive file:
+  * US_NYC20.07.2020cases&deaths: 1j-XlKqqiA8QL5igGjf4sCOQEilJ-_EORm-7YcVuT5B4
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "US_NYC20.07.2020cases&deaths"
+Writing to sheet "cases_deaths_age"
+Writing to "US_NYC20.07.2020cases&deaths"
+Writing to sheet "cases_deaths_sex"
+Writing to "US_NYC20.07.2020cases&deaths"
+Writing to sheet "tests"
+Writing to "US_NYC20.07.2020cases&deaths"
+Writing to sheet "tested"
+Deleting these sheet(s) from "US_NYC20.07.2020cases&deaths":
+* Sheet1
+[1] "NC data saved! 2020-07-21"
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.3     v dplyr   1.0.0
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+[1] "Starting data retrieval for NYC..."
+Reading from "NYC input template"
+Range "'database'"
+Parsed with column specification:
+cols(
+  AGE_GROUP = col_character(),
+  CASE_RATE = col_double(),
+  HOSPITALIZED_RATE = col_double(),
+  DEATH_RATE = col_double(),
+  CASE_COUNT = col_double(),
+  HOSPITALIZED_COUNT = col_double(),
+  DEATH_COUNT = col_double()
+)
+Parsed with column specification:
+cols(
+  SEX_GROUP = col_character(),
+  CASE_RATE = col_double(),
+  HOSPITALIZED_RATE = col_double(),
+  DEATH_RATE = col_double(),
+  CASE_COUNT = col_double(),
+  HOSPITALIZED_COUNT = col_double(),
+  DEATH_COUNT = col_double()
+)
+Parsed with column specification:
+cols(
+  X1 = col_character(),
+  X2 = col_character()
+)
+Parsed with column specification:
+cols(
+  DATE = col_character(),
+  TOTAL_TESTS = col_double(),
+  POSITIVE_TESTS = col_double(),
+  PERCENT_POSITIVE = col_double(),
+  PERCENT_POSITIVE_3DAYS_AGG = col_double()
+)
+Parsed with column specification:
+cols(
+  modzcta = col_double(),
+  Positive = col_double(),
+  Total = col_double(),
+  modzcta_cum_perc_pos = col_double()
+)
+Warnmeldung:
+Expected 2 pieces. Additional pieces discarded in 1 rows [1]. 
+Writing to "NYC input template"
+Appending 19 row(s) to "database"
+Created Drive file:
+  * US_NYC21.07.2020cases&deaths: 17n9eFdO8alFCTT9uQAanwDU7b1PWoJLas5ac-vEG45k
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "US_NYC21.07.2020cases&deaths"
+Writing to sheet "cases_deaths_age"
+Writing to "US_NYC21.07.2020cases&deaths"
+Writing to sheet "cases_deaths_sex"
+Writing to "US_NYC21.07.2020cases&deaths"
+Writing to sheet "tests"
+Writing to "US_NYC21.07.2020cases&deaths"
+Writing to sheet "tested"
+Deleting these sheet(s) from "US_NYC21.07.2020cases&deaths":
+* Sheet1
+[1] "NC data saved! 2020-07-22"
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.3     v dplyr   1.0.0
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+[1] "Starting data retrieval for NYC..."
+Reading from "NYC input template"
+Range "'database'"
+Parsed with column specification:
+cols(
+  AGE_GROUP = col_character(),
+  CASE_RATE = col_double(),
+  HOSPITALIZED_RATE = col_double(),
+  DEATH_RATE = col_double(),
+  CASE_COUNT = col_double(),
+  HOSPITALIZED_COUNT = col_double(),
+  DEATH_COUNT = col_double()
+)
+Parsed with column specification:
+cols(
+  SEX_GROUP = col_character(),
+  CASE_RATE = col_double(),
+  HOSPITALIZED_RATE = col_double(),
+  DEATH_RATE = col_double(),
+  CASE_COUNT = col_double(),
+  HOSPITALIZED_COUNT = col_double(),
+  DEATH_COUNT = col_double()
+)
+Parsed with column specification:
+cols(
+  X1 = col_character(),
+  X2 = col_character()
+)
+Parsed with column specification:
+cols(
+  DATE = col_character(),
+  TOTAL_TESTS = col_double(),
+  POSITIVE_TESTS = col_double(),
+  PERCENT_POSITIVE = col_double(),
+  PERCENT_POSITIVE_3DAYS_AGG = col_double()
+)
+Parsed with column specification:
+cols(
+  modzcta = col_double(),
+  Positive = col_double(),
+  Total = col_double(),
+  modzcta_cum_perc_pos = col_double()
+)
+Warnmeldung:
+Expected 2 pieces. Additional pieces discarded in 1 rows [1]. 
+Writing to "NYC input template"
+Appending 19 row(s) to "database"
+Created Drive file:
+  * US_NYC22.07.2020cases&deaths: 1ihdvk3plpgxjwc_WJHc_MJU-4rIl5eAy2-Fixy3SMvI
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "US_NYC22.07.2020cases&deaths"
+Writing to sheet "cases_deaths_age"
+Writing to "US_NYC22.07.2020cases&deaths"
+Writing to sheet "cases_deaths_sex"
+Writing to "US_NYC22.07.2020cases&deaths"
+Writing to sheet "tests"
+Writing to "US_NYC22.07.2020cases&deaths"
+Writing to sheet "tested"
+Deleting these sheet(s) from "US_NYC22.07.2020cases&deaths":
+* Sheet1
+[1] "NC data saved! 2020-07-23"
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.3     v dplyr   1.0.0
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+[1] "Starting data retrieval for NYC..."
+Reading from "NYC input template"
+Range "'database'"
+Parsed with column specification:
+cols(
+  AGE_GROUP = col_character(),
+  CASE_RATE = col_double(),
+  HOSPITALIZED_RATE = col_double(),
+  DEATH_RATE = col_double(),
+  CASE_COUNT = col_double(),
+  HOSPITALIZED_COUNT = col_double(),
+  DEATH_COUNT = col_double()
+)
+Parsed with column specification:
+cols(
+  SEX_GROUP = col_character(),
+  CASE_RATE = col_double(),
+  HOSPITALIZED_RATE = col_double(),
+  DEATH_RATE = col_double(),
+  CASE_COUNT = col_double(),
+  HOSPITALIZED_COUNT = col_double(),
+  DEATH_COUNT = col_double()
+)
+Parsed with column specification:
+cols(
+  X1 = col_character(),
+  X2 = col_character()
+)
+Parsed with column specification:
+cols(
+  DATE = col_character(),
+  TOTAL_TESTS = col_double(),
+  POSITIVE_TESTS = col_double(),
+  PERCENT_POSITIVE = col_double(),
+  PERCENT_POSITIVE_3DAYS_AGG = col_double()
+)
+Parsed with column specification:
+cols(
+  modzcta = col_double(),
+  Positive = col_double(),
+  Total = col_double(),
+  modzcta_cum_perc_pos = col_double()
+)
+Warnmeldung:
+Expected 2 pieces. Additional pieces discarded in 1 rows [1]. 
+Writing to "NYC input template"
+Appending 19 row(s) to "database"
+Created Drive file:
+  * US_NYC27.07.2020cases&deaths: 1TuPoUtrDjbMVSqsKZSGry0oxUrKSrlQIa3LEmYV-8Aw
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "US_NYC27.07.2020cases&deaths"
+Writing to sheet "cases_deaths_age"
+Writing to "US_NYC27.07.2020cases&deaths"
+Writing to sheet "cases_deaths_sex"
+Writing to "US_NYC27.07.2020cases&deaths"
+Writing to sheet "tests"
+Writing to "US_NYC27.07.2020cases&deaths"
+Writing to sheet "tested"
+Deleting these sheet(s) from "US_NYC27.07.2020cases&deaths":
+* Sheet1
+[1] "NC data saved! 2020-07-28"
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.3     v dplyr   1.0.0
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+[1] "Starting data retrieval for NYC..."
+Reading from "NYC input template"
+Range "'database'"
+Parsed with column specification:
+cols(
+  AGE_GROUP = col_character(),
+  CASE_RATE = col_double(),
+  HOSPITALIZED_RATE = col_double(),
+  DEATH_RATE = col_double(),
+  CASE_COUNT = col_double(),
+  HOSPITALIZED_COUNT = col_double(),
+  DEATH_COUNT = col_double()
+)
+Parsed with column specification:
+cols(
+  SEX_GROUP = col_character(),
+  CASE_RATE = col_double(),
+  HOSPITALIZED_RATE = col_double(),
+  DEATH_RATE = col_double(),
+  CASE_COUNT = col_double(),
+  HOSPITALIZED_COUNT = col_double(),
+  DEATH_COUNT = col_double()
+)
+Parsed with column specification:
+cols(
+  X1 = col_character(),
+  X2 = col_character()
+)
+Parsed with column specification:
+cols(
+  DATE = col_character(),
+  TOTAL_TESTS = col_double(),
+  POSITIVE_TESTS = col_double(),
+  PERCENT_POSITIVE = col_double(),
+  PERCENT_POSITIVE_3DAYS_AGG = col_double()
+)
+Parsed with column specification:
+cols(
+  modzcta = col_double(),
+  Positive = col_double(),
+  Total = col_double(),
+  modzcta_cum_perc_pos = col_double()
+)
+Warnmeldung:
+Expected 2 pieces. Additional pieces discarded in 1 rows [1]. 
+Writing to "NYC input template"
+Appending 19 row(s) to "database"
+Created Drive file:
+  * US_NYC28.07.2020cases&deaths: 1cjMo-ac29il2SWLFyodV_exDurgW6Yq_1Eu_i73-OQE
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "US_NYC28.07.2020cases&deaths"
+Writing to sheet "cases_deaths_age"
+Writing to "US_NYC28.07.2020cases&deaths"
+Writing to sheet "cases_deaths_sex"
+Writing to "US_NYC28.07.2020cases&deaths"
+Writing to sheet "tests"
+Writing to "US_NYC28.07.2020cases&deaths"
+Writing to sheet "tested"
+Deleting these sheet(s) from "US_NYC28.07.2020cases&deaths":
+* Sheet1
+[1] "NC data saved! 2020-07-29"
+-- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+v ggplot2 3.3.0     v purrr   0.3.4
+v tibble  3.0.3     v dplyr   1.0.0
+v tidyr   1.1.0     v stringr 1.4.0
+v readr   1.3.1     v forcats 0.5.0
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warnmeldungen:
+1: Paket 'tidyverse' wurde unter R Version 3.6.3 erstellt 
+2: Paket 'ggplot2' wurde unter R Version 3.6.3 erstellt 
+3: Paket 'tibble' wurde unter R Version 3.6.3 erstellt 
+4: Paket 'tidyr' wurde unter R Version 3.6.3 erstellt 
+5: Paket 'readr' wurde unter R Version 3.6.3 erstellt 
+6: Paket 'purrr' wurde unter R Version 3.6.3 erstellt 
+7: Paket 'dplyr' wurde unter R Version 3.6.3 erstellt 
+8: Paket 'stringr' wurde unter R Version 3.6.3 erstellt 
+9: Paket 'forcats' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'lubridate'
+
+The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union
+
+Warnmeldung:
+Paket 'lubridate' wurde unter R Version 3.6.3 erstellt 
+Warnmeldung:
+Paket 'googlesheets4' wurde unter R Version 3.6.3 erstellt 
+
+Attache Paket: 'googledrive'
+
+The following objects are masked from 'package:googlesheets4':
+
+    request_generate, request_make
+
+Warnmeldung:
+Paket 'googledrive' wurde unter R Version 3.6.3 erstellt 
+[1] "Starting data retrieval for NYC..."
+Reading from "NYC input template"
+Range "'database'"
+Parsed with column specification:
+cols(
+  AGE_GROUP = col_character(),
+  CASE_RATE = col_double(),
+  HOSPITALIZED_RATE = col_double(),
+  DEATH_RATE = col_double(),
+  CASE_COUNT = col_double(),
+  HOSPITALIZED_COUNT = col_double(),
+  DEATH_COUNT = col_double()
+)
+Parsed with column specification:
+cols(
+  SEX_GROUP = col_character(),
+  CASE_RATE = col_double(),
+  HOSPITALIZED_RATE = col_double(),
+  DEATH_RATE = col_double(),
+  CASE_COUNT = col_double(),
+  HOSPITALIZED_COUNT = col_double(),
+  DEATH_COUNT = col_double()
+)
+Parsed with column specification:
+cols(
+  X1 = col_character(),
+  X2 = col_character()
+)
+Parsed with column specification:
+cols(
+  DATE = col_character(),
+  TOTAL_TESTS = col_double(),
+  POSITIVE_TESTS = col_double(),
+  PERCENT_POSITIVE = col_double(),
+  PERCENT_POSITIVE_3DAYS_AGG = col_double()
+)
+Parsed with column specification:
+cols(
+  modzcta = col_double(),
+  Positive = col_double(),
+  Total = col_double(),
+  modzcta_cum_perc_pos = col_double()
+)
+Warnmeldung:
+Expected 2 pieces. Additional pieces discarded in 1 rows [1]. 
+Writing to "NYC input template"
+Appending 19 row(s) to "database"
+Created Drive file:
+  * US_NYC29.07.2020cases&deaths: 1nGBIrBuPRSvimYgxgJHp1sYm7fZPeRLNENEJq9z0AHg
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "US_NYC29.07.2020cases&deaths"
+Writing to sheet "cases_deaths_age"
+Writing to "US_NYC29.07.2020cases&deaths"
+Writing to sheet "cases_deaths_sex"
+Writing to "US_NYC29.07.2020cases&deaths"
+Writing to sheet "tests"
+Writing to "US_NYC29.07.2020cases&deaths"
+Writing to sheet "tested"
+Deleting these sheet(s) from "US_NYC29.07.2020cases&deaths":
+* Sheet1
+[1] "NC data saved! 2020-07-30"
