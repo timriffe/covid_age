@@ -8,7 +8,7 @@ library(tidyverse)
 
 inputDB <- read_csv("Data/inputDB.csv") %>% 
   mutate(
-    Date = as.Date(Date, format = "%d.%m.%Y"),
+    Date = dmy(Date),
     Code = paste(Short, Region, Date, Sex, Metric, Measure, sep = "-"))
 
 # Here we implement the 15 validations
@@ -21,7 +21,7 @@ valid <- inputDB %>%
     v2 = Country %in% unique(inputDB$Country), # here we should have a separate list of regions otherwise the check is useless.
     v3 = Age %in% c(0:105, "TOT", "UNK"),
     v4 = AgeInt %in% c(0:105, NA),
-    v5 = replace(v0, Age %in% c("TOT", "UNL") & !is.na(AgeInt), FALSE),
+    v5 = replace(v0, Age %in% c("TOT", "UNK") & !is.na(AgeInt), FALSE),
     v6 = NA,
     v7 = TRUE,
     v8 = Sex %in% c("m", "f", "b", "UNK"),

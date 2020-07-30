@@ -9,7 +9,9 @@ This project is currently in development, stay tuned for documentation. You can 
 A short guide to reading the data into `R` can be found [here](https://timriffe.github.io/covid_age/GettingStarted.html). We will add other basic scripts for common data operations, and we will add some `Stata` examples too.
 
 ## Data availability
-You can get the data by downloading the `csv` files in the `Data/` folder of this repository, or from the `OSF` site that we mirror to: [https://osf.io/mpwjq/](https://osf.io/mpwjq/).
+You can get the most up-to-date data at the `OSF` site that we mirror to: [https://osf.io/mpwjq/](https://osf.io/mpwjq/). 
+
+Here's an overview of global coverage as of now. A country marked as *forthcoming* means we've identified a source, but that collection is pending for one reason or another. Are you from one of those countries? Please reach out, if so.
 ![coverage map](https://raw.githubusercontent.com/timriffe/covid_age/master/assets/coveragemap.svg)
 
 A detailed dashboard of data availability can be found [here](https://timriffe.github.io/covid_age/DataAvail.html).
@@ -28,8 +30,21 @@ Most populations in the database contain multiple time snapshots, and all are co
 
 If you know of sources for other populations, please either email, Tweet, or leave an *Issue* in this repository, and we'll look into it. If you would like to assist this project in gathering data, or other tasks, please let us know and I'm sure we can find a task!
 
+## Citation
+
+Please cite using the OSF repository, which has a doi. All collaborators are coauthors (see full list below), but this short form is preferred:
+
+### APA
+Riffe, T., Acosta, E., et. al. (DATE). COVerAGE-DB: A database of COVID-19 cases and deaths by age . (https://doi.org/10.17605/OSF.IO/MPWJQ)[https://doi.org/10.17605/OSF.IO/MPWJQ]
+
+### MLA
+Riffe, Tim, Enrique Acosta, et. al. “COVerAGE-DB: A Database of COVID-19 Cases and Deaths by Age .” OSF, DATE. Web.(https://doi.org/10.17605/OSF.IO/MPWJQ)[https://doi.org/10.17605/OSF.IO/MPWJQ]
+
+### Chicago
+Riffe, Tim, Enrique Acosta, et. al. 2020. “COVerAGE-DB: A Database of COVID-19 Cases and Deaths by Age .” OSF. DATE. doi:10.17605/OSF.IO/MPWJQ.
+
 ## The team (so far), alphabetical by last name
-José Manuel Aburto, Enrique Acosta, Diego Alburez-Gutierrez, Anna Altová, Ugofilippo Baselini, Simona Bignami, Didier Breton, Jorge Cimentada, Emanuele del Fava, Viorela Diaconu, Jessica Donzowa, Christian Dudel, Toni Froehlich, Alain Gagnon, Mariana Garcia Cristómo, Armando González, Irwin Hecker, Chia Liu, Andrea Lozer, Mădălina Manea, Victor Manuel Garcia Guerrero, Ryohei Mogi, Saskia Morwinsky, Mikko Myrskylä, Marilia Nepomuceno, Natalie Nitsche, Anna Oksuzyan, Emmanuel Olamijuwon, Marius Pascariu, Filipe Ribeiro, Tim Riffe, Silvia Rizzi, Francisco Rowe, Jiaxin Shi, Rafael Silva, Cosmo Strozza, Catalina Torres, Sergi Trias, Fumiya Uchikoshi, Alyson van Raalte, Paola Vasquez, Estevão Vilela, Iván Williams, Virginia Zarulli
+José Manuel Aburto, Enrique Acosta, Diego Alburez-Gutierrez, Anna Altová, Lateef Amusa, Ugofilippo Baselini, Simona Bignami, Didier Breton, Jorge Cimentada, Gonzalo De Armas, Emanuele del Fava, Viorela Diaconu, Jessica Donzowa, Christian Dudel, Toni Froehlich, Alain Gagnon, Mariana Garcia Cristómo, Victor M. Garcia-Guerrero, Armando González, Irwin Hecker, Eric Koba, Marina Kolobova, Mine Kühn, Chia Liu, Andrea Lozer, Mădălina Manea, Muntasir Masun, Ryohei Mogi, Saskia Morwinsky, Mikko Myrskylä, Marilia Nepomuceno, Michelle Nickel, Natalie Nitsche, Anna Oksuzyan, Samuel Oladele, Emmanuel Olamijuwon, Soumaila Ouedraogo, Mariana Paredes, Marius Pascariu, Manuel Piriz, Raquel Pollero, Federico Rehermann, Filipe Ribeiro, Tim Riffe, Silvia Rizzi, Francisco Rowe, Isaac Sasson, Jiaxin Shi, Rafael Silva, Cosmo Strozza, Catalina Torres, Sergi Trias-Llimos, Fumiya Uchikoshi, Alyson van Raalte, Paola Vasquez, Estevão Vilela, Iván Williams, Virginia Zarulli
 
 (and a few more people at the moment have made commitments. )
 

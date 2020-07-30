@@ -19,19 +19,31 @@ We are considering moving toward measure-specific files, similar to what HMD doe
 
 Details: commas are column separators, decimals are dots. When reading in, skip the first row. You can can typically read these in straight from the repository using the `raw` version. See examples.
 
+# NOTE
+File storage for this database in the middle of shifting from github to OSF exclusively. The following code works (or at least it will as soon as our OSF repo is unflagged as spam...), but it's not as slick as reading the file directly into an R `data.frame` or similar. We'll keep tinkering to figure out a better way.
+
 # R
 For `R`, we suggest using the `read_csv()` function from `readr` because it's easy to specify column classes using shorthand:
 
 ## inputDB file
+
+
 ```{r}
 library(tidyverse)
 library(readr)
 library(lubridate)
 library(ggplot2)
-# this is the "raw" url
-inputDB <- read_csv("https://raw.githubusercontent.com/timriffe/covid_age/master/Data/inputDB.csv",
-                    skip = 1,
-                    col_types = "cccccciccdc") # this gets the classes right
+library(osfr)
+
+# This downloads the file, preserving the name inputDB.csv
+osf_retrieve_file("8uk9n") %>%
+  osf_download(conflicts = "overwrite") 
+
+# This reads it in
+inputDB <-  read_csv("inputDB.csv",
+                     skip = 1,
+                     col_types = "cccccciccdc")
+
 glimpse(inputDB)
 ```
 Notice, `Age` is character because it can contain `"TOT"` or `"UNK"` values. Therefore, if you sort, it will do so alphabetically, in which case `"10"` comes before `"5"`. This is the file from which we begin the harmonization routines. Maybe you have use for it?
@@ -40,17 +52,26 @@ Notice, `Age` is character because it can contain `"TOT"` or `"UNK"` values. The
 
 Output files are friendlier for several reasons. Since measures from like subsets are next to each other, it's easier to calculate things. Since age groups are uniform, it's easy to compare subsets. Since `Age` is a proper integer it's easy to plot it in the abscissa. However, you'll still want to convert the `Date` class to use it in plotting. These come as character strigngs following the format `"DD.MM.YYYY"`, and can be converted using `lubridate::dmy()` without further ado.
 ```{r}
-# this is the "raw" url
-Output_10 <- read_csv("https://raw.githubusercontent.com/timriffe/covid_age/master/Data/Output_10.csv",
-                    skip = 1,
-                    col_types = "cccciicddd") # this gets the classes right
-glimpse(Output_10)
 
+osf_retrieve_file("wu5ve") %>%
+  osf_download(conflicts = "overwrite") 
+
+# This reads it in
+Output_10 <-  read_csv("Output_10.csv",
+                     skip = 3,
+                     col_types = "ccccciiddd")
 # convert to date class
 Output_10 <- 
   Output_10 %>% 
   mutate(Date = dmy(Date))
 ```
+
+```{r, include = FALSE}
+# cleanup
+file.remove("inputDB.csv")
+file.remove("Output_10.csv")
+```
+
 
 # Stata
 Maybe someone can help out here?

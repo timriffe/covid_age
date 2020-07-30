@@ -2,7 +2,11 @@
 # French Guiana presently included w France, but French
 # data don't include French Guiana. Need to use
 # https://cran.r-project.org/web/packages/rnaturalearth/vignettes/what-is-a-country.html
-source("R/00_Functions.R")
+library(here)
+source(here("R","00_Functions.R"))
+logfile <- here("buildlog.md")
+
+source(here("R","00_Functions.R"))
 library(googlesheets4)
 library(tidyverse)
 library(cartography)
@@ -10,6 +14,14 @@ library(rgdal)
 library(tmap)
 library(sf)
 data(World)
+
+# DB objects
+gs4_auth(email = "tim.riffe@gmail.com")
+db_pops  <- get_input_rubric("input")
+db_input <- readRDS(here("Data","inputDB.rds"))
+db_input <- db_input %>% 
+  mutate(Country = ifelse(Country == "US","USA",Country))
+
 
 # checking coordinate system
 st_crs(World)
@@ -22,24 +34,15 @@ World$name[World$name == "United States"]   <- "USA"
 World$name[World$name == "Korea"] <- "South Korea"
 World$name[World$name == "Dominican Rep."]  <- "Dominican Republic"
 World$name[World$name == "Czech Rep." ]     <- "Czechia"
-
+World$name[World$name == "Central African Rep." ]     <- "Central African Republic"
 # remove Antarctica
 World <- World[!World$name == "Antarctica",]
 
-#changing to Robinson system; Tim´s request, hope this is what he expected
+# add Robinson projection
 world_rob<-st_transform(World, "+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
 world_rob %>% ggplot() + geom_sf()
 
 
-
-db_pops <- get_input_rubric("input")
-
-db_input <- readRDS("Data/inputDB.rds")
-# 
-# db_10 <- read_csv("https://github.com/timriffe/covid_age/raw/master/Data/Output_10.csv",
-#                   skip = 1) 
-
-#setwd("C:/Users/kikep/Dropbox/covid_age/vw/")
 
 have_in_idb <- 
   db_input %>% 
@@ -64,9 +67,11 @@ db_coverage <-
   bind_rows(have_in_idb,
             forthcoming) %>% 
   # we do this because UK envelops them in map.
-  filter(!Country %in% c("Northern Ireland", "Scotland","England","Wales")) %>% 
+  filter(!Country %in% c("Northern Ireland", "Scotland","England","Wales","England and Wales")) %>% 
   mutate(coverage = ifelse(Country == "UK","National and regional",coverage)) %>% 
   filter(Country != "Russia")
+
+db_coverage$Country[!db_coverage$Country %in% world_rob$name]
 
 map_joined <- left_join(world_rob, db_coverage, 
                         by = c('name' = 'Country')) 
@@ -74,7 +79,7 @@ map_joined <- left_join(world_rob, db_coverage,
 
 map_joined$coverage[is.na(map_joined$coverage)] <- "Not included yet"
 
-"#b3b3b3"
+
 cols_data <- c("National and regional" = "grey10", "National" = "grey30", "Forthcoming" = "#A3d3d3","Not included yet" = "grey90")
 
 map_joined<-
@@ -91,7 +96,9 @@ map_joined<-
 
 
 tx        <- 7
-map_joined %>% 
+
+map_out <-
+  map_joined %>% 
   ggplot() + 
   geom_sf(aes(fill = coverage), col = "white", size = 0.2) +
   scale_x_continuous(expand=c(0.03,0.03)) +
@@ -103,7 +110,7 @@ map_joined %>%
   guides(fill = guide_legend(title.position = "bottom",
                            keywidth = .5,
                            keyheight = .4))+
-  theme(legend.text=element_text(size = tx + 3),
+  theme(legend.text=element_text(size = tx + 2),
         legend.key.size = unit(1, "cm"),
         legend.title = element_blank(),
         # legend.position = c(0.1,.3),
@@ -124,4 +131,9 @@ map_joined %>%
         panel.grid.minor=element_blank(),
         plot.background=element_blank())
 # proposal
-ggsave("assets/coveragemap.svg")
+ggsave(here("assets","coveragemap.svg"), map_out, width = 30, height = 20, units = "cm")
+ggsave(here("assets","coveragemap.png"), map_out, width = 30, height = 20, units = "cm", dpi=300)
+
+
+
+rm(list=setdiff(ls(), c("logfile","creds")))

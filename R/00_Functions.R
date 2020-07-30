@@ -1,45 +1,462 @@
+### Dependency preamble #############################################
 
-
-# ----------------------------------------------
-# dependency preamble
-# ----------------------------------------------
 # install pacman to streamline further package installation
-if (!require("pacman", character.only = TRUE)){
+if(!require("pacman", character.only = TRUE)) {
   install.packages("pacman", dep = TRUE)
   if (!require("pacman", character.only = TRUE))
-    stop("Package not found")
+    stop("Package pacman not found")
 }
 
-packages_CRAN <- c("tidyverse","lubridate","here","gargle","ungroup","HMDHFDplus","tictoc","parallel")
+library(pacman)
 
-if(!sum(!p_isinstalled(packages_CRAN))==0){
+# Required CRAN packages
+packages_CRAN <- c("tidyverse","lubridate","gargle","ungroup","HMDHFDplus",
+                   "tictoc","parallel","osfr","data.table","git2r","usethis",
+                   "remotes","here","knitr","rmarkdown")
+
+# Install required CRAN packages if not available yet
+if(!sum(!p_isinstalled(packages_CRAN))==0) {
   p_install(
     package = packages_CRAN[!p_isinstalled(packages_CRAN)], 
     character.only = TRUE
   )
 }
 
-gphgs <- c("googlesheets4","DemoTools")
+# Reuired github packages
+packages_git <- c("googlesheets4","DemoTools","parallelsugar")
+
 # install from github if necessary
-if (!p_isinstalled("googlesheets4")){
+if (!p_isinstalled("googlesheets4")) {
   library(remotes)
   install_github("tidyverse/googlesheets4")
 }
-if (!p_isinstalled("DemoTools")){
+
+if (!p_isinstalled("DemoTools")) {
   library(remotes)
   install_github("timriffe/DemoTools")
 }
 
-# load the packages
-p_load(packages_CRAN, character.only = TRUE)
-p_load(gphgs, character.only = TRUE)
+if (!p_isinstalled("parallelsugar")){
+  library(remotes)
+  install_github("nathanvan/parallelsugar")
+}
 
-# --------------------------------
-# Custom functions used in DB production routine
-#--------------------------------------------------
-sort_input_data <- function(X){
+# Load the required CRAN/github packages
+p_load(packages_CRAN, character.only = TRUE)
+p_load(packages_git, character.only = TRUE)
+
+
+
+### Functions used in production routine ############################
+
+### change_here()
+# Required for timed batch processing, changes output of here()
+# @param new_path character. New directory
+
+change_here <- function(new_path) {
+  
+  # Get current root 
+  new_root <- here:::.root_env
+  
+  # Set new root
+  new_root$f <- function(...){file.path(new_path, ...)}
+  assignInNamespace(".root_env", new_root, ns = "here")
+  
+}
+
+
+### push_current()
+# Pushes compiled files to OSF
+
+push_current <- function() {
+  
+  # Get directory on OSF
+  target_dir <- osf_retrieve_node("mpwjq") %>% 
+    osf_ls_files(pattern = "Data") 
+  
+  # Complete paths for CSV files
+  files_data <- c("offsets.csv","inputDB.csv",
+                  "Output_5.csv","Output_10.csv")
+  files <- here("Data",files_data)
+  
+  # Push to OSF
+  osf_upload(target_dir,
+             path = files,
+             conflicts = "overwrite")
+  
+}
+
+
+### log_section()
+# Write on error log: Name of step and timestap
+# @param step character Name/description of step
+# @param append logical Append to existing log file
+# @param logfile character Name of the log file
+
+log_section <- function(step = "A", append = TRUE, 
+                        logfile = "buildlog.md") {
+  
+  # Paste step and timestamp
+  header <- paste("\n#", 
+                  step, 
+                  "Build error log\n",
+                  timestamp(prefix="",suffix=""),
+                  "\n\n")
+  
+  cat(header,file=logfile,append=append)   
+  
+}
+
+
+### log_processing_error()
+# Write error to log for chunk
+# @param chunk Data chunk
+# @param byvars character List of variables
+# logfile character Name of log file
+
+log_processing_error <- function(chunk,
+                                 byvars = c("Code", "Sex", "Measure"),
+                                 logfile = "buildlog.md"){
+  
+  # Get as data table
+  chunk  <- data.table(chunk)
+  
+  # Get values
+  marker <- chunk[1, ..byvars]
+  
+  # single quotes around char byvars: (only age isn't char..)
+  marker <- ifelse(byvars == "Age",marker,paste0("'",marker,"'"))
+  
+  # List of variables
+  marker <- paste(paste(byvars, marker, sep = " == "),collapse=", ")
+  
+  # Format
+  marker <- c("filter(",marker,")\n")
+  
+  # Write to logfile
+  cat(marker, file = logfile, append = TRUE)
+}
+
+
+### try_step()
+# Try function on data and if error capture in log
+# @param process_function function Name of function to apply
+# @param chunk tibble Name of data
+# @param byvars character Names of grouping variables
+# @param logfile Name of log file
+
+try_step <- function(process_function, 
+                     chunk, 
+                     byvars = c("Code","Sex"),
+                     logfile = "buildlog.md", 
+                     ...) {
+  
+  # Try function on chunc
+  out <- try(process_function(chunk = chunk, ...))
+  
+  # If error happens...
+  if (class(out)[1] == "try-error"){
+    
+    # ...write error to log
+    log_processing_error(chunk = chunk, 
+                         byvars = byvars,
+                         logfile = logfile)
+    
+    # ... return empty chunk
+    out <- chunk[0]
+  }
+  
+  # Return result (potentially empty chunk)
+  return(out)
+  
+}
+
+
+
+### Main compile functions ##########################################
+
+### compile_inputDB()
+# Compiles database
+# @param rubric Main spreadsheet
+
+# leave rubric as NULL for full build
+compile_inputDB <- function(rubric = NULL) {
+  
+  # Get spreadsheet
+  if (is.null(rubric)){
+    rubric <- get_input_rubric(tab = "input")
+  }
+  
+  # Only get countries with at least one row of data
+  rubric <- rubric %>% 
+    filter(Rows > 0)
+  
+  # Empty list for results
+  input_list <- list()
+  
+  failures <- rep(NA,nrow(rubric))
+  # Loop over countries
+  for (i in rubric$Short) {
+    
+    # Get spreadsheet address
+    ss_i <- rubric %>% filter(Short == i) %>% '$'(Sheet)
+    
+    # Try to read spreadsheet
+    X <- try(read_sheet(ss_i, 
+                        sheet = "database", 
+                        na = "NA", 
+                        col_types = "cccccciccd"))
+    
+    # If error
+    if (class(X)[1] == "try-error") {
+      
+      # Wait two minutes
+      cat(i,"didn't load, waiting 2 min to try again")
+      Sys.sleep(120)
+      
+      # Try to load again
+      X <- try(read_sheet(ss_i, 
+                          sheet = "database", 
+                          na = "NA", 
+                          col_types = "cccccciccd"))
+      
+    }
+    
+    # If again error
+    if (class(X)[1] == "try-error") {
+      
+      cat(i,"failure\n")
+      failures[i] <- i
+    } else {
+      
+      # If data loaded get code
+      X <- 
+        X %>% 
+        mutate(Short = add_Short(Code, Date))
+      
+      # Add to result list
+      input_list[[i]] <- X
+      
+    }
+    
+    # Wait a moment
+    Sys.sleep(45) 
+    
+  }
+  
+  
+  # One last chance to pick up the failed loads...
+  failures <- failures[!is.na(failures)]
+  if (length(failures)>0){
+    
+    for (i in failures){
+      Sys.sleep(200)
+      # Get spreadsheet address
+      ss_i <- rubric %>% filter(Short == i) %>% '$'(Sheet)
+      X <- try(read_sheet(ss_i, 
+                          sheet = "database", 
+                          na = "NA", 
+                          col_types = "cccccciccd"))
+      if (class(X)[1] == "try-error"){
+        cat(i, "on 3rd try still didn't load\n")
+      } else {
+        input_list[[i]] <- X
+      }
+    }
+  }
+  
+  # Bind and sort
+  inputDB <- 
+    input_list %>% 
+    bind_rows() %>% 
+    sort_input_data()
+  
+  # Return data base
+  inputDB
+  
+}
+
+
+### compile_offsetsDB()
+# Compile offsets for splitting of age intervals
+
+compile_offsetsDB <- function() {
+  
+  # Load offset overview spreadsheet
+  ss_offsets <- "https://docs.google.com/spreadsheets/d/1z9Dg7iQWPdIGRI3rvgd-Dx3rE5RPNd7B_paOP86FRzA/edit#gid=0"
+  offsets_rubric <- read_sheet(ss_offsets, sheet = 'checklist') %>% 
+    filter(!is.na(Sheet))
+  
+  # Empty list for results
+  off_list <- list()
+  
+  # Loop over countries
+  for (i in offsets_rubric$Short){
+    
+    # Get spreadsheet for country
+    ss_i <- offsets_rubric %>% filter(Short == i) %>% '$'(Sheet)
+    
+    # Try reading spreadhseet
+    X <- try(read_sheet(ss_i, 
+                        sheet = "population", 
+                        na = "NA", 
+                        col_types = "ccccicd"))
+    
+    # If error
+    if (class(X)[1] == "try-error") {
+      
+      # Wait two minutes to try again
+      cat(i,"didn't load, waiting 2 min to try again\n")
+      Sys.sleep(120)
+      
+      # Try again
+      X <- try(read_sheet(ss_i, 
+                          sheet = "population", 
+                          na = "NA", 
+                          col_types = "ccccicd"))
+      
+    }
+    
+    # Set Short label
+    # X <-  X %>% 
+    #   mutate(Short = i)
+    # 
+    # Add country to list for results
+    off_list[[i]] <- X
+    
+    # Wait a bit
+    Sys.sleep(20) 
+    
+  }
+  
+  # Catch additional errors
+  errors <- lapply(off_list,function(x){length(x)==1}) %>% unlist()
+  
+  # Show countries with additional errors
+  if (sum(errors) > 0){
+    
+    
+    prob_codes <- offsets_rubric %>% mutate(Code=paste(Country,Region)) %>% pull(Code) %>% '['(errors)
+    cat("\nThe following code(s) did not read properly:\n",paste(prob_codes,collapse = "\n"))
+    off_list <- off_list[!errors]
+  }
+  
+  # Bind and sort
+  offsetsDB <- 
+    off_list %>% 
+    bind_rows() %>% 
+    arrange(Country, Region, Sex)
+  
+  # Output
+  offsetsDB
+  
+}
+
+
+
+### Functions for loading/getting data ##############################
+
+### get_input_rubric()
+# Get overview spreadsheet with input data sources
+# @param tab character, which sheet to get
+
+get_input_rubric <- function(tab = "input") {
+  
+  # Spreadsheet on Google Docs
+  ss_rubric <- "https://docs.google.com/spreadsheets/d/1IDQkit829LrUShH-NpeprDus20b6bso7FAOkpYvDHi4/edit#gid=0"
+  
+  # Read spreadsheet
+  input_rubric <- read_sheet(ss_rubric, sheet = tab) %>% 
+    # Drop if no source spreadsheet
+    filter(!is.na(Sheet))
+  
+  # Return tibble
+  input_rubric
+  
+}
+
+
+### get_country_inputDB()
+# Load just a single country
+# @param ShortCode character specifying country to load
+
+get_country_inputDB <- function(ShortCode) {
+  
+  # Get spreadsheet
+  rubric <- get_input_rubric(tab = "input")
+  
+  # Find spreadsheet for country
+  ss_i   <- rubric %>% filter(Short == ShortCode) %>% '$'(Sheet)
+  
+  # Load spreadsheet
+  out <- read_sheet(ss_i, 
+                    sheet = "database", 
+                    na = "NA", 
+                    col_types= "cccccciccd")
+  
+  # Assign short code
+  out$Short <- ShortCode
+  
+  # Output
+  out
+  
+}
+
+
+### swap_country_inputDB()
+# Replace subset with new load after Date correction
+# @param inputDB tibble Input data with data to be replaced
+# @param ShortCode character Code of country 
+
+swap_country_inputDB <- function(inputDB, ShortCode) {
+  
+  # Get data for country
+  X <- get_country_inputDB(ShortCode)
+  
+  # Filter old data out
+  inputDB <-
+    inputDB %>% 
+    filter(!grepl(ShortCode,Code)) %>% 
+    # Attach new data
+    rbind(X) %>% 
+    # Sort
+    sort_input_data()
+  
+  # Output
+  inputDB
+  
+}
+
+
+### inspect_code()
+# Views database entry
+# @param DB Database
+# @param .Code Country/day code
+# inspect_code(inputDB,"ES31.03.2020)
+
+inspect_code <- function(DB, .Code) {
+  
+  DB %>% 
+    # Select rows with .Code
+    filter(Code == .Code) %>% 
+    View()
+  
+}
+
+
+
+### Functions for editing data ######################################
+
+### sort_input_data()
+# Sorts input data nicely
+# @param X 
+
+sort_input_data <- function(X) {
+  
   X %>% 
-  mutate(Date2 = dmy(Date)) %>% 
+    # Date to DDMMYYYY
+    mutate(Date2 = dmy(Date)) %>% 
+    # Sort data
     arrange(Country,
             Region,
             Date2,
@@ -48,799 +465,1392 @@ sort_input_data <- function(X){
             Measure,
             Metric,
             suppressWarnings(as.integer(Age))) %>% 
+    # Drop extra date variable
     select(-Date2)
+  
 }
 
-# -------------------------------------------------
 
-get_input_rubric <- function(tab = "input"){
-  ss_rubric <- "https://docs.google.com/spreadsheets/d/15kat5Qddi11WhUPBW3Kj3faAmhuWkgtQzioaHvAGZI0/edit#gid=0"
-  input_rubric <- read_sheet(ss_rubric, sheet = tab) %>% 
-    filter(!is.na(Sheet))
-  input_rubric
-}
+### add_short()
+# Create short labels from long labels
+# @param Code Character vector of long labels
+# @param Date Vector of dates
 
-add_Short <- function(Code, Date){
+add_Short <- function(Code, Date) {
+  
+  # Apply elementwise
   mapply(function(Code, Date){
+    
+    # Remove date
     Short <- gsub(pattern = Date, replacement = "", Code)
+    
+    # Remove last character if not a letter
     last_char <- str_sub(Short,-1)
     if (last_char %in% c("\\.","_","-")){
       Short <- substr(Short,1,nchar(Short)-1)
     }
+    
+    # Return short label
     Short
+    
   }, Code, Date)
-
+  
 }
 
-# leave rubric as NULL for full build
-compile_inputDB <- function(rubric = NULL){
-  if (is.null(rubric)){
-    rubric <- get_input_rubric(tab = "input")
+
+### a modularized check on Age AgeInt consistency
+# @param chunk data chunk consisting in unique combo of Code, Sex, Measure, Metric
+check_age_seq <- function(chunk){
+  chunki <- copy(chunk)
+  chunki <- chunki[!Age%in%c("TOT","UNK")]
+  
+  if (nrow(chunki) == 0){
+    return(TRUE)
   }
-  rubric <- rubric %>% 
-    filter(Rows > 0)
   
-  input_list <- list()
-  for (i in rubric$Short){
-    ss_i           <- rubric %>% filter(Short == i) %>% pull(Sheet)
-    X <- try(read_sheet(ss_i, 
-                     sheet = "database", 
-                     na = "NA", 
-                     col_types = "cccccciccd"))
-    if (class(X) == "try-error"){
-      cat(i,"didn't load, waiting 2 min to try again")
-      Sys.sleep(120)
-      X <- try(read_sheet(ss_i, 
-                          sheet = "database", 
-                          na = "NA", 
-                          col_types = "cccccciccd"))
-    }
-    X <- 
-      X %>% 
-      mutate(Short = add_Short(Code, Date))
-    input_list[[i]] <- X
-    Sys.sleep(45) # this is getting absurd
+  keep   <- chunki$Sex != "UNK"
+  chunki <- chunki[keep]
+  if (nrow(chunki) == 0){
+    return(TRUE)
   }
-  # bind and sort:
-  inputDB <- 
-    input_list %>% 
-    bind_rows() %>% 
-    sort_input_data()
+  chunki[, Age := as.integer(Age)]
+  chunki <- chunki[order(Age)]
+  chunki[, Age2 := Age + AgeInt]
+  chunki[, Age2 := lag(Age2)]
   
-  inputDB
+  all(chunki[["Age"]] == chunki[["Age2"]], na.rm=TRUE) & min(chunki[["Age"]]) == 0
 }
 
-compile_offsetsDB <- function(){
-  ss_offsets <- "https://docs.google.com/spreadsheets/d/1z9Dg7iQWPdIGRI3rvgd-Dx3rE5RPNd7B_paOP86FRzA/edit#gid=0"
-  offsets_rubric <- read_sheet(ss_offsets, sheet = 'checklist') %>% 
-    filter(!is.na(Sheet))
+### do_we_convert_fractions_sexes()
+# Checks if fractions shoudl be converted to case counts
+# @param chunk Data chunk
+# @param logfile character Name of the log file
+
+do_we_convert_fractions_sexes <- function(chunk, 
+                                          logfile = "buildlog.md") {
   
-  off_list <- list()
-  for (i in offsets_rubric$Short){
-    ss_i           <- offsets_rubric %>% filter(Short == i) %>% pull(Sheet)
-    X <- try(read_sheet(ss_i, 
-                        sheet = "population", 
-                        na = "NA", 
-                        col_types = "ccccicd"))
-    if (class(X)[1] == "try-error"){
-      cat(i,"didn't load, waiting 2 min to try again")
-      Sys.sleep(100)
-      X <- try(read_sheet(ss_i, 
-                          sheet = "population", 
-                          na = "NA", 
-                          col_types = "ccccicd"))
-    }
-    X <- 
-      X %>% 
-      mutate(Short = i)
-    off_list[[i]] <- X
-    Sys.sleep(20) # this is getting absurd
-  }
-  # bind and sort:
-  offsetsDB <- 
-    off_list %>% 
-    bind_rows() %>% 
-    arrange(Country, Region, Sex)
-  offsetsDB
-}
-
-
-
-
-# load just a single country
-get_country_inputDB <- function(ShortCode){
-  rubric <- get_input_rubric(tab = "input")
-  ss_i   <- rubric %>% filter(Short == ShortCode) %>% pull(Sheet)
-  out <- read_sheet(ss_i, 
-                     sheet = "database", 
-                     na = "NA", 
-                     col_types= "cccccciccd")
-  out$Short <- ShortCode
-  out
-}
+  # No of entries which are fractions
+  Fracs <-  chunk[["Metric"]] %>% '=='("Fraction") %>% sum()
   
-# ---------------------------------------------------
-# # replace subset with new load after Date correction
-swap_country_inputDB <- function(inputDB, ShortCode){
-  X <- get_country_inputDB(ShortCode)
-  inputDB <-
-    inputDB %>% 
-    filter(!grepl(ShortCode,Code)) %>% 
-    rbind(X) %>% 
-    sort_input_data()
-  inputDB
-}
-
-# ----------------------------------------------------
-
-
-get_standby_inputDB <- function(){
-  rubric <- get_input_rubric(tab = "output")
-  inputDB_ss <- 
-    rubric %>% 
-    filter(tab == "inputDB") %>% 
-    pull(Sheet)
-  standbyDB <- read_sheet(inputDB_ss, sheet = "inputDB", na = "NA", col_types= "cccccciccdc")
-  standbyDB
-}
-
-check_input_updates <- function(inputDB  = NULL, standbyDB = NULL){
-
-  if (is.null(standbyDB)){
-    standbyDB <- get_standby_inputDB()
-  }
-  if (is.null(inputDB)){
-    inputDB <- compile_inputDB()
-  }
-  codes_have      <- standbyDB %>% pull(Code) %>% unique()
-  codes_collected <- inputDB %>% pull(Code) %>% unique()
-  
-  new_codes <- codes_collected[!codes_collected%in%codes_have]
-  if (length(new_codes)  > 0){
-    cat(new_codes)
-    nr <- nrow(standbyDB) - nrow(inputDB)
-    cat(nr, "total new values collected")
-  } else {
-    cat("no new updates to add")
-  }
-}
-
-
-# inspect_code(inputDB,"ES31.03.2020)
-inspect_code <- function(DB, .Code){
-  DB %>% 
-    filter(Code == .Code) %>% 
-    View()
-}
-
-# agressive push
-push_inputDB <- function(inputDB = NULL){
-
-  inputDB_ss <- 
-    get_input_rubric(tab="output") %>% 
-    filter(tab == "inputDB") %>% 
-    pull(Sheet)
-  
-  write_sheet(inputDB, ss = inputDB_ss, sheet = "inputDB")
-}
-
-
-# Output can live straight in github now
-# push_outputDB <- function(outputDB = NULL){
-# 
-#   inputDB_ss <- 
-#     get_input_rubric(tab="output") %>% 
-#     filter(tab == "outputDB") %>% 
-#     pull(Sheet)
-#   
-#   write_sheet(outputDB, ss = inputDB_ss, sheet = "outputDB")
-# }
-
-
-
-# TODO: write validation functions
-# group_by(Code, Measure)
-do_we_convert_fractions_all_sexes <- function(chunk){
-  Fracs <-  chunk %>% pull(Metric) %>% '=='("Fraction") %>% sum()
-  
+  # Any fractions in data? T/F
   maybe <- Fracs > 0 
-  if (maybe){
-    Fracs      <- chunk %>% filter(Metric == "Fraction")
-    have_sexes <- all(c("m","f") %in% Fracs$Sex)
   
-    # Don't need explicit TOT b, Counts by age in b is enough
-    yes_b_scalar <- chunk %>% 
-      filter(Metric == "Count",
-             Sex == "b") %>% 
-      nrow() %>% 
-      '>'(0)
+  # If fractions in data
+  if(maybe) {
     
-    no_sex_scalars <- chunk %>% 
-      filter(Sex %in% c("m","f")) %>% 
-      pull(Metric) %>% 
-      '=='("Count") %>% 
-      sum() %>% 
-      "=="(0)
-
+    # Get fraction data
+    Fracs      <- chunk[Metric == "Fraction"]
+    
+    # Check if data for both sexes
+    have_sexes <- all(c("m","f") %in% Fracs[["Sex"]])
+    
+    # Check if case count for both sexes combined
+    yes_b_scalar <- chunk[Metric == "Count" &
+                            Sex == "b"] %>% 
+                    nrow() %>% 
+                    '>'(0)
+    
+    # Check if sex-specific case counts (TRUE if not available)
+    no_sex_scalars <- chunk[Sex %in% c("m","f")][["Metric"]] %>% 
+                      '=='("Count") %>% 
+                      sum() %>% 
+                      "=="(0)
+    
+    # T if fraction for both sexes, total case counts, but no
+    # sex specific case counts
     out <- have_sexes & yes_b_scalar & no_sex_scalars
+    
   } else{
+    
+    # If no need to convert fractions
     out <- FALSE
+    
   }
+  
+  # Output
   out
+  
 }
 
-convert_fractions_all_sexes <- function(chunk){
-  do_this <- do_we_convert_fractions_all_sexes(chunk)
-  if (!do_this){
+
+### convert_fractions_sexes()
+# Converts fractions into counts
+# @param chunk Data chunk
+# @param verbose logical Print console messages
+
+convert_fractions_sexes <- function(chunk, verbose = FALSE) {
+  
+  # Check if conversion is needed
+  do_this <- do_we_convert_fractions_sexes(chunk)
+  
+  # If no conversion needed return unchanged chunk
+  if(!do_this) {
+    
     return(chunk)
+    
   }
   
-  # this might suggest a better way to check whether
-  # to do this transformation
-  b    <- chunk %>% filter(Sex == "b")
-  rest <- chunk %>% filter(Sex != "b")
+  # Split chunk into two parts: Combined vs sex-specific
+  b    <- chunk[Sex == "b"]
+  rest <- chunk[Sex != "b"]
   
-  # TR: this is a hard check to make sure the checker function
-  # does the right thing
-  stopifnot(all(rest$Metric == "Fraction"))
-    
+  # Double-check that only fractions available as sex-specific
+  stopifnot(all(rest[["Metric"]] == "Fraction"))
+  
   # Console message
-  cat("Fractions converted to Counts for",unique(chunk$Code),"\n")
-  if (any(b$Age == "TOT")){
-    BB <- b %>% filter(Age == "TOT") %>% pull(Value)
+  if(verbose) cat("Fractions converted to Counts for",
+                  unique(chunk$Code),"\n")
+  
+  # Get totals for combined-sex data
+  if(any(b[["Age"]] == "TOT")) {
+    
+    # If total is included take it
+    BB <- b[Age == "TOT"][["Value"]]
+    
   } else {
-    BB <- b %>% pull(Value) %>% sum()
+    
+    # If no total included calculate it as sum
+    BB <- b[["Value"]] %>% sum()
+    
   }
-    
-  out <-
-    rest %>% 
-    mutate(Value = Value * BB,
-           Metric = "Count") %>% 
-    bind_rows(b)
-    
-  out
-}
   
+  # Rescale sex-specific values according to total
+  v2 <- rescale_vector(rest[["Value"]], scale = BB)
+  
+  # Format and merge sex-specific with combined-sex data
+  out <- rest[,c("Value", "Metric") := .(v2,"Count")] %>% 
+          rbind(b)
+  
+  # Output
+  out
+  
+}
 
 
+### do_we_convert_fractions_within_sex()
+# Convert fractions within sex to totals?
+# @param chunk Data chunk
 
-# 1) convert fraction. Should be on 
-# group_by(Code, Sex, Measure)
-
-do_we_convert_fractions_within_sex <- function(chunk){
-  have_fracs <- "Fraction" %in% chunk$Metric 
-  scaleable  <- chunk %>% 
-    filter(Metric == "Count",
-           Age == "TOT")
+do_we_convert_fractions_within_sex <- function(chunk) {
+  
+  # Fractions in data?
+  have_fracs <- "Fraction" %in% chunk[["Metric"]] 
+  
+  # Total counts available?
+  scaleable  <- chunk[Metric == "Count" & Age == "TOT"]
+  
+  # Output (TRUE if fractions can be converted)
   (nrow(scaleable) == 1) & have_fracs
+  
 }
 
-convert_fractions_within_sex <- function(chunk){
-  # subset should contain only Fractions and one Total Count
+
+### convert_fractions_within_sex()
+# Convert fractions to counts within a sex
+# Chunk should contain only Fractions and one Total Count
+# @param chunk Data chunk
+# @param verbose logical Print console messages
+
+convert_fractions_within_sex <- function(chunk, verbose = FALSE) {
   
+  # Check if conversion is necessary
   do.this <- do_we_convert_fractions_within_sex(chunk)
-  if (!do.this){
+  
+  # If not necessary return unchanged chunk
+  if(!do.this) {
+    
     return(chunk)
+    
   }
   
-  TOT <- chunk %>% 
-    filter(Metric == "Count")
+  # Get counts
+  TOT <- chunk[Metric == "Count"]
   
-  stopifnot(TOT$Age == "TOT")
+  # Stop if no total is available
+  stopifnot(TOT[["Age"]] == "TOT")
+  
   # Console message
-  cat("Fractions converted to Counts for",unique(chunk$Code),"\n")
+  if(verbose) cat("Fractions converted to Counts for",
+                  unique(chunk[["Code"]]),"\n")
   
-  TOT <- TOT %>% pull(Value)
+  # Get total count
+  TOT <- TOT[["Value"]]
   
-  out <- chunk %>% 
-    filter(Metric == "Fraction") %>% 
-    mutate(Value = Value / sum(Value),
-           Value = Value * TOT,
-           Metric = "Count")
+  # Get fractions
+  out <- chunk[Metric == "Fraction"]
+  
+  # Rescale fractions
+  v2  <- rescale_vector(out[["Value"]], scale = TOT)
+  
+  # Format output
+  out <- out[, c("Value", "Metric") := .(v2, "Count")]
+  
+  # Output
   out
-}
-do_we_infer_deaths_from_cases_and_ascfr <- function(chunk){
-  have_ratios_counts <- setequal(chunk$Metric, c("Ratio","Count") )
-  ascfr_ratio <- chunk %>% 
-    filter(Metric == "Ratio") %>% 
-    pull(Measure) %>% 
-    `==`("ASCFR") %>% 
-    all()
-  cases_count <- chunk %>% 
-    filter(Metric == "Count") %>% 
-    pull(Measure) %>% 
-    `==`("Cases") %>% 
-    all()
-  have_ratios_counts & ascfr_ratio & cases_count
+  
 }
 
-infer_deaths_from_cases_and_ascfr <- function(chunk){
+
+### do_we_infer_deaths_from_cases_and_ascfr()
+# Check if deaths need to be calculated from case counts and CFRs
+# @param chunk Data chunk
+
+do_we_infer_deaths_from_cases_and_ascfr <- function(chunk) {
+  
+  # Does data contain ratios and counts
+  have_ratios_counts <- setequal(chunk[["Metric"]], 
+                                 c("Ratio","Count") )
+  
+  # Are ratios CFRs?
+  ascfr_ratio <- chunk[Metric == "Ratio", Measure] %>% 
+                  `==`("ASCFR") %>% 
+                  all()
+  
+  # Are counts case counts and no deaths?
+  cases_count <- chunk[Metric == "Count", Measure] %>% 
+                  `==`("Cases") %>% 
+                  all()
+  
+  # Output (TRUE if data has CFRs, case counts, but no deaths)
+  have_ratios_counts & ascfr_ratio & cases_count
+  
+}
+
+
+### infer_deaths_from_cases_and_ascfr()
+# Calculate deaths from cacse counts and CFRs
+# @param chunk Data chunk
+# @param verbose logical Print messages to console
+
+infer_deaths_from_cases_and_ascfr <- function(chunk, verbose=FALSE) {
+  
+  # Check if calculation is necessary
   do_this <- do_we_infer_deaths_from_cases_and_ascfr(chunk)
-  if (!do_this){
+  
+  # If not necessary, return unchanged chunk
+  if(!do_this) {
+    
     return(chunk)
+    
   }
   
-  TOT   <- chunk %>% filter(Age == "TOT")
-  chunk <- chunk %>% filter(Age != "TOT")
+  # Get total case count
+  TOT   <- chunk[Age == "TOT"]
   
-  ASCFR  <- chunk %>% filter(Metric == "Ratio")
-  stopifnot(all(ASCFR$Measure == "ASCFR"))
-  Cases <- chunk %>% filter(Metric == "Count")
-  stopifnot(all(Cases$Measure == "Cases"))
+  # Rest of chunk
+  chunk <- chunk[Age != "TOT"]
   
+  # Get CFRs and case counts
+  ASCFR  <- chunk[Metric == "Ratio"]
+  Cases  <- chunk[Metric == "Count"]
+  
+  # Stop if no CFRs or case counts
+  stopifnot(all(ASCFR[["Measure"]] == "ASCFR"))
+  stopifnot(all(Cases[["Measure"]] == "Cases"))
+  
+  # Stop if CFRs do not match case counts
   if (nrow(Cases)!=nrow(ASCFR)){
-    cat(unique(chunk$Code),"\n")
+    cat(unique(chunk[["Code"]]),"\n")
   }
   stopifnot(nrow(Cases) == nrow(ASCFR))
+  
+  # Console message
+  if (verbose) cat("ACSFR converted to deaths for",
+                   unique(chunk[["Code"]]),"\n")
+  
+  # Object for death counts
   Deaths  <- ASCFR
   
-  # Console message
-  cat("ACSFR converted to deaths for",unique(chunk$Code),"\n")
-  
+  # Calculate deaths
   Deaths <-
-    Deaths %>% 
-    mutate(Value = Cases$Value * ASCFR$Value,
-           Measure = "Deaths",
-           Metric = "Count")
+    Deaths[, c("Value", "Measure", "Metric") := 
+             .(Cases[["Value"]] * ASCFR[["Value"]],"Deaths","Count")]
   
+  # Output
   rbind(Cases, Deaths, TOT)
   
 }
 
 
-do_we_infer_cases_from_deaths_and_ascfr <- function(chunk){
-  have_ratios_counts <- setequal(chunk$Metric, c("Ratio","Count") )
-  ascfr_ratio <- chunk %>% 
-    filter(Metric == "Ratio") %>% 
-    pull(Measure) %>% 
-    `==`("ASCFR") %>% 
-    all()
+### do_we_infer_cases_from_deaths_and_ascfr()
+# Do cases need to be inferred from deaths and CFRs?
+# @param chunk Data chunk
+
+do_we_infer_cases_from_deaths_and_ascfr <- function(chunk) {
   
-  deaths_count <- chunk %>% 
-    filter(Metric == "Count",
-           Age != "TOT") %>% 
-    pull(Measure) %>% 
-    `==`("Deaths") %>% 
-    all()
+  # Does chunk have ratio and count?
+  have_ratios_counts <- setequal(chunk[["Metric"]], 
+                                 c("Ratio","Count") )
   
+  # Are the ratios CFRs?
+  ascfr_ratio <- chunk[Metric == "Ratio", Measure] %>% 
+                  `==`("ASCFR") %>% 
+                  all()
+  
+  # Are all counts death counts?
+  deaths_count <- chunk[Metric== "Count" & Age!= "TOT", Measure] %>% 
+                    `==`("Deaths") %>% 
+                    all()
+  
+  # Output (TRUE if CFRs and death counts but no case counts)
   have_ratios_counts & ascfr_ratio & deaths_count
+  
 }
-# 2) convert infografica style data to counts
-# subset cannot include Metric or Measure as splitters
-# group_by(Code, Sex)
-infer_cases_from_deaths_and_ascfr <- function(chunk){
+
+
+### infer_cases_from_deaths_and_ascfr()
+# Calculate cases from deaths and CFRs
+# @param chunk Data chunk
+# @param verbose logical Print console message?
+
+infer_cases_from_deaths_and_ascfr <- function(chunk, verbose= FALSE){
+  
+  # Check if calculation is necessary
   do_this <- do_we_infer_cases_from_deaths_and_ascfr(chunk)
-  if (!do_this){
+  
+  # If not necessary, return unchanged chunk
+  if(!do_this) {
+    
     return(chunk)
+    
   }
   
-  TOT <- chunk %>% filter(Age == "TOT")
-  chunk <- chunk %>% filter(Age != "TOT")
+  # Copy chunk
+  zunk <- copy(chunk)
   
-  ASCFR  <- chunk %>% filter(Metric == "Ratio")
-  stopifnot(all(ASCFR$Measure == "ASCFR"))
-  Deaths <- chunk %>% filter(Metric == "Count")
-  stopifnot(all(Deaths$Measure == "Deaths"))
+  # Separate total deaths from rest of chunk
+  TOT   <- zunk[Age == "TOT"]
+  zunk <- zunk[Age != "TOT"]
   
-  if (nrow(Deaths)!=nrow(ASCFR)){
-    cat(unique(chunk$Code),"\n")
+  # Split chunk into CFRs and death counts
+  ASCFR  <- zunk[Metric == "Ratio"]
+  Deaths <- zunk[Metric == "Count"]
+  
+  # Stop if no CFRs or no death counts
+  stopifnot(all(ASCFR[["Measure"]] == "ASCFR"))
+  stopifnot(all(Deaths[["Measure"]] == "Deaths"))
+  
+  # Check if CFRs do not match death counts
+  if(nrow(Deaths)!=nrow(ASCFR)) {
+    
+    # Print country code 
+    cat(unique(zunk[["Code"]]),"\n")
+    
   }
+  
+  # Stop if CFRs do not match death counts
   stopifnot(nrow(Deaths) == nrow(ASCFR))
-  Cases  <- ASCFR
   
-  # Problem is that ASCFRs are often rounded, which can lead to
-  # apparent 0 cases in young ages, doh! This is a kludge. Better
-  # would be a time series of Bollettin data, interpolated and then
-  # constrained to observed deaths in the Infografica...
-  if (any(ASCFR$Value == 0)){
+  # If CFRs are zero (due to rounding): Impute
+  if(any(ASCFR[["Value"]] == 0)) {
+    
     # remove UNK
-    UNK <- filter(ASCFR, Age == "UNK")
+    UNK        <- ASCFR[Age == "UNK"]
+    
     # convert Age to integer
-    ASCFR <- ASCFR %>% 
-      filter(Age != "UNK") %>% 
-      mutate(Age = as.integer(Age))
+    ASCFR      <- ASCFR[Age != "UNK"] 
+    v          <- ASCFR[["Value"]]
+    ai         <- ASCFR[["AgeInt"]]
+    a          <- ASCFR[["Age"]] %>% as.integer()
+    
     # indicate 0s
-    ind   <- ASCFR$Value > 0 & !is.na(ASCFR$AgeInt)
+    ind        <- v > 0 & !is.na(ai) & a < 60
+    ind2       <- v == 0 & !is.na(ai)
+    vi         <- v[ind]
+    aii        <- ai[ind]
+    ai         <- a[ind]
+    
     # fit linear model to fill in
-    mod   <- lm(log(Value) ~ Age, data = filter(ASCFR,ind))
+    mod        <- lm(log(vi) ~ ai)
+    
     # ages we need to predict for
-    apred <- filter(ASCFR,!ind) %>% pull(Age)
+    #apred     <- a[!ind]
+    
     # impute prediction
-    ASCFR$Value[!ind] <- exp(predict(mod, newdata=data.frame(Age =apred)))
+    vpred      <- exp(predict(mod, newdata = data.frame(ai = a)))
+    v[ind2]    <- vpred[ind2]
+    
     # stick UNK back on (assuming sorted properly)
-    ASCFR <- rbind(ASCFR,UNK)
+    ASCFR <-
+      ASCFR[,Value := v] %>% 
+      rbind(UNK)
+    
   }
+  
   # Console message
-  cat("ACSFR converted to counts for",unique(chunk$Code),"\n")
+  if (verbose) cat("ACSFR converted to counts for",
+                   unique(zunk[["Code"]]),"\n")
   
-  Cases <-
-    Cases %>% 
-    mutate(Value = Deaths$Value / ASCFR$Value,
-           Value = ifelse(is.nan(Value),0,Value), # in case UNK deaths was 0
-           Measure = "Cases",
-           Metric = "Count")
+  # Calculate case counts
+  cases <- Deaths[["Value"]] / ASCFR[["Value"]]
   
+  # Replace NaN with 0
+  cases <- ifelse(is.nan(cases),0,cases)
+  
+  # Format for output
+  Cases <- ASCFR
+  Cases <- Cases[, c("Value","Measure", "Metric") := 
+                   .(cases,"Cases","Count")]
+  
+  # Output
   rbind(Cases, Deaths, TOT)
   
 }
 
 
-# Harmonization functions:
+### do_we_redistribute_unknown_age()
+# Are there cases with unknown age?
+# @param chunk Data chunk
 
 do_we_redistribute_unknown_age <- function(chunk){
-  maybe <- "UNK" %in% chunk$Age & all(chunk$Metric != "Ratio")
-  if (maybe){
-  positive <- chunk %>% 
-                filter(Age == "UNK") %>% 
-                pull(Value) %>% 
-                `>`(0)
-  } else {
-    positive <- FALSE
-  }
-  maybe & positive
-}
-
-# 3)
-# 
-# group_by(Code, Sex, Measure)
-# redistribute_unknown_age()
-redistribute_unknown_age <- function(chunk){
-  # this should happen after ratios turned to counts!
-  do_this <- do_we_redistribute_unknown_age(chunk)
-  if (!do_this){
-    # could be returning chunk with UNK value of 0,
-    # so remove just in case
-    chunk <- chunk %>% 
-      filter(Age != "UNK") 
-    return(chunk)
-  }
   
-  # foresee TOT,
-  TOT   <- chunk %>% filter(Age == "TOT")
-  chunk <- chunk %>% filter(Age != "TOT")
+  # Are there cases with unknown age?
+  maybe <- "UNK" %in% chunk[, Age] & 
+            all(chunk[, Metric] != "Ratio")
   
-  if (do_this){
-    UNK   <- chunk %>% filter(Age == "UNK")
-    chunk <- chunk %>% 
-      filter(Age != "UNK") %>% 
-      mutate(Value = Value + (Value / sum(Value)) * UNK$Value,
-             Value = ifelse(is.nan(Value),0,Value))
+  # If yes
+  if(maybe) {
     
-    # Console message
-    cat(paste("UNK Age redistributed for",
-        unique(chunk$Code),
-        unique(chunk$Sex),
-        unique(chunk$Measure)),"\n")
+    # 'Unknown age' has more than zero cases
+    positive <- chunk[Age == "UNK",Value] %>% `>`(0)
+    
+  } else {
+    
+    positive <- FALSE
+    
   }
-  chunk <- rbind(chunk, TOT)
-  chunk
+  
+  # Output (TRUE if more than 0 cases with unknown age)
+  maybe & positive
+  
 }
 
 
+### redistribute_unknown_age()
+# Distribute cases with unknown age
+# This should happen after ratios turned to counts!
+# @param chunk Data chunk
+# @param verbose logical Print console message?
 
-do_we_rescale_to_total <- function(chunk){
+redistribute_unknown_age <- function(chunk, verbose = FALSE) {
+  
+  # Cases with unknown age?
+  do_this <- do_we_redistribute_unknown_age(chunk)
+  
+  # If not, return unchanged chunk
+  if(!do_this) {
+    
+    # Remove "unknown" category -> zero cases
+    chunk <- chunk[Age != "UNK"]
+    
+    # Return
+    return(chunk)
+    
+  }
+  
+  # Split total and rest of chunk
+  TOT   <- chunk[Age == "TOT"]
+  chunk <- chunk[Age != "TOT"]
+  
+  # Split unknown ages and other ages
+  UNK   <- chunk[Age == "UNK"]
+  chunk <- chunk[Age != "UNK"]
+  
+  # Redistribute unknown age
+  v2    <- chunk[, Value] + 
+          (chunk[, Value] / sum(chunk[, Value])) * UNK[, Value]
+  
+  # Replace NaN with 0
+  v2    <- ifelse(is.nan(v2),0,v2)
+  
+  # Replace old counts with new counts
+  chunk <- chunk[, Value := v2]  
+    
+  # Console message
+  if(verbose) {
+      cat(paste("UNK Age redistributed for",
+                unique(chunk[,Code]),
+                unique(chunk[,Sex]),
+                unique(chunk[,Measure])),"\n")
+    }
+  
+  # Combine total and redistributed cases
+  chunk <- rbind(chunk, TOT)
+  
+  # Output
+  chunk
+  
+}
+
+
+### do_we_rescale_to_total()
+# Do counts need to be rescaled to match total?
+# @param chunk Data chunk
+
+do_we_rescale_to_total <- function(chunk) {
+  
+  # Chunk has more than one row
   has_rows   <- nrow(chunk) > 1
-  has_TOT    <- any("TOT" %in% chunk$Age)
-  all_counts <- all(chunk$Metric == "Count")
   
-
+  # Chunk has total
+  has_TOT    <- any("TOT" %in% chunk[["Age"]])
   
+  # Chunk has counts
+  all_counts <- all(chunk[["Metric"]] == "Count")
+  
+  # Potential need of rescaling?
   maybe <- has_rows & has_TOT & all_counts
   
-  if (maybe){
+  # If yes
+  if(maybe) {
+    
     # is the TOT different from the marginal sum?
-    marginal_sum <- chunk %>% filter(Age != "TOT") %>% pull(Value) %>% sum()
-    TOT          <- chunk %>% filter(Age == "TOT") %>% pull(Value)
+    marginal_sum <- chunk[Age != "TOT",Value] %>% sum()
+    TOT          <- chunk[Age == "TOT",Value] 
     out <- abs(marginal_sum - TOT) > 1e-4
+    
   } else {
+    
     out <- FALSE
+    
   }
+  
+  # Output
   out
+  
 }
-# This function to be run on a given Code * Sex subset.
-# This could be run before redistributing UNK, for example.
 
-rescale_to_total <- function(chunk){
+
+### rescale_to_total()
+# Rescale age-specifc counts to maatch total
+# @param chunk Data chunk
+# @param verbose logical Print console message?
+
+rescale_to_total <- function(chunk, verbose = FALSE){
+  
+  # Check if rescaling is needed
   do_this <- do_we_rescale_to_total(chunk)
-  if (!do_this){
-    # looks silly, but possibly subset contains only TOT,
-    # in which case we throw out moving forward. BUT
-    # we might want to keep both-sex TOT for scaling
-    # m and f ...
-    chunk <- chunk %>% 
-      filter(!(Age == "TOT" & Sex %in% c("m","f","UNK")))
+  
+  # If no rescaling is needed return unchanged chung
+  if(!do_this) {
+    
+    # Keeo both sex tot
+    i1    <- chunk[["Sex"]] %in% c("m","f","UNK")
+    i2    <- chunk[["Age"]] == "TOT"
+    ind   <- !(i1 & i2)
+    chunk <- chunk[ind] 
+    
+    # Output
     return(chunk)
   }
-
   
-  TOT <- chunk %>% filter(Age == "TOT")
-  # foresee this pathology
+  # Get total
+  TOT <- chunk[Age == "TOT"]
+  
+  # Stop if not exactly one total
   stopifnot(nrow(TOT) == 1)
-  # if (TOT$Value == 0){
-  #   chunk <- chunk %>% 
-  #     filter(Age != "TOT")
-  #   return(chunk)
-  # }
+ 
+  # Get chunk without total
+  chunk <- chunk[Age != "TOT"]
   
-  chunk <- chunk %>% 
-    filter(Age != "TOT") %>% 
-    mutate(Value = rescale_vector(Value, 
-                                  scale = TOT$Value),
-           Value = ifelse(is.nan(Value),0,Value))
+  # Get counts
+  v2    <- chunk[["Value"]]
+  
+  # Rescale to total
+  v2    <- rescale_vector(v2, scale = TOT[["Value"]])
+  
+  # Set NaNs to zero
+  v2    <- ifelse(is.nan(v2),0,v2)
+  
+  # Replace old values with rescaled values
+  chunk <- chunk[, Value := v2]
   
   # Console message
-  cat(paste("Counts rescaled to TOT for",
-      unique(chunk$Code),
-      unique(chunk$Sex),
-      unique(chunk$Measure)),"\n")
+  if(verbose) {
+    
+    cat(paste("Counts rescaled to TOT for",
+              unique(chunk[["Code"]]),
+              unique(chunk[["Sex"]]),
+              unique(chunk[["Measure"]])),"\n")
+    
+  }
   
+  # Output
   chunk
+  
 }
 
-do_we_rescale_sexes <- function(chunk){
-  sexes  <- chunk %>% pull(Sex) %>% unique()
-  Counts <- all(chunk$Metric == "Count")
+
+### do_we_rescale_sexes()
+# Do sexes need rescaling?
+# @param chunk Data chunk
+
+do_we_rescale_sexes <- function(chunk) {
+  
+  # Get sexes in chunk
+  sexes  <- chunk[["Sex"]] %>% unique()
+  
+  # All metrics are counts in chunk?
+  Counts <- all(chunk[["Metric"]] == "Count")
+  
+  # All sexes in data and all counts?
   maybe  <- setequal(sexes,c("b","f","m")) & Counts
-  if (maybe){
+  
+  # If yes
+  if(maybe) {
+    
     # separate chunks
-    m    <- chunk %>% filter(Sex == "m")
-    f    <- chunk %>% filter(Sex == "f")
-    b    <- chunk %>% filter(Sex == "b")
-    if ("TOT" %in% m$Age){
-      MM   <- m %>% filter(Age=="TOT") %>% pull(Value)
+    m    <- chunk[Sex == "m"]
+    f    <- chunk[Sex == "f"]
+    b    <- chunk[Sex == "b"]
+    
+    # Get total for males
+    if ("TOT" %in% m[["Age"]]){
+      MM   <- m[Age=="TOT",Value]
     } else {
-      MM   <- m %>% pull(Value) %>% sum()
+      MM   <- m[["Value"]] %>% sum()
     }
-    if ("TOT" %in% f$Age){
-      FF   <- f %>% filter(Age=="TOT") %>% pull(Value)
+    
+    # Get total for females
+    if ("TOT" %in% f[["Age"]]){
+      FF   <- f[Age=="TOT", Value]
     } else {
-      FF   <- f %>% pull(Value) %>% sum()
+      FF   <- f[["Value"]] %>% sum()
     }
-    if ("TOT" %in% b$Age){
-      BB   <- b %>% filter(Age=="TOT") %>% pull(Value)
+    
+    # Get total for both sexes combined
+    if ("TOT" %in% b[["Age"]]){
+      BB   <- b[Age=="TOT", Value]
     } else {
-      BB   <- b %>% pull(Value) %>% sum()
+      BB   <- b[["Value"]] %>% sum()
     }
+    
+    # Do totals match?
     out <- abs(MM + FF - BB) > 1e-4
+    
   } else {
+    
     out <- FALSE
+    
   }
+  
+  # Output (TRUE if rescaling needed)
   out
+  
 }
-# This can produce NAs in early Belgium Deaths (presumably)
-rescale_sexes <- function(chunk){
+
+
+### rescale_sexes()
+# Rescale sexes according to total
+# @param chunk Data chunk
+# @param verbose logical Print console message?
+
+rescale_sexes <- function(chunk, verbose = FALSE) {
+  
+  # Do sexes need to be rescaled
   do_this <- do_we_rescale_sexes(chunk)
-  if (!do_this){
+  
+  # If no rescaling needed:
+  if(!do_this) {
+    
+    # Return unchanged chunk
     return(chunk)
+    
   }
   
   # Console message
-  cat("Sex-specific estimates rescaled to both-sex Totals for",
-      unique(chunk$Code),
-      unique(chunk$Measure),"\n")
+  if(verbose) {
+    
+    cat("Sex-specific estimates rescaled to both-sex Totals for",
+        unique(chunk[["Code"]]),
+        unique(chunk[["Measure"]]),"\n")
+  }
   
   # separate chunks
-  m    <- chunk %>% filter(Sex == "m")
-  f    <- chunk %>% filter(Sex == "f")
-  b    <- chunk %>% filter(Sex == "b")
+  m    <- chunk[Sex == "m"]
+  f    <- chunk[Sex == "f"]
+  b    <- chunk[Sex == "b"]
   
-  # Get marginal sums
-  if ("TOT" %in% m$Age){
-    MM   <- m %>% filter(Age=="TOT") %>% pull(Value)
+  # Get total men
+  if("TOT" %in% m[["Age"]]) {
+    MM   <- m[Age=="TOT", Value]
   } else {
-    MM   <- m %>% pull(Value) %>% sum()
+    MM   <- m[["Value"]] %>% sum()
   }
-  if ("TOT" %in% f$Age){
-    FF   <- f %>% filter(Age=="TOT") %>% pull(Value)
+  
+  # Get total women
+  if("TOT" %in% f$Age) {
+    FF   <- f[Age=="TOT", Value]
   } else {
-    FF   <- f %>% pull(Value) %>% sum()
+    FF   <- f[["Value"]] %>% sum()
   }
-  if ("TOT" %in% b$Age){
-    BB   <- b %>% filter(Age=="TOT") %>% pull(Value)
+  
+  # Get total sexes combined
+  if("TOT" %in% b$Age) {
+    BB   <- b[Age=="TOT", Value]
   } else {
-    BB   <- b %>% pull(Value) %>% sum()
+    BB   <- b[["Value"]] %>% sum()
   }
+  
   # Get adjustment coefs
   PM     <- MM / (MM + FF)
   Madj   <- (PM * BB) / MM
   Fadj   <- ((1 - PM) * BB) / FF
   
+  # Replace NaN with 1
   Madj <- ifelse(is.nan(Madj),1,Madj)
   Fadj <- ifelse(is.nan(Fadj),1,Fadj)
+  
   # adjust Value
-  m      <- m %>% filter(Age != "TOT") %>% mutate(Value = Value * Madj)
-  f      <- f %>% filter(Age != "TOT") %>% mutate(Value = Value * Fadj)
+  m      <- m[Age != "TOT", Value := Value * Madj]
+  f      <- f[Age != "TOT", Value := Value * Fadj]
   
-  # return binded, no need for TOT columns,
-  # If these were previously there, they should
-  # have been used and thrown out already.
+  # Output
   rbind(f,m,b)
+  
 }
 
-do_we_redistribute_unknown_sex <- function(chunk){
-  "UNK" %in% chunk$Sex
+
+### do_we_redistribute_unknown_sex()
+# Are there cases with unknown sex?
+# @param chunk Data chunk
+
+do_we_redistribute_unknown_sex <- function(chunk) {
+  
+  # Check for cases with unknown sex
+  "UNK" %in% chunk[["Sex"]]
+  
 }
-# this should happen within age, though
-# group_by(Code, Age, Measure)
-redistribute_unknown_sex <- function(chunk){
-  # this should happen after ratios turned to counts!
-  stopifnot(all(chunk$Metric != "Ratio"))
+
+
+### redistribute_unknown_sex()
+# Distribute cases with unknown sex
+# This should happen after ratios turned to counts
+# @param chunk
+# @param verbose
+
+redistribute_unknown_sex <- function(chunk, verbose = FALSE) {
+
+  # Stop if ratio in chunk
+  stopifnot(all(chunk[["Metric"]] != "Ratio"))
+  
+  # Check if unknown sexes
   do_this <- do_we_redistribute_unknown_sex(chunk)
-  if (do_this){
-    UNK   <- chunk %>% filter(Sex == "UNK")
-    chunk <- chunk %>% 
-      filter(Sex != "UNK") %>% 
-      mutate(Value = Value + (Value / sum(Value)) * UNK$Value,
-             Value = ifelse(is.nan(Value), UNK$Value / 2, Value))
-    
-    # Console message
+  
+  # If no unknown sex return unchanged chunk
+  if(!do_this) return(chunk)
+  
+  # Split chunk: Unknown vs known sex
+  UNK   <- chunk[Sex == "UNK"]
+  chunk <- chunk[Sex != "UNK"]
+  
+  # Get counts with known sex
+  v <- chunk[["Value"]]
+  
+  # Rescale counts with unknown sex
+  v <- v + rescale_vector(v, scale = UNK[["Value"]])
+  
+  # TR: I don't remember what I was thinking with this line...
+  v <- ifelse(is.nan(v), UNK[["Value"]] / 2, v)
+  
+  # Replace old values with rescaled values
+  chunk <- chunk[, Value := v]
+  
+  # Console message
+  if (verbose){
     cat("UNK Sex redistributed for",
-        unique(chunk$Code),
-        unique(chunk$Age),
-        unique(chunk$Measure),"\n")
-  }
+      unique(chunk[["Code"]]),
+      unique(chunk[["Age"]]),
+      unique(chunk[["Measure"]]),"\n")
+    }
 
+  # Output
   chunk
+  
 }
-# inputDB %>%
-#   filter(Code == "US_IL14.04.2020") %>% 
-#   group_by(Code, Age, Measure) %>% 
-#   do(redistribute_unknown_sex(chunk = .data)) %>% 
-#   ungroup() %>% 
-#   group_by(Code, Sex, Measure) %>% 
-#   do(redistribute_unknown_age(chunk = .data)) %>% 
-#   View()
 
-# Here group_by(Country, Region, Code, Date, Measure).
-# AFTER all Measure == "Count", ergo at the end of the pipe.
-# this scales to totals (either stated or derived).
-# it doesn't scale within age groups. Hmmm.
+
+### do_we_infer_both_sex()
+# Check if no combined sex counts
+# @param chunk Data chunk
+
 do_we_infer_both_sex <- function(chunk){
-  sexes  <- chunk %>% pull(Sex) %>% unique()
-  Counts <- all(chunk$Metric == "Count")
+  
+  # Get sexes in data
+  sexes  <- chunk[["Sex"]] %>% unique()
+  
+  # Everything in chunk is count data?
+  Counts <- all(chunk[["Metric"]] == "Count")
+  
+  # No 'b' and everything is count?
   setequal(sexes,c("f","m")) & Counts
+  
 }
 
 
-infer_both_sex <- function(chunk){
+### infer_both_sex()
+# Get combined sex counts from sex-specific counts
+# @param chunk Data chunk
+# @param verbose logical Print console message?
+
+infer_both_sex <- function(chunk, verbose = FALSE){
+  
+  # Check if needed
   do_this <- do_we_infer_both_sex(chunk)
-  # 2 things: 
-  # 1) could be a both-sex total available, so far unused.
-  if (!do_this){
+  
+  # If not needed...
+  if(!do_this) {
+    
+    # ... return unchanged chunk
     return(chunk)
+    
   }
-  Code    <- chunk %>% pull(Code) %>% '['(1)
-  Sex     <- chunk %>% pull(Sex) %>% '['(1)
-  Measure <- chunk %>% pull(Measure) %>% '['(1)
-  cat("Both sex counts created by summing sex-specific counts",Code,Sex,Measure,"\n")
-  chunk %>% 
-    pivot_wider(names_from = "Sex",
-                values_from = "Value",
-                values_fill = list(m=0,f=0)) %>% 
-    mutate(b = f + m) %>% 
-    pivot_longer(cols = c(f,m,b),
-                 values_to = "Value",
-                 names_to = "Sex")
+  
+  # Get current code, sex, measure
+  Code    <- chunk[["Code"]][1]
+  Sex     <- chunk[["Sex"]][1]
+  Measure <- chunk[["Measure"]][1]
+  
+  # Console message
+  if (verbose) {
+    cat("Both sex counts created by summing sex-specific counts",
+         Code,Sex,Measure,"\n")
+  }
+  
+  # Copy chunk
+  zunk <- copy(chunk)
+  
+  # Calculate combined sex totals by age
+  b <- zunk[ ,Value := sum(Value), by = list(Age)]
+  
+  # Set sex variable
+  b <- b[,Sex := "b"]
+  
+  # Remove duplicates
+  b <- b[!duplicated(Age)]
+  
+  # Output
+  rbind(chunk,b)
+  
 }
 
-# Standardize closeout.
-# closing out with 0 counts is pretty bad.
-# closing out with known single ages that 
-# don't go cleanly to 105 is also a pain for processing.
-# age ranges that don't start at 0 are a pain for processing.
-# need to standardize these things. What shall it be?
-# on the lower end, if there are 0s
 
-# 
+### do_we_maybe_lower_closeout()
+# Check if close out age needs to be lowered 
+# @param chunk Data chunk
+# param OAnew_min numeric Minimum close out age
 
-# chunk <- inputDB %>% 
-#   filter(Code =="MX19.04.2020",
-#          Measure == "Deaths",
-#          Sex == "m")
-# group_by(Code, Sex, Measure) %>% 
-# do(maybe_lower_closeout(chunk = .data, OAnew_min = 85)) %>% 
-
-# pad_single_zeros <- function(chunk, OAnew_min = 85){
-#   if (!all(chunk$Metric == "Count")){
-#     return(chunk)
-#   }
-#   chunk <- chunk %>% 
-#     mutate(Age = as.integer(Age)) %>% 
-#     arrange(Age)
-#   Age    <- chunk %>% pull(Age) %>% as.integer()
-#   Value  <- chunk %>% pull(Value) 
-#   AgeInt <- chunk %>% pull(AgeInt)%>% as.integer()
-#   
-#   ind1   <- AgeInt == 1
-#   if (all(ind1[Age < 100])){
-#     
-#   }
-# 
-# }
-
-# iL <- split(inputCounts, list(inputCounts$Code, inputCounts$Sex, inputCounts$Measure),drop = TRUE) 
-# 
-# for (i in 1:length(iL)){
-#   chunk <- iL[[i]]
-#   maybe_lower_closeout(iL[[i]])
-# }
-# this is after all rescaling is done. Group OAG down to the 
-# highest age with a positive count.
-# group_by(Code, Sex, Measure) %>% 
-
-# TODO: maybe a general "patch zeros" function premised on 
-# intermediary grouping to 5 years, then detection of lone 0s,
-# then grouping to 10 (but not all ages, just the necessary ones).
-
-do_we_maybe_lower_closeout <- function(chunk, OAnew_min){
-
-  maybe1 <- all(chunk$Metric == "Count")
-  if (!maybe1){
+do_we_maybe_lower_closeout <- function(chunk, OAnew_min, Amax) {
+  
+  # Check if chunk only has count data...
+  maybe1 <- all(chunk[["Metric"]] == "Count")
+  
+  # ...if not return FALSE
+  if(!maybe1){
+    
     return(FALSE)
+    
   }
   
-  chunk <- chunk %>% 
-    mutate(Age = as.integer(Age)) %>% 
-    arrange(Age)
-  Age    <- chunk %>% pull(Age) %>% as.integer()
-  Value  <- chunk %>% pull(Value) 
-  AgeInt <- chunk %>% pull(AgeInt)%>% as.integer()
+  # Sort chunk by age
+  chunk  <- chunk[order(Age)]
   
+  # Get variables
+  Age    <- chunk[["Age"]] 
+  Value  <- chunk[["Value"]]
+  AgeInt <- chunk[["AgeInt"]]
+  
+  # Check maximum age above new min...
   maybe2 <- max(Age) >= OAnew_min
-  if (!maybe2){
+  
+  # ... if not return F
+  if(!maybe2) {
     return(FALSE)
   }
   
+  # also need to group down if top age too high
+  maybe3 <- max(Age) > Amax
+  if (maybe3){
+    return(TRUE)
+  }
+  
+  # Number of age groups
   n <- length(Age)
+  
+  # Find smallest age equal to OAnew_min
   nm <- (Age >= OAnew_min) %>% which() %>% min()
+  
+  # For ages above closeout age find largest with counts > 0
   for (i in n:nm){
     if (Value[i] > 0){
       break
     }
   }
+  
+  # Output
   i < n
 }
-maybe_lower_closeout <- function(chunk, OAnew_min = 85){
 
-  do_this <- do_we_maybe_lower_closeout(chunk, OAnew_min)
-  if (!do_this){
+
+### maybe_lower_closeout()
+# Lower closeout age
+# @param chunk Data chunk
+# @param OAnew_min Minimum closeout age
+# @param verbose logical Print console message
+
+maybe_lower_closeout <- function(chunk, 
+                                 OAnew_min = 85, 
+                                 Amax = 104,
+                                 verbose = FALSE){
+  
+  # Check if lower clouseout is needed...
+  do_this <- do_we_maybe_lower_closeout(chunk, OAnew_min, Amax) 
+  
+  # ... if no...
+  if(!do_this) {
+    
+    # ... return unchanged chunk
     return(chunk)
+    
   }
   
-  chunk <- chunk %>% 
-    mutate(Age = as.integer(Age)) %>% 
-    arrange(Age)
-  Age    <- chunk %>% pull(Age) %>% as.integer()
-  Value  <- chunk %>% pull(Value) 
-  AgeInt <- chunk %>% pull(AgeInt)%>% as.integer()
-
+  # Order chunk
+  chunk  <- chunk[order(Age)]
+  
+  # Get variables, in right format (integer)
+  Age    <- chunk[["Age"]] %>% as.integer()
+  Value  <- chunk[["Value"]] 
+  AgeInt <- chunk[["AgeInt"]] %>% as.integer()
+  
+  # Get number of age groups
   n  <- length(Age)
-  nm <- (Age >= OAnew_min) %>% which() %>% min()
-  for (i in n:nm){
+  
+  # Get oldest age group under max closeout age
+  nmax <- (Age <= Amax) %>% which() %>% max()
+  
+  if (nmax < n){
+    # Get code, sex, measure
+    .Code    <- chunk[["Code"]][1]
+    .Sex     <- chunk[["Sex"]][1]
+    .Measure <- chunk[["Measure"]][1]
+    
+    # Console message
+    if (verbose) cat("Open age group lowered from",Age[n],
+                     "to",maxA,"for",.Code,.Sex,.Measure,"\n")
+    
+    # Get new values
+    .Value  <- c(Value[1:(nmax-1)],sum(Value[nmax:n]))
+    
+    # Get new ages
+    .Age    <- Age[1:nmax]
+    
+    # Turn to integer
+    .AgeInt <- c(AgeInt[1:(nmax-1)], 105 - Age[nmax]) %>% as.integer()
+    
+    # Get chunk with ages up to open age group
+    chunk <- chunk[1:nmax, ]
+    chunk[,c("Age","AgeInt","Value") := .(.Age, .AgeInt, .Value)]
+    
+    # reform parameter to pass on
+    n <- length(.Age)
+  }
+  
+  
+  # Get youngest age group above min closeout age
+  nmin <- (Age >= OAnew_min) %>% which() %>% min()
+  
+  # Get oldest age above closeout with more than 0 cases
+  for (i in n:nmin){
     if (Value[i] > 0){
       break
     }
   }
-  if (i < n){
-    .Code    <- chunk %>% pull(Code) %>% '[['(1)
-    .Sex     <- chunk %>% pull(Sex) %>% '[['(1)
-    .Measure <- chunk %>% pull(Measure) %>% '[['(1)
-    cat("Open age group lowered from",Age[n],"to",Age[i],"for",.Code,.Sex,.Measure,"\n")
-    Value  <- c(Value[1:(i-1)],sum(Value[i:n]))
-    Age    <- Age[1:i]
-    AgeInt <- c(AgeInt[1:(i-1)], 105 - Age[i])
-    
-    chunk <- chunk[1:i, ]
-    chunk$Age = Age
-    chunk$AgeInt = AgeInt
-    chunk$Value = Value
-  }
-  chunk
-}
-                
-# This encapsulates the entire processing chain.
-process_counts <- function(inputDB, Offsets = NULL, N = 10){
   
+  # If oldest age is not max age in data
+  if (i < n){
+    
+    # Get code, sex, measure
+    .Code    <- chunk[["Code"]][1]
+    .Sex     <- chunk[["Sex"]][1]
+    .Measure <- chunk[["Measure"]][1]
+    
+    # Console message
+    if (verbose) cat("Open age group lowered from",Age[n],
+                     "to",Age[i],"for",.Code,.Sex,.Measure,"\n")
+    
+    # Get new values
+    .Value  <- c(Value[1:(i-1)],sum(Value[i:n]))
+    
+    # Get new ages
+    .Age    <- Age[1:i]
+    
+    # Turn to integer
+    .AgeInt <- c(AgeInt[1:(i-1)], 105 - Age[i]) %>% as.integer()
+    
+    # Get chunk with ages up to open age group
+    chunk <- chunk[1:i, ]
+    chunk[,c("Age","AgeInt","Value") := .(.Age, .AgeInt, .Value)]
+    
+  }
+  
+  # Output
+  chunk
+  
+}
+
+
+### harmonize_offset_age()
+# Harmonize highest age
+# @param chunk Data chunk
+
+harmonize_offset_age <- function(chunk){
+  
+  # Get age and population data
+  Age     <- chunk %>% '$'(Age)
+  Pop     <- chunk %>% '$'(Population) 
+  
+  # If already in shape, then skip it
+  if(is_single(Age) & max(Age) == 104) {
+    
+    return(chunk[,"Age","Population"])
+    
+  }
+  
+  # if single, but high open age, then drop it:
+  if(is_single(Age) & max(Age) > 104) {
+    
+    p1 <- groupOAG(Pop,Age,OAnew = 104)
+    out <- tibble(Age = 0:104,
+                  Population = p1)
+    return(out)
+    
+  }
+  
+  # WIdth of current open interval
+  nlast <- max(105 - max(Age), 5)
+  
+  # Widths of all age intervals
+  AgeInt<- DemoTools::age2int(Age, OAvalue = nlast)
+  
+  # Split last age interval using PCLM
+  p1 <- pclm(y = Pop, 
+             x = Age, 
+             nlast = nlast, 
+             control = list(lambda = 10, deg = 3))$fitted
+  
+  # Rescale age groups
+  p1  <- rescaleAgeGroups(Value1 = p1, 
+                          AgeInt1 = rep(1,length(p1)), 
+                          Value2 = Pop, 
+                          AgeInt2 = AgeInt, 
+                          splitfun = graduate_uniform)
+  
+  # Ages
+  a1 <- 1:length(p1)-1
+  
+  # Group to new open age
+  p1 <- groupOAG(p1, a1, OAnew = 104)
+  
+  out <- tibble(Age = 0:104,
+                Population = p1)
+  
+  # Output
+  out
+  
+}
+
+
+### harmonize_offset_age_p()
+# Wrapper for harmonizing age offset
+# @param chunk Data chunk
+
+harmonize_offset_age_p <- function(chunk) {
+  
+  # Get current country region sex
+  .Country <- chunk %>% pull(Country) %>% '['(1)
+  .Region  <- chunk %>% pull(Region) %>% '['(1)
+  .Sex     <- chunk %>% pull(Sex) %>% '['(1)
+  
+  # Harmonize
+  out <- harmonize_offset_age(chunk)
+  
+  # Add country region sex back
+  out <-
+    out %>% 
+    mutate(Country = .Country,
+           Region = .Region,
+           Sex = .Sex)
+  
+  # Output
+  out
+  
+}
+
+
+### harmonize_age()
+# Age harmonization
+# @param chunk Data chunk
+# @param Offsets Tibble/data frame with offsets
+# @param N integer Age interval width
+# @param OAnew integer Open age interval
+# @param lambda Lambda value for PCLM
+
+harmonize_age <- function(chunk, Offsets = NULL, N = 5, OAnew = 100, 
+                          lambda = 100) {
+  
+  # Get age, interval width, counts
+  Age     <- chunk %>% '$'(Age)
+  AgeInt  <- chunk %>% '$'(AgeInt)
+  Value   <- chunk %>% '$'(Value) 
+  
+  # Maybe we don't need to do anything but lower the OAG?
+  if(all(AgeInt == N) & max(Age) >= OAnew) {
+    
+    # Lower open age group: Combine values
+    Value   <- groupOAG(Value, Age, OAnew = OAnew)
+    
+    # Reduce ages and interval width
+    Age     <- Age[1:length(Value)]
+    AgeInt  <- AgeInt[1:length(Value)]
+    
+    # Output
+    return(select(chunk, Age, AgeInt, Value))
+    
+  }
+  
+  # Get country, region, sex
+  .Country <- chunk %>% '$'(Country) %>% "["(1)
+  .Region  <- chunk %>% '$'(Region) %>% "["(1)
+  .Sex     <- chunk %>% '$'(Sex) %>% "["(1)
+  
+  # If offsets available...
+  if(!is.null(Offsets)) {
+    
+    # ...get offset for country/region/sex
+    Offsets   <- Offsets %>% 
+      filter(Country == .Country,
+             Region == .Region,
+             Sex == .Sex)
+    
+  } else {
+    
+    # Empty tibble if no offsets
+    Offsets <- tibble()
+    
+  }
+  
+  # If offsets available...
+  if (nrow(Offsets) == 105){
+    
+    # ... get offsets
+    pop     <- Offsets %>% '$'(Population)
+    age_pop <- Offsets %>% '$'(Age)
+    
+    # Apply PCLM with offsets
+    V1 <- pclm(x = Age, 
+               y = Value, 
+               nlast = AgeInt[length(AgeInt)], 
+               offset = pop, 
+               control = list(lambda = lambda, deg = 3))$fitted * pop
+  }  else {
+    
+    # If no offsets are available then run through without.
+    V1 <- pclm(x = Age, 
+               y = Value, 
+               nlast = AgeInt[length(AgeInt)], 
+               control = list(lambda = lambda, deg = 3))$fitted
+  }
+  
+  # Rescale age groups
+  V1      <- rescaleAgeGroups(Value1 = V1, 
+                              AgeInt1 = rep(1,length(V1)), 
+                              Value2 = Value, 
+                              AgeInt2 = AgeInt, 
+                              splitfun = graduate_mono)
+  
+  # Replace NaN with zero
+  V1[is.nan(V1)] <- 0
+  
+  # Group to age intervals
+  VN      <- groupAges(V1, 0:104, N = N, OAnew = OAnew)
+  
+  # First age of each age interval
+  Age     <- names2age(VN)
+  
+  # Interval widths
+  AgeInt  <- rep(N, length(VN))
+  
+  # Output
+  tibble(Age = Age, AgeInt = AgeInt, Value = VN)
+  
+}
+
+
+### harmonize_age_p()
+# Age harmonization keeping format
+# @param chunk Data chunk
+# @param Offsets Tibble/data frame with offsets
+# @param N integer Age interval width
+# @param OAnew integer Open age interval
+# @param lambda Lambda value for PCLM
+
+harmonize_age_p <- function(chunk, Offsets, N = 5, 
+                            OAnew = 100, lambda = 100){
+  
+  # Get country, region, etc.
+  .Country <- chunk %>% '$'(Country) %>% "[["(1)
+  .Region  <- chunk %>% '$'(Region) %>% "[["(1)
+  .Code    <- chunk %>% '$'(Code) %>% "[["(1)
+  .Date    <- chunk %>% '$'(Date) %>% "[["(1)
+  .Sex     <- chunk %>% '$'(Sex) %>% "[["(1)
+  .Measure <- chunk %>% '$'(Measure) %>% "[["(1)
+  
+  # Harmonize age
+  out <- harmonize_age(chunk, Offsets = Offsets, N = N, 
+                       OAnew = OAnew, lambda = lambda)
+  
+  # Add country, region, etc. information back
+  out <- out %>% mutate(Country = .Country,
+                        Region = .Region,
+                        Code = .Code,
+                        Date = .Date,
+                        Sex = .Sex,
+                        Measure = .Measure) %>% 
+        select(Country, Region, Code, Date, Sex, 
+               Measure, Age, AgeInt, Value)
+  
+  # Output
+  out
+}
+
+
+### rescale_sexes_post()
+# Rescales sex-specific counts to match combined-sex values
+# @param chunk Data chunk
+
+rescale_sexes_post <- function(chunk) {
+  
+  # Get sexes in data
+  sexes  <- chunk %>% '$'(Sex) %>% unique()
+  
+  # Data includes b, m, f?
+  maybe  <- setequal(sexes,c("b","f","m")) 
+  
+  # If so,
+  if (maybe){
+    
+    chunk <- chunk %>% 
+             # Sort by Sex and Age
+             arrange(Sex, Age) %>% 
+             # Reshape to wide
+             pivot_wider(names_from = Sex,
+                  values_from = Value) %>% 
+             # Calculate/apply adjustment
+             mutate(mf = m + f,
+              adj = b / mf,
+              adj = ifelse(mf == 0,1,adj),
+              m = adj * m,
+              f = adj * f) %>% 
+             # Drop intermediate steps
+             select(-c(mf,adj)) %>% 
+             # Reshape back to long
+             pivot_longer(cols = c("f","m","b") ,
+                   names_to = "Sex",
+                   values_to = "Value") %>% 
+             # Sort 
+             arrange(Sex,Age)
+    
+  } 
+  
+  # Output
+  return(chunk)
+  
+}
+
+
+### rescaleAgeGroups()
+# Rescale counts in age groups to match counts in different age groups
+# @param See help(rescaleAgeGroups)
+
+rescaleAgeGroups <- function (Value1, AgeInt1, Value2, AgeInt2,
+                              splitfun = c(graduate_uniform,graduate_mono),
+                              recursive = FALSE, tol = 0.001) {
+  
+  # Number of counts
+  N1 <- length(Value1)
+  
+  # Stop if total number of ages does not match
+  stopifnot(sum(AgeInt1) == sum(AgeInt2))
+  
+  # Lower bounds of age classes
+  Age1 <- int2age(AgeInt1)
+  Age2 <- int2age(AgeInt2)
+  
+  # Stop if counts do not match number of age classes
+  stopifnot(N1 == length(Age1))
+  
+  # Duplicate lowe bounds
+  AgeN <- rep(Age2, times = AgeInt2)
+  
+  # Split counts
+  ValueS <- splitfun(Value1, AgeInt = AgeInt1, OAG = FALSE)
+  
+  # Single ages
+  AgeS <- 0:104
+  
+  # Duplicate lower bounds
+  AgeN2 <- rep(Age2, times = AgeInt2)
+  
+  # Group into age groups
+  beforeN <- groupAges(ValueS, AgeS, AgeN = AgeN2)
+  
+  # Duplicate values
+  beforeNint <- rep(beforeN, times = AgeInt2)
+  afterNint <- rep(Value2, times = AgeInt2)
+  
+  # Calculate ratios
+  ratio <- afterNint/beforeNint
+  
+  # Rescale
+  SRescale <- ValueS * ratio
+  AgeN1 <- rep(Age1, times = AgeInt1)
+  
+  # Output
+  out <- groupAges(SRescale, AgeS, AgeN = AgeN1)
+  
+  # If not recursive...
+  if(!recursive) {
+    return(out)
+  }
+  
+  # Split and regroup
+  newN <- splitfun(out, AgeInt = AgeInt1, OAG = FALSE)
+  check <- groupAges(newN, AgeS, AgeN = AgeN2)
+  
+  # If recursive and match within tolerance return...
+  if(max(abs(check - Value2)) < tol) {
+    return(out)
+  }
+  # ... otherwise repeat
+  else {
+    rescaleAgeGroups(Value1 = out, AgeInt1 = AgeInt1, Value2 = Value2, 
+                     AgeInt2 = AgeInt2, splitfun = splitfun, tol = tol, 
+                     recursive = recursive)
+  }
+  
+}
+
+
+# -------------------------------------------------
+# -------------------------------------------------
+# -------------------------------------------------
+
+### process_counts()
+# This encapsulates the entire processing chain.
+# TODO: ensure match to current chain.
+# TODO: Document properly
+
+process_counts <- function(inputDB, Offsets = NULL, N = 10){
   
   A <-
     inputDB %>% 
@@ -848,8 +1858,8 @@ process_counts <- function(inputDB, Offsets = NULL, N = 10){
            !(Age == "UNK" & Value == 0),
            !(Sex == "UNK" & Sex == 0)) %>% 
     group_by(Code, Measure) %>%
-    # do_we_convert_fractions_all_sexes(chunk)
-    do(convert_fractions_all_sexes(chunk = .data)) %>% 
+    # do_we_convert_fractions_sexes(chunk)
+    do(convert_fractions_sexes(chunk = .data)) %>% 
     ungroup() %>% 
     group_by(Code, Sex, Measure) %>% 
     # do_we_convert_fractions_within_sex(chunk)
@@ -918,208 +1928,3 @@ process_counts <- function(inputDB, Offsets = NULL, N = 10){
     pivot_wider(names_from = Measure,
                 values_from = Value) 
 }
-
-# Separate harmonize_offsets() is better,
-# it saves multiple redundant
-
-harmonize_offset_age <- function(chunk){
-  Age     <- chunk %>% pull(Age)
-  Pop     <- chunk %>% pull(Population) 
-  
-  # if already in shape, then skip it
-  if (is_single(Age) & max(Age) == 104){
-    return(chunk[,"Age","Population"])
-  }
-  
-  # if single, but high open age, then drop it:
-  if (is_single(Age) & max(Age) > 104){
-    p1 <- groupOAG(Pop,Age,OAnew = 104)
-    out <- tibble(Age = 0:104,
-                  Population = p1)
-    return(out)
-  }
-  
-  nlast <- max(105 - max(Age), 5)
-  AgeInt<- DemoTools::age2int(Age, OAvalue = nlast)
-  p1 <- pclm(y = Pop, 
-             x = Age, 
-             nlast = nlast, 
-             control = list(lambda = 10, deg = 3))$fitted
-  
-  p1      <- rescaleAgeGroups(Value1 = p1, 
-                              AgeInt1 = rep(1,length(p1)), 
-                              Value2 = Pop, 
-                              AgeInt2 = AgeInt, 
-                              splitfun = graduate_uniform)
-  
-  a1 <- 1:length(p1)-1
-  p1 <- groupOAG(p1, a1, OAnew = 104)
-  
-  out <- tibble(Age = 0:104,
-                Population = p1)
-  out
-}
-
-
-
-
-
-
-
-
-# Age harmonization is the last step.
-harmonize_age <- function(chunk, Offsets = NULL, N = 5, OAnew = 100, lambda = 100){
-  Age     <- chunk %>% pull(Age)
-  AgeInt  <- chunk %>% pull(AgeInt)
-  Value   <- chunk %>% pull(Value) 
-  
-   # maybe we don't need to do anything but lower the OAG?
-  if (all(AgeInt == N) & max(Age) >= OAnew){
-    Value   <- groupOAG(Value, Age, OAnew = OAnew)
-    Age     <- Age[1:length(Value)]
-    AgeInt  <- AgeInt[1:length(Value)]
-    return(select(chunk, Age, AgeInt, Value))
-  }
-  # --------------------------------- #
-  # otherwise get offset sorted out.  #
-  # Offsets now handled in advance    #
-  # --------------------------------- #
-  .Country <- chunk %>% pull(Country) %>% "["(1)
-  .Region  <- chunk %>% pull(Region) %>% "["(1)
-  .Sex     <- chunk %>% pull(Sex) %>% "["(1)
-  
-  if (!is.null(Offsets)){
-    Offsets   <- Offsets %>% 
-      filter(Country == .Country,
-             Region == .Region,
-             Sex == .Sex)
-  } else {
-    Offsets <- tibble()
-  }
-  
-  if (nrow(Offsets) == 105){
-    pop     <- Offsets %>% pull(Population)
-    age_pop <- Offsets %>% pull(Age)
-
-  # so need to rescale in next step (pattern looks OK)
-    V1      <- pclm(x = Age, 
-                  y = Value, 
-                  nlast = AgeInt[length(AgeInt)], 
-                  offset = pop, 
-                  control = list(lambda = lambda, deg = 3))$fitted * pop
-  }  else {
-    # if no offsets are available then run through without.
-    V1      <- pclm(x = Age, 
-                    y = Value, 
-                    nlast = AgeInt[length(AgeInt)], 
-                    control = list(lambda = lambda, deg = 3))$fitted
-  }
-
-  # Important to rescale
-  V1      <- rescaleAgeGroups(Value1 = V1, 
-                              AgeInt1 = rep(1,length(V1)), 
-                              Value2 = Value, 
-                              AgeInt2 = AgeInt, 
-                              splitfun = graduate_mono)
-  
-  # division by 0, it's a thing
-  V1[is.nan(V1)] <- 0
-  
-  VN      <- groupAges(V1, 0:104, N = N, OAnew = OAnew)
-  Age     <- names2age(VN)
-  AgeInt  <- rep(N, length(VN))
-  
-  tibble(Age = Age, AgeInt = AgeInt, Value = VN)
-}
-
-
-harmonize_age_p <- function(chunk, Offsets, N = 5, OAnew = 100, lambda = 100){
-  .Country <- chunk %>% pull(Country) %>% "[["(1)
-  .Region  <- chunk %>% pull(Region) %>% "[["(1)
-  .Code    <- chunk %>% pull(Code) %>% "[["(1)
-  .Date    <- chunk %>% pull(Date) %>% "[["(1)
-  .Sex     <- chunk %>% pull(Sex) %>% "[["(1)
-  .Measure <- chunk %>% pull(Measure) %>% "[["(1)
-  
-  out <- try(harmonize_age(chunk, Offsets = Offsets, N = N, OAnew = OAnew, lambda = lambda))
-  if (class(out)[1] == "try-error"){
-    return(paste("Error in:",.Code))
-  } 
-  out <- out %>% mutate(Country = .Country,
-                        Region = .Region,
-                        Code = .Code,
-                        Date = .Date,
-                        Sex = .Sex,
-                        Measure = .Measure) %>% 
-    select(Country, Region, Code, Date, Sex, Measure, Age, AgeInt, Value)
-  out
-}
-
-
-# this is similar to the other one, except
-# it's within age, so be done after age splitting
-rescale_sexes_post <- function(chunk){
-  sexes  <- chunk %>% pull(Sex) %>% unique()
-  maybe  <- setequal(sexes,c("b","f","m")) 
-  if (maybe){
-    chunk <-
-      chunk %>% 
-      arrange(Sex, Age) %>% 
-      pivot_wider(names_from = Sex,
-                  values_from = Value) %>% 
-      mutate(mf = m + f,
-             adj = b / mf,
-             adj = ifelse(mf == 0,1,adj),
-             m = adj * m,
-             f = adj * f) %>% 
-      select(-c(mf,adj)) %>% 
-      pivot_longer(cols = c("f","m","b") ,
-                   names_to = "Sex",
-                   values_to = "Value") %>% 
-      arrange(Sex,Age)
-    
-  } 
-  return(chunk)
-}
-
-
-
-
-
-# Slightly modified...
-rescaleAgeGroups <- function (Value1, AgeInt1, Value2, AgeInt2, splitfun = c(graduate_uniform, 
-                                                         graduate_mono), recursive = FALSE, tol = 0.001) 
-{
-  N1 <- length(Value1)
-  stopifnot(sum(AgeInt1) == sum(AgeInt2))
-  Age1 <- int2age(AgeInt1)
-  Age2 <- int2age(AgeInt2)
-  stopifnot(N1 == length(Age1))
-  AgeN <- rep(Age2, times = AgeInt2)
-  ValueS <- splitfun(Value1, AgeInt = AgeInt1, OAG = FALSE)
-  AgeS <- 0:104
-  AgeN2 <- rep(Age2, times = AgeInt2)
-  beforeN <- groupAges(ValueS, AgeS, AgeN = AgeN2)
-  beforeNint <- rep(beforeN, times = AgeInt2)
-  afterNint <- rep(Value2, times = AgeInt2)
-  ratio <- afterNint/beforeNint
-  SRescale <- ValueS * ratio
-  AgeN1 <- rep(Age1, times = AgeInt1)
-  out <- groupAges(SRescale, AgeS, AgeN = AgeN1)
-  if (!recursive) {
-    return(out)
-  }
-  newN <- splitfun(out, AgeInt = AgeInt1, OAG = FALSE)
-  check <- groupAges(newN, AgeS, AgeN = AgeN2)
-  if (max(abs(check - Value2)) < tol) {
-    return(out)
-  }
-  else {
-    rescaleAgeGroups(Value1 = out, AgeInt1 = AgeInt1, Value2 = Value2, 
-                     AgeInt2 = AgeInt2, splitfun = splitfun, tol = tol, 
-                     recursive = recursive)
-  }
-}
-
-
-

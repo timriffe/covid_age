@@ -28,3 +28,17 @@ GB_once-off.R
 USA_PA_cases.R
 HMDexpo.R
 US_MI_prep.R
+IN_fix.R
+build.log
+test.R
+test.log
+.Rprofile
+build_pre.log
+test_dash.R
+test_dash.log
+NL_prep.R
+MZ_fix.R
+US_cases.R
+stmf_timelines.R
+ITbol_auto.R
+MM_auto.R

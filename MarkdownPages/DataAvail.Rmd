@@ -2,6 +2,7 @@
 title: "Data Availability"
 author: "COVerAGE-DB"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
+runtime: shiny
 output: html_document
 ---
 
