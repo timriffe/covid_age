@@ -1,24 +1,24 @@
 
 # New build run! Build error log
- Fri Jul 31 09:49:56 2020 
+ Fri Jul 31 23:27:46 2020 
 
 
 # Compile inputDB from Drive Build error log
- Fri Jul 31 09:49:56 2020 
+ Fri Jul 31 23:27:46 2020 
 
 
 # Filter valid Measure entries: Build error log
- Fri Jul 31 13:04:56 2020 
+ Sat Aug 01 02:37:33 2020 
 
 Valid Measures include: Cases,Deaths,Tests,ASCFR
- 3099 rows removed
+ 3113 rows removed
 # Filter valid Metric entries: Build error log
- Fri Jul 31 13:04:56 2020 
+ Sat Aug 01 02:37:33 2020 
 
 Valid Metrics include: Count,Fraction,Ratio
  14 rows removed
 # Duplicates detected. Following `Code`s removed: Build error log
- Fri Jul 31 13:05:04 2020 
+ Sat Aug 01 02:37:39 2020 
 
 AL16.07.2020
 CF03.07.2020
@@ -43,35 +43,37 @@ IN29.07.2020
 IN30.07.2020
 US_TX19.07.2020
 # A Build error log
- Fri Jul 31 13:11:52 2020 
+ Sat Aug 01 02:44:33 2020 
 
 
 # B Build error log
- Fri Jul 31 13:13:13 2020 
+ Sat Aug 01 02:45:53 2020 
 
 
 # C Build error log
- Fri Jul 31 13:17:01 2020 
+ Sat Aug 01 02:49:37 2020 
 
 filter( Code == 'PA7.06.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'PA7.06.2020', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'UY22.07.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'UY22.07.2020', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'UY22.07.2020', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'UY22.07.2020', Sex == 'f', Measure == 'Deaths' )
 
 # D Build error log
- Fri Jul 31 13:19:11 2020 
+ Sat Aug 01 02:51:47 2020 
 
 
 # E Build error log
- Fri Jul 31 13:20:19 2020 
+ Sat Aug 01 02:52:53 2020 
 
 
 # G Build error log
- Fri Jul 31 13:21:25 2020 
+ Sat Aug 01 02:53:59 2020 
 
 
 # H Build error log
- Fri Jul 31 13:25:17 2020 
+ Sat Aug 01 02:57:50 2020 
 
 filter( Code == 'PK10.03.2020', Measure == 'Deaths' )
 filter( Code == 'PK11.03.2020', Measure == 'Deaths' )
@@ -83,11 +85,11 @@ filter( Code == 'PK16.03.2020', Measure == 'Deaths' )
 filter( Code == 'PK17.03.2020', Measure == 'Deaths' )
 
 # I Build error log
- Fri Jul 31 13:27:01 2020 
+ Sat Aug 01 02:59:34 2020 
 
 
 # J Build error log
- Fri Jul 31 13:27:51 2020 
+ Sat Aug 01 03:00:24 2020 
 
 filter( Code == 'CA_QC10.05.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'CA_QC10.05.2020', Sex == 'b', Measure == 'Deaths' )
@@ -101,37 +103,13 @@ filter( Code == 'CA_QC23.05.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'CA_QC23.05.2020', Sex == 'b', Measure == 'Deaths' )
 
 # Age harmonization Build error log
- Fri Jul 31 13:32:45 2020 
+ Sat Aug 01 03:05:23 2020 
 
 filter( Code == 'DO18.06.2020', Sex == 'm', Measure == 'Deaths' )
 filter( Code == 'DO16.06.2020', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'DO17.06.2020', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'DO18.06.2020', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'DO19.06.2020', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'MW14.07.2020', Sex == 'm', Measure == 'Deaths' )
-filter( Code == 'MW15.07.2020', Sex == 'm', Measure == 'Deaths' )
-filter( Code == 'MW16.07.2020', Sex == 'm', Measure == 'Deaths' )
-filter( Code == 'MW18.07.2020', Sex == 'm', Measure == 'Deaths' )
-filter( Code == 'MW19.07.2020', Sex == 'm', Measure == 'Deaths' )
-filter( Code == 'MW20.07.2020', Sex == 'm', Measure == 'Deaths' )
-filter( Code == 'MW14.07.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'MW15.07.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'MW16.07.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'MW18.07.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'MW19.07.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'MW20.07.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'MW14.07.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'MW15.07.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'MW16.07.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'MW18.07.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'MW19.07.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'MW20.07.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'MW14.07.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'MW15.07.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'MW16.07.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'MW18.07.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'MW19.07.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'MW20.07.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'US_IL26.07.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_IL26.07.2021', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_IL26.07.2022', Sex == 'b', Measure == 'Cases' )
@@ -149,18 +127,6 @@ filter( Code == 'US_IL26.07.2049', Sex == 'b', Measure == 'Tests' )
 filter( Code == 'US_IL26.07.2050', Sex == 'b', Measure == 'Tests' )
 filter( Code == 'US_IL26.07.2051', Sex == 'b', Measure == 'Tests' )
 filter( Code == 'CA_QC19.06.2020', Sex == 'b', Measure == 'Deaths' )
-filter( Code == 'MW14.07.2020', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'MW15.07.2020', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'MW16.07.2020', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'MW18.07.2020', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'MW19.07.2020', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'MW20.07.2020', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'MW14.07.2020', Sex == 'b', Measure == 'Deaths' )
-filter( Code == 'MW15.07.2020', Sex == 'b', Measure == 'Deaths' )
-filter( Code == 'MW16.07.2020', Sex == 'b', Measure == 'Deaths' )
-filter( Code == 'MW18.07.2020', Sex == 'b', Measure == 'Deaths' )
-filter( Code == 'MW19.07.2020', Sex == 'b', Measure == 'Deaths' )
-filter( Code == 'MW20.07.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'US_IL26.07.2032', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'US_IL26.07.2033', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'US_IL26.07.2034', Sex == 'b', Measure == 'Deaths' )
@@ -172,9 +138,9 @@ filter( Code == 'US_IL26.07.2039', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'US_VA29.03.2020', Sex == 'b', Measure == 'Deaths' )
 
 # Building dashboards Build error log
- Fri Jul 31 14:38:31 2020 
+ Sat Aug 01 04:12:45 2020 
 
 
 # Commit dashboards and buildlog Build error log
- Fri Jul 31 15:16:27 2020 
+ Sat Aug 01 04:50:25 2020 
 
