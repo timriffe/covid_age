@@ -23,7 +23,7 @@ if (schedule_this){
   taskscheduler_create(taskname = "COVerAGE-DB-automatic-daily-build", 
                        rscript = "C:/Users/riffe/Documents/covid_age/R/build_pre.R", 
                        schedule = "DAILY", 
-                       starttime = "02:00",
+                       starttime = "01:00",
                        startdate = format(Sys.Date() + 1, "%d/%m/%Y"))
 }
 
