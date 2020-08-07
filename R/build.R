@@ -164,7 +164,7 @@ source(here("R","04_harmonize_age_groups.R"))
 # Build dashboards
 # Temporarily disabled on hydra because default run
 # doesn't have pandoc?
-#source(here("R","06_data_dashes.R"))
+source(here("R","06_data_dashes.R"))
 
 # ---------------------- #
 

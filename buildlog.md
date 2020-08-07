@@ -750,3 +750,8 @@ filter( Code == 'US_MI05.08.2020', Sex == 'b', Measure == 'Deaths' )
 # Commit dashboards and buildlog Build error log
  Fri Aug 07 16:12:21 2020 
 
+
+ 2.7.2
+# Commit dashboards and buildlog Build error log
+ Fri Aug 07 17:19:02 2020 
+
