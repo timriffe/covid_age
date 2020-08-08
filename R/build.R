@@ -109,7 +109,7 @@ if (nrow(rm_this)>0){
       file = logfile, 
       append = TRUE)
 }
-inputDB <- inputDB[consistent := NULL]
+inputDB <- inputDB[, consistent := NULL]
 # BadRange <-
 #   inputDB %>% 
 #   filter(!Age %in% c("TOT","UNK"),
