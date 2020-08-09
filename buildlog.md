@@ -1,29 +1,29 @@
 
 # New build run! Build error log
- Sat Aug 08 01:00:08 2020 
+ Sun Aug 09 01:00:08 2020 
 
 
 # Compile inputDB from Drive Build error log
- Sat Aug 08 01:00:08 2020 
+ Sun Aug 09 01:00:08 2020 
 
 
 # Filter valid Measure entries: Build error log
- Sat Aug 08 05:02:58 2020 
+ Sun Aug 09 05:04:45 2020 
 
 Valid Measures include: Cases,Deaths,Tests,ASCFR
- 3266 rows removed
+ 3272 rows removed
 # Filter valid Metric entries: Build error log
- Sat Aug 08 05:02:58 2020 
+ Sun Aug 09 05:04:45 2020 
 
 Valid Metrics include: Count,Fraction,Ratio
  14 rows removed
 # Filter valid Sex entries: Build error log
- Sat Aug 08 05:02:59 2020 
+ Sun Aug 09 05:04:46 2020 
 
 Valid Sex values include: m,f,b,UNK
  1 rows removed
 # Duplicates detected. Following `Code`s removed: Build error log
- Sat Aug 08 05:03:09 2020 
+ Sun Aug 09 05:04:56 2020 
 
 AL16.07.2020
 CA_QC20.06.2020
@@ -37,7 +37,6 @@ CA_QC27.06.2020
 CA_QC28.06.2020
 CA_QC29.06.2020
 CA_QC30.06.2020
-CN_HK05.08.2020
 NA
 CR26.07.2020
 CZNA
@@ -80,18 +79,18 @@ PE_CAJ01.08.2020
 PE_CAJ02.08.2020
 PE_CAJ03.08.2020
 PE_CAJ04.08.2020
+PE_CAJ05.08.2020
 US_TX19.07.2020
-
 # A Build error log
- Sat Aug 08 08:35:55 2020 
+ Sun Aug 09 05:14:57 2020 
 
 
 # B Build error log
- Sat Aug 08 08:37:35 2020 
+ Sun Aug 09 05:16:32 2020 
 
 
 # C Build error log
- Sat Aug 08 08:42:05 2020 
+ Sun Aug 09 05:20:52 2020 
 
 filter( Code == 'PA7.06.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'PA7.06.2020', Sex == 'm', Measure == 'Cases' )
@@ -101,19 +100,19 @@ filter( Code == 'UY22.07.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'UY22.07.2020', Sex == 'f', Measure == 'Deaths' )
 
 # D Build error log
- Sat Aug 08 08:45:16 2020 
+ Sun Aug 09 05:23:58 2020 
 
 
 # E Build error log
- Sat Aug 08 08:46:46 2020 
+ Sun Aug 09 05:25:24 2020 
 
 
 # G Build error log
- Sat Aug 08 08:48:15 2020 
+ Sun Aug 09 05:26:50 2020 
 
 
 # H Build error log
- Sat Aug 08 08:52:04 2020 
+ Sun Aug 09 05:30:24 2020 
 
 filter( Code == 'PK10.03.2020', Measure == 'Deaths' )
 filter( Code == 'PK11.03.2020', Measure == 'Deaths' )
@@ -125,11 +124,11 @@ filter( Code == 'PK16.03.2020', Measure == 'Deaths' )
 filter( Code == 'PK17.03.2020', Measure == 'Deaths' )
 
 # I Build error log
- Sat Aug 08 08:55:05 2020 
+ Sun Aug 09 05:33:22 2020 
 
 
 # J Build error log
- Sat Aug 08 08:55:56 2020 
+ Sun Aug 09 05:34:11 2020 
 
 filter( Code == 'CA_QC06.04.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'CA_QC9.04.2020', Sex == 'b', Measure == 'Cases' )
@@ -152,7 +151,7 @@ filter( Code == 'CA_QC23.05.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'CA_QC23.05.2020', Sex == 'b', Measure == 'Deaths' )
 
 # Age harmonization Build error log
- Sat Aug 08 09:03:39 2020 
+ Sun Aug 09 05:41:56 2020 
 
 filter( Code == 'US_IL26.07.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_IL26.07.2021', Sex == 'b', Measure == 'Cases' )
@@ -166,6 +165,7 @@ filter( Code == 'US_MI03.08.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_MI04.08.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_MI05.08.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_MI06.08.2020', Sex == 'b', Measure == 'Cases' )
+filter( Code == 'US_MI07.08.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_VA29.03.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'CA_QC8.04.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'CA_QC19.06.2020', Sex == 'b', Measure == 'Deaths' )
@@ -178,6 +178,7 @@ filter( Code == 'DO19.06.2020', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'PE02.07.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'PE03.06.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'PE03.08.2020', Sex == 'b', Measure == 'Cases' )
+filter( Code == 'PE04.08.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'PE05.07.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'PE06.05.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'PE08.05.2020', Sex == 'b', Measure == 'Cases' )
@@ -208,6 +209,7 @@ filter( Code == 'PE30.05.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'PE30.06.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'PE30.07.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'PE02.07.2020', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'PE04.08.2020', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'PE05.07.2020', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'PE08.05.2020', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'PE10.06.2020', Sex == 'm', Measure == 'Cases' )
@@ -247,10 +249,12 @@ filter( Code == 'US_MI03.08.2020', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'US_MI04.08.2020', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'US_MI05.08.2020', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'US_MI06.08.2020', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'US_MI07.08.2020', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'US_MI03.08.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'US_MI04.08.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'US_MI05.08.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'US_MI06.08.2020', Sex == 'f', Measure == 'Cases' )
+filter( Code == 'US_MI07.08.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'PE06.07.2020', Sex == 'm', Measure == 'Deaths' )
 filter( Code == 'PE07.07.2020', Sex == 'm', Measure == 'Deaths' )
 filter( Code == 'PE15.06.2020', Sex == 'm', Measure == 'Deaths' )
@@ -261,6 +265,7 @@ filter( Code == 'US_MI03.08.2020', Sex == 'm', Measure == 'Deaths' )
 filter( Code == 'US_MI04.08.2020', Sex == 'm', Measure == 'Deaths' )
 filter( Code == 'US_MI05.08.2020', Sex == 'm', Measure == 'Deaths' )
 filter( Code == 'US_MI06.08.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'US_MI07.08.2020', Sex == 'm', Measure == 'Deaths' )
 filter( Code == 'US_IL26.07.2044', Sex == 'b', Measure == 'Tests' )
 filter( Code == 'US_IL26.07.2045', Sex == 'b', Measure == 'Tests' )
 filter( Code == 'US_IL26.07.2046', Sex == 'b', Measure == 'Tests' )
@@ -269,15 +274,18 @@ filter( Code == 'US_IL26.07.2048', Sex == 'b', Measure == 'Tests' )
 filter( Code == 'US_IL26.07.2049', Sex == 'b', Measure == 'Tests' )
 filter( Code == 'US_IL26.07.2050', Sex == 'b', Measure == 'Tests' )
 filter( Code == 'US_IL26.07.2051', Sex == 'b', Measure == 'Tests' )
+filter( Code == 'PE05.08.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'PE05.08.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'PE06.07.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'PE07.07.2020', Sex == 'b', Measure == 'Deaths' )
-filter( Code == 'PE15.06.2020', Sex == 'b', Measure == 'Deaths' )
-filter( Code == 'PE15.07.2020', Sex == 'b', Measure == 'Deaths' )
-filter( Code == 'PE21.06.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'US_MI03.08.2020', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'US_MI04.08.2020', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'US_MI05.08.2020', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'US_MI06.08.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'US_MI07.08.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'PE15.06.2020', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'PE15.07.2020', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'PE21.06.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'PE23.06.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'US_IL26.07.2032', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'US_IL26.07.2033', Sex == 'b', Measure == 'Deaths' )
@@ -291,11 +299,12 @@ filter( Code == 'US_MI03.08.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'US_MI04.08.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'US_MI05.08.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'US_MI06.08.2020', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'US_MI07.08.2020', Sex == 'b', Measure == 'Deaths' )
 
 # Building dashboards Build error log
- Sat Aug 08 10:36:52 2020 
+ Sun Aug 09 07:14:13 2020 
 
 
 # Commit dashboards and buildlog Build error log
- Sat Aug 08 11:26:33 2020 
+ Sun Aug 09 07:43:06 2020 
 
