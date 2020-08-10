@@ -157,7 +157,7 @@ source(here("R","04_harmonize_age_groups.R"))
 
 # ---------------------- #
 
-# 05_quick_updates.R is not in use anymore
+source(here("R","05_compile_metadata.R"))
 
 # ---------------------- #
 

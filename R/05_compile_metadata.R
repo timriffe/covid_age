@@ -4,20 +4,15 @@ library(here)
 source(here("R","00_Functions.R"))
 library(googlesheets4)
 library(tidyverse)
-library(readr)
-library(lubridate)
-library(ggplot2)
-library(osfr)
 
-if (interactive()){
-  osf_retrieve_file("8uk9n") %>%
-    osf_download(path = "Data",
-               conflicts = "overwrite") 
-}
+
+# if (interactive()){
+#   osf_retrieve_file("8uk9n") %>%
+#     osf_download(path = "Data",
+#                conflicts = "overwrite") 
+# }
 # This reads it in
-inputDB <-  read_csv(here("Data","inputDB.csv"),
-                     skip = 1,
-                     col_types = "cccccciccdc")
+inputDB <-  readRDS(here("Data","inputDB.rds"))
 
 
 # we get this to extract which Metrics are captured for each source.
@@ -36,36 +31,18 @@ for (i in 1:nrow(rubric)){
    Sys.sleep(1)
 }
 
+# some of these are simply empty metadata tabs by design 
+# (sources parsed over multiple sheets only need one)
 errors <- lapply(metadata_tabs, function(x){
   class(x)[1] == "try-error"
 }) %>% unlist()
 
-rubric$Short[errors]
+# rubric$Short[errors]
 metadata_tabs <- metadata_tabs[!errors]
 
 saveRDS(metadata_tabs,here("Data","metadata_tabs.rds"))
 
-
-# TODO: make sure that the Short Codes collected in the metadata tabs match the Short
-# codes used in the database.
-
-vars.dash <- c( "Country", 
-               "Region(s)",
-               "Author",
-               "Main website",
-               "Retrospective corrections",
-               "Date of start of data series (data captured for this project)",
-               "Date of end of data series",
-               "CASES - Definition",
-               "CASES - Coverage",
-               "CASES - Date of events",
-               "DEATHS - Definition",
-               "DEATHS - Coverage",
-               "DEATHS - Date of events"
-               )
-metadata_tabs <- readRDS(here("Data","metadata_tabs.rds"))
-X <- metadata_tabs[[1]]
-
+# pick out Fields for basic source table
 metadata_basic <- 
   metadata_tabs %>% 
   lapply(function(X){
@@ -78,14 +55,31 @@ metadata_basic <-
   }) %>% bind_rows()
 
 
-library(googlesheets4)
+# save Drive copy for manual inspection / corrections
 write_sheet(metadata_basic, ss = "https://docs.google.com/spreadsheets/d/1ik5RNGYP0uB9TIrV5vVF7ixYJ9y9P4N7oW9a-9Cqw6M/edit#gid=0", sheet = "metadata_basic")
 
-
+# save local copy for dash building
 saveRDS(metadata_basic, file = here("Data","metadata_basic.rds"))
+
+
 # ----------------
+# further stuff to design / implement. Lots of field gaps to fill still here.
 do_this <- FALSE
 if (do_this){
+  vars.dash <- c( "Country", 
+                  "Region(s)",
+                  "Author",
+                  "Main website",
+                  "Retrospective corrections",
+                  "Date of start of data series (data captured for this project)",
+                  "Date of end of data series",
+                  "CASES - Definition",
+                  "CASES - Coverage",
+                  "CASES - Date of events",
+                  "DEATHS - Definition",
+                  "DEATHS - Coverage",
+                  "DEATHS - Date of events"
+  )
 metadata_table <- lapply(metadata_tabs, function(X, vars.dash){
   dash.vars <-
     X %>% 
