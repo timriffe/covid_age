@@ -25,6 +25,9 @@ This does not yet give an overview of age-group harmonization performed, but we'
 ## Documentation
 Source documentation is presently being gathered and standardized, and we will find a slick way of displaying it when it's further along. All data results are provisional and may change if we decide to change particular sources, or if we change our minds about how to split age groups, etc. So **please always use the most up-to-date version**.
 
+### Sources
+A basic data source dashboard is available  [here](https://timriffe.github.io/covid_age/DataSources.html).
+
 ## Notes
 Most populations in the database contain multiple time snapshots, and all are continually monitored for new data releases.  All statistics reported here are **cumulative**. 
 
