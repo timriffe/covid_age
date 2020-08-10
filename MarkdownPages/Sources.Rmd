@@ -1,0 +1,39 @@
+---
+title: "Data Sources"
+author: "COVerAGE-DB"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+runtime: shiny
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Overview
+Sources for each population in COVerAGE-DB are under continual re-evaluation. We seek high frequency, detailed, official sources where possible. We seek reasonably comparable definitions of cases and deaths. We seek sources that provide time series with retrospective corrections (duplicate removals, late registrations, etc). However, these are not always available, and where necessary we fill gaps using the best data available. This table of sources simply gives the data producers and websites we draw on for data. We are working on more metadata dashboards that will describe source characteristics, and other important observations about the data sources. 
+
+We've opted to deliver this sort of metadata in tabular form, but it's not always easy to format it this way (automatically). We appreciate your patience as we complete all fields and work out how to best produce the tabular metadata.
+
+# Source table
+
+
+```{r, include = FALSE}
+library(tidyverse)
+library(lubridate)
+library(DT)
+library(here)
+
+metadata_sources <-  readRDS(here("Data","metadata_basic.rds"))
+rownames(metadata_sources) <- NULL
+
+metadata_sources_table <-
+  metadata_sources %>% 
+  arrange(Country, `Region(s)`) %>% 
+  datatable(options = list(pageLength = 100))
+
+```
+
+```{r, echo = FALSE}
+metadata_sources_table
+```

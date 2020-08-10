@@ -3,9 +3,24 @@
 library(here)
 source(here("R","00_Functions.R"))
 library(googlesheets4)
+library(tidyverse)
+library(readr)
+library(lubridate)
+library(ggplot2)
+library(osfr)
+
+if (interactive()){
+  osf_retrieve_file("8uk9n") %>%
+    osf_download(path = "Data",
+               conflicts = "overwrite") 
+}
+# This reads it in
+inputDB <-  read_csv(here("Data","inputDB.csv"),
+                     skip = 1,
+                     col_types = "cccccciccdc")
+
 
 # we get this to extract which Metrics are captured for each source.
-inputDB <- readRDS(here("Data","inputDB.rds"))
 
 gs4_auth(email = "tim.riffe@gmail.com")
 
@@ -17,10 +32,18 @@ rubric <- read_sheet(ss_rubric, sheet = "input") %>%
 metadata_tabs <- list()
 for (i in 1:nrow(rubric)){
    ss <- rubric %>% pull(Sheet) %>% '['(i)
-   metadata_tabs[[i]] <- read_sheet(ss, sheet = "metadata", col_types = "ccc")
+   metadata_tabs[[i]] <- try(read_sheet(ss, sheet = "metadata", col_types = "ccc"))
+   Sys.sleep(1)
 }
 
+errors <- lapply(metadata_tabs, function(x){
+  class(x)[1] == "try-error"
+}) %>% unlist()
 
+rubric$Short[errors]
+metadata_tabs <- metadata_tabs[!errors]
+
+saveRDS(metadata_tabs,here("Data","metadata_tabs.rds"))
 
 
 # TODO: make sure that the Short Codes collected in the metadata tabs match the Short
@@ -41,14 +64,37 @@ vars.dash <- c( "Country",
                "DEATHS - Date of events"
                )
 metadata_tabs <- readRDS(here("Data","metadata_tabs.rds"))
+X <- metadata_tabs[[1]]
 
+metadata_basic <- 
+  metadata_tabs %>% 
+  lapply(function(X){
+    cnames <- c("Country","Region(s)","Author","Main website")
+    X <- X %>% 
+      filter(Field %in%cnames) 
+    out <- data.frame(t(X[, 2]))
+    colnames(out) <- cnames
+    out
+  }) %>% bind_rows()
+
+
+library(googlesheets4)
+write_sheet(metadata_basic, ss = "https://docs.google.com/spreadsheets/d/1ik5RNGYP0uB9TIrV5vVF7ixYJ9y9P4N7oW9a-9Cqw6M/edit#gid=0", sheet = "metadata_basic")
+
+
+saveRDS(metadata_basic, file = here("Data","metadata_basic.rds"))
+# ----------------
+do_this <- FALSE
+if (do_this){
 metadata_table <- lapply(metadata_tabs, function(X, vars.dash){
   dash.vars <-
     X %>% 
     filter(Field %in% vars.dash) %>% 
     select(Answer)
   
-  this.row <- as.matrix(dash.vars) %>% t() %>% as.data.frame(stringsAsFactors = FALSE)
+  this.row <- as.matrix(dash.vars) %>% 
+    t() %>% 
+    as.data.frame(stringsAsFactors = FALSE)
   colnames(this.row) <- vars.dash
   this.row
 },vars.dash=vars.dash) %>% 
@@ -94,7 +140,7 @@ saveRDS(tab2,file = here("Data","tab2.rds"))
 saveRDS(tab3,file = here("Data","tab3.rds"))
 
 
-
+}
 
 
 
