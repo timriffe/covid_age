@@ -27,8 +27,6 @@ log_section("Compile inputDB from Drive",
 inputDB  <- compile_inputDB(hours = hours)
 
 
-# TODO: add templateID column to inputDB for internal purposes.
-# use this to filter instead of unique Code values.
 if (hours < Inf){
   # What unique templates were loaded?
   codesIN     <- inputDB %>% pull(templateID) %>% unique()
