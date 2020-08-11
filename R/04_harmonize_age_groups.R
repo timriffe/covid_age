@@ -11,6 +11,8 @@ n.cores <- round(6 + (detectCores() - 8)/8)
 # Count data
 inputCounts <- readRDS(here("Data","inputCounts.rds"))
 
+codes_in <- with(inputCounts, paste(Country,Region,Measure,Short)) %>% unique()
+
 # Offsets
 Offsets     <- readRDS(here("Data","Offsets.rds"))
 
@@ -65,6 +67,39 @@ outputCounts_5_1e5 <- iLout1e5 %>%
                       arrange(Country, Region, date, Sex, Age) %>% 
                       select(-date) 
 
+# Save binary
+
+if (hours < Inf){
+  outputCounts_5_1e5_hold <- readRDS(here("Data","Output_5.rds"))
+  outputCounts_5_1e5 <-
+    outputCounts_5_1e5_hold %>% 
+    pivot_longer(cols = c(Cases, Deaths, Tests),
+                 names_to = "Measure",
+                 values_to = "Value") %>% 
+    filter(!is.na(Value)) %>% 
+    mutate(Metric = "Count",
+           Short = add_Short(Code,Date)) %>% 
+    sort_input_data() %>% 
+    mutate(checkid = paste(Country,Region,Measure,Short)) %>% 
+    # remove anything we had before that we just re-processed.
+    # unfortunately also throws out anything that didn't throw an
+    # error previous time but did so this time.
+    filter(!checkid %in% codes_in) %>% 
+    pivot_wider(names_from = Measure,
+                values_from = Value) %>% 
+    # append the stuff we just processed
+    bind_rows(outputCounts_5_1e5) %>% 
+    # Get date into correct format
+    mutate(date = dmy(Date)) %>% 
+    # Sort
+    arrange(Country, Region, date, Sex, Age) %>% 
+    select(-date, -Short, -checkid)
+  
+}
+
+saveRDS(outputCounts_5_1e5, here("Data","Output_5.rds"))
+
+
 # Round to full integers
 outputCounts_5_1e5_rounded <- 
   outputCounts_5_1e5 %>% 
@@ -77,8 +112,7 @@ header_msg <- paste("Counts of Cases, Deaths, and Tests in harmonized 5-year age
 write_lines(header_msg, path = here("Data","Output_5.csv"))
 write_csv(outputCounts_5_1e5_rounded, path = here("Data","Output_5.csv"), append = TRUE, col_names = TRUE)
 
-# Save binary
-saveRDS(outputCounts_5_1e5, here("Data","Output_5.rds"))
+
 
 
 

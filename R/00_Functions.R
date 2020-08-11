@@ -178,9 +178,13 @@ try_step <- function(process_function,
 ### compile_inputDB()
 # Compiles database
 # @param rubric Main spreadsheet
+# @param hours (integer) just pull sheets modified within a specified window
+#           Inf means it grabs all templates, no matter when they were last 
+#           modified. Set to 4 if this is to be called as a cron job on a 4
+#           hour timer, for example.
 
 # leave rubric as NULL for full build
-compile_inputDB <- function(rubric = NULL) {
+compile_inputDB <- function(rubric = NULL, hours = Inf) {
   
   # Get spreadsheet
   if (is.null(rubric)){
@@ -194,12 +198,45 @@ compile_inputDB <- function(rubric = NULL) {
   # Empty list for results
   input_list <- list()
   
+  # cut down if hours < Inf
+  if (hours < Inf){
+    hours <- as.integer(hours)
+    if (hours > 0){
+      seconds <- hours*60*60
+      cutofftime <- format(Sys.time()-hours*60*60, "%Y-%m-%dT%H:%M:00")
+      query <- paste0("modifiedTime > '",
+                     cutofftime,
+                     "' and name contains 'input template'")
+      A <- drive_find(q = query)
+      ids <- A %>% 
+        pull(drive_resource) %>% 
+        lapply(function(x){x$id[1]}) %>% unlist()
+      
+      cutID <- function(x){
+        sheetID <- gsub(x,pattern = "https://docs.google.com/spreadsheets/d/", replacement = "")
+        sheetID <- strsplit(sheetID, split = "/edit")[[1]][1]
+        sheetID
+      }
+      
+      # cut down to just those modified in last hours
+      rubric <- 
+        rubric %>%  
+        mutate(sheetID = sapply(Sheet,cutID )) %>% 
+        filter(sheetID %in% ids)
+      
+     }
+  }
+  
+  
+  
   failures <- rep(NA,nrow(rubric))
   # Loop over countries
-  for (i in rubric$Short) {
+  for (i in 1:nrow(rubric)) {
     
     # Get spreadsheet address
-    ss_i <- rubric %>% filter(Short == i) %>% '$'(Sheet)
+    ss_i <- rubric %>% '$'(Sheet) %>% '['(i)
+    
+    id <-  rubric %>% '$'(Short) %>% '['(i)
     
     # Try to read spreadsheet
     X <- try(read_sheet(ss_i, 
@@ -211,7 +248,7 @@ compile_inputDB <- function(rubric = NULL) {
     if (class(X)[1] == "try-error") {
       
       # Wait two minutes
-      cat(i,"didn't load, waiting 2 min to try again")
+      cat(id,"didn't load, waiting 2 min to try again")
       Sys.sleep(120)
       
       # Try to load again
@@ -225,17 +262,18 @@ compile_inputDB <- function(rubric = NULL) {
     # If again error
     if (class(X)[1] == "try-error") {
       
-      cat(i,"failure\n")
-      failures[i] <- i
+      cat(id,"failure\n")
+      failures[id] <- id
     } else {
       
       # If data loaded get code
       X <- 
         X %>% 
-        mutate(Short = add_Short(Code, Date))
+        mutate(Short = add_Short(Code, Date),
+               templateID = id)
       
       # Add to result list
-      input_list[[i]] <- X
+      input_list[[id]] <- X
       
     }
     
@@ -260,6 +298,10 @@ compile_inputDB <- function(rubric = NULL) {
       if (class(X)[1] == "try-error"){
         cat(i, "on 3rd try still didn't load\n")
       } else {
+        X <- 
+         X %>% 
+          mutate(Short = add_Short(Code, Date),
+                 templateID = i)
         input_list[[i]] <- X
       }
     }
@@ -496,6 +538,17 @@ add_Short <- function(Code, Date) {
   }, Code, Date)
   
 }
+
+
+#----------------------
+# TR: this will be a bigger pain than it needs to be...
+# still needs to be called AFTER Age is integer
+add_AgeInt <- function(Age, omega = 105){
+   
+    DemoTools::age2int(Age = Age, OAvalue = omega - max(Age))
+}
+#---------------------
+
 
 
 ### a modularized check on Age AgeInt consistency
@@ -850,14 +903,13 @@ infer_cases_from_deaths_and_ascfr <- function(chunk, verbose= FALSE){
     # convert Age to integer
     ASCFR      <- ASCFR[Age != "UNK"] 
     v          <- ASCFR[["Value"]]
-    ai         <- ASCFR[["AgeInt"]]
+ 
     a          <- ASCFR[["Age"]] %>% as.integer()
     
     # indicate 0s
-    ind        <- v > 0 & !is.na(ai) & a < 60
-    ind2       <- v == 0 & !is.na(ai)
+    ind        <- v > 0 & !is.na(a) & a < 60
+    ind2       <- v == 0 & !is.na(a)
     vi         <- v[ind]
-    aii        <- ai[ind]
     ai         <- a[ind]
     
     # fit linear model to fill in
@@ -1358,7 +1410,6 @@ do_we_maybe_lower_closeout <- function(chunk, OAnew_min, Amax) {
   # Get variables
   Age    <- chunk[["Age"]] 
   Value  <- chunk[["Value"]]
-  AgeInt <- chunk[["AgeInt"]]
   
   # Check maximum age above new min...
   maybe2 <- max(Age) >= OAnew_min
@@ -1420,7 +1471,6 @@ maybe_lower_closeout <- function(chunk,
   # Get variables, in right format (integer)
   Age    <- chunk[["Age"]] %>% as.integer()
   Value  <- chunk[["Value"]] 
-  AgeInt <- chunk[["AgeInt"]] %>% as.integer()
   
   # Get number of age groups
   n  <- length(Age)
@@ -1444,12 +1494,9 @@ maybe_lower_closeout <- function(chunk,
     # Get new ages
     .Age    <- Age[1:nmax]
     
-    # Turn to integer
-    .AgeInt <- c(AgeInt[1:(nmax-1)], 105 - Age[nmax]) %>% as.integer()
-    
     # Get chunk with ages up to open age group
     chunk <- chunk[1:nmax, ]
-    chunk[,c("Age","AgeInt","Value") := .(.Age, .AgeInt, .Value)]
+    chunk[,c("Age","Value") := .(.Age,  .Value)]
     
     # reform parameter to pass on
     n <- length(.Age)
@@ -1484,12 +1531,10 @@ maybe_lower_closeout <- function(chunk,
     # Get new ages
     .Age    <- Age[1:i]
     
-    # Turn to integer
-    .AgeInt <- c(AgeInt[1:(i-1)], 105 - Age[i]) %>% as.integer()
-    
+
     # Get chunk with ages up to open age group
     chunk <- chunk[1:i, ]
-    chunk[,c("Age","AgeInt","Value") := .(.Age, .AgeInt, .Value)]
+    chunk[,c("Age","Value") := .(.Age, .Value)]
     
   }
   
@@ -1526,7 +1571,7 @@ harmonize_offset_age <- function(chunk){
     
   }
   
-  # WIdth of current open interval
+  # Width of current open interval
   nlast <- max(105 - max(Age), 5)
   
   # Widths of all age intervals
