@@ -178,9 +178,13 @@ try_step <- function(process_function,
 ### compile_inputDB()
 # Compiles database
 # @param rubric Main spreadsheet
+# @param hours (integer) just pull sheets modified within a specified window
+#           Inf means it grabs all templates, no matter when they were last 
+#           modified. Set to 4 if this is to be called as a cron job on a 4
+#           hour timer, for example.
 
 # leave rubric as NULL for full build
-compile_inputDB <- function(rubric = NULL) {
+compile_inputDB <- function(rubric = NULL, hours = Inf) {
   
   # Get spreadsheet
   if (is.null(rubric)){
@@ -193,6 +197,37 @@ compile_inputDB <- function(rubric = NULL) {
   
   # Empty list for results
   input_list <- list()
+  
+  # cut down if hours < Inf
+  if (hours < Inf){
+    hours <- as.integer(hours)
+    if (hours > 0){
+      seconds <- hours*60*60
+      cutofftime <- format(Sys.time()-hours*60*60, "%Y-%m-%dT%H:%M:00")
+      query <- paste0("modifiedTime > '",
+                     cutofftime,
+                     "' and name contains 'input template'")
+      A <- drive_find(q = query)
+      ids <- A %>% 
+        pull(drive_resource) %>% 
+        lapply(function(x){x$id[1]}) %>% unlist()
+      
+      cutID <- function(x){
+        sheetID <- gsub(x,pattern = "https://docs.google.com/spreadsheets/d/", replacement = "")
+        sheetID <- strsplit(sheetID, split = "/edit")[[1]][1]
+        sheetID
+      }
+      
+      # cut down to just those modified in last hours
+      rubric <- 
+        rubric %>%  
+        mutate(sheetID = sapply(Sheet,cutID )) %>% 
+        filter(sheetID %in% ids)
+      
+     }
+  }
+  
+  
   
   failures <- rep(NA,nrow(rubric))
   # Loop over countries
