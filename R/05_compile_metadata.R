@@ -73,7 +73,7 @@ metadata_important <-
 write_sheet(metadata_important, ss = "https://docs.google.com/spreadsheets/d/1ik5RNGYP0uB9TIrV5vVF7ixYJ9y9P4N7oW9a-9Cqw6M/edit#gid=0", sheet = "metadata_important")
 
 # save local copy for dash building
-saveRDS(metadata_basic, file = here("Data","metadata_basic.rds"))
+saveRDS(metadata_important, file = here("Data","metadata_important.rds"))
 
 
 # ----------------
