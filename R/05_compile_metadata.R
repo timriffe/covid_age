@@ -42,21 +42,35 @@ metadata_tabs <- metadata_tabs[!errors]
 
 saveRDS(metadata_tabs,here("Data","metadata_tabs.rds"))
 
+vars.dash <- c( "Country", 
+                "Region(s)",
+                "Author",
+                "Main website",
+                "Retrospective corrections",
+                "Date of start of data series (data captured for this project)",
+                "Date of end of data series",
+                "CASES - Definition",
+                "CASES - Coverage",
+                "CASES - Date of events",
+                "DEATHS - Definition",
+                "DEATHS - Coverage",
+                "DEATHS - Date of events"
+)
 # pick out Fields for basic source table
-metadata_basic <- 
+metadata_important <- 
   metadata_tabs %>% 
-  lapply(function(X){
-    cnames <- c("Country","Region(s)","Author","Main website")
+  lapply(function(X,vars.dash){
+    #cnames <- c("Country","Region(s)","Author","Main website")
     X <- X %>% 
-      filter(Field %in%cnames) 
+      filter(Field %in%vars.dash) 
     out <- data.frame(t(X[, 2]))
-    colnames(out) <- cnames
+    colnames(out) <- vars.dash
     out
-  }) %>% bind_rows()
+  },vars.dash=vars.dash) %>% bind_rows()
 
 
 # save Drive copy for manual inspection / corrections
-write_sheet(metadata_basic, ss = "https://docs.google.com/spreadsheets/d/1ik5RNGYP0uB9TIrV5vVF7ixYJ9y9P4N7oW9a-9Cqw6M/edit#gid=0", sheet = "metadata_basic")
+write_sheet(metadata_important, ss = "https://docs.google.com/spreadsheets/d/1ik5RNGYP0uB9TIrV5vVF7ixYJ9y9P4N7oW9a-9Cqw6M/edit#gid=0", sheet = "metadata_important")
 
 # save local copy for dash building
 saveRDS(metadata_basic, file = here("Data","metadata_basic.rds"))
