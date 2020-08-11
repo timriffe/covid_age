@@ -168,18 +168,18 @@ inputCounts <- J[ , AgeInt := add_AgeInt(Age, omega = 105),
 saveRDS(inputCounts, file = here("Data","inputCounts.rds"))
 
 # List of everything
-COMPONENTS <- list(inputDB = inputDB, 
-                   A = A, 
-                   B = B, 
-                   C = C, 
-                   D = D, 
-                   E = E, 
-                   G = G, 
-                   H = H, 
-                   I = I, 
-                   J = J)
-
-# Save list
-save(COMPONENTS, file = here("Data","ProcessingSteps.Rdata"))
+# COMPONENTS <- list(inputDB = inputDB, 
+#                    A = A, 
+#                    B = B, 
+#                    C = C, 
+#                    D = D, 
+#                    E = E, 
+#                    G = G, 
+#                    H = H, 
+#                    I = I, 
+#                    J = J)
+# 
+# # Save list
+# save(COMPONENTS, file = here("Data","ProcessingSteps.Rdata"))
 
 
