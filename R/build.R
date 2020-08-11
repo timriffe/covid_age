@@ -1,5 +1,10 @@
 library(here)
 
+
+# Set the time lag for reading in modified templates. 
+# For now leave as-is.
+hours <- Inf
+
 # -------------------------------------- #
 source(here("R","00_Functions.R"))
 
@@ -17,9 +22,42 @@ log_section("New build run!",
 log_section("Compile inputDB from Drive", 
             append = TRUE,
             logfile = logfile)
-inputDB  <- compile_inputDB()
 
-saveRDS(inputDB,here("Data","inputDBhold.rds"))
+
+inputDB  <- compile_inputDB(hours = hours)
+
+
+# TODO: add templateID column to inputDB for internal purposes.
+# use this to filter instead of unique Code values.
+if (hours < Inf){
+  # What unique templates were loaded?
+  codesIN     <- inputDB %>% pull(templateID) %>% unique()
+    
+  # Read in previous unfiltered inputDB
+  inputDBhold <- readRDS(here("Data","inputDBhold.rds"))
+    
+  # remove any codes we just read in
+  inputDBhold <- 
+      inputDBhold %>% 
+      filter(!templateID %in% codesIN)
+    
+  # bind on the data we just read in
+  inputDBhold <- bind_rows(inputDBhold, inputDB)
+  
+  # resave out to the full unfltered inputDB.
+  saveRDS(inputDBhold,here("Data","inputDBhold.rds"))
+  # CAVEAT: if we meant to DELETE a subset in the data, it won't be captured by this.
+} else {
+  
+  # otherwise we must have compiled the whole thing
+  saveRDS(inputDB,here("Data","inputDBhold.rds"))
+  
+  # if hours = Inf only once a week, then we'd take care of deletions on that time scale.
+}
+
+# TR: this is temporary:
+inputDB$templateID <- NULL
+
 # --------------------- #
 
 # remove non-standard Measure:
@@ -92,6 +130,8 @@ if (sum(n) > 0){
         append = TRUE)
   }
 }
+
+# TR: AgeInt checks are on the way out.
 
 # Are Age and AgeInt consistent? (kind of slow)
 inputDB <- as.data.table(inputDB)

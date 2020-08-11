@@ -231,10 +231,12 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
   
   failures <- rep(NA,nrow(rubric))
   # Loop over countries
-  for (i in rubric$Short) {
+  for (i in 1:nrow(rubric)) {
     
     # Get spreadsheet address
-    ss_i <- rubric %>% filter(Short == i) %>% '$'(Sheet)
+    ss_i <- rubric %>% '$'(Sheet) %>% '['(i)
+    
+    id <-  rubric %>% '$'(Short) %>% '['(i)
     
     # Try to read spreadsheet
     X <- try(read_sheet(ss_i, 
@@ -246,7 +248,7 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
     if (class(X)[1] == "try-error") {
       
       # Wait two minutes
-      cat(i,"didn't load, waiting 2 min to try again")
+      cat(id,"didn't load, waiting 2 min to try again")
       Sys.sleep(120)
       
       # Try to load again
@@ -260,17 +262,18 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
     # If again error
     if (class(X)[1] == "try-error") {
       
-      cat(i,"failure\n")
-      failures[i] <- i
+      cat(id,"failure\n")
+      failures[id] <- id
     } else {
       
       # If data loaded get code
       X <- 
         X %>% 
-        mutate(Short = add_Short(Code, Date))
+        mutate(Short = add_Short(Code, Date),
+               templateID = id)
       
       # Add to result list
-      input_list[[i]] <- X
+      input_list[[id]] <- X
       
     }
     
@@ -295,6 +298,10 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
       if (class(X)[1] == "try-error"){
         cat(i, "on 3rd try still didn't load\n")
       } else {
+        X <- 
+         X %>% 
+          mutate(Short = add_Short(Code, Date),
+                 templateID = i)
         input_list[[i]] <- X
       }
     }
@@ -531,6 +538,18 @@ add_Short <- function(Code, Date) {
   }, Code, Date)
   
 }
+
+
+#----------------------
+# TR: this will be a bigger pain than it needs to be...
+# add_AgeInt <-
+#   function(chunk){
+#    UNKTOT <- chunk %>% filter(Age %in% c("TOT","UNK"))
+#    
+#     DemoTools::age2int(Age  = Age, OAvalue = omega  -max(Age))
+#   }
+#---------------------
+
 
 
 ### a modularized check on Age AgeInt consistency
