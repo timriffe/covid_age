@@ -542,12 +542,11 @@ add_Short <- function(Code, Date) {
 
 #----------------------
 # TR: this will be a bigger pain than it needs to be...
-# add_AgeInt <-
-#   function(chunk){
-#    UNKTOT <- chunk %>% filter(Age %in% c("TOT","UNK"))
-#    
-#     DemoTools::age2int(Age  = Age, OAvalue = omega  -max(Age))
-#   }
+# still needs to be called AFTER Age is integer
+add_AgeInt <- function(Age, omega = 105){
+   
+    DemoTools::age2int(Age = Age, OAvalue = omega - max(Age))
+}
 #---------------------
 
 
@@ -904,14 +903,13 @@ infer_cases_from_deaths_and_ascfr <- function(chunk, verbose= FALSE){
     # convert Age to integer
     ASCFR      <- ASCFR[Age != "UNK"] 
     v          <- ASCFR[["Value"]]
-    ai         <- ASCFR[["AgeInt"]]
+ 
     a          <- ASCFR[["Age"]] %>% as.integer()
     
     # indicate 0s
-    ind        <- v > 0 & !is.na(ai) & a < 60
-    ind2       <- v == 0 & !is.na(ai)
+    ind        <- v > 0 & !is.na(a) & a < 60
+    ind2       <- v == 0 & !is.na(a)
     vi         <- v[ind]
-    aii        <- ai[ind]
     ai         <- a[ind]
     
     # fit linear model to fill in
@@ -1412,7 +1410,6 @@ do_we_maybe_lower_closeout <- function(chunk, OAnew_min, Amax) {
   # Get variables
   Age    <- chunk[["Age"]] 
   Value  <- chunk[["Value"]]
-  AgeInt <- chunk[["AgeInt"]]
   
   # Check maximum age above new min...
   maybe2 <- max(Age) >= OAnew_min
@@ -1474,7 +1471,6 @@ maybe_lower_closeout <- function(chunk,
   # Get variables, in right format (integer)
   Age    <- chunk[["Age"]] %>% as.integer()
   Value  <- chunk[["Value"]] 
-  AgeInt <- chunk[["AgeInt"]] %>% as.integer()
   
   # Get number of age groups
   n  <- length(Age)
@@ -1498,12 +1494,9 @@ maybe_lower_closeout <- function(chunk,
     # Get new ages
     .Age    <- Age[1:nmax]
     
-    # Turn to integer
-    .AgeInt <- c(AgeInt[1:(nmax-1)], 105 - Age[nmax]) %>% as.integer()
-    
     # Get chunk with ages up to open age group
     chunk <- chunk[1:nmax, ]
-    chunk[,c("Age","AgeInt","Value") := .(.Age, .AgeInt, .Value)]
+    chunk[,c("Age","Value") := .(.Age,  .Value)]
     
     # reform parameter to pass on
     n <- length(.Age)
@@ -1538,12 +1531,10 @@ maybe_lower_closeout <- function(chunk,
     # Get new ages
     .Age    <- Age[1:i]
     
-    # Turn to integer
-    .AgeInt <- c(AgeInt[1:(i-1)], 105 - Age[i]) %>% as.integer()
-    
+
     # Get chunk with ages up to open age group
     chunk <- chunk[1:i, ]
-    chunk[,c("Age","AgeInt","Value") := .(.Age, .AgeInt, .Value)]
+    chunk[,c("Age","Value") := .(.Age, .Value)]
     
   }
   
@@ -1580,7 +1571,7 @@ harmonize_offset_age <- function(chunk){
     
   }
   
-  # WIdth of current open interval
+  # Width of current open interval
   nlast <- max(105 - max(Age), 5)
   
   # Widths of all age intervals

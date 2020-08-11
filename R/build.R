@@ -132,22 +132,22 @@ if (sum(n) > 0){
 # TR: AgeInt checks are on the way out.
 
 # Are Age and AgeInt consistent? (kind of slow)
-inputDB <- as.data.table(inputDB)
-inputDB[, consistent := check_age_seq(chunk = .SD), by=list(Code, Sex, Measure, Metric)]
-
-rm_this <- inputDB[consistent == FALSE]
-if (nrow(rm_this)>0){
-  rmcodes <- rm_this %>% pull(Code) %>% unique()
-  
-
-  log_section("Inconsistent Age, AgeInt detected. Following `Code`s removed:", 
-              append = TRUE, 
-              logfile = logfile)
-  cat(paste(rmcodes, collapse = "\n"), 
-      file = logfile, 
-      append = TRUE)
-}
-inputDB <- inputDB[, consistent := NULL]
+# inputDB <- as.data.table(inputDB)
+# inputDB[, consistent := check_age_seq(chunk = .SD), by=list(Code, Sex, Measure, Metric)]
+# 
+# rm_this <- inputDB[consistent == FALSE]
+# if (nrow(rm_this)>0){
+#   rmcodes <- rm_this %>% pull(Code) %>% unique()
+#   
+# 
+#   log_section("Inconsistent Age, AgeInt detected. Following `Code`s removed:", 
+#               append = TRUE, 
+#               logfile = logfile)
+#   cat(paste(rmcodes, collapse = "\n"), 
+#       file = logfile, 
+#       append = TRUE)
+# }
+# inputDB <- inputDB[, consistent := NULL]
 # BadRange <-
 #   inputDB %>% 
 #   filter(!Age %in% c("TOT","UNK"),
