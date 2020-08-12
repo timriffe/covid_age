@@ -10,6 +10,7 @@ n.cores <- round(6 + (detectCores() - 8)/8)
 
 # Count data
 inputCounts <- readRDS(here("Data","inputCounts.rds"))
+inputCounts$Metric <- NULL
 
 codes_in <- with(inputCounts, paste(Country,Region,Measure,Short)) %>% unique()
 
@@ -77,10 +78,8 @@ if (hours < Inf){
                  names_to = "Measure",
                  values_to = "Value") %>% 
     filter(!is.na(Value)) %>% 
-    mutate(Metric = "Count",
-           Short = add_Short(Code,Date),
+    mutate(Short = add_Short(Code,Date),
            checkid = paste(Country,Region,Measure,Short)) %>% 
-    sort_input_data() %>% 
     # remove anything we had before that we just re-processed.
     # unfortunately also throws out anything that didn't throw an
     # error previous time but did so this time.
@@ -93,7 +92,7 @@ if (hours < Inf){
     mutate(date = dmy(Date)) %>% 
     # Sort
     arrange(Country, Region, date, Sex, Age) %>% 
-    select(-date, -Short, -checkid, -Metric)
+    select(-date, -Short, -checkid)
   
   saveRDS(outputCounts_5_1e5_out, here("Data","Output_5.rds"))
   
