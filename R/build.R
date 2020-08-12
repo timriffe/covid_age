@@ -3,7 +3,7 @@ library(here)
 
 # Set the time lag for reading in modified templates. 
 # For now leave as-is.
-hours <- Inf
+hours <- 25
 
 # -------------------------------------- #
 source(here("R","00_Functions.R"))
@@ -29,7 +29,7 @@ inputDB  <- compile_inputDB(hours = hours)
 
 if (hours < Inf){
   # What unique templates were loaded?
-  codesIN     <- inputDB %>% pull(templateID) %>% unique()
+  codesIN     <- with(inputDB, paste(Country,Region,Measure,Short)) %>% unique()
     
   # Read in previous unfiltered inputDB
   inputDBhold <- readRDS(here("Data","inputDBhold.rds"))
@@ -37,18 +37,20 @@ if (hours < Inf){
   # remove any codes we just read in
   inputDBhold <- 
       inputDBhold %>% 
-      filter(!templateID %in% codesIN)
+      mutate(checkid = paste(Country,Region,Measure,Short)) %>% 
+      filter(!checkid %in% codesIN) %>% 
+      select(-checkid)
     
   # bind on the data we just read in
   inputDBhold <- bind_rows(inputDBhold, inputDB)
   
   # resave out to the full unfltered inputDB.
-  saveRDS(inputDBhold,here("Data","inputDBhold.rds"))
+  saveRDS(inputDBhold, here("Data","inputDBhold.rds"))
   # CAVEAT: if we meant to DELETE a subset in the data, it won't be captured by this.
 } else {
   
   # otherwise we must have compiled the whole thing
-  saveRDS(inputDB,here("Data","inputDBhold.rds"))
+  saveRDS(inputDB, here("Data","inputDBhold.rds"))
   
   # if hours = Inf only once a week, then we'd take care of deletions on that time scale.
 }
@@ -182,10 +184,12 @@ if (hours < Inf){
   inputDB_prior %>% 
     mutate(checkid = paste(Country,Region,Measure,Short)) %>% 
     filter(!checkid %in% ids_new) %>% 
+    select(-checkid) %>% 
     bind_rows(inputDB) %>% 
     sort_input_data()
   
   saveRDS(inputDB_out, here("Data","inputDB.rds"))
+  
   saveRDS(inputDB, here("Data","inputDB_i.rds"))
   
   # public file, full precision.
@@ -203,10 +207,6 @@ if (hours < Inf){
   write_csv(inputDB, path = here("Data","inputDB.csv"), append = TRUE, col_names = TRUE)
 }
 
-
-# localy binary
-saveRDS(inputDB, here("Data","inputDB.rds"))
-
 # ---------------------- #
 
 # Harmonize Measure, Metric, and Scaling
@@ -223,6 +223,7 @@ source(here("R","04_harmonize_age_groups.R"))
 
 # ---------------------- #
 
+# um, let's just do this Wed and Sun?
 source(here("R","05_compile_metadata.R"))
 
 # ---------------------- #
