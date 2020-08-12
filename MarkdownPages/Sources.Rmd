@@ -24,7 +24,7 @@ library(lubridate)
 library(DT)
 library(here)
 
-metadata_sources <-  readRDS(here("Data","metadata_basic.rds"))
+metadata_sources <-  readRDS(here("Data","metadata_important.rds"))[,1:4]
 rownames(metadata_sources) <- NULL
 
 metadata_sources_table <-
