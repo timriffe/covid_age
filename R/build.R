@@ -171,10 +171,38 @@ if (sum(n) > 0){
 
 # --------------------- #
 
-# public file, full precision.
-header_msg <- paste("COVerAGE-DB input database, filtered after some simple checks:",timestamp(prefix = "", suffix = ""))
-write_lines(header_msg, path = here("Data","inputDB.csv"))
-write_csv(inputDB, path = here("Data","inputDB.csv"), append = TRUE, col_names = TRUE)
+# local binary
+if (hours < Inf){
+  # this is for partial builds (save complete inputDB, but also separately just the new stuff)
+  ids_new <- with(inputDB, paste(Country,Region,Measure,Short))
+  
+  inputDB_prior <- readRDS(here("Data","inputDB.rds"))
+  
+  inputDB_out <-
+  inputDB_prior %>% 
+    mutate(checkid = paste(Country,Region,Measure,Short)) %>% 
+    filter(!checkid %in% ids_new) %>% 
+    bind_rows(inputDB) %>% 
+    sort_input_data()
+  
+  saveRDS(inputDB_out, here("Data","inputDB.rds"))
+  saveRDS(inputDB, here("Data","inputDB_i.rds"))
+  
+  # public file, full precision.
+  header_msg <- paste("COVerAGE-DB input database, filtered after some simple checks:",timestamp(prefix = "", suffix = ""))
+  write_lines(header_msg, path = here("Data","inputDB.csv"))
+  write_csv(inputDB_out, path = here("Data","inputDB.csv"), append = TRUE, col_names = TRUE)
+  
+} else {
+  # this toggled if it's a full build
+  
+  saveRDS(inputDB, here("Data","inputDB.rds"))
+  # public file, full precision.
+  header_msg <- paste("COVerAGE-DB input database, filtered after some simple checks:",timestamp(prefix = "", suffix = ""))
+  write_lines(header_msg, path = here("Data","inputDB.csv"))
+  write_csv(inputDB, path = here("Data","inputDB.csv"), append = TRUE, col_names = TRUE)
+}
+
 
 # localy binary
 saveRDS(inputDB, here("Data","inputDB.rds"))
