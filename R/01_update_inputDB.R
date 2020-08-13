@@ -39,7 +39,7 @@ log_section(paste(Sys.time(),"updates"),
 
 #source("R_checks/inputDB_check.R")
 gs4_auth(email = "tim.riffe@gmail.com")
-
+drive_auth(email = "tim.riffe@gmail.com")
 # these parameters to grab templates that were modified between 12 and 2 hours ago,
 # a 10-hour window. This will be run every 8 hours, so this implies overlap.
 hours_from <- 12
