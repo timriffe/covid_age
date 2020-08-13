@@ -44,3 +44,4 @@ ITbol_auto.R
 MM_auto.R
 test_dash_scheduled.R
 test_dash_scheduled.log
+01_update_inputDB.log
