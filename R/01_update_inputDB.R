@@ -194,7 +194,7 @@ if (schedule_this){
                        schedule = "HOURLY", 
                        modifier = 8,
                        starttime = "23:00",
-                       startdate = Sys.Date())
+                       startdate = format(Sys.Date(), "%d/%m/%Y"))
   # taskscheduleR::taskscheduler_delete("COVerAGE-DB-every-8-hour-inputDB-updates")
 }
 
