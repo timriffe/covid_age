@@ -99,7 +99,7 @@ log_section <- function(step = "A", append = TRUE,
   # Paste step and timestamp
   header <- paste("\n#", 
                   step, 
-                  "Build error log\n",
+                  "\n",
                   timestamp(prefix="",suffix=""),
                   "\n\n")
   
@@ -1972,4 +1972,45 @@ process_counts <- function(inputDB, Offsets = NULL, N = 10){
     ungroup() %>% 
     pivot_wider(names_from = Measure,
                 values_from = Value) 
+}
+
+# function that filters rubric down to just those templates that have been updated
+# in a given time reference window (t-hours_from, t-hours_to)
+get_rubric_update_window <- function(hours_from = 12, hours_to = 2){
+  rubric <- get_input_rubric(tab = "input")
+  
+  cutofftime <- format(Sys.time()-hours_from*60*60, "%Y-%m-%dT%H:%M:00")
+  query <- paste0("modifiedTime > '",
+                  cutofftime,
+                  "' and name contains 'input template'")
+  A <- drive_find(q = query)
+  ids_read <- A %>% 
+    pull(drive_resource) %>% 
+    lapply(function(x){x$id[1]}) %>% unlist()
+  
+  # which templates were updated within last hours_to hours
+  cutofftime <- format(Sys.time()-hours_to*60*60, "%Y-%m-%dT%H:%M:00")
+  query <- paste0("modifiedTime > '",
+                  cutofftime,
+                  "' and name contains 'input template'")
+  B <- drive_find(q = query)
+  ids_rm <- B %>% 
+    pull(drive_resource) %>% 
+    lapply(function(x){x$id[1]}) %>% unlist()
+  
+  ids_read <- ids_read[!ids_read%in%ids_rm]
+  
+  cutID <- function(x){
+    sheetID <- gsub(x,pattern = "https://docs.google.com/spreadsheets/d/", replacement = "")
+    sheetID <- strsplit(sheetID, split = "/edit")[[1]][1]
+    sheetID
+  }
+  
+  # cut down to just those modified in last hours
+  rubric <- 
+    rubric %>%  
+    mutate(sheetID = sapply(Sheet,cutID )) %>% 
+    filter(sheetID %in% ids_read)
+  
+  rubric
 }
