@@ -26,7 +26,7 @@ logfile <- here("inputDB_compile_log.md")
 
 # read in the log file, do we start a new one?
 # if it's Sunday then yes.
-new_log <- (today() %>% weekdays()) == "Sunday" & 
+new_log <- !(today() %>% weekdays()) == "Sunday" & 
   (Sys.time() %>% hour()) < 8
 
 log_section(paste(today(),"inputDB updates"), 
@@ -50,142 +50,143 @@ hours_to   <- 2
 
 rubric <- get_rubric_update_window(hours_from, hours_to)
 
-# read in modified data templates (this is the slowest part)
-inputDB <- compile_inputDB(rubric, hours = Inf)
-
-# what data combinations have we read in?
-codesIN     <- with(inputDB, paste(Country, Region, Measure, Short)) %>% unique()
-
-# Read in previous unfiltered inputDB
-inputDBhold <- readRDS(here("Data","inputDBhold.rds"))
-
-# remove any codes we just read in
-inputDBhold <- 
-  inputDBhold %>% 
-  mutate(checkid = paste(Country, Region, Measure, Short)) %>% 
-  filter(!checkid %in% codesIN) %>% 
-  select(-checkid)
-
-# bind on the data we just read in
-inputDBhold <- bind_rows(inputDBhold, inputDB) %>% 
-  sort_input_data()
-
-# resave out to the full unfltered inputDB.
-saveRDS(inputDBhold, here("Data","inputDBhold.rds"))
-
-# TR: this is temporary:
-inputDB$templateID <- NULL
-
-
-# remove non-standard Measure:
-# filters: remove any code that has a duplicate entry
-Measures <- c("Cases","Deaths","Tests","ASCFR")
-n <- inputDB %>% pull(Measure) %>% `%in%`(Measures)
-# sum(n)
-if (sum(!n) > 0){
-  inputDB <- inputDB %>% filter(n) 
-  log_section("Filter valid Measure entries:", 
-              append = TRUE, 
-              logfile = logfile)
-  cat("Valid Measures include:", paste(Measures, collapse = ","), 
-      file = logfile, 
-      append = TRUE)
-  cat("\n",sum(!n),"rows removed", 
-      file = logfile, 
-      append = TRUE)
-}
-
-# remove non-standard Metric:
-# filters: remove any code that has a duplicate entry
-Metrics <- c("Count","Fraction","Ratio")
-n <- inputDB %>% pull(Metric) %>% `%in%`(Metrics)
-# sum(n)
-if (sum(!n) > 0){
-  inputDB <- inputDB %>% filter(n)
-  log_section("Filter valid Metric entries:", 
-              append = TRUE, 
-              logfile = logfile)
-  cat("Valid Metrics include:",paste(Metrics,collapse=","), 
-      file = logfile, 
-      append = TRUE)
-  cat("\n",sum(!n),"rows removed", 
-      file = logfile, 
-      append = TRUE)
-}
-
-# remove non-standard Sex:
-# filters: remove any code that has a duplicate entry
-Sexes <- c("m","f","b","UNK")
-n <- inputDB %>% pull(Sex) %>% `%in%`(Sexes)
-# sum(n)
-if (sum(!n) > 0){
-  inputDB <- inputDB %>% filter(n)
-  log_section("Filter valid Sex entries:", 
-              append = TRUE, 
-              logfile = logfile)
-  cat("Valid Sex values include:",paste(Sexes,collapse=","), 
-      file = logfile, 
-      append = TRUE)
-  cat("\n",sum(!n),"rows removed", 
-      file = logfile, 
-      append = TRUE)
-}
-
-# filters: remove any code that has a duplicate entry
-n <- duplicated(inputDB[,c("Code","Sex","Age","Measure","Metric")])
-# sum(n)
-if (sum(n) > 0){
-  rmcodes <- inputDB %>% filter(n) %>% pull(Code) %>% unique()
-  inputDB <- inputDB %>% filter(!Code%in%rmcodes)
-  if (length(rmcodes)>0){
-    log_section("Duplicates detected. Following `Code`s removed:", 
+if (nrow(rubric) > 0){
+  # read in modified data templates (this is the slowest part)
+  inputDB <- compile_inputDB(rubric, hours = Inf)
+  
+  # what data combinations have we read in?
+  codesIN     <- with(inputDB, paste(Country, Region, Measure, Short)) %>% unique()
+  
+  # Read in previous unfiltered inputDB
+  inputDBhold <- readRDS(here("Data","inputDBhold.rds"))
+  
+  # remove any codes we just read in
+  inputDBhold <- 
+    inputDBhold %>% 
+    mutate(checkid = paste(Country, Region, Measure, Short)) %>% 
+    filter(!checkid %in% codesIN) %>% 
+    select(-checkid)
+  
+  # bind on the data we just read in
+  inputDBhold <- bind_rows(inputDBhold, inputDB) %>% 
+    sort_input_data()
+  
+  # resave out to the full unfltered inputDB.
+  saveRDS(inputDBhold, here("Data","inputDBhold.rds"))
+  
+  # TR: this is temporary:
+  inputDB$templateID <- NULL
+  
+  
+  # remove non-standard Measure:
+  # filters: remove any code that has a duplicate entry
+  Measures <- c("Cases","Deaths","Tests","ASCFR")
+  n <- inputDB %>% pull(Measure) %>% `%in%`(Measures)
+  # sum(n)
+  if (sum(!n) > 0){
+    inputDB <- inputDB %>% filter(n) 
+    log_section("Filter valid Measure entries:", 
                 append = TRUE, 
                 logfile = logfile)
-    cat(paste(rmcodes, collapse = "\n"), 
+    cat("Valid Measures include:", paste(Measures, collapse = ","), 
+        file = logfile, 
+        append = TRUE)
+    cat("\n",sum(!n),"rows removed", 
         file = logfile, 
         append = TRUE)
   }
+  
+  # remove non-standard Metric:
+  # filters: remove any code that has a duplicate entry
+  Metrics <- c("Count","Fraction","Ratio")
+  n <- inputDB %>% pull(Metric) %>% `%in%`(Metrics)
+  # sum(n)
+  if (sum(!n) > 0){
+    inputDB <- inputDB %>% filter(n)
+    log_section("Filter valid Metric entries:", 
+                append = TRUE, 
+                logfile = logfile)
+    cat("Valid Metrics include:",paste(Metrics,collapse=","), 
+        file = logfile, 
+        append = TRUE)
+    cat("\n",sum(!n),"rows removed", 
+        file = logfile, 
+        append = TRUE)
+  }
+  
+  # remove non-standard Sex:
+  # filters: remove any code that has a duplicate entry
+  Sexes <- c("m","f","b","UNK")
+  n <- inputDB %>% pull(Sex) %>% `%in%`(Sexes)
+  # sum(n)
+  if (sum(!n) > 0){
+    inputDB <- inputDB %>% filter(n)
+    log_section("Filter valid Sex entries:", 
+                append = TRUE, 
+                logfile = logfile)
+    cat("Valid Sex values include:",paste(Sexes,collapse=","), 
+        file = logfile, 
+        append = TRUE)
+    cat("\n",sum(!n),"rows removed", 
+        file = logfile, 
+        append = TRUE)
+  }
+  
+  # filters: remove any code that has a duplicate entry
+  n <- duplicated(inputDB[,c("Code","Sex","Age","Measure","Metric")])
+  # sum(n)
+  if (sum(n) > 0){
+    rmcodes <- inputDB %>% filter(n) %>% pull(Code) %>% unique()
+    inputDB <- inputDB %>% filter(!Code%in%rmcodes)
+    if (length(rmcodes)>0){
+      log_section("Duplicates detected. Following `Code`s removed:", 
+                  append = TRUE, 
+                  logfile = logfile)
+      cat(paste(rmcodes, collapse = "\n"), 
+          file = logfile, 
+          append = TRUE)
+    }
+  }
+  
+  # -------------------------------------- #
+  # now swap out data in inputDB files
+  
+  ids_new       <- with(inputDB, paste(Country,Region,Measure,Short))
+  
+  inputDB_prior <- readRDS(here("Data","inputDB.rds"))
+  
+  inputDB_out <-
+    inputDB_prior %>% 
+    mutate(checkid = paste(Country,Region,Measure,Short)) %>% 
+    filter(!checkid %in% ids_new) %>% 
+    select(-checkid) %>% 
+    bind_rows(inputDB) %>% 
+    sort_input_data()
+  
+  saveRDS(inputDB_out, here("Data","inputDB.rds"))
+  
+  #saveRDS(inputDB, here("Data","inputDB_i.rds"))
+  
+  # public file, full precision.
+  header_msg <- paste("COVerAGE-DB input database, filtered after some simple checks:",timestamp(prefix = "", suffix = ""))
+  write_lines(header_msg, path = here("Data","inputDB.csv"))
+  write_csv(inputDB_out, path = here("Data","inputDB.csv"), append = TRUE, col_names = TRUE)
+  
+  # push logfile to github:
+  library(usethis)
+  library(git2r)
+  
+  repo <- git2r::repository(here())
+  #init()
+  source("~/.Rprofile")
+  git2r::pull(repo,credentials = creds) 
+  
+  commit(repo, 
+         message = "update inputDB logfile", 
+         all = TRUE)
+  
+  git2r::push(repo,credentials = creds)
 }
-
-# -------------------------------------- #
-# now swap out data in inputDB files
-
-ids_new       <- with(inputDB, paste(Country,Region,Measure,Short))
-
-inputDB_prior <- readRDS(here("Data","inputDB.rds"))
-
-inputDB_out <-
-  inputDB_prior %>% 
-  mutate(checkid = paste(Country,Region,Measure,Short)) %>% 
-  filter(!checkid %in% ids_new) %>% 
-  select(-checkid) %>% 
-  bind_rows(inputDB) %>% 
-  sort_input_data()
-
-saveRDS(inputDB_out, here("Data","inputDB.rds"))
-
-#saveRDS(inputDB, here("Data","inputDB_i.rds"))
-
-# public file, full precision.
-header_msg <- paste("COVerAGE-DB input database, filtered after some simple checks:",timestamp(prefix = "", suffix = ""))
-write_lines(header_msg, path = here("Data","inputDB.csv"))
-write_csv(inputDB_out, path = here("Data","inputDB.csv"), append = TRUE, col_names = TRUE)
-
-# push logfile to github:
-library(usethis)
-library(git2r)
-
-repo <- git2r::repository(here())
-#init()
-source("~/.Rprofile")
-git2r::pull(repo,credentials = creds) 
-
-commit(repo, 
-       message = "update inputDB logfile", 
-       all = TRUE)
-
-git2r::push(repo,credentials = creds)
-
 schedule_this <- FALSE
 if (schedule_this){
   library(taskscheduleR)
