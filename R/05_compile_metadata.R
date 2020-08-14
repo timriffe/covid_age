@@ -75,10 +75,12 @@ write_sheet(metadata_important, ss = "https://docs.google.com/spreadsheets/d/1ik
 
 metadata_important <- 
   metadata_important %>% 
-  arrange(Country, `Region(s)`) %>% 
-  group_by(Country, `Region(s)`) %>% 
-  slice(1) %>% 
-  ungroup()
+  arrange(Country, `Region(s)`) 
+
+drm <- duplicated(metadata_important)
+metadata_important <- 
+  metadata_important %>% 
+  filter(!drm)
 # save local copy for dash building
 saveRDS(metadata_important, file = here("Data","metadata_important.rds"))
 
