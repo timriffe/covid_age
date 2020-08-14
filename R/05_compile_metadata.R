@@ -63,15 +63,22 @@ metadata_important <-
     #cnames <- c("Country","Region(s)","Author","Main website")
     X <- X %>% 
       filter(Field %in%vars.dash) 
-    out <- data.frame(t(X[, 2]))
+    out <- data.frame(t(X[, 2]),stringsAsFactors = FALSE)
     colnames(out) <- vars.dash
     out
-  },vars.dash=vars.dash) %>% bind_rows()
+  },vars.dash=vars.dash) %>% 
+  bind_rows() 
 
 
 # save Drive copy for manual inspection / corrections
 write_sheet(metadata_important, ss = "https://docs.google.com/spreadsheets/d/1ik5RNGYP0uB9TIrV5vVF7ixYJ9y9P4N7oW9a-9Cqw6M/edit#gid=0", sheet = "metadata_important")
 
+metadata_important <- 
+  metadata_important %>% 
+  arrange(Country, `Region(s)`) %>% 
+  group_by(Country, `Region(s)`) %>% 
+  slice(1) %>% 
+  ungroup()
 # save local copy for dash building
 saveRDS(metadata_important, file = here("Data","metadata_important.rds"))
 
