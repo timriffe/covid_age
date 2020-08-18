@@ -21,3 +21,16 @@ Valid Sex values include: m,f,b,UNK
  Tue Aug 18 00:26:17 2020 
 
 US_TX19.07.2020
+# 2020-08-18 inputDB updates 
+ Tue Aug 18 07:00:08 2020 
+
+
+# 2020-08-18 07:00:08 updates 
+ Tue Aug 18 07:00:08 2020 
+
+
+# Filter valid Measure entries: 
+ Tue Aug 18 07:58:33 2020 
+
+Valid Measures include: Cases,Deaths,Tests,ASCFR
+ 598 rows removed
