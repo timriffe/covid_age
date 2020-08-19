@@ -51,7 +51,7 @@ source(here("R","08_coverage_map.R"))
 
 # Coverage Map
 # getting 401 errors
-#source(here("R","09_push_osf.R"))
+source(here("R","09_push_osf.R"))
 
 # ---------------------- #
 

@@ -80,7 +80,7 @@ map_joined <- left_join(world_rob, db_coverage,
 map_joined$coverage[is.na(map_joined$coverage)] <- "Not included yet"
 
 
-cols_data <- c("National and regional" = "grey10", "National" = "grey30", "Forthcoming" = "#A3d3d3","Not included yet" = "grey90")
+cols_data <- c("National and regional" = "grey10", "National" = "grey50", "Forthcoming" = "#A3d3d3","Not included yet" = "grey90")
 
 map_joined<-
   map_joined %>% 
@@ -110,7 +110,7 @@ map_out <-
   guides(fill = guide_legend(title.position = "bottom",
                            keywidth = .5,
                            keyheight = .4))+
-  theme(legend.text=element_text(size = tx + 2),
+  theme(legend.text=element_text(size = tx + 5),
         legend.key.size = unit(1, "cm"),
         legend.title = element_blank(),
         # legend.position = c(0.1,.3),
