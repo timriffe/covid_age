@@ -68,21 +68,21 @@ change_here <- function(new_path) {
 ### push_current()
 # Pushes compiled files to OSF
 
-push_current <- function() {
+push_current <- function(files_data = c("inputDB.csv","Output_5.csv","Output_10.csv")) {
   
   # Get directory on OSF
   target_dir <- osf_retrieve_node("mpwjq") %>% 
     osf_ls_files(pattern = "Data") 
   
-  # Complete paths for CSV files
-  files_data <- c("offsets.csv","inputDB.csv",
-                  "Output_5.csv","Output_10.csv")
   files <- here("Data",files_data)
   
   # Push to OSF
-  osf_upload(target_dir,
-             path = files,
-             conflicts = "overwrite")
+  for (i in 1:length(files)){
+    osf_upload(target_dir,
+               path = files[i],
+               conflicts = "overwrite")  
+  }
+  
   
 }
 

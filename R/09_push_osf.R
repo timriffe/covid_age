@@ -9,7 +9,8 @@ library(lubridate)
 # Basic
 # log_section("Push build to Data/Current folder on OSF", append = TRUE)
 # move_to_current()
-push_current()
+files_data <- c("inputDB.csv","Output_5.csv","Output_10.csv")
+push_current(files_data)
 
 
 
