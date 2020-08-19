@@ -18,7 +18,9 @@ A detailed dashboard of data availability can be found [here](https://timriffe.g
 
 ## Data processing steps
 
-A (preliminary) description of data processing steps, and dash overview of which steps are applied to each country-region-date subset of data can be found [here](https://timriffe.github.io/covid_age/DataSteps.html).
+A draft Method Protocol is available [here](https://osf.io/jcnw3/)
+
+A dash overview of which steps are applied to each country-region-date subset of data can be found [here](https://timriffe.github.io/covid_age/DataSteps.html).  
 
 This does not yet give an overview of age-group harmonization performed, but we'll add this soon. Further details will be spelled out in a methods protocol, presently in preparation.
 
