@@ -11,7 +11,7 @@ library(pacman)
 
 # Required CRAN packages
 packages_CRAN <- c("tidyverse","lubridate","gargle","ungroup","HMDHFDplus",
-                   "tictoc","parallel","osfr","data.table","git2r","usethis",
+                   "tictoc","parallel","data.table","git2r","usethis",
                    "remotes","here","knitr","rmarkdown","googledrive")
 
 # Install required CRAN packages if not available yet
@@ -23,7 +23,7 @@ if(!sum(!p_isinstalled(packages_CRAN))==0) {
 }
 
 # Reuired github packages
-packages_git <- c("googlesheets4","DemoTools","parallelsugar")
+packages_git <- c("googlesheets4","DemoTools","parallelsugar","osfr")
 
 # install from github if necessary
 if (!p_isinstalled("googlesheets4")) {
@@ -40,7 +40,10 @@ if (!p_isinstalled("parallelsugar")){
   library(remotes)
   install_github("nathanvan/parallelsugar")
 }
-
+if (!p_isinstalled("osfr")){
+  library(remotes)
+  install_github("ropensci/osfr")
+}
 # Load the required CRAN/github packages
 p_load(packages_CRAN, character.only = TRUE)
 p_load(packages_git, character.only = TRUE)
