@@ -1,24 +1,30 @@
 
 # 2020-08-19 inputDB updates 
- Wed Aug 19 15:00:09 2020 
+ Wed Aug 19 23:00:06 2020 
 
 
-# 2020-08-19 15:00:09 updates 
- Wed Aug 19 15:00:09 2020 
+# 2020-08-19 23:00:06 updates 
+ Wed Aug 19 23:00:06 2020 
 
 
 # Filter valid Measure entries: 
- Wed Aug 19 15:30:11 2020 
+ Thu Aug 20 00:02:39 2020 
 
 Valid Measures include: Cases,Deaths,Tests,ASCFR
- 200 rows removed
-# Filter valid Metric entries: 
- Wed Aug 19 15:30:11 2020 
+ 3664 rows removed
+# Filter valid Sex entries: 
+ Thu Aug 20 00:02:39 2020 
 
-Valid Metrics include: Count,Fraction,Ratio
- 14 rows removed
+Valid Sex values include: m,f,b,UNK
+ 1222 rows removed
 # Duplicates detected. Following `Code`s removed: 
- Wed Aug 19 15:30:12 2020 
+ Thu Aug 20 00:02:42 2020 
 
-GT03.07.2020
 US_TX19.07.2020
+# 2020-08-20 inputDB updates 
+ Thu Aug 20 07:00:05 2020 
+
+
+# 2020-08-20 07:00:05 updates 
+ Thu Aug 20 07:00:05 2020 
+
