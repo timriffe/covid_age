@@ -12,13 +12,14 @@ for (fl in files_data){
 zip::zip(here("Data",paste0(fl,".zip")), 
          files = file.path("Data",paste0(fl,".csv")), 
          compression_level = 9)
+  Sys.sleep(2)
 }
 
 # Basic
 # log_section("Push build to Data/Current folder on OSF", append = TRUE)
 # move_to_current()
-files_data_zipped <- here("Data",paste0(files_data,".zip"))
-push_current(files_data)
+files_data_zipped <- paste0(files_data,".zip")
+push_current(files_data_zipped)
 
 
 
