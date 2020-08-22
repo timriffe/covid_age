@@ -2693,3 +2693,7 @@ filter( Code == 'DO18.06.2020', Sex == 'm', Measure == 'Deaths' )
 filter( Code == 'DO29.07.2020', Sex == 'm', Measure == 'Deaths' )
 filter( Code == 'DO30.07.2020', Sex == 'm', Measure == 'Deaths' )
 filter( Code == 'DO31.07.2020', Sex == 'm', Measure == 'Deaths' )
+
+# Commit dashboards and buildlog 
+ Sat Aug 22 08:50:19 2020 
+
