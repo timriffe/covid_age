@@ -12,6 +12,7 @@ hours <- Inf
 # becomes inefficient we will move to only update pieces that were
 # modified, which is not necessary at this time.
 
+log_section("New build log", append = FALSE)
 
 # ---------------------- #
 
