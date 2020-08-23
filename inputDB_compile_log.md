@@ -1,19 +1,14 @@
 
 # 2020-08-23 inputDB updates 
- Sun Aug 23 15:00:05 2020 
+ Sun Aug 23 23:00:08 2020 
 
 
-# 2020-08-23 15:00:05 updates 
- Sun Aug 23 15:00:05 2020 
+# 2020-08-23 23:00:08 updates 
+ Sun Aug 23 23:00:08 2020 
 
 
 # Filter valid Measure entries: 
- Sun Aug 23 15:23:30 2020 
+ Mon Aug 24 00:08:02 2020 
 
 Valid Measures include: Cases,Deaths,Tests,ASCFR
- 208 rows removed
-# Filter valid Metric entries: 
- Sun Aug 23 15:23:30 2020 
-
-Valid Metrics include: Count,Fraction,Ratio
- 14 rows removed
+ 606 rows removed
