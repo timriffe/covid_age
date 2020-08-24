@@ -55,7 +55,7 @@ have_in_idb <-
   select(Country, coverage) %>% 
   distinct()
 
-ctries <- have_in_idb %>% pull(Country)
+ctries <- have_in_idb %>% dplyr::pull(Country)
 
 forthcoming <-
   db_pops %>% 
