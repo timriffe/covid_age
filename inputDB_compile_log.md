@@ -12,3 +12,10 @@
 
 Valid Measures include: Cases,Deaths,Tests,ASCFR
  606 rows removed
+# 2020-08-24 inputDB updates 
+ Mon Aug 24 07:00:07 2020 
+
+
+# 2020-08-24 07:00:07 updates 
+ Mon Aug 24 07:00:07 2020 
+
