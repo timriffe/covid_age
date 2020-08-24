@@ -36,11 +36,11 @@ library(ggplot2)
 library(osfr)
 
 # This downloads the file, preserving the name inputDB.csv
-osf_retrieve_file("8uk9n") %>%
+osf_retrieve_file("9dsfk") %>%
   osf_download(conflicts = "overwrite") 
 
 # This reads it in
-inputDB <-  read_csv("inputDB.csv",
+inputDB <-  read_csv("inputDB.zip",
                      skip = 1,
                      col_types = "cccccciccdc")
 
@@ -54,11 +54,11 @@ Output files are friendlier for several reasons. Since measures from like subset
 
 ```{r}
 
-osf_retrieve_file("wu5ve") %>%
+osf_retrieve_file("43ucn") %>%
   osf_download(conflicts = "overwrite") 
 
 # This reads it in
-Output_10 <-  read_csv("Output_10.csv",
+Output_10 <-  read_csv("Output_10.zip",
                      skip = 3,
                      col_types = "ccccciiddd")
 # convert to date class
