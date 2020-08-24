@@ -71,8 +71,8 @@ glimpse(Output_10)
 
 ```{r, include = FALSE}
 # cleanup
-file.remove("inputDB.csv")
-file.remove("Output_10.csv")
+file.remove("inputDB.zip")
+file.remove("Output_10.zip")
 ```
 
 
