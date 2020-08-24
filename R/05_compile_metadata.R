@@ -26,7 +26,7 @@ rubric <- read_sheet(ss_rubric, sheet = "input") %>%
 
 metadata_tabs <- list()
 for (i in 1:nrow(rubric)){
-   ss <- rubric %>% pull(Sheet) %>% '['(i)
+   ss <- rubric %>% dplyr::pull(Sheet) %>% '['(i)
    metadata_tabs[[i]] <- try(read_sheet(ss, sheet = "metadata", col_types = "ccc"))
    Sys.sleep(1)
 }
