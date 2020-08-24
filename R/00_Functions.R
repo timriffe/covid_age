@@ -6,7 +6,7 @@ if(!require("pacman", character.only = TRUE)) {
   if (!require("pacman", character.only = TRUE))
     stop("Package pacman not found")
 }
-
+  
 library(pacman)
 
 # Required CRAN packages
