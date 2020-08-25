@@ -1,5 +1,5 @@
 library(here)
-
+source(here("R","00_Functions.R"))
 
 # Set the time lag for reading in modified templates. 
 # For now leave as-is.
