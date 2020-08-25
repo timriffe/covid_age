@@ -22,7 +22,7 @@ max(last_date_drive)
 url_age <- "https://data.virginia.gov/api/views/uktn-mwig/rows.csv?accessType=DOWNLOAD"
 db_age <- read_csv(url_age)
 
-date_f <- mdy(db_age[1,1])
+date_f <- mdy(max(db_age$`Report Date`))
 
 if (!(date_f %in% last_date_drive)){
 
@@ -47,60 +47,85 @@ if (!(date_f %in% last_date_drive)){
              year(date_f_tests), sep = ".")
   
   db_age2 <- db_age %>% 
-    rename(Cases = "Number of Cases",
+    rename(date = "Report Date",
+           Cases = "Number of Cases",
            Deaths = "Number of Deaths") %>% 
     separate("Age Group", c("Age", "trash"), sep = "-") %>% 
-    group_by(Age) %>% 
-    summarise(Cases = sum(Cases),
-              Deaths = sum(Deaths)) %>% 
-    ungroup() %>% 
-    mutate(Age = case_when(Age == "80+" ~ "80",
+    replace_na(list(Cases = 0, Deaths = 0)) %>% 
+    mutate(date_f =  mdy(date),
+           Age = case_when(Age == "80+" ~ "80",
                            Age == "Missing" ~ "UNK",
-                           TRUE ~ Age),
+                           TRUE ~ Age)) %>% 
+    select(date_f, Age, Cases, Deaths) %>% 
+    gather(Cases, Deaths, key = "Measure", value = "new") %>% 
+    group_by(date_f, Age, Measure) %>% 
+    summarise(new = sum(new)) %>% 
+    ungroup() %>% 
+    group_by(Age, Measure) %>% 
+    mutate(Value = cumsum(new),
            Sex = "b") %>% 
-    gather(Cases, Deaths, key = "Measure", value = "Value") 
+    ungroup()
+    
+    
   
   
   db_sex2 <- db_sex %>% 
-    rename(Cases = "Number of Cases",
+    rename(date = "Report Date",
+           Cases = "Number of Cases",
            Deaths = "Number of Deaths") %>% 
-    group_by(Sex) %>% 
-    summarise(Cases = sum(Cases),
-              Deaths = sum(Deaths)) %>% 
-    ungroup() %>% 
+    replace_na(list(Cases = 0, Deaths = 0)) %>% 
+    mutate(date_f =  mdy(date)) %>% 
     mutate(Sex = case_when(Sex == "Female" ~ "f",
                            Sex == "Male" ~ "m",
-                           TRUE ~ "UNK"),
+                           TRUE ~ "UNK")) %>% 
+    select(date_f, Sex, Cases, Deaths) %>% 
+    gather(Cases, Deaths, key = "Measure", value = "new") %>% 
+    group_by(date_f, Sex, Measure) %>% 
+    summarise(new = sum(new)) %>% 
+    ungroup() %>% 
+    group_by(Sex, Measure) %>% 
+    mutate(Value = cumsum(new),
            Age = "TOT") %>% 
-    gather(Cases, Deaths, key = "Measure", value = "Value")
-  
+    ungroup()
+    
   db_tests2 <- db_tests %>% 
-    rename(tests = "Number of PCR Testing Encounters") %>% 
+    rename(tests = "Number of PCR Testing Encounters",
+           date = "Lab Report Date") %>% 
+    mutate(date_f =  mdy(date)) %>% 
+    replace_na(list(tets = 0)) %>% 
+    drop_na() %>% 
+    group_by(date_f) %>% 
+    summarise(new = sum(tests)) %>%
+    ungroup() %>% 
     group_by() %>% 
-    summarise(Value = sum(tests)) %>% 
-    mutate(Sex = "b",
+    mutate(Value = cumsum(new),
+           Sex = "b",
            Age = "TOT",
-           Measure = "Tests")
-  
+           Measure = "Tests") %>% 
+    ungroup()
+ 
   db_all <- bind_rows(db_age2, db_sex2, db_tests2) %>% 
     mutate(Country = "USA",
            Region = "Virginia",
-           Code = ifelse(Measure == "Tests", paste0("US_VA", d_tests), paste0("US_VA", d)),
-           Date = ifelse(Measure == "Tests", d_tests, d),
+           Date = paste(sprintf("%02d",day(date_f)),
+                        sprintf("%02d",month(date_f)),
+                        year(date_f),
+                        sep="."),
+           Code = paste0("US_VA", Date),
            AgeInt = case_when(Age == "TOT" ~ "",
                               Age == "UNK" ~ "",
                               Age == "80" ~ "25",
                               TRUE ~ "10"),
            Metric = "Count") %>% 
+    arrange(Region, date_f, Measure, Sex, suppressWarnings(as.integer(Age))) %>% 
     select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
   
   ############################################
   #### uploading database to Google Drive ####
   ############################################
-  # This command append new rows at the end of the sheet
-  sheet_append(db_all,
-               ss = "https://docs.google.com/spreadsheets/d/1b8vpZhKDPKWm8QeSFFy01u3rGbEhxUf_nkyjtkPLQlc/edit#gid=0",
-               sheet = "database")
+  write_sheet(db_all, 
+              ss = "https://docs.google.com/spreadsheets/d/1b8vpZhKDPKWm8QeSFFy01u3rGbEhxUf_nkyjtkPLQlc/edit#gid=0",
+              sheet = "database")
   
   ############################################
   #### uploading metadata to Google Drive ####
