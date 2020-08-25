@@ -25,7 +25,6 @@ delete_sched <- function(pp = "CA_montreal"){
 sched("Colombia", "00:00")
 sched("Venezuela", "01:00")
 sched("CA_Montreal", "02:00")
-# sched("US_New_Jersey", "02:10")
 
 sched("Slovenia", "04:00")
 sched("Germany", "05:00")
@@ -44,14 +43,34 @@ sched("US_Michigan", "16:00")
 sched("Sweden", "17:00")
 sched("Netherlands", "18:00")
 
-sched("New_Zeland", "20:00")
+sched("New_Zeland", "18:20")
 sched("Estonia", "21:00")
 sched("Peru", "22:00")
 
+# delete_sched("Austria")
+# delete_sched("CA_Montreal")
+# delete_sched("Colombia")
+# delete_sched("Estonia")
+# delete_sched("Germany")
+# delete_sched("Mexico")
+# delete_sched("Netherlands")
+# delete_sched("New_Zeland")
+# delete_sched("Peru")
+# delete_sched("Slovenia")
+# delete_sched("Sweden")
+# delete_sched("US_Massachusetts")
+# delete_sched("US_Michigan")
+# delete_sched("US_New_Jersey")
+# delete_sched("US_NYC")
+# delete_sched("US_Texas")
+# delete_sched("US_Virginia")
+# delete_sched("US_Wisconsin")
+# delete_sched("USA_all_deaths")
+# delete_sched("Venezuela")
 
-
-taskscheduler_ls()
-
+# 
+# taskscheduler_ls()
+# 
 # scripts <- c(
 #   "Colombia",
 #   "Germany",
@@ -60,10 +79,10 @@ taskscheduler_ls()
 #   "US_Virginia",
 #   "US_NYC",
 #   "USA_all_deaths",
-#   "CA_Montreal", 
+#   "CA_Montreal",
 #   "US_Texas", 
 #   "US_Wisconsin",
-#   "US_Michigan", 
+#   "US_Michigan",
 #   "Sweden",
 #   "Netherlands",
 #   "Venezuela",
