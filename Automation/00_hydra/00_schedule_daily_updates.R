@@ -1,10 +1,8 @@
 rm(list=ls())
 library(taskscheduleR)
 
-local_path <- "U:/nextcloud/Projects/COVID_19/COVerAGE-DB/covid_age/Automation/00_hydra/"
-
 sched <- function(pp = "CA_montreal", tm = "06:00"){
-  script <- paste0(local_path, pp, ".R")  
+  script <- paste0("U:/nextcloud/Projects/COVID_19/COVerAge-DB/automated_COVerAge-DB/00_hydra/", pp, ".R")  
   tskname <- paste0("coverage_db_", pp, "_daily")
   
   try(taskscheduler_delete(taskname = tskname))
@@ -22,53 +20,57 @@ delete_sched <- function(pp = "CA_montreal"){
 }
 
 # sched("Netherlands", "15:12")
-# delete_sched("CA_montreal")
+# delete_sched("US_New_Jersey")
+
+sched("Colombia", "00:00")
+sched("Venezuela", "01:00")
+sched("CA_Montreal", "02:00")
+# sched("US_New_Jersey", "02:10")
+
+sched("Slovenia", "04:00")
+sched("Germany", "05:00")
+sched("US_Massachusetts", "06:00")
+
+sched("Austria", "07:00")
+sched("US_Virginia", "09:00")
+sched("Mexico", "10:00")
+
+sched("US_NYC", "11:00")
+sched("USA_all_deaths", "12:00")
+sched("US_Texas", "13:00")
+
+sched("US_Wisconsin", "15:00")
+sched("US_Michigan", "16:00")
+sched("Sweden", "17:00")
+sched("Netherlands", "18:00")
+
+sched("New_Zeland", "20:00")
+sched("Estonia", "21:00")
+sched("Peru", "22:00")
 
 
-sched("US_New_Jersey", "13:50")
-sched("Slovenia", "13:55")
-sched("Colombia", "14:00")
-sched("Germany", "14:20")
-sched("US_Massachusetts", "14:45")
-sched("Austria", "15:00")
-sched("US_Virginia", "15:20")
-sched("US_NYC", "15:25")
-sched("USA_all_deaths", "15:30")
-sched("CA_Montreal", "15:35")
-sched("US_Texas", "15:40")
-sched("US_Wisconsin", "15:45")
-sched("US_Michigan", "15:50")
-sched("Sweden", "15:55")
-sched("Netherlands", "16:00")
-sched("Venezuela", "16:05")
-sched("New_Zeland", "16:10")
-sched("Estonia", "16:15")
 
 taskscheduler_ls()
 
-scripts <- c(
-  "US_New_Jersey",
-  "Slovenia",
-  "Colombia",
-  "Germany",
-  "US_Massachusetts",
-  "Austria",
-  "US_Virginia",
-  "US_NYC",
-  "USA_all_deaths",
-  "CA_Montreal",
-  "US_Texas",
-  "US_Wisconsin",
-  "US_Michigan",
-  "Sweden",
-  "Netherlands",
-  "Venezuela",
-  "New_Zeland",
-  "Estonia"
-)
-
-
-# ## Delete all
+# scripts <- c(
+#   "Colombia",
+#   "Germany",
+#   "US_Massachusetts",
+#   "Austria",
+#   "US_Virginia",
+#   "US_NYC",
+#   "USA_all_deaths",
+#   "CA_Montreal", 
+#   "US_Texas", 
+#   "US_Wisconsin",
+#   "US_Michigan", 
+#   "Sweden",
+#   "Netherlands",
+#   "Venezuela",
+#   "New_Zeland"
+# )
+# 
+### Delete all 
 # for (sc in scripts){
 #   print(sc)
 #   delete_sched(sc)
