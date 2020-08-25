@@ -7,14 +7,16 @@ logfile <- here("buildlog.md")
 
 ### Get data ########################################################
 
-inputDB <- readRDS(here("Data","inputDB.rds"))
+if (hours < Inf){
+  inputDB <- readRDS(here("Data","inputDB_i.rds"))
+} else {
+  inputDB <- readRDS(here("Data","inputDB.rds"))
+}
 
 # this script transforms the inputDB as required, and produces standardized measures and metrics
 
-
-icols <- colnames(inputDB)
-
-
+icolsIN <- colnames(inputDB)
+icols   <- icolsIN[icolsIN != "AgeInt"]
 
 ### Remove unnecessary rows #########################################
 
@@ -160,7 +162,9 @@ J <- J[ , try_step(process_function = maybe_lower_closeout,
 ### Saving ##########################################################
 
 # Formatting 
-inputCounts <- J %>% 
+
+inputCounts <- J[ , AgeInt := add_AgeInt(Age, omega = 105),
+                  by = list(Code, Sex, Measure)][, ..icolsIN] %>% 
   arrange(Country, Region, Sex, Measure, Age) %>% 
   as.data.frame()
 
@@ -168,18 +172,18 @@ inputCounts <- J %>%
 saveRDS(inputCounts, file = here("Data","inputCounts.rds"))
 
 # List of everything
-COMPONENTS <- list(inputDB = inputDB, 
-                   A = A, 
-                   B = B, 
-                   C = C, 
-                   D = D, 
-                   E = E, 
-                   G = G, 
-                   H = H, 
-                   I = I, 
-                   J = J)
-
-# Save list
-save(COMPONENTS, file = here("Data","ProcessingSteps.Rdata"))
+# COMPONENTS <- list(inputDB = inputDB, 
+#                    A = A, 
+#                    B = B, 
+#                    C = C, 
+#                    D = D, 
+#                    E = E, 
+#                    G = G, 
+#                    H = H, 
+#                    I = I, 
+#                    J = J)
+# 
+# # Save list
+# save(COMPONENTS, file = here("Data","ProcessingSteps.Rdata"))
 
 

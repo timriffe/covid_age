@@ -1,16 +1,7 @@
 #.rs.restartR()
 
 
-change_here <- function(new_path){
-  new_root <- here:::.root_env
-  
-  new_root$f <- function(...){file.path(new_path, ...)}
-  
-  assignInNamespace(".root_env", new_root, ns = "here")
-}
-
-change_here("C:/Users/riffe/Documents/covid_age")
-startup::startup()
+source("~/.Rprofile")
 source(here("R","00_Functions.R"))
 logfile <- here("buildlog.md")
 log_section("Commit dashboards and buildlog", append = TRUE, logfile = logfile)
