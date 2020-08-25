@@ -18,12 +18,17 @@ A detailed dashboard of data availability can be found [here](https://timriffe.g
 
 ## Data processing steps
 
-A (preliminary) description of data processing steps, and dash overview of which steps are applied to each country-region-date subset of data can be found [here](https://timriffe.github.io/covid_age/DataSteps.html).
+A draft Method Protocol is available [here](https://osf.io/jcnw3/)
+
+A dash overview of which steps are applied to each country-region-date subset of data can be found [here](https://timriffe.github.io/covid_age/DataSteps.html).  
 
 This does not yet give an overview of age-group harmonization performed, but we'll add this soon. Further details will be spelled out in a methods protocol, presently in preparation.
 
 ## Documentation
 Source documentation is presently being gathered and standardized, and we will find a slick way of displaying it when it's further along. All data results are provisional and may change if we decide to change particular sources, or if we change our minds about how to split age groups, etc. So **please always use the most up-to-date version**.
+
+### Sources
+A basic data source dashboard is available  [here](https://timriffe.github.io/covid_age/DataSources.html).
 
 ## Notes
 Most populations in the database contain multiple time snapshots, and all are continually monitored for new data releases.  All statistics reported here are **cumulative**. 
@@ -44,7 +49,7 @@ Riffe, Tim, Enrique Acosta, et. al. “COVerAGE-DB: A Database of COVID-19 Cases
 Riffe, Tim, Enrique Acosta, et. al. 2020. “COVerAGE-DB: A Database of COVID-19 Cases and Deaths by Age .” OSF. DATE. doi:10.17605/OSF.IO/MPWJQ.
 
 ## The team (so far), alphabetical by last name
-José Manuel Aburto, Enrique Acosta, Diego Alburez-Gutierrez, Anna Altová, Lateef Amusa, Ugofilippo Baselini, Simona Bignami, Didier Breton, Jorge Cimentada, Gonzalo De Armas, Emanuele del Fava, Viorela Diaconu, Jessica Donzowa, Christian Dudel, Toni Froehlich, Alain Gagnon, Mariana Garcia Cristómo, Victor M. Garcia-Guerrero, Armando González, Irwin Hecker, Eric Koba, Marina Kolobova, Mine Kühn, Chia Liu, Andrea Lozer, Mădălina Manea, Muntasir Masun, Ryohei Mogi, Saskia Morwinsky, Mikko Myrskylä, Marilia Nepomuceno, Michelle Nickel, Natalie Nitsche, Anna Oksuzyan, Samuel Oladele, Emmanuel Olamijuwon, Soumaila Ouedraogo, Mariana Paredes, Marius Pascariu, Manuel Piriz, Raquel Pollero, Federico Rehermann, Filipe Ribeiro, Tim Riffe, Silvia Rizzi, Francisco Rowe, Isaac Sasson, Jiaxin Shi, Rafael Silva, Cosmo Strozza, Catalina Torres, Sergi Trias-Llimos, Fumiya Uchikoshi, Alyson van Raalte, Paola Vasquez, Estevão Vilela, Iván Williams, Virginia Zarulli
+José Manuel Aburto, Enrique Acosta, Diego Alburez-Gutierrez, Anna Altová, Ugofilippo Baselini, Simona Bignami, Didier Breton, Peter Choi, Jorge Cimentada, Gonzalo De Armas, Emanuele del Fava, Alicia Delgado, Viorela Diaconu, Jessica Donzowa, Christian Dudel, Toni Froehlich, Alain Gagnon, Mariana Garcia Cristómo, Victor M. Garcia-Guerrero, Armando González, Irwin Hecker, Dagnon Eric Koba, Marina Kolobova, Mine Kühn, Chia Liu, Andrea Lozer, Mădălina Manea, Muntasir Masun, Ryohei Mogi, Saskia Morwinsky, Ronald Musizvingoza, Mikko Myrskylä, Marilia Nepomuceno, Michelle Nickel, Natalie Nitsche, Anna Oksuzyan, Samuel Oladele, Emmanuel Olamijuwon, Oluwafunke Omodara, Soumaila Ouedraogo, Mariana Paredes, Marius Pascariu, Manuel Piriz, Raquel Pollero, Federico Rehermann, Filipe Ribeiro, Tim Riffe, Silvia Rizzi, Francisco Rowe, Isaac Sasson, Jiaxin Shi, Rafael Silva-Ramírez, Cosmo Strozza, Catalina Torres, Sergi Trias-Llimos, Fumiya Uchikoshi, Alyson van Raalte, Paola Vasquez, Estevão Vilela, Iván Williams, Virginia Zarulli
 
 (and a few more people at the moment have made commitments. )
 

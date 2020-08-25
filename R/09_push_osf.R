@@ -1,15 +1,25 @@
 
 #install.packages("osfr")
+library(here)
 source(here("R","00_Functions.R"))
 library(osfr)
-library(here)
 library(lubridate)
+library(zip)
+# TR: let's start zipping, it's time. Can delete the .csv files after a while.
 
+files_data <- c("inputDB","Output_5","Output_10")
+for (fl in files_data){
+zip::zip(here("Data",paste0(fl,".zip")), 
+         files = file.path("Data",paste0(fl,".csv")), 
+         compression_level = 9)
+  Sys.sleep(2)
+}
 
 # Basic
 # log_section("Push build to Data/Current folder on OSF", append = TRUE)
 # move_to_current()
-push_current()
+files_data_zipped <- paste0(files_data,".zip")
+push_current(files_data_zipped)
 
 
 
