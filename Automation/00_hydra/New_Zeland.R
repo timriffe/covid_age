@@ -47,12 +47,12 @@ if (date_f > last_date_drive){
   
   db_c_conf <- rio::import(paste0(root, url1), 
                         sheet = "Confirmed",
-                        skip = 3) %>% 
+                        skip = 2) %>% 
     as_tibble()
   
   db_c_prob <- rio::import(paste0(root, url1), 
                          sheet = "Probable",
-                         skip = 3) %>% 
+                         skip = 2) %>% 
     as_tibble()
   
   
@@ -83,7 +83,7 @@ if (date_f > last_date_drive){
     group_by(date_f, Age, Sex, type) %>% 
     summarise(new = n()) %>% 
     ungroup() %>% 
-    tidyr::complete(date_f = dates, Sex, Age = ages, type, fill = list(new = 0)) %>% 
+    tidyr::complete(date_f = dates, Sex = c("Female", "Male"), Age = ages, type, fill = list(new = 0)) %>% 
     group_by(Sex, Age, type) %>% 
     mutate(Value = cumsum(new)) %>% 
     arrange(date_f, Sex, type, Age) %>% 

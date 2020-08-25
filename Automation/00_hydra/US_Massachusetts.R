@@ -19,15 +19,16 @@ db_p_all <- NULL
 ##################################
 
 # Files for previous-June
-url_file2 <- "https://www.mass.gov/doc/covid-19-raw-data-may-31-2020/download"
+url_file2 <- "https://www.mass.gov/doc/covid-19-raw-data-august-11-2020/download"
 temp <- tempfile()
 download.file(url_file2, temp, mode="wb")
-age_p <- read_csv(unz(temp, "COVID-19 Dashboard Files 05-31-2020/Age.csv"))
-c_sex_p <- read_csv(unz(temp, "COVID-19 Dashboard Files 05-31-2020/Sex.csv"))
-d_sex_p <- read_csv(unz(temp, "COVID-19 Dashboard Files 05-31-2020/Death Pies.csv"))
-tests_p <- read_csv(unz(temp, "COVID-19 Dashboard Files 05-31-2020/TestingByDate.csv"))
-c_p <- read_csv(unz(temp, "COVID-19 Dashboard Files 05-31-2020/CasesByDate.csv"))
-d_p <- read_csv(unz(temp, "COVID-19 Dashboard Files 05-31-2020/DateofDeath.csv"))
+
+age_p <- read_csv(unz(temp, "Age.csv"))
+c_sex_p <- read_csv(unz(temp, "Sex.csv"))
+d_sex_p <- read_csv(unz(temp, "Death Pies.csv"))
+tests_p <- read_csv(unz(temp, "TestingByDate.csv"))
+c_p <- read_csv(unz(temp, "CasesByDate.csv"))
+d_p <- read_csv(unz(temp, "DateofDeath.csv"))
 unlink(temp)
 
 date_1 <- "2020/03/22"
@@ -64,7 +65,7 @@ d_sex_p2 <- d_sex_p %>%
   filter(date_f >= date_1)
 
 c_p2 <- c_p %>% 
-  rename(Value = Total) %>% 
+  rename(Value = `Positive Total`) %>% 
   mutate(Sex = "b",
          Age = "TOT",
          date_f = mdy(Date),
@@ -73,7 +74,7 @@ c_p2 <- c_p %>%
   filter(date_f >= date_1)
 
 d_p2 <- d_p %>% 
-  rename(Value = "Running Total",
+  rename(Value = "Confirmed Total",
          Date = "Date of Death") %>% 
   mutate(Sex = "b",
          Age = "TOT",
