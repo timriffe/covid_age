@@ -7,7 +7,10 @@ library(lubridate)
 library(googlesheets4)
 library(tidyverse)
 library(here)
-#install.packages("emayili")
+
+logfile <- here("buildlog.md")
+log_section("update build series log", append = TRUE, logfile = logfile)
+
 
 Date <- lubridate::today()
 idb  <- readRDS(here("Data","inputDB.rds"))

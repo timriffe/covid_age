@@ -5,7 +5,10 @@ source(here("R","00_Functions.R"))
 library(googlesheets4)
 library(tidyverse)
 
-
+logfile <- here("buildlog.md")
+log_section("Compile metadata", 
+            append = TRUE, 
+            logfile = logfile)
 # if (interactive()){
 #   osf_retrieve_file("8uk9n") %>%
 #     osf_download(path = "Data",

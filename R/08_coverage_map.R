@@ -6,6 +6,8 @@ library(here)
 source(here("R","00_Functions.R"))
 logfile <- here("buildlog.md")
 
+log_section("remake coverage map", append = TRUE, logfile = logfile)
+
 source(here("R","00_Functions.R"))
 library(googlesheets4)
 library(tidyverse)
