@@ -16,3 +16,10 @@ Valid Measures include: Cases,Deaths,Tests,ASCFR
  Tue Aug 25 00:04:56 2020 
 
 GT03.07.2020
+# 2020-08-25 inputDB updates 
+ Tue Aug 25 07:00:08 2020 
+
+
+# 2020-08-25 07:00:08 updates 
+ Tue Aug 25 07:00:08 2020 
+
