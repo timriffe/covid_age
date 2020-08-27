@@ -1,12 +1,26 @@
-rm(list=ls())
+# don't manually alter the below
+# This is modified by sched()
+# ##  ###
+email <- "tim.riffe@gmail.com"
+setwd("C:/Users/riffe/Documents/covid_age")
+# ##  ###
+
+# end 
+
+# TR New: you must be in the repo environment 
+source("R/00_Functions.R")
+
+
+
 library(tidyverse)
 library(lubridate)
 library(googlesheets4)
 library(googledrive)
 library(zip)
 
-drive_auth(email = "kikepaila@gmail.com")
-gs4_auth(email = "kikepaila@gmail.com")
+# Authorizing authentification or Drive (edit these lines with the user's email)
+drive_auth(email = email)
+gs4_auth(email = email)
 
 db <- read_csv("https://www.datos.gov.co/api/views/gt2j-8ykr/rows.csv?accessType=DOWNLOAD")
 db_muestras <- read_csv("https://www.datos.gov.co/api/views/8835-5baf/rows.csv")
@@ -20,7 +34,7 @@ db2 <- db %>%
          status = 'Estado') %>% 
   mutate(Age = as.character(Edad),
          Region = case_when(
-           Region == "Bogotá D.C." ~ "Bogota",
+           Region == "Bogot? D.C." ~ "Bogota",
            Region == "Valle del Cauca" ~ "Valle del Cauca",
            Region == "Antioquia" ~ "Antioquia",
            Region == "Cartagena D.T. y C." ~ "Bolivar",
@@ -32,29 +46,29 @@ db2 <- db %>%
            Region == "Cundinamarca" ~ "Cundinamarca",
            Region == "Barranquilla D.E." ~ "Atlantico",
            Region == "Santander" ~ "Santander",
-           Region == "Quindío" ~ "Quindio",
+           Region == "Quind?o" ~ "Quindio",
            Region == "Tolima" ~ "Tolima",
            Region == "Cauca" ~ "Cauca",
            Region == "Santa Marta D.T. y C." ~ "Magdalena",
            Region == "Cesar" ~ "Cesar",
-           Region == "Archipiélago de San Andrés Providencia y Santa Catalina" ~ "San Andres",
+           Region == "Archipi?lago de San Andr?s Providencia y Santa Catalina" ~ "San Andres",
            Region == "Casanare" ~ "Casanare",
-           Region == "Nariño" ~ "Nariño",
-           Region == "Atlántico" ~ "Atlantico",
-           Region == "Boyacá" ~ "Boyaca",
-           Region == "Córdoba" ~ "Cordoba",
-           Region == "Bolívar" ~ "Bolivar",
+           Region == "Nari?o" ~ "Nari?o",
+           Region == "Atl?ntico" ~ "Atlantico",
+           Region == "Boyac?" ~ "Boyaca",
+           Region == "C?rdoba" ~ "Cordoba",
+           Region == "Bol?var" ~ "Bolivar",
            Region == "Sucre" ~ "Sucre",
            Region == "Magdalena" ~ "Magdalena",
            Region == "La Guajira" ~ "Guajira",
            Region == "Buenaventura D.E." ~ "Valle del Cauca",
-           Region == "Chocó" ~ "Choco",
+           Region == "Choc?" ~ "Choco",
            Region == "Amazonas" ~ "Amazonas",
-           Region == "Caquetá" ~ "Caqueta",
+           Region == "Caquet?" ~ "Caqueta",
            Region == "Putumayo" ~ "Putumayo",
            Region == "Arauca" ~ "Arauca",
-           Region == "Vaupés" ~ "Vaupes",
-           Region == "Guainía" ~ "Guainia",
+           Region == "Vaup?s" ~ "Vaupes",
+           Region == "Guain?a" ~ "Guainia",
            Region == "Vichada" ~ "Vichada")) 
 
 # cases ----------------------------------------------
@@ -222,7 +236,7 @@ db_final <- db_all2 %>%
            Region == "Guajira" ~ paste0("CO_LAG", Date),
            Region == "Magdalena" ~ paste0("CO_MAG", Date),
            Region == "Meta" ~ paste0("CO_MET", Date),
-           Region == "Nariño" ~ paste0("CO_NAR", Date),
+           Region == "Nari?o" ~ paste0("CO_NAR", Date),
            Region == "Nte Santander" ~ paste0("CO_NSA", Date),
            Region == "Putumayo" ~ paste0("CO_PUT", Date),
            Region == "Quindio" ~ paste0("CO_QUI", Date),
@@ -268,32 +282,44 @@ db_final_5 <- db_final %>%
 #### uploading database to Google Drive ####
 ############################################
 
+# TR: pull urls from rubric instead
+rubric <- get_input_rubric()
+ss_0   <- rubric %>% filter(Short == "CO") %>% dplyr::pull(Sheet)
+ss_1   <- rubric %>% filter(Short == "CO_1") %>% dplyr::pull(Sheet)
+ss_2   <- rubric %>% filter(Short == "CO_2") %>% dplyr::pull(Sheet)
+ss_3   <- rubric %>% filter(Short == "CO_3") %>% dplyr::pull(Sheet)
+ss_4   <- rubric %>% filter(Short == "CO_4") %>% dplyr::pull(Sheet)
+ss_5   <- rubric %>% filter(Short == "CO_5") %>% dplyr::pull(Sheet)
+
+ss_db  <- rubric %>% filter(Short == "CO") %>% dplyr::pull(Source)
+
+
 write_sheet(db_final_co, 
-            ss = "https://docs.google.com/spreadsheets/d/14IQValalDu927CHyeDpIqSvT6cvo-ZyWHUx6DD64638/edit?usp=sharing",
+            ss = ss_0,
             sheet = "database")
 
 write_sheet(db_final_1, 
-            ss = "https://docs.google.com/spreadsheets/d/10JBHD_XM5u4-F5jrIMJxmmjHmkINnegzVqTDl-8zZz0/edit#gid=1328391221",
+            ss = ss_1,
             sheet = "database")
 
 Sys.sleep(105)
 
 write_sheet(db_final_2, 
-            ss = "https://docs.google.com/spreadsheets/d/1xkIcSML7sNq--wWpw9CndS_cNRYVpo11yqgRfCpwyDM/edit#gid=1328391221",
+            ss = ss_2,
             sheet = "database")
 
 write_sheet(db_final_3, 
-            ss = "https://docs.google.com/spreadsheets/d/11E0HhABStIbegfKAbBJHACgW7FF01CJcRsJrpABUQkc/edit#gid=1328391221",
+            ss = ss_3,
             sheet = "database")
 
 Sys.sleep(105)
 
 write_sheet(db_final_4, 
-            ss = "https://docs.google.com/spreadsheets/d/1HfGYxza9hvGwnZf4iP9V6CUPUUb7BLGLCKbdi2oPKXw/edit#gid=1328391221",
+            ss = ss_4,
             sheet = "database")
 
 write_sheet(db_final_5, 
-            ss = "https://docs.google.com/spreadsheets/d/1COWAPqF9Ih6GIdR41rKW6pkIm1YeNz8f8bPsyM_e1jk/edit#gid=1328391221",
+            ss = ss_5,
             sheet = "database")
 
 Sys.sleep(105)
@@ -310,7 +336,7 @@ date <- paste(sprintf("%02d", day(date_f)),
 filename_1 <- paste0("CO", date, "cases&deaths.csv")
 filename_2 <- paste0("CO", date, "tests.csv")
 
-setwd("U:/nextcloud/Projects/COVID_19/COVerAGE-DB/automated_COVerAge-DB/Colombia_data")
+setwd("Data")
 
 write_csv(db, filename_1)
 write_csv(db_m1, filename_2)
@@ -322,7 +348,9 @@ zip(filename, files, compression_level = 9)
 
 drive_upload(
   filename,
-  path = "https://drive.google.com/drive/folders/1PUMLfc_YKEnMX22gbwb0rWB-1tm-rVq8?usp=sharing",
+  path = ss_db,
   name = filename,
-  overwrite = T)
+  overwrite = TRUE)
 
+# clean up file chaff
+file.remove(c(filename_1,filename_2, filename))

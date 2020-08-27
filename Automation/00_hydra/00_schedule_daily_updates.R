@@ -1,8 +1,28 @@
+
+# TR: modifying this script to assume we're working inside the repository, and are relative to it.
+# should detect if it's tim, enrique, or diego.
 rm(list=ls())
 library(taskscheduleR)
-
-sched <- function(pp = "CA_montreal", tm = "06:00"){
-  script <- paste0("U:/nextcloud/Projects/COVID_19/COVerAge-DB/automated_COVerAge-DB/00_hydra/", pp, ".R")  
+library(tidyverse)
+library(here)
+auto_update_email <- '"tim.riffe@gmail.com"'
+auto_update_wd    <- here()
+# we assume this tasks are scheduled in a here()-aware fashion
+sched <- function(
+  pp = "CA_montreal", 
+  tm = "06:00", 
+  email = "tim.riffe@gmail.com",
+  wd = here()){
+  script <- here("Automation/00_hydra/", paste0(pp, ".R")  )
+  
+  # modify the script to know who scehduled it and where it is
+  A        <- readLines(script)
+  ind      <- (A == "# ##  ###") %>% which() %>% '['(1)
+  A[ind+1] <- paste("email <-",email)
+  A[ind+2] <- paste0('setwd("',wd,'")')
+  writeLines(A,script)
+  # -------------------
+  
   tskname <- paste0("coverage_db_", pp, "_daily")
   
   try(taskscheduler_delete(taskname = tskname))
@@ -24,7 +44,7 @@ delete_sched <- function(pp = "CA_montreal"){
 
 sched("Colombia", "00:00")
 sched("Venezuela", "01:00")
-sched("CA_Montreal", "02:00")
+sched("CA_Montreal", tm="12:08",email = auto_update_email, wd = auto_update_wd)
 
 sched("Slovenia", "04:00")
 sched("Germany", "05:00")
