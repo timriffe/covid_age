@@ -42,20 +42,22 @@ delete_sched <- function(pp = "CA_montreal"){
 # sched("Netherlands", "15:12")
 # delete_sched("US_New_Jersey")
 
-sched("Colombia", "00:00")
-sched("Venezuela", "01:00")
-sched("CA_Montreal", tm="12:08",email = auto_update_email, wd = auto_update_wd)
+sched("CA_Montreal", tm = "12:08",email = auto_update_email, wd = auto_update_wd)
+sched("Colombia",  tm = "12:30",email = auto_update_email, wd = auto_update_wd)
+sched("Venezuela", tm = "13:48",email = auto_update_email, wd = auto_update_wd)
 
-sched("Slovenia", "04:00")
-sched("Germany", "05:00")
-sched("US_Massachusetts", "06:00")
 
-sched("Austria", "07:00")
-sched("US_Virginia", "09:00")
-sched("Mexico", "10:00")
+sched("Slovenia", tm = "15:48",email = auto_update_email, wd = auto_update_wd)
+sched("Germany", tm = "16:12",email = auto_update_email, wd = auto_update_wd)
+sched("US_Massachusetts", tm = "16:50",email = auto_update_email, wd = auto_update_wd)
 
-sched("US_NYC", "11:00")
-sched("USA_all_deaths", "12:00")
+sched("Austria", tm = "18:50",email = auto_update_email, wd = auto_update_wd)
+sched("US_Virginia", tm = "19:50",email = auto_update_email, wd = auto_update_wd)
+sched("Mexico", tm = "20:50",email = auto_update_email, wd = auto_update_wd)
+
+sched("US_NYC", tm = "22:38",email = auto_update_email, wd = auto_update_wd)
+sched("USA_all_deaths", tm = "15:00",email = auto_update_email, wd = auto_update_wd)
+
 sched("US_Texas", "13:00")
 
 sched("US_Wisconsin", "15:00")
