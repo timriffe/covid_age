@@ -1,4 +1,15 @@
-rm(list=ls())
+# don't manually alter the below
+# This is modified by sched()
+# ##  ###
+email <- "tim.riffe@gmail.com"
+setwd("C:/Users/riffe/Documents/covid_age")
+# ##  ###
+
+# end 
+
+# TR New: you must be in the repo environment 
+source("R/00_Functions.R")
+
 library(tidyverse)
 library(readxl)
 library(rio)
@@ -6,13 +17,16 @@ library(googlesheets4)
 library(googledrive)
 library(lubridate)
 
+drive_auth(email = email)
+gs4_auth(email = email)
+# TR: pull urls from rubric instead 
+rubric_i <- get_input_rubric() %>% filter(Short == "US")
+ss_i     <- rubric_i %>% dplyr::pull(Sheet)
+ss_db    <- rubric_i %>% dplyr::pull(Source)
 
-drive_auth(email = "kikepaila@gmail.com")
-gs4_auth(email = "kikepaila@gmail.com")
 
 # reading data from Drive and last date entered 
-db_drive <- read_sheet("https://docs.google.com/spreadsheets/d/1l3eyBvFy2aN-B3iz1QuMCs1MU0ALxILRNH0x2BEZ8do/edit#gid=1359526339",
-                       sheet = "database")
+db_drive <- get_country_inputDB("US_TX")
 
 last_date_drive <- db_drive %>% 
   mutate(date_f = dmy(Date)) %>% 
@@ -65,25 +79,23 @@ if (date_f > last_date_drive){
            Sex = "b") %>% 
     select(Sex, Age, Measure, Value)
   
-  db_totals <- rio::import(url1, 
-                           sheet = "Trends",
-                           skip = 2) %>% 
-    as_tibble() %>% 
-    rename(Cases = 3,
-           Deaths = 4) %>% 
-    mutate(d_f = ymd(Date),
-           Deaths = as.numeric(Deaths)) %>% 
-    select(d_f, Cases, Deaths) %>% 
-    drop_na(d_f) %>% 
-    replace_na(list(Deaths = 0)) %>% 
-    summarise(Cases = max(Cases),
-              Deaths = max(Deaths))
+  # db_totals <- rio::import(url1, 
+  #                          sheet = "Trends",
+  #                          skip = 2) %>% 
+  #   as_tibble() %>% 
+  #   rename(Cases = 3,
+  #          Deaths = 4) %>% 
+  #   mutate(d_f = as_date(Date),
+  #          Deaths = as.numeric(Deaths)) %>% 
+  #   select(d_f, Cases, Deaths) %>% 
+  #   drop_na(d_f) %>% 
+  #   replace_na(list(Deaths = 0)) 
 
-  c_tot <- db_totals %>% 
-    pull(Cases)
-  
-  d_tot <- db_totals %>% 
-    pull(Deaths)
+  # c_tot <- db_totals %>% 
+  #   pull(Cases)
+  # 
+  # d_tot <- db_totals %>% 
+  #   pull(Deaths)
   
   db_c_age2 <- db_c_age %>% 
     separate('Age\r\nGroupings', c("Age", "trash"), sep = "-") %>% 
@@ -97,8 +109,8 @@ if (date_f > last_date_drive){
     drop_na(Value) %>% 
     select(Sex, Age, Value) %>% 
     filter(Age != "TOT",
-           Age != "UNK") %>% 
-    bind_rows(tibble(Sex = "b", Age = "TOT", Value = c_tot))
+            Age != "UNK")# %>% 
+    # bind_rows(tibble(Sex = "b", Age = "TOT", Value = c_tot))
   
   db_c_sex2 <- db_c_sex %>% 
     rename(Value = "Number") %>% 
@@ -128,8 +140,10 @@ if (date_f > last_date_drive){
     drop_na(Value) %>% 
     select(Sex, Age, Value) %>% 
     filter(Age != "TOT",
-           Age != "UNK") %>% 
-    bind_rows(tibble(Sex = "b", Age = "TOT", Value = c_tot))
+           Age != "UNK")
+  # TR: this was what provoked github.com/timriffe/covid_age/issues/38
+  #%>% 
+    #bind_rows(tibble(Sex = "b", Age = "TOT", Value = c_tot)) # TR should have been d_tot
   
   db_d_sex2 <- db_d_sex %>% 
     rename(Value = "Number") %>% 
@@ -173,7 +187,7 @@ if (date_f > last_date_drive){
   ############################################
   # This command append new rows at the end of the sheet
   sheet_append(db_all,
-               ss = "https://docs.google.com/spreadsheets/d/1l3eyBvFy2aN-B3iz1QuMCs1MU0ALxILRNH0x2BEZ8do/edit#gid=1359526339",
+               ss = ss_i,
                sheet = "database")
   
   ############################################
@@ -213,3 +227,52 @@ if (date_f > last_date_drive){
 } else {
   cat(paste0("no new updates so far, last date: ", date_f))
 }
+
+# TR : now, no matter what, whenever we rerun this script, we can still swap out totals,
+# and also do a re-sort. i.e. age stuff is always an append operation, but both-sex totals
+# can be revised in retrospect, and should always be swapped.
+
+# 1) re-read the full DB (wasteful)
+db_drive <- get_country_inputDB("US_TX")
+
+# 2) read and format totals:
+db_totals <- rio::import(url1, 
+                         sheet = "Trends",
+                         skip = 2) %>% 
+  as_tibble() %>% 
+  rename(Cases = 3,
+         Deaths = 4) %>% 
+  mutate(d_f = as_date(Date),
+         Deaths = as.numeric(Deaths)) %>% 
+  select(d_f, Cases, Deaths) %>% 
+  drop_na(d_f) %>% 
+  replace_na(list(Deaths = 0)) %>% 
+  pivot_longer(Cases:Deaths, 
+               names_to = "Measure", 
+               values_to = "Value") %>% 
+  mutate(Sex = "b",
+         Date = paste(
+           sprintf("%02d",day(Date)),
+           sprintf("%02d",month(Date)),
+           sprintf("%02d",year(Date)),
+           sep = "."
+         ),
+         Code = paste0("US_TX",Date),
+         Country = "USA",
+         Region = "Texas",
+         Metric = "Count",
+         AgeInt = NA,
+         Age = "TOT") %>% 
+  select(.dots = colnames(db_drive))
+
+# 3) remove both-sex totals from drive object
+db_drive <- db_drive %>% 
+  filter(!(Sex == "b" & Age == "TOT" & Measure %in% c("Cases","Deaths")))
+
+# 4) bind and push:
+db_out <- db_drive %>% 
+  bind_rows(db_totals) %>% 
+  sort_input_data()
+
+write_sheet(db_out, ss = ss_i, sheet = "database")
+
