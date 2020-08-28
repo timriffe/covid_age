@@ -1,15 +1,29 @@
-rm(list=ls())
+# don't manually alter the below
+# This is modified by sched()
+# ##  ###
+email <- "tim.riffe@gmail.com"
+setwd("C:/Users/riffe/Documents/covid_age")
+# ##  ###
+
+# end 
+
+# TR New: you must be in the repo environment 
+source("R/00_Functions.R")
 library(tidyverse)
 library(lubridate)
 library(googlesheets4)
 library(googledrive)
 
-drive_auth(email = "kikepaila@gmail.com")
-gs4_auth(email = "kikepaila@gmail.com")
+drive_auth(email = email)
+gs4_auth(email = email)
 
-# reading data from Montreal and last date entered 
-db_drive <- read_sheet("https://docs.google.com/spreadsheets/d/1S7juDEgKOg57KcXDhTBF7fzTgV7LlA0hfTJCPOKxC7M/edit#gid=0",
-                       sheet = "database")
+# TR: pull urls from rubric instead 
+at_rubric <- get_input_rubric() %>% filter(Short == "AT")
+ss_i   <- at_rubric %>% dplyr::pull(Sheet)
+ss_db  <- at_rubric %>% dplyr::pull(Source)
+
+# reading data from Austria and last date entered 
+db_drive <- get_country_inputDB("AT")
 db_drive2 <- db_drive %>% 
   mutate(date_f = dmy(Date))
 
@@ -57,7 +71,7 @@ if (date_f > last_date_drive){
   db_c_sex2 <- db_c_sex %>% 
     rename(Value = "Anzahl in %") %>% 
     mutate(Sex = case_when(Geschlecht == "weiblich" ~ "f",
-                           Geschlecht == "männlich" ~ "m",
+                           Geschlecht == "m?nnlich" ~ "m",
                            TRUE ~ "UNK"),
            Metric = "Fraction",
            Value = Value / 100,
@@ -81,7 +95,7 @@ if (date_f > last_date_drive){
   db_d_sex2 <- db_d_sex %>% 
     rename(Value = "Anzahl in %") %>% 
     mutate(Sex = case_when(Geschlecht == "weiblich" ~ "f",
-                           Geschlecht == "männlich" ~ "m",
+                           Geschlecht == "m?nnlich" ~ "m",
                            TRUE ~ "UNK"),
            Metric = "Fraction",
            Value = Value / 100,
@@ -115,7 +129,7 @@ if (date_f > last_date_drive){
   ############################################
   # This command append new rows at the end of the sheet
   sheet_append(db_all,
-               ss = "https://docs.google.com/spreadsheets/d/1S7juDEgKOg57KcXDhTBF7fzTgV7LlA0hfTJCPOKxC7M/edit#gid=0",
+               ss = ss_i,
                sheet = "database")
   
   ############################################
@@ -125,7 +139,7 @@ if (date_f > last_date_drive){
   sheet_name <- paste0("AT", d, "cases&deaths")
   
   meta <- drive_create(sheet_name, 
-               path = "https://drive.google.com/drive/folders/1_Sh1868yjlu1yxIIOt3TAyEegAszX6kK?usp=sharing", 
+               path = ss_db, 
                type = "spreadsheet",
                overwrite = T)
   

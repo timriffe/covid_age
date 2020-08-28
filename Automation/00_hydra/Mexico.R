@@ -1,12 +1,22 @@
-rm(list=ls())
+# don't manually alter the below
+# This is modified by sched()
+# ##  ###
+email <- "tim.riffe@gmail.com"
+setwd("C:/Users/riffe/Documents/covid_age")
+# ##  ###
+
+# end 
+
+# TR New: you must be in the repo environment 
+source("R/00_Functions.R")
 library(tidyverse)
 library(lubridate)
 library(googlesheets4)
 library(googledrive)
 library(rvest)
 
-drive_auth(email = "kikepaila@gmail.com")
-gs4_auth(email = "kikepaila@gmail.com")
+drive_auth(email = email)
+gs4_auth(email = email)
 
 # reading data from the website ------------------------------------------------------ 
 m_url <- "https://www.gob.mx/salud/documentos/datos-abiertos-152127"
@@ -48,29 +58,29 @@ db2 <- db %>%
            ENTIDAD_RES == '06' ~ 'Colima',
            ENTIDAD_RES == '07' ~ 'Chiapas',
            ENTIDAD_RES == '08' ~ 'Chihuahua',
-           ENTIDAD_RES == '09' ~ 'Ciudad de México',
+           ENTIDAD_RES == '09' ~ 'Ciudad de M?xico',
            ENTIDAD_RES == '10' ~ 'Durango',
            ENTIDAD_RES == '11' ~ 'Guanajuato',
            ENTIDAD_RES == '12' ~ 'Guerrero',
            ENTIDAD_RES == '13' ~ 'Hidalgo',
            ENTIDAD_RES == '14' ~ 'Jalisco',
-           ENTIDAD_RES == '15' ~ 'México',
-           ENTIDAD_RES == '16' ~ 'Michoacán de Ocampo',
+           ENTIDAD_RES == '15' ~ 'M?xico',
+           ENTIDAD_RES == '16' ~ 'Michoac?n de Ocampo',
            ENTIDAD_RES == '17' ~ 'Morelos',
            ENTIDAD_RES == '18' ~ 'Nayarit',
-           ENTIDAD_RES == '19' ~ 'Nuevo León',
+           ENTIDAD_RES == '19' ~ 'Nuevo Le?n',
            ENTIDAD_RES == '20' ~ 'Oaxaca',
            ENTIDAD_RES == '21' ~ 'Puebla',
-           ENTIDAD_RES == '22' ~ 'Querétaro',
+           ENTIDAD_RES == '22' ~ 'Quer?taro',
            ENTIDAD_RES == '23' ~ 'Quintana Roo',
-           ENTIDAD_RES == '24' ~ 'San Luis Potosí',
+           ENTIDAD_RES == '24' ~ 'San Luis Potos?',
            ENTIDAD_RES == '25' ~ 'Sinaloa',
            ENTIDAD_RES == '26' ~ 'Sonora',
            ENTIDAD_RES == '27' ~ 'Tabasco',
            ENTIDAD_RES == '28' ~ 'Tamaulipas',
            ENTIDAD_RES == '29' ~ 'Tlaxcala',
            ENTIDAD_RES == '30' ~ 'Veracruz de Ignacio de la Llave',
-           ENTIDAD_RES == '31' ~ 'Yucatán',
+           ENTIDAD_RES == '31' ~ 'Yucat?n',
            ENTIDAD_RES == '32' ~ 'Zacatecas',
            TRUE ~ 'Other'
          )) %>% 
@@ -189,7 +199,7 @@ db_final <- db_all2 %>%
                       sep="."),
          iso = case_when(
            Region == 'All' ~ 'MX',
-           Region == 'Ciudad de México' ~ 'MX_CMX',
+           Region == 'Ciudad de M?xico' ~ 'MX_CMX',
            Region == 'Aguascalientes' ~ 'MX_AGU',
            Region == 'Baja California' ~ 'MX_BCN',
            Region == 'Baja California Sur' ~ 'MX_BCS',
@@ -203,23 +213,23 @@ db_final <- db_all2 %>%
            Region == 'Guerrero' ~ 'MX_GRO',
            Region == 'Hidalgo' ~ 'MX_HID',
            Region == 'Jalisco' ~ 'MX_JAL',
-           Region == 'México' ~ 'MX_MEX',
-           Region == 'Michoacán de Ocampo' ~ 'MX_MIC',
+           Region == 'M?xico' ~ 'MX_MEX',
+           Region == 'Michoac?n de Ocampo' ~ 'MX_MIC',
            Region == 'Morelos' ~ 'MX_MOR',
            Region == 'Nayarit' ~ 'MX_NAY',
-           Region == 'Nuevo León' ~ 'MX_NLE',
+           Region == 'Nuevo Le?n' ~ 'MX_NLE',
            Region == 'Oaxaca' ~ 'MX_OAX',
            Region == 'Puebla' ~ 'MX_PUE',
-           Region == 'Querétaro' ~ 'MX_QUE',
+           Region == 'Quer?taro' ~ 'MX_QUE',
            Region == 'Quintana Roo' ~ 'MX_ROO',
-           Region == 'San Luis Potosí' ~ 'MX_SLP',
+           Region == 'San Luis Potos?' ~ 'MX_SLP',
            Region == 'Sinaloa' ~ 'MX_SIN',
            Region == 'Sonora' ~ 'MX_SON',
            Region == 'Tabasco' ~ 'MX_TAB',
            Region == 'Tamaulipas' ~ 'MX_TAM',
            Region == 'Tlaxcala' ~ 'MX_TLA',
            Region == 'Veracruz de Ignacio de la Llave' ~ 'MX_VER',
-           Region == 'Yucatán' ~ 'MX_YUC',
+           Region == 'Yucat?n' ~ 'MX_YUC',
            Region == 'Zacatecas' ~ 'MX_ZAC',
            TRUE ~ "Other"
          ),
@@ -243,7 +253,7 @@ unique(db_final$Region)
 db_final_mx <- db_final %>% 
   filter(Region == "All")
 
-gr1 <- c('Ciudad de México', 
+gr1 <- c('Ciudad de M?xico', 
          'Aguascalientes', 
          'Baja California', 
          'Baja California Sur')
@@ -261,22 +271,22 @@ gr3 <- c('Chihuahua',
 gr4 <- c(
   'Hidalgo', 
   'Jalisco', 
-  'México', 
-  'Michoacán de Ocampo'
+  'M?xico', 
+  'Michoac?n de Ocampo'
 )
 
 gr5 <- c(
   'Morelos', 
   'Nayarit', 
-  'Nuevo León', 
+  'Nuevo Le?n', 
   'Oaxaca'
 )
 
 gr6 <- c(
   'Puebla', 
-  'Querétaro', 
+  'Quer?taro', 
   'Quintana Roo', 
-  'San Luis Potosí'
+  'San Luis Potos?'
 )
 
 gr7 <- c(
@@ -289,7 +299,7 @@ gr7 <- c(
 gr8 <- c(
   'Tlaxcala', 
   'Veracruz de Ignacio de la Llave', 
-  'Yucatán', 
+  'Yucat?n', 
   'Zacatecas'
 )
 
@@ -323,46 +333,62 @@ db_final_8 <- db_final %>%
 # Push dataframe to Drive -------------------------------------------------
 #########################
 
+
+rubric <- get_input_rubric()
+ss_0   <- rubric %>% filter(Short == "MX") %>% dplyr::pull(Sheet)
+ss_1   <- rubric %>% filter(Short == "MX_1") %>% dplyr::pull(Sheet)
+ss_2   <- rubric %>% filter(Short == "MX_2") %>% dplyr::pull(Sheet)
+ss_3   <- rubric %>% filter(Short == "MX_3") %>% dplyr::pull(Sheet)
+ss_4   <- rubric %>% filter(Short == "MX_4") %>% dplyr::pull(Sheet)
+ss_5   <- rubric %>% filter(Short == "MX_5") %>% dplyr::pull(Sheet)
+ss_6   <- rubric %>% filter(Short == "MX_6") %>% dplyr::pull(Sheet)
+ss_7   <- rubric %>% filter(Short == "MX_7") %>% dplyr::pull(Sheet)
+ss_8   <- rubric %>% filter(Short == "MX_8") %>% dplyr::pull(Sheet)
+
+ss_db  <- rubric %>% filter(Short == "MX") %>% dplyr::pull(Source)
+
+
+
 sheet_write(db_final_mx,
-            ss = "https://docs.google.com/spreadsheets/d/1rimoH7FEEpN2_7DT8862hG2CPQzeQnoN5fitaLsCSC4/edit?usp=sharing",
+            ss = ss_0,
             sheet = "database")
 
 sheet_write(db_final_1,
-            ss = "https://docs.google.com/spreadsheets/d/1EuhDi6KNpnNhG-7rga2YSEyL0cPo9r5U1OuoWgfFRss/edit?usp=sharing",
+            ss = ss_1,
             sheet = "database")
 
 sheet_write(db_final_2,
-            ss = "https://docs.google.com/spreadsheets/d/12ZLJAyIc9tjRcJ01tGJwv0Q8LjbcjfBF0erCXAqDcmg/edit?usp=sharing",
+            ss = ss_2,
             sheet = "database")
 
 Sys.sleep(105)
 
 sheet_write(db_final_3,
-            ss = "https://docs.google.com/spreadsheets/d/1XgqjymGPW5abfT4JeUoNst3N25jMKgiMsigxq2omapM/edit?usp=sharing",
+            ss = ss_3,
             sheet = "database")
 
 sheet_write(db_final_4,
-            ss = "https://docs.google.com/spreadsheets/d/12IOQrT2CC-jM72y8mk2-dm0rK76b4J_DlIxL1xPp6nA/edit?usp=sharing",
+            ss = ss_4,
             sheet = "database")
 
 Sys.sleep(105)
 
 sheet_write(db_final_5,
-            ss = "https://docs.google.com/spreadsheets/d/1WLkr81K2bopz2wkIp_EF5Ji6PMULTSDfwAIepLEfvOA/edit?usp=sharing",
+            ss = ss_5,
             sheet = "database")
 
 sheet_write(db_final_6,
-            ss = "https://docs.google.com/spreadsheets/d/1sYXX5Rlrumi0IZJcZO13LEf3ejKVaPLCdsPlMPQKjy8/edit?usp=sharing",
+            ss = ss_6,
             sheet = "database")
 
 Sys.sleep(105)
 
 sheet_write(db_final_7,
-            ss = "https://docs.google.com/spreadsheets/d/1oybqM9wa2UW_ntlefNd36Z22Aor66TwQDpzG3DNNTAM/edit?usp=sharing",
+            ss = ss_7,
             sheet = "database")
 
 sheet_write(db_final_8,
-            ss = "https://docs.google.com/spreadsheets/d/1seqAzE02j7l0jtUSj8FBqXLNqtUna5lzsaUG3oCwukA/edit?usp=sharing",
+            ss = ss_8,
             sheet = "database")
 
 Sys.sleep(105)
@@ -385,7 +411,7 @@ filename <- paste0("MX", date, "cases&deaths.zip")
 
 drive_upload(
   temp,
-  path = "https://drive.google.com/drive/folders/1NuKNgYdTuKe-qSS-bYwxEMPwuiQDA8U3?usp=sharing",
+  path = ss_db,
   name = filename,
   overwrite = T)
 

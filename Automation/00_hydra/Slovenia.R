@@ -1,4 +1,16 @@
-rm(list=ls())
+# don't manually alter the below
+# This is modified by sched()
+# ##  ###
+email <- "tim.riffe@gmail.com"
+setwd("C:/Users/riffe/Documents/covid_age")
+# ##  ###
+
+# end 
+
+# TR New: you must be in the repo environment 
+source("R/00_Functions.R")
+
+
 library(tidyverse)
 library(readxl)
 library(googlesheets4)
@@ -8,13 +20,17 @@ library(lubridate)
 library(rvest)
 library(httr)
 
-drive_auth(email = "kikepaila@gmail.com")
-gs4_auth(email = "kikepaila@gmail.com")
+drive_auth(email = email)
+gs4_auth(email = email)
 
+
+SI_rubric <- get_input_rubric() %>% filter(Short == "SI")
+ss_i  <- VE_rubric %>% dplyr::pull(Sheet)
+ss_db <-  VE_rubric %>% dplyr::pull(Source)
+# reading data from Montreal and last date ent
 
 #### Previous database in COVerAGE-DB ####
-db_drive <- read_sheet("https://docs.google.com/spreadsheets/d/1vvPlqHb5sLjaUZ7GvGTuZ-NNe0RsXdNMEtBbllHMsXM/edit#gid=1079196673",
-                       sheet = "database")
+db_drive <- get_country_inputDB("SI")
 
 last_date_drive <- db_drive %>% 
   mutate(date_f = dmy(Date)) %>% 
@@ -120,7 +136,7 @@ if (date_f > last_date_drive){
   ############################################
   # This command append new rows at the end of the sheet
   sheet_append(db_all,
-               ss = "https://docs.google.com/spreadsheets/d/1vvPlqHb5sLjaUZ7GvGTuZ-NNe0RsXdNMEtBbllHMsXM",
+               ss = ss_i,
                sheet = "database")
   
   ############################################
@@ -132,7 +148,7 @@ if (date_f > last_date_drive){
              year(date_f), sep = ".")
   
   meta <- drive_create(paste0("SI", d, "_cases&deaths"),
-                       path = "https://drive.google.com/drive/u/0/folders/1JAHPhLCIQou8vZC4JA1rTmO0ZCOdWuIq", 
+                       path = ss_db, 
                        type = "spreadsheet",
                        overwrite = T)
   

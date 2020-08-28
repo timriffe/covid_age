@@ -1,8 +1,28 @@
+
+# TR: modifying this script to assume we're working inside the repository, and are relative to it.
+# should detect if it's tim, enrique, or diego.
 rm(list=ls())
 library(taskscheduleR)
-
-sched <- function(pp = "CA_montreal", tm = "06:00"){
-  script <- paste0("U:/nextcloud/Projects/COVID_19/COVerAge-DB/automated_COVerAge-DB/00_hydra/", pp, ".R")  
+library(tidyverse)
+library(here)
+auto_update_email <- '"tim.riffe@gmail.com"'
+auto_update_wd    <- here()
+# we assume this tasks are scheduled in a here()-aware fashion
+sched <- function(
+  pp = "CA_montreal", 
+  tm = "06:00", 
+  email = "tim.riffe@gmail.com",
+  wd = here()){
+  script <- here("Automation/00_hydra/", paste0(pp, ".R")  )
+  
+  # modify the script to know who scehduled it and where it is
+  A        <- readLines(script)
+  ind      <- (A == "# ##  ###") %>% which() %>% '['(1)
+  A[ind+1] <- paste("email <-",email)
+  A[ind+2] <- paste0('setwd("',wd,'")')
+  writeLines(A,script)
+  # -------------------
+  
   tskname <- paste0("coverage_db_", pp, "_daily")
   
   try(taskscheduler_delete(taskname = tskname))
@@ -22,20 +42,22 @@ delete_sched <- function(pp = "CA_montreal"){
 # sched("Netherlands", "15:12")
 # delete_sched("US_New_Jersey")
 
-sched("Colombia", "00:00")
-sched("Venezuela", "01:00")
-sched("CA_Montreal", "02:00")
+sched("CA_Montreal", tm = "12:08",email = auto_update_email, wd = auto_update_wd)
+sched("Colombia",  tm = "12:30",email = auto_update_email, wd = auto_update_wd)
+sched("Venezuela", tm = "13:48",email = auto_update_email, wd = auto_update_wd)
 
-sched("Slovenia", "04:00")
-sched("Germany", "05:00")
-sched("US_Massachusetts", "06:00")
 
-sched("Austria", "07:00")
-sched("US_Virginia", "09:00")
-sched("Mexico", "10:00")
+sched("Slovenia", tm = "15:48",email = auto_update_email, wd = auto_update_wd)
+sched("Germany", tm = "16:12",email = auto_update_email, wd = auto_update_wd)
+sched("US_Massachusetts", tm = "16:50",email = auto_update_email, wd = auto_update_wd)
 
-sched("US_NYC", "11:00")
-sched("USA_all_deaths", "12:00")
+sched("Austria", tm = "18:50",email = auto_update_email, wd = auto_update_wd)
+sched("US_Virginia", tm = "19:50",email = auto_update_email, wd = auto_update_wd)
+sched("Mexico", tm = "20:50",email = auto_update_email, wd = auto_update_wd)
+
+sched("US_NYC", tm = "22:38",email = auto_update_email, wd = auto_update_wd)
+sched("USA_all_deaths", tm = "01:00",email = auto_update_email, wd = auto_update_wd)
+
 sched("US_Texas", "13:00")
 
 sched("US_Wisconsin", "15:00")

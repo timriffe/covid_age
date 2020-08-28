@@ -1,11 +1,30 @@
-rm(list=ls())
+# don't manually alter the below
+# This is modified by sched()
+# ##  ###
+email <- "tim.riffe@gmail.com"
+setwd("C:/Users/riffe/Documents/covid_age")
+# ##  ###
+
+# end 
+
+# TR New: you must be in the repo environment 
+source("R/00_Functions.R")
+
+
 library(tidyverse)
 library(lubridate)
 library(googlesheets4)
 library(googledrive)
 
-drive_auth(email = "kikepaila@gmail.com")
-gs4_auth(email = "kikepaila@gmail.com")
+drive_auth(email = email)
+gs4_auth(email = email)
+
+# TR: pull urls from rubric instead 
+de_rubric <- get_input_rubric() %>% filter(Short == "DE")
+ss_i   <- de_rubric %>% dplyr::pull(Sheet)
+ss_db  <- de_rubric %>% dplyr::pull(Source)
+
+
 
 db <- read_csv("https://opendata.arcgis.com/datasets/dd4580c810204019a7b8eb3e0b329dd6_0.csv")
 
@@ -92,7 +111,7 @@ while (ref <= date_end){
 db_region <- db_all %>% 
   mutate(Value = replace_na(Value, 0),
          Country = "Germany",
-         Code1 = case_when(Region == 'Baden-Württemberg' ~ 'DE_BW_',
+         Code1 = case_when(Region == 'Baden-W?rttemberg' ~ 'DE_BW_',
                             Region == 'Bayern' ~ 'DE_BY_',
                             Region ==  'Berlin' ~ 'DE_BE_',
                             Region == 'Brandenburg' ~ 'DE_BB_',
@@ -107,7 +126,7 @@ db_region <- db_all %>%
                             Region == 'Sachsen' ~ 'DE_SN_',
                             Region == 'Sachsen-Anhalt' ~ 'DE_ST_',
                             Region == 'Schleswig-Holstein' ~ 'DE_SH_',
-                            Region == 'Thüringen' ~ 'DE_TH_',
+                            Region == 'Th?ringen' ~ 'DE_TH_',
                             TRUE ~ "other"),
          Date = paste(sprintf("%02d", day(date_f)),
                       sprintf("%02d", month(date_f)),
@@ -169,7 +188,7 @@ db_full %>%
 ############################################
 
 write_sheet(db_full,
-            ss = "https://docs.google.com/spreadsheets/d/12OavEjjo6I4FdLfqZv0g1iTXy9R8bCK0RD82fuqJpc0/edit#gid=1548224005",
+            ss = ss_i,
             sheet = "database")
 
 ############################################
@@ -184,12 +203,13 @@ d <- paste(sprintf("%02d", day(date_f)),
 sheet_name <- paste0("DE", d, "cases&deaths")
 
 meta <- drive_create(sheet_name, 
-                     path = "https://drive.google.com/drive/folders/1vx35ThBgKkPxHt6K8ZCOtFXyQhJfOFDe?usp=sharing", 
+                     path = ss_db, 
                      type = "spreadsheet",
-                     overwrite = T)
+                     overwrite = TRUE)
 
 write_sheet(db, 
             ss = meta$id,
             sheet = "cases&deaths_age_sex")
 
 sheet_delete(meta$id, "Sheet1")
+

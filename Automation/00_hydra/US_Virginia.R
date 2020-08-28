@@ -1,20 +1,35 @@
-rm(list=ls())
+# don't manually alter the below
+# This is modified by sched()
+# ##  ###
+email <- "tim.riffe@gmail.com"
+setwd("C:/Users/riffe/Documents/covid_age")
+# ##  ###
+
+# end 
+
+# TR New: you must be in the repo environment 
+source("R/00_Functions.R")
 library(tidyverse)
 library(lubridate)
 library(googlesheets4)
 library(googledrive)
 
-drive_auth(email = "kikepaila@gmail.com")
-gs4_auth(email = "kikepaila@gmail.com")
+drive_auth(email = email)
+gs4_auth(email = email)
+
+# TR: pull urls from rubric instead 
+rubric_i <- get_input_rubric() %>% filter(Short == "US_VA")
+ss_i     <- rubric_i %>% dplyr::pull(Sheet)
+ss_db    <- rubric_i %>% dplyr::pull(Source)
+
 
 # reading data from Drive and last date entered 
-db_drive <- read_sheet("https://docs.google.com/spreadsheets/d/1b8vpZhKDPKWm8QeSFFy01u3rGbEhxUf_nkyjtkPLQlc/edit#gid=0",
-                       sheet = "database")
+db_drive <- get_country_inputDB("US_VA")
 
 last_date_drive <- db_drive %>% 
   mutate(date_f = dmy(Date)) %>% 
   drop_na(date_f) %>% 
-  pull(date_f) 
+  dplyr::pull(date_f) 
 
 max(last_date_drive)
 
@@ -124,7 +139,7 @@ if (!(date_f %in% last_date_drive)){
   #### uploading database to Google Drive ####
   ############################################
   write_sheet(db_all, 
-              ss = "https://docs.google.com/spreadsheets/d/1b8vpZhKDPKWm8QeSFFy01u3rGbEhxUf_nkyjtkPLQlc/edit#gid=0",
+              ss = ss_i,
               sheet = "database")
   
   ############################################
@@ -134,9 +149,9 @@ if (!(date_f %in% last_date_drive)){
   sheet_name <- paste0("US_VA", d, "cases&deaths")
   
   meta <- drive_create(sheet_name,
-                       path = "https://drive.google.com/drive/folders/1lwjVpzT6QLzW-_PzhygMiosXcJd7jNk4?usp=sharing", 
+                       path = ss_db, 
                        type = "spreadsheet",
-                       overwrite = T)
+                       overwrite = TRUE)
   
   write_sheet(db_age, 
               ss = meta$id,

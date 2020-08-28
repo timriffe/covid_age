@@ -1,4 +1,16 @@
-rm(list=ls())
+# don't manually alter the below
+# This is modified by sched()
+# ##  ###
+email <- "tim.riffe@gmail.com"
+setwd("C:/Users/riffe/Documents/covid_age")
+# ##  ###
+
+# end 
+
+# TR New: you must be in the repo environment 
+source("R/00_Functions.R")
+
+
 library(httr)
 library(jsonlite)
 library(tidyverse)
@@ -6,12 +18,14 @@ library(googlesheets4)
 library(googledrive)
 library(lubridate)
 
-drive_auth(email = "kikepaila@gmail.com")
-gs4_auth(email = "kikepaila@gmail.com")
+drive_auth(email = email)
+gs4_auth(email = email)
 
-
+VE_rubric <- get_input_rubric() %>% filter(Short == "VE")
+ss_i  <- VE_rubric %>% dplyr::pull(Sheet)
+ss_db <-  VE_rubric %>% dplyr::pull(Source)
 # reading data from Montreal and last date entered 
-db_drive <- read_sheet("https://docs.google.com/spreadsheets/d/1UB9lOnSZiPD4LeedYBaAkpFL3r1DB51BI7F1GKJw-Bw/edit#gid=0",
+db_drive <- read_sheet(ss_i,
                        sheet = "database")
 
 last_date_drive <- db_drive %>% 
@@ -72,7 +86,7 @@ if (date_f > last_date_drive){
   
   # This command append new rows at the end of the sheet
   sheet_append(db,
-               ss = "https://docs.google.com/spreadsheets/d/1UB9lOnSZiPD4LeedYBaAkpFL3r1DB51BI7F1GKJw-Bw/edit#gid=0",
+               ss = ss_i,
                sheet = "database")
   
   ############################################
@@ -82,9 +96,9 @@ if (date_f > last_date_drive){
   writeLines(a, temp)
   drive_upload(
     temp,
-    path = "https://drive.google.com/drive/folders/1khiU26stWXubrwM7wNd_tndfzd9QVpeJ?usp=sharing",
+    path = ss_db,
     name = paste0("VE", d, "_cases.txt"),
-    overwrite = T)
+    overwrite = TRUE)
   unlink(temp)
 
 } else {
