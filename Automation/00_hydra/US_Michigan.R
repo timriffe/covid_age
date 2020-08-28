@@ -1,4 +1,15 @@
-rm(list=ls())
+rm(list=ls())# don't manually alter the below
+# This is modified by sched()
+# ##  ###
+email <- "tim.riffe@gmail.com"
+setwd("C:/Users/riffe/Documents/covid_age")
+# ##  ###
+
+# end 
+
+# TR New: you must be in the repo environment 
+source("R/00_Functions.R")
+library(tidyverse)
 library(tidyverse)
 library(readxl)
 library(googlesheets4)
@@ -7,12 +18,15 @@ library(rio)
 library(lubridate)
 library(rvest)
 
-drive_auth(email = "kikepaila@gmail.com")
-gs4_auth(email = "kikepaila@gmail.com")
+drive_auth(email = email)
+gs4_auth(email = email)
+# TR: pull urls from rubric instead 
+rubric_i <- get_input_rubric() %>% filter(Short == "US_MI")
+ss_i     <- rubric_i %>% dplyr::pull(Sheet)
+ss_db    <- rubric_i %>% dplyr::pull(Source)
 
-# reading data from Montreal and last date entered 
-db_drive <- read_sheet("https://docs.google.com/spreadsheets/d/1iVdBYYaGAuWiJj8NbUke3n_ah6bPaig3-LrN9_RLnrg/edit#gid=1891323520",
-                       sheet = "database")
+# what's current most recent date?
+db_drive <- get_country_inputDB("US_MI")
 db_drive2 <- db_drive %>% 
   mutate(date_f = dmy(Date))
 
@@ -135,7 +149,7 @@ if (date_f > last_date_drive){
   
   # This command append new rows at the end of the sheet
   sheet_append(db_all,
-               ss = "https://docs.google.com/spreadsheets/d/1iVdBYYaGAuWiJj8NbUke3n_ah6bPaig3-LrN9_RLnrg/edit#gid=1891323520",
+               ss = ss_i,
                sheet = "database")
   
   ############################################
@@ -145,7 +159,7 @@ if (date_f > last_date_drive){
   sheet_name <- paste0("US_MI", d, "cases&deaths")
   
   meta <- drive_create(sheet_name,
-                       path = "https://drive.google.com/drive/folders/1c0425ZgoFUq6p7KbgvJahS92Dk_Xw_CG?usp=sharing", 
+                       path = ss_db, 
                        type = "spreadsheet",
                        overwrite = T)
   

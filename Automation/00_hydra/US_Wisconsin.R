@@ -1,12 +1,24 @@
-rm(list=ls())
-library(tidyverse)
+rm(list=ls())# don't manually alter the below
+# This is modified by sched()
+# ##  ###
+email <- "tim.riffe@gmail.com"
+setwd("C:/Users/riffe/Documents/covid_age")
+# ##  ###
+
+# end 
+
+# TR New: you must be in the repo environment 
+source("R/00_Functions.R")library(tidyverse)
 library(lubridate)
 library(googlesheets4)
 library(googledrive)
 
-drive_auth(email = "kikepaila@gmail.com")
-gs4_auth(email = "kikepaila@gmail.com")
-
+drive_auth(email = email)
+gs4_auth(email = email)
+# TR: pull urls from rubric instead 
+rubric_i <- get_input_rubric() %>% filter(Short == "US_WI")
+ss_i     <- rubric_i %>% dplyr::pull(Sheet)
+ss_db    <- rubric_i %>% dplyr::pull(Source)
 # reading directly from the web
 # https://data.dhsgis.wi.gov/datasets/covid-19-historical-data-table/data
 db0 <- read_csv("https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv",
@@ -64,7 +76,7 @@ db3 <- db2 %>%
 ############################################
 
 write_sheet(db3, 
-            ss = "https://docs.google.com/spreadsheets/d/1nNzuEbAN1x-K9aAXXfCYaHuBR5TbbAl9WgVg6RxqMeU/edit#gid=1079196673",
+            ss = ss_i,
             sheet = "database")
 
 ############################################
@@ -78,7 +90,7 @@ date_end_f <- paste(sprintf("%02d", day(date_end)),
 sheet_name <- paste0("US_WI", date_end_f, "cases&deaths")
 
 meta <- drive_create(sheet_name, 
-             path = "https://drive.google.com/drive/folders/1-fpm0Ah6Pd63x7Rskk8uy4NMR35GQCJb?usp=sharing", 
+             path = ss_db, 
              type = "spreadsheet",
              overwrite = T)
 
