@@ -1,11 +1,27 @@
-rm(list=ls())
+# don't manually alter the below
+# This is modified by sched()
+# ##  ###
+email <- "tim.riffe@gmail.com"
+setwd("C:/Users/riffe/Documents/covid_age")
+# ##  ###
+
+# end 
+
+# TR New: you must be in the repo environment 
+source("R/00_Functions.R")
+
 library(tidyverse)
 library(lubridate)
 library(googlesheets4)
 library(googledrive)
 
-drive_auth(email = "kikepaila@gmail.com")
-gs4_auth(email = "kikepaila@gmail.com")
+# Drive credentials
+drive_auth(email = email)
+gs4_auth(email = email)
+# TR: pull urls from rubric instead 
+rubric_i <- get_input_rubric() %>% filter(Short == "EE")
+ss_i     <- rubric_i %>% dplyr::pull(Sheet)
+ss_db    <- rubric_i %>% dplyr::pull(Source)
 
 db <- read_csv("https://opendata.digilugu.ee/opendata_covid19_test_results.csv")
 
@@ -18,7 +34,7 @@ db2 <- db %>%
          Sex = case_when(Sex == 'N' ~ 'f',
                          Sex == 'M' ~ 'm',
                          TRUE ~ 'UNK'),
-         Age = ifelse(Age == "üle 85", "85", Age),
+         Age = ifelse(Age == "?le 85", "85", Age),
          Age = replace_na(Age, "UNK")) %>% 
   group_by(date_f, Age, Sex) %>% 
   summarise(Cases = sum(Case),
@@ -72,7 +88,7 @@ db_all <- bind_rows(db3, db4, db5, db6) %>%
 ############################################
 # This command replace the whole sheet
 write_sheet(db_all, 
-            ss = "https://docs.google.com/spreadsheets/d/1Jp2ffKZBYzraR5qb0eDcaz9jx-90vRwZqZBHn8tp-ak/edit#gid=1548224005",
+            ss = ss_i,
             sheet = "database")
 
 #############################################
@@ -87,7 +103,7 @@ d <- paste(sprintf("%02d", day(date_f)),
 sheet_name <- paste0("EE", d, "_cases&tests")
 
 meta <- drive_create(sheet_name, 
-                     path = "https://drive.google.com/drive/folders/1iH6a7i6_e7roA3-fvDOPPGFTONzl4xr_?usp=sharing", 
+                     path = ss_db, 
                      type = "spreadsheet",
                      overwrite = T)
 

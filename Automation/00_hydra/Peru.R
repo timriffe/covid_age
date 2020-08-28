@@ -1,4 +1,14 @@
-rm(list=ls())
+# don't manually alter the below
+# This is modified by sched()
+# ##  ###
+email <- "tim.riffe@gmail.com"
+setwd("C:/Users/riffe/Documents/covid_age")
+# ##  ###
+
+# end 
+
+# TR New: you must be in the repo environment 
+source("R/00_Functions.R")
 library(tidyverse)
 library(googlesheets4)
 library(googledrive)
@@ -6,8 +16,22 @@ library(lubridate)
 library(rvest)
 library(zip)
 
-drive_auth(email = "kikepaila@gmail.com")
-gs4_auth(email = "kikepaila@gmail.com")
+drive_auth(email = email)
+gs4_auth(email = email)
+
+rubric <- get_input_rubric()
+ss_0   <- rubric %>% filter(Short == "PE") %>% dplyr::pull(Sheet)
+ss_1   <- rubric %>% filter(Short == "PE_1") %>% dplyr::pull(Sheet)
+ss_2   <- rubric %>% filter(Short == "PE_2") %>% dplyr::pull(Sheet)
+ss_3   <- rubric %>% filter(Short == "PE_3") %>% dplyr::pull(Sheet)
+ss_4   <- rubric %>% filter(Short == "PE_4") %>% dplyr::pull(Sheet)
+ss_5   <- rubric %>% filter(Short == "PE_5") %>% dplyr::pull(Sheet)
+ss_6   <- rubric %>% filter(Short == "PE_6") %>% dplyr::pull(Sheet)
+
+ss_db  <- rubric %>% filter(Short == "PE") %>% dplyr::pull(Source)
+
+# ---------
+
 
 m_url1 <- "https://www.datosabiertos.gob.pe/dataset/casos-positivos-por-covid-19-ministerio-de-salud-minsa"
 m_url2 <- "https://www.datosabiertos.gob.pe/dataset/fallecidos-por-covid-19-ministerio-de-salud-minsa"
@@ -221,35 +245,43 @@ db_final_6 <- db_final %>%
 #########################
 
 sheet_write(db_final_pe,
-            ss = "https://docs.google.com/spreadsheets/d/1pZlmK63AYc6yPJqconJv6vQRAuY415w_WX74AcRU14s/edit?usp=sharing",
+            ss = ss_0,
             sheet = "database")
+
+Sys.sleep(105)
 
 sheet_write(db_final_1,
-            ss = "https://docs.google.com/spreadsheets/d/1ZMa9JnERiMLoIaURaEgk6GNPlL0OtE1n-rlu3EQhwIE/edit?usp=sharing",
+            ss = ss_1,
             sheet = "database")
 
+Sys.sleep(105)
+
 sheet_write(db_final_2,
-            ss = "https://docs.google.com/spreadsheets/d/1OeRHqqyi71UlpL3vwMdkYPh8TGlDobfkJQGuZFiLbcg/edit?usp=sharing",
+            ss = ss_2,
             sheet = "database")
 
 Sys.sleep(105)
 
 sheet_write(db_final_3,
-            ss = "https://docs.google.com/spreadsheets/d/1v7F1qdg78zek65oMbgH63KsnBbipYO5jbBkONx_IOCE/edit?usp=sharing",
+            ss = ss_3,
             sheet = "database")
 
+Sys.sleep(105)
+
 sheet_write(db_final_4,
-            ss = "https://docs.google.com/spreadsheets/d/1FEiQ2VtE5XmoMUz20_XWO_jtiW036qmANUrx2sTg2gw/edit?usp=sharing",
+            ss = ss_4,
             sheet = "database")
 
 Sys.sleep(105)
 
 sheet_write(db_final_5,
-            ss = "https://docs.google.com/spreadsheets/d/1Mpe76xrrMzke__gPri0ra32_XCoXVxvGaCpAZP2m2cg/edit?usp=sharing",
+            ss = ss_5,
             sheet = "database")
 
+Sys.sleep(105)
+
 sheet_write(db_final_6,
-            ss = "https://docs.google.com/spreadsheets/d/104ZXycNS2QTCUZLNLIJBlow22tyiuxmDtKQU7cw8SYI/edit?usp=sharing",
+            ss = ss_6,
             sheet = "database")
 
 Sys.sleep(105)
@@ -268,22 +300,26 @@ date <- paste(sprintf("%02d",day(date_f)),
               year(date_f),
               sep=".")
 
-filename_c <- paste0("PE", date, "cases.csv")
-filename_d <- paste0("PE", date, "deaths.csv")
+filename_c <- file.path("Data",paste0("PE", date, "cases.csv"))
+filename_d <- file.path("Data",paste0("PE", date, "deaths.csv"))
 
-setwd("U:/nextcloud/Projects/COVID_19/COVerAGE-DB/automated_COVerAge-DB/Peru_data")
+
 
 write_csv(db_c, filename_c)
 write_csv(db_d, filename_d)
 
-filename <- paste0("PE", date, "cases&deaths.zip")
+filename <- file.path("Data",paste0("PE", date, "cases&deaths.zip"))
 
 files <- c(filename_c, filename_d)
 zip(filename, files, compression_level = 9)
 
 drive_upload(
   filename,
-  path = "https://drive.google.com/drive/folders/1qu4hSq-cNGffOkmeknVEKUQvW7lkFx0p?usp=sharing",
+  path = ss_db,
   name = filename,
   overwrite = T)
 
+
+file.remove(filename)
+file.remove(filename_c)
+file.remove(filename_d)

@@ -64,14 +64,13 @@ sched("US_Michigan", tm = "02:40",email = auto_update_email, wd = auto_update_wd
 
 sched("Sweden", tm = "03:40",email = auto_update_email, wd = auto_update_wd)
 sched("Netherlands", tm = "04:00",email = auto_update_email, wd = auto_update_wd)
-
+sched("Estonia", tm = "04:31",email = auto_update_email, wd = auto_update_wd)
 
 # TR: back to manual execution
 #sched("New_Zeland", "18:20")
 
 # not yet scheduled:
-sched("Estonia", "21:00")
-sched("Peru", "22:00")
+sched("Peru", tm = "05:31",email = auto_update_email, wd = auto_update_wd)
 
 # delete_sched("Austria")
 # delete_sched("CA_Montreal")
