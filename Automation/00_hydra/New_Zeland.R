@@ -1,4 +1,15 @@
-rm(list=ls())
+# don't manually alter the below
+# This is modified by sched()
+# ##  ###
+email <- "tim.riffe@gmail.com"
+setwd("C:/Users/riffe/Documents/covid_age")
+# ##  ###
+
+# end 
+
+# TR New: you must be in the repo environment 
+source("R/00_Functions.R")
+
 library(tidyverse)
 library(readxl)
 library(googlesheets4)
@@ -10,12 +21,21 @@ library(XML)
 library(RCurl)
 
 
-drive_auth(email = "kikepaila@gmail.com")
-gs4_auth(email = "kikepaila@gmail.com")
+# Drive credentials
+drive_auth(email = email)
+gs4_auth(email = email)
+# TR: pull urls from rubric instead 
+rubric_i <- get_input_rubric() %>% filter(Short == "NZ")
+ss_i     <- rubric_i %>% dplyr::pull(Sheet)
+ss_db    <- rubric_i %>% dplyr::pull(Source)
+
+
+# TR:
+# current operation just appends cases. I'd prefer to re-tabulate the full case history from the spreadsheet.
+
 
 # reading data from Montreal and last date entered 
-db_drive <- read_sheet("https://docs.google.com/spreadsheets/d/1Dph3uiEPUX7X58nE3g3k4utuvnH8Cy1vuOc-kloCSpM/edit#gid=159107504",
-                       sheet = "database")
+db_drive <- get_country_inputDB("NZ")
 
 last_date_drive <- db_drive %>% 
   mutate(date_f = dmy(Date)) %>% 
@@ -206,8 +226,7 @@ if (date_f > last_date_drive){
   #### uploading database to Google Drive ####
   ############################################
   
-  ss <- "https://docs.google.com/spreadsheets/d/1Dph3uiEPUX7X58nE3g3k4utuvnH8Cy1vuOc-kloCSpM/edit#gid=159107504"
-  write_sheet(db_all, ss, sheet = "database")
+  write_sheet(db_all, ss_i, sheet = "database")
   
   ############################################
   #### uploading metadata to Google Drive ####
@@ -216,7 +235,7 @@ if (date_f > last_date_drive){
   sheet_name <- paste0("NZ", date_f, "cases&deaths")
   
   meta <- drive_create(sheet_name,
-                       path = "https://drive.google.com/drive/folders/1XZA2itXUJMLgSoSWlFB-5NHW40iPWOnB?usp=sharing", 
+                       path = ss_db, 
                        type = "spreadsheet",
                        overwrite = T)
   

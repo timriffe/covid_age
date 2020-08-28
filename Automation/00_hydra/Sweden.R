@@ -1,4 +1,14 @@
-rm(list=ls())
+# don't manually alter the below
+# This is modified by sched()
+# ##  ###
+email <- "tim.riffe@gmail.com"
+setwd("C:/Users/riffe/Documents/covid_age")
+# ##  ###
+
+# end 
+
+# TR New: you must be in the repo environment 
+source("R/00_Functions.R")
 library(tidyverse)
 library(readxl)
 library(googlesheets4)
@@ -7,8 +17,12 @@ library(lubridate)
 library(httr)
 
 # Drive credentials
-drive_auth(email = "kikepaila@gmail.com")
-gs4_auth(email = "kikepaila@gmail.com")
+drive_auth(email = email)
+gs4_auth(email = email)
+# TR: pull urls from rubric instead 
+rubric_i <- get_input_rubric() %>% filter(Short == "SE")
+ss_i     <- rubric_i %>% dplyr::pull(Sheet)
+ss_db    <- rubric_i %>% dplyr::pull(Source)
 
 print(paste0("Starting data retrieval for Sweden..."))
 
@@ -27,8 +41,7 @@ date_f <- read_xlsx(tf, sheet = "Antal per dag region") %>%
   ymd()
 
 # reading data from Montreal and last date entered 
-db_drive <- read_sheet("https://docs.google.com/spreadsheets/d/1w-ynPuKT_5xZf7emTuUFp_n-PdStCyrylY6gZVQj_do/edit#gid=1079196673",
-                       sheet = "database")
+db_drive <- get_country_inputDB("SE")
 
 last_date_drive <- db_drive %>% 
   mutate(date_f = dmy(Date)) %>% 
@@ -43,13 +56,13 @@ if (date_f > last_date_drive){
                 sprintf("%02d", month(date_f)),
                 year(date_f), sep = ".")
   
-  db_sex <- read_xlsx(tf, sheet = "Totalt antal per kön")
-  db_age <- read_xlsx(tf, sheet = "Totalt antal per åldersgrupp")
+  db_sex <- read_xlsx(tf, sheet = "Totalt antal per kÃ¶n")
+  db_age <- read_xlsx(tf, sheet = "Totalt antal per Ã¥ldersgrupp")
   
   # Get data by sex
   
   db_s2 <- db_sex %>% 
-    # rename(Sex = Kön,
+    # rename(Sex = K?n,
     rename(
       Sex = starts_with("K"),
       Cases = Totalt_antal_fall,
@@ -71,7 +84,7 @@ if (date_f > last_date_drive){
       Deaths = Totalt_antal_avlidna
       , Age = ends_with("ldersgrupp")
     ) %>% 
-    # mutate(Age = str_sub(Åldersgrupp, 7, 8),
+    # mutate(Age = str_sub(?ldersgrupp, 7, 8),
     mutate(
       Age = str_sub(Age, 7, 8),
       Age = case_when(Age == "0_" ~ "0",
@@ -100,7 +113,7 @@ if (date_f > last_date_drive){
   #### uploading database to Google Drive ####
   ############################################
   sheet_append(db_all,
-               ss = "https://docs.google.com/spreadsheets/d/1w-ynPuKT_5xZf7emTuUFp_n-PdStCyrylY6gZVQj_do/edit#gid=1079196673",
+               ss = ss_i,
                sheet = "database")
   
   ############################################
@@ -109,7 +122,7 @@ if (date_f > last_date_drive){
   sheet_name <- paste0("SE", date, "cases&deaths")
   
   meta <- drive_create(sheet_name,
-                       path = "https://drive.google.com/drive/folders/1194c1EJL1PEYJr8VBpbcoWJ5Bq7LZ-Va?usp=sharing", 
+                       path = ss_db, 
                        type = "spreadsheet",
                        overwrite = T)
   

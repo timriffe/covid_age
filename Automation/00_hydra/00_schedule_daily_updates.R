@@ -58,15 +58,18 @@ sched("Mexico", tm = "20:50",email = auto_update_email, wd = auto_update_wd)
 sched("US_NYC", tm = "22:38",email = auto_update_email, wd = auto_update_wd)
 sched("USA_all_deaths", tm = "01:00",email = auto_update_email, wd = auto_update_wd)
 
-# not yet scheduled:
 sched("US_Texas", tm = "01:30",email = auto_update_email, wd = auto_update_wd)
-
 sched("US_Wisconsin", tm = "02:10",email = auto_update_email, wd = auto_update_wd)
-sched("US_Michigan", "16:00")
-sched("Sweden", "17:00")
-sched("Netherlands", "18:00")
+sched("US_Michigan", tm = "02:40",email = auto_update_email, wd = auto_update_wd)
 
-sched("New_Zeland", "18:20")
+sched("Sweden", tm = "03:40",email = auto_update_email, wd = auto_update_wd)
+sched("Netherlands", tm = "04:00",email = auto_update_email, wd = auto_update_wd)
+
+
+# TR: back to manual execution
+#sched("New_Zeland", "18:20")
+
+# not yet scheduled:
 sched("Estonia", "21:00")
 sched("Peru", "22:00")
 
