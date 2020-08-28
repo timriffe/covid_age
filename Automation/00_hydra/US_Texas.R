@@ -20,7 +20,7 @@ library(lubridate)
 drive_auth(email = email)
 gs4_auth(email = email)
 # TR: pull urls from rubric instead 
-rubric_i <- get_input_rubric() %>% filter(Short == "US")
+rubric_i <- get_input_rubric() %>% filter(Short == "US_TX")
 ss_i     <- rubric_i %>% dplyr::pull(Sheet)
 ss_db    <- rubric_i %>% dplyr::pull(Source)
 
@@ -68,6 +68,8 @@ if (date_f > last_date_drive){
                           skip = 1) %>% 
     as_tibble()
   
+  # TR: this is an aggregate of all reported testing types.
+  # We may wish to parse it down to a subset of these
   db_tests <- rio::import(url1, 
                           sheet = "Tests",
                           skip = 1) %>% 
@@ -233,7 +235,8 @@ if (date_f > last_date_drive){
 # can be revised in retrospect, and should always be swapped.
 
 # 1) re-read the full DB (wasteful)
-db_drive <- get_country_inputDB("US_TX")
+db_drive <- get_country_inputDB("US_TX") %>% 
+  select(-Short)
 
 # 2) read and format totals:
 db_totals <- rio::import(url1, 
@@ -252,9 +255,9 @@ db_totals <- rio::import(url1,
                values_to = "Value") %>% 
   mutate(Sex = "b",
          Date = paste(
-           sprintf("%02d",day(Date)),
-           sprintf("%02d",month(Date)),
-           sprintf("%02d",year(Date)),
+           sprintf("%02d",day(d_f)),
+           sprintf("%02d",month(d_f)),
+           sprintf("%02d",year(d_f)),
            sep = "."
          ),
          Code = paste0("US_TX",Date),
@@ -263,7 +266,9 @@ db_totals <- rio::import(url1,
          Metric = "Count",
          AgeInt = NA,
          Age = "TOT") %>% 
-  select(.dots = colnames(db_drive))
+  select(all_of(colnames(db_drive))) %>% 
+  filter(Value > 0) %>% 
+  filter(Date %in% db_drive$Date)
 
 # 3) remove both-sex totals from drive object
 db_drive <- db_drive %>% 
