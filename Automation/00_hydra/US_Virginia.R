@@ -41,10 +41,10 @@ date_f <- mdy(max(db_age$`Report Date`))
 
 if (!(date_f %in% last_date_drive)){
 
-  url_sex <- "https://data.virginia.gov/api/views/tdt3-q47w/rows.csv?accessType=DOWNLOAD"
+  url_sex   <- "https://data.virginia.gov/api/views/tdt3-q47w/rows.csv?accessType=DOWNLOAD"
   url_tests <- "https://data.virginia.gov/api/views/3u5k-c2gr/rows.csv?accessType=DOWNLOAD"
-  db_sex <- read_csv(url_sex)
-  db_tests <- read_csv(url_tests)
+  db_sex    <- read_csv(url_sex)
+  db_tests  <- read_csv(url_tests)
   
   d <- paste(sprintf("%02d", day(date_f)),
              sprintf("%02d", month(date_f)),
@@ -74,11 +74,11 @@ if (!(date_f %in% last_date_drive)){
     select(date_f, Age, Cases, Deaths) %>% 
     gather(Cases, Deaths, key = "Measure", value = "new") %>% 
     group_by(date_f, Age, Measure) %>% 
-    summarise(new = sum(new)) %>% 
-    ungroup() %>% 
-    group_by(Age, Measure) %>% 
-    mutate(Value = cumsum(new),
-           Sex = "b") %>% 
+    summarise(Value = sum(new)) %>% 
+    # ungroup() %>% 
+    # group_by(Age, Measure) %>% 
+    # mutate(Value = cumsum(new),
+    #        Sex = "b") %>% 
     ungroup()
     
     
@@ -97,11 +97,11 @@ if (!(date_f %in% last_date_drive)){
     gather(Cases, Deaths, key = "Measure", value = "new") %>% 
     group_by(date_f, Sex, Measure) %>% 
     summarise(new = sum(new)) %>% 
-    ungroup() %>% 
-    group_by(Sex, Measure) %>% 
-    mutate(Value = cumsum(new),
-           Age = "TOT") %>% 
-    ungroup()
+    ungroup() #%>% 
+    # group_by(Sex, Measure) %>% 
+    # mutate(Value = cumsum(new),
+    #        Age = "TOT") %>% 
+    # ungroup()
     
   db_tests2 <- db_tests %>% 
     rename(tests = "Number of PCR Testing Encounters",
