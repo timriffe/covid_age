@@ -46,72 +46,38 @@ db2 <- db %>%
          Deaths = ifelse(AnzahlTodesfall < 0, 0, AnzahlTodesfall),
          Region = Bundesland) %>% 
   select(date_f, Sex, Age, Cases, Deaths, Region) %>% 
-  gather('Cases', 'Deaths', key = 'Measure', value = 'Value')
+  pivot_longer(Cases:Deaths, names_to = "Measure", values_to ="Value") %>% 
+  group_by(Region, Sex, Measure, date_f, Age) %>% 
+  summarize(Value = sum(Value)) %>% 
+  ungroup()
   
 
-unique(db2$Region)
-unique(db2$date_f)
+# unique(db2$Region)
+# unique(db2$date_f)
 
-ages <- unique(db2$Age)
-sexes <- unique(db2$Sex)
+ages    <- unique(db2$Age)
+sexes   <- unique(db2$Sex)
 regions <- unique(db2$Region)
+date_range <- range(db2$date_f)
 
-empty_db <- expand_grid(Region = regions, Measure = c("Cases", "Deaths"), Sex = c("m", "f", "b"), Age = c("0", "5", "15", "35", "60", "80")) %>%
-  bind_rows(expand_grid(Region = regions, Measure = c("Cases", "Deaths"), Sex = "b", Age = "TOT"))
+# we can expand on days too
+dates   <- seq(date_range[1],date_range[2],by="days")
 
-db_all <- NULL
-
-min(db2$date_f)
-max(db2$date_f)
-date_start <- dmy("01/03/2020")
-date_end <- max(db2$date_f)
-ref <- date_start
-
-while (ref <= date_end){
-  print(ref)
+# TR: This replaces a big manual loop
+db_all <- db2 %>% 
+  group_by(Region, Measure) %>% 
+  expand(Sex = sexes, Age = ages, date_f = dates) %>% 
+  left_join(., db2) %>% 
+  replace_na(list(Value = 0)) %>% 
+  ungroup() %>% 
+  arrange(Region, Sex, Measure, Age, date_f) %>% 
+  group_by(Region, Sex, Measure, Age) %>% 
+  mutate(Value = cumsum(Value))
   
-  db3 <- db2 %>% 
-    filter(date_f <= ref)
-
-  db4 <- db3 %>% 
-    group_by(Age, Sex, Region, Measure) %>% 
-    summarise(Value = sum(Value)) %>% 
-    ungroup()
-  
-  db5 <- db3 %>% 
-    group_by(Age, Region, Measure) %>% 
-    summarise(Value = sum(Value)) %>% 
-    mutate(Sex = "b") %>% 
-    ungroup()
-
-  db6 <- db3 %>% 
-    group_by(Sex, Region, Measure) %>% 
-    summarise(Value = sum(Value)) %>% 
-    mutate(Age = "TOT") %>% 
-    ungroup()
-  
-  db7 <- db3 %>% group_by(Measure, Region) %>% 
-    group_by(Region, Measure) %>% 
-    summarise(Value = sum(Value))%>% 
-    mutate(Sex = "b",
-           Age = "TOT") %>% 
-    ungroup()
-  
-  db8 <- bind_rows(db4, db5, db6, db7)
-  
-  db9 <- empty_db %>% 
-    left_join(db8) %>% 
-    mutate(date_f = ref)
-
-  db_all <- bind_rows(db_all, db9)
-  
-  ref = ref + 1
-}  
 
 db_region <- db_all %>% 
-  mutate(Value = replace_na(Value, 0),
-         Country = "Germany",
-         Code1 = case_when(Region == 'Baden-W?rttemberg' ~ 'DE_BW_',
+  mutate(Country = "Germany",
+         Code1 = case_when(Region == 'Baden-Württemberg' ~ 'DE_BW_',
                             Region == 'Bayern' ~ 'DE_BY_',
                             Region ==  'Berlin' ~ 'DE_BE_',
                             Region == 'Brandenburg' ~ 'DE_BB_',
@@ -126,22 +92,22 @@ db_region <- db_all %>%
                             Region == 'Sachsen' ~ 'DE_SN_',
                             Region == 'Sachsen-Anhalt' ~ 'DE_ST_',
                             Region == 'Schleswig-Holstein' ~ 'DE_SH_',
-                            Region == 'Th?ringen' ~ 'DE_TH_',
+                            Region == 'Thüringen' ~ 'DE_TH_',
                             TRUE ~ "other"),
          Date = paste(sprintf("%02d", day(date_f)),
                       sprintf("%02d", month(date_f)),
                       year(date_f), sep = "."),
          Code = paste0(Code1, Date),
-         AgeInt = case_when(Age == "0" ~ "5",
-                            Age == "5" ~ "10",
-                            Age == "15" ~ "20",
-                            Age == "35" ~ "25",
-                            Age == "60" ~ "20",
-                            Age == "80" ~ "25",
-                            Age == "UNK" ~ ""),
+         AgeInt = case_when(Age == "0" ~ 5,
+                            Age == "5" ~ 10,
+                            Age == "15" ~ 20,
+                            Age == "35" ~ 25,
+                            Age == "60" ~ 20,
+                            Age == "80" ~ 25,
+                            Age == "UNK" ~ NA_real_),
          Metric = "Count") %>% 
-  arrange(Region, date_f, Measure, Sex, suppressWarnings(as.integer(Age))) %>% 
-  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
+  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
+  sort_input_data()
 
 db_germany <- db_all %>% 
   mutate(Value = replace_na(Value, 0)) %>% 
@@ -162,8 +128,8 @@ db_germany <- db_all %>%
                             Age == "80" ~ "25",
                             Age == "UNK" ~ ""),
          Metric = "Count") %>% 
-  arrange(Region, date_f, Measure, Sex, suppressWarnings(as.integer(Age))) %>% 
-  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
+  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
+  sort_input_data()
 
 unique(db_all$Region)
 
@@ -182,6 +148,7 @@ db_full %>%
          Age == "TOT") %>%
   select(Region, Measure, Value) %>% 
   spread(Measure, Value)
+
 
 ############################################
 #### uploading database to Google Drive ####
@@ -210,6 +177,8 @@ meta <- drive_create(sheet_name,
 write_sheet(db, 
             ss = meta$id,
             sheet = "cases&deaths_age_sex")
+
+
 
 sheet_delete(meta$id, "Sheet1")
 
