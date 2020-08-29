@@ -8,36 +8,7 @@ library(here)
 auto_update_email <- '"tim.riffe@gmail.com"'
 auto_update_wd    <- here()
 # we assume this tasks are scheduled in a here()-aware fashion
-sched <- function(
-  pp = "CA_montreal", 
-  tm = "06:00", 
-  email = "tim.riffe@gmail.com",
-  wd = here()){
-  script <- here("Automation/00_hydra/", paste0(pp, ".R")  )
-  
-  # modify the script to know who scehduled it and where it is
-  A        <- readLines(script)
-  ind      <- (A == "# ##  ###") %>% which() %>% '['(1)
-  A[ind+1] <- paste("email <-",email)
-  A[ind+2] <- paste0('setwd("',wd,'")')
-  writeLines(A,script)
-  # -------------------
-  
-  tskname <- paste0("coverage_db_", pp, "_daily")
-  
-  try(taskscheduler_delete(taskname = tskname))
-  
-  taskscheduler_create(taskname = tskname, 
-                       rscript = script,
-                       schedule = "DAILY", 
-                       starttime = tm, 
-                       startdate = "30/06/2020")
-}
 
-delete_sched <- function(pp = "CA_montreal"){
-  tskname <- paste0("coverage_db_", pp, "_daily")
-  taskscheduler_delete(taskname = tskname)
-}
 
 # sched("Netherlands", "15:12")
 # delete_sched("US_New_Jersey")

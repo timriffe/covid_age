@@ -2017,3 +2017,41 @@ get_rubric_update_window <- function(hours_from = 12, hours_to = 2){
   
   rubric
 }
+
+# Functions inherited from EA, modifed by TR.
+
+# @param pp base name of script (needs to be inside Automation/00_hydra/)
+# @param tm what time should it be run at?
+# @param email gmail account with permissions and local PAT set up
+# @param wd repo base path.
+sched <- function(
+  pp = "CA_montreal", 
+  tm = "06:00", 
+  email = "tim.riffe@gmail.com",
+  wd = here()){
+  script <- here("Automation/00_hydra/", paste0(pp, ".R")  )
+  
+  # modify the script to know who scehduled it and where it is
+  A        <- readLines(script)
+  ind      <- (A == "# ##  ###") %>% which() %>% '['(1)
+  A[ind+1] <- paste("email <-",email)
+  A[ind+2] <- paste0('setwd("',wd,'")')
+  writeLines(A,script)
+  # -------------------
+  
+  tskname <- paste0("coverage_db_", pp, "_daily")
+  
+  try(taskscheduler_delete(taskname = tskname))
+  
+  taskscheduler_create(taskname = tskname, 
+                       rscript = script,
+                       schedule = "DAILY", 
+                       starttime = tm, 
+                       startdate = "30/06/2020")
+}
+# remove a scheduled task
+# @param pp script base name
+delete_sched <- function(pp = "CA_montreal"){
+  tskname <- paste0("coverage_db_", pp, "_daily")
+  taskscheduler_delete(taskname = tskname)
+}
