@@ -205,3 +205,16 @@ other24.08.2020
 other25.08.2020
 other26.08.2020
 other27.08.2020
+# 2020-08-29 inputDB updates 
+ Sat Aug 29 07:00:06 2020 
+
+
+# 2020-08-29 07:00:06 updates 
+ Sat Aug 29 07:00:06 2020 
+
+
+# Filter valid Measure entries: 
+ Sat Aug 29 07:34:21 2020 
+
+Valid Measures include: Cases,Deaths,Tests,ASCFR
+ 630 rows removed
