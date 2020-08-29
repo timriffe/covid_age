@@ -2058,6 +2058,6 @@ delete_sched <- function(pp = "CA_montreal"){
 
 log_update <- function(pp, N){
   ss <- "https://docs.google.com/spreadsheets/d/1ftqFwX_Z29OrXxH9HnQWo31ApoEpxSqYOJspnIUAUbk/edit#gid=0"
-  log_this <- tibble(pp=pp,Date = lubrdidate::today(), rows = N)
+  log_this <- tibble(pp=pp,Date = lubridate::today(), rows = N)
   append_sheet(log_this, ss = ss, sheet = "log")
 }
