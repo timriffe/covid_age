@@ -92,7 +92,7 @@ db_all <- bind_rows(db3, db5) %>%
 write_sheet(db_all, 
             ss = ss_i,
             sheet = "database")
-
+log_update(pp = "Estonia", N = nrow(db_all))
 #############################################
 #### saving metadata in the Drive folder ####
 #############################################

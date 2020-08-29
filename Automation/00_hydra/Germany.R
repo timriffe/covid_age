@@ -172,6 +172,8 @@ write_sheet(db_full,
             ss = ss_i,
             sheet = "database")
 
+log_update(pp = "Germany", N = nrow(db_full))
+
 ############################################
 #### uploading metadata to Google Drive ####
 ############################################

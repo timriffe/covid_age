@@ -286,6 +286,9 @@ sheet_write(db_final_6,
 
 Sys.sleep(105)
 
+N <- nrow(db_final_pe) + nrow(db_final_1) + nrow(db_final_2) + nrow(db_final_3) +
+  nrow(db_final_4) + nrow(db_final_5) + nrow(db_final_6)  
+log_update(pp = "Peru", N = N)
 #########################
 # Push zip file to Drive -------------------------------------------------
 #########################

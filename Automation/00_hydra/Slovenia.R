@@ -138,7 +138,7 @@ if (date_f > last_date_drive){
   sheet_append(db_all,
                ss = ss_i,
                sheet = "database")
-  
+  log_update(pp = "Slovenia", N = nrow(db_all))
   ############################################
   #### uploading metadata to Google Drive ####
   ############################################

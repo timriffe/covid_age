@@ -227,7 +227,7 @@ if (date_f > last_date_drive){
   ############################################
   
   write_sheet(db_all, ss_i, sheet = "database")
-  
+  log_update(pp = "New_Zealand", N = nrow(db_all))
   ############################################
   #### uploading metadata to Google Drive ####
   ############################################

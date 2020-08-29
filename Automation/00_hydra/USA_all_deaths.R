@@ -100,7 +100,7 @@ db_all <- db_cum %>%
 write_sheet(db_all, 
             ss = ss_i,
             sheet = "database")
-
+log_update(pp = "USA_all_deaths", N = nrow(db_all))
 ############################################
 #### uploading metadata to Google Drive ####
 ############################################

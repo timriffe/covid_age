@@ -39,8 +39,6 @@ sched("Estonia", tm = "04:31",email = auto_update_email, wd = auto_update_wd)
 
 # TR: back to manual execution
 #sched("New_Zeland", "18:20")
-
-# not yet scheduled:
 sched("Peru", tm = "05:31",email = auto_update_email, wd = auto_update_wd)
 
 # delete_sched("Austria")

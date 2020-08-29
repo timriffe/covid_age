@@ -78,7 +78,7 @@ db3 <- db2 %>%
 write_sheet(db3, 
             ss = ss_i,
             sheet = "database")
-
+log_update(pp = "US_Wisconsin", N = nrow(db3))
 ############################################
 #### uploading metadata to Google Drive ####
 ############################################

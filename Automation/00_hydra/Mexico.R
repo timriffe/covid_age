@@ -392,7 +392,9 @@ sheet_write(db_final_8,
             sheet = "database")
 
 Sys.sleep(105)
-
+N <- nrow(db_final_mx) + nrow(db_final_1) + nrow(db_final_2) + nrow(db_final_3) +
+  nrow(db_final_4) + nrow(db_final_5) + nrow(db_final_6) + nrow(db_final_7) + nrow(db_final_8) 
+log_update(pp = "Mexico", N = N)
 #########################
 # Push zip file to Drive -------------------------------------------------
 #########################

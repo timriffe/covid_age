@@ -199,7 +199,7 @@ out <-
 write_sheet(out, 
             ss = ss_i, 
             sheet = "database")
-
+log_update(pp = "Netherlands", N = nrow(out))
 ############################################
 #### uploading metadata to Google Drive ####
 ############################################

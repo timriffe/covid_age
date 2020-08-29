@@ -324,6 +324,8 @@ write_sheet(db_final_5,
 
 Sys.sleep(105)
 
+N <- nrow(db_final_co) + nrow(db_final_1) + nrow(db_final_2) + nrow(db_final_3) + nrow(db_final_4) + nrow(db_final_5)
+log_update(pp = "Colombia", N = N)
 ############################################
 #### uploading metadata to Google Drive ####
 ############################################

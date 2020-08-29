@@ -232,7 +232,7 @@ ss_db  <- us_ma_rubric %>% dplyr::pull(Source)
 write_sheet(db_all,
             ss = ss_i,
             sheet = "database")
-
+log_update(pp = "US_Massachusetts", N = nrow(db_all))
 ############################################
 #### uploading metadata to Google Drive ####
 ############################################
