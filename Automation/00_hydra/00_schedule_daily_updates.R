@@ -5,6 +5,7 @@ rm(list=ls())
 library(taskscheduleR)
 library(tidyverse)
 library(here)
+source("R/00_Functions.R")
 auto_update_email <- '"tim.riffe@gmail.com"'
 auto_update_wd    <- here()
 # we assume this tasks are scheduled in a here()-aware fashion
@@ -20,7 +21,9 @@ sched("Venezuela", tm = "13:48",email = auto_update_email, wd = auto_update_wd)
 
 sched("Slovenia", tm = "15:48",email = auto_update_email, wd = auto_update_wd)
 sched("Germany", tm = "16:12",email = auto_update_email, wd = auto_update_wd)
-sched("US_Massachusetts", tm = "16:50",email = auto_update_email, wd = auto_update_wd)
+
+# Massachussets no longer gives age, grr. Only weekly, with new counts for the past two weeks.
+#sched("US_Massachusetts", tm = "17:04",email = auto_update_email, wd = auto_update_wd)
 
 sched("Austria", tm = "18:50",email = auto_update_email, wd = auto_update_wd)
 sched("US_Virginia", tm = "19:50",email = auto_update_email, wd = auto_update_wd)
