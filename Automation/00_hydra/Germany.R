@@ -120,20 +120,33 @@ db_germany <- db_all %>%
                       sprintf("%02d", month(date_f)),
                       year(date_f), sep = "."),
          Code = paste0("DE_", Date),
-         AgeInt = case_when(Age == "0" ~ "5",
-                            Age == "5" ~ "10",
-                            Age == "15" ~ "20",
-                            Age == "35" ~ "25",
-                            Age == "60" ~ "20",
-                            Age == "80" ~ "25",
-                            Age == "UNK" ~ ""),
+         AgeInt = case_when(Age == "0" ~ 5,
+                            Age == "5" ~ 10,
+                            Age == "15" ~ 20,
+                            Age == "35" ~ 25,
+                            Age == "60" ~ 20,
+                            Age == "80" ~ 25,
+                            Age == "UNK" ~ NA_real_),
          Metric = "Count") %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
   sort_input_data()
 
-unique(db_all$Region)
 
-db_full <- bind_rows(db_germany, db_region)
+
+db_full <- bind_rows(db_germany, db_region) 
+  
+# Remove days where cumulative sum is 0.
+db_full <-
+  db_full %>% 
+  group_by(Region, Measure, date_f = dmy(Date)) %>% 
+  mutate(N = sum(Value)) %>% 
+  filter(N > 0) %>% 
+  filter(!(Sex == "UNK" & Value == 0),
+         !(Age == "UNK" & Value == 0)) %>% 
+  select(-date_f, -N) %>% 
+  sort_input_data()
+  
+  
 
 ############################################
 #### comparison with reported aggregate data
@@ -142,13 +155,14 @@ db_full <- bind_rows(db_germany, db_region)
 # comparison with aggregate data reported online in 
 # https://www.rki.de/DE/Content/InfAZ/N/Neuartiges_Coronavirus/Fallzahlen.html
 
-db_full %>%
-  filter(dmy(Date) == max(db2$date_f),
-         Sex == "b",
-         Age == "TOT") %>%
-  select(Region, Measure, Value) %>% 
-  spread(Measure, Value)
 
+db_full %>% 
+  filter(Date == "28.08.2020") %>% 
+  group_by(Region, Measure) %>% 
+  summarize(N = sum(Value)) %>% 
+  select(Region, Measure, N) %>% 
+  pivot_wider(names_from = Measure, values_from = N)
+  
 
 ############################################
 #### uploading database to Google Drive ####
