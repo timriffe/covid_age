@@ -75,11 +75,13 @@ if (!(date_f %in% last_date_drive)){
     gather(Cases, Deaths, key = "Measure", value = "new") %>% 
     group_by(date_f, Age, Measure) %>% 
     summarise(Value = sum(new)) %>% 
+    ungroup() %>% 
+    mutate(Sex = "b")
     # ungroup() %>% 
     # group_by(Age, Measure) %>% 
     # mutate(Value = cumsum(new),
     #        Sex = "b") %>% 
-    ungroup()
+    
     
     
   
@@ -94,10 +96,11 @@ if (!(date_f %in% last_date_drive)){
                            Sex == "Male" ~ "m",
                            TRUE ~ "UNK")) %>% 
     select(date_f, Sex, Cases, Deaths) %>% 
-    gather(Cases, Deaths, key = "Measure", value = "new") %>% 
+    pivot_longer(Cases:Deaths, names_to = "Measure", values_to = "Value") %>% 
     group_by(date_f, Sex, Measure) %>% 
-    summarise(new = sum(new)) %>% 
-    ungroup() #%>% 
+    summarise(Value = sum(Value)) %>% 
+    ungroup() %>% 
+    mutate(Age = "TOT")
     # group_by(Sex, Measure) %>% 
     # mutate(Value = cumsum(new),
     #        Age = "TOT") %>% 

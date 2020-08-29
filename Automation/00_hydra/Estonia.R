@@ -34,7 +34,7 @@ db2 <- db %>%
          Sex = case_when(Sex == 'N' ~ 'f',
                          Sex == 'M' ~ 'm',
                          TRUE ~ 'UNK'),
-         Age = ifelse(Age == "?le 85", "85", Age),
+         Age = ifelse(Age == "üle 85", "85", Age),
          Age = replace_na(Age, "UNK")) %>% 
   group_by(date_f, Age, Sex) %>% 
   summarise(Cases = sum(Case),
@@ -49,25 +49,27 @@ db3 <- db2 %>%
   arrange(date_f, Sex, Measure, Age) %>% 
   ungroup() 
 
-db4 <- db3 %>% 
-  group_by(date_f, Sex, Measure) %>% 
-  summarise(Value = sum(Value)) %>% 
-  mutate(Age = "TOT") %>%
-  ungroup() 
+# TR: these steps aren't necessary at the data entry stage.
+# The R pipeline does all this.
+# db4 <- db3 %>% 
+#   group_by(date_f, Sex, Measure) %>% 
+#   summarise(Value = sum(Value)) %>% 
+#   mutate(Age = "TOT") %>%
+#   ungroup() 
+# 
+ db5 <- db3 %>% 
+   group_by(date_f, Measure) %>% 
+   summarise(Value = sum(Value)) %>% 
+   mutate(Sex = "b", Age = "TOT") %>% 
+   ungroup() 
+# 
+ # db6 <- db3 %>% 
+ #   group_by(date_f, Age, Measure) %>% 
+ #   summarise(Value = sum(Value)) %>% 
+ #   mutate(Sex = "b") %>% 
+ #   ungroup() 
 
-db5 <- db4 %>% 
-  group_by(date_f, Measure) %>% 
-  summarise(Value = sum(Value)) %>% 
-  mutate(Sex = "b", Age = "TOT") %>% 
-  ungroup() 
-
-db6 <- db3 %>% 
-  group_by(date_f, Age, Measure) %>% 
-  summarise(Value = sum(Value)) %>% 
-  mutate(Sex = "b") %>% 
-  ungroup() 
-
-db_all <- bind_rows(db3, db4, db5, db6) %>% 
+db_all <- bind_rows(db3, db5) %>% 
   filter(Age != "UNK",
          Sex != "UNK") %>%
   mutate(Region = "All",
@@ -76,12 +78,12 @@ db_all <- bind_rows(db3, db4, db5, db6) %>%
                       year(date_f), sep = "."),
          Country = "Estonia",
          Code = paste0("EE_", Date),
-         AgeInt = case_when(Age == "TOT" | Age == "UNK" ~ NA_character_, 
-                            Age == "85" ~ "20",
-                            TRUE ~ "5"),
+         AgeInt = case_when(Age == "TOT" | Age == "UNK" ~ NA_real_, 
+                            Age == "85" ~ 20,
+                            TRUE ~ 5),
          Metric = "Count") %>% 
-  arrange(date_f, Measure, Sex, suppressWarnings(as.integer(Age))) %>% 
-  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
+  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
+  sort_input_data()
 
 ############################################
 #### uploading database to Google Drive ####
