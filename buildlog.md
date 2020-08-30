@@ -177,3 +177,11 @@ filter( Code == 'DO31.07.2020', Sex == 'm', Measure == 'Deaths' )
 # push outputs to OSF 
  Sun Aug 30 04:06:11 2020 
 
+
+# push outputs to OSF 
+ Sun Aug 30 08:15:24 2020 
+
+
+# Commit dashboards and buildlog 
+ Sun Aug 30 08:16:23 2020 
+
