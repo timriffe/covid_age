@@ -65,14 +65,34 @@ Output_10 <-  read_csv("Output_10.zip",
 Output_10 <- 
   Output_10 %>% 
   mutate(Date = dmy(Date))
+```
 
-glimpse(Output_10)
+## Save out smaller files
+
+By now the files have got too big to handle easily in Excel. Here's a way to filter down and save out so that you can work with them in Excel if need be (a slicker interactive solution is in the works.)
+```{r}
+# Filter down to just one country
+Out <- 
+  Output_10 %>% 
+  filter(Country == "Spain", Region == "All")
+
+# save it out
+write_csv(Out, path = "Spain_Output_10.csv")
+
+# or for the inputDB
+In <- 
+  inputDB %>% 
+  filter(Country == "Spain", Region == "All")
+  
+write_csv(In, path = "Spain_InputDB.csv")
 ```
 
 ```{r, include = FALSE}
 # cleanup
 file.remove("inputDB.zip")
 file.remove("Output_10.zip")
+file.remove("Spain_Output_10.csv")
+file.remove("Spain_InputDB.csv")
 ```
 
 
