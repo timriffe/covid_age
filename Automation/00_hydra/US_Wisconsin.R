@@ -198,7 +198,7 @@ sheet_name <- paste0("US_WI", date_end_f, "cases&deaths")
 meta <- drive_create(sheet_name, 
              path = ss_db, 
              type = "spreadsheet",
-             overwrite = T)
+             overwrite = TRUE)
 
 write_sheet(db, 
             ss = meta$id,
