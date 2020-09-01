@@ -23,24 +23,37 @@ rubric_i <- get_input_rubric() %>% filter(Short == "EE")
 ss_i     <- rubric_i %>% dplyr::pull(Sheet)
 ss_db    <- rubric_i %>% dplyr::pull(Source)
 
-db <- read_csv("https://opendata.digilugu.ee/opendata_covid19_test_results.csv")
+cols_in <- cols(
+  id = col_character(),
+  Gender = col_character(),
+  AgeGroup = col_character(),
+  Country = col_character(),
+  County = col_character(),
+  ResultValue = col_character(),
+  StatisticsDate = col_date(format = ""),
+  ResultTime = col_datetime(format = ""),
+  AnalysisInsertTime = col_datetime(format = "")
+)
+
+db <- read_csv("https://opendata.digilugu.ee/opendata_covid19_test_results.csv", col_types = cols_in)
+
 
 db2 <- db %>% 
   rename(Sex = Gender) %>% 
-  separate(AgeGroup, c("Age","age2"), "-") %>% 
+  tidyr::separate(AgeGroup, c("Age","age2"), "-") %>% 
   mutate(Test = 1,
          Case = ifelse(ResultValue == "P", 1, 0),
          date_f = as.Date(ResultTime),
          Sex = case_when(Sex == 'N' ~ 'f',
                          Sex == 'M' ~ 'm',
                          TRUE ~ 'UNK'),
-         Age = ifelse(Age == "üle 85", "85", Age),
+         Age = readr::parse_number(Age),
          Age = replace_na(Age, "UNK")) %>% 
   group_by(date_f, Age, Sex) %>% 
   summarise(Cases = sum(Case),
             Tests = sum(Test)) %>% 
   ungroup() %>% 
-  gather('Cases', 'Tests', key = 'Measure', value = 'new')
+  pivot_longer(Cases:Tests, names_to = "Measure", values_to = "new")
 
 db3 <- db2 %>% 
   tidyr::complete(date_f = unique(db2$date_f), Sex = unique(db2$Sex), Age = unique(db2$Age), Measure, fill = list(new = 0)) %>% 
