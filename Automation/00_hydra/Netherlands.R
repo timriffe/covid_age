@@ -69,7 +69,7 @@ redistribute_under50 <- function(chunk){
 # this is convoluted. To redistribute the N cases that died
 # under age 50, we need to cumulate all the other ages over
 # time to get the distribution at each time point.
-Cases <-
+Cases1 <-
   NL %>%
   mutate(Sex = case_when(
                  Sex == "Female" ~ "f",
@@ -90,8 +90,17 @@ Cases <-
          ) %>% 
   group_by(Date_statistics, Sex, Age) %>% 
   summarize(New = n()) %>% 
-  ungroup() %>% 
-  tidyr::complete(Sex, Age, Date_statistics = dates_all, fill = list(New = 0)) %>% 
+  ungroup() 
+
+Cases_full <- 
+  Cases1 %>% 
+  expand(Sex, Age, Date_statistics = dates_all) 
+
+Cases2 <- 
+  Cases_full %>% 
+  left_join(Cases1, by = c("Sex","Age","Date_statistics")) %>% 
+  replace_na(list(New = 0)) %>% 
+  # tidyr::complete(Sex, Age, Date_statistics = dates_all, fill = list(New = 0)) %>% 
   arrange(Sex, Age, Date_statistics) %>% 
   group_by(Sex, Age) %>% 
   mutate(Value = cumsum(New)) %>% 
@@ -186,7 +195,7 @@ Deaths <- NL %>%
 # bind and sort:
 
 out <- 
-  bind_rows(Cases, Deaths) %>%
+  bind_rows(Cases2, Deaths) %>%
   mutate(date_f = dmy(Date)) %>% 
   filter(date_f >= dmy("01.03.2020")) %>% 
   arrange(date_f, Sex, Measure, suppressWarnings(as.integer(Age))) %>% 
@@ -222,7 +231,13 @@ write_sheet(NL,
 
 sheet_delete(meta$id, "Sheet1")
 
-
+out %>% 
+  mutate(Date = dmy(Date)) %>% 
+  filter(Measure == "Deaths") %>% 
+  group_by(Date) %>% 
+  summarize(N = sum(Value)) %>% 
+  ggplot(aes(x=Date, y = N)) + 
+  geom_line()
 
 
 #### to adjust later
