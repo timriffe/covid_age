@@ -231,13 +231,13 @@ write_sheet(NL,
 
 sheet_delete(meta$id, "Sheet1")
 
-out %>% 
-  mutate(Date = dmy(Date)) %>% 
-  filter(Measure == "Deaths") %>% 
-  group_by(Date) %>% 
-  summarize(N = sum(Value)) %>% 
-  ggplot(aes(x=Date, y = N)) + 
-  geom_line()
+# out %>% 
+#   mutate(Date = dmy(Date)) %>% 
+#   filter(Measure == "Deaths") %>% 
+#   group_by(Date) %>% 
+#   summarize(N = sum(Value)) %>% 
+#   ggplot(aes(x=Date, y = N)) + 
+#   geom_line()
 
 
 #### to adjust later
