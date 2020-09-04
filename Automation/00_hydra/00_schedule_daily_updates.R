@@ -11,15 +11,28 @@ auto_update_wd    <- here()
 # we assume this tasks are scheduled in a here()-aware fashion
 
 
+# broken scripts:
+# CA_Montreal
+# Slovenia
+# Mexico
+# Sweden
+
+
+
 # sched("Netherlands", "15:12")
 # delete_sched("US_New_Jersey")
 
+# broken:
 sched("CA_Montreal", tm = "12:08",email = auto_update_email, wd = auto_update_wd)
+
+
 sched("Colombia",  tm = "12:30",email = auto_update_email, wd = auto_update_wd)
 sched("Venezuela", tm = "13:48",email = auto_update_email, wd = auto_update_wd)
 
 
+# broken
 sched("Slovenia", tm = "15:48",email = auto_update_email, wd = auto_update_wd)
+
 sched("Germany", tm = "16:12",email = auto_update_email, wd = auto_update_wd)
 
 # Massachussets no longer gives age, grr. Only weekly, with new counts for the past two weeks.
@@ -27,6 +40,8 @@ sched("Germany", tm = "16:12",email = auto_update_email, wd = auto_update_wd)
 
 sched("Austria", tm = "18:50",email = auto_update_email, wd = auto_update_wd)
 sched("US_Virginia", tm = "19:50",email = auto_update_email, wd = auto_update_wd)
+
+# broken
 sched("Mexico", tm = "20:50",email = auto_update_email, wd = auto_update_wd)
 
 sched("US_NYC", tm = "22:38",email = auto_update_email, wd = auto_update_wd)
@@ -36,7 +51,9 @@ sched("US_Texas", tm = "01:30",email = auto_update_email, wd = auto_update_wd)
 sched("US_Wisconsin", tm = "02:10",email = auto_update_email, wd = auto_update_wd)
 sched("US_Michigan", tm = "02:40",email = auto_update_email, wd = auto_update_wd)
 
+# broken
 sched("Sweden", tm = "03:40",email = auto_update_email, wd = auto_update_wd)
+
 sched("Netherlands", tm = "04:00",email = auto_update_email, wd = auto_update_wd)
 sched("Estonia", tm = "04:31",email = auto_update_email, wd = auto_update_wd)
 
