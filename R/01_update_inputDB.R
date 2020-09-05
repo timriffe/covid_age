@@ -47,7 +47,7 @@ hours_to   <- 2
 
 
 # which templates were updated within last hours_from hours?
-
+#rubric <- get_input_rubric()
 rubric <- get_rubric_update_window(hours_from, hours_to)
 
 if (nrow(rubric) > 0){
@@ -194,7 +194,7 @@ if (schedule_this){
                        rscript = "C:/Users/riffe/Documents/covid_age/R/01_update_inputDB.R", 
                        schedule = "HOURLY", 
                        modifier = 8,
-                       starttime = "23:00",
+                       starttime = "18:00",
                        startdate = format(Sys.Date(), "%d/%m/%Y"))
   # taskscheduleR::taskscheduler_delete("COVerAGE-DB-every-8-hour-inputDB-updates")
 }
