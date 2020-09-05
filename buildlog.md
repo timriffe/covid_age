@@ -1,18 +1,18 @@
 
 # New build log 
- Fri Sep 04 07:12:39 2020 
+ Sat Sep 05 13:46:26 2020 
 
 
 # A 
- Fri Sep 04 07:12:51 2020 
+ Sat Sep 05 13:46:34 2020 
 
 
 # B 
- Fri Sep 04 07:14:34 2020 
+ Sat Sep 05 13:48:20 2020 
 
 
 # C 
- Fri Sep 04 07:20:43 2020 
+ Sat Sep 05 13:54:43 2020 
 
 filter( Code == 'AL17.07.2020', Sex == 'b', Measure == 'Tests' )
 filter( Code == 'AL18.07.2020', Sex == 'b', Measure == 'Tests' )
@@ -68,19 +68,19 @@ filter( Code == 'US_VA07.07.2020', Sex == 'b', Measure == 'Tests' )
 filter( Code == 'US_VA08.07.2020', Sex == 'b', Measure == 'Tests' )
 
 # D 
- Fri Sep 04 07:24:13 2020 
+ Sat Sep 05 13:58:09 2020 
 
 
 # E 
- Fri Sep 04 07:26:18 2020 
+ Sat Sep 05 14:00:11 2020 
 
 
 # G 
- Fri Sep 04 07:28:20 2020 
+ Sat Sep 05 14:02:12 2020 
 
 
 # H 
- Fri Sep 04 07:33:43 2020 
+ Sat Sep 05 14:07:26 2020 
 
 filter( Code == 'PK10.03.2020', Measure == 'Deaths' )
 filter( Code == 'PK11.03.2020', Measure == 'Deaths' )
@@ -92,11 +92,11 @@ filter( Code == 'PK16.03.2020', Measure == 'Deaths' )
 filter( Code == 'PK17.03.2020', Measure == 'Deaths' )
 
 # I 
- Fri Sep 04 07:37:06 2020 
+ Sat Sep 05 14:10:45 2020 
 
 
 # J 
- Fri Sep 04 07:38:17 2020 
+ Sat Sep 05 14:11:56 2020 
 
 filter( Code == 'CA_QC9.04.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'CA_QC10.04.2020', Sex == 'b', Measure == 'Cases' )
@@ -110,7 +110,7 @@ filter( Code == 'CA_QC14.04.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'CA_QC14.04.2020', Sex == 'b', Measure == 'Deaths' )
 
 # Age harmonization 
- Fri Sep 04 07:45:45 2020 
+ Sat Sep 05 14:19:15 2020 
 
 filter( Code == 'AL19.07.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'AL20.07.2020', Sex == 'b', Measure == 'Cases' )
@@ -165,25 +165,21 @@ filter( Code == 'DO30.07.2020', Sex == 'm', Measure == 'Deaths' )
 filter( Code == 'DO31.07.2020', Sex == 'm', Measure == 'Deaths' )
 
 # Compile metadata 
- Fri Sep 04 08:58:00 2020 
+ Sat Sep 05 15:36:44 2020 
 
 
 # Building dashboards 
- Fri Sep 04 09:15:58 2020 
+ Sat Sep 05 15:54:13 2020 
 
 
 # remake coverage map 
- Fri Sep 04 09:18:11 2020 
+ Sat Sep 05 15:56:13 2020 
 
 
 # push outputs to OSF 
- Fri Sep 04 09:18:40 2020 
+ Sat Sep 05 15:58:39 2020 
 
 
 # Commit dashboards and buildlog 
- Fri Sep 04 09:19:33 2020 
-
-
-# update build series log 
- Fri Sep 04 09:19:42 2020 
+ Sat Sep 05 15:59:44 2020 
 
