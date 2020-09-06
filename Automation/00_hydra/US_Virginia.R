@@ -54,7 +54,7 @@ if (!(date_f %in% last_date_drive)){
     rename(date_f = "Lab Report Date") %>% 
     mutate(date_f = mdy(date_f)) %>%
     drop_na(date_f) %>% 
-    pull(date_f) %>% 
+    dplyr::pull(date_f) %>% 
     max()
   
   d_tests <- paste(sprintf("%02d", day(date_f_tests)),
