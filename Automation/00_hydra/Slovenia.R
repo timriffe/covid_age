@@ -25,8 +25,8 @@ gs4_auth(email = email)
 
 
 SI_rubric <- get_input_rubric() %>% filter(Short == "SI")
-ss_i  <- VE_rubric %>% dplyr::pull(Sheet)
-ss_db <-  VE_rubric %>% dplyr::pull(Source)
+ss_i  <- SI_rubric %>% dplyr::pull(Sheet)
+ss_db <-  SI_rubric %>% dplyr::pull(Source)
 # reading data from Montreal and last date ent
 
 #### Previous database in COVerAGE-DB ####
