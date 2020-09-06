@@ -36,7 +36,7 @@ httr::GET(url, write_disk(tf <- tempfile(fileext = ".xlsx")))
 # date from the data directly, last reported date in the sheet 'Antal per dag region'
 
 date_f <- read_xlsx(tf, sheet = "Antal per dag region") %>% 
-  pull(Statistikdatum) %>% 
+  dplyr::pull(Statistikdatum) %>% 
   max() %>% 
   ymd()
 
@@ -45,7 +45,7 @@ db_drive <- get_country_inputDB("SE")
 
 last_date_drive <- db_drive %>% 
   mutate(date_f = dmy(Date)) %>% 
-  pull(date_f) %>% 
+  dplyr::pull(date_f) %>% 
   max()
 
 # process data and upload it only if the reported date is more recent than the date in Drive

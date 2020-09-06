@@ -103,7 +103,7 @@ regions_deaths <- db_deaths %>%
 
 reg_inc <- regions_deaths %>%
   filter(new >= 50) %>%
-  pull(Region)
+  dplyr::pull(Region)
 
 # summarising new cases for each combination -----------------------
 db3 <- bind_rows(db_cases, db_deaths) %>% 
@@ -121,7 +121,7 @@ db3 <- bind_rows(db_cases, db_deaths) %>%
 ages <- as.character(seq(0, 100, 1))
 all_dates <- db3 %>% 
   filter(!is.na(date_f)) %>% 
-  pull(date_f) %>% 
+  dplyr::pull(date_f) %>% 
   unique()
 dates_f <- seq(min(all_dates), max(all_dates), by = '1 day')
 
@@ -257,7 +257,7 @@ db_final <- db_all2 %>%
 # slicing the database by some regions ----------------------------------
 ############################################
 
-regions <- db_final %>% pull(Region) %>% unique()
+regions <- db_final %>% dplyr::pull(Region) %>% unique()
 length(regions)
 
 db_final_co <- db_final %>% 

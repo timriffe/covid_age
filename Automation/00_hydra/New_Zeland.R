@@ -39,7 +39,7 @@ db_drive <- get_country_inputDB("NZ")
 
 last_date_drive <- db_drive %>% 
   mutate(date_f = dmy(Date)) %>% 
-  pull(date_f) %>% 
+  dplyr::pull(date_f) %>% 
   max()
 
 # reading data from the website 

@@ -34,7 +34,7 @@ db_drive <- get_country_inputDB("SI")
 
 last_date_drive <- db_drive %>% 
   mutate(date_f = dmy(Date)) %>% 
-  pull(date_f) %>% 
+  dplyr::pull(date_f) %>% 
   max()
 
 ### reading data from the website 
@@ -55,7 +55,7 @@ date_f <- db_cases %>%
   mutate(date = as.numeric(date),
          date_f = as.Date(date, origin = "1899-12-30")) %>% 
   drop_na(date_f) %>% 
-  pull(date_f) %>% 
+  dplyr::pull(date_f) %>% 
   max()
 
 

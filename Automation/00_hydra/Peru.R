@@ -217,7 +217,7 @@ table(db_final$Region) %>% sort()
 
 unique(db_final$Region)
 
-regions <- db_final %>% pull(Region) %>% unique()
+regions <- db_final %>% dplyr::pull(Region) %>% unique()
 
 db_final_pe <- db_final %>% 
   filter(Region == "All")
@@ -295,7 +295,7 @@ log_update(pp = "Peru", N = N)
 
 date_f <- db_d2 %>% 
   filter(!is.na(date_f)) %>% 
-  pull(date_f) %>% 
+  dplyr::pull(date_f) %>% 
   max()
 
 date <- paste(sprintf("%02d",day(date_f)),

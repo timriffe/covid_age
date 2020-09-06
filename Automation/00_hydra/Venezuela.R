@@ -30,7 +30,7 @@ db_drive <- read_sheet(ss_i,
 
 last_date_drive <- db_drive %>% 
   mutate(date_f = dmy(Date)) %>% 
-  pull(date_f) %>% 
+  dplyr::pull(date_f) %>% 
   max()
 
 # reading data from the website 
@@ -43,7 +43,7 @@ a2 <- content(r2, "text", encoding = "ISO-8859-1")
 b2 <- fromJSON(a2)
 
 date_f <- b2 %>% 
-  pull(Date) %>% 
+  dplyr::pull(Date) %>% 
   max()
 
 d <- paste(sprintf("%02d", day(date_f)),

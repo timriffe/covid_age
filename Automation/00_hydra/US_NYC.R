@@ -32,7 +32,7 @@ db_drive <- get_country_inputDB("US_NYC")
 
 last_date_drive <- db_drive %>% 
   mutate(date_f = dmy(Date)) %>% 
-  pull(date_f) %>% 
+  dplyr::pull(date_f) %>% 
   max()
 
 
@@ -57,7 +57,7 @@ date_f <- db_sum %>%
   filter(X1 == "DATE_UPDATED") %>% 
   separate(X2, c("m", "d")) %>% 
   mutate(date = ymd(paste("2020", m, d, sep = "/"))) %>% 
-  pull(date)
+  dplyr::pull(date)
 
 d <- paste(sprintf("%02d", day(date_f)),
               sprintf("%02d", month(date_f)),

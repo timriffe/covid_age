@@ -401,7 +401,7 @@ log_update(pp = "Mexico", N = N)
 
 date_f <- db %>% 
   filter(!is.na(FECHA_ACTUALIZACION)) %>% 
-  pull(FECHA_ACTUALIZACION) %>% 
+  dplyr::pull(FECHA_ACTUALIZACION) %>% 
   max()
 
 date <- paste(sprintf("%02d",day(date_f)),
