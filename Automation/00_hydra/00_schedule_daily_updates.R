@@ -49,6 +49,8 @@ sched("USA_all_deaths", tm = "01:00",email = auto_update_email, wd = auto_update
 
 sched("US_Texas", tm = "01:30",email = auto_update_email, wd = auto_update_wd)
 sched("US_Wisconsin", tm = "02:10",email = auto_update_email, wd = auto_update_wd)
+
+# broken?
 sched("US_Michigan", tm = "02:40",email = auto_update_email, wd = auto_update_wd)
 
 # broken
