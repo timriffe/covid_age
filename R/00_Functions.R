@@ -212,7 +212,7 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
                      "' and name contains 'input template'")
       A <- drive_find(q = query)
       ids <- A %>% 
-        pull(drive_resource) %>% 
+        dplyr::pull(drive_resource) %>% 
         lapply(function(x){x$id[1]}) %>% unlist()
       
       cutID <- function(x){
@@ -381,7 +381,7 @@ compile_offsetsDB <- function() {
   if (sum(errors) > 0){
     
     
-    prob_codes <- offsets_rubric %>% mutate(Code=paste(Country,Region)) %>% pull(Code) %>% '['(errors)
+    prob_codes <- offsets_rubric %>% mutate(Code=paste(Country,Region)) %>% dplyr::pull(Code) %>% '['(errors)
     cat("\nThe following code(s) did not read properly:\n",paste(prob_codes,collapse = "\n"))
     off_list <- off_list[!errors]
   }
@@ -1615,9 +1615,9 @@ harmonize_offset_age <- function(chunk){
 harmonize_offset_age_p <- function(chunk) {
   
   # Get current country region sex
-  .Country <- chunk %>% pull(Country) %>% '['(1)
-  .Region  <- chunk %>% pull(Region) %>% '['(1)
-  .Sex     <- chunk %>% pull(Sex) %>% '['(1)
+  .Country <- chunk %>% dplyr::pull(Country) %>% '['(1)
+  .Region  <- chunk %>% dplyr::pull(Region) %>% '['(1)
+  .Sex     <- chunk %>% dplyr::pull(Sex) %>% '['(1)
   
   # Harmonize
   out <- harmonize_offset_age(chunk)
@@ -1988,7 +1988,7 @@ get_rubric_update_window <- function(hours_from = 12, hours_to = 2){
                   "' and name contains 'input template'")
   A <- drive_find(q = query)
   ids_read <- A %>% 
-    pull(drive_resource) %>% 
+    dplyr::pull(drive_resource) %>% 
     lapply(function(x){x$id[1]}) %>% unlist()
   
   # which templates were updated within last hours_to hours
@@ -1998,7 +1998,7 @@ get_rubric_update_window <- function(hours_from = 12, hours_to = 2){
                   "' and name contains 'input template'")
   B <- drive_find(q = query)
   ids_rm <- B %>% 
-    pull(drive_resource) %>% 
+    dplyr::pull(drive_resource) %>% 
     lapply(function(x){x$id[1]}) %>% unlist()
   
   ids_read <- ids_read[!ids_read%in%ids_rm]
