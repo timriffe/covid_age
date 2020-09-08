@@ -179,7 +179,7 @@ saveRDS(tab3,file = here("Data","tab3.rds"))
 
 # sheet_tabs <- list()
 # for (i in 1:nrow(rubric)){
-#   ss <- rubric %>% pull(Sheet) %>% '['(i)
+#   ss <- rubric %>% dplyr::pull(Sheet) %>% '['(i)
 #   sheet_tabs[[i]] <- gs4_get(ss)
 # }
 # 

@@ -1086,10 +1086,10 @@ rescale_to_total <- function(chunk, verbose = FALSE){
   # Check if rescaling is needed
   do_this <- do_we_rescale_to_total(chunk)
   
-  # If no rescaling is needed return unchanged chung
+  # If no rescaling is needed return unchanged chunk
   if(!do_this) {
     
-    # Keeo both sex tot
+    # Keep both sex tot
     i1    <- chunk[["Sex"]] %in% c("m","f","UNK")
     i2    <- chunk[["Age"]] == "TOT"
     ind   <- !(i1 & i2)
