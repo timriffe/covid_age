@@ -49,3 +49,13 @@ Valid Measures include: Cases,Deaths,Tests,ASCFR
 
 Valid Metrics include: Count,Fraction,Ratio
  14 rows removed
+# Filter valid Measure entries: 
+ Tue Sep 08 07:45:16 2020 
+
+Valid Measures include: Cases,Deaths,Tests,ASCFR
+ 886 rows removed
+# Filter valid Metric entries: 
+ Tue Sep 08 07:45:16 2020 
+
+Valid Metrics include: Count,Fraction,Ratio
+ 14 rows removed
