@@ -209,6 +209,7 @@ write_sheet(out,
             ss = ss_i, 
             sheet = "database")
 log_update(pp = "Netherlands", N = nrow(out))
+Sys.sleep(100)
 ############################################
 #### uploading metadata to Google Drive ####
 ############################################
