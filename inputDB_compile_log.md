@@ -29,3 +29,14 @@ CH07.09.2020
 # 2020-09-09 07:06:06 updates 
  Wed Sep 09 07:06:06 2020 
 
+
+# Filter valid Measure entries: 
+ Wed Sep 09 07:34:16 2020 
+
+Valid Measures include: Cases,Deaths,Tests,ASCFR
+ 234 rows removed
+# Filter valid Metric entries: 
+ Wed Sep 09 07:34:16 2020 
+
+Valid Metrics include: Count,Fraction,Ratio
+ 14 rows removed
