@@ -101,6 +101,7 @@ write_sheet(db_all,
             ss = ss_i,
             sheet = "database")
 log_update(pp = "USA_all_deaths", N = nrow(db_all))
+Sys.sleep(100)
 ############################################
 #### uploading metadata to Google Drive ####
 ############################################
@@ -127,7 +128,7 @@ write_sheet(to,
 
 sheet_delete(meta$id, "Sheet1")
 
-
+Sys.sleep(100)
 # uploading data for INED
 # TR: not sure where this leads to, seems to be exact same place, overwriting the previous?
 meta2 <- drive_create(sheet_name, 
