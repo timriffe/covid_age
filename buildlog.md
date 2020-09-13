@@ -1,18 +1,18 @@
 
 # New build log 
- Sat Sep 12 02:00:07 2020 
+ Sun Sep 13 02:00:06 2020 
 
 
 # A 
- Sat Sep 12 02:00:21 2020 
+ Sun Sep 13 02:00:18 2020 
 
 
 # B 
- Sat Sep 12 02:02:14 2020 
+ Sun Sep 13 02:02:03 2020 
 
 
 # C 
- Sat Sep 12 02:09:09 2020 
+ Sun Sep 13 02:08:28 2020 
 
 filter( Code == 'AL17.07.2020', Sex == 'b', Measure == 'Tests' )
 filter( Code == 'AL18.07.2020', Sex == 'b', Measure == 'Tests' )
@@ -68,19 +68,19 @@ filter( Code == 'US_VA07.07.2020', Sex == 'b', Measure == 'Tests' )
 filter( Code == 'US_VA08.07.2020', Sex == 'b', Measure == 'Tests' )
 
 # D 
- Sat Sep 12 02:12:58 2020 
+ Sun Sep 13 02:12:21 2020 
 
 
 # E 
- Sat Sep 12 02:15:15 2020 
+ Sun Sep 13 02:14:39 2020 
 
 
 # G 
- Sat Sep 12 02:17:31 2020 
+ Sun Sep 13 02:16:54 2020 
 
 
 # H 
- Sat Sep 12 02:23:14 2020 
+ Sun Sep 13 02:22:41 2020 
 
 filter( Code == 'PK10.03.2020', Measure == 'Deaths' )
 filter( Code == 'PK11.03.2020', Measure == 'Deaths' )
@@ -92,11 +92,11 @@ filter( Code == 'PK16.03.2020', Measure == 'Deaths' )
 filter( Code == 'PK17.03.2020', Measure == 'Deaths' )
 
 # I 
- Sat Sep 12 02:27:07 2020 
+ Sun Sep 13 02:26:44 2020 
 
 
 # J 
- Sat Sep 12 02:28:27 2020 
+ Sun Sep 13 02:28:06 2020 
 
 filter( Code == 'CA_QC9.04.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'CA_QC10.04.2020', Sex == 'b', Measure == 'Cases' )
@@ -190,9 +190,10 @@ filter( Code == 'US05.09.2020', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'US05.09.2020', Sex == 'm', Measure == 'Deaths' )
 filter( Code == 'US05.09.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'US_TX10.09.2020', Sex == 'b', Measure == 'Cases' )
+filter( Code == 'US_TX11.09.2020', Sex == 'b', Measure == 'Cases' )
 
 # Age harmonization 
- Sat Sep 12 02:36:35 2020 
+ Sun Sep 13 02:36:30 2020 
 
 filter( Code == 'AL19.07.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'AL20.07.2020', Sex == 'b', Measure == 'Cases' )
@@ -201,6 +202,7 @@ filter( Code == 'AL22.07.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'DO29.07.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'DO30.07.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'DO31.07.2020', Sex == 'f', Measure == 'Cases' )
+filter( Code == 'FI11.09.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'CA_QC24.06.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'TR03.08.2020', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'TR05.07.2020', Sex == 'm', Measure == 'Cases' )
@@ -215,11 +217,11 @@ filter( Code == 'AL19.07.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'AL20.07.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'AL21.07.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'AL22.07.2020', Sex == 'b', Measure == 'Deaths' )
-filter( Code == 'US_IL21.07.2020', Sex == 'b', Measure == 'Deaths' )
-filter( Code == 'US_IL22.07.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'DO29.07.2020', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'DO30.07.2020', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'DO31.07.2020', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'US_IL21.07.2020', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'US_IL22.07.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'US_IL21.07.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_IL22.07.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'TR03.08.2020', Sex == 'f', Measure == 'Cases' )
@@ -247,33 +249,29 @@ filter( Code == 'DO30.07.2020', Sex == 'm', Measure == 'Deaths' )
 filter( Code == 'DO31.07.2020', Sex == 'm', Measure == 'Deaths' )
 
 # Compile metadata 
- Sat Sep 12 03:58:00 2020 
+ Sun Sep 13 04:01:47 2020 
 
 
 # Building dashboards 
- Sat Sep 12 04:18:25 2020 
+ Sun Sep 13 04:20:04 2020 
 
 
 # remake coverage map 
- Sat Sep 12 04:19:40 2020 
+ Sun Sep 13 04:21:33 2020 
 
 
 # push outputs to OSF 
- Sat Sep 12 04:20:22 2020 
+ Sun Sep 13 04:22:05 2020 
 
 
 # remake coverage map 
- Sat Sep 12 11:12:14 2020 
+ Sun Sep 13 07:47:23 2020 
 
 
 # push outputs to OSF 
- Sat Sep 12 11:13:01 2020 
+ Sun Sep 13 07:47:47 2020 
 
 
 # Commit dashboards and buildlog 
- Sat Sep 12 11:14:25 2020 
-
-
-# update build series log 
- Sat Sep 12 11:14:32 2020 
+ Sun Sep 13 07:48:43 2020 
 
