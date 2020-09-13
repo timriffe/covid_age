@@ -53,6 +53,8 @@ sched("US_Michigan", tm = "02:40",email = auto_update_email, wd = auto_update_wd
 
 # broken
 sched("Sweden", tm = "03:40",email = auto_update_email, wd = auto_update_wd)
+sched("Sweden", tm = "03:40",email = auto_update_email, wd = auto_update_wd)
+
 
 sched("Netherlands", tm = "04:00",email = auto_update_email, wd = auto_update_wd)
 sched("Estonia", tm = "04:31",email = auto_update_email, wd = auto_update_wd)
