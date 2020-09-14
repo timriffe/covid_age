@@ -51,9 +51,9 @@ sched("US_Texas", tm = "01:30",email = auto_update_email, wd = auto_update_wd)
 sched("US_Wisconsin", tm = "02:10",email = auto_update_email, wd = auto_update_wd)
 sched("US_Michigan", tm = "02:40",email = auto_update_email, wd = auto_update_wd)
 
-# broken
+# broken (works if manually sourced)
 sched("Sweden", tm = "03:40",email = auto_update_email, wd = auto_update_wd)
-sched("Sweden", tm = "03:40",email = auto_update_email, wd = auto_update_wd)
+#sched("Sweden", tm = "03:40",email = auto_update_email, wd = auto_update_wd)
 
 
 sched("Netherlands", tm = "04:00",email = auto_update_email, wd = auto_update_wd)
