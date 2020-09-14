@@ -6,8 +6,16 @@ library(taskscheduleR)
 library(tidyverse)
 library(here)
 source("R/00_Functions.R")
-auto_update_email <- '"tim.riffe@gmail.com"'
+
 auto_update_wd    <- here()
+
+if (grepl("riffe", auto_update_wd)){
+   auto_update_email <- '"tim.riffe@gmail.com"'   
+}
+if (grepl("acosta", auto_update_wd)){
+        auto_update_email <- '"kikepaila@gmail.com"'   
+}
+
 # we assume this tasks are scheduled in a here()-aware fashion
 
 
