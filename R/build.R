@@ -50,8 +50,6 @@ source(here("R","08_coverage_map.R"))
 
 # push to OSF
 
-# Coverage Map
-# getting 401 errors
 source(here("R","09_push_osf.R"))
 
 # ---------------------- #
