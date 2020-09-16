@@ -12,7 +12,7 @@ source("R/00_Functions.R")
 
 library(tidyverse)
 library(readxl)
-library(rio)
+#library(rio)
 library(googlesheets4)
 library(googledrive)
 library(lubridate)
@@ -39,7 +39,7 @@ url1 <- "https://dshs.texas.gov/coronavirus/TexasCOVID19CaseCountData.xlsx"
 text_date <- rio::import(url1, 
                       sheet = "Cases by Age Group",
                       range = "A1:A1",
-                      col_names = F)[1,1]
+                      col_names = FALSE)[1,1]
 
 loc_date <- str_locate(text_date, "/")[2]
 
@@ -48,6 +48,7 @@ date_f <- dmy(d)
 
 if (date_f > last_date_drive){
 
+ 
   db_c_age <- rio::import(url1, 
                           sheet = "Cases by Age Group",
                           skip = 1) %>% 
@@ -69,29 +70,34 @@ if (date_f > last_date_drive){
     as_tibble()
   
   # TR: this is an aggregate of all reported testing types.
-  # We may wish to parse it down to a subset of these
-  db_tests <- rio::import(url1, 
-                          sheet = "Tests",
-                          skip = 1) %>% 
-    as_tibble() %>% 
-    filter(Location == "Total Tests") %>% 
-    rename(Value = Count) %>% 
-    mutate(Measure = "Tests",
-           Age = "TOT",
-           Sex = "b") %>% 
-    select(Sex, Age, Measure, Value)
+   # We may wish to parse it down to a subset of these
+   db_tests <- rio::import(url1, 
+                           sheet = "Tests by Day",
+                           skip = 2) %>% 
+     as_tibble() %>% 
+     select(6:7) %>% 
+    # filter(Location == "Total Tests") %>% 
+     rename(Value = `Test Results...7`,
+            Date = `Specimen Collection Date`) %>% 
+     mutate(Measure = "Tests",
+            Age = "TOT",
+            Sex = "b",
+            Date = as_date(Date)) %>% 
+     select(Sex, Age, Measure, Value) %>% 
+     arrange(Date) %>% 
+     mutate(Value = cumsum(Value))
   
-  # db_totals <- rio::import(url1, 
-  #                          sheet = "Trends",
-  #                          skip = 2) %>% 
-  #   as_tibble() %>% 
-  #   rename(Cases = 3,
-  #          Deaths = 4) %>% 
-  #   mutate(d_f = as_date(Date),
-  #          Deaths = as.numeric(Deaths)) %>% 
-  #   select(d_f, Cases, Deaths) %>% 
-  #   drop_na(d_f) %>% 
-  #   replace_na(list(Deaths = 0)) 
+   db_totals <- rio::import(url1, 
+                            sheet = "Trends",
+                            skip = 2) %>% 
+     as_tibble() %>% 
+     rename(Cases = 3,
+            Deaths = 4) %>% 
+     mutate(d_f = as_date(Date),
+            Deaths = as.numeric(Deaths)) %>% 
+     select(d_f, Cases, Deaths) %>% 
+     drop_na(d_f) %>% 
+     replace_na(list(Deaths = 0)) 
 
   # c_tot <- db_totals %>% 
   #   pull(Cases)
