@@ -82,22 +82,23 @@ if (date_f > last_date_drive){
      mutate(Measure = "Tests",
             Age = "TOT",
             Sex = "b",
-            Date = as_date(Date)) %>% 
+            Date = as_date(Date),
+            Value = ifelse(is.na(Value),0,Value)) %>% 
      select(Sex, Age, Measure, Value) %>% 
      arrange(Date) %>% 
      mutate(Value = cumsum(Value))
   
-   db_totals <- rio::import(url1, 
-                            sheet = "Trends",
-                            skip = 2) %>% 
-     as_tibble() %>% 
-     rename(Cases = 3,
-            Deaths = 4) %>% 
-     mutate(d_f = as_date(Date),
-            Deaths = as.numeric(Deaths)) %>% 
-     select(d_f, Cases, Deaths) %>% 
-     drop_na(d_f) %>% 
-     replace_na(list(Deaths = 0)) 
+   # db_totals <- rio::import(url1, 
+   #                          sheet = "Trends",
+   #                          skip = 2) %>% 
+   #   as_tibble() %>% 
+   #   rename(Cases = 3,
+   #          Deaths = 4) %>% 
+   #   mutate(d_f = as_date(Date),
+   #          Deaths = as.numeric(Deaths)) %>% 
+   #   select(d_f, Cases, Deaths) %>% 
+   #   drop_na(d_f) %>% 
+   #   replace_na(list(Deaths = 0)) 
 
   # c_tot <- db_totals %>% 
   #   pull(Cases)
@@ -110,6 +111,7 @@ if (date_f > last_date_drive){
     mutate(Age = case_when(Age == "<1 year" ~ "0",
                            Age == "80+ years" ~ "80",
                            Age == "Unknown" ~ "UNK",
+                           Age == "Pending DOB" ~ "UNK",
                            Age == "Total" ~ "TOT",
                            TRUE ~ Age),
            Sex = "b") %>% 
@@ -141,6 +143,7 @@ if (date_f > last_date_drive){
     mutate(Age = case_when(Age == "<1 year" ~ "0",
                            Age == "80+ years" ~ "80",
                            Age == "Unknown" ~ "UNK",
+                           Age == "Pending DOB" ~ "UNK",
                            Age == "Total" ~ "TOT",
                            TRUE ~ Age),
            Sex = "b") %>% 
@@ -171,7 +174,7 @@ if (date_f > last_date_drive){
   db_deaths <- bind_rows(db_d_age2, db_d_sex2) %>% 
     mutate(Measure = "Deaths")
   
-  db_all <- bind_rows(db_cases, db_deaths, db_tests) %>% 
+  db_all <- bind_rows(db_cases, db_deaths) %>% 
     mutate(Country = "USA",
            Region = "Texas",
            Code = paste0("US_TX", d),
@@ -226,10 +229,7 @@ if (date_f > last_date_drive){
               ss = meta$id,
               sheet = "deaths_sex")
   
-  write_sheet(db_tests, 
-              ss = meta$id,
-              sheet = "tests")
-  
+
   sheet_delete(meta$id, "Sheet1")
   
 } else {
@@ -240,9 +240,43 @@ if (date_f > last_date_drive){
 # and also do a re-sort. i.e. age stuff is always an append operation, but both-sex totals
 # can be revised in retrospect, and should always be swapped.
 
+Sys.sleep(100)
 # 1) re-read the full DB (wasteful)
 db_drive <- get_country_inputDB("US_TX") %>% 
   select(-Short)
+
+
+db_tests <- rio::import(url1, 
+                        sheet = "Tests by Day",
+                        skip = 2) %>% 
+  as_tibble() %>% 
+  select(6:7) %>% 
+  # filter(Location == "Total Tests") %>% 
+  rename(Value = `Test Results...7`,
+         date_f = `Specimen Collection Date`) %>% 
+  mutate(Measure = "Tests",
+         Age = "TOT",
+         Sex = "b",
+         date_f = as_date(date_f),
+         Value = ifelse(is.na(Value),0,Value)) %>% 
+  select(date_f, Sex, Age, Measure, Value) %>% 
+  arrange(date_f) %>% 
+  mutate(Value = cumsum(Value),
+       Sex = "b",
+       Date = paste(
+         sprintf("%02d",day(date_f)),
+         sprintf("%02d",month(date_f)),
+         sprintf("%02d",year(date_f)),
+         sep = "."
+       ),
+       Code = paste0("US_TX",Date),
+       Country = "USA",
+       Region = "Texas",
+       Metric = "Count",
+       AgeInt = NA,
+       Age = "TOT") %>% 
+  select(all_of(colnames(db_drive))) %>% 
+  filter(Value > 0) 
 
 # 2) read and format totals:
 db_totals <- rio::import(url1, 
@@ -273,16 +307,16 @@ db_totals <- rio::import(url1,
          AgeInt = NA,
          Age = "TOT") %>% 
   select(all_of(colnames(db_drive))) %>% 
-  filter(Value > 0) %>% 
-  filter(Date %in% db_drive$Date)
+  filter(Value > 0) 
 
 # 3) remove both-sex totals from drive object
 db_drive <- db_drive %>% 
-  filter(!(Sex == "b" & Age == "TOT" & Measure %in% c("Cases","Deaths")))
+  filter(!(Sex == "b" & Age == "TOT" & Measure %in% c("Cases","Deaths","Tests")))
 
 # 4) bind and push:
 db_out <- db_drive %>% 
   bind_rows(db_totals) %>% 
+  bind_rows(db_tests) %>% 
   sort_input_data()
 
 write_sheet(db_out, ss = ss_i, sheet = "database")

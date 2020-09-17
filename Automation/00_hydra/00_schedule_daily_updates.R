@@ -21,7 +21,6 @@ if (grepl("acosta", auto_update_wd)){
 
 # broken scripts:
 # CA_Montreal
-# Slovenia
 # Mexico
 # Sweden
 
