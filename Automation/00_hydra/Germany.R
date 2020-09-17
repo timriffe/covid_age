@@ -1,8 +1,8 @@
 # don't manually alter the below
 # This is modified by sched()
 # ##  ###
-email <- "tim.riffe@gmail.com"
-setwd("C:/Users/riffe/Documents/covid_age")
+email <- kikepaila@gmail.com
+setwd("C:/Users/acosta/Documents/covid_age")
 # ##  ###
 
 # end 

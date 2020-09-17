@@ -13,7 +13,7 @@ if (grepl("riffe", auto_update_wd)){
    auto_update_email <- '"tim.riffe@gmail.com"'   
 }
 if (grepl("acosta", auto_update_wd)){
-        auto_update_email <- '"kikepaila@gmail.com"'   
+        auto_update_email <- "kikepaila@gmail.com"
 }
 
 # we assume this tasks are scheduled in a here()-aware fashion
@@ -30,16 +30,13 @@ if (grepl("acosta", auto_update_wd)){
 # delete_sched("US_New_Jersey")
 
 # broken:
-sched("CA_Montreal", tm = "12:08",email = auto_update_email, wd = auto_update_wd)
-
+sched("CA_Montreal", tm = "13:46",email = auto_update_email, wd = auto_update_wd)
 
 sched("Colombia",  tm = "12:30",email = auto_update_email, wd = auto_update_wd)
 sched("Venezuela", tm = "13:48",email = auto_update_email, wd = auto_update_wd)
 
-
 # broken
 sched("Slovenia", tm = "15:48",email = auto_update_email, wd = auto_update_wd)
-
 sched("Germany", tm = "16:12",email = auto_update_email, wd = auto_update_wd)
 
 # Massachussets no longer gives age, grr. Only weekly, with new counts for the past two weeks.
