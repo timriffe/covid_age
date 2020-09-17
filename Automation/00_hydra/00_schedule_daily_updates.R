@@ -1,11 +1,6 @@
 
 # TR: modifying this script to assume we're working inside the repository, and are relative to it.
 # should detect if it's tim, enrique, or diego.
-rm(list=ls())
-library(taskscheduleR)
-library(tidyverse)
-library(here)
-source("R/00_Functions.R")
 
 auto_update_wd    <- here()
 
@@ -13,7 +8,7 @@ if (grepl("riffe", auto_update_wd)){
    auto_update_email <- '"tim.riffe@gmail.com"'   
 }
 if (grepl("acosta", auto_update_wd)){
-        auto_update_email <- "kikepaila@gmail.com"
+        auto_update_email <- '"kikepaila@gmail.com"'
 }
 
 # we assume this tasks are scheduled in a here()-aware fashion
@@ -24,13 +19,11 @@ if (grepl("acosta", auto_update_wd)){
 # Mexico
 # Sweden
 
-
-
 # sched("Netherlands", "15:12")
 # delete_sched("US_New_Jersey")
 
 # broken:
-sched("CA_Montreal", tm = "13:46",email = auto_update_email, wd = auto_update_wd)
+sched("CA_Montreal", tm = "13:57",email = auto_update_email, wd = auto_update_wd)
 
 sched("Colombia",  tm = "12:30",email = auto_update_email, wd = auto_update_wd)
 sched("Venezuela", tm = "13:48",email = auto_update_email, wd = auto_update_wd)

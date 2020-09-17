@@ -1,7 +1,7 @@
 rm(list=ls())# don't manually alter the below
 # This is modified by sched()
 # ##  ###
-email <- kikepaila@gmail.com
+email <- "kikepaila@gmail.com"
 setwd("C:/Users/acosta/Documents/covid_age")
 # ##  ###
 
