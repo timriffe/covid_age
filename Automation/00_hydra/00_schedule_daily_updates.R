@@ -23,7 +23,7 @@ if (grepl("acosta", auto_update_wd)){
 # delete_sched("US_New_Jersey")
 
 # broken:
-sched("CA_Montreal", tm = "13:57",email = auto_update_email, wd = auto_update_wd)
+sched("CA_Montreal", tm = "16:44",email = auto_update_email, wd = auto_update_wd)
 
 sched("Colombia",  tm = "12:30",email = auto_update_email, wd = auto_update_wd)
 sched("Venezuela", tm = "13:48",email = auto_update_email, wd = auto_update_wd)
