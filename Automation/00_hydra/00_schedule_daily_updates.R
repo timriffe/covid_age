@@ -22,9 +22,7 @@ if (grepl("acosta", auto_update_wd)){
 # sched("Netherlands", "15:12")
 # delete_sched("US_New_Jersey")
 
-# broken:
 sched("CA_Montreal", tm = "16:44",email = auto_update_email, wd = auto_update_wd)
-
 sched("Colombia",  tm = "12:30",email = auto_update_email, wd = auto_update_wd)
 sched("Venezuela", tm = "13:48",email = auto_update_email, wd = auto_update_wd)
 
@@ -48,16 +46,13 @@ sched("US_Texas", tm = "01:30",email = auto_update_email, wd = auto_update_wd)
 sched("US_Wisconsin", tm = "02:10",email = auto_update_email, wd = auto_update_wd)
 sched("US_Michigan", tm = "02:40",email = auto_update_email, wd = auto_update_wd)
 
-# broken (works if manually sourced)
 sched("Sweden", tm = "17:02",email = auto_update_email, wd = auto_update_wd)
-f#sched("Sweden", tm = "03:40",email = auto_update_email, wd = auto_update_wd)
-
+sched("New_Zealand", "17:20",email = auto_update_email, wd = auto_update_wd)
 
 sched("Netherlands", tm = "04:00",email = auto_update_email, wd = auto_update_wd)
 sched("Estonia", tm = "04:31",email = auto_update_email, wd = auto_update_wd)
 
 # TR: back to manual execution
-#sched("New_Zealand", "18:20",email = auto_update_email, wd = auto_update_wd)
 sched("Peru", tm = "05:31",email = auto_update_email, wd = auto_update_wd)
  # delete_sched("Austria")
  # delete_sched("CA_Montreal")
