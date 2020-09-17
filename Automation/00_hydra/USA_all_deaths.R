@@ -1,11 +1,26 @@
-rm(list=ls())
+# don't manually alter the below
+# This is modified by sched()
+# ##  ###
+email <- "tim.riffe@gmail.com"
+setwd("C:/Users/riffe/Documents/covid_age")
+# ##  ###
+
+# end 
+
+# TR New: you must be in the repo environment 
+source("R/00_Functions.R")
+
 library(tidyverse)
 library(lubridate)
 library(googlesheets4)
 library(googledrive)
 
-drive_auth(email = "kikepaila@gmail.com")
-gs4_auth(email = "kikepaila@gmail.com")
+drive_auth(email = email)
+gs4_auth(email = email)
+# TR: pull urls from rubric instead 
+rubric_i <- get_input_rubric() %>% filter(Short == "US")
+ss_i     <- rubric_i %>% dplyr::pull(Sheet)
+ss_db    <- rubric_i %>% dplyr::pull(Source)
 
 # info by state
 # hm <- read_csv("https://data.cdc.gov/api/views/9bhg-hcku/rows.csv?accessType=DOWNLOAD")
@@ -83,9 +98,10 @@ db_all <- db_cum %>%
 ############################################
 
 write_sheet(db_all, 
-            ss = "https://docs.google.com/spreadsheets/d/146lWGd4Vwmq98FDxLEvEJlUC0MvJUR7XlROyE98AEiM/edit#gid=1300689471",
+            ss = ss_i,
             sheet = "database")
-
+log_update(pp = "USA_all_deaths", N = nrow(db_all))
+Sys.sleep(100)
 ############################################
 #### uploading metadata to Google Drive ####
 ############################################
@@ -98,9 +114,9 @@ d <- paste(sprintf("%02d", day(date_f)),
 sheet_name <- paste0("US_All_", d, "cases&deaths")
 
 meta <- drive_create(sheet_name, 
-                     path = "https://drive.google.com/drive/folders/1wZFatpaBA-zI6Bduli-ycQG450oSOzIQ?usp=sharing", 
+                     path = ss_db, 
                      type = "spreadsheet",
-                     overwrite = T)
+                     overwrite = TRUE)
 
 write_sheet(db, 
             ss = meta$id,
@@ -112,13 +128,13 @@ write_sheet(to,
 
 sheet_delete(meta$id, "Sheet1")
 
-
+Sys.sleep(100)
 # uploading data for INED
-
+# TR: not sure where this leads to, seems to be exact same place, overwriting the previous?
 meta2 <- drive_create(sheet_name, 
                      path = "https://drive.google.com/drive/folders/1t2_JQaVJEPWEZxAqhe8TxEDkIrYeMLCF?usp=sharing", 
                      type = "spreadsheet",
-                     overwrite = T)
+                     overwrite = TRUE)
 
 write_sheet(db, 
             ss = meta2$id,

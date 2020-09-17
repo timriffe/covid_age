@@ -1,4 +1,15 @@
-rm(list=ls())
+# don't manually alter the below
+# This is modified by sched()
+# ##  ###
+email <- "tim.riffe@gmail.com"
+setwd("C:/Users/riffe/Documents/covid_age")
+# ##  ###
+
+# end 
+
+# TR New: you must be in the repo environment 
+source("R/00_Functions.R")
+
 library(tidyverse)
 library(googlesheets4)
 library(googledrive)
@@ -6,26 +17,30 @@ library(rvest)
 library(lubridate)
 
 # Authorizing authentification or Drive (edit these lines with the user's email)
-drive_auth(email = "kikepaila@gmail.com")
-gs4_auth(email = "kikepaila@gmail.com")
+drive_auth(email = email)
+gs4_auth(email = email)
 
+
+CA_MTL_rubric <- get_input_rubric() %>% filter(Short == "CA_MTL")
+ss_i  <- CA_MTL_rubric %>% dplyr::pull(Sheet)
+ss_db <-  CA_MTL_rubric %>% dplyr::pull(Source)
 # reading data from Montreal and last date entered 
-db_drive <- read_sheet("https://docs.google.com/spreadsheets/d/1EQTK1lbqzOvMK3o6FJ3Qtc6EMpreZn8qp8mzwt2k0r0/edit?usp=drive_web&ouid=114992678969098684781",
-                    sheet = "database")
+db_drive <- get_country_inputDB("CA_MTL")
 db_drive2 <- db_drive %>% 
   mutate(date_f = dmy(Date))
 last_date_drive <- max(db_drive2$date_f)
 
 # Date of last update on the website
 # https://santemontreal.qc.ca/en/public/coronavirus-covid-19/situation-of-the-coronavirus-covid-19-in-montreal/#c41383
-m_url <- "https://santemontreal.qc.ca/en/public/coronavirus-covid-19/situation-of-the-coronavirus-covid-19-in-montreal/"
-html <- read_html(m_url)
-date_text <- html_nodes(html, xpath = '//*[@id="c43669"]/p/b') %>% 
+m_url     <- "https://santemontreal.qc.ca/en/public/coronavirus-covid-19/situation-of-the-coronavirus-covid-19-in-montreal/"
+html      <- read_html(m_url)
+date_text <- 
+  html_nodes(html, xpath = '//*[@id="c43669"]/p/b') %>% 
   html_text()
 loc_date1 <- str_locate(date_text, "as of ")[2] + 1
 loc_date2 <- str_locate(date_text, ",")[1] - 1
-date1 <- paste0(str_sub(date_text, loc_date1, loc_date2), " 2020")
-date_f <- mdy(date1)
+date1     <- paste0(str_sub(date_text, loc_date1, loc_date2), " 2020")
+date_f    <- mdy(date1)
 
 if (date_f > last_date_drive){
 
@@ -97,9 +112,9 @@ if (date_f > last_date_drive){
   
   # This command append new rows at the end of the sheet
   sheet_append(db,
-               ss = "https://docs.google.com/spreadsheets/d/1EQTK1lbqzOvMK3o6FJ3Qtc6EMpreZn8qp8mzwt2k0r0/edit#gid=601949320",
+               ss = ss_i,
                sheet = "database")
-  
+  log_update(pp = "Austria", N = nrow(db))
   ############################################
   #### uploading metadata to Google Drive ####
   ############################################
@@ -107,9 +122,9 @@ if (date_f > last_date_drive){
   sheet_name <- paste0("CA_MTL", d, "cases&deaths")
   
   meta <- drive_create(sheet_name,
-                       path = "https://drive.google.com/drive/folders/1K3Px57wr-MFR7Wjff0K6VamFdYmhZo_q?usp=sharing", 
+                       path = ss_db, 
                        type = "spreadsheet",
-                       overwrite = T)
+                       overwrite = TRUE)
   
   write_sheet(db_a, 
               ss = meta$id,

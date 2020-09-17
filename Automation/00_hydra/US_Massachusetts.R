@@ -1,12 +1,22 @@
-rm(list=ls())
+# don't manually alter the below
+# This is modified by sched()
+# ##  ###
+email <- "tim.riffe@gmail.com"
+setwd("C:/Users/riffe/Documents/covid_age")
+# ##  ###
+
+# end 
+
+# TR New: you must be in the repo environment 
+source("R/00_Functions.R")
 library(tidyverse)
 library(lubridate)
 library(googlesheets4)
 library(googledrive)
 library(rvest)
 
-drive_auth(email = "kikepaila@gmail.com")
-gs4_auth(email = "kikepaila@gmail.com")
+drive_auth(email = email)
+gs4_auth(email = email)
 
 m_url <- "https://www.mass.gov/info-details/covid-19-response-reporting#covid-19-cases-in-massachusetts-"
 root <- "https://www.mass.gov"
@@ -213,10 +223,16 @@ last_date <- paste(sprintf("%02d", day(last_date_f)),
 ############################################
 #### uploading database to Google Drive ####
 ############################################
-write_sheet(db_all,
-            ss = "https://docs.google.com/spreadsheets/d/1gkysAAUBvo3_RGtxiGnBTPpq1UoXXC4_f5bzEeJzO4Q/edit#gid=1079196673",
-            sheet = "database")
 
+# TR: pull urls from rubric instead 
+us_ma_rubric <- get_input_rubric() %>% filter(Short == "US_MA")
+ss_i   <- us_ma_rubric %>% dplyr::pull(Sheet)
+ss_db  <- us_ma_rubric %>% dplyr::pull(Source)
+
+write_sheet(db_all,
+            ss = ss_i,
+            sheet = "database")
+log_update(pp = "US_Massachusetts", N = nrow(db_all))
 ############################################
 #### uploading metadata to Google Drive ####
 ############################################
@@ -224,7 +240,7 @@ write_sheet(db_all,
 sheet_name <- paste0("US_MA_", last_date_f, "_cases&deaths")
 
 meta <- drive_create(sheet_name,
-                     path = "https://drive.google.com/drive/u/0/folders/1ZaGxUxhFyFSzhGlYdrelAJft9gvIv4Zx",
+                     path = ss_db,
                      type = "spreadsheet",
                      overwrite = T)
 

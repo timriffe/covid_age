@@ -6,6 +6,9 @@ library(osfr)
 library(lubridate)
 library(zip)
 # TR: let's start zipping, it's time. Can delete the .csv files after a while.
+logfile <- here("buildlog.md")
+
+log_section("push outputs to OSF", append = TRUE, logfile = logfile)
 
 files_data <- c("inputDB","Output_5","Output_10")
 for (fl in files_data){

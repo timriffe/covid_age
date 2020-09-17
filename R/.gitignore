@@ -47,3 +47,9 @@ test_dash_scheduled.log
 01_update_inputDB.log
 US_harmonization_check.R
 manuscript_stats.R
+input_rubric_check.R
+US_OH_check.R
+TX_VA_check.R
+FranceDownload.R
+Guinea_download.R
+NO_fix.R

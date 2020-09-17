@@ -22,15 +22,16 @@ source(here("R","build.R"))
 
 schedule_this <- FALSE
 if (schedule_this){
-  library(taskscheduleR)
-  taskscheduler_create(taskname = "COVerAGE-DB-automatic-daily-build", 
+  taskscheduleR::taskscheduler_delete("COVerAGE-DB-automatic-daily-build")
+  taskscheduleR::taskscheduler_create(
+                       taskname = "COVerAGE-DB-automatic-daily-build", 
                        rscript = "C:/Users/riffe/Documents/covid_age/R/build_pre.R", 
                        schedule = "DAILY", 
                        starttime = "02:00",
                        startdate = format(Sys.Date() + 1, "%d/%m/%Y"))
 }
 
-#taskscheduleR::taskscheduler_delete("COVerAGE-DB-automatic-daily-build")
+#
 test_schedule_build <- FALSE
 if (test_schedule_build){
   library(taskscheduleR)

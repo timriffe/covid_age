@@ -1,20 +1,35 @@
-rm(list=ls())
+# don't manually alter the below
+# This is modified by sched()
+# ##  ###
+email <- "tim.riffe@gmail.com"
+setwd("C:/Users/riffe/Documents/covid_age")
+# ##  ###
+
+# end 
+
+# TR New: you must be in the repo environment 
+source("R/00_Functions.R")
 library(tidyverse)
 library(lubridate)
 library(googlesheets4)
 library(googledrive)
 
-drive_auth(email = "kikepaila@gmail.com")
-gs4_auth(email = "kikepaila@gmail.com")
+drive_auth(email = email)
+gs4_auth(email = email)
+
+# TR: pull urls from rubric instead 
+rubric_i <- get_input_rubric() %>% filter(Short == "US_VA")
+ss_i     <- rubric_i %>% dplyr::pull(Sheet)
+ss_db    <- rubric_i %>% dplyr::pull(Source)
+
 
 # reading data from Drive and last date entered 
-db_drive <- read_sheet("https://docs.google.com/spreadsheets/d/1b8vpZhKDPKWm8QeSFFy01u3rGbEhxUf_nkyjtkPLQlc/edit#gid=0",
-                       sheet = "database")
+db_drive <- get_country_inputDB("US_VA")
 
 last_date_drive <- db_drive %>% 
   mutate(date_f = dmy(Date)) %>% 
   drop_na(date_f) %>% 
-  pull(date_f) 
+  dplyr::pull(date_f) 
 
 max(last_date_drive)
 
@@ -26,10 +41,10 @@ date_f <- mdy(max(db_age$`Report Date`))
 
 if (!(date_f %in% last_date_drive)){
 
-  url_sex <- "https://data.virginia.gov/api/views/tdt3-q47w/rows.csv?accessType=DOWNLOAD"
+  url_sex   <- "https://data.virginia.gov/api/views/tdt3-q47w/rows.csv?accessType=DOWNLOAD"
   url_tests <- "https://data.virginia.gov/api/views/3u5k-c2gr/rows.csv?accessType=DOWNLOAD"
-  db_sex <- read_csv(url_sex)
-  db_tests <- read_csv(url_tests)
+  db_sex    <- read_csv(url_sex)
+  db_tests  <- read_csv(url_tests)
   
   d <- paste(sprintf("%02d", day(date_f)),
              sprintf("%02d", month(date_f)),
@@ -39,7 +54,7 @@ if (!(date_f %in% last_date_drive)){
     rename(date_f = "Lab Report Date") %>% 
     mutate(date_f = mdy(date_f)) %>%
     drop_na(date_f) %>% 
-    pull(date_f) %>% 
+    dplyr::pull(date_f) %>% 
     max()
   
   d_tests <- paste(sprintf("%02d", day(date_f_tests)),
@@ -59,12 +74,14 @@ if (!(date_f %in% last_date_drive)){
     select(date_f, Age, Cases, Deaths) %>% 
     gather(Cases, Deaths, key = "Measure", value = "new") %>% 
     group_by(date_f, Age, Measure) %>% 
-    summarise(new = sum(new)) %>% 
+    summarise(Value = sum(new)) %>% 
     ungroup() %>% 
-    group_by(Age, Measure) %>% 
-    mutate(Value = cumsum(new),
-           Sex = "b") %>% 
-    ungroup()
+    mutate(Sex = "b")
+    # ungroup() %>% 
+    # group_by(Age, Measure) %>% 
+    # mutate(Value = cumsum(new),
+    #        Sex = "b") %>% 
+    
     
     
   
@@ -79,14 +96,15 @@ if (!(date_f %in% last_date_drive)){
                            Sex == "Male" ~ "m",
                            TRUE ~ "UNK")) %>% 
     select(date_f, Sex, Cases, Deaths) %>% 
-    gather(Cases, Deaths, key = "Measure", value = "new") %>% 
+    pivot_longer(Cases:Deaths, names_to = "Measure", values_to = "Value") %>% 
     group_by(date_f, Sex, Measure) %>% 
-    summarise(new = sum(new)) %>% 
+    summarise(Value = sum(Value)) %>% 
     ungroup() %>% 
-    group_by(Sex, Measure) %>% 
-    mutate(Value = cumsum(new),
-           Age = "TOT") %>% 
-    ungroup()
+    mutate(Age = "TOT")
+    # group_by(Sex, Measure) %>% 
+    # mutate(Value = cumsum(new),
+    #        Age = "TOT") %>% 
+    # ungroup()
     
   db_tests2 <- db_tests %>% 
     rename(tests = "Number of PCR Testing Encounters",
@@ -124,9 +142,9 @@ if (!(date_f %in% last_date_drive)){
   #### uploading database to Google Drive ####
   ############################################
   write_sheet(db_all, 
-              ss = "https://docs.google.com/spreadsheets/d/1b8vpZhKDPKWm8QeSFFy01u3rGbEhxUf_nkyjtkPLQlc/edit#gid=0",
+              ss = ss_i,
               sheet = "database")
-  
+  log_update(pp = "US_Virginia", N = nrow(db_all))
   ############################################
   #### uploading metadata to Google Drive ####
   ############################################
@@ -134,9 +152,9 @@ if (!(date_f %in% last_date_drive)){
   sheet_name <- paste0("US_VA", d, "cases&deaths")
   
   meta <- drive_create(sheet_name,
-                       path = "https://drive.google.com/drive/folders/1lwjVpzT6QLzW-_PzhygMiosXcJd7jNk4?usp=sharing", 
+                       path = ss_db, 
                        type = "spreadsheet",
-                       overwrite = T)
+                       overwrite = TRUE)
   
   write_sheet(db_age, 
               ss = meta$id,

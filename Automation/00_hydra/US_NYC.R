@@ -1,4 +1,16 @@
-rm(list=ls())
+# don't manually alter the below
+# This is modified by sched()
+# ##  ###
+email <- "tim.riffe@gmail.com"
+setwd("C:/Users/riffe/Documents/covid_age")
+# ##  ###
+
+# end 
+
+# TR New: you must be in the repo environment 
+source("R/00_Functions.R")
+
+
 library(tidyverse)
 library(lubridate)
 library(googlesheets4)
@@ -7,17 +19,20 @@ library(googledrive)
 print(paste0("Starting data retrieval for NYC..."))
 
 # Drive credentials
-drive_auth(email = "kikepaila@gmail.com")
-gs4_auth(email = "kikepaila@gmail.com")
+drive_auth(email = email)
+gs4_auth(email = email)
+# TR: pull urls from rubric instead 
+rubric_i <- get_input_rubric() %>% filter(Short == "US_NYC")
+ss_i     <- rubric_i %>% dplyr::pull(Sheet)
+ss_db    <- rubric_i %>% dplyr::pull(Source)
 
 
 # reading data from Drive and last date entered 
-db_drive <- read_sheet("https://docs.google.com/spreadsheets/d/1p1BH48_J3sjyT1zvss9H9YqBQZq3q-7c3FEXbA2qeIk/edit?usp=sharing",
-                       sheet = "database")
+db_drive <- get_country_inputDB("US_NYC")
 
 last_date_drive <- db_drive %>% 
   mutate(date_f = dmy(Date)) %>% 
-  pull(date_f) %>% 
+  dplyr::pull(date_f) %>% 
   max()
 
 
@@ -42,7 +57,7 @@ date_f <- db_sum %>%
   filter(X1 == "DATE_UPDATED") %>% 
   separate(X2, c("m", "d")) %>% 
   mutate(date = ymd(paste("2020", m, d, sep = "/"))) %>% 
-  pull(date)
+  dplyr::pull(date)
 
 d <- paste(sprintf("%02d", day(date_f)),
               sprintf("%02d", month(date_f)),
@@ -101,9 +116,9 @@ if (date_f > last_date_drive){
   
   # This command append new rows at the end of the sheet
   sheet_append(db_all,
-               ss = "https://docs.google.com/spreadsheets/d/1p1BH48_J3sjyT1zvss9H9YqBQZq3q-7c3FEXbA2qeIk/edit?usp=sharing",
+               ss = ss_i,
                sheet = "database")
-  
+  log_update(pp = "US_NYC", N = nrow(db_all))
   ############################################
   #### uploading metadata to Google Drive ####
   ############################################
@@ -112,7 +127,7 @@ if (date_f > last_date_drive){
   sheet_name <- paste0("US_NYC", d, "cases&deaths")
   
   meta <- drive_create(sheet_name,
-                       path = "https://drive.google.com/drive/folders/10BtgHUcPLXOeUrxBfzyEYEIL9TeZ4qzY?usp=sharing", 
+                       path = ss_db, 
                        type = "spreadsheet",
                        overwrite = T)
   

@@ -5,7 +5,10 @@ source(here("R","00_Functions.R"))
 library(googlesheets4)
 library(tidyverse)
 
-
+logfile <- here("buildlog.md")
+log_section("Compile metadata", 
+            append = TRUE, 
+            logfile = logfile)
 # if (interactive()){
 #   osf_retrieve_file("8uk9n") %>%
 #     osf_download(path = "Data",
@@ -176,7 +179,7 @@ saveRDS(tab3,file = here("Data","tab3.rds"))
 
 # sheet_tabs <- list()
 # for (i in 1:nrow(rubric)){
-#   ss <- rubric %>% pull(Sheet) %>% '['(i)
+#   ss <- rubric %>% dplyr::pull(Sheet) %>% '['(i)
 #   sheet_tabs[[i]] <- gs4_get(ss)
 # }
 # 

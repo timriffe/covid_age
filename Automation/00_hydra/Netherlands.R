@@ -1,4 +1,16 @@
-rm(list=ls())
+# don't manually alter the below
+# This is modified by sched()
+# ##  ###
+email <- "tim.riffe@gmail.com"
+setwd("C:/Users/riffe/Documents/covid_age")
+# ##  ###
+
+# end 
+
+# TR New: you must be in the repo environment 
+source("R/00_Functions.R")
+
+
 library(tidyverse)
 library(readr)
 library(googlesheets4)
@@ -6,8 +18,14 @@ library(lubridate)
 library(aweek)
 library(googledrive)
 
-drive_auth(email = "kikepaila@gmail.com")
-gs4_auth(email = "kikepaila@gmail.com")
+
+# Drive credentials
+drive_auth(email = email)
+gs4_auth(email = email)
+# TR: pull urls from rubric instead 
+rubric_i <- get_input_rubric() %>% filter(Short == "NL")
+ss_i     <- rubric_i %>% dplyr::pull(Sheet)
+ss_db    <- rubric_i %>% dplyr::pull(Source)
 
 # TODO: add pdf scraping.
 
@@ -51,7 +69,7 @@ redistribute_under50 <- function(chunk){
 # this is convoluted. To redistribute the N cases that died
 # under age 50, we need to cumulate all the other ages over
 # time to get the distribution at each time point.
-Cases <-
+Cases1 <-
   NL %>%
   mutate(Sex = case_when(
                  Sex == "Female" ~ "f",
@@ -72,8 +90,17 @@ Cases <-
          ) %>% 
   group_by(Date_statistics, Sex, Age) %>% 
   summarize(New = n()) %>% 
-  ungroup() %>% 
-  tidyr::complete(Sex, Age, Date_statistics = dates_all, fill = list(New = 0)) %>% 
+  ungroup() 
+
+Cases_full <- 
+  Cases1 %>% 
+  expand(Sex, Age, Date_statistics = dates_all) 
+
+Cases2 <- 
+  Cases_full %>% 
+  left_join(Cases1, by = c("Sex","Age","Date_statistics")) %>% 
+  replace_na(list(New = 0)) %>% 
+  # tidyr::complete(Sex, Age, Date_statistics = dates_all, fill = list(New = 0)) %>% 
   arrange(Sex, Age, Date_statistics) %>% 
   group_by(Sex, Age) %>% 
   mutate(Value = cumsum(New)) %>% 
@@ -168,7 +195,7 @@ Deaths <- NL %>%
 # bind and sort:
 
 out <- 
-  bind_rows(Cases, Deaths) %>%
+  bind_rows(Cases2, Deaths) %>%
   mutate(date_f = dmy(Date)) %>% 
   filter(date_f >= dmy("01.03.2020")) %>% 
   arrange(date_f, Sex, Measure, suppressWarnings(as.integer(Age))) %>% 
@@ -179,9 +206,10 @@ out <-
 ############################################
 
 write_sheet(out, 
-            ss = 'https://docs.google.com/spreadsheets/d/1OB-zNLIbC_fappgMv443PnTGsG97NMHiiehsprRkEpU/edit#gid=431079373', 
+            ss = ss_i, 
             sheet = "database")
-
+log_update(pp = "Netherlands", N = nrow(out))
+Sys.sleep(100)
 ############################################
 #### uploading metadata to Google Drive ####
 ############################################
@@ -194,7 +222,7 @@ d <- paste(sprintf("%02d", day(date_f)),
 sheet_name <- paste0("NL", d, "cases&deaths")
 
 meta <- drive_create(sheet_name, 
-                     path = "https://drive.google.com/drive/folders/1rwemqsieh_PXe0Qj-6y4LlrQoCaq4SQp?usp=sharing", 
+                     path = ss_db, 
                      type = "spreadsheet",
                      overwrite = T)
 
@@ -204,7 +232,13 @@ write_sheet(NL,
 
 sheet_delete(meta$id, "Sheet1")
 
-
+# out %>% 
+#   mutate(Date = dmy(Date)) %>% 
+#   filter(Measure == "Deaths") %>% 
+#   group_by(Date) %>% 
+#   summarize(N = sum(Value)) %>% 
+#   ggplot(aes(x=Date, y = N)) + 
+#   geom_line()
 
 
 #### to adjust later

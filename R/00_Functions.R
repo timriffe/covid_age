@@ -6,7 +6,7 @@ if(!require("pacman", character.only = TRUE)) {
   if (!require("pacman", character.only = TRUE))
     stop("Package pacman not found")
 }
-
+  
 library(pacman)
 
 # Required CRAN packages
@@ -212,7 +212,7 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
                      "' and name contains 'input template'")
       A <- drive_find(q = query)
       ids <- A %>% 
-        pull(drive_resource) %>% 
+        dplyr::pull(drive_resource) %>% 
         lapply(function(x){x$id[1]}) %>% unlist()
       
       cutID <- function(x){
@@ -381,7 +381,7 @@ compile_offsetsDB <- function() {
   if (sum(errors) > 0){
     
     
-    prob_codes <- offsets_rubric %>% mutate(Code=paste(Country,Region)) %>% pull(Code) %>% '['(errors)
+    prob_codes <- offsets_rubric %>% mutate(Code=paste(Country,Region)) %>% dplyr::pull(Code) %>% '['(errors)
     cat("\nThe following code(s) did not read properly:\n",paste(prob_codes,collapse = "\n"))
     off_list <- off_list[!errors]
   }
@@ -1086,10 +1086,10 @@ rescale_to_total <- function(chunk, verbose = FALSE){
   # Check if rescaling is needed
   do_this <- do_we_rescale_to_total(chunk)
   
-  # If no rescaling is needed return unchanged chung
+  # If no rescaling is needed return unchanged chunk
   if(!do_this) {
     
-    # Keeo both sex tot
+    # Keep both sex tot
     i1    <- chunk[["Sex"]] %in% c("m","f","UNK")
     i2    <- chunk[["Age"]] == "TOT"
     ind   <- !(i1 & i2)
@@ -1615,9 +1615,9 @@ harmonize_offset_age <- function(chunk){
 harmonize_offset_age_p <- function(chunk) {
   
   # Get current country region sex
-  .Country <- chunk %>% pull(Country) %>% '['(1)
-  .Region  <- chunk %>% pull(Region) %>% '['(1)
-  .Sex     <- chunk %>% pull(Sex) %>% '['(1)
+  .Country <- chunk %>% dplyr::pull(Country) %>% '['(1)
+  .Region  <- chunk %>% dplyr::pull(Region) %>% '['(1)
+  .Sex     <- chunk %>% dplyr::pull(Sex) %>% '['(1)
   
   # Harmonize
   out <- harmonize_offset_age(chunk)
@@ -1988,7 +1988,7 @@ get_rubric_update_window <- function(hours_from = 12, hours_to = 2){
                   "' and name contains 'input template'")
   A <- drive_find(q = query)
   ids_read <- A %>% 
-    pull(drive_resource) %>% 
+    dplyr::pull(drive_resource) %>% 
     lapply(function(x){x$id[1]}) %>% unlist()
   
   # which templates were updated within last hours_to hours
@@ -1998,7 +1998,7 @@ get_rubric_update_window <- function(hours_from = 12, hours_to = 2){
                   "' and name contains 'input template'")
   B <- drive_find(q = query)
   ids_rm <- B %>% 
-    pull(drive_resource) %>% 
+    dplyr::pull(drive_resource) %>% 
     lapply(function(x){x$id[1]}) %>% unlist()
   
   ids_read <- ids_read[!ids_read%in%ids_rm]
@@ -2016,4 +2016,48 @@ get_rubric_update_window <- function(hours_from = 12, hours_to = 2){
     filter(sheetID %in% ids_read)
   
   rubric
+}
+
+# Functions inherited from EA, modifed by TR.
+
+# @param pp base name of script (needs to be inside Automation/00_hydra/)
+# @param tm what time should it be run at?
+# @param email gmail account with permissions and local PAT set up
+# @param wd repo base path.
+sched <- function(
+  pp = "CA_montreal", 
+  tm = "06:00", 
+  email = "tim.riffe@gmail.com",
+  wd = here()){
+  script <- here("Automation/00_hydra/", paste0(pp, ".R")  )
+  
+  # modify the script to know who scehduled it and where it is
+  A        <- readLines(script)
+  ind      <- (A == "# ##  ###") %>% which() %>% '['(1)
+  A[ind+1] <- paste("email <-",email)
+  A[ind+2] <- paste0('setwd("',wd,'")')
+  writeLines(A,script)
+  # -------------------
+  
+  tskname <- paste0("coverage_db_", pp, "_daily")
+  
+  try(taskscheduler_delete(taskname = tskname))
+  
+  taskscheduler_create(taskname = tskname, 
+                       rscript = script,
+                       schedule = "DAILY", 
+                       starttime = tm, 
+                       startdate = "30/06/2020")
+}
+# remove a scheduled task
+# @param pp script base name
+delete_sched <- function(pp = "CA_montreal"){
+  tskname <- paste0("coverage_db_", pp, "_daily")
+  taskscheduler_delete(taskname = tskname)
+}
+
+log_update <- function(pp, N){
+  ss <- "https://docs.google.com/spreadsheets/d/1ftqFwX_Z29OrXxH9HnQWo31ApoEpxSqYOJspnIUAUbk/edit#gid=0"
+  log_this <- tibble(pp=pp,Date = lubridate::today(), rows = N)
+  sheet_append(log_this, ss = ss, sheet = "log")
 }

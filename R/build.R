@@ -50,8 +50,6 @@ source(here("R","08_coverage_map.R"))
 
 # push to OSF
 
-# Coverage Map
-# getting 401 errors
 source(here("R","09_push_osf.R"))
 
 # ---------------------- #
@@ -61,6 +59,6 @@ source(here("R","10_commit_files.R"))
 
 # ---------------------- #
 
-# update build log / comminucations
+# update build log / communications
 source(here("R","11_email_and_tweet.R"))
 

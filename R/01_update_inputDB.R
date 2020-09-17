@@ -11,9 +11,8 @@ change_here <- function(new_path){
 }
 
 change_here("C:/Users/riffe/Documents/covid_age")
-startup::startup()
 setwd(here())
-
+startup::startup()
 # always work with the most uptodate repository
 repo <- git2r::repository(here())
 #init()
@@ -47,7 +46,7 @@ hours_to   <- 2
 
 
 # which templates were updated within last hours_from hours?
-
+#rubric <- get_input_rubric()
 rubric <- get_rubric_update_window(hours_from, hours_to)
 
 if (nrow(rubric) > 0){
@@ -81,7 +80,7 @@ if (nrow(rubric) > 0){
   # remove non-standard Measure:
   # filters: remove any code that has a duplicate entry
   Measures <- c("Cases","Deaths","Tests","ASCFR")
-  n <- inputDB %>% pull(Measure) %>% `%in%`(Measures)
+  n <- inputDB %>% dplyr::pull(Measure) %>% `%in%`(Measures)
   # sum(n)
   if (sum(!n) > 0){
     inputDB <- inputDB %>% filter(n) 
@@ -99,7 +98,7 @@ if (nrow(rubric) > 0){
   # remove non-standard Metric:
   # filters: remove any code that has a duplicate entry
   Metrics <- c("Count","Fraction","Ratio")
-  n <- inputDB %>% pull(Metric) %>% `%in%`(Metrics)
+  n <- inputDB %>% dplyr::pull(Metric) %>% `%in%`(Metrics)
   # sum(n)
   if (sum(!n) > 0){
     inputDB <- inputDB %>% filter(n)
@@ -117,7 +116,7 @@ if (nrow(rubric) > 0){
   # remove non-standard Sex:
   # filters: remove any code that has a duplicate entry
   Sexes <- c("m","f","b","UNK")
-  n <- inputDB %>% pull(Sex) %>% `%in%`(Sexes)
+  n <- inputDB %>% dplyr::pull(Sex) %>% `%in%`(Sexes)
   # sum(n)
   if (sum(!n) > 0){
     inputDB <- inputDB %>% filter(n)
@@ -136,7 +135,7 @@ if (nrow(rubric) > 0){
   n <- duplicated(inputDB[,c("Code","Sex","Age","Measure","Metric")])
   # sum(n)
   if (sum(n) > 0){
-    rmcodes <- inputDB %>% filter(n) %>% pull(Code) %>% unique()
+    rmcodes <- inputDB %>% filter(n) %>% dplyr::pull(Code) %>% unique()
     inputDB <- inputDB %>% filter(!Code%in%rmcodes)
     if (length(rmcodes)>0){
       log_section("Duplicates detected. Following `Code`s removed:", 
@@ -190,13 +189,14 @@ if (nrow(rubric) > 0){
 schedule_this <- FALSE
 if (schedule_this){
   library(taskscheduleR)
+  taskscheduleR::taskscheduler_delete("COVerAGE-DB-every-8-hour-inputDB-updates")
   taskscheduler_create(taskname = "COVerAGE-DB-every-8-hour-inputDB-updates", 
                        rscript = "C:/Users/riffe/Documents/covid_age/R/01_update_inputDB.R", 
                        schedule = "HOURLY", 
                        modifier = 8,
-                       starttime = "23:00",
+                       starttime = "15:06",
                        startdate = format(Sys.Date(), "%d/%m/%Y"))
-  # taskscheduleR::taskscheduler_delete("COVerAGE-DB-every-8-hour-inputDB-updates")
+  # 
 }
 
 
