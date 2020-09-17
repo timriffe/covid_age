@@ -1,18 +1,18 @@
 
 # New build log 
- Wed Sep 16 02:00:19 2020 
+ Thu Sep 17 02:00:06 2020 
 
 
 # A 
- Wed Sep 16 02:00:50 2020 
+ Thu Sep 17 02:00:17 2020 
 
 
 # B 
- Wed Sep 16 02:05:06 2020 
+ Thu Sep 17 02:01:59 2020 
 
 
 # C 
- Wed Sep 16 02:26:25 2020 
+ Thu Sep 17 02:08:01 2020 
 
 filter( Code == 'AL17.07.2020', Sex == 'b', Measure == 'Tests' )
 filter( Code == 'AL18.07.2020', Sex == 'b', Measure == 'Tests' )
@@ -68,19 +68,19 @@ filter( Code == 'US_VA07.07.2020', Sex == 'b', Measure == 'Tests' )
 filter( Code == 'US_VA08.07.2020', Sex == 'b', Measure == 'Tests' )
 
 # D 
- Wed Sep 16 02:37:57 2020 
+ Thu Sep 17 02:11:30 2020 
 
 
 # E 
- Wed Sep 16 02:44:16 2020 
+ Thu Sep 17 02:13:34 2020 
 
 
 # G 
- Wed Sep 16 02:50:54 2020 
+ Thu Sep 17 02:15:35 2020 
 
 
 # H 
- Wed Sep 16 03:08:17 2020 
+ Thu Sep 17 02:20:42 2020 
 
 filter( Code == 'PK10.03.2020', Measure == 'Deaths' )
 filter( Code == 'PK11.03.2020', Measure == 'Deaths' )
@@ -92,11 +92,11 @@ filter( Code == 'PK16.03.2020', Measure == 'Deaths' )
 filter( Code == 'PK17.03.2020', Measure == 'Deaths' )
 
 # I 
- Wed Sep 16 03:19:42 2020 
+ Thu Sep 17 02:24:06 2020 
 
 
 # J 
- Wed Sep 16 03:23:52 2020 
+ Thu Sep 17 02:25:17 2020 
 
 filter( Code == 'CA_QC9.04.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'CA_QC10.04.2020', Sex == 'b', Measure == 'Cases' )
@@ -197,13 +197,16 @@ filter( Code == 'US_TX11.09.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_TX13.09.2020', Sex == 'b', Measure == 'Cases' )
 
 # Age harmonization 
- Wed Sep 16 03:45:46 2020 
+ Thu Sep 17 02:32:53 2020 
 
 filter( Code == 'AL19.07.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'AL20.07.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'AL21.07.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'AL22.07.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'CA_QC24.06.2020', Sex == 'b', Measure == 'Cases' )
+filter( Code == 'DO29.07.2020', Sex == 'f', Measure == 'Cases' )
+filter( Code == 'DO30.07.2020', Sex == 'f', Measure == 'Cases' )
+filter( Code == 'DO31.07.2020', Sex == 'f', Measure == 'Cases' )
+filter( Code == 'FI11.09.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'TR03.08.2020', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'TR05.07.2020', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'TR10.08.2020', Sex == 'm', Measure == 'Cases' )
@@ -213,14 +216,11 @@ filter( Code == 'TR19.07.2020', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'TR24.08.2020', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'TR26.07.2020', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'TR28.06.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'FI11.09.2020', Sex == 'b', Measure == 'Cases' )
+filter( Code == 'CA_QC24.06.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'AL19.07.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'AL20.07.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'AL21.07.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'AL22.07.2020', Sex == 'b', Measure == 'Deaths' )
-filter( Code == 'DO29.07.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'DO30.07.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'DO31.07.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'US_IL21.07.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'US_IL22.07.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'US_LA27.08.2020', Sex == 'b', Measure == 'Deaths' )
@@ -244,6 +244,10 @@ filter( Code == 'TR19.07.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'TR24.08.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'TR26.07.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'TR28.06.2020', Sex == 'f', Measure == 'Cases' )
+filter( Code == 'US_IL22.07.2020', Sex == 'b', Measure == 'Tests' )
+filter( Code == 'DO29.07.2020', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'DO30.07.2020', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'DO31.07.2020', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'CF20.07.2020', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'DO16.06.2020', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'DO17.06.2020', Sex == 'f', Measure == 'Deaths' )
@@ -252,10 +256,6 @@ filter( Code == 'DO19.06.2020', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'DO29.07.2020', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'DO30.07.2020', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'DO31.07.2020', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'DO29.07.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'DO30.07.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'DO31.07.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'US_IL22.07.2020', Sex == 'b', Measure == 'Tests' )
 filter( Code == 'CR26.07.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'DO18.06.2020', Sex == 'm', Measure == 'Deaths' )
 filter( Code == 'DO29.07.2020', Sex == 'm', Measure == 'Deaths' )
@@ -263,29 +263,17 @@ filter( Code == 'DO30.07.2020', Sex == 'm', Measure == 'Deaths' )
 filter( Code == 'DO31.07.2020', Sex == 'm', Measure == 'Deaths' )
 
 # Compile metadata 
- Wed Sep 16 05:51:31 2020 
+ Thu Sep 17 03:46:57 2020 
 
 
 # Building dashboards 
- Wed Sep 16 06:13:25 2020 
+ Thu Sep 17 04:06:07 2020 
 
 
 # remake coverage map 
- Wed Sep 16 06:14:41 2020 
+ Thu Sep 17 04:07:27 2020 
 
 
 # push outputs to OSF 
- Wed Sep 16 06:15:06 2020 
-
-
-# push outputs to OSF 
- Wed Sep 16 08:59:00 2020 
-
-
-# Commit dashboards and buildlog 
- Wed Sep 16 09:00:24 2020 
-
-
-# update build series log 
- Wed Sep 16 09:00:36 2020 
+ Thu Sep 17 04:07:51 2020 
 
