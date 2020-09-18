@@ -58,29 +58,29 @@ db2 <- db %>%
            ENTIDAD_RES == '06' ~ 'Colima',
            ENTIDAD_RES == '07' ~ 'Chiapas',
            ENTIDAD_RES == '08' ~ 'Chihuahua',
-           ENTIDAD_RES == '09' ~ 'Ciudad de M?xico',
+           ENTIDAD_RES == '09' ~ 'Ciudad de Mexico',
            ENTIDAD_RES == '10' ~ 'Durango',
            ENTIDAD_RES == '11' ~ 'Guanajuato',
            ENTIDAD_RES == '12' ~ 'Guerrero',
            ENTIDAD_RES == '13' ~ 'Hidalgo',
            ENTIDAD_RES == '14' ~ 'Jalisco',
-           ENTIDAD_RES == '15' ~ 'M?xico',
-           ENTIDAD_RES == '16' ~ 'Michoac?n de Ocampo',
+           ENTIDAD_RES == '15' ~ 'Mexico',
+           ENTIDAD_RES == '16' ~ 'Michoacan de Ocampo',
            ENTIDAD_RES == '17' ~ 'Morelos',
            ENTIDAD_RES == '18' ~ 'Nayarit',
-           ENTIDAD_RES == '19' ~ 'Nuevo Le?n',
+           ENTIDAD_RES == '19' ~ 'Nuevo Leon',
            ENTIDAD_RES == '20' ~ 'Oaxaca',
            ENTIDAD_RES == '21' ~ 'Puebla',
-           ENTIDAD_RES == '22' ~ 'Quer?taro',
+           ENTIDAD_RES == '22' ~ 'Queretaro',
            ENTIDAD_RES == '23' ~ 'Quintana Roo',
-           ENTIDAD_RES == '24' ~ 'San Luis Potos?',
+           ENTIDAD_RES == '24' ~ 'San Luis Potosi',
            ENTIDAD_RES == '25' ~ 'Sinaloa',
            ENTIDAD_RES == '26' ~ 'Sonora',
            ENTIDAD_RES == '27' ~ 'Tabasco',
            ENTIDAD_RES == '28' ~ 'Tamaulipas',
            ENTIDAD_RES == '29' ~ 'Tlaxcala',
            ENTIDAD_RES == '30' ~ 'Veracruz de Ignacio de la Llave',
-           ENTIDAD_RES == '31' ~ 'Yucat?n',
+           ENTIDAD_RES == '31' ~ 'Yucatan',
            ENTIDAD_RES == '32' ~ 'Zacatecas',
            TRUE ~ 'Other'
          )) %>% 
@@ -199,7 +199,7 @@ db_final <- db_all2 %>%
                       sep="."),
          iso = case_when(
            Region == 'All' ~ 'MX',
-           Region == 'Ciudad de M?xico' ~ 'MX_CMX',
+           Region == 'Ciudad de Mexico' ~ 'MX_CMX',
            Region == 'Aguascalientes' ~ 'MX_AGU',
            Region == 'Baja California' ~ 'MX_BCN',
            Region == 'Baja California Sur' ~ 'MX_BCS',
@@ -213,23 +213,23 @@ db_final <- db_all2 %>%
            Region == 'Guerrero' ~ 'MX_GRO',
            Region == 'Hidalgo' ~ 'MX_HID',
            Region == 'Jalisco' ~ 'MX_JAL',
-           Region == 'M?xico' ~ 'MX_MEX',
-           Region == 'Michoac?n de Ocampo' ~ 'MX_MIC',
+           Region == 'Mexico' ~ 'MX_MEX',
+           Region == 'Michoacan de Ocampo' ~ 'MX_MIC',
            Region == 'Morelos' ~ 'MX_MOR',
            Region == 'Nayarit' ~ 'MX_NAY',
-           Region == 'Nuevo Le?n' ~ 'MX_NLE',
+           Region == 'Nuevo Leon' ~ 'MX_NLE',
            Region == 'Oaxaca' ~ 'MX_OAX',
            Region == 'Puebla' ~ 'MX_PUE',
-           Region == 'Quer?taro' ~ 'MX_QUE',
+           Region == 'Queretaro' ~ 'MX_QUE',
            Region == 'Quintana Roo' ~ 'MX_ROO',
-           Region == 'San Luis Potos?' ~ 'MX_SLP',
+           Region == 'San Luis Potosi' ~ 'MX_SLP',
            Region == 'Sinaloa' ~ 'MX_SIN',
            Region == 'Sonora' ~ 'MX_SON',
            Region == 'Tabasco' ~ 'MX_TAB',
            Region == 'Tamaulipas' ~ 'MX_TAM',
            Region == 'Tlaxcala' ~ 'MX_TLA',
            Region == 'Veracruz de Ignacio de la Llave' ~ 'MX_VER',
-           Region == 'Yucat?n' ~ 'MX_YUC',
+           Region == 'Yucatan' ~ 'MX_YUC',
            Region == 'Zacatecas' ~ 'MX_ZAC',
            TRUE ~ "Other"
          ),
@@ -253,7 +253,7 @@ unique(db_final$Region)
 db_final_mx <- db_final %>% 
   filter(Region == "All")
 
-gr1 <- c('Ciudad de M?xico', 
+gr1 <- c('Ciudad de Mexico', 
          'Aguascalientes', 
          'Baja California', 
          'Baja California Sur')
@@ -271,22 +271,22 @@ gr3 <- c('Chihuahua',
 gr4 <- c(
   'Hidalgo', 
   'Jalisco', 
-  'M?xico', 
-  'Michoac?n de Ocampo'
+  'Mexico', 
+  'Michoacan de Ocampo'
 )
 
 gr5 <- c(
   'Morelos', 
   'Nayarit', 
-  'Nuevo Le?n', 
+  'Nuevo Leon', 
   'Oaxaca'
 )
 
 gr6 <- c(
   'Puebla', 
-  'Quer?taro', 
+  'Queretaro', 
   'Quintana Roo', 
-  'San Luis Potos?'
+  'San Luis Potosi'
 )
 
 gr7 <- c(
@@ -299,7 +299,7 @@ gr7 <- c(
 gr8 <- c(
   'Tlaxcala', 
   'Veracruz de Ignacio de la Llave', 
-  'Yucat?n', 
+  'Yucatan', 
   'Zacatecas'
 )
 
@@ -333,7 +333,6 @@ db_final_8 <- db_final %>%
 # Push dataframe to Drive -------------------------------------------------
 #########################
 
-
 rubric <- get_input_rubric()
 ss_0   <- rubric %>% filter(Short == "MX") %>% dplyr::pull(Sheet)
 ss_1   <- rubric %>% filter(Short == "MX_1") %>% dplyr::pull(Sheet)
@@ -346,7 +345,6 @@ ss_7   <- rubric %>% filter(Short == "MX_7") %>% dplyr::pull(Sheet)
 ss_8   <- rubric %>% filter(Short == "MX_8") %>% dplyr::pull(Sheet)
 
 ss_db  <- rubric %>% filter(Short == "MX") %>% dplyr::pull(Source)
-
 
 
 sheet_write(db_final_mx,
