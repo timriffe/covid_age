@@ -1082,7 +1082,7 @@ do_we_rescale_to_total <- function(chunk) {
 # @param verbose logical Print console message?
 
 rescale_to_total <- function(chunk, verbose = FALSE){
-  
+  chunk   <- as.data.table(chunk)
   # Check if rescaling is needed
   do_this <- do_we_rescale_to_total(chunk)
   
