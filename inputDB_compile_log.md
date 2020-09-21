@@ -29,3 +29,14 @@ US_OR04.09.2020
 # 2020-09-21 07:06:06 updates 
  Mon Sep 21 07:06:06 2020 
 
+
+# Filter valid Measure entries: 
+ Mon Sep 21 07:43:58 2020 
+
+Valid Measures include: Cases,Deaths,Tests,ASCFR
+ 256 rows removed
+# Filter valid Metric entries: 
+ Mon Sep 21 07:43:58 2020 
+
+Valid Metrics include: Count,Fraction,Ratio
+ 14 rows removed
