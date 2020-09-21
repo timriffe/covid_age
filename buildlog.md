@@ -3,15 +3,15 @@
  Mon Sep 21 02:00:06 2020 
 
 
-# A 
+# A (convert_fractions_sexes, convert_fractions_within_sex)
  Mon Sep 21 02:00:19 2020 
 
 
-# B 
+# B (redistribute_unknown_age)
  Mon Sep 21 02:02:07 2020 
 
 
-# C 
+# C (rescale_to_total)
  Mon Sep 21 02:08:23 2020 
 
 filter( Code == 'AL17.07.2020', Sex == 'b', Measure == 'Tests' )
@@ -4383,19 +4383,19 @@ filter( Code == 'US_VA05.07.2020', Sex == 'b', Measure == 'Tests' )
 filter( Code == 'US_VA07.07.2020', Sex == 'b', Measure == 'Tests' )
 filter( Code == 'US_VA08.07.2020', Sex == 'b', Measure == 'Tests' )
 
-# D 
+# D (infer_cases_from_deaths_and_ascfr)
  Mon Sep 21 02:12:20 2020 
 
 
-# E 
+# E (infer_deaths_from_cases_and_ascfr)
  Mon Sep 21 02:14:26 2020 
 
 
-# G 
+# G (redistribute_unknown_sex)
  Mon Sep 21 02:16:33 2020 
 
 
-# H 
+# H (rescale_sexes)
  Mon Sep 21 02:21:45 2020 
 
 filter( Code == 'PK10.03.2020', Measure == 'Deaths' )
@@ -4407,11 +4407,11 @@ filter( Code == 'PK15.03.2020', Measure == 'Deaths' )
 filter( Code == 'PK16.03.2020', Measure == 'Deaths' )
 filter( Code == 'PK17.03.2020', Measure == 'Deaths' )
 
-# I 
+# I (infer_both_sex)
  Mon Sep 21 02:25:14 2020 
 
 
-# J 
+# J (maybe_lower_closeout)
  Mon Sep 21 02:26:25 2020 
 
 filter( Code == 'CA_QC9.04.2020', Sex == 'b', Measure == 'Cases' )
