@@ -243,3 +243,15 @@ filter( Code == 'MX_CMX14.05.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'MX_CMX14.05.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'MX_CMX14.05.2020', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'MX_CMX14.05.2020', Sex == 'b', Measure == 'Deaths' )
+
+# remake coverage map 
+ Tue Sep 22 09:00:58 2020 
+
+
+# push outputs to OSF 
+ Tue Sep 22 09:05:26 2020 
+
+
+# Commit dashboards and buildlog 
+ Tue Sep 22 09:06:19 2020 
+
