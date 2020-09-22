@@ -1089,10 +1089,12 @@ rescale_to_total <- function(chunk, verbose = FALSE){
   # If no rescaling is needed return unchanged chunk
   if(!do_this) {
     
+    # TR: no need to keep both-sex TOT age.
+    # it can be summed from the margins if needed.
     # Keep both sex tot
-    i1    <- chunk[["Sex"]] %in% c("m","f","UNK")
-    i2    <- chunk[["Age"]] == "TOT"
-    ind   <- !(i1 & i2)
+   #i1    <- chunk[["Sex"]] %in% c("m","f","UNK")
+    i1    <- chunk[["Age"]] == "TOT"
+    ind   <- !i1
     chunk <- chunk[ind] 
     
     # Output

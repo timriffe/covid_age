@@ -24,7 +24,7 @@ Z <-
   inputDB %>% 
   filter(!(Age == "TOT" & Metric == "Fraction"),
          !(Age == "UNK" & Value == 0),
-         !(Sex == "UNK" & Sex == 0)) %>% 
+         !(Sex == "UNK" & Value == 0)) %>% 
   as.data.table() %>% 
   mutate(AgeInt = as.integer(AgeInt))
 
