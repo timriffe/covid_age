@@ -399,10 +399,20 @@ osf_retrieve_file(&quot;9dsfk&quot;) %&gt;%
 <pre class="r"><code># This reads it in
 inputDB &lt;-  read_csv(&quot;inputDB.zip&quot;,
                      skip = 1,
-                     col_types = &quot;cccccciccdc&quot;)
-
-glimpse(inputDB)</code></pre>
-<pre><code>## Rows: 3,123,609
+                     col_types = &quot;cccccciccdc&quot;)</code></pre>
+<pre><code>## Warning: Unnamed `col_types` should have the same length as `col_names`. Using
+## smaller of the two.</code></pre>
+<pre><code>## Warning: 3432994 parsing failures.
+## row col   expected     actual          file
+##   1  -- 11 columns 12 columns &#39;inputDB.zip&#39;
+##   2  -- 11 columns 12 columns &#39;inputDB.zip&#39;
+##   3  -- 11 columns 12 columns &#39;inputDB.zip&#39;
+##   4  -- 11 columns 12 columns &#39;inputDB.zip&#39;
+##   5  -- 11 columns 12 columns &#39;inputDB.zip&#39;
+## ... ... .......... .......... .............
+## See problems(...) for more details.</code></pre>
+<pre class="r"><code>glimpse(inputDB)</code></pre>
+<pre><code>## Rows: 3,432,994
 ## Columns: 11
 ## $ Country &lt;chr&gt; &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanistan&quot;,...
 ## $ Region  &lt;chr&gt; &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;Al...

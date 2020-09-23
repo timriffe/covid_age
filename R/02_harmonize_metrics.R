@@ -24,7 +24,8 @@ Z <-
   inputDB %>% 
   filter(!(Age == "TOT" & Metric == "Fraction"),
          !(Age == "UNK" & Value == 0),
-         !(Sex == "UNK" & Sex == 0)) %>% 
+         !(Sex == "UNK" & Value == 0),
+         !is.na(Value)) %>% 
   as.data.table() %>% 
   mutate(AgeInt = as.integer(AgeInt))
 
@@ -32,7 +33,7 @@ Z <-
 ### Convert fractions ###############################################
 
 # Log 
-log_section("A", logfile = logfile)
+log_section("A (convert_fractions_sexes)", logfile = logfile)
 
 # Convert sex-specific fractions to counts
 A <- Z[ , try_step(process_function = convert_fractions_sexes,
@@ -53,7 +54,7 @@ A <- A[ , try_step(process_function = convert_fractions_within_sex,
 ### Distribute counts with unknown age ##############################
 
 # Log
-log_section("B", logfile = logfile)
+log_section("B (redistribute_unknown_age)", logfile = logfile)
 
 B <- A[ , try_step(process_function = redistribute_unknown_age,
                    chunk = .SD,
@@ -65,7 +66,7 @@ B <- A[ , try_step(process_function = redistribute_unknown_age,
 ### Scale to totals (within sex) ####################################
 
 # Log
-log_section("C", logfile = logfile)
+log_section("C (rescale_to_total)", logfile = logfile)
 
 C <- B[ , try_step(process_function = rescale_to_total,
                    chunk = .SD,
@@ -77,7 +78,7 @@ C <- B[ , try_step(process_function = rescale_to_total,
 ### Derive counts from deaths and CFRs ##############################
 
 # Log
-log_section("D", logfile = logfile)
+log_section("D (infer_cases_from_deaths_and_ascfr)", logfile = logfile)
 
 D <- C[ , try_step(process_function = infer_cases_from_deaths_and_ascfr,
                    chunk = .SD,
@@ -89,7 +90,7 @@ D <- C[ , try_step(process_function = infer_cases_from_deaths_and_ascfr,
 # Infer deaths from cases and CFRs ##################################
 
 # Log
-log_section("E", logfile = logfile)
+log_section("E (infer_deaths_from_cases_and_ascfr)", logfile = logfile)
 
 E <- D[ , try_step(process_function = infer_deaths_from_cases_and_ascfr,
                    chunk = .SD,
@@ -103,7 +104,7 @@ E <- E[Metric != "Ratio"]
 
 ### Distribute cases with unkown sex ################################
 
-log_section("G", logfile = logfile)
+log_section("G (redistribute_unknown_sex)", logfile = logfile)
 
 G <- E[ , try_step(process_function = redistribute_unknown_sex,
                    chunk = .SD,
@@ -115,7 +116,7 @@ G <- E[ , try_step(process_function = redistribute_unknown_sex,
 ### Scale sex-specific data to match combined sex data ##############
 
 # Log
-log_section("H", logfile = logfile)
+log_section("H (rescale_sexes)", logfile = logfile)
 
 H <- G[ , try_step(process_function = rescale_sexes,
                    chunk = .SD,
@@ -130,7 +131,7 @@ H <- H[Age != "TOT"]
 ### Both sexes combined calculated from sex-specifc #################
 
 # Log
-log_section("I", logfile = logfile)
+log_section("I (infer_both_sex)", logfile = logfile)
 
 I <- H[ , try_step(process_function = infer_both_sex,
                    chunk = .SD,
@@ -143,7 +144,7 @@ I <- H[ , try_step(process_function = infer_both_sex,
 ### Adjust closeout age #############################################
 
 # Log
-log_section("J", logfile = logfile)
+log_section("J (maybe_lower_closeout)", logfile = logfile)
 
 J <- I[ , Age := as.integer(Age), ][, ..icols]
 

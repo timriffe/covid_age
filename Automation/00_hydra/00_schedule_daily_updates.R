@@ -13,7 +13,6 @@ if (grepl("acosta", auto_update_wd)){
 
 # we assume this tasks are scheduled in a here()-aware fashion
 
-
 # broken scripts:
 # CA_Montreal
 # Mexico
@@ -23,6 +22,7 @@ if (grepl("acosta", auto_update_wd)){
 # delete_sched("US_New_Jersey")
 
 sched("CA_Montreal", tm = "16:44",email = auto_update_email, wd = auto_update_wd)
+
 sched("Colombia",  tm = "12:30",email = auto_update_email, wd = auto_update_wd)
 sched("Venezuela", tm = "13:48",email = auto_update_email, wd = auto_update_wd)
 
@@ -61,7 +61,7 @@ sched("Peru", tm = "05:31",email = auto_update_email, wd = auto_update_wd)
  # delete_sched("Germany")
  # delete_sched("Mexico")
  # delete_sched("Netherlands")
- # delete_sched("New_Zeland")
+ # delete_sched("New_Zealand")
  # delete_sched("Peru")
  # delete_sched("Slovenia")
  # delete_sched("Sweden")
