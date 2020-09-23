@@ -39,14 +39,10 @@ If you know of sources for other populations, please either email, Tweet, or lea
 
 Please cite using the OSF repository, which has a doi. All collaborators are coauthors (see full list below), but this short form is preferred:
 
-### APA
-Riffe, T., Acosta, E., et. al. (DATE). COVerAGE-DB: A database of COVID-19 cases and deaths by age . (https://doi.org/10.17605/OSF.IO/MPWJQ)[https://doi.org/10.17605/OSF.IO/MPWJQ]
+COVeAGE-DB: A database of age-structured COVID-19 cases and deaths.
+Tim Riffe, Enrique Acosta, The COVerAGE-DB team
+medRxiv 2020.09.18.20197228; doi: https://doi.org/10.1101/2020.09.18.20197228 Data downloaded from [DATE] (https://doi.org/10.17605/OSF.IO/MPWJQ)[https://doi.org/10.17605/OSF.IO/MPWJQ]
 
-### MLA
-Riffe, Tim, Enrique Acosta, et. al. “COVerAGE-DB: A Database of COVID-19 Cases and Deaths by Age .” OSF, DATE. Web.(https://doi.org/10.17605/OSF.IO/MPWJQ)[https://doi.org/10.17605/OSF.IO/MPWJQ]
-
-### Chicago
-Riffe, Tim, Enrique Acosta, et. al. 2020. “COVerAGE-DB: A Database of COVID-19 Cases and Deaths by Age .” OSF. DATE. doi:10.17605/OSF.IO/MPWJQ.
 
 ## The team (so far), alphabetical by last name
 José Manuel Aburto, Enrique Acosta, Diego Alburez-Gutierrez, Anna Altová, Ugofilippo Baselini, Simona Bignami, Didier Breton, Peter Choi, Jorge Cimentada, Gonzalo De Armas, Emanuele del Fava, Alicia Delgado, Viorela Diaconu, Jessica Donzowa, Christian Dudel, Toni Froehlich, Alain Gagnon, Mariana Garcia Cristómo, Victor M. Garcia-Guerrero, Armando González, Irwin Hecker, Dagnon Eric Koba, Marina Kolobova, Mine Kühn, Chia Liu, Andrea Lozer, Mădălina Manea, Muntasir Masun, Ryohei Mogi, Saskia Morwinsky, Ronald Musizvingoza, Mikko Myrskylä, Marilia Nepomuceno, Michelle Nickel, Natalie Nitsche, Anna Oksuzyan, Samuel Oladele, Emmanuel Olamijuwon, Oluwafunke Omodara, Soumaila Ouedraogo, Mariana Paredes, Marius Pascariu, Manuel Piriz, Raquel Pollero, Federico Rehermann, Filipe Ribeiro, Tim Riffe, Silvia Rizzi, Francisco Rowe, Isaac Sasson, Jiaxin Shi, Rafael Silva-Ramírez, Cosmo Strozza, Catalina Torres, Sergi Trias-Llimos, Fumiya Uchikoshi, Alyson van Raalte, Paola Vasquez, Estevão Vilela, Iván Williams, Virginia Zarulli
