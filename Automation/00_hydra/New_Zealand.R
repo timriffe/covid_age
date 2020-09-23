@@ -1,8 +1,8 @@
 # don't manually alter the below
 # This is modified by sched()
 # ##  ###
-email <- "tim.riffe@gmail.com"
-setwd("C:/Users/riffe/Documents/covid_age")
+email <- "kikepaila@gmail.com"
+setwd("C:/Users/acosta/Documents/covid_age")
 # ##  ###
 
 # end 
@@ -64,6 +64,10 @@ if (date_f > last_date_drive){
   # locating the links for Excel files
   url1 <- html_nodes(html, xpath = '//*[@id="node-10866"]/div/div/div/ul[2]/li[1]/a') %>%
     html_attr("href")
+  
+  url1 <- html_nodes(html, xpath = '//*[@id="node-10866"]/div/div/div/ul[2]/li[1]/strong/a') %>%
+    html_attr("href")
+  
   
   db_c_conf <- rio::import(paste0(root, url1), 
                         sheet = "Confirmed",
@@ -221,8 +225,7 @@ if (date_f > last_date_drive){
     arrange(date_f, Sex, Measure, suppressWarnings(as.integer(Age))) %>% 
     select(Country,Region, Code,  Date, Sex, Age, AgeInt, Metric, Measure, Value)
   
-  
-  ############################################
+    ############################################
   #### uploading database to Google Drive ####
   ############################################
   

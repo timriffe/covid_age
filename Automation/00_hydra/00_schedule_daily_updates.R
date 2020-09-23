@@ -1,11 +1,6 @@
 
 # TR: modifying this script to assume we're working inside the repository, and are relative to it.
 # should detect if it's tim, enrique, or diego.
-rm(list=ls())
-library(taskscheduleR)
-library(tidyverse)
-library(here)
-source("R/00_Functions.R")
 
 auto_update_wd    <- here()
 
@@ -13,22 +8,26 @@ if (grepl("riffe", auto_update_wd)){
    auto_update_email <- '"tim.riffe@gmail.com"'   
 }
 if (grepl("acosta", auto_update_wd)){
-        auto_update_email <- '"kikepaila@gmail.com"'   
+        auto_update_email <- '"kikepaila@gmail.com"'
 }
 
 # we assume this tasks are scheduled in a here()-aware fashion
 
-# broken:
-sched("CA_Montreal", tm = "12:08",email = auto_update_email, wd = auto_update_wd)
+# broken scripts:
+# CA_Montreal
+# Mexico
+# Sweden
 
+# sched("Netherlands", "15:12")
+# delete_sched("US_New_Jersey")
+
+sched("CA_Montreal", tm = "16:44",email = auto_update_email, wd = auto_update_wd)
 
 sched("Colombia",  tm = "12:30",email = auto_update_email, wd = auto_update_wd)
 sched("Venezuela", tm = "13:48",email = auto_update_email, wd = auto_update_wd)
 
-
 # broken
 sched("Slovenia", tm = "15:48",email = auto_update_email, wd = auto_update_wd)
-
 sched("Germany", tm = "16:12",email = auto_update_email, wd = auto_update_wd)
 
 # Massachussets no longer gives age, grr. Only weekly, with new counts for the past two weeks.
@@ -47,16 +46,13 @@ sched("US_Texas", tm = "01:30",email = auto_update_email, wd = auto_update_wd)
 sched("US_Wisconsin", tm = "02:10",email = auto_update_email, wd = auto_update_wd)
 sched("US_Michigan", tm = "02:40",email = auto_update_email, wd = auto_update_wd)
 
-# broken (works if manually sourced)
-sched("Sweden", tm = "03:40",email = auto_update_email, wd = auto_update_wd)
-#sched("Sweden", tm = "03:40",email = auto_update_email, wd = auto_update_wd)
-
+sched("Sweden", tm = "17:02",email = auto_update_email, wd = auto_update_wd)
+sched("New_Zealand", "17:20",email = auto_update_email, wd = auto_update_wd)
 
 sched("Netherlands", tm = "04:00",email = auto_update_email, wd = auto_update_wd)
 sched("Estonia", tm = "04:31",email = auto_update_email, wd = auto_update_wd)
 
 # TR: back to manual execution
-#sched("New_Zealand", "18:20",email = auto_update_email, wd = auto_update_wd)
 sched("Peru", tm = "05:31",email = auto_update_email, wd = auto_update_wd)
  # delete_sched("Austria")
  # delete_sched("CA_Montreal")

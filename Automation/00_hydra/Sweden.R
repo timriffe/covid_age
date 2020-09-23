@@ -1,8 +1,8 @@
 # don't manually alter the below
 # This is modified by sched()
 # ##  ###
-email <- "tim.riffe@gmail.com"
-setwd("C:/Users/riffe/Documents/covid_age")
+email <- "kikepaila@gmail.com"
+setwd("C:/Users/acosta/Documents/covid_age")
 # ##  ###
 
 # end 
@@ -35,7 +35,7 @@ httr::GET(url, write_disk(tf <- tempfile(fileext = ".xlsx")))
 
 # date from the data directly, last reported date in the sheet 'Antal per dag region'
 
-date_f <- read_xlsx(tf, sheet = "Antal per dag region") %>% 
+date_f <- read_xlsx(tf, sheet = 1) %>% 
   dplyr::pull(Statistikdatum) %>% 
   max() %>% 
   ymd()
@@ -56,8 +56,8 @@ if (date_f > last_date_drive){
                 sprintf("%02d", month(date_f)),
                 year(date_f), sep = ".")
   
-  db_sex <- read_xlsx(tf, sheet = "Totalt antal per kön")
-  db_age <- read_xlsx(tf, sheet = "Totalt antal per åldersgrupp")
+  db_sex <- read_xlsx(tf, sheet = 5)
+  db_age <- read_xlsx(tf, sheet = 6)
   
   # Get data by sex
   

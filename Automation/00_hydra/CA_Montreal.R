@@ -1,8 +1,8 @@
 # don't manually alter the below
 # This is modified by sched()
 # ##  ###
-email <- "tim.riffe@gmail.com"
-setwd("C:/Users/riffe/Documents/covid_age")
+email <- "kikepaila@gmail.com"
+setwd("C:/Users/acosta/Documents/covid_age")
 # ##  ###
 
 # end 
@@ -35,7 +35,7 @@ last_date_drive <- max(db_drive2$date_f)
 m_url     <- "https://santemontreal.qc.ca/en/public/coronavirus-covid-19/situation-of-the-coronavirus-covid-19-in-montreal/"
 html      <- read_html(m_url)
 date_text <- 
-  html_nodes(html, xpath = '//*[@id="c43669"]/p/b') %>% 
+  html_nodes(html, xpath = '//*[@id="c43669"]/div[2]/p[1]/b') %>% 
   html_text()
 loc_date1 <- str_locate(date_text, "as of ")[2] + 1
 loc_date2 <- str_locate(date_text, ",")[1] - 1
@@ -114,7 +114,7 @@ if (date_f > last_date_drive){
   sheet_append(db,
                ss = ss_i,
                sheet = "database")
-  log_update(pp = "Austria", N = nrow(db))
+  log_update(pp = "CA_Montreal", N = nrow(db))
   ############################################
   #### uploading metadata to Google Drive ####
   ############################################
