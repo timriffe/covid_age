@@ -219,3 +219,7 @@ filter( Code == 'DO19.06.2020', Sex == 'm', Measure == 'Deaths' )
 # Commit dashboards and buildlog 
  Wed Sep 23 09:32:42 2020 
 
+
+# update build series log 
+ Wed Sep 23 09:32:49 2020 
+
