@@ -1,13 +1,19 @@
 
 # 2020-09-24 inputDB updates 
- Thu Sep 24 15:06:07 2020 
+ Thu Sep 24 23:06:06 2020 
 
 
-# 2020-09-24 15:06:07 updates 
- Thu Sep 24 15:06:07 2020 
+# 2020-09-24 23:06:06 updates 
+ Thu Sep 24 23:06:06 2020 
 
 
-# Duplicates detected. Following `Code`s removed: 
- Thu Sep 24 16:32:34 2020 
+# Filter valid Measure entries: 
+ Thu Sep 24 23:52:49 2020 
 
-US_OR04.09.2020
+Valid Measures include: Cases,Deaths,Tests,ASCFR
+ 264 rows removed
+# Filter valid Metric entries: 
+ Thu Sep 24 23:52:49 2020 
+
+Valid Metrics include: Count,Fraction,Ratio
+ 14 rows removed
