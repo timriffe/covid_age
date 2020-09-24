@@ -109,3 +109,15 @@ filter( Code == 'US18.07.2020', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'US18.07.2020', Sex == 'm', Measure == 'Deaths' )
 filter( Code == 'US18.07.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'US25.07.2020', Sex == 'f', Measure == 'Deaths' )
+
+# remake coverage map 
+ Thu Sep 24 07:49:22 2020 
+
+
+# push outputs to OSF 
+ Thu Sep 24 07:49:42 2020 
+
+
+# Commit dashboards and buildlog 
+ Thu Sep 24 07:50:19 2020 
+
