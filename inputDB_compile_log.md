@@ -21,3 +21,25 @@ Valid Metrics include: Count,Fraction,Ratio
  Fri Sep 25 23:47:42 2020 
 
 US_OR04.09.2020
+# 2020-09-26 inputDB updates 
+ Sat Sep 26 07:06:07 2020 
+
+
+# 2020-09-26 07:06:07 updates 
+ Sat Sep 26 07:06:07 2020 
+
+
+# Filter valid Measure entries: 
+ Sat Sep 26 08:00:51 2020 
+
+Valid Measures include: Cases,Deaths,Tests,ASCFR
+ 976 rows removed
+# Filter valid Metric entries: 
+ Sat Sep 26 08:00:51 2020 
+
+Valid Metrics include: Count,Fraction,Ratio
+ 14 rows removed
+# Duplicates detected. Following `Code`s removed: 
+ Sat Sep 26 08:00:54 2020 
+
+BR_AM23.06.2020
