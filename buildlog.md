@@ -227,3 +227,7 @@ filter( Code == 'PK17.03.2020', Sex == 'b', Measure == 'Deaths' )
 # Commit dashboards and buildlog 
  Mon Sep 28 10:31:04 2020 
 
+
+# update build series log 
+ Mon Sep 28 10:31:09 2020 
+
