@@ -167,8 +167,9 @@ if (date_f > last_date_drive){
   
   sheet_delete(meta$id, "Sheet1")
   
-} else {
+} else if (date_f == last_date_drive) {
   cat(paste0("no new updates so far, last date: ", date_f))
+  log_update(pp = "Austria", N = 0)
 }
-  
+
   
