@@ -145,6 +145,7 @@ if (!(date_f %in% last_date_drive)){
               ss = ss_i,
               sheet = "database")
   log_update(pp = "US_Virginia", N = nrow(db_all))
+  
   ############################################
   #### uploading metadata to Google Drive ####
   ############################################
@@ -170,6 +171,7 @@ if (!(date_f %in% last_date_drive)){
   
   sheet_delete(meta$id, "Sheet1")
 
-} else {
+} else if (date_f %in% last_date_drive) {
   cat(paste0("no new updates so far, last date: ", date_f))
+  log_update(pp = "US_Virginia", N = 0)
 }

@@ -1,7 +1,8 @@
+Sys.setenv(LANG = "en")
+library("taskscheduleR")
 
 # TR: modifying this script to assume we're working inside the repository, and are relative to it.
 # should detect if it's tim, enrique, or diego.
-
 auto_update_wd    <- here()
 
 if (grepl("riffe", auto_update_wd)){
@@ -21,17 +22,16 @@ if (grepl("acosta", auto_update_wd)){
 # sched("Netherlands", "15:12")
 # delete_sched("US_New_Jersey")
 
-sched("CA_Montreal", tm = "16:44",email = auto_update_email, wd = auto_update_wd)
-
 sched("Colombia",  tm = "12:30",email = auto_update_email, wd = auto_update_wd)
 sched("Venezuela", tm = "13:48",email = auto_update_email, wd = auto_update_wd)
 
-# broken
 sched("Slovenia", tm = "15:48",email = auto_update_email, wd = auto_update_wd)
 sched("Germany", tm = "16:12",email = auto_update_email, wd = auto_update_wd)
 
+sched("CA_Montreal", tm = "16:44",email = auto_update_email, wd = auto_update_wd)
+
 # Massachussets no longer gives age, grr. Only weekly, with new counts for the past two weeks.
-#sched("US_Massachusetts", tm = "17:04",email = auto_update_email, wd = auto_update_wd)
+# sched("US_Massachusetts", tm = "17:04",email = auto_update_email, wd = auto_update_wd)
 
 sched("Austria", tm = "18:50",email = auto_update_email, wd = auto_update_wd)
 sched("US_Virginia", tm = "19:50",email = auto_update_email, wd = auto_update_wd)

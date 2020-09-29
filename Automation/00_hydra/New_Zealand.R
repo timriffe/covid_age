@@ -62,12 +62,9 @@ if (date_f > last_date_drive){
   html <- read_html(m_url)
   
   # locating the links for Excel files
+
   url1 <- html_nodes(html, xpath = '//*[@id="node-10866"]/div/div/div/ul[2]/li[1]/a') %>%
     html_attr("href")
-  
-  url1 <- html_nodes(html, xpath = '//*[@id="node-10866"]/div/div/div/ul[2]/li[1]/strong/a') %>%
-    html_attr("href")
-  
   
   db_c_conf <- rio::import(paste0(root, url1), 
                         sheet = "Confirmed",
@@ -260,8 +257,9 @@ if (date_f > last_date_drive){
   
   sheet_delete(meta$id, "Sheet1")
 
-} else {
+} else if (date_f == last_date_drive) {
   cat(paste0("no new updates so far, last date: ", date_f))
+  log_update(pp = "New_Zealand", N = 0)
 }
 
 

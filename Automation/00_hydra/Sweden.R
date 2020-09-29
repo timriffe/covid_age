@@ -144,8 +144,8 @@ if (date_f > last_date_drive){
     name = file_name,
     overwrite = T)
   
-  
-} else {
+} else if (date_f == last_date_drive) {
   cat(paste0("no new updates so far, last date: ", date_f))
+  log_update(pp = "Sweden", N = 0)
 }
 
