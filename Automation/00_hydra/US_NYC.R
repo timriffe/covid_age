@@ -151,6 +151,7 @@ if (date_f > last_date_drive){
   
   print(paste("NC data saved!", Sys.Date()))
   
-} else {
+} else if (date_f == last_date_drive) {
   cat(paste0("no new updates so far, last date: ", date_f))
+  log_update(pp = "US_NYC", N = 0)
 }

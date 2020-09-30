@@ -1,11 +1,16 @@
 # don't manually alter the below
 # This is modified by sched()
 # ##  ###
-email <- "tim.riffe@gmail.com"
-setwd("C:/Users/riffe/Documents/covid_age")
+email <- "kikepaila@gmail.com"
+setwd("C:/Users/acosta/Documents/covid_age")
 # ##  ###
 
 # end 
+
+############################################################################
+# Deprecated!!!! Massachusetts stopped reporting age groups on August 11 :(
+# Task schedule deleted!
+############################################################################
 
 # TR New: you must be in the repo environment 
 source("R/00_Functions.R")

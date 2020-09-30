@@ -28,9 +28,9 @@ db <- read_csv("https://data.cdc.gov/api/views/vsak-wrfu/rows.csv?accessType=DOW
 to <- read_csv("https://data.cdc.gov/api/views/r8kw-7aab/rows.csv?accessType=DOWNLOAD")
 
 db2 <- db %>% 
-  select("Age Group", "Sex", "Week ending Date", "COVID-19 Deaths") %>% 
+  select("Age Group", "Sex", "End Week", "COVID-19 Deaths") %>% 
   rename(Age = "Age Group",
-         date_f = "Week ending Date",
+         date_f = "End Week",
          Value = "COVID-19 Deaths") %>% 
   mutate(Age = str_sub(Age, 1, 2),
          Age = case_when(Age == "Un" ~ "0",
