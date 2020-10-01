@@ -2065,3 +2065,6 @@ log_update <- function(pp, N){
   log_this <- tibble(pp = pp, Date = lubridate::today(), rows = N)
   sheet_append(log_this, ss = ss, sheet = "log")
 }
+
+Sys.setenv(LANG = "en")
+Sys.setlocale("LC_ALL","English")
