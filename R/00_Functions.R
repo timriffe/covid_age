@@ -13,6 +13,7 @@ library(pacman)
 packages_CRAN <- c("tidyverse","lubridate","gargle","ungroup","HMDHFDplus",
                    "tictoc","parallel","data.table","git2r","usethis",
                    "remotes","here","knitr","rmarkdown","googledrive","zip",
+                   "cartography","rgdal","tmap","svglite",
                    "taskscheduleR")
 
 # Install required CRAN packages if not available yet
