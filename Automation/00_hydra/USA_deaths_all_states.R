@@ -23,9 +23,6 @@ ss_i     <- rubric_i %>% dplyr::pull(Sheet)
 ss_db    <- rubric_i %>% dplyr::pull(Source)
 
 
-# in progress: update the data for the last day entered
-# -------------------------------------
-
 # # reading data in Drive 
 db_drive <- get_country_inputDB("USA_CDC")
 # -------------------------------------
@@ -35,7 +32,6 @@ db_drive <- get_country_inputDB("USA_CDC")
 db <- read_csv("https://data.cdc.gov/api/views/9bhg-hcku/rows.csv?accessType=DOWNLOAD")
 
 unique(db$`Age group`)
-unique(db$State)
 
 ages_all <- c("All Ages", "Under 1 year", "0-17 years", "1-4 years", "5-14 years", "15-24 years", "18-29 years", "25-34 years", "30-49 years", "35-44 years", "45-54 years", "50-64 years", "55-64 years", "65-74 years", "75-84 years", "85 years and over")
 ages1 <- c("All Ages", "Under 1 year", "1-4 years", "5-14 years", "15-24 years", "25-34 years", "35-44 years", "45-54 years", "55-64 years", "65-74 years", "75-84 years", "85 years and over")
@@ -130,8 +126,6 @@ ages_na <- db4 %>%
               select(State, Sex, diff)) %>% 
   mutate(imput = diff * prop,
          imp2 = round(imput))
-
-unique(ages_na$State)
 
 overs <- ages_na %>% 
   filter(imp2 == 0)
@@ -258,7 +252,7 @@ db_final <- db_drive %>%
 write_sheet(db_final,
              ss = ss_i,
              sheet = "database")
-# log_update(pp = "Sweden", N = nrow(db_all))
+log_update(pp = "USA_CDC", N = nrow(db_all))
 
 ############################################
 #### uploading metadata to Google Drive ####
