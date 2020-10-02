@@ -28,7 +28,7 @@ db_drive <- get_country_inputDB("USA_CDC")
 # -------------------------------------
 
 
-# info by age for each state!!!!!!!!!!!!!!!!!!!!!!!!!!
+# info by age for each state!!
 db <- read_csv("https://data.cdc.gov/api/views/9bhg-hcku/rows.csv?accessType=DOWNLOAD")
 
 unique(db$`Age group`)
@@ -90,6 +90,7 @@ db4 <- db3 %>%
 
 
 # Imputation of NAs using the same distribution that the national level
+#######################################################################
 
 all_us <- db4 %>% 
   filter(State == "United States",
@@ -151,11 +152,9 @@ ages_na3 <- ages_na2 %>%
   select(State, Age, Sex, Value) %>% 
   mutate(imp = 1)
   
-# binding data and imputations for NAs
-date = paste(sprintf("%02d",day(date_f)),
-             sprintf("%02d",month(date_f)),
-             year(date_f),
-             sep=".")
+
+# binding data and imputations for NAs and adjusting to COVerAGE-DB format
+###########################################################################
 
 date_data <- paste(sprintf("%02d",day(date_f)),
                    sprintf("%02d",month(date_f)),
@@ -252,7 +251,7 @@ db_final <- db_drive %>%
 write_sheet(db_final,
              ss = ss_i,
              sheet = "database")
-log_update(pp = "USA_CDC", N = nrow(db_all))
+log_update(pp = "USA_CDC", N = nrow(db5))
 
 ############################################
 #### uploading metadata to Google Drive ####
