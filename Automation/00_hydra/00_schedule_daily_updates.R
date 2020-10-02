@@ -1,4 +1,5 @@
 Sys.setenv(LANG = "en")
+Sys.setlocale("LC_ALL","English")
 library("taskscheduleR")
 
 # TR: modifying this script to assume we're working inside the repository, and are relative to it.
