@@ -22,11 +22,16 @@ rubric_i <- get_input_rubric() %>% filter(Short == "USA_CDC")
 ss_i     <- rubric_i %>% dplyr::pull(Sheet)
 ss_db    <- rubric_i %>% dplyr::pull(Source)
 
+
+# # reading data in Drive 
+db_drive <- get_country_inputDB("USA_CDC")
+# -------------------------------------
+
+
 # info by age for each state!!!!!!!!!!!!!!!!!!!!!!!!!!
 db <- read_csv("https://data.cdc.gov/api/views/9bhg-hcku/rows.csv?accessType=DOWNLOAD")
 
 unique(db$`Age group`)
-ages
 
 ages_all <- c("All Ages", "Under 1 year", "0-17 years", "1-4 years", "5-14 years", "15-24 years", "18-29 years", "25-34 years", "30-49 years", "35-44 years", "45-54 years", "50-64 years", "55-64 years", "65-74 years", "75-84 years", "85 years and over")
 ages1 <- c("All Ages", "Under 1 year", "1-4 years", "5-14 years", "15-24 years", "25-34 years", "35-44 years", "45-54 years", "55-64 years", "65-74 years", "75-84 years", "85 years and over")
@@ -152,8 +157,12 @@ date = paste(sprintf("%02d",day(date_f)),
              year(date_f),
              sep=".")
 
+date_data <- paste(sprintf("%02d",day(date_f)),
+                   sprintf("%02d",month(date_f)),
+                   year(date_f),
+                   sep=".")
 
-db_final <- db4 %>% 
+db5 <- db4 %>% 
   filter(!is.na(Value),
          State != "United States") %>% 
   mutate(imp = 0) %>% 
@@ -161,67 +170,65 @@ db_final <- db4 %>%
   arrange(State, Sex, suppressWarnings(as.integer(Age))) %>% 
   mutate(Country = "USA",
          Region = State,
-         Date = paste(sprintf("%02d",day(date_f)),
-                      sprintf("%02d",month(date_f)),
-                      year(date_f),
-                      sep="."),
-         short = case_when(State == 'Alabama' ~ 'US_AL_CDC',
-                           State == 'Alaska' ~ 'US_AK_CDC',
-                           State == 'Arizona' ~ 'US_AZ_CDC',
-                           State == 'Arkansas' ~ 'US_AR_CDC',
-                           State == 'California' ~ 'US_CA_CDC',
-                           State == 'Colorado' ~ 'US_CO_CDC',
-                           State == 'Connecticut' ~ 'US_CT_CDC',
-                           State == 'Delaware' ~ 'US_DE_CDC',
-                           State == 'Florida' ~ 'US_FL_CDC',
-                           State == 'Georgia' ~ 'US_GA_CDC',
-                           State == 'Hawaii' ~ 'US_HI_CDC',
-                           State == 'Idaho' ~ 'US_ID_CDC',
-                           State == 'Illinois' ~ 'US_IL_CDC',
-                           State == 'Indiana' ~ 'US_IN_CDC',
-                           State == 'Iowa' ~ 'US_IA_CDC',
-                           State == 'Kansas' ~ 'US_KS_CDC',
-                           State == 'Kentucky' ~ 'US_KY_CDC',
-                           State == 'Louisiana' ~ 'US_LA_CDC',
-                           State == 'Maine' ~ 'US_ME_CDC',
-                           State == 'Maryland' ~ 'US_MD_CDC',
-                           State == 'Massachusetts' ~ 'US_MA_CDC',
-                           State == 'Michigan' ~ 'US_MI_CDC',
-                           State == 'Minnesota' ~ 'US_MN_CDC',
-                           State == 'Mississippi' ~ 'US_MS_CDC',
-                           State == 'Missouri' ~ 'US_MO_CDC',
-                           State == 'Montana' ~ 'US_MT_CDC',
-                           State == 'Nebraska' ~ 'US_NE_CDC',
-                           State == 'Nevada' ~ 'US_NV_CDC',
-                           State == 'New Hampshire' ~ 'US_NH_CDC',
-                           State == 'New Jersey' ~ 'US_NJ_CDC',
-                           State == 'New Mexico' ~ 'US_NM_CDC',
-                           State == 'New York' ~ 'US_NY_CDC',
-                           State == 'North Carolina' ~ 'US_NC_CDC',
-                           State == 'North Dakota' ~ 'US_ND_CDC',
-                           State == 'Ohio' ~ 'US_OH_CDC',
-                           State == 'Oklahoma' ~ 'US_OK_CDC',
-                           State == 'Oregon' ~ 'US_OR_CDC',
-                           State == 'Pennsylvania' ~ 'US_PA_CDC',
-                           State == 'Rhode Island' ~ 'US_RI_CDC',
-                           State == 'South Carolina' ~ 'US_SC_CDC',
-                           State == 'South Dakota' ~ 'US_SD_CDC',
-                           State == 'Tennessee' ~ 'US_TN_CDC',
-                           State == 'Texas' ~ 'US_TX_CDC',
-                           State == 'Utah' ~ 'US_UT_CDC',
-                           State == 'Vermont' ~ 'US_VT_CDC',
-                           State == 'Virginia' ~ 'US_VA_CDC',
-                           State == 'Washington' ~ 'US_WA_CDC',
-                           State == 'West Virginia' ~ 'US_WV_CDC',
-                           State == 'Wisconsin' ~ 'US_WI_CDC',
-                           State == 'Wyoming' ~ 'US_WY_CDC',
-                           State == 'District of Columbia' ~ 'US_DC_CDC',
-                           State == 'American Samoa' ~ 'US_AS_CDC',
-                           State == 'Guam' ~ 'US_GU_CDC',
-                           State == 'Northern Mariana Islands' ~ 'US_MP_CDC',
-                           State == 'Puerto Rico' ~ 'US_PR_CDC',
-                           State == 'United States Minor Outlying Islands' ~ 'US_UM_CDC',
-                           State == 'U.S. Virgin Islands' ~ 'US_VI_CDC'),
+         Date = date_data,
+         short = case_when(State == 'Alabama' ~ 'US_CDC_AL',
+                           State == 'Alaska' ~ 'US_CDC_AK',
+                           State == 'Arizona' ~ 'US_CDC_AZ',
+                           State == 'Arkansas' ~ 'US_CDC_AR',
+                           State == 'California' ~ 'US_CDC_CA',
+                           State == 'Colorado' ~ 'US_CDC_CO',
+                           State == 'Connecticut' ~ 'US_CDC_CT',
+                           State == 'Delaware' ~ 'US_CDC_DE',
+                           State == 'Florida' ~ 'US_CDC_FL',
+                           State == 'Georgia' ~ 'US_CDC_GA',
+                           State == 'Hawaii' ~ 'US_CDC_HI',
+                           State == 'Idaho' ~ 'US_CDC_ID',
+                           State == 'Illinois' ~ 'US_CDC_IL',
+                           State == 'Indiana' ~ 'US_CDC_IN',
+                           State == 'Iowa' ~ 'US_CDC_IA',
+                           State == 'Kansas' ~ 'US_CDC_KS',
+                           State == 'Kentucky' ~ 'US_CDC_KY',
+                           State == 'Louisiana' ~ 'US_CDC_LA',
+                           State == 'Maine' ~ 'US_CDC_ME',
+                           State == 'Maryland' ~ 'US_CDC_MD',
+                           State == 'Massachusetts' ~ 'US_CDC_MA',
+                           State == 'Michigan' ~ 'US_CDC_MI',
+                           State == 'Minnesota' ~ 'US_CDC_MN',
+                           State == 'Mississippi' ~ 'US_CDC_MS',
+                           State == 'Missouri' ~ 'US_CDC_MO',
+                           State == 'Montana' ~ 'US_CDC_MT',
+                           State == 'Nebraska' ~ 'US_CDC_NE',
+                           State == 'Nevada' ~ 'US_CDC_NV',
+                           State == 'New Hampshire' ~ 'US_CDC_NH',
+                           State == 'New Jersey' ~ 'US_CDC_NJ',
+                           State == 'New Mexico' ~ 'US_CDC_NM',
+                           State == 'New York' ~ 'US_CDC_NY',
+                           State == 'New York City' ~ 'US_CDC_NYC',
+                           State == 'North Carolina' ~ 'US_CDC_NC',
+                           State == 'North Dakota' ~ 'US_CDC_ND',
+                           State == 'Ohio' ~ 'US_CDC_OH',
+                           State == 'Oklahoma' ~ 'US_CDC_OK',
+                           State == 'Oregon' ~ 'US_CDC_OR',
+                           State == 'Pennsylvania' ~ 'US_CDC_PA',
+                           State == 'Rhode Island' ~ 'US_CDC_RI',
+                           State == 'South Carolina' ~ 'US_CDC_SC',
+                           State == 'South Dakota' ~ 'US_CDC_SD',
+                           State == 'Tennessee' ~ 'US_CDC_TN',
+                           State == 'Texas' ~ 'US_CDC_TX',
+                           State == 'Utah' ~ 'US_CDC_UT',
+                           State == 'Vermont' ~ 'US_CDC_VT',
+                           State == 'Virginia' ~ 'US_CDC_VA',
+                           State == 'Washington' ~ 'US_CDC_WA',
+                           State == 'West Virginia' ~ 'US_CDC_WV',
+                           State == 'Wisconsin' ~ 'US_CDC_WI',
+                           State == 'Wyoming' ~ 'US_CDC_WY',
+                           State == 'District of Columbia' ~ 'US_CDC_DC',
+                           State == 'American Samoa' ~ 'US_CDC_AS',
+                           State == 'Guam' ~ 'US_CDC_GU',
+                           State == 'Northern Mariana Islands' ~ 'US_CDC_MP',
+                           State == 'Puerto Rico' ~ 'US_CDC_PR',
+                           State == 'United States Minor Outlying Islands' ~ 'US_CDC_UM',
+                           State == 'U.S. Virgin Islands' ~ 'US_CDC_VI'),
          Code = paste0(short, Date),
          AgeInt = case_when(Age == "0" ~ "1",
                             Age == "1" ~ "4",
@@ -233,13 +240,19 @@ db_final <- db4 %>%
   select(Country, Region, Code,  Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
   arrange(Region, Measure, Sex, suppressWarnings(as.integer(Age)))
   
+db_final <- db_drive %>% 
+  filter(Date != date_data) %>% 
+  mutate(AgeInt = as.character(AgeInt)) %>% 
+  select(-Short) %>% 
+  bind_rows(db5)
+
 ############################################
 #### uploading database to Google Drive ####
 ############################################
-sheet_append(db_final,
+write_sheet(db_final,
              ss = ss_i,
              sheet = "database")
-# log_update(pp = "Sweden", N = nrow(db_all))
+log_update(pp = "USA_CDC", N = nrow(db_all))
 
 ############################################
 #### uploading metadata to Google Drive ####
