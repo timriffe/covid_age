@@ -1,42 +1,42 @@
 
 # New build log 
- Fri Oct 02 22:05:21 2020 
+ Sat Oct 03 02:00:09 2020 
 
 
 # A (convert_fractions_sexes) 
- Fri Oct 02 22:05:33 2020 
+ Sat Oct 03 02:00:25 2020 
 
 
 # B (redistribute_unknown_age) 
- Fri Oct 02 22:06:50 2020 
+ Sat Oct 03 02:02:47 2020 
 
 
 # C (rescale_to_total) 
- Fri Oct 02 22:12:07 2020 
+ Sat Oct 03 02:09:49 2020 
 
 
 # D (infer_cases_from_deaths_and_ascfr) 
- Fri Oct 02 22:18:30 2020 
+ Sat Oct 03 02:20:48 2020 
 
 
 # E (infer_deaths_from_cases_and_ascfr) 
- Fri Oct 02 22:20:48 2020 
+ Sat Oct 03 02:22:58 2020 
 
 
 # G (redistribute_unknown_sex) 
- Fri Oct 02 22:23:03 2020 
+ Sat Oct 03 02:25:07 2020 
 
 
 # H (rescale_sexes) 
- Fri Oct 02 22:24:51 2020 
+ Sat Oct 03 02:27:08 2020 
 
 
 # I (infer_both_sex) 
- Fri Oct 02 22:26:11 2020 
+ Sat Oct 03 02:29:15 2020 
 
 
 # J (maybe_lower_closeout) 
- Fri Oct 02 22:27:08 2020 
+ Sat Oct 03 02:30:35 2020 
 
 filter( Code == 'CA_QC9.04.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'CA_QC10.04.2020', Sex == 'b', Measure == 'Cases' )
@@ -53,7 +53,7 @@ filter( Code == 'US_TX11.09.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_TX13.09.2020', Sex == 'b', Measure == 'Cases' )
 
 # Age harmonization 
- Fri Oct 02 22:31:45 2020 
+ Sat Oct 03 02:39:59 2020 
 
 filter( Code == 'NZ01.10.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'NZ18.09.2020', Sex == 'f', Measure == 'Cases' )
@@ -123,23 +123,3 @@ filter( Code == 'PK14.03.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'PK15.03.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'PK16.03.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'PK17.03.2020', Sex == 'b', Measure == 'Deaths' )
-
-# Compile metadata 
- Sat Oct 03 00:21:06 2020 
-
-
-# Building dashboards 
- Sat Oct 03 00:40:10 2020 
-
-
-# remake coverage map 
- Sat Oct 03 00:41:47 2020 
-
-
-# push outputs to OSF 
- Sat Oct 03 00:46:12 2020 
-
-
-# Commit dashboards and buildlog 
- Sat Oct 03 00:47:15 2020 
-
