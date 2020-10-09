@@ -100,7 +100,9 @@ db_c2 <- db_c %>%
   summarise(new = n()) %>% 
   ungroup()
 
-dates_f <- seq(min(db_c2$date_f),max(db_c2$date_f), by = '1 day')
+dates <- db_c2 %>% drop_na(date_f) %>% select(date_f) %>% unique()
+
+dates_f <- seq(min(dates$date_f),max(dates$date_f), by = '1 day')
 
 db_c3 <- db_c2 %>% 
   complete(Region, Sex, Age = ages, date_f = dates_f, fill = list(new = 0)) %>% 
