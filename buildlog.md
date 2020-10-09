@@ -162,3 +162,39 @@ filter( Code == 'DO19.06.2020', Sex == 'm', Measure == 'Deaths' )
 # Commit dashboards and buildlog 
  Thu Oct 08 07:29:19 2020 
 
+
+# A (convert_fractions_sexes) 
+ Thu Oct  8 12:11:06 2020 
+
+
+# B (redistribute_unknown_age) 
+ Thu Oct  8 12:11:09 2020 
+
+
+# C (rescale_to_total) 
+ Thu Oct  8 12:11:14 2020 
+
+
+# D (infer_cases_from_deaths_and_ascfr) 
+ Thu Oct  8 12:11:16 2020 
+
+
+# E (infer_deaths_from_cases_and_ascfr) 
+ Thu Oct  8 12:11:17 2020 
+
+
+# G (redistribute_unknown_sex) 
+ Thu Oct  8 12:11:18 2020 
+
+
+# H (rescale_sexes) 
+ Thu Oct  8 12:11:19 2020 
+
+
+# I (infer_both_sex) 
+ Thu Oct  8 12:11:20 2020 
+
+
+# J (maybe_lower_closeout) 
+ Thu Oct  8 12:11:21 2020 
+
