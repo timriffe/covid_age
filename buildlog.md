@@ -1,42 +1,46 @@
 
 # New build log 
- Sat Oct 10 02:00:08 2020 
+ Sat Oct 10 15:59:09 2020 
+
+
+# prep (resolve_UNKUNK) 
+ Sat Oct 10 15:59:19 2020 
 
 
 # A (convert_fractions_sexes) 
- Sat Oct 10 02:00:24 2020 
+ Sat Oct 10 16:01:29 2020 
 
 
 # B (redistribute_unknown_age) 
- Sat Oct 10 02:02:50 2020 
+ Sat Oct 10 16:02:51 2020 
 
 
 # C (rescale_to_total) 
- Sat Oct 10 02:10:02 2020 
+ Sat Oct 10 16:07:58 2020 
 
 
 # D (infer_cases_from_deaths_and_ascfr) 
- Sat Oct 10 02:21:13 2020 
+ Sat Oct 10 16:14:35 2020 
 
 
 # E (infer_deaths_from_cases_and_ascfr) 
- Sat Oct 10 02:23:27 2020 
+ Sat Oct 10 16:16:54 2020 
 
 
 # G (redistribute_unknown_sex) 
- Sat Oct 10 02:25:38 2020 
+ Sat Oct 10 16:19:13 2020 
 
 
 # H (rescale_sexes) 
- Sat Oct 10 02:27:12 2020 
+ Sat Oct 10 16:20:45 2020 
 
 
 # I (infer_both_sex) 
- Sat Oct 10 02:29:23 2020 
+ Sat Oct 10 16:22:06 2020 
 
 
 # J (maybe_lower_closeout) 
- Sat Oct 10 02:30:44 2020 
+ Sat Oct 10 16:23:03 2020 
 
 filter( Code == 'CA_QC9.04.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'CA_QC10.04.2020', Sex == 'b', Measure == 'Cases' )
@@ -53,18 +57,8 @@ filter( Code == 'US_TX11.09.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_TX13.09.2020', Sex == 'b', Measure == 'Cases' )
 
 # Age harmonization 
- Sat Oct 10 02:40:21 2020 
+ Sat Oct 10 16:27:46 2020 
 
-filter( Code == 'SZ21.09.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'TR03.08.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'TR05.07.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'TR10.08.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'TR12.07.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'TR17.08.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'TR19.07.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'TR24.08.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'TR26.07.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'TR28.06.2020', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'NZ01.10.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'NZ02.10.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'NZ03.10.2020', Sex == 'f', Measure == 'Cases' )
@@ -77,6 +71,16 @@ filter( Code == 'NZ18.09.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'NZ19.09.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'NZ28.09.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'NZ30.09.2020', Sex == 'f', Measure == 'Cases' )
+filter( Code == 'SZ21.09.2020', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'TR03.08.2020', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'TR05.07.2020', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'TR10.08.2020', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'TR12.07.2020', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'TR17.08.2020', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'TR19.07.2020', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'TR24.08.2020', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'TR26.07.2020', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'TR28.06.2020', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'CA_QC24.06.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'PK10.03.2020', Sex == 'm', Measure == 'Deaths' )
 filter( Code == 'PK11.03.2020', Sex == 'm', Measure == 'Deaths' )
@@ -144,93 +148,21 @@ filter( Code == 'PK16.03.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'PK17.03.2020', Sex == 'b', Measure == 'Deaths' )
 
 # Compile metadata 
- Sat Oct 10 04:06:21 2020 
+ Sat Oct 10 18:02:22 2020 
 
 
 # Building dashboards 
- Sat Oct 10 04:26:20 2020 
+ Sat Oct 10 18:22:29 2020 
 
 
 # remake coverage map 
- Sat Oct 10 04:28:01 2020 
+ Sat Oct 10 18:24:06 2020 
 
 
 # push outputs to OSF 
- Sat Oct 10 04:32:18 2020 
+ Sat Oct 10 18:28:31 2020 
 
 
-# A (convert_fractions_sexes) 
- Thu Oct  8 12:11:06 2020 
-
-
-# B (redistribute_unknown_age) 
- Thu Oct  8 12:11:09 2020 
-
-
-# C (rescale_to_total) 
- Thu Oct  8 12:11:14 2020 
-
-
-# D (infer_cases_from_deaths_and_ascfr) 
- Thu Oct  8 12:11:16 2020 
-
-
-# E (infer_deaths_from_cases_and_ascfr) 
- Thu Oct  8 12:11:17 2020 
-
-
-# G (redistribute_unknown_sex) 
- Thu Oct  8 12:11:18 2020 
-
-
-# H (rescale_sexes) 
- Thu Oct  8 12:11:19 2020 
-
-
-# I (infer_both_sex) 
- Thu Oct  8 12:11:20 2020 
-
-
-# J (maybe_lower_closeout) 
- Thu Oct  8 12:11:21 2020 
-
-
-# prep (resolve_UNKUNK) 
- Sat Oct 10 15:38:00 2020 
-
-
-# A (convert_fractions_sexes) 
- Sat Oct 10 15:42:56 2020 
-
-
-# B (redistribute_unknown_age) 
- Sat Oct 10 15:43:15 2020 
-
-
-# C (rescale_to_total) 
- Sat Oct 10 15:46:25 2020 
-
-
-# D (infer_cases_from_deaths_and_ascfr) 
- Sat Oct 10 15:48:27 2020 
-
-
-# E (infer_deaths_from_cases_and_ascfr) 
- Sat Oct 10 15:48:57 2020 
-
-
-# G (redistribute_unknown_sex) 
- Sat Oct 10 15:49:20 2020 
-
-
-# H (rescale_sexes) 
- Sat Oct 10 15:49:40 2020 
-
-
-# I (infer_both_sex) 
- Sat Oct 10 15:49:48 2020 
-
-
-# J (maybe_lower_closeout) 
- Sat Oct 10 15:50:04 2020 
+# Commit dashboards and buildlog 
+ Sat Oct 10 18:29:36 2020 
 

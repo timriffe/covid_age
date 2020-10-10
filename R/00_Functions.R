@@ -580,7 +580,7 @@ check_age_seq <- function(chunk){
 }
 
 
-### resolveUNKUNK() we don't want UNK Sex and UNK Age in same row. Instead,
+### resolve_UNKUNK() we don't want UNK Sex and UNK Age in same row. Instead,
 # generate both-sex TOT count if needed, then everythnig will rescale properly.
 # downstream.
 # @param chunk Data chunk
@@ -621,7 +621,7 @@ resolve_UNKUNK <- function(chunk){
     
     # doesn't repeat if case 1 is done
     if (!has_b & has_tot_mfunk){
-      TOT <- sum(tot_mf[["Value"]])
+      TOT <- sum(tot_mfunk[["Value"]])
       totb[["Value"]] <- TOT
     }
     
