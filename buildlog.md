@@ -197,3 +197,43 @@ filter( Code == 'PK17.03.2020', Sex == 'b', Measure == 'Deaths' )
 # J (maybe_lower_closeout) 
  Thu Oct  8 12:11:21 2020 
 
+
+# prep (resolve_UNKUNK) 
+ Sat Oct 10 15:38:00 2020 
+
+
+# A (convert_fractions_sexes) 
+ Sat Oct 10 15:42:56 2020 
+
+
+# B (redistribute_unknown_age) 
+ Sat Oct 10 15:43:15 2020 
+
+
+# C (rescale_to_total) 
+ Sat Oct 10 15:46:25 2020 
+
+
+# D (infer_cases_from_deaths_and_ascfr) 
+ Sat Oct 10 15:48:27 2020 
+
+
+# E (infer_deaths_from_cases_and_ascfr) 
+ Sat Oct 10 15:48:57 2020 
+
+
+# G (redistribute_unknown_sex) 
+ Sat Oct 10 15:49:20 2020 
+
+
+# H (rescale_sexes) 
+ Sat Oct 10 15:49:40 2020 
+
+
+# I (infer_both_sex) 
+ Sat Oct 10 15:49:48 2020 
+
+
+# J (maybe_lower_closeout) 
+ Sat Oct 10 15:50:04 2020 
+

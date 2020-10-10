@@ -579,6 +579,71 @@ check_age_seq <- function(chunk){
   all(chunki[["Age"]] == chunki[["Age2"]], na.rm=TRUE) & min(chunki[["Age"]]) == 0
 }
 
+
+### resolveUNKUNK() we don't want UNK Sex and UNK Age in same row. Instead,
+# generate both-sex TOT count if needed, then everythnig will rescale properly.
+# downstream.
+# @param chunk Data chunk
+resolve_UNKUNK <- function(chunk){
+  has_unkunk <- any(chunk[["Sex"]] == "UNK" & chunk[["Age"]] == "UNK")
+  has_tot_b  <- any(chunk[["Age"]] == "TOT" & chunk[["Sex"]] == "b")
+  
+  all_counts <- all(chunk[["Metric"]] == "Count")
+  # if there's already tot b, then return without UNKUNK, adds nothing.
+  if (has_tot_b | !all_counts){
+    chunk <- chunk %>% 
+      filter(!(.data$Age == "UNK" & .data$Sex == "UNK"))
+    return(chunk)
+  }
+  # In this case we calculate TOT b, one way or another and remove UNKUNK
+  
+  if (has_unkunk & !has_tot_b){
+    totb     <- slice(chunk,1)
+    totb[["Sex"]] <- "b"
+    totb[["Age"]] <- "TOT"
+    
+    maybe_b    <- chunk %>% 
+      filter(Age != "TOT",
+             !Sex %in% c("m","f","UNK"))
+    
+    # Case 1: we have a marginal disttribution of both-sex
+    has_b <- nrow(maybe_b) > 3
+    if (has_b){
+      TOT <- sum(maybe_b[["Value"]])
+      totb[["Value"]] <- TOT
+    } 
+    
+    # case 2 If male, female, UNK marginal totals are given
+    tot_mfunk <- chunk %>% 
+      filter(.data$Sex %in% c("m","f","UNK"), 
+             .data$Age == "TOT")
+    has_tot_mfunk <- nrow(tot_mfunk) %in% c(2,3)
+    
+    # doesn't repeat if case 1 is done
+    if (!has_b & has_tot_mfunk){
+      TOT <- sum(tot_mf[["Value"]])
+      totb[["Value"]] <- TOT
+    }
+    
+    # case 3 the marginal total of everything except b
+    if (!(has_b | has_tot_mfunk)){
+      just_mfunk <- chunk %>% 
+        filter(.data$Sex != "b",
+               .data$Age != "TOT")
+      TOT <- sum(just_mfunk[["Value"]])
+      totb[["Value"]] <- TOT
+    }
+    chunk <- chunk %>% 
+      filter(!(.data$Age == "UNK" & .data$Sex == "UNK")) %>% 
+      bind_rows(totb)
+  }
+  
+  chunk
+}
+
+
+
+
 ### do_we_convert_fractions_sexes()
 # Checks if fractions shoudl be converted to case counts
 # @param chunk Data chunk
