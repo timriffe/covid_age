@@ -15,6 +15,7 @@ library(readxl)
 library(googlesheets4)
 library(googledrive)
 library(lubridate)
+library(httr)
 
 drive_auth(email = email)
 gs4_auth(email = email)
