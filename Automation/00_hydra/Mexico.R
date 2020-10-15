@@ -41,7 +41,7 @@ table(db$ENTIDAD_RES)
 # filter confirmed cases and standardize data ----------------------------------------
 
 db2 <- db %>% 
-  filter(RESULTADO == 1) %>% 
+  filter(RESULTADO_LAB == 1) %>% 
   rename(Age = EDAD,
          date_c = FECHA_SINTOMAS,
          date_d = FECHA_DEF) %>% 
