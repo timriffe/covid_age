@@ -182,3 +182,15 @@ filter( Code == 'DO19.06.2020', Sex == 'm', Measure == 'Deaths' )
 # push outputs to OSF 
  Sun Oct 18 05:06:20 2020 
 
+
+# remake coverage map 
+ Sun Oct 18 20:36:04 2020 
+
+
+# push outputs to OSF 
+ Sun Oct 18 20:40:31 2020 
+
+
+# Commit dashboards and buildlog 
+ Sun Oct 18 20:41:39 2020 
+
