@@ -442,7 +442,7 @@ get_country_inputDB <- function(ShortCode) {
                     col_types= "cccccciccd")
   
   # Assign short code
-  out$Short <- ShortCode
+  out$Short <- add_Short(out$Code,out$Date)
   
   # Output
   out
