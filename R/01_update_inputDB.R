@@ -78,7 +78,6 @@ if (nrow(rubric) > 0){
   
   
   # remove non-standard Measure:
-  # filters: remove any code that has a duplicate entry
   Measures <- c("Cases","Deaths","Tests","ASCFR")
   n <- inputDB %>% dplyr::pull(Measure) %>% `%in%`(Measures)
   # sum(n)
@@ -96,7 +95,6 @@ if (nrow(rubric) > 0){
   }
   
   # remove non-standard Metric:
-  # filters: remove any code that has a duplicate entry
   Metrics <- c("Count","Fraction","Ratio")
   n <- inputDB %>% dplyr::pull(Metric) %>% `%in%`(Metrics)
   # sum(n)
@@ -114,7 +112,6 @@ if (nrow(rubric) > 0){
   }
   
   # remove non-standard Sex:
-  # filters: remove any code that has a duplicate entry
   Sexes <- c("m","f","b","UNK")
   n <- inputDB %>% dplyr::pull(Sex) %>% `%in%`(Sexes)
   # sum(n)
