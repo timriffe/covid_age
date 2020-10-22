@@ -30,13 +30,27 @@ Z <-
   mutate(AgeInt = as.integer(AgeInt))
 
 
+### Covert UNK Sex, UNK Age to both-sex TOT entries ################
+
+# Log
+log_section("prep (resolve_UNKUNK)", logfile = logfile)
+
+AA <- Z[ , try_step(
+  process_function = resolve_UNKUNK,
+  chunk = .SD,
+  byvars = c("Code","Measure"),
+  logfile = logfile),
+  by = list(Code, Measure),
+  .SDcols = icols][,..icols]
+
+
 ### Convert fractions ###############################################
 
 # Log 
 log_section("A (convert_fractions_sexes)", logfile = logfile)
 
 # Convert sex-specific fractions to counts
-A <- Z[ , try_step(process_function = convert_fractions_sexes,
+A <- AA[ , try_step(process_function = convert_fractions_sexes,
                    chunk = .SD,
                    byvars = c("Code","Measure"),
                    logfile = logfile),
