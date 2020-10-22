@@ -53,8 +53,8 @@ if (date_f > last_date_drive){
   
   db_s2 <- db_s %>% 
     rename(Sex = 1,
-           Cases = 2,
-           Deaths = 5)
+           Cases = 5,
+           Deaths = 9)
   
   db_s3 <- db_s2 %>% 
     select(Sex, Cases, Deaths) %>% 
@@ -72,8 +72,8 @@ if (date_f > last_date_drive){
     
   db_a2 <- db_a  %>% 
     rename(Age = 1,
-           Cases = 2,
-           Deaths = 5)
+           Cases = 5,
+           Deaths = 9)
   
   db_a3 <- db_a2 %>% 
     mutate(Age = str_sub(Age, 1, 2),
