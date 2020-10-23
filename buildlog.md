@@ -202,3 +202,10 @@ filter( Code == 'DO19.06.2020', Sex == 'm', Measure == 'Deaths' )
 # Compile offsets from Drive 
  Fri Oct 23 09:52:37 2020 
 
+
+# Harmonize offsets 
+ Fri Oct 23 15:35:46 2020 
+
+filter( Country == 'UK', Region == 'All', Sex == 'm' )
+filter( Country == 'UK', Region == 'All', Sex == 'b' )
+filter( Country == 'UK', Region == 'All', Sex == 'f' )
