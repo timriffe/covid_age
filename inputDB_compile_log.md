@@ -20,3 +20,25 @@ CH13.10.2020
 CH14.10.2020
 CH15.10.2020
 US_OR04.09.2020
+# 2020-10-23 inputDB updates 
+ Fri Oct 23 03:06:11 2020 
+
+
+# 2020-10-23 03:06:11 updates 
+ Fri Oct 23 03:06:11 2020 
+
+
+# Filter valid Measure entries: 
+ Fri Oct 23 03:23:51 2020 
+
+Valid Measures include: Cases,Deaths,Tests,ASCFR
+ 320 rows removed
+# Filter valid Metric entries: 
+ Fri Oct 23 03:23:51 2020 
+
+Valid Metrics include: Count,Fraction,Ratio
+ 14 rows removed
+# Duplicates detected. Following `Code`s removed: 
+ Fri Oct 23 03:23:51 2020 
+
+PS12.10.2020
