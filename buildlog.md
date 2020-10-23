@@ -194,3 +194,11 @@ filter( Code == 'DO19.06.2020', Sex == 'm', Measure == 'Deaths' )
 # Commit dashboards and buildlog 
  Fri Oct 23 09:20:22 2020 
 
+
+# update build series log 
+ Fri Oct 23 09:20:28 2020 
+
+
+# Compile offsets from Drive 
+ Fri Oct 23 09:52:37 2020 
+
