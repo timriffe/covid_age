@@ -1,58 +1,46 @@
 
 # New build log 
- Sat Oct 24 02:00:08 2020 
+ Sun Oct 25 02:00:08 2020 
 
 
 # prep (resolve_UNKUNK) 
- Sat Oct 24 02:00:24 2020 
+ Sun Oct 25 02:00:23 2020 
 
 
 # A (convert_fractions_sexes) 
- Sat Oct 24 02:02:47 2020 
+ Sun Oct 25 02:02:46 2020 
 
 
 # B (redistribute_unknown_age) 
- Sat Oct 24 02:04:48 2020 
+ Sun Oct 25 02:04:41 2020 
 
 
 # C (rescale_to_total) 
- Sat Oct 24 02:11:11 2020 
+ Sun Oct 25 02:10:50 2020 
 
-filter( Code == 'PS03.10.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'PS03.10.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'PS03.10.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'PS03.10.2020', Sex == 'b', Measure == 'Deaths' )
-filter( Code == 'PS05.10.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'PS05.10.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'PS05.10.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'PS05.10.2020', Sex == 'b', Measure == 'Deaths' )
-filter( Code == 'PS09.10.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'PS09.10.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'PS09.10.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'PS09.10.2020', Sex == 'b', Measure == 'Deaths' )
 
 # D (infer_cases_from_deaths_and_ascfr) 
- Sat Oct 24 02:22:49 2020 
+ Sun Oct 25 02:22:05 2020 
 
 
 # E (infer_deaths_from_cases_and_ascfr) 
- Sat Oct 24 02:25:09 2020 
+ Sun Oct 25 02:24:23 2020 
 
 
 # G (redistribute_unknown_sex) 
- Sat Oct 24 02:27:27 2020 
+ Sun Oct 25 02:26:40 2020 
 
 
 # H (rescale_sexes) 
- Sat Oct 24 02:28:58 2020 
+ Sun Oct 25 02:28:07 2020 
 
 
 # I (infer_both_sex) 
- Sat Oct 24 02:30:55 2020 
+ Sun Oct 25 02:29:59 2020 
 
 
 # J (maybe_lower_closeout) 
- Sat Oct 24 02:32:15 2020 
+ Sun Oct 25 02:31:15 2020 
 
 filter( Code == 'CA_QC9.04.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'CA_QC10.04.2020', Sex == 'b', Measure == 'Cases' )
@@ -69,7 +57,7 @@ filter( Code == 'US_TX11.09.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_TX13.09.2020', Sex == 'b', Measure == 'Cases' )
 
 # Age harmonization 
- Sat Oct 24 02:41:39 2020 
+ Sun Oct 25 02:40:18 2020 
 
 filter( Code == 'NZ01.10.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'NZ02.10.2020', Sex == 'f', Measure == 'Cases' )
@@ -83,10 +71,10 @@ filter( Code == 'NZ09.10.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'NZ11.10.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'NZ18.09.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'NZ19.09.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'PK10.03.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'NZ28.09.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'PK11.03.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'NZ30.09.2020', Sex == 'f', Measure == 'Cases' )
+filter( Code == 'PK10.03.2020', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'PK11.03.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'PK12.03.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'PK13.03.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'PK14.03.2020', Sex == 'b', Measure == 'Deaths' )
@@ -118,6 +106,9 @@ filter( Code == 'PK14.03.2020', Sex == 'm', Measure == 'Deaths' )
 filter( Code == 'PK15.03.2020', Sex == 'm', Measure == 'Deaths' )
 filter( Code == 'PK16.03.2020', Sex == 'm', Measure == 'Deaths' )
 filter( Code == 'PK17.03.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'PS03.10.2020', Sex == 'b', Measure == 'Cases' )
+filter( Code == 'PS05.10.2020', Sex == 'b', Measure == 'Cases' )
+filter( Code == 'PS09.10.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'PS20.10.2021', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'PS20.10.2022', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'PS20.10.2023', Sex == 'b', Measure == 'Cases' )
@@ -180,28 +171,5 @@ filter( Code == 'DO18.06.2020', Sex == 'm', Measure == 'Deaths' )
 filter( Code == 'DO19.06.2020', Sex == 'm', Measure == 'Deaths' )
 
 # Compile metadata 
- Sat Oct 24 04:10:52 2020 
+ Sun Oct 25 03:08:41 2020 
 
-
-# remake coverage map 
- Sat Oct 24 11:22:22 2020 
-
-
-# push outputs to OSF 
- Sat Oct 24 11:26:49 2020 
-
-
-# Commit dashboards and buildlog 
- Sat Oct 24 11:28:00 2020 
-
-
-# update build series log 
- Sat Oct 24 11:28:05 2020 
-
-
-# Duplicates detected. Following `Code`s removed: 
- Sat Oct 24 11:40:46 2020 
-
-PS03.10.2020
-PS05.10.2020
-PS09.10.2020
