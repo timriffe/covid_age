@@ -42,6 +42,12 @@ source(here("R","06_data_dashes.R"))
 
 # ---------------------- #
 
+# Quality metrics
+
+# source(here("R","07_quality_metrics.R"))
+
+# ---------------------- #
+
 # Coverage Map
 
 source(here("R","08_coverage_map.R"))
