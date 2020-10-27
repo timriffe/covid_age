@@ -1,22 +1,22 @@
 
 # New build log 
- Mon Oct 26 02:00:08 2020 
+ Tue Oct 27 02:00:08 2020 
 
 
 # prep (resolve_UNKUNK) 
- Mon Oct 26 02:00:24 2020 
+ Tue Oct 27 02:00:23 2020 
 
 
 # A (convert_fractions_sexes) 
- Mon Oct 26 02:02:50 2020 
+ Tue Oct 27 02:02:49 2020 
 
 
 # B (redistribute_unknown_age) 
- Mon Oct 26 02:04:51 2020 
+ Tue Oct 27 02:04:47 2020 
 
 
 # C (rescale_to_total) 
- Mon Oct 26 02:11:12 2020 
+ Tue Oct 27 02:11:07 2020 
 
 filter( Code == 'PS19.10.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'PS19.10.2020', Sex == 'f', Measure == 'Cases' )
@@ -36,27 +36,27 @@ filter( Code == 'PS09.10.2020', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'PS09.10.2020', Sex == 'b', Measure == 'Deaths' )
 
 # D (infer_cases_from_deaths_and_ascfr) 
- Mon Oct 26 02:22:51 2020 
+ Tue Oct 27 02:22:43 2020 
 
 
 # E (infer_deaths_from_cases_and_ascfr) 
- Mon Oct 26 02:25:11 2020 
+ Tue Oct 27 02:25:04 2020 
 
 
 # G (redistribute_unknown_sex) 
- Mon Oct 26 02:27:31 2020 
+ Tue Oct 27 02:27:23 2020 
 
 
 # H (rescale_sexes) 
- Mon Oct 26 02:29:03 2020 
+ Tue Oct 27 02:28:53 2020 
 
 
 # I (infer_both_sex) 
- Mon Oct 26 02:31:00 2020 
+ Tue Oct 27 02:30:47 2020 
 
 
 # J (maybe_lower_closeout) 
- Mon Oct 26 02:32:20 2020 
+ Tue Oct 27 02:32:06 2020 
 
 filter( Code == 'CA_QC9.04.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'CA_QC10.04.2020', Sex == 'b', Measure == 'Cases' )
@@ -73,22 +73,8 @@ filter( Code == 'US_TX11.09.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_TX13.09.2020', Sex == 'b', Measure == 'Cases' )
 
 # Age harmonization 
- Mon Oct 26 02:41:46 2020 
+ Tue Oct 27 02:41:22 2020 
 
-filter( Code == 'NZ01.10.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'NZ02.10.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'NZ03.10.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'NZ04.10.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'NZ05.10.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'NZ06.10.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'NZ07.10.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'NZ08.10.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'NZ09.10.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'NZ11.10.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'NZ18.09.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'NZ19.09.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'NZ28.09.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'NZ30.09.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'TR03.08.2020', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'TR05.07.2020', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'TR05.10.2020', Sex == 'm', Measure == 'Cases' )
@@ -130,20 +116,6 @@ filter( Code == 'TR26.07.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'TR28.06.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'TR28.09.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'TR31.08.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'NZ01.10.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'NZ02.10.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'NZ03.10.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'NZ04.10.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'NZ05.10.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'NZ06.10.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'NZ07.10.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'NZ08.10.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'NZ09.10.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'NZ11.10.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'NZ18.09.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'NZ19.09.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'NZ28.09.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'NZ30.09.2020', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'LB25.09.2023', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'LB25.09.2024', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'LB25.09.2025', Sex == 'b', Measure == 'Cases' )
@@ -176,21 +148,5 @@ filter( Code == 'PK16.03.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'PK17.03.2020', Sex == 'b', Measure == 'Deaths' )
 
 # Compile metadata 
- Mon Oct 26 04:11:52 2020 
-
-
-# remake coverage map 
- Mon Oct 26 08:28:33 2020 
-
-
-# push outputs to OSF 
- Mon Oct 26 08:33:05 2020 
-
-
-# Commit dashboards and buildlog 
- Mon Oct 26 08:34:22 2020 
-
-
-# update build series log 
- Mon Oct 26 08:34:29 2020 
+ Tue Oct 27 04:11:52 2020 
 
