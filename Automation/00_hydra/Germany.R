@@ -9,8 +9,9 @@ setwd("C:/Users/acosta/Documents/covid_age")
 
 # TR New: you must be in the repo environment 
 source("R/00_Functions.R")
-
-
+# source(..., locale="UTF-8")
+Sys.setenv(LANG = "en")
+Sys.setlocale("LC_ALL","English")
 library(tidyverse)
 library(lubridate)
 library(googlesheets4)
@@ -24,11 +25,11 @@ de_rubric <- get_input_rubric() %>% filter(Short == "DE")
 ss_i   <- de_rubric %>% dplyr::pull(Sheet)
 ss_db  <- de_rubric %>% dplyr::pull(Source)
 
-
-
-db <- read_csv("https://opendata.arcgis.com/datasets/dd4580c810204019a7b8eb3e0b329dd6_0.csv")
+db <- read_csv("https://opendata.arcgis.com/datasets/dd4580c810204019a7b8eb3e0b329dd6_0.csv",
+               locale = locale(encoding = "UTF-8"))
 
 unique(db$Geschlecht)
+unique(db$Bundesland)
 
 db2 <- db %>% 
   mutate(Sex = case_when(Geschlecht == "M" ~ "m",
@@ -52,7 +53,7 @@ db2 <- db %>%
   ungroup()
   
 
-# unique(db2$Region)
+unique(db2$Region)
 # unique(db2$date_f)
 
 ages    <- unique(db2$Age)
@@ -72,28 +73,30 @@ db_all <- db2 %>%
   ungroup() %>% 
   arrange(Region, Sex, Measure, Age, date_f) %>% 
   group_by(Region, Sex, Measure, Age) %>% 
-  mutate(Value = cumsum(Value))
+  mutate(Value = cumsum(Value)) %>% 
+  ungroup() 
   
-
+  
+# Regions acronyms from https://en.wikipedia.org/wiki/ISO_3166-2:DE
 db_region <- db_all %>% 
   mutate(Country = "Germany",
          Code1 = case_when(Region == 'Baden-Württemberg' ~ 'DE_BW_',
-                            Region == 'Bayern' ~ 'DE_BY_',
-                            Region ==  'Berlin' ~ 'DE_BE_',
-                            Region == 'Brandenburg' ~ 'DE_BB_',
-                            Region == 'Bremen' ~ 'DE_HB_',
-                            Region == 'Hamburg' ~ 'DE_HH_',
-                            Region ==  'Hessen' ~ 'DE_HE_',
-                            Region ==  'Mecklenburg-Vorpommern' ~ 'DE_MV_',
-                            Region == 'Niedersachsen' ~ 'DE_NI_',
-                            Region == 'Nordrhein-Westfalen' ~ 'DE_NW_',
-                            Region == 'Rheinland-Pfalz' ~ 'DE_RP_',
-                            Region == 'Saarland' ~ 'DE_SL_',
-                            Region == 'Sachsen' ~ 'DE_SN_',
-                            Region == 'Sachsen-Anhalt' ~ 'DE_ST_',
-                            Region == 'Schleswig-Holstein' ~ 'DE_SH_',
-                            Region == 'Thüringen' ~ 'DE_TH_',
-                            TRUE ~ "other"),
+                           Region == 'Bayern' ~ 'DE_BY_',
+                           Region == 'Berlin' ~ 'DE_BE_',
+                           Region == 'Brandenburg' ~ 'DE_BB_',
+                           Region == 'Bremen' ~ 'DE_HB_',
+                           Region == 'Hamburg' ~ 'DE_HH_',
+                           Region == 'Hessen' ~ 'DE_HE_',
+                           Region == 'Mecklenburg-Vorpommern' ~ 'DE_MV_',
+                           Region == 'Niedersachsen' ~ 'DE_NI_',
+                           Region == 'Nordrhein-Westfalen' ~ 'DE_NW_',
+                           Region == 'Rheinland-Pfalz' ~ 'DE_RP_',
+                           Region == 'Saarland' ~ 'DE_SL_',
+                           Region == 'Sachsen' ~ 'DE_SN_',
+                           Region == 'Sachsen-Anhalt' ~ 'DE_ST_',
+                           Region == 'Schleswig-Holstein' ~ 'DE_SH_',
+                           Region == 'Thüringen' ~ 'DE_TH_',
+                           TRUE ~ "other"),
          Date = paste(sprintf("%02d", day(date_f)),
                       sprintf("%02d", month(date_f)),
                       year(date_f), sep = "."),
@@ -106,8 +109,14 @@ db_region <- db_all %>%
                             Age == "80" ~ 25,
                             Age == "UNK" ~ NA_real_),
          Metric = "Count") %>% 
-  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
-  sort_input_data()
+  arrange(Region, date_f, Measure, Sex, suppressWarnings(as.integer(Age))) %>% 
+  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
+
+# codes for regions
+db_region %>% 
+  mutate(short = str_sub(Code, 1, 6)) %>% 
+  select(short) %>% 
+  unique()
 
 db_germany <- db_all %>% 
   mutate(Value = replace_na(Value, 0)) %>% 
@@ -128,9 +137,8 @@ db_germany <- db_all %>%
                             Age == "80" ~ 25,
                             Age == "UNK" ~ NA_real_),
          Metric = "Count") %>% 
-  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
-  sort_input_data()
-
+  arrange(Region, date_f, Measure, Sex, suppressWarnings(as.integer(Age))) %>% 
+  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
 
 
 db_full <- bind_rows(db_germany, db_region) 
@@ -143,11 +151,10 @@ db_full <-
   filter(N > 0) %>% 
   filter(!(Sex == "UNK" & Value == 0),
          !(Age == "UNK" & Value == 0)) %>% 
+  ungroup() %>% 
   select(-date_f, -N) %>% 
   sort_input_data()
   
-  
-
 ############################################
 #### comparison with reported aggregate data
 ############################################
@@ -155,9 +162,16 @@ db_full <-
 # comparison with aggregate data reported online in 
 # https://www.rki.de/DE/Content/InfAZ/N/Neuartiges_Coronavirus/Fallzahlen.html
 
+last_date <- db_full %>% 
+  mutate(date_f = dmy(Date)) %>% 
+  group_by() %>% 
+  summarise(date_f = max(date_f)) %>% 
+  mutate(Date = paste(sprintf("%02d", day(date_f)),
+        sprintf("%02d", month(date_f)),
+        year(date_f), sep = "."))
 
 db_full %>% 
-  filter(Date == "28.08.2020") %>% 
+  filter(Date == last_date$Date) %>% 
   group_by(Region, Measure) %>% 
   summarize(N = sum(Value)) %>% 
   select(Region, Measure, N) %>% 
@@ -193,8 +207,6 @@ meta <- drive_create(sheet_name,
 write_sheet(db, 
             ss = meta$id,
             sheet = "cases&deaths_age_sex")
-
-
 
 sheet_delete(meta$id, "Sheet1")
 
