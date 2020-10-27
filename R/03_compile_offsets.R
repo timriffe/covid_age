@@ -1,7 +1,5 @@
 ### Functions & Settings ############################################
 
-# Functions
-source("R/00_Functions.R")
 # Detect cores
 n.cores     <- round(6 + (detectCores() - 8)/8)
 
