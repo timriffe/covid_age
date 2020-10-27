@@ -10,8 +10,8 @@ setwd("C:/Users/acosta/Documents/covid_age")
 # TR New: you must be in the repo environment 
 source("R/00_Functions.R")
 
-
-
+Sys.setenv(LANG = "en")
+Sys.setlocale("LC_ALL","English")
 library(tidyverse)
 library(lubridate)
 library(googlesheets4)
@@ -22,8 +22,10 @@ library(zip)
 drive_auth(email = email)
 gs4_auth(email = email)
 
-db <- read_csv("https://www.datos.gov.co/api/views/gt2j-8ykr/rows.csv?accessType=DOWNLOAD")
-db_muestras <- read_csv("https://www.datos.gov.co/api/views/8835-5baf/rows.csv")
+db <- read_csv("https://www.datos.gov.co/api/views/gt2j-8ykr/rows.csv?accessType=DOWNLOAD",
+               locale = locale(encoding = "UTF-8"))
+db_muestras <- read_csv("https://www.datos.gov.co/api/views/8835-5baf/rows.csv",
+                        locale = locale(encoding = "UTF-8"))
 
 unique(db$Estado)
 unique(db$"Departamento o Distrito")
@@ -34,43 +36,27 @@ db2 <- db %>%
          status = 'Estado') %>% 
   mutate(Age = as.character(Edad),
          Region = case_when(
-           Region == "Bogot? D.C." ~ "Bogota",
-           Region == "Valle del Cauca" ~ "Valle del Cauca",
-           Region == "Antioquia" ~ "Antioquia",
+           Region == "Bogotá D.C." ~ "Bogota",
            Region == "Cartagena D.T. y C." ~ "Bolivar",
-           Region == "Huila" ~ "Huila",
-           Region == "Meta" ~ "Meta",
-           Region == "Risaralda" ~ "Risaralda",
            Region == "Norte de Santander" ~ "Nte Santander",
-           Region == "Caldas" ~ "Caldas",
-           Region == "Cundinamarca" ~ "Cundinamarca",
            Region == "Barranquilla D.E." ~ "Atlantico",
-           Region == "Santander" ~ "Santander",
-           Region == "Quind?o" ~ "Quindio",
-           Region == "Tolima" ~ "Tolima",
-           Region == "Cauca" ~ "Cauca",
+           Region == "Quindío" ~ "Quindio",
            Region == "Santa Marta D.T. y C." ~ "Magdalena",
-           Region == "Cesar" ~ "Cesar",
-           Region == "Archipi?lago de San Andr?s Providencia y Santa Catalina" ~ "San Andres",
-           Region == "Casanare" ~ "Casanare",
-           Region == "Nari?o" ~ "Nari?o",
-           Region == "Atl?ntico" ~ "Atlantico",
-           Region == "Boyac?" ~ "Boyaca",
-           Region == "C?rdoba" ~ "Cordoba",
-           Region == "Bol?var" ~ "Bolivar",
-           Region == "Sucre" ~ "Sucre",
-           Region == "Magdalena" ~ "Magdalena",
+           Region == "Archipiélago de San Andrés Providencia y Santa Catalina" ~ "San Andres",
+           Region == "Nariño" ~ "Nariño",
+           Region == "Atlántico" ~ "Atlantico",
+           Region == "Boyacá" ~ "Boyaca",
+           Region == "Córdoba" ~ "Cordoba",
+           Region == "Bolívar" ~ "Bolivar",
            Region == "La Guajira" ~ "Guajira",
            Region == "Buenaventura D.E." ~ "Valle del Cauca",
-           Region == "Choc?" ~ "Choco",
-           Region == "Amazonas" ~ "Amazonas",
-           Region == "Caquet?" ~ "Caqueta",
-           Region == "Putumayo" ~ "Putumayo",
-           Region == "Arauca" ~ "Arauca",
-           Region == "Vaup?s" ~ "Vaupes",
-           Region == "Guain?a" ~ "Guainia",
-           Region == "Vichada" ~ "Vichada")) 
+           Region == "Chocó" ~ "Choco",
+           Region == "Caquetá" ~ "Caqueta",
+           Region == "Vaupés" ~ "Vaupes",
+           Region == "Guainía" ~ "Guainia",
+           TRUE ~ Region)) 
 
+unique(db2$Region)
 # cases ----------------------------------------------
 # three dates for cases, preferred in this order: diagnosed, symptoms, reported to web
 db_cases <- db2 %>% 
@@ -236,7 +222,7 @@ db_final <- db_all2 %>%
            Region == "Guajira" ~ paste0("CO_LAG", Date),
            Region == "Magdalena" ~ paste0("CO_MAG", Date),
            Region == "Meta" ~ paste0("CO_MET", Date),
-           Region == "Nari?o" ~ paste0("CO_NAR", Date),
+           Region == "Nariño" ~ paste0("CO_NAR", Date),
            Region == "Nte Santander" ~ paste0("CO_NSA", Date),
            Region == "Putumayo" ~ paste0("CO_PUT", Date),
            Region == "Quindio" ~ paste0("CO_QUI", Date),
@@ -256,27 +242,19 @@ db_final <- db_all2 %>%
 ############################################
 # slicing the database by some regions ----------------------------------
 ############################################
+dims <- db_final %>% dim() 
+slice_size <- floor(dims[1]/10) 
 
-regions <- db_final %>% dplyr::pull(Region) %>% unique()
-length(regions)
-
-db_final_co <- db_final %>% 
-  filter(Region == "All")
-
-db_final_1 <- db_final %>% 
-  filter(Region %in% regions[2:5])
-
-db_final_2 <- db_final %>% 
-  filter(Region %in% regions[6:10])
-
-db_final_3 <- db_final %>% 
-  filter(Region %in% regions[11:15])
-
-db_final_4 <- db_final %>% 
-  filter(Region %in% regions[16:20])
-
-db_final_5 <- db_final %>% 
-  filter(Region %in% regions[21:length(regions)])
+db_final_1 <- db_final[(0 * slice_size + 1) : slice_size,]
+db_final_2 <- db_final[(1 * slice_size + 1) : (2 * slice_size),]
+db_final_3 <- db_final[(2 * slice_size + 1) : (3 * slice_size),]
+db_final_4 <- db_final[(3 * slice_size + 1) : (4 * slice_size),]
+db_final_5 <- db_final[(4 * slice_size + 1) : (5 * slice_size),]
+db_final_6 <- db_final[(5 * slice_size + 1) : (6 * slice_size),]
+db_final_7 <- db_final[(6 * slice_size + 1) : (7 * slice_size),]
+db_final_8 <- db_final[(7 * slice_size + 1) : (8 * slice_size),]
+db_final_9 <- db_final[(8 * slice_size + 1) : (9 * slice_size),]
+db_final_10 <- db_final[(9 * slice_size + 1) : dims[1],]
 
 ############################################
 #### uploading database to Google Drive ####
@@ -284,48 +262,74 @@ db_final_5 <- db_final %>%
 
 # TR: pull urls from rubric instead
 rubric <- get_input_rubric()
-ss_0   <- rubric %>% filter(Short == "CO") %>% dplyr::pull(Sheet)
-ss_1   <- rubric %>% filter(Short == "CO_1") %>% dplyr::pull(Sheet)
-ss_2   <- rubric %>% filter(Short == "CO_2") %>% dplyr::pull(Sheet)
-ss_3   <- rubric %>% filter(Short == "CO_3") %>% dplyr::pull(Sheet)
-ss_4   <- rubric %>% filter(Short == "CO_4") %>% dplyr::pull(Sheet)
-ss_5   <- rubric %>% filter(Short == "CO_5") %>% dplyr::pull(Sheet)
+ss_1   <- rubric %>% filter(Short == "CO_01") %>% dplyr::pull(Sheet)
+ss_2   <- rubric %>% filter(Short == "CO_02") %>% dplyr::pull(Sheet)
+ss_3   <- rubric %>% filter(Short == "CO_03") %>% dplyr::pull(Sheet)
+ss_4   <- rubric %>% filter(Short == "CO_04") %>% dplyr::pull(Sheet)
+ss_5   <- rubric %>% filter(Short == "CO_05") %>% dplyr::pull(Sheet)
+ss_6   <- rubric %>% filter(Short == "CO_06") %>% dplyr::pull(Sheet)
+ss_7   <- rubric %>% filter(Short == "CO_07") %>% dplyr::pull(Sheet)
+ss_8   <- rubric %>% filter(Short == "CO_08") %>% dplyr::pull(Sheet)
+ss_9   <- rubric %>% filter(Short == "CO_09") %>% dplyr::pull(Sheet)
+ss_10   <- rubric %>% filter(Short == "CO_10") %>% dplyr::pull(Sheet)
 
-ss_db  <- rubric %>% filter(Short == "CO") %>% dplyr::pull(Source)
+# ss_db  <- rubric %>% filter(Short == "CO") %>% dplyr::pull(Source)
 
-
-write_sheet(db_final_co, 
-            ss = ss_0,
-            sheet = "database")
-
+# write_sheet(db_final_co, 
+#             ss = ss_0,
+#             sheet = "database")
+# 
 write_sheet(db_final_1, 
             ss = ss_1,
             sheet = "database")
-
-Sys.sleep(105)
 
 write_sheet(db_final_2, 
             ss = ss_2,
             sheet = "database")
 
+Sys.sleep(105)
+
 write_sheet(db_final_3, 
             ss = ss_3,
             sheet = "database")
-
-Sys.sleep(105)
 
 write_sheet(db_final_4, 
             ss = ss_4,
             sheet = "database")
 
+Sys.sleep(105)
+
 write_sheet(db_final_5, 
             ss = ss_5,
             sheet = "database")
 
+write_sheet(db_final_6, 
+            ss = ss_6,
+            sheet = "database")
+
 Sys.sleep(105)
 
-N <- nrow(db_final_co) + nrow(db_final_1) + nrow(db_final_2) + nrow(db_final_3) + nrow(db_final_4) + nrow(db_final_5)
-log_update(pp = "Colombia", N = N)
+write_sheet(db_final_7, 
+            ss = ss_7,
+            sheet = "database")
+
+write_sheet(db_final_8, 
+            ss = ss_8,
+            sheet = "database")
+
+Sys.sleep(105)
+
+write_sheet(db_final_9, 
+            ss = ss_9,
+            sheet = "database")
+
+write_sheet(db_final_10, 
+            ss = ss_10,
+            sheet = "database")
+
+Sys.sleep(105)
+
+log_update(pp = "Colombia", N = dims[1])
 ############################################
 #### uploading metadata to Google Drive ####
 ############################################
@@ -337,8 +341,6 @@ date <- paste(sprintf("%02d", day(date_f)),
 
 filename_1 <- file.path("Data",paste0("CO", date, "cases&deaths.csv"))
 filename_2 <- file.path("Data",paste0("CO", date, "tests.csv"))
-
-
 
 write_csv(db, filename_1)
 write_csv(db_m1, filename_2)
