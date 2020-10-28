@@ -1,0 +1,268 @@
+---
+title: "Age Harmonization in COVerAGE-DB"
+author: "Tim Riffe"
+date: "10/28/2020"
+output: beamer_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+```
+```{r, include=FALSE}
+library(tidyverse)
+library(readr)
+library(lubridate)
+library(ggplot2)
+library(osfr)
+library(DemoTools)
+source("/home/tim/workspace/covid_age/R/00_Functions.R")
+```
+
+```{r, eval = FALSE, include = FALSE}
+osf_retrieve_file("9dsfk") %>%
+  osf_download(conflicts = "overwrite") 
+osf_retrieve_file("7tnfh") %>%
+  osf_download(conflicts = "overwrite") 
+# get offsets
+osf_retrieve_file("unf6v") %>%
+  osf_download(conflicts = "overwrite") 
+```
+
+```{r}
+# this runs only once, manually, not at each build
+
+
+# This reads it in
+inputDB <-  read_csv("inputDB.zip",
+                     skip = 1,
+                     col_types = "cccccciccdc")
+
+
+# This reads it in
+inputDB <-  read_csv("inputDB.zip",
+                     skip = 1,
+                     col_types = "cccccciccdc")
+# This reads it in
+Output_5 <-  read_csv("Output_5.zip",
+                     skip = 3,
+                     col_types = "ccccciiddd")
+# convert to date class
+Output_5 <- 
+  Output_5 %>% 
+  mutate(Date = dmy(Date))
+
+
+Offsets <- read_csv("offsets.csv",skip=1)
+```
+
+# 
+
+![](Rizzipaper.png)
+
+# Features
+
+- Implemented in [`ungroup` `R`](https://cran.rstudio.com/web/packages/ungroup/index.html) package
+- If offsets (population) used, then smoothness penalty happens at the rate scale
+- Smoothness (of implied rates) controlled by a single parameter, $\lambda$
+- COVerAGE-DB uses $\lambda = 100000$, very smooth, good for old ages
+- Can also auto-select $\lambda$
+- Tim's fav graduation method (comparing w Sprague, Beers, splines)
+
+# Performance examples
+
+- Show performance based on full-information case
+- CZ has single-age offsets and confirmed cases (Oct 10, 2020) (some noise)
+- Group cases to 5, 10, 20 year age groups
+- Use PCLM to get back to single ages, compare
+- 
+
+
+# Population structure, Czechia females
+```{r}
+
+Offsets %>% 
+  filter(Country == "Czechia", 
+         Region == "All",
+         Sex == "f") %>% 
+  ggplot(aes(x=Age,y=Population)) + 
+  geom_line()
+
+
+```
+
+# Cases (1 \& 5 year intervals)
+
+- gray = orig
+- grouped to 5-yr intervals
+
+```{r, include == FALSE}
+
+CZCases <- 
+inputDB %>% 
+  mutate(Date = dmy(Date)) %>% 
+  filter(Country == "Czechia",
+         Sex == "f",
+         Date == dmy("01.10.2020"),
+         Measure == "Cases") %>% 
+  mutate(Age = as.integer(Age)) 
+```
+
+```{r}
+CZ5 <- groupAges(CZCases$Value, OAnew = 100)
+CZ10 <- groupAges(CZCases$Value, N = 10, OAnew = 100)
+CZ20 <- groupAges(CZCases$Value, N = 20, OAnew = 100)
+
+plot(CZCases$Age,CZCases$Value,type = 's', col = gray(.5))
+lines(names2age(CZ5),CZ5/5, type = 's', col = "red")
+```
+
+# Cases (1 \& 10 year intervals)
+
+- gray = orig
+- grouped to 10-yr intervals
+```{r}
+
+plot(CZCases$Age,CZCases$Value,type = 's', col = gray(.5))
+lines(names2age(CZ10),CZ10/10, type = 's', col = "red")
+```
+
+# Cases (1 \& 20 year intervals)
+- gray = orig
+- grouped to 20-yr intervals
+```{r}
+plot(CZCases$Age,CZCases$Value,type = 's', col = gray(.5))
+lines(names2age(CZ20),CZ20/20, type = 's', col = "red")
+```
+
+
+```{r}
+groupNtest <- function(chunk, N = 5){
+  V <- groupAges(chunk$Value, N = N, OAnew = 100)
+  Age <- names2age(V)
+  AgeInt <- rep(N,length(Age))
+  AgeInt[length(AgeInt)] <- 105 - max(Age)
+  data.frame(Country = chunk$Country[1],
+             Region = chunk$Region[1],
+             Sex = chunk$Sex[1],
+             Age = Age, AgeInt = AgeInt, Value = V)
+}
+
+```
+
+
+# Performance comparisons 5 -> 1, very smooth
+Red = original single ages
+Black = PCLM from 5-year intervals
+```{r}
+CZCases %>% 
+  groupNtest(N=5) %>% 
+  harmonize_age(Offsets, N = 1, lambda = 1e5) %>% 
+  ggplot(aes(x=Age,y=Value)) + 
+  geom_step() + 
+  geom_step(data=CZCases,aes(x=Age,y=Value),color="red")
+```
+
+# Performance comparisons, 5 -> 1, less smooth
+Red = original single ages
+Black = PCLM from 5-year intervals
+```{r}
+CZCases %>% 
+  groupNtest(N=5) %>% 
+  harmonize_age(Offsets, N = 1, lambda = 1) %>% 
+  ggplot(aes(x=Age,y=Value)) + 
+  geom_step() + 
+  geom_step(data=CZCases,aes(x=Age,y=Value),color="red")
+```
+
+# Performance comparisons 10 -> 1, very smooth
+Red = original single ages
+Black = PCLM from 10-year intervals
+```{r}
+CZCases %>% 
+  groupNtest(N=10) %>% 
+  harmonize_age(Offsets, N = 1, lambda = 1e5) %>% 
+  ggplot(aes(x=Age,y=Value)) + 
+  geom_step() + 
+  geom_step(data=CZCases,aes(x=Age,y=Value),color="red")
+```
+
+# Performance comparisons 10 -> 1, less smooth
+Red = original single ages
+Black = PCLM from 10-year intervals
+```{r}
+CZCases %>% 
+  groupNtest(N=10) %>% 
+  harmonize_age(Offsets, N = 1, lambda = 1) %>% 
+  ggplot(aes(x=Age,y=Value)) + 
+  geom_step() + 
+  geom_step(data=CZCases,aes(x=Age,y=Value),color="red")
+```
+
+# Performance comparisons 20 -> 1, very smooth
+Red = original single ages
+Black = PCLM from 20-year intervals
+```{r}
+CZCases %>% 
+  groupNtest(N=20) %>% 
+  harmonize_age(Offsets, N = 1, lambda = 1e5) %>% 
+  ggplot(aes(x=Age,y=Value)) + 
+  geom_step() + 
+  geom_step(data=CZCases,aes(x=Age,y=Value),color="red")
+```
+
+# Performance comparisons 20 -> 1, less smooth
+Red = original single ages
+Black = PCLM from 20-year intervals
+```{r}
+CZCases %>% 
+  groupNtest(N=20) %>% 
+  harmonize_age(Offsets, N = 1, lambda = 1) %>% 
+  ggplot(aes(x=Age,y=Value)) + 
+  geom_step() + 
+  geom_step(data=CZCases,aes(x=Age,y=Value),color="red")
+```
+
+# Wide age groups look pretty bad, right?
+
+- Less bad when output is delivered in 5-year age groups
+- Less bad when offsets available
+- Less bad when related to population, deaths, or similar
+
+# Example: 20 -> 1 -> 5, compare w orig 5
+
+```{r}
+C5 <- CZCases %>% 
+  groupNtest(N=5) 
+CZCases %>% 
+  groupNtest(N=20) %>% 
+  harmonize_age(Offsets, N = 5, lambda = 1000) %>% 
+  ggplot(aes(x=Age,y=Value/5)) + 
+  geom_step() + 
+  geom_step(data=C5,aes(x=Age,y=Value/5),color="red")
+```
+
+# Example: 20 -> 1 -> 10, compare w orig 10
+
+```{r}
+C10 <- CZCases %>% 
+  groupNtest(N=10) 
+CZCases %>% 
+  groupNtest(N=20) %>% 
+  harmonize_age(Offsets, N = 10, lambda = 1e5) %>% 
+  ggplot(aes(x=Age,y=Value/10)) + 
+  geom_step() + 
+  geom_step(data=C10,aes(x=Age,y=Value/10),color="red")
+```
+
+# Comments
+
+- Age patterns of cases appear harder to match than deaths
+- Results slightly better with auto-select $\lambda$ (not shown), but runs slow
+- COVerAGE-DB might change protocol, this is just current fav
+- Thanks!
+- `R` Markdown for this pres [https://github.com/timriffe/covid_age/blob/master/Talks/AgeHarmonization.Rmd](https://github.com/timriffe/covid_age/blob/master/Talks/AgeHarmonization.Rmd)
+- Questions to Tim: riffe\@demogr.mpg.de
+
+
+
+
