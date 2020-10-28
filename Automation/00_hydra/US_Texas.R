@@ -37,7 +37,7 @@ last_date_drive <- db_drive %>%
 m_url     <- "https://dshs.texas.gov/coronavirus/additionaldata/"
 html      <- read_html(m_url)
 date_text <- 
-  html_nodes(html, xpath = '//*[@id="ctl00_ContentPlaceHolder1_uxContent"]/h6[2]/i') %>% 
+  html_nodes(html, xpath = '//*[@id="ctl00_ContentPlaceHolder1_uxContent"]/p[3]/b/i') %>% 
   html_text()
 loc_date1 <- str_locate(date_text, "Last updated: ")[2] + 1
 loc_date2 <- str_locate(date_text, '\\)')[1] - 1

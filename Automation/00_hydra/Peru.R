@@ -27,6 +27,8 @@ ss_3   <- rubric %>% filter(Short == "PE_3") %>% dplyr::pull(Sheet)
 ss_4   <- rubric %>% filter(Short == "PE_4") %>% dplyr::pull(Sheet)
 ss_5   <- rubric %>% filter(Short == "PE_5") %>% dplyr::pull(Sheet)
 ss_6   <- rubric %>% filter(Short == "PE_6") %>% dplyr::pull(Sheet)
+ss_7   <- rubric %>% filter(Short == "PE_7") %>% dplyr::pull(Sheet)
+ss_8   <- rubric %>% filter(Short == "PE_8") %>% dplyr::pull(Sheet)
 
 ss_db  <- rubric %>% filter(Short == "PE") %>% dplyr::pull(Source)
 
@@ -46,10 +48,10 @@ url1 <- html_nodes(html1, xpath = '//*[@id="data-and-resources"]/div/div/ul/li/d
 url2 <- html_nodes(html2, xpath = '//*[@id="data-and-resources"]/div/div/ul/li/div/span/a') %>%
   html_attr("href")
 
-db_c <- read_csv(url1) %>% 
+db_c <- read_delim(url1, delim = ";") %>% 
   as_tibble()
 
-db_d <- read_csv(url2) %>% 
+db_d <- read_delim(url2, delim = ";") %>% 
   as_tibble()
 
 # deaths ----------------------------------------------
@@ -75,7 +77,7 @@ dates_f <- seq(min(db_d2$date_f),max(db_d2$date_f), by = '1 day')
 ages <- as.character(seq(0, 100, 1))
 
 db_d3 <- db_d2 %>% 
-  complete(Region, Sex, Age = ages, date_f = dates_f, fill = list(new = 0)) %>% 
+  tidyr::complete(Region, Sex, Age = ages, date_f = dates_f, fill = list(new = 0)) %>% 
   group_by(Region, Sex, Age) %>% 
   mutate(Value = cumsum(new),
          Measure = "Deaths") %>% 
@@ -105,7 +107,7 @@ dates <- db_c2 %>% drop_na(date_f) %>% select(date_f) %>% unique()
 dates_f <- seq(min(dates$date_f),max(dates$date_f), by = '1 day')
 
 db_c3 <- db_c2 %>% 
-  complete(Region, Sex, Age = ages, date_f = dates_f, fill = list(new = 0)) %>% 
+  tidyr::complete(Region, Sex, Age = ages, date_f = dates_f, fill = list(new = 0)) %>% 
   group_by(Region, Sex, Age) %>% 
   mutate(Value = cumsum(new),
          Measure = "Cases") %>% 
@@ -225,22 +227,28 @@ db_final_pe <- db_final %>%
   filter(Region == "All")
 
 db_final_1 <- db_final %>% 
-  filter(Region %in% regions[2:4])
+  filter(Region %in% regions[2:5])
 
 db_final_2 <- db_final %>% 
-  filter(Region %in% regions[5:7])
+  filter(Region %in% regions[6:8])
 
 db_final_3 <- db_final %>% 
-  filter(Region %in% regions[8:10])
+  filter(Region %in% regions[9:12])
 
 db_final_4 <- db_final %>% 
-  filter(Region %in% regions[11:13])
+  filter(Region %in% regions[13:14])
 
 db_final_5 <- db_final %>% 
-  filter(Region %in% regions[14:18])
+  filter(Region %in% regions[15:16])
 
 db_final_6 <- db_final %>% 
-  filter(Region %in% regions[19:length(regions)])
+  filter(Region %in% regions[17:19])
+
+db_final_7 <- db_final %>% 
+  filter(Region %in% regions[20:23])
+
+db_final_8 <- db_final %>% 
+  filter(Region %in% regions[24:length(regions)])
 
 #########################
 # Push dataframe to Drive -------------------------------------------------

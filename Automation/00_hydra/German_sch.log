@@ -1,0 +1,14 @@
+Fehler in file(filename, "r", encoding = encoding) : 
+  kann Verbindung nicht öffnen
+Ruft auf: source -> file
+Zusätzlich: Warnmeldung:
+In file(filename, "r", encoding = encoding) :
+  kann Datei 'Germany.r' nicht öffnen: No such file or directory
+Ausführung angehalten
+Fehler in file(filename, "r", encoding = encoding) : 
+  kann Verbindung nicht öffnen
+Ruft auf: source -> file
+Zusätzlich: Warnmeldung:
+In file(filename, "r", encoding = encoding) :
+  kann Datei 'C:/Users/acosta/Documents/ovid_age/Automation/00_hydra/Germany.r' nicht öffnen: No such file or directory
+Ausführung angehalten

@@ -1,6 +1,7 @@
 Sys.setenv(LANG = "en")
 Sys.setlocale("LC_ALL","English")
 library("taskscheduleR")
+source("R/00_Functions.R")
 
 # TR: modifying this script to assume we're working inside the repository, and are relative to it.
 # should detect if it's tim, enrique, or diego.
@@ -23,11 +24,11 @@ if (grepl("acosta", auto_update_wd)){
 # sched("Netherlands", "15:12")
 # delete_sched("US_New_Jersey")
 
-sched("Colombia",  tm = "12:30",email = auto_update_email, wd = auto_update_wd)
+sched("Colombia",  tm = "12:00",email = auto_update_email, wd = auto_update_wd)
 sched("Venezuela", tm = "13:48",email = auto_update_email, wd = auto_update_wd)
 
 sched("Slovenia", tm = "15:48",email = auto_update_email, wd = auto_update_wd)
-sched("Germany", tm = "16:12",email = auto_update_email, wd = auto_update_wd)
+sched("German_sch", tm = "11:53",email = auto_update_email, wd = auto_update_wd)
 
 sched("CA_Montreal", tm = "16:44",email = auto_update_email, wd = auto_update_wd)
 
