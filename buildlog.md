@@ -153,3 +153,15 @@ filter( Code == 'PK17.03.2020', Sex == 'f', Measure == 'Deaths' )
 # Compile metadata 
  Wed Oct 28 04:14:34 2020 
 
+
+# remake coverage map 
+ Wed Oct 28 10:39:33 2020 
+
+
+# push outputs to OSF 
+ Wed Oct 28 10:44:11 2020 
+
+
+# Commit dashboards and buildlog 
+ Wed Oct 28 10:45:33 2020 
+
