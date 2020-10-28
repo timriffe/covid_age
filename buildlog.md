@@ -165,3 +165,15 @@ filter( Code == 'PK17.03.2020', Sex == 'f', Measure == 'Deaths' )
 # Commit dashboards and buildlog 
  Wed Oct 28 10:45:33 2020 
 
+
+# update build series log 
+ Wed Oct 28 10:45:41 2020 
+
+
+# push outputs to OSF 
+ Wed Oct 28 10:46:09 2020 
+
+
+# Commit dashboards and buildlog 
+ Wed Oct 28 10:47:27 2020 
+
