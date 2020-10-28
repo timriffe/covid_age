@@ -42,34 +42,28 @@ m_url <- "https://www.nijz.si/sl/dnevno-spremljanje-okuzb-s-sars-cov-2-covid-19"
 html <- read_html(m_url)
 
 # locating the links for Excel files
-url <- html_nodes(html, xpath = '//*[@id="node-5056"]/div[5]/ul/li/a') %>%
+url <- html_nodes(html, xpath = '//*[@id="node-5056"]/div[4]/div/div/div/p[7]/a') %>%
   html_attr("href")
 
-db_cases <- rio::import(url, 
-                        sheet = "Po starostnih skupinah ", 
-                        range = cell_cols("A:L")) %>% 
-  as_tibble()
+paste0("https://www.nijz.si", url)
+# tb4 cases
+# tb6 deaths
 
-date_f <- db_cases %>%
-  rename(date = "Starostna skupina") %>%
-  mutate(date = as.numeric(date),
-         date_f = as.Date(date, origin = "1899-12-30")) %>% 
-  drop_na(date_f) %>% 
+
+date_f <- rio::import(paste0("https://www.nijz.si", url), 
+                        sheet = "tb4", 
+                        range = cell_cols(1)) %>% 
+  rename(date_f = 1) %>% 
+  mutate(date_f = as.Date(as.integer(date_f), origin = "1899-12-30")) %>% 
+  drop_na() %>% 
   dplyr::pull(date_f) %>% 
   max()
+         
+
+
 
 
 if (date_f > last_date_drive){
-  
-  db_c <- rio::import(url, 
-                      sheet = 3, 
-                      range = "O1:R12") %>% 
-    as_tibble()
-  
-  db_d <- rio::import(url, 
-                      sheet = 4) %>% 
-    as_tibble()
-  
   
   ###############################
   ### daily collection automation
@@ -77,45 +71,117 @@ if (date_f > last_date_drive){
   
   ### Cases
   ##############
+
+  db_c <- rio::import(paste0("https://www.nijz.si", url), 
+                      sheet = "tb4", 
+                      skip = 2) %>%
+    as_tibble() 
   
-  db_c2 <- db_c %>%
-    rename(age_g = 1,
-           m = 2,
-           f = 3,
-           b = 4) %>%
-    gather(-age_g, key = Sex, value = Value) %>%
-    separate(age_g, c("Age","age2"), "-") %>%
-    mutate(Age = case_when(Age == "Skupaj" ~ "TOT",
-                           Age == "85+" ~ "85",
-                           TRUE ~ Age),
-           date_f = date_f,
-           Measure = "Cases") %>%
-    select(Sex, Age, date_f, Measure, Value)
+  db_c2 <- db_c %>% 
+    rename(date_f = 1,
+           m_0 = 2,
+           m_5 = 3,
+           m_15 = 4,
+           m_25 = 5,
+           m_35 = 6,
+           m_45 = 7,
+           m_55 = 8,
+           m_65 = 9,
+           m_75 = 10,
+           m_85 = 11,
+           m_TOT = 12,
+           f_0 = 13,
+           f_5 = 14,
+           f_15 = 15,
+           f_25 = 16,
+           f_35 = 17,
+           f_45 = 18,
+           f_55 = 19,
+           f_65 = 20,
+           f_75 = 21,
+           f_85 = 22,
+           f_TOT = 23,
+           b_0 = 24,
+           b_5 = 25,
+           b_15 = 26,
+           b_25 = 27,
+           b_35 = 28,
+           b_45 = 29,
+           b_55 = 30,
+           b_65 = 31,
+           b_75 = 32,
+           b_85 = 33,
+           b_TOT = 34) %>% 
+    gather(-date_f, key = Age, value = new) %>% 
+    separate(Age, c("Sex", "Age"), sep = "_") %>% 
+    mutate(date_f = as.Date(as.integer(date_f), origin = "1899-12-30")) %>% 
+    replace_na(list(new = 0)) %>% 
+    drop_na()
+  
+  # # test  
+  # db_cases %>% 
+  #   filter(Age != "TOT") %>% 
+  #   group_by(Sex) %>% 
+  #   summarise(sum(Value))
+  
+  db_c3 <- db_c2 %>% 
+    group_by(Sex, Age) %>% 
+    mutate(Value = cumsum(new)) %>% 
+    select(-new) %>% 
+    ungroup() %>% 
+    mutate(Measure = "Cases")
   
   ### deaths
   ##############
-  
-  id_d <- grep("Starostne", colnames(db_d))
-  
+  db_d <- rio::import(paste0("https://www.nijz.si", url), 
+                      sheet = "tb6", 
+                      skip = 2)
+    
   db_d2 <- db_d %>% 
-    select(id_d, id_d + 1, id_d + 2, id_d + 3) %>% 
-    rename(age_g = 1,
-           m = 2,
-           f = 3,
-           b = 4) %>%
-    drop_na() %>% 
-    bind_rows(tibble(age_g = "0", m = 0, f = 0, b = 0)) %>% 
-    gather(-age_g, key = Sex, value = Value) %>% 
-    separate(age_g, c("Age","age2"), "-") %>% 
-    mutate(Age = case_when(Age == "Skupaj" ~ "TOT",
-                           Age == "85+" ~ "85",
-                           TRUE ~ Age),
-           Measure = "Deaths",
-           date_f = date_f,
-           Measure = "Deaths") %>%
-    select(Sex, Age, date_f, Measure, Value) 
+    rename(date_f = 1,
+           m_45 = 2,
+           m_55 = 3,
+           m_65 = 4,
+           m_75 = 5,
+           m_85 = 6,
+           m_TOT = 7,
+           f_45 = 8,
+           f_55 = 9,
+           f_65 = 10,
+           f_75 = 11,
+           f_85 = 12,
+           f_TOT = 13,
+           b_45 = 14,
+           b_55 = 15,
+           b_65 = 16,
+           b_75 = 17,
+           b_85 = 18,
+           b_TOT = 19) %>% 
+    gather(-date_f, key = Age, value = new) %>% 
+    separate(Age, c("Sex", "Age"), sep = "_") %>% 
+    mutate(date_f = as.Date(as.integer(date_f), origin = "1899-12-30")) %>% 
+    replace_na(list(new = 0)) %>% 
+    drop_na()
+
+  # # test  
+  # db_d %>% 
+  #   filter(Age != "TOT") %>% 
+  #   group_by(Sex) %>% 
+  #   summarise(sum(Value))
   
-  db_all <- bind_rows(db_c2, db_d2) %>% 
+  db_d3 <- db_d2 %>% 
+    complete(date_f, 
+             Sex, 
+             Age = c("0", as.character(seq(45, 85, 10)), "TOT"), 
+             fill = list(new = 0)) %>% 
+    group_by(Sex, Age) %>% 
+    mutate(Value = cumsum(new)) %>% 
+    select(-new) %>% 
+    ungroup() %>% 
+    mutate(Measure = "Deaths")
+  
+  
+  db_all <- bind_rows(db_c3, db_d3) %>% 
     mutate(Date = paste(sprintf("%02d", day(date_f)),
                         sprintf("%02d", month(date_f)),
                         year(date_f), sep = "."),
@@ -135,7 +201,7 @@ if (date_f > last_date_drive){
   #### uploading database to Google Drive ####
   ############################################
   # This command append new rows at the end of the sheet
-  sheet_append(db_all,
+  write_sheet(db_all,
                ss = ss_i,
                sheet = "database")
   log_update(pp = "Slovenia", N = nrow(db_all))
@@ -151,10 +217,6 @@ if (date_f > last_date_drive){
                        path = ss_db, 
                        type = "spreadsheet",
                        overwrite = T)
-  
-  write_sheet(db_cases, 
-              ss = meta$id,
-              sheet = "cases_age")
   
   write_sheet(db_c, 
               ss = meta$id,
