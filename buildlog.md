@@ -152,3 +152,30 @@ filter( Code == 'PK17.03.2020', Sex == 'f', Measure == 'Deaths' )
 # push outputs to OSF 
  Thu Oct 29 04:41:54 2020 
 
+
+# Filter valid Measure entries: 
+ Thu Oct 29 11:55:31 2020 
+
+Valid Measures include: Cases,Deaths,Tests,ASCFR
+ 596 rows removed
+# Filter valid Metric entries: 
+ Thu Oct 29 11:55:33 2020 
+
+Valid Metrics include: Count,Fraction,Ratio
+ 14 rows removed
+# Duplicates detected. Following `Code`s removed: 
+ Thu Oct 29 11:55:40 2020 
+
+CA_QC 01.10.20
+CA_QC 02.10.20
+CA_QC 03.10.20
+CA_QC 04.10.20
+CA_QC 05.10.20
+CA_QC 06.10.20
+CA_QC 07.10.20
+CA_QC 08.10.20
+CA_QC 09.10.20
+CA_QC 10.10.20
+CA_QC 11.10.20
+PS12.10.2020
+US_TX27.10.2020
