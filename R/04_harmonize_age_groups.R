@@ -29,7 +29,11 @@ iL <- split(inputCounts,
                    inputCounts$Measure),
               drop =TRUE)
 
-
+# rmelements <-
+# iL %>% lapply(function(X){
+#   any(X$Measure == "Count")
+# }) %>% unlist()
+# iL <- iL[!rmelements]
 ### Age harmonization: 5-year age groups ############################
 
 # Log
@@ -48,7 +52,11 @@ iLout1e5 <- mclapply(iL,
                       lambda = 1e5,
                       logfile = logfile,
                       mc.cores = n.cores)
-
+# rmelements <-
+#   iLout1e5 %>% lapply(function(X){
+#     any(X$Measure == "Count")
+#   }) %>% unlist()
+# iLout1e5 <- iLout1e5[!rmelements]
 # Edit results
 outputCounts_5_1e5 <- iLout1e5 %>% 
                       # Get into one data set
