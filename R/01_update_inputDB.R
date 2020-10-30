@@ -186,12 +186,12 @@ if (nrow(rubric) > 0){
 schedule_this <- FALSE
 if (schedule_this){
   library(taskscheduleR)
-  taskscheduleR::taskscheduler_delete("COVerAGE-DB-every-8-hour-inputDB-updates")
+  taskscheduler_delete("COVerAGE-DB-every-8-hour-inputDB-updates")
   taskscheduler_create(taskname = "COVerAGE-DB-every-8-hour-inputDB-updates", 
                        rscript = "C:/Users/riffe/Documents/covid_age/R/01_update_inputDB.R", 
                        schedule = "HOURLY", 
                        modifier = 8,
-                       starttime = "16:32",
+                       starttime = "23:00",
                        startdate = format(Sys.Date(), "%d/%m/%Y"))
   # 
 }
