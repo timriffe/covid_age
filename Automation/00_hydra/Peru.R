@@ -296,6 +296,18 @@ sheet_write(db_final_6,
 
 Sys.sleep(105)
 
+sheet_write(db_final_7,
+            ss = ss_7,
+            sheet = "database")
+
+Sys.sleep(105)
+
+sheet_write(db_final_8,
+            ss = ss_8,
+            sheet = "database")
+
+Sys.sleep(105)
+
 N <- nrow(db_final_pe) + nrow(db_final_1) + nrow(db_final_2) + nrow(db_final_3) +
   nrow(db_final_4) + nrow(db_final_5) + nrow(db_final_6)  
 log_update(pp = "Peru", N = N)
