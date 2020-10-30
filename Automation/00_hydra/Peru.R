@@ -325,15 +325,15 @@ date <- paste(sprintf("%02d",day(date_f)),
               year(date_f),
               sep=".")
 
-filename_c <- file.path("Data",paste0("PE", date, "cases.csv"))
-filename_d <- file.path("Data",paste0("PE", date, "deaths.csv"))
+filename_c <- file.path("Automation/temp_files",paste0("PE", date, "cases.csv"))
+filename_d <- file.path("Automation/temp_files",paste0("PE", date, "deaths.csv"))
 
 
 
 write_csv(db_c, filename_c)
 write_csv(db_d, filename_d)
 
-filename <- file.path("Data",paste0("PE", date, "cases&deaths.zip"))
+filename <- file.path("Automation/temp_files",paste0("PE", date, "cases&deaths.zip"))
 
 files <- c(filename_c, filename_d)
 zip(filename, files, compression_level = 9)

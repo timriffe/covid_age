@@ -339,13 +339,13 @@ date <- paste(sprintf("%02d", day(date_f)),
               sprintf("%02d", month(date_f)),
               year(date_f), sep = ".")
 
-filename_1 <- file.path("Data",paste0("CO", date, "cases&deaths.csv"))
-filename_2 <- file.path("Data",paste0("CO", date, "tests.csv"))
+filename_1 <- file.path("Automation/temp_files",paste0("CO", date, "cases&deaths.csv"))
+filename_2 <- file.path("Automation/temp_files",paste0("CO", date, "tests.csv"))
 
 write_csv(db, filename_1)
 write_csv(db_m1, filename_2)
 
-filename <- file.path("Data",paste0("CO", date, "cases&deaths.zip"))
+filename <- file.path("Automation/temp_files",paste0("CO", date, "cases&deaths.zip"))
 
 files <- c(filename_1, filename_2)
 zip(filename, files, compression_level = 9)
