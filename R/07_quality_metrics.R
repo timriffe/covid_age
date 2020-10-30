@@ -156,8 +156,10 @@ Metadata %>%
 # 3) merge, calculate metric Cases / Tests
 
 
-#   Non-monotonicity
-# VII Bohk-completeness metric - National only, can wait
+# VII  Non-monotonicity
+
+
+# VIII Bohk-completeness metric - National only, can wait
 
 # needs to wait because need to gather location-sex-specific lifetables. WPP can work for countries,
 # but would need to gather subnational. Might also want to provide this extra metric as output.
