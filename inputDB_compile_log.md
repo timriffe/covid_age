@@ -1,16 +1,19 @@
 
-# 2020-10-28 inputDB updates 
- Wed Oct 28 11:26:58 2020 
+# 2020-10-30 inputDB updates 
+ Fri Oct 30 08:32:09 2020 
 
 
-# 2020-10-28 11:27:02 updates 
- Wed Oct 28 11:27:02 2020 
+# 2020-10-30 08:32:09 updates 
+ Fri Oct 30 08:32:09 2020 
 
 
-# Duplicates detected. Following `Code`s removed: 
- Wed Oct 28 16:16:05 2020 
+# Filter valid Measure entries: 
+ Fri Oct 30 08:45:04 2020 
 
-PS19.10.2020
-PS03.10.2020
-PS05.10.2020
-PS09.10.2020
+Valid Measures include: Cases,Deaths,Tests,ASCFR
+ 334 rows removed
+# Filter valid Metric entries: 
+ Fri Oct 30 08:45:04 2020 
+
+Valid Metrics include: Count,Fraction,Ratio
+ 14 rows removed

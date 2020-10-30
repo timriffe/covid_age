@@ -191,8 +191,8 @@ if (schedule_this){
                        rscript = "C:/Users/riffe/Documents/covid_age/R/01_update_inputDB.R", 
                        schedule = "HOURLY", 
                        modifier = 8,
-                       starttime = "01:59",
-                       startdate = format(Sys.Date()+1, "%d/%m/%Y"))
+                       starttime = "16:32",
+                       startdate = format(Sys.Date(), "%d/%m/%Y"))
   # 
 }
 
