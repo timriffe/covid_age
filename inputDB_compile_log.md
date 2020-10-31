@@ -222,3 +222,27 @@ CO_Other11.04.2020
 CO_Other12.04.2020
 CO_Other13.04.2020
 CO_Other14.04.2020
+# 2020-10-31 inputDB updates 
+ Sat Oct 31 07:00:09 2020 
+
+
+# 2020-10-31 07:00:09 updates 
+ Sat Oct 31 07:00:09 2020 
+
+
+# Filter valid Measure entries: 
+ Sat Oct 31 08:30:22 2020 
+
+Valid Measures include: Cases,Deaths,Tests,ASCFR
+ 1166 rows removed
+# Filter valid Metric entries: 
+ Sat Oct 31 08:30:22 2020 
+
+Valid Metrics include: Count,Fraction,Ratio
+ 14 rows removed
+# Duplicates detected. Following `Code`s removed: 
+ Sat Oct 31 08:30:26 2020 
+
+PS01.10.2020
+PS12.10.2020
+US_OR04.09.2020
