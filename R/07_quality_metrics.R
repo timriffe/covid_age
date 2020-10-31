@@ -90,12 +90,15 @@ Marginal_sums_check <-
 
 NAgeCategories <-
   inputDB %>% 
+  mutate(Date = dmy(Date)) %>% 
   filter(! Age %in% c("TOT","UNK")) %>% 
   group_by(Country,Region,Code,Date,Sex,Measure) %>% 
   summarize(N = n()) %>% 
   ungroup() %>% 
-  pivot_wider(names_from = Measure, values_from=N) 
-  
+  pivot_wider(names_from = Measure, values_from=N) %>% 
+  rename(NrAgesCases = Cases,
+         NrAgesDeaths = Deaths,
+         NrAgesTests = Tests)
 # III Open age
 
 # 1) get inputDB:
@@ -106,11 +109,15 @@ NAgeCategories <-
 MaxAge <-
   inputDB %>% 
   filter(! Age %in% c("TOT","UNK")) %>% 
-  mutate(Age = as.integer(Age)) %>% 
+  mutate(Age = as.integer(Age),
+         Date = dmy(Date)) %>% 
   group_by(Country,Region,Code,Date,Sex,Measure) %>% 
   summarize(MaxAge = max(Age)) %>% 
   ungroup() %>% 
-  pivot_wider(names_from = Measure, values_from=MaxAge) 
+  pivot_wider(names_from = Measure, values_from=MaxAge) %>% 
+  rename(MaxAgeCases = Cases,
+         MaxAgeDeaths = Deaths,
+         MaxAgeTests = Tests)
 
 # IV Offsets yes/no
 
@@ -139,10 +146,12 @@ SubPopsOffsetsIndicator <-
   
 # V Refreshing yes/no
 
+# metadata needs some cleaning before this can integrate
 rownames(Metadata)<- NULL
+Corrections <-
 Metadata %>% 
   select(Country, `Region(s)`,`Retrospective corrections`) %>% 
-  rename("Region" = `Region(s)`, "Corrected" = `Retrospective corrections`) %>% View() 
+  rename("Region" = `Region(s)`, "Corrected" = `Retrospective corrections`)# %>% View() 
 
 # read metadata_basic.rds, this should be compiled daily with the build,
 # it comes from the metadata tabs
@@ -165,3 +174,23 @@ Metadata %>%
 # but would need to gather subnational. Might also want to provide this extra metric as output.
 
 
+
+# Merge metrics into
+# Country
+# Country - Region
+# Country - Region - Date (data only)
+
+# Marginal_sums_check
+# NAgeCategories
+# MaxAge
+# SubPopsOffsetsIndicator
+
+FullIndicators <- 
+  Marginal_sums_check %>% 
+  left_join(NAgeCategories) %>% 
+  left_join(MaxAge) %>% 
+  left_join(SubPopsOffsetsIndicator)
+
+# Marginal_sums_check %>% 
+#   group_by(Country, Region) %>% 
+#   
