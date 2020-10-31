@@ -1,27 +1,23 @@
 
 # New build log 
- Sat Oct 31 02:00:09 2020 
+ Sat Oct 31 14:17:14 2020 
 
 
 # prep (resolve_UNKUNK) 
- Sat Oct 31 02:00:26 2020 
+ Sat Oct 31 14:17:26 2020 
 
 
 # A (convert_fractions_sexes) 
- Sat Oct 31 02:03:00 2020 
+ Sat Oct 31 14:19:41 2020 
 
 
 # B (redistribute_unknown_age) 
- Sat Oct 31 02:05:08 2020 
+ Sat Oct 31 14:21:14 2020 
 
 
 # C (rescale_to_total) 
- Sat Oct 31 02:12:33 2020 
+ Sat Oct 31 14:26:42 2020 
 
-filter( Code == 'PS19.10.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'PS19.10.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'PS19.10.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'PS19.10.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'CO_Other09.04.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'CO_Other09.04.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'CO_Other09.04.2020', Sex == 'm', Measure == 'Cases' )
@@ -30,34 +26,34 @@ filter( Code == 'CO_Other09.04.2020', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'CO_Other09.04.2020', Sex == 'm', Measure == 'Deaths' )
 
 # D (infer_cases_from_deaths_and_ascfr) 
- Sat Oct 31 02:24:30 2020 
+ Sat Oct 31 14:33:57 2020 
 
 
 # E (infer_deaths_from_cases_and_ascfr) 
- Sat Oct 31 02:27:05 2020 
+ Sat Oct 31 14:36:31 2020 
 
 
 # G (redistribute_unknown_sex) 
- Sat Oct 31 02:29:38 2020 
+ Sat Oct 31 14:39:01 2020 
 
 
 # H (rescale_sexes) 
- Sat Oct 31 02:31:37 2020 
+ Sat Oct 31 14:40:45 2020 
 
 
 # I (infer_both_sex) 
- Sat Oct 31 02:33:21 2020 
+ Sat Oct 31 14:42:20 2020 
 
 
 # J (maybe_lower_closeout) 
- Sat Oct 31 02:35:11 2020 
+ Sat Oct 31 14:43:18 2020 
 
 filter( Code == 'US_TX10.09.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_TX11.09.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_TX13.09.2020', Sex == 'b', Measure == 'Cases' )
 
 # Age harmonization 
- Sat Oct 31 02:45:09 2020 
+ Sat Oct 31 14:48:14 2020 
 
 filter( Code == 'PK10.03.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'PK11.03.2020', Sex == 'b', Measure == 'Deaths' )
@@ -67,10 +63,6 @@ filter( Code == 'PK14.03.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'PK15.03.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'PK16.03.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'PK17.03.2020', Sex == 'b', Measure == 'Deaths' )
-filter( Code == 'DO16.06.2020', Sex == 'm', Measure == 'Deaths' )
-filter( Code == 'DO17.06.2020', Sex == 'm', Measure == 'Deaths' )
-filter( Code == 'DO18.06.2020', Sex == 'm', Measure == 'Deaths' )
-filter( Code == 'DO19.06.2020', Sex == 'm', Measure == 'Deaths' )
 filter( Code == 'TR03.08.2020', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'TR05.07.2020', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'TR05.10.2020', Sex == 'm', Measure == 'Cases' )
@@ -88,6 +80,10 @@ filter( Code == 'TR26.07.2020', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'TR28.06.2020', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'TR28.09.2020', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'TR31.08.2020', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'DO16.06.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'DO17.06.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'DO18.06.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'DO19.06.2020', Sex == 'm', Measure == 'Deaths' )
 filter( Code == 'PK10.03.2020', Sex == 'm', Measure == 'Deaths' )
 filter( Code == 'PK11.03.2020', Sex == 'm', Measure == 'Deaths' )
 filter( Code == 'PK12.03.2020', Sex == 'm', Measure == 'Deaths' )
@@ -132,27 +128,3 @@ filter( Code == 'PK14.03.2020', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'PK15.03.2020', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'PK16.03.2020', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'PK17.03.2020', Sex == 'f', Measure == 'Deaths' )
-
-# Compile metadata 
- Sat Oct 31 04:22:39 2020 
-
-
-# Building dashboards 
- Sat Oct 31 04:38:56 2020 
-
-
-# remake coverage map 
- Sat Oct 31 04:41:39 2020 
-
-
-# push outputs to OSF 
- Sat Oct 31 04:46:13 2020 
-
-
-# push outputs to OSF 
- Sat Oct 31 08:35:03 2020 
-
-
-# Commit dashboards and buildlog 
- Sat Oct 31 08:36:18 2020 
-
