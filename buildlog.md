@@ -128,3 +128,23 @@ filter( Code == 'PK14.03.2020', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'PK15.03.2020', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'PK16.03.2020', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'PK17.03.2020', Sex == 'f', Measure == 'Deaths' )
+
+# Compile metadata 
+ Sat Oct 31 16:37:30 2020 
+
+
+# Building dashboards 
+ Sat Oct 31 16:52:38 2020 
+
+
+# remake coverage map 
+ Sat Oct 31 16:55:22 2020 
+
+
+# push outputs to OSF 
+ Sat Oct 31 16:59:48 2020 
+
+
+# Commit dashboards and buildlog 
+ Sat Oct 31 17:00:59 2020 
+
