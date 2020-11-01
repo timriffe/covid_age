@@ -1,25 +1,19 @@
 
-# 2020-10-31 inputDB updates 
- Sat Oct 31 23:00:09 2020 
+# 2020-11-01 inputDB updates 
+ Sun Nov 01 07:00:09 2020 
 
 
-# 2020-10-31 23:00:09 updates 
- Sat Oct 31 23:00:09 2020 
+# 2020-11-01 07:00:09 updates 
+ Sun Nov 01 07:00:09 2020 
 
 
-# Duplicates detected. Following `Code`s removed: 
- Sat Oct 31 23:26:25 2020 
+# Filter valid Measure entries: 
+ Sun Nov 01 08:37:33 2020 
 
-CA_QC_01.10.2020
-CA_QC_02.10.2020
-CA_QC_03.10.2020
-CA_QC_04.10.2020
-CA_QC_05.10.2020
-CA_QC_06.10.2020
-CA_QC_07.10.2020
-CA_QC_08.10.2020
-CA_QC_09.10.2020
-CA_QC_10.10.2020
-CA_QC_11.10.2020
-CR06.09.2020
-PS12.10.2020
+Valid Measures include: Cases,Deaths,Tests,ASCFR
+ 338 rows removed
+# Filter valid Metric entries: 
+ Sun Nov 01 08:37:34 2020 
+
+Valid Metrics include: Count,Fraction,Ratio
+ 14 rows removed
