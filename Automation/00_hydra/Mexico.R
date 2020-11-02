@@ -2,7 +2,7 @@
 # This is modified by sched()
 # ##  ###
 email <- "kikepaila@gmail.com"
-setwd("C:/Users/acosta/Documents/covid_age")
+# setwd("C:/Users/acosta/Documents/covid_age")
 # ##  ###
 
 # end 
@@ -14,6 +14,7 @@ library(lubridate)
 library(googlesheets4)
 library(googledrive)
 library(rvest)
+library(zip)
 
 drive_auth(email = email)
 gs4_auth(email = email)
@@ -26,12 +27,15 @@ url1 <- html_nodes(html, xpath = '/html/body/main/div/div[1]/div[4]/div/table[2]
   html_attr("href")
 
 temp <- tempfile()
-download.file(url1, temp)
+download.file(url1, "Data/temp.zip")
 # download.file("http://datosabiertos.salud.gob.mx/gobmx/salud/datos_abiertos/datos_abiertos_covid19.zip", temp)
 
-zipdf <- unzip(temp, list = TRUE)
+zipdf <- unzip("Data/temp.zip", list = TRUE)
+getwd()
 csv_file <- zipdf$Name
-db <- read_csv(unz(temp, csv_file))
+db <- read_csv(unz("Data/temp.zip", csv_file))
+db <- read_csv("201030COVID19MEXICO.csv")
+db <- read_csv(unzip("Data/temp.zip", "201030COVID19MEXICO"))
 
 unique(db$SEXO)
 unique(db$EDAD)
@@ -355,41 +359,42 @@ sheet_write(db_final_1,
             ss = ss_1,
             sheet = "database")
 
+Sys.sleep(105)
+
 sheet_write(db_final_2,
             ss = ss_2,
             sheet = "database")
-
-Sys.sleep(105)
 
 sheet_write(db_final_3,
             ss = ss_3,
             sheet = "database")
 
+Sys.sleep(105)
+
 sheet_write(db_final_4,
             ss = ss_4,
             sheet = "database")
-
-Sys.sleep(105)
 
 sheet_write(db_final_5,
             ss = ss_5,
             sheet = "database")
 
+Sys.sleep(105)
+
 sheet_write(db_final_6,
             ss = ss_6,
             sheet = "database")
-
-Sys.sleep(105)
 
 sheet_write(db_final_7,
             ss = ss_7,
             sheet = "database")
 
+Sys.sleep(105)
+
 sheet_write(db_final_8,
             ss = ss_8,
             sheet = "database")
 
-Sys.sleep(105)
 N <- nrow(db_final_mx) + nrow(db_final_1) + nrow(db_final_2) + nrow(db_final_3) +
   nrow(db_final_4) + nrow(db_final_5) + nrow(db_final_6) + nrow(db_final_7) + nrow(db_final_8) 
 log_update(pp = "Mexico", N = N)
