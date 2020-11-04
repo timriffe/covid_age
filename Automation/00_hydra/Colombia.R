@@ -27,12 +27,28 @@ db <- read_csv("https://www.datos.gov.co/api/views/gt2j-8ykr/rows.csv?accessType
 db_muestras <- read_csv("https://www.datos.gov.co/api/views/8835-5baf/rows.csv",
                         locale = locale(encoding = "UTF-8"))
 
-unique(db$Estado)
-unique(db$"Departamento o Distrito")
+#TODO Provintial tetst to be incorporated!!
+# changes in variable names
+# now provincial info
+# include cities
 
+db_m2 <- read_csv("https://www.datos.gov.co/api/views/8835-5baf/rows.csv?accessType=DOWNLOAD",
+                        locale = locale(encoding = "UTF-8"))
+
+unique(db$Estado)
+unique(db$"Nombre municipio")
+
+
+
+test <- db %>% 
+  rename(mun = "Nombre municipio") %>% 
+  group_by(mun) %>% 
+  summarise(d = sum(n())) %>% 
+  arrange(-d)
+  
 db2 <- db %>% 
   rename(Sex = Sexo,
-         Region = 'Departamento o Distrito',
+         Region = 'Nombre departamento',
          status = 'Estado') %>% 
   mutate(Age = as.character(Edad),
          Region = case_when(
