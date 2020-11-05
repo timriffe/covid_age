@@ -16,3 +16,10 @@ Valid Measures include: Cases,Deaths,Tests,ASCFR
  Wed Nov 04 23:45:56 2020 
 
 US_OR04.09.2020
+# 2020-11-05 inputDB updates 
+ Thu Nov 05 07:00:09 2020 
+
+
+# 2020-11-05 07:00:09 updates 
+ Thu Nov 05 07:00:09 2020 
+
