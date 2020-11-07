@@ -1,36 +1,255 @@
 
-# 2020-11-05 inputDB updates 
- Thu Nov 05 23:00:23 2020 
-
-
-# 2020-11-05 23:00:23 updates 
- Thu Nov 05 23:00:23 2020 
-
-
-# Duplicates detected. Following `Code`s removed: 
- Thu Nov 05 23:54:45 2020 
-
-PS12.10.2020
-US_OR04.09.2020
 # 2020-11-06 inputDB updates 
- Fri Nov 06 07:00:09 2020 
+ Fri Nov 06 10:49:41 2020 
 
 
-# 2020-11-06 07:00:09 updates 
- Fri Nov 06 07:00:09 2020 
+# 2020-11-06 10:49:41 updates 
+ Fri Nov 06 10:49:41 2020 
 
 
 # Filter valid Measure entries: 
- Fri Nov 06 07:47:23 2020 
+ Fri Nov 06 17:29:37 2020 
 
 Valid Measures include: Cases,Deaths,Tests,ASCFR
- 348 rows removed
+ 1202 rows removed
 # Filter valid Metric entries: 
- Fri Nov 06 07:47:23 2020 
+ Fri Nov 06 17:29:37 2020 
 
 Valid Metrics include: Count,Fraction,Ratio
  14 rows removed
 # Duplicates detected. Following `Code`s removed: 
- Fri Nov 06 07:47:24 2020 
+ Fri Nov 06 17:30:00 2020 
 
+BR_AM23.06.2020
+CO_Other12.08.2020
+CO_Other13.08.2020
+CO_Other14.08.2020
+CO_Other15.08.2020
+CO_Other16.08.2020
+CO_Other17.08.2020
+CO_Other18.08.2020
+CO_Other19.08.2020
+CO_Other20.08.2020
+CO_Other21.08.2020
+CO_Other22.08.2020
+CO_Other23.08.2020
+CO_Other24.08.2020
+CO_Other25.08.2020
+CO_Other26.08.2020
+CO_Other27.08.2020
+CO_Other28.08.2020
+CO_Other29.08.2020
+CO_Other30.08.2020
+CO_Other31.08.2020
+CO_Other01.09.2020
+CO_Other02.09.2020
+CO_Other03.09.2020
+CO_Other04.09.2020
+CO_Other05.09.2020
+CO_Other06.09.2020
+CO_Other07.09.2020
+CO_Other08.09.2020
+CO_Other09.09.2020
+CO_Other10.09.2020
+CO_Other11.09.2020
+CO_Other12.09.2020
+CO_Other13.09.2020
+CO_Other14.09.2020
+CO_Other15.09.2020
+CO_Other16.09.2020
+CO_Other17.09.2020
+CO_Other18.09.2020
+CO_Other19.09.2020
+CO_Other20.09.2020
+CO_Other21.09.2020
+CO_Other22.09.2020
+CO_Other23.09.2020
+CO_Other24.09.2020
+CO_Other25.09.2020
+CO_Other26.09.2020
+CO_Other27.09.2020
+CO_Other28.09.2020
+CO_Other29.09.2020
+CO_Other30.09.2020
+CO_Other01.10.2020
+CO_Other02.10.2020
+CO_Other03.10.2020
+CO_Other04.10.2020
+CO_Other05.10.2020
+CO_Other06.10.2020
+CO_Other07.10.2020
+CO_Other08.10.2020
+CO_Other09.10.2020
+CO_Other10.10.2020
+CO_Other11.10.2020
+CO_Other12.10.2020
+CO_Other13.10.2020
+CO_Other14.10.2020
+CO_Other15.10.2020
+CO_Other16.10.2020
+CO_Other17.10.2020
+CO_Other18.10.2020
+CO_Other19.10.2020
+CO_Other20.10.2020
+CO_Other21.10.2020
+CO_Other22.10.2020
+CO_Other23.10.2020
+CO_Other24.10.2020
+CO_Other25.10.2020
+CO_Other26.10.2020
+CO_Other27.10.2020
+CO_Other29.05.2020
+CO_Other30.05.2020
+CO_Other31.05.2020
+CO_Other01.06.2020
+CO_Other02.06.2020
+CO_Other03.06.2020
+CO_Other04.06.2020
+CO_Other05.06.2020
+CO_Other06.06.2020
+CO_Other07.06.2020
+CO_Other08.06.2020
+CO_Other09.06.2020
+CO_Other10.06.2020
+CO_Other11.06.2020
+CO_Other12.06.2020
+CO_Other13.06.2020
+CO_Other14.06.2020
+CO_Other15.06.2020
+CO_Other16.06.2020
+CO_Other17.06.2020
+CO_Other18.06.2020
+CO_Other19.06.2020
+CO_Other20.06.2020
+CO_Other21.06.2020
+CO_Other22.06.2020
+CO_Other23.06.2020
+CO_Other24.06.2020
+CO_Other25.06.2020
+CO_Other26.06.2020
+CO_Other27.06.2020
+CO_Other28.06.2020
+CO_Other29.06.2020
+CO_Other30.06.2020
+CO_Other01.07.2020
+CO_Other02.07.2020
+CO_Other03.07.2020
+CO_Other04.07.2020
+CO_Other05.07.2020
+CO_Other06.07.2020
+CO_Other07.07.2020
+CO_Other08.07.2020
+CO_Other09.07.2020
+CO_Other10.07.2020
+CO_Other11.07.2020
+CO_Other12.07.2020
+CO_Other13.07.2020
+CO_Other14.07.2020
+CO_Other15.07.2020
+CO_Other16.07.2020
+CO_Other17.07.2020
+CO_Other18.07.2020
+CO_Other19.07.2020
+CO_Other20.07.2020
+CO_Other21.07.2020
+CO_Other22.07.2020
+CO_Other23.07.2020
+CO_Other24.07.2020
+CO_Other25.07.2020
+CO_Other26.07.2020
+CO_Other27.07.2020
+CO_Other28.07.2020
+CO_Other29.07.2020
+CO_Other30.07.2020
+CO_Other31.07.2020
+CO_Other01.08.2020
+CO_Other02.08.2020
+CO_Other03.08.2020
+CO_Other04.08.2020
+CO_Other05.08.2020
+CO_Other06.08.2020
+CO_Other07.08.2020
+CO_Other08.08.2020
+CO_Other09.08.2020
+CO_Other10.08.2020
+CO_Other11.08.2020
+CO_Other24.04.2020
+CO_Other25.04.2020
+CO_Other26.04.2020
+CO_Other27.04.2020
+CO_Other28.04.2020
+CO_Other29.04.2020
+CO_Other30.04.2020
+CO_Other01.05.2020
+CO_Other02.05.2020
+CO_Other03.05.2020
+CO_Other04.05.2020
+CO_Other05.05.2020
+CO_Other06.05.2020
+CO_Other07.05.2020
+CO_Other08.05.2020
+CO_Other09.05.2020
+CO_Other10.05.2020
+CO_Other11.05.2020
+CO_Other12.05.2020
+CO_Other13.05.2020
+CO_Other14.05.2020
+CO_Other15.05.2020
+CO_Other16.05.2020
+CO_Other17.05.2020
+CO_Other18.05.2020
+CO_Other19.05.2020
+CO_Other20.05.2020
+CO_Other21.05.2020
+CO_Other22.05.2020
+CO_Other23.05.2020
+CO_Other24.05.2020
+CO_Other25.05.2020
+CO_Other26.05.2020
+CO_Other27.05.2020
+CO_Other28.05.2020
+CO_Other15.04.2020
+CO_Other16.04.2020
+CO_Other17.04.2020
+CO_Other18.04.2020
+CO_Other19.04.2020
+CO_Other20.04.2020
+CO_Other21.04.2020
+CO_Other22.04.2020
+CO_Other23.04.2020
+CO_Other10.04.2020
+CO_Other11.04.2020
+CO_Other12.04.2020
+CO_Other13.04.2020
+CO_Other14.04.2020
+CR06.09.2020
+GT03.07.2020
 PS12.10.2020
+US_OR04.09.2020
+US_TX27.10.2020
+# 2020-11-07 inputDB updates 
+ Sat Nov 07 02:00:27 2020 
+
+
+# 2020-11-07 02:00:27 updates 
+ Sat Nov 07 02:00:27 2020 
+
+
+# Filter valid Measure entries: 
+ Sat Nov 07 02:32:17 2020 
+
+Valid Measures include: Cases,Deaths,Tests,ASCFR
+ 1212 rows removed
+# Filter valid Metric entries: 
+ Sat Nov 07 02:32:17 2020 
+
+Valid Metrics include: Count,Fraction,Ratio
+ 14 rows removed
+# Duplicates detected. Following `Code`s removed: 
+ Sat Nov 07 02:32:18 2020 
+
+CM05.08.2020
+CM12.08.2020
+CM26.08.2020
+CM02.09.2020
+CM09.09.2020
