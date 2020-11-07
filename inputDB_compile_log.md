@@ -227,3 +227,29 @@ GT03.07.2020
 PS12.10.2020
 US_OR04.09.2020
 US_TX27.10.2020
+# 2020-11-07 inputDB updates 
+ Sat Nov 07 02:00:27 2020 
+
+
+# 2020-11-07 02:00:27 updates 
+ Sat Nov 07 02:00:27 2020 
+
+
+# Filter valid Measure entries: 
+ Sat Nov 07 02:32:17 2020 
+
+Valid Measures include: Cases,Deaths,Tests,ASCFR
+ 1212 rows removed
+# Filter valid Metric entries: 
+ Sat Nov 07 02:32:17 2020 
+
+Valid Metrics include: Count,Fraction,Ratio
+ 14 rows removed
+# Duplicates detected. Following `Code`s removed: 
+ Sat Nov 07 02:32:18 2020 
+
+CM05.08.2020
+CM12.08.2020
+CM26.08.2020
+CM02.09.2020
+CM09.09.2020
