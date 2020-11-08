@@ -44,7 +44,7 @@ if (!p_isinstalled("parallelsugar")){
 }
 if (!p_isinstalled("osfr")){
   library(remotes)
-  install_github("ropensci/osfr")
+  install_github("ropensci/osfr", force = TRUE)
 }
 # Load the required CRAN/github packages
 p_load(packages_CRAN, character.only = TRUE)
