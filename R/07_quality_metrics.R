@@ -1,4 +1,4 @@
-
+source(here("R","00_Functions.R"))
 # some functions internal to this script
 add_b_margin <- function(chunk){
   if (nrow(chunk) > 0){
@@ -16,8 +16,7 @@ add_b_margin <- function(chunk){
 
 
 # Script should calculate
-library(here)
-source(here("R","00_Functions.R"))
+
 inputDB   <- readRDS(here("Data","inputDB.rds"))
 Output_10 <- readRDS(here("Data","Output_10.rds"))
 Offsets   <- readRDS(here("Data","Offsets.rds"))
@@ -96,9 +95,10 @@ NAgeCategories <-
   summarize(N = n()) %>% 
   ungroup() %>% 
   pivot_wider(names_from = Measure, values_from=N) %>% 
-  rename(NrAgesCases = Cases,
-         NrAgesDeaths = Deaths,
-         NrAgesTests = Tests)
+  rename(cases_N_ages = Cases,
+         deaths_N_ages = Deaths,
+         tests_N_ages = Tests) %>% 
+  select(-ASCFR)
 # III Open age
 
 # 1) get inputDB:
@@ -115,9 +115,10 @@ MaxAge <-
   summarize(MaxAge = max(Age)) %>% 
   ungroup() %>% 
   pivot_wider(names_from = Measure, values_from=MaxAge) %>% 
-  rename(MaxAgeCases = Cases,
-         MaxAgeDeaths = Deaths,
-         MaxAgeTests = Tests)
+  rename(cases_max_age = Cases,
+         deaths_max_age = Deaths,
+         tests_max_age = Tests) %>% 
+  select(-ASCFR)
 
 # IV Offsets yes/no
 
@@ -147,6 +148,9 @@ SubPopsOffsetsIndicator <-
 # V Refreshing yes/no
 
 # metadata needs some cleaning before this can integrate
+
+all_regions <- c("Mexico", "Peru", "Japan", "France", "Germany", "Colombia", "Brazil")
+
 rownames(Metadata)<- NULL
 Corrections <-
 Metadata %>% 
@@ -158,6 +162,23 @@ Metadata %>%
 
 
 # VI Positivity (OWD) *
+
+OWD <- read_csv("https://covid.ourworldindata.org/data/owid-covid-data.csv",
+                col_types= "cccDddddddddddddddddddddddddddddcdddddddddddddddd") %>% 
+  filter(!is.na(iso_code)) %>% 
+  filter(! iso_code %in% c("OWID_KOS","OWID_WRL")) %>% 
+  mutate(Short = countrycode(iso_code, 
+                             origin = 'iso3c', 
+                             destination = 'iso2c')) %>% 
+  select(Short, 
+         Date = date, 
+         total_cases, 
+         total_tests, 
+         new_cases_smoothed, 
+         new_tests_smoothed) %>% 
+  mutate(positivity_cumulative = total_cases / total_tests,
+         positivity_new = new_cases_smoothed / new_tests_smoothed) %>% 
+  select(-total_cases, - total_tests, -new_cases_smoothed, -new_tests_smoothed)
 
 # 1) read in OWD data,
 # 1.1) do we capture any tests that they don't have? If so, send them an email.
@@ -187,9 +208,11 @@ Metadata %>%
 
 FullIndicators <- 
   Marginal_sums_check %>% 
+  left_join(Corrections) %>% 
   left_join(NAgeCategories) %>% 
   left_join(MaxAge) %>% 
-  left_join(SubPopsOffsetsIndicator)
+  left_join(SubPopsOffsetsIndicator) %>% 
+  left_join(OWD) 
 
 # Marginal_sums_check %>% 
 #   group_by(Country, Region) %>% 
