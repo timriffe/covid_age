@@ -12,3 +12,450 @@ Zusätzlich: Warnmeldung:
 In file(filename, "r", encoding = encoding) :
   kann Datei 'C:/Users/acosta/Documents/ovid_age/Automation/00_hydra/Germany.r' nicht öffnen: No such file or directory
 Ausführung angehalten
+Lade nötiges Paket: pacman
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Parsed with column specification:
+cols(
+  ObjectId = col_double(),
+  IdBundesland = col_double(),
+  Bundesland = col_character(),
+  Landkreis = col_character(),
+  Altersgruppe = col_character(),
+  Geschlecht = col_character(),
+  AnzahlFall = col_double(),
+  AnzahlTodesfall = col_double(),
+  Meldedatum = col_character(),
+  IdLandkreis = col_character(),
+  Datenstand = col_character(),
+  NeuerFall = col_double(),
+  NeuerTodesfall = col_double(),
+  Refdatum = col_character(),
+  NeuGenesen = col_double(),
+  AnzahlGenesen = col_double(),
+  IstErkrankungsbeginn = col_double(),
+  Altersgruppe2 = col_character()
+)
+`summarise()` regrouping output by 'Region', 'Sex', 'Measure', 'date_f' (override with `.groups` argument)
+Joining, by = c("Region", "Measure", "Sex", "Age", "date_f")
+`summarise()` regrouping output by 'date_f', 'Measure', 'Sex' (override with `.groups` argument)
+`summarise()` regrouping output by 'Region' (override with `.groups` argument)
+Writing to "Germany input template"
+Writing to sheet "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Auto-refreshing stale OAuth token.
+Files trashed:
+  * DE31.10.2020cases&deaths: 19JdLZFQm963lsE7cBb4ulTma0ADBv1XUquaVjQ3dzeA
+Created Drive file:
+  * DE31.10.2020cases&deaths: 1RGiNr-ll23N_7YoY4NSbqqR-gsH69mFxjWDG_zFVMuM
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "DE31.10.2020cases&deaths"
+Writing to sheet "cases&deaths_age_sex"
+Error: Expected content type 'application/json' not 'text/html'.
+<!DOCTYPE html>
+<html lang=en>
+  <meta charset=utf-8>
+  <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width">
+  <title>Error 502 (Server Error)!!1</title>
+  <style>
+  ...
+Backtrace:
+     x
+  1. +-base::source(...)
+  2. | +-base::withVisible(eval(ei, envir))
+  3. | \-base::eval(ei, envir)
+  4. |   \-base::eval(ei, envir)
+  5. \-googlesheets4::write_sheet(db, ss = meta$id, sheet = "cases&deaths_age_sex")
+  6.   \-gargle::response_process(resp_raw)
+  7.     +-gargle:::stop_request_failed(error_message(resp), resp)
+  8.     | +-rlang::abort(...)
+  9.     | | \-rlang:::validate_signal_message(message, class)
+ 10.     | \-glue::glue_collapse(message, sep = "\n")
+ 11.     \-gargle:::error_message(resp)
+ 12.       \-gargle::response_as_json(resp)
+ 13.         \-gargle:::check_for_json(resp)
+ 14.           \-gargle:::stop_request_failed(message, resp)
+Execution halted
+Lade nötiges Paket: pacman
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Parsed with column specification:
+cols(
+  ObjectId = col_double(),
+  IdBundesland = col_double(),
+  Bundesland = col_character(),
+  Landkreis = col_character(),
+  Altersgruppe = col_character(),
+  Geschlecht = col_character(),
+  AnzahlFall = col_double(),
+  AnzahlTodesfall = col_double(),
+  Meldedatum = col_character(),
+  IdLandkreis = col_character(),
+  Datenstand = col_character(),
+  NeuerFall = col_double(),
+  NeuerTodesfall = col_double(),
+  Refdatum = col_character(),
+  NeuGenesen = col_double(),
+  AnzahlGenesen = col_double(),
+  IstErkrankungsbeginn = col_double(),
+  Altersgruppe2 = col_character()
+)
+`summarise()` regrouping output by 'Region', 'Sex', 'Measure', 'date_f' (override with `.groups` argument)
+Joining, by = c("Region", "Measure", "Sex", "Age", "date_f")
+`summarise()` regrouping output by 'date_f', 'Measure', 'Sex' (override with `.groups` argument)
+`summarise()` regrouping output by 'Region' (override with `.groups` argument)
+Writing to "Germany input template"
+Writing to sheet "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * DE01.11.2020cases&deaths: 1JzTWqwfqYzknHqDFn1bZh_JqaCodXJTr8bv11JIOnZ0
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "DE01.11.2020cases&deaths"
+Writing to sheet "cases&deaths_age_sex"
+Deleting these sheet(s) from "DE01.11.2020cases&deaths":
+* Sheet1
+Lade nötiges Paket: pacman
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Parsed with column specification:
+cols(
+  ObjectId = col_double(),
+  IdBundesland = col_double(),
+  Bundesland = col_character(),
+  Landkreis = col_character(),
+  Altersgruppe = col_character(),
+  Geschlecht = col_character(),
+  AnzahlFall = col_double(),
+  AnzahlTodesfall = col_double(),
+  Meldedatum = col_character(),
+  IdLandkreis = col_character(),
+  Datenstand = col_character(),
+  NeuerFall = col_double(),
+  NeuerTodesfall = col_double(),
+  Refdatum = col_character(),
+  NeuGenesen = col_double(),
+  AnzahlGenesen = col_double(),
+  IstErkrankungsbeginn = col_double(),
+  Altersgruppe2 = col_character()
+)
+`summarise()` regrouping output by 'Region', 'Sex', 'Measure', 'date_f' (override with `.groups` argument)
+Joining, by = c("Region", "Measure", "Sex", "Age", "date_f")
+`summarise()` regrouping output by 'date_f', 'Measure', 'Sex' (override with `.groups` argument)
+`summarise()` regrouping output by 'Region' (override with `.groups` argument)
+Writing to "Germany input template"
+Writing to sheet "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Auto-refreshing stale OAuth token.
+Files trashed:
+  * DE02.11.2020cases&deaths: 1RwT_KHlCe1KgHPR5IZRpTWGQGHtKCKFswaV2hQHLb5M
+Created Drive file:
+  * DE02.11.2020cases&deaths: 1vKD7kn9XyFWOEsPluu3r6ELK_wty60rbr5gPStNg4sE
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "DE02.11.2020cases&deaths"
+Writing to sheet "cases&deaths_age_sex"
+Error: Expected content type 'application/json' not 'text/html'.
+<!DOCTYPE html>
+<html lang=en>
+  <meta charset=utf-8>
+  <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width">
+  <title>Error 502 (Server Error)!!1</title>
+  <style>
+  ...
+Backtrace:
+     x
+  1. +-base::source(...)
+  2. | +-base::withVisible(eval(ei, envir))
+  3. | \-base::eval(ei, envir)
+  4. |   \-base::eval(ei, envir)
+  5. \-googlesheets4::write_sheet(db, ss = meta$id, sheet = "cases&deaths_age_sex")
+  6.   \-gargle::response_process(resp_raw)
+  7.     +-gargle:::stop_request_failed(error_message(resp), resp)
+  8.     | +-rlang::abort(...)
+  9.     | | \-rlang:::validate_signal_message(message, class)
+ 10.     | \-glue::glue_collapse(message, sep = "\n")
+ 11.     \-gargle:::error_message(resp)
+ 12.       \-gargle::response_as_json(resp)
+ 13.         \-gargle:::check_for_json(resp)
+ 14.           \-gargle:::stop_request_failed(message, resp)
+Execution halted
+Lade nötiges Paket: pacman
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Parsed with column specification:
+cols(
+  ObjectId = col_double(),
+  IdBundesland = col_double(),
+  Bundesland = col_character(),
+  Landkreis = col_character(),
+  Altersgruppe = col_character(),
+  Geschlecht = col_character(),
+  AnzahlFall = col_double(),
+  AnzahlTodesfall = col_double(),
+  Meldedatum = col_character(),
+  IdLandkreis = col_character(),
+  Datenstand = col_character(),
+  NeuerFall = col_double(),
+  NeuerTodesfall = col_double(),
+  Refdatum = col_character(),
+  NeuGenesen = col_double(),
+  AnzahlGenesen = col_double(),
+  IstErkrankungsbeginn = col_double(),
+  Altersgruppe2 = col_character()
+)
+`summarise()` regrouping output by 'Region', 'Sex', 'Measure', 'date_f' (override with `.groups` argument)
+Joining, by = c("Region", "Measure", "Sex", "Age", "date_f")
+`summarise()` regrouping output by 'date_f', 'Measure', 'Sex' (override with `.groups` argument)
+`summarise()` regrouping output by 'Region' (override with `.groups` argument)
+Writing to "Germany input template"
+Writing to sheet "database"
+Error: Client error: (429) RESOURCE_EXHAUSTED
+  * Either out of resource quota or reaching rate limiting. The client should look for google.rpc.QuotaFailure error detail for more information.
+  * Quota exceeded for quota group 'ReadGroup' and limit 'Read requests per 100 seconds' of service 'sheets.googleapis.com' for consumer 'project_number:603366585132'.
+
+Error details:
+  * Error details of type 'google.rpc.Help' are not implemented yet.
+  * Workaround: use `tryCatch()` and inspect error payload yourself.
+  * Please open an issue at https://github.com/r-lib/gargle/issues, so we can fix.
+Backtrace:
+     x
+  1. +-base::source(...)
+  2. | +-base::withVisible(eval(ei, envir))
+  3. | \-base::eval(ei, envir)
+  4. |   \-base::eval(ei, envir)
+  5. \-global::log_update(pp = "Germany", N = nrow(db_full))
+  6.   \-googlesheets4::sheet_append(log_this, ss = ss, sheet = "log")
+  7.     \-googlesheets4::gs4_get(ssid)
+  8.       \-googlesheets4:::gs4_get_impl_(as_sheets_id(ss))
+  9.         \-gar
+Execution halted
+Lade nötiges Paket: pacman
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Parsed with column specification:
+cols(
+  IdBundesland = col_double(),
+  Bundesland = col_character(),
+  Landkreis = col_character(),
+  Altersgruppe = col_character(),
+  Geschlecht = col_character(),
+  AnzahlFall = col_double(),
+  AnzahlTodesfall = col_double(),
+  ObjectId = col_double(),
+  IdLandkreis = col_character(),
+  Altersgruppe2 = col_character(),
+  Refdatum = col_character(),
+  Meldedatum = col_character(),
+  IstErkrankungsbeginn = col_double(),
+  NeuerFall = col_double(),
+  NeuerTodesfall = col_double(),
+  NeuGenesen = col_double(),
+  AnzahlGenesen = col_double(),
+  Datenstand = col_character()
+)
+`summarise()` regrouping output by 'Region', 'Sex', 'Measure', 'date_f' (override with `.groups` argument)
+Joining, by = c("Region", "Measure", "Sex", "Age", "date_f")
+`summarise()` regrouping output by 'date_f', 'Measure', 'Sex' (override with `.groups` argument)
+`summarise()` regrouping output by 'Region' (override with `.groups` argument)
+Writing to "Germany input template"
+Writing to sheet "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * DE04.11.2020cases&deaths: 1SjTIFNyq8N3qtWKKMmZpLuYbi_yrtd5FRUgcfHYkCss
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "DE04.11.2020cases&deaths"
+Writing to sheet "cases&deaths_age_sex"
+Error: Client error: (400) INVALID_ARGUMENT
+  * Client specified an invalid argument. Check error message and error details for more information.
+  * Invalid requests[0].updateSheetProperties: This action would increase the number of cells in the workbook above the limit of 5000000 cells.
+Backtrace:
+    x
+ 1. +-base::source(...)
+ 2. | +-base::withVisible(eval(ei, envir))
+ 3. | \-base::eval(ei, envir)
+ 4. |   \-base::eval(ei, envir)
+ 5. \-googlesheets4::write_sheet(db, ss = meta$id, sheet = "cases&deaths_age_sex")
+ 6.   \-gargle::response_process(resp_raw)
+ 7.     \-gargle:::stop_request_failed(error_message(resp), resp)
+Execution halted
+Lade nötiges Paket: pacman
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Parsed with column specification:
+cols(
+  ObjectId = col_double(),
+  IdBundesland = col_double(),
+  Bundesland = col_character(),
+  Landkreis = col_character(),
+  Altersgruppe = col_character(),
+  Geschlecht = col_character(),
+  AnzahlFall = col_double(),
+  AnzahlTodesfall = col_double(),
+  Meldedatum = col_character(),
+  IdLandkreis = col_character(),
+  Datenstand = col_character(),
+  NeuerFall = col_double(),
+  NeuerTodesfall = col_double(),
+  Refdatum = col_character(),
+  NeuGenesen = col_double(),
+  AnzahlGenesen = col_double(),
+  IstErkrankungsbeginn = col_double(),
+  Altersgruppe2 = col_character()
+)
+`summarise()` regrouping output by 'Region', 'Sex', 'Measure', 'date_f' (override with `.groups` argument)
+Joining, by = c("Region", "Measure", "Sex", "Age", "date_f")
+`summarise()` regrouping output by 'date_f', 'Measure', 'Sex' (override with `.groups` argument)
+`summarise()` regrouping output by 'Region' (override with `.groups` argument)
+Writing to "Germany input template"
+Writing to sheet "database"
+Error: Client error: (429) RESOURCE_EXHAUSTED
+  * Either out of resource quota or reaching rate limiting. The client should look for google.rpc.QuotaFailure error detail for more information.
+  * Quota exceeded for quota group 'ReadGroup' and limit 'Read requests per 100 seconds' of service 'sheets.googleapis.com' for consumer 'project_number:603366585132'.
+
+Error details:
+  * Error details of type 'google.rpc.Help' are not implemented yet.
+  * Workaround: use `tryCatch()` and inspect error payload yourself.
+  * Please open an issue at https://github.com/r-lib/gargle/issues, so we can fix.
+Backtrace:
+     x
+  1. +-base::source(...)
+  2. | +-base::withVisible(eval(ei, envir))
+  3. | \-base::eval(ei, envir)
+  4. |   \-base::eval(ei, envir)
+  5. \-global::log_update(pp = "Germany", N = nrow(db_full))
+  6.   \-googlesheets4::sheet_append(log_this, ss = ss, sheet = "log")
+  7.     \-googlesheets4::gs4_get(ssid)
+  8.       \-googlesheets4:::gs4_get_impl_(as_sheets_id(ss))
+  9.         \-gar
+Execution halted
+Lade nötiges Paket: pacman
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Parsed with column specification:
+cols(
+  ObjectId = col_double(),
+  IdBundesland = col_double(),
+  Bundesland = col_character(),
+  Landkreis = col_character(),
+  Altersgruppe = col_character(),
+  Geschlecht = col_character(),
+  AnzahlFall = col_double(),
+  AnzahlTodesfall = col_double(),
+  Meldedatum = col_character(),
+  IdLandkreis = col_character(),
+  Datenstand = col_character(),
+  NeuerFall = col_double(),
+  NeuerTodesfall = col_double(),
+  Refdatum = col_character(),
+  NeuGenesen = col_double(),
+  AnzahlGenesen = col_double(),
+  IstErkrankungsbeginn = col_double(),
+  Altersgruppe2 = col_character()
+)
+`summarise()` regrouping output by 'Region', 'Sex', 'Measure', 'date_f' (override with `.groups` argument)
+Joining, by = c("Region", "Measure", "Sex", "Age", "date_f")
+`summarise()` regrouping output by 'date_f', 'Measure', 'Sex' (override with `.groups` argument)
+`summarise()` regrouping output by 'Region' (override with `.groups` argument)
+Writing to "Germany input template"
+Writing to sheet "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Auto-refreshing stale OAuth token.
+Files trashed:
+  * DE06.11.2020cases&deaths: 1wcWMU40MMlAKJopcUvYuPc-vBDh26W7G2Ompso9lb-c
+Created Drive file:
+  * DE06.11.2020cases&deaths: 1aarQ3YeYyBh8AKmn73tAEt9-7NSUxImw-Sw0SBdwK5A
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Error: Client error: (429) RESOURCE_EXHAUSTED
+  * Either out of resource quota or reaching rate limiting. The client should look for google.rpc.QuotaFailure error detail for more information.
+  * Quota exceeded for quota group 'ReadGroup' and limit 'Read requests per 100 seconds' of service 'sheets.googleapis.com' for consumer 'project_number:603366585132'.
+
+Error details:
+  * Error details of type 'google.rpc.Help' are not implemented yet.
+  * Workaround: use `tryCatch()` and inspect error payload yourself.
+  * Please open an issue at https://github.com/r-lib/gargle/issues, so we can fix.
+Backtrace:
+    x
+ 1. +-base::source(...)
+ 2. | +-base::withVisible(eval(ei, envir))
+ 3. | \-base::eval(ei, envir)
+ 4. |   \-base::eval(ei, envir)
+ 5. \-googlesheets4::write_sheet(db, ss = meta$id, sheet = "cases&deaths_age_sex")
+ 6.   \-googlesheets4::gs4_get(ssid)
+ 7.     \-googlesheets4:::gs4_get_impl_(as_sheets_id(ss))
+ 8.       \-gargle::response_process(raw_resp)
+ 9.         \-gargle:::stop_req
+Execution halted
+Lade nötiges Paket: pacman
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Parsed with column specification:
+cols(
+  ObjectId = col_double(),
+  IdBundesland = col_double(),
+  Bundesland = col_character(),
+  Landkreis = col_character(),
+  Altersgruppe = col_character(),
+  Geschlecht = col_character(),
+  AnzahlFall = col_double(),
+  AnzahlTodesfall = col_double(),
+  Meldedatum = col_character(),
+  IdLandkreis = col_character(),
+  Datenstand = col_character(),
+  NeuerFall = col_double(),
+  NeuerTodesfall = col_double(),
+  Refdatum = col_character(),
+  NeuGenesen = col_double(),
+  AnzahlGenesen = col_double(),
+  IstErkrankungsbeginn = col_double(),
+  Altersgruppe2 = col_character()
+)
+`summarise()` regrouping output by 'Region', 'Sex', 'Measure', 'date_f' (override with `.groups` argument)
+Joining, by = c("Region", "Measure", "Sex", "Age", "date_f")
+`summarise()` regrouping output by 'date_f', 'Measure', 'Sex' (override with `.groups` argument)
+`summarise()` regrouping output by 'Region' (override with `.groups` argument)
+Writing to "Germany input template"
+Writing to sheet "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Auto-refreshing stale OAuth token.
+Files trashed:
+  * DE07.11.2020cases&deaths: 1FgAs9I_B5qUod178XZnAW54z8ZKVs9vCkyOUXloFnfE
+Created Drive file:
+  * DE07.11.2020cases&deaths: 1n4KqsaB_wfdAU3upLOq6aDi2BkXD2_5C-RPzC1JdFzs
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "DE07.11.2020cases&deaths"
+Writing to sheet "cases&deaths_age_sex"
+Auto-refreshing stale OAuth token.
+Error: Client error: (400) INVALID_ARGUMENT
+  * Client specified an invalid argument. Check error message and error details for more information.
+  * Invalid requests[0].updateSheetProperties: This action would increase the number of cells in the workbook above the limit of 5000000 cells.
+Backtrace:
+    x
+ 1. +-base::source(...)
+ 2. | +-base::withVisible(eval(ei, envir))
+ 3. | \-base::eval(ei, envir)
+ 4. |   \-base::eval(ei, envir)
+ 5. \-googlesheets4::write_sheet(db, ss = meta$id, sheet = "cases&deaths_age_sex")
+ 6.   \-gargle::response_process(resp_raw)
+ 7.     \-gargle:::stop_request_failed(error_message(resp), resp)
+Execution halted

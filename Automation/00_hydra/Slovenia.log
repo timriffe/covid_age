@@ -1,0 +1,2676 @@
+Lade nötiges Paket: pacman
+Fehler in library(rio) : es gibt kein Paket namens 'rio'
+Ausführung angehalten
+Lade nötiges Paket: pacman
+Lade nötiges Paket: xml2
+
+Attache Paket: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attache Paket: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "Slovenia input template"
+Range "'database'"
+Warnmeldungen:
+1: Problem with `mutate()` input `date`.
+i NAs durch Umwandlung erzeugt
+i Input `date` is `as.numeric(date)`. 
+2: In mask$eval_all_mutate(dots[[i]]) : NAs durch Umwandlung erzeugt
+no new updates so far, last date: 2020-09-16Lade nötiges Paket: pacman
+Lade nötiges Paket: xml2
+
+Attache Paket: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attache Paket: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "Slovenia input template"
+Range "'database'"
+Warnmeldungen:
+1: Problem with `mutate()` input `date`.
+i NAs durch Umwandlung erzeugt
+i Input `date` is `as.numeric(date)`. 
+2: In mask$eval_all_mutate(dots[[i]]) : NAs durch Umwandlung erzeugt
+New names:
+* Skupaj -> Skupaj...70
+* `` -> ...71
+* `` -> ...72
+* `` -> ...73
+* Skupaj -> Skupaj...77
+Note: Using an external vector in selections is ambiguous.
+i Use `all_of(id_d)` instead of `id_d` to silence this message.
+i See <https://tidyselect.r-lib.org/reference/faq-external-vector.html>.
+This message is displayed once per session.
+Writing to "Slovenia input template"
+Appending 54 row(s) to "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * SI18.09.2020_cases&deaths: 1uGuw6zxXDEVBVdsd2we2WspoQMgDm_feSZi_c9pnYEw
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI18.09.2020_cases&deaths"
+Writing to sheet "cases_age"
+Writing to "SI18.09.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI18.09.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Deleting these sheet(s) from "SI18.09.2020_cases&deaths":
+* Sheet1
+Warnmeldungen:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 6 rows [10, 11, 21, 22, 32, 33]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 9 rows [5, 6, 7, 12, 13, 14, 19, 20, 21]. 
+Lade nötiges Paket: pacman
+Lade nötiges Paket: xml2
+
+Attache Paket: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attache Paket: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "Slovenia input template"
+Range "'database'"
+Warnmeldungen:
+1: Problem with `mutate()` input `date`.
+i NAs durch Umwandlung erzeugt
+i Input `date` is `as.numeric(date)`. 
+2: In mask$eval_all_mutate(dots[[i]]) : NAs durch Umwandlung erzeugt
+New names:
+* Skupaj -> Skupaj...70
+* `` -> ...71
+* `` -> ...72
+* `` -> ...73
+* Skupaj -> Skupaj...77
+Note: Using an external vector in selections is ambiguous.
+i Use `all_of(id_d)` instead of `id_d` to silence this message.
+i See <https://tidyselect.r-lib.org/reference/faq-external-vector.html>.
+This message is displayed once per session.
+Writing to "Slovenia input template"
+Appending 54 row(s) to "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * SI19.09.2020_cases&deaths: 18nLIzzZCXOrU6gWWWcBTAlyAFs-m7qvpmn5_-AIrFNc
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI19.09.2020_cases&deaths"
+Writing to sheet "cases_age"
+Writing to "SI19.09.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI19.09.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Deleting these sheet(s) from "SI19.09.2020_cases&deaths":
+* Sheet1
+Warnmeldungen:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 6 rows [10, 11, 21, 22, 32, 33]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 9 rows [5, 6, 7, 12, 13, 14, 19, 20, 21]. 
+Lade nötiges Paket: pacman
+Lade nötiges Paket: xml2
+
+Attache Paket: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attache Paket: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "Slovenia input template"
+Range "'database'"
+Warnmeldungen:
+1: Problem with `mutate()` input `date`.
+i NAs durch Umwandlung erzeugt
+i Input `date` is `as.numeric(date)`. 
+2: In mask$eval_all_mutate(dots[[i]]) : NAs durch Umwandlung erzeugt
+New names:
+* Skupaj -> Skupaj...70
+* `` -> ...71
+* `` -> ...72
+* `` -> ...73
+* Skupaj -> Skupaj...77
+Note: Using an external vector in selections is ambiguous.
+i Use `all_of(id_d)` instead of `id_d` to silence this message.
+i See <https://tidyselect.r-lib.org/reference/faq-external-vector.html>.
+This message is displayed once per session.
+Writing to "Slovenia input template"
+Appending 54 row(s) to "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * SI20.09.2020_cases&deaths: 1PT8gRW1xrXYNKl7uu7qaZhVBvT8zz81iDf8WLP4K9tA
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI20.09.2020_cases&deaths"
+Writing to sheet "cases_age"
+Writing to "SI20.09.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI20.09.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Deleting these sheet(s) from "SI20.09.2020_cases&deaths":
+* Sheet1
+Warnmeldungen:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 6 rows [10, 11, 21, 22, 32, 33]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 9 rows [5, 6, 7, 12, 13, 14, 19, 20, 21]. 
+Lade nötiges Paket: pacman
+Lade nötiges Paket: xml2
+
+Attache Paket: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attache Paket: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "Slovenia input template"
+Range "'database'"
+Warnmeldungen:
+1: Problem with `mutate()` input `date`.
+i NAs durch Umwandlung erzeugt
+i Input `date` is `as.numeric(date)`. 
+2: In mask$eval_all_mutate(dots[[i]]) : NAs durch Umwandlung erzeugt
+New names:
+* Skupaj -> Skupaj...70
+* `` -> ...71
+* `` -> ...72
+* `` -> ...73
+* Skupaj -> Skupaj...77
+Note: Using an external vector in selections is ambiguous.
+i Use `all_of(id_d)` instead of `id_d` to silence this message.
+i See <https://tidyselect.r-lib.org/reference/faq-external-vector.html>.
+This message is displayed once per session.
+Writing to "Slovenia input template"
+Appending 54 row(s) to "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * SI21.09.2020_cases&deaths: 18QL3I8af1FR28vQddmlCnnHRwRR4Khuy1DvsWmno684
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI21.09.2020_cases&deaths"
+Writing to sheet "cases_age"
+Writing to "SI21.09.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI21.09.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Deleting these sheet(s) from "SI21.09.2020_cases&deaths":
+* Sheet1
+Warnmeldungen:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 6 rows [10, 11, 21, 22, 32, 33]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 9 rows [5, 6, 7, 12, 13, 14, 19, 20, 21]. 
+Lade nötiges Paket: pacman
+Lade nötiges Paket: xml2
+
+Attache Paket: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attache Paket: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "Slovenia input template"
+Range "'database'"
+Warnmeldungen:
+1: Problem with `mutate()` input `date`.
+i NAs durch Umwandlung erzeugt
+i Input `date` is `as.numeric(date)`. 
+2: In mask$eval_all_mutate(dots[[i]]) : NAs durch Umwandlung erzeugt
+New names:
+* Skupaj -> Skupaj...70
+* `` -> ...71
+* `` -> ...72
+* `` -> ...73
+* Skupaj -> Skupaj...77
+Note: Using an external vector in selections is ambiguous.
+i Use `all_of(id_d)` instead of `id_d` to silence this message.
+i See <https://tidyselect.r-lib.org/reference/faq-external-vector.html>.
+This message is displayed once per session.
+Writing to "Slovenia input template"
+Appending 54 row(s) to "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * SI22.09.2020_cases&deaths: 1K1dipg3-tT-jlq8M9xwNaZQNHp8zOV4hSqh-9q8OeeA
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI22.09.2020_cases&deaths"
+Writing to sheet "cases_age"
+Writing to "SI22.09.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI22.09.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Deleting these sheet(s) from "SI22.09.2020_cases&deaths":
+* Sheet1
+Warnmeldungen:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 6 rows [10, 11, 21, 22, 32, 33]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 9 rows [5, 6, 7, 12, 13, 14, 19, 20, 21]. 
+Lade nötiges Paket: pacman
+Lade nötiges Paket: xml2
+
+Attache Paket: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attache Paket: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "Slovenia input template"
+Range "'database'"
+Warnmeldungen:
+1: Problem with `mutate()` input `date`.
+i NAs durch Umwandlung erzeugt
+i Input `date` is `as.numeric(date)`. 
+2: In mask$eval_all_mutate(dots[[i]]) : NAs durch Umwandlung erzeugt
+New names:
+* Skupaj -> Skupaj...71
+* `` -> ...72
+* `` -> ...73
+* `` -> ...74
+* Skupaj -> Skupaj...78
+Note: Using an external vector in selections is ambiguous.
+i Use `all_of(id_d)` instead of `id_d` to silence this message.
+i See <https://tidyselect.r-lib.org/reference/faq-external-vector.html>.
+This message is displayed once per session.
+Writing to "Slovenia input template"
+Appending 54 row(s) to "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * SI23.09.2020_cases&deaths: 1LQe4c73j6OGQs1BQuKPAeg6KC5mTVTF2zOsBKTLWl2I
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI23.09.2020_cases&deaths"
+Writing to sheet "cases_age"
+Writing to "SI23.09.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI23.09.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Deleting these sheet(s) from "SI23.09.2020_cases&deaths":
+* Sheet1
+Warnmeldungen:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 6 rows [10, 11, 21, 22, 32, 33]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 9 rows [5, 6, 7, 12, 13, 14, 19, 20, 21]. 
+Lade nötiges Paket: pacman
+Lade nötiges Paket: xml2
+
+Attache Paket: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attache Paket: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "Slovenia input template"
+Range "'database'"
+Fehler: Sheet 'Po starostnih skupinah ' not found
+Ausführung angehalten
+Lade nötiges Paket: pacman
+Lade nötiges Paket: xml2
+
+Attache Paket: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attache Paket: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "Slovenia input template"
+Range "'database'"
+Warnmeldungen:
+1: Problem with `mutate()` input `date`.
+i NAs durch Umwandlung erzeugt
+i Input `date` is `as.numeric(date)`. 
+2: In mask$eval_all_mutate(dots[[i]]) : NAs durch Umwandlung erzeugt
+New names:
+* Skupaj -> Skupaj...72
+* `` -> ...73
+* `` -> ...74
+* `` -> ...75
+* Skupaj -> Skupaj...79
+Note: Using an external vector in selections is ambiguous.
+i Use `all_of(id_d)` instead of `id_d` to silence this message.
+i See <https://tidyselect.r-lib.org/reference/faq-external-vector.html>.
+This message is displayed once per session.
+Writing to "Slovenia input template"
+Appending 54 row(s) to "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * SI25.09.2020_cases&deaths: 1PswEMgQhsYcs_0LoGPJqwHyI5pV-4oW1wVEOdHmFuLs
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI25.09.2020_cases&deaths"
+Writing to sheet "cases_age"
+Writing to "SI25.09.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI25.09.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Deleting these sheet(s) from "SI25.09.2020_cases&deaths":
+* Sheet1
+Warnmeldungen:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 6 rows [10, 11, 21, 22, 32, 33]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 9 rows [5, 6, 7, 12, 13, 14, 19, 20, 21]. 
+Lade nötiges Paket: pacman
+Lade nötiges Paket: xml2
+
+Attache Paket: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attache Paket: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "Slovenia input template"
+Range "'database'"
+Warnmeldungen:
+1: Problem with `mutate()` input `date`.
+i NAs durch Umwandlung erzeugt
+i Input `date` is `as.numeric(date)`. 
+2: In mask$eval_all_mutate(dots[[i]]) : NAs durch Umwandlung erzeugt
+New names:
+* Skupaj -> Skupaj...72
+* `` -> ...73
+* `` -> ...74
+* `` -> ...75
+* Skupaj -> Skupaj...79
+Note: Using an external vector in selections is ambiguous.
+i Use `all_of(id_d)` instead of `id_d` to silence this message.
+i See <https://tidyselect.r-lib.org/reference/faq-external-vector.html>.
+This message is displayed once per session.
+Writing to "Slovenia input template"
+Appending 54 row(s) to "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * SI26.09.2020_cases&deaths: 15bBfLynmrw5psCWtVsM1cy7N_utH7copKY1bXOLRJBQ
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI26.09.2020_cases&deaths"
+Writing to sheet "cases_age"
+Writing to "SI26.09.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI26.09.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Deleting these sheet(s) from "SI26.09.2020_cases&deaths":
+* Sheet1
+Warnmeldungen:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 6 rows [10, 11, 21, 22, 32, 33]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 9 rows [5, 6, 7, 12, 13, 14, 19, 20, 21]. 
+Lade nötiges Paket: pacman
+Lade nötiges Paket: xml2
+
+Attache Paket: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attache Paket: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "Slovenia input template"
+Range "'database'"
+Warnmeldungen:
+1: Problem with `mutate()` input `date`.
+i NAs durch Umwandlung erzeugt
+i Input `date` is `as.numeric(date)`. 
+2: In mask$eval_all_mutate(dots[[i]]) : NAs durch Umwandlung erzeugt
+New names:
+* Skupaj -> Skupaj...72
+* `` -> ...73
+* `` -> ...74
+* `` -> ...75
+* Skupaj -> Skupaj...79
+Note: Using an external vector in selections is ambiguous.
+i Use `all_of(id_d)` instead of `id_d` to silence this message.
+i See <https://tidyselect.r-lib.org/reference/faq-external-vector.html>.
+This message is displayed once per session.
+Writing to "Slovenia input template"
+Appending 54 row(s) to "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * SI27.09.2020_cases&deaths: 1FoijeseyopaEG1wwGVssJnoUnYIAZPRQqDNl7IV989c
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI27.09.2020_cases&deaths"
+Writing to sheet "cases_age"
+Writing to "SI27.09.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI27.09.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Deleting these sheet(s) from "SI27.09.2020_cases&deaths":
+* Sheet1
+Warnmeldungen:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 6 rows [10, 11, 21, 22, 32, 33]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 9 rows [5, 6, 7, 12, 13, 14, 19, 20, 21]. 
+Lade nötiges Paket: pacman
+Lade nötiges Paket: xml2
+
+Attache Paket: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attache Paket: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "Slovenia input template"
+Range "'database'"
+Warnmeldungen:
+1: Problem with `mutate()` input `date`.
+i NAs durch Umwandlung erzeugt
+i Input `date` is `as.numeric(date)`. 
+2: In mask$eval_all_mutate(dots[[i]]) : NAs durch Umwandlung erzeugt
+New names:
+* Skupaj -> Skupaj...74
+* `` -> ...75
+* `` -> ...76
+* `` -> ...77
+* Skupaj -> Skupaj...81
+Note: Using an external vector in selections is ambiguous.
+i Use `all_of(id_d)` instead of `id_d` to silence this message.
+i See <https://tidyselect.r-lib.org/reference/faq-external-vector.html>.
+This message is displayed once per session.
+Writing to "Slovenia input template"
+Appending 54 row(s) to "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * SI28.09.2020_cases&deaths: 15dK-w68G4Am9oSIspGV8rYjiGx8AoUxStOK2sfZvRDo
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI28.09.2020_cases&deaths"
+Writing to sheet "cases_age"
+Writing to "SI28.09.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI28.09.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Deleting these sheet(s) from "SI28.09.2020_cases&deaths":
+* Sheet1
+Warnmeldungen:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 6 rows [10, 11, 21, 22, 32, 33]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 9 rows [5, 6, 7, 12, 13, 14, 19, 20, 21]. 
+Lade nötiges Paket: pacman
+Lade nötiges Paket: xml2
+
+Attache Paket: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attache Paket: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "Slovenia input template"
+Range "'database'"
+Warnmeldungen:
+1: Problem with `mutate()` input `date`.
+i NAs durch Umwandlung erzeugt
+i Input `date` is `as.numeric(date)`. 
+2: In mask$eval_all_mutate(dots[[i]]) : NAs durch Umwandlung erzeugt
+New names:
+* Skupaj -> Skupaj...74
+* `` -> ...75
+* `` -> ...76
+* `` -> ...77
+* Skupaj -> Skupaj...81
+Note: Using an external vector in selections is ambiguous.
+i Use `all_of(id_d)` instead of `id_d` to silence this message.
+i See <https://tidyselect.r-lib.org/reference/faq-external-vector.html>.
+This message is displayed once per session.
+Writing to "Slovenia input template"
+Appending 54 row(s) to "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * SI29.09.2020_cases&deaths: 1U1Fu8xEpe5E-gEc6x8v25yqBfEFdsWhINCyUCDe10c4
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI29.09.2020_cases&deaths"
+Writing to sheet "cases_age"
+Writing to "SI29.09.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI29.09.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Deleting these sheet(s) from "SI29.09.2020_cases&deaths":
+* Sheet1
+Warnmeldungen:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 6 rows [10, 11, 21, 22, 32, 33]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 9 rows [5, 6, 7, 12, 13, 14, 19, 20, 21]. 
+Lade nötiges Paket: pacman
+Lade nötiges Paket: xml2
+
+Attache Paket: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attache Paket: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "Slovenia input template"
+Range "'database'"
+Warnmeldungen:
+1: Problem with `mutate()` input `date`.
+i NAs durch Umwandlung erzeugt
+i Input `date` is `as.numeric(date)`. 
+2: In mask$eval_all_mutate(dots[[i]]) : NAs durch Umwandlung erzeugt
+New names:
+* Skupaj -> Skupaj...74
+* `` -> ...75
+* `` -> ...76
+* `` -> ...77
+* Skupaj -> Skupaj...81
+Note: Using an external vector in selections is ambiguous.
+i Use `all_of(id_d)` instead of `id_d` to silence this message.
+i See <https://tidyselect.r-lib.org/reference/faq-external-vector.html>.
+This message is displayed once per session.
+Writing to "Slovenia input template"
+Appending 54 row(s) to "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * SI30.09.2020_cases&deaths: 10AQ1l4aSUSq2-ZsHSBrZvA9SWBNeNo_odPvJAq44k4g
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI30.09.2020_cases&deaths"
+Writing to sheet "cases_age"
+Writing to "SI30.09.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI30.09.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Deleting these sheet(s) from "SI30.09.2020_cases&deaths":
+* Sheet1
+Warnmeldungen:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 6 rows [10, 11, 21, 22, 32, 33]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 9 rows [5, 6, 7, 12, 13, 14, 19, 20, 21]. 
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "Slovenia input template"
+Range "'database'"
+Warning messages:
+1: Problem with `mutate()` input `date`.
+i NAs introduced by coercion
+i Input `date` is `as.numeric(date)`. 
+2: In mask$eval_all_mutate(dots[[i]]) : NAs introduced by coercion
+New names:
+* Skupaj -> Skupaj...75
+* `` -> ...76
+* `` -> ...77
+* `` -> ...78
+* Skupaj -> Skupaj...82
+Note: Using an external vector in selections is ambiguous.
+i Use `all_of(id_d)` instead of `id_d` to silence this message.
+i See <https://tidyselect.r-lib.org/reference/faq-external-vector.html>.
+This message is displayed once per session.
+Writing to "Slovenia input template"
+Appending 54 row(s) to "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * SI01.10.2020_cases&deaths: 17ClpeWm3KyQfOc1G_PX2OT3zbNve-vlz8QoUiqTHMxU
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI01.10.2020_cases&deaths"
+Writing to sheet "cases_age"
+Writing to "SI01.10.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI01.10.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Deleting these sheet(s) from "SI01.10.2020_cases&deaths":
+* Sheet1
+Warning messages:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 6 rows [10, 11, 21, 22, 32, 33]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 9 rows [5, 6, 7, 12, 13, 14, 19, 20, 21]. 
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "Slovenia input template"
+Range "'database'"
+Warning messages:
+1: Problem with `mutate()` input `date`.
+i NAs introduced by coercion
+i Input `date` is `as.numeric(date)`. 
+2: In mask$eval_all_mutate(dots[[i]]) : NAs introduced by coercion
+New names:
+* Skupaj -> Skupaj...75
+* `` -> ...76
+* `` -> ...77
+* `` -> ...78
+* Skupaj -> Skupaj...82
+Note: Using an external vector in selections is ambiguous.
+i Use `all_of(id_d)` instead of `id_d` to silence this message.
+i See <https://tidyselect.r-lib.org/reference/faq-external-vector.html>.
+This message is displayed once per session.
+Writing to "Slovenia input template"
+Appending 54 row(s) to "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * SI02.10.2020_cases&deaths: 14HFKNHmYaOpkNU6VuwwoO0gu8GYL9EJU9qTieoxTDw8
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI02.10.2020_cases&deaths"
+Writing to sheet "cases_age"
+Writing to "SI02.10.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI02.10.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Deleting these sheet(s) from "SI02.10.2020_cases&deaths":
+* Sheet1
+Warning messages:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 6 rows [10, 11, 21, 22, 32, 33]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 9 rows [5, 6, 7, 12, 13, 14, 19, 20, 21]. 
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "Slovenia input template"
+Range "'database'"
+Warning messages:
+1: Problem with `mutate()` input `date`.
+i NAs introduced by coercion
+i Input `date` is `as.numeric(date)`. 
+2: In mask$eval_all_mutate(dots[[i]]) : NAs introduced by coercion
+New names:
+* Skupaj -> Skupaj...75
+* `` -> ...76
+* `` -> ...77
+* `` -> ...78
+* Skupaj -> Skupaj...82
+Note: Using an external vector in selections is ambiguous.
+i Use `all_of(id_d)` instead of `id_d` to silence this message.
+i See <https://tidyselect.r-lib.org/reference/faq-external-vector.html>.
+This message is displayed once per session.
+Writing to "Slovenia input template"
+Appending 54 row(s) to "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * SI03.10.2020_cases&deaths: 1TRch-I2kS9yoxaPLUExe7oKBtr1VDovFFYaU5zUdRZk
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI03.10.2020_cases&deaths"
+Writing to sheet "cases_age"
+Writing to "SI03.10.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI03.10.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Deleting these sheet(s) from "SI03.10.2020_cases&deaths":
+* Sheet1
+Warning messages:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 6 rows [10, 11, 21, 22, 32, 33]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 9 rows [5, 6, 7, 12, 13, 14, 19, 20, 21]. 
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "Slovenia input template"
+Range "'database'"
+Warning messages:
+1: Problem with `mutate()` input `date`.
+i NAs introduced by coercion
+i Input `date` is `as.numeric(date)`. 
+2: In mask$eval_all_mutate(dots[[i]]) : NAs introduced by coercion
+New names:
+* Skupaj -> Skupaj...75
+* `` -> ...76
+* `` -> ...77
+* `` -> ...78
+* Skupaj -> Skupaj...82
+Note: Using an external vector in selections is ambiguous.
+i Use `all_of(id_d)` instead of `id_d` to silence this message.
+i See <https://tidyselect.r-lib.org/reference/faq-external-vector.html>.
+This message is displayed once per session.
+Writing to "Slovenia input template"
+Appending 54 row(s) to "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * SI04.10.2020_cases&deaths: 1SoZpaLO3grOka465dm3V2LhlKMkuOndEyKst4yBM-VQ
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI04.10.2020_cases&deaths"
+Writing to sheet "cases_age"
+Writing to "SI04.10.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI04.10.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Deleting these sheet(s) from "SI04.10.2020_cases&deaths":
+* Sheet1
+Warning messages:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 6 rows [10, 11, 21, 22, 32, 33]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 9 rows [5, 6, 7, 12, 13, 14, 19, 20, 21]. 
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "Slovenia input template"
+Range "'database'"
+Warning messages:
+1: Problem with `mutate()` input `date`.
+i NAs introduced by coercion
+i Input `date` is `as.numeric(date)`. 
+2: In mask$eval_all_mutate(dots[[i]]) : NAs introduced by coercion
+New names:
+* Skupaj -> Skupaj...76
+* `` -> ...77
+* `` -> ...78
+* `` -> ...79
+* Skupaj -> Skupaj...83
+Note: Using an external vector in selections is ambiguous.
+i Use `all_of(id_d)` instead of `id_d` to silence this message.
+i See <https://tidyselect.r-lib.org/reference/faq-external-vector.html>.
+This message is displayed once per session.
+Writing to "Slovenia input template"
+Appending 54 row(s) to "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * SI05.10.2020_cases&deaths: 1Dw35z1CcqOldVDK79wVoiVYSWBnjCQKrhaR0myoGjm0
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI05.10.2020_cases&deaths"
+Writing to sheet "cases_age"
+Writing to "SI05.10.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI05.10.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Deleting these sheet(s) from "SI05.10.2020_cases&deaths":
+* Sheet1
+Warning messages:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 6 rows [10, 11, 21, 22, 32, 33]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 9 rows [5, 6, 7, 12, 13, 14, 19, 20, 21]. 
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "Slovenia input template"
+Range "'database'"
+Warning messages:
+1: Problem with `mutate()` input `date`.
+i NAs introduced by coercion
+i Input `date` is `as.numeric(date)`. 
+2: In mask$eval_all_mutate(dots[[i]]) : NAs introduced by coercion
+New names:
+* Skupaj -> Skupaj...76
+* `` -> ...77
+* `` -> ...78
+* `` -> ...79
+* Skupaj -> Skupaj...83
+Note: Using an external vector in selections is ambiguous.
+i Use `all_of(id_d)` instead of `id_d` to silence this message.
+i See <https://tidyselect.r-lib.org/reference/faq-external-vector.html>.
+This message is displayed once per session.
+Writing to "Slovenia input template"
+Appending 54 row(s) to "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * SI06.10.2020_cases&deaths: 13M_GhDBWcCcirFanH-gAU86qK4h_UwuHD8eJVN0EMqY
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI06.10.2020_cases&deaths"
+Writing to sheet "cases_age"
+Writing to "SI06.10.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI06.10.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Deleting these sheet(s) from "SI06.10.2020_cases&deaths":
+* Sheet1
+Warning messages:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 6 rows [10, 11, 21, 22, 32, 33]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 9 rows [5, 6, 7, 12, 13, 14, 19, 20, 21]. 
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "Slovenia input template"
+Range "'database'"
+Warning messages:
+1: Problem with `mutate()` input `date`.
+i NAs introduced by coercion
+i Input `date` is `as.numeric(date)`. 
+2: In mask$eval_all_mutate(dots[[i]]) : NAs introduced by coercion
+New names:
+* Skupaj -> Skupaj...76
+* `` -> ...77
+* `` -> ...78
+* `` -> ...79
+* Skupaj -> Skupaj...83
+Note: Using an external vector in selections is ambiguous.
+i Use `all_of(id_d)` instead of `id_d` to silence this message.
+i See <https://tidyselect.r-lib.org/reference/faq-external-vector.html>.
+This message is displayed once per session.
+Writing to "Slovenia input template"
+Appending 54 row(s) to "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * SI07.10.2020_cases&deaths: 1ZXKit9SRrSCU4ngA42hlAKS6xrvP_AHa2i9xc2D68bM
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI07.10.2020_cases&deaths"
+Writing to sheet "cases_age"
+Writing to "SI07.10.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI07.10.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Deleting these sheet(s) from "SI07.10.2020_cases&deaths":
+* Sheet1
+Warning messages:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 6 rows [10, 11, 21, 22, 32, 33]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 9 rows [5, 6, 7, 12, 13, 14, 19, 20, 21]. 
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "Slovenia input template"
+Range "'database'"
+Warning messages:
+1: Problem with `mutate()` input `date`.
+i NAs introduced by coercion
+i Input `date` is `as.numeric(date)`. 
+2: In mask$eval_all_mutate(dots[[i]]) : NAs introduced by coercion
+New names:
+* Skupaj -> Skupaj...76
+* `` -> ...77
+* `` -> ...78
+* `` -> ...79
+* Skupaj -> Skupaj...83
+Note: Using an external vector in selections is ambiguous.
+i Use `all_of(id_d)` instead of `id_d` to silence this message.
+i See <https://tidyselect.r-lib.org/reference/faq-external-vector.html>.
+This message is displayed once per session.
+Writing to "Slovenia input template"
+Appending 54 row(s) to "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * SI08.10.2020_cases&deaths: 1M9MkF2ncH2ipjHmKAAlLQ3eimOyAOtMSrrVR-1B3QnQ
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI08.10.2020_cases&deaths"
+Writing to sheet "cases_age"
+Writing to "SI08.10.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI08.10.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Deleting these sheet(s) from "SI08.10.2020_cases&deaths":
+* Sheet1
+Warning messages:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 6 rows [10, 11, 21, 22, 32, 33]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 9 rows [5, 6, 7, 12, 13, 14, 19, 20, 21]. 
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "Slovenia input template"
+Range "'database'"
+Warning messages:
+1: Problem with `mutate()` input `date`.
+i NAs introduced by coercion
+i Input `date` is `as.numeric(date)`. 
+2: In mask$eval_all_mutate(dots[[i]]) : NAs introduced by coercion
+New names:
+* Skupaj -> Skupaj...76
+* `` -> ...77
+* `` -> ...78
+* `` -> ...79
+* Skupaj -> Skupaj...83
+Note: Using an external vector in selections is ambiguous.
+i Use `all_of(id_d)` instead of `id_d` to silence this message.
+i See <https://tidyselect.r-lib.org/reference/faq-external-vector.html>.
+This message is displayed once per session.
+Writing to "Slovenia input template"
+Appending 54 row(s) to "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * SI09.10.2020_cases&deaths: 1zntH7Y9m6nONYN3YSB8mgB8dscnIPv9z_kJi_56YeZE
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI09.10.2020_cases&deaths"
+Writing to sheet "cases_age"
+Writing to "SI09.10.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI09.10.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Deleting these sheet(s) from "SI09.10.2020_cases&deaths":
+* Sheet1
+Warning messages:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 6 rows [10, 11, 21, 22, 32, 33]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 9 rows [5, 6, 7, 12, 13, 14, 19, 20, 21]. 
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "Slovenia input template"
+Range "'database'"
+Warning messages:
+1: Problem with `mutate()` input `date`.
+i NAs introduced by coercion
+i Input `date` is `as.numeric(date)`. 
+2: In mask$eval_all_mutate(dots[[i]]) : NAs introduced by coercion
+New names:
+* Skupaj -> Skupaj...77
+* `` -> ...78
+* `` -> ...79
+* `` -> ...80
+* Skupaj -> Skupaj...84
+Note: Using an external vector in selections is ambiguous.
+i Use `all_of(id_d)` instead of `id_d` to silence this message.
+i See <https://tidyselect.r-lib.org/reference/faq-external-vector.html>.
+This message is displayed once per session.
+Writing to "Slovenia input template"
+Appending 54 row(s) to "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * SI10.10.2020_cases&deaths: 11oC6ROCbHny-jQJ7koDVeFKIZ-Uuvgd1SrG52PYH7lg
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI10.10.2020_cases&deaths"
+Writing to sheet "cases_age"
+Writing to "SI10.10.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI10.10.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Deleting these sheet(s) from "SI10.10.2020_cases&deaths":
+* Sheet1
+Warning messages:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 6 rows [10, 11, 21, 22, 32, 33]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 9 rows [5, 6, 7, 12, 13, 14, 19, 20, 21]. 
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "Slovenia input template"
+Range "'database'"
+Warning messages:
+1: Problem with `mutate()` input `date`.
+i NAs introduced by coercion
+i Input `date` is `as.numeric(date)`. 
+2: In mask$eval_all_mutate(dots[[i]]) : NAs introduced by coercion
+New names:
+* Skupaj -> Skupaj...78
+* `` -> ...79
+* `` -> ...80
+* `` -> ...81
+* Skupaj -> Skupaj...85
+Note: Using an external vector in selections is ambiguous.
+i Use `all_of(id_d)` instead of `id_d` to silence this message.
+i See <https://tidyselect.r-lib.org/reference/faq-external-vector.html>.
+This message is displayed once per session.
+Writing to "Slovenia input template"
+Appending 54 row(s) to "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * SI11.10.2020_cases&deaths: 1LUKKy2ErbClu-debZz7Ltzu0EF2-0BPIs4R_RkUqdpM
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI11.10.2020_cases&deaths"
+Writing to sheet "cases_age"
+Writing to "SI11.10.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI11.10.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Deleting these sheet(s) from "SI11.10.2020_cases&deaths":
+* Sheet1
+Warning messages:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 6 rows [10, 11, 21, 22, 32, 33]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 9 rows [5, 6, 7, 12, 13, 14, 19, 20, 21]. 
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "Slovenia input template"
+Range "'database'"
+Warning messages:
+1: Problem with `mutate()` input `date`.
+i NAs introduced by coercion
+i Input `date` is `as.numeric(date)`. 
+2: In mask$eval_all_mutate(dots[[i]]) : NAs introduced by coercion
+New names:
+* Skupaj -> Skupaj...80
+* `` -> ...81
+* `` -> ...82
+* Skupaj -> Skupaj...86
+Note: Using an external vector in selections is ambiguous.
+i Use `all_of(id_d)` instead of `id_d` to silence this message.
+i See <https://tidyselect.r-lib.org/reference/faq-external-vector.html>.
+This message is displayed once per session.
+Writing to "Slovenia input template"
+Appending 54 row(s) to "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * SI12.10.2020_cases&deaths: 1atzK6dBG3HGDY6-n9IBrueF90exbgi8Ju2A1ca7TOJI
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI12.10.2020_cases&deaths"
+Writing to sheet "cases_age"
+Writing to "SI12.10.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI12.10.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Error: Client error: (429) RESOURCE_EXHAUSTED
+  * Either out of resource quota or reaching rate limiting. The client should look for google.rpc.QuotaFailure error detail for more information.
+  * Quota exceeded for quota group 'ReadGroup' and limit 'Read requests per 100 seconds' of service 'sheets.googleapis.com' for consumer 'project_number:603366585132'.
+
+Error details:
+  * Error details of type 'google.rpc.Help' are not implemented yet.
+  * Workaround: use `tryCatch()` and inspect error payload yourself.
+  * Please open an issue at https://github.com/r-lib/gargle/issues, so we can fix.
+Backtrace:
+    x
+ 1. \-googlesheets4::sheet_delete(meta$id, "Sheet1")
+ 2.   \-googlesheets4::gs4_get(ssid)
+ 3.     \-googlesheets4:::gs4_get_impl_(as_sheets_id(ss))
+ 4.       \-gargle::response_process(raw_resp)
+ 5.         \-gargle:::stop_request_failed(error_message(resp), resp)
+In addition: Warning messages:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 6 rows [10, 11, 21, 22, 32, 33]. 
+2: Expected 2 pieces. Missing pieces filled with `NA` in 9 rows [5, 6, 7, 12, 13, 14, 19, 20, 21]. 
+Execution halted
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "Slovenia input template"
+Range "'database'"
+New names:
+* `` -> ...1
+Error: Can't rename columns that don't exist.
+x Column `Starostna skupina` doesn't exist.
+Backtrace:
+     x
+  1. \-`%>%`(...)
+  2.   +-base::withVisible(eval(quote(`_fseq`(`_lhs`)), env, env))
+  3.   \-base::eval(quote(`_fseq`(`_lhs`)), env, env)
+  4.     \-base::eval(quote(`_fseq`(`_lhs`)), env, env)
+  5.       \-`_fseq`(`_lhs`)
+  6.         \-magrittr::freduce(value, `_function_list`)
+  7.           \-function_list[[i]](value)
+  8.             +-dplyr::rename(., date = "Starostna skupina")
+  9.             \-dplyr:::rename.data.frame(., date = "Starostna skupina")
+ 10.               \-tidyselect::eval_rename(expr(c(...)), .data)
+ 11.                 \-tidyselect:::rename_impl(...)
+ 12.                   \-tidyselect:::eval_select_impl(...)
+ 13.                     +-tidyselect:::with_subscript_errors(...)
+ 14.                     | +-base::tryCatch(...)
+ 15.                     | | \-base:::tryCatchList(expr, classes, parentenv, handlers)
+ 16.                     | |   \-base:::tryC
+Execution halted
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "Slovenia input template"
+Range "'database'"
+New names:
+* `` -> ...1
+Error: Can't rename columns that don't exist.
+x Column `Starostna skupina` doesn't exist.
+Backtrace:
+     x
+  1. \-`%>%`(...)
+  2.   +-base::withVisible(eval(quote(`_fseq`(`_lhs`)), env, env))
+  3.   \-base::eval(quote(`_fseq`(`_lhs`)), env, env)
+  4.     \-base::eval(quote(`_fseq`(`_lhs`)), env, env)
+  5.       \-`_fseq`(`_lhs`)
+  6.         \-magrittr::freduce(value, `_function_list`)
+  7.           \-function_list[[i]](value)
+  8.             +-dplyr::rename(., date = "Starostna skupina")
+  9.             \-dplyr:::rename.data.frame(., date = "Starostna skupina")
+ 10.               \-tidyselect::eval_rename(expr(c(...)), .data)
+ 11.                 \-tidyselect:::rename_impl(...)
+ 12.                   \-tidyselect:::eval_select_impl(...)
+ 13.                     +-tidyselect:::with_subscript_errors(...)
+ 14.                     | +-base::tryCatch(...)
+ 15.                     | | \-base:::tryCatchList(expr, classes, parentenv, handlers)
+ 16.                     | |   \-base:::tryC
+Execution halted
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "Slovenia input template"
+Range "'database'"
+Error: Sheet 'Po starostnih skupinah ' not found
+Execution halted
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "Slovenia input template"
+Range "'database'"
+Error in if (grepl("^http.*://", file)) { : argument is of length zero
+Calls: %>% -> eval -> eval -> <Anonymous>
+Execution halted
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "Slovenia input template"
+Range "'database'"
+Error in if (grepl("^http.*://", file)) { : argument is of length zero
+Calls: %>% -> eval -> eval -> <Anonymous>
+Execution halted
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "Slovenia input template"
+Range "'database'"
+Error in if (grepl("^http.*://", file)) { : argument is of length zero
+Calls: %>% -> eval -> eval -> <Anonymous>
+Execution halted
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "Slovenia input template"
+Range "'database'"
+Error in if (grepl("^http.*://", file)) { : argument is of length zero
+Calls: %>% -> eval -> eval -> <Anonymous>
+Execution halted
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "Slovenia input template"
+Range "'database'"
+Error in if (grepl("^http.*://", file)) { : argument is of length zero
+Calls: %>% -> eval -> eval -> <Anonymous>
+Execution halted
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "Slovenia input template"
+Range "'database'"
+Error in if (grepl("^http.*://", file)) { : argument is of length zero
+Calls: %>% -> eval -> eval -> <Anonymous>
+Execution halted
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "Slovenia input template"
+Range "'database'"
+Error in if (grepl("^http.*://", file)) { : argument is of length zero
+Calls: %>% -> eval -> eval -> <Anonymous>
+Execution halted
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "Slovenia input template"
+Range "'database'"
+Error in if (grepl("^http.*://", file)) { : argument is of length zero
+Calls: %>% -> eval -> eval -> <Anonymous>
+Execution halted
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "Slovenia input template"
+Range "'database'"
+Error in if (grepl("^http.*://", file)) { : argument is of length zero
+Calls: %>% -> eval -> eval -> <Anonymous>
+Execution halted
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "Slovenia input template"
+Range "'database'"
+Error in if (grepl("^http.*://", file)) { : argument is of length zero
+Calls: %>% -> eval -> eval -> <Anonymous>
+Execution halted
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "Slovenia input template"
+Range "'database'"
+Error in if (grepl("^http.*://", file)) { : argument is of length zero
+Calls: %>% -> eval -> eval -> <Anonymous>
+Execution halted
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "Slovenia input template"
+Range "'database'"
+Error in if (grepl("^http.*://", file)) { : argument is of length zero
+Calls: %>% -> eval -> eval -> <Anonymous>
+Execution halted
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "Slovenia input template"
+Range "'database'"
+Error in if (grepl("^http.*://", file)) { : argument is of length zero
+Calls: %>% -> eval -> eval -> <Anonymous>
+Execution halted
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Auto-refreshing stale OAuth token.
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "Slovenia input template"
+Range "'database'"
+Error in if (grepl("^http.*://", file)) { : argument is of length zero
+Calls: %>% -> eval -> eval -> <Anonymous>
+Execution halted
+Fehler: Objekt 'tim.riffe' nicht gefunden
+Ausführung angehalten
+Fehler: Objekt 'tim.riffe' nicht gefunden
+Ausführung angehalten
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "spreadsheets_rows"
+Range "'input'"
+Reading from "Slovenia input template"
+Range "'database'"
+Warning message:
+In max.default(numeric(0), na.rm = FALSE) :
+  no non-missing arguments to max; returning -Inf
+[1] "https://www.nijz.si/sites/www.nijz.si/files/uploaded/porocilo_stevilo_potrjenih_primerov_covid-19_29102020_splet.xlsx"
+Warning messages:
+1: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+2: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+New names:
+* `` -> ...1
+* `0-4` -> `0-4...2`
+* `5-14` -> `5-14...3`
+* `15-24` -> `15-24...4`
+* `25-34` -> `25-34...5`
+* ...
+New names:
+* `` -> ...1
+* `45-54` -> `45-54...2`
+* `55-64` -> `55-64...3`
+* `65-74` -> `65-74...4`
+* `75-84` -> `75-84...5`
+* ...
+Writing to "Slovenia input template"
+Writing to sheet "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Files trashed:
+  * SI29.10.2020_cases&deaths: 1vltO2htnYvHWnt8mzknlKVG7XMrK0WFcZfiDj8fOeMA
+Created Drive file:
+  * SI29.10.2020_cases&deaths: 1SRZHkD3E-hI-yQ_73Sbc0ye5iNc3ar1_N2eBlKj2PI8
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI29.10.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI29.10.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Deleting these sheet(s) from "SI29.10.2020_cases&deaths":
+* Sheet1
+Warning messages:
+1: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+2: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+3: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+4: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Reading from "spreadsheets_rows"
+Range "'input'"
+[1] "https://www.nijz.si/sites/www.nijz.si/files/uploaded/porocilo_stevilo_potrjenih_primerov_covid-19_30102020_splet.xlsx"
+New names:
+* `` -> ...1
+* `0-4` -> `0-4...2`
+* `5-14` -> `5-14...3`
+* `15-24` -> `15-24...4`
+* `25-34` -> `25-34...5`
+* ...
+Warning messages:
+1: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+2: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+New names:
+* `` -> ...1
+* `45-54` -> `45-54...2`
+* `55-64` -> `55-64...3`
+* `65-74` -> `65-74...4`
+* `75-84` -> `75-84...5`
+* ...
+Warning messages:
+1: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+2: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+Writing to "Slovenia input template"
+Writing to sheet "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Created Drive file:
+  * SI30.10.2020_cases&deaths: 1bjrFG-NpSl23B0QbnCusjasX8XUrKvT7CglSH-Qa3YE
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI30.10.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI30.10.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Deleting these sheet(s) from "SI30.10.2020_cases&deaths":
+* Sheet1
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Reading from "spreadsheets_rows"
+Range "'input'"
+[1] "https://www.nijz.si/sites/www.nijz.si/files/uploaded/porocilo_stevilo_potrjenih_primerov_covid-19_31102020_splet.xlsx"
+New names:
+* `` -> ...1
+* `0-4` -> `0-4...2`
+* `5-14` -> `5-14...3`
+* `15-24` -> `15-24...4`
+* `25-34` -> `25-34...5`
+* ...
+Warning messages:
+1: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+2: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+New names:
+* `` -> ...1
+* `45-54` -> `45-54...2`
+* `55-64` -> `55-64...3`
+* `65-74` -> `65-74...4`
+* `75-84` -> `75-84...5`
+* ...
+Warning messages:
+1: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+2: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+Writing to "Slovenia input template"
+Writing to sheet "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * SI31.10.2020_cases&deaths: 1N_dRJVxNEzwpFkDCEfkmsKsjDgSXfZNlMYEbT_NaxCI
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI31.10.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI31.10.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Deleting these sheet(s) from "SI31.10.2020_cases&deaths":
+* Sheet1
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Reading from "spreadsheets_rows"
+Range "'input'"
+[1] "https://www.nijz.si/sites/www.nijz.si/files/uploaded/porocilo_stevilo_potrjenih_primerov_covid-19_01112020_splet.xlsx"
+New names:
+* `` -> ...1
+* `0-4` -> `0-4...2`
+* `5-14` -> `5-14...3`
+* `15-24` -> `15-24...4`
+* `25-34` -> `25-34...5`
+* ...
+Warning messages:
+1: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+2: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+New names:
+* `` -> ...1
+* `45-54` -> `45-54...2`
+* `55-64` -> `55-64...3`
+* `65-74` -> `65-74...4`
+* `75-84` -> `75-84...5`
+* ...
+Warning messages:
+1: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+2: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+Writing to "Slovenia input template"
+Writing to sheet "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * SI01.11.2020_cases&deaths: 1raoXjvGb3CF8DlC2iz174AtoYj2a32R0EPS3_vgplnc
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI01.11.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI01.11.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Deleting these sheet(s) from "SI01.11.2020_cases&deaths":
+* Sheet1
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Reading from "spreadsheets_rows"
+Range "'input'"
+[1] "https://www.nijz.si/sites/www.nijz.si/files/uploaded/porocilo_stevilo_potrjenih_primerov_covid-19_02112020_splet.xlsx"
+New names:
+* `` -> ...1
+* `0-4` -> `0-4...2`
+* `5-14` -> `5-14...3`
+* `15-24` -> `15-24...4`
+* `25-34` -> `25-34...5`
+* ...
+Warning messages:
+1: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+2: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+New names:
+* `` -> ...1
+* `45-54` -> `45-54...2`
+* `55-64` -> `55-64...3`
+* `65-74` -> `65-74...4`
+* `75-84` -> `75-84...5`
+* ...
+Warning messages:
+1: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+2: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+Writing to "Slovenia input template"
+Writing to sheet "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Created Drive file:
+  * SI02.11.2020_cases&deaths: 1M6m0596qfYEf9Z7cH3Hgf9pDm-3w6b5rJyWe5reaBtw
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI02.11.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI02.11.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Deleting these sheet(s) from "SI02.11.2020_cases&deaths":
+* Sheet1
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Reading from "spreadsheets_rows"
+Range "'input'"
+[1] "https://www.nijz.si/sites/www.nijz.si/files/uploaded/porocilo_stevilo_potrjenih_primerov_covid-19_03112020_splet.xlsx"
+New names:
+* `` -> ...1
+* `0-4` -> `0-4...2`
+* `5-14` -> `5-14...3`
+* `15-24` -> `15-24...4`
+* `25-34` -> `25-34...5`
+* ...
+Warning messages:
+1: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+2: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+New names:
+* `` -> ...1
+* `35-44` -> `35-44...2`
+* `45-54` -> `45-54...3`
+* `55-64` -> `55-64...4`
+* `65-74` -> `65-74...5`
+* ...
+Warning messages:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 312 rows [1873, 1874, 1875, 1876, 1877, 1878, 1879, 1880, 1881, 1882, 1883, 1884, 1885, 1886, 1887, 1888, 1889, 1890, 1891, 1892, ...]. 
+2: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+3: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+Writing to "Slovenia input template"
+Writing to sheet "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Created Drive file:
+  * SI03.11.2020_cases&deaths: 1dCZQVNfZXPOx1UzlFKUiEXWjXxbF7BKqSF8F3oezUh8
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI03.11.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI03.11.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Deleting these sheet(s) from "SI03.11.2020_cases&deaths":
+* Sheet1
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Error: Client error: (429) RESOURCE_EXHAUSTED
+  * Either out of resource quota or reaching rate limiting. The client should look for google.rpc.QuotaFailure error detail for more information.
+  * Quota exceeded for quota group 'ReadGroup' and limit 'Read requests per 100 seconds' of service 'sheets.googleapis.com' for consumer 'project_number:603366585132'.
+
+Error details:
+  * Error details of type 'google.rpc.Help' are not implemented yet.
+  * Workaround: use `tryCatch()` and inspect error payload yourself.
+  * Please open an issue at https://github.com/r-lib/gargle/issues, so we can fix.
+Backtrace:
+     x
+  1. +-get_input_rubric() %>% filter(Short == "SI")
+  2. | \-base::eval(lhs, parent, parent)
+  3. |   \-base::eval(lhs, parent, parent)
+  4. \-global::get_input_rubric()
+  5.   +-read_sheet(ss_rubric, sheet = tab) %>% filter(!is.na(Sheet))
+  6.   | \-base::eval(lhs, parent, parent)
+  7.   |   \-base::eval(lhs, parent, parent)
+  8.   \-googlesheets4::read_sheet(ss_rubric, sheet = ta
+Execution halted
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Reading from "spreadsheets_rows"
+Range "'input'"
+[1] "https://www.nijz.si/sites/www.nijz.si/files/uploaded/porocilo_stevilo_potrjenih_primerov_covid-19_05112020.xlsx"
+New names:
+* `` -> ...1
+* `0-4` -> `0-4...2`
+* `5-14` -> `5-14...3`
+* `15-24` -> `15-24...4`
+* `25-34` -> `25-34...5`
+* ...
+Warning messages:
+1: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+2: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+New names:
+* `` -> ...1
+* `35-44` -> `35-44...2`
+* `45-54` -> `45-54...3`
+* `55-64` -> `55-64...4`
+* `65-74` -> `65-74...5`
+* ...
+Warning messages:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 318 rows [1909, 1910, 1911, 1912, 1913, 1914, 1915, 1916, 1917, 1918, 1919, 1920, 1921, 1922, 1923, 1924, 1925, 1926, 1927, 1928, ...]. 
+2: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+3: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+Writing to "Slovenia input template"
+Writing to sheet "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Created Drive file:
+  * SI05.11.2020_cases&deaths: 18IVMzCTXaoHYYC-6lavRs9LFUYeggYQmAKLoNENDTj4
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI05.11.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI05.11.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Deleting these sheet(s) from "SI05.11.2020_cases&deaths":
+* Sheet1
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Reading from "spreadsheets_rows"
+Range "'input'"
+[1] "https://www.nijz.si/sites/www.nijz.si/files/uploaded/porocilo_stevilo_potrjenih_primerov_covid-19_06112020_splet.xlsx"
+New names:
+* `` -> ...1
+* `0-4` -> `0-4...2`
+* `5-14` -> `5-14...3`
+* `15-24` -> `15-24...4`
+* `25-34` -> `25-34...5`
+* ...
+Warning messages:
+1: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+2: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+New names:
+* `` -> ...1
+* `35-44` -> `35-44...2`
+* `45-54` -> `45-54...3`
+* `55-64` -> `55-64...4`
+* `65-74` -> `65-74...5`
+* ...
+Warning messages:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 216 rows [1945, 1946, 1947, 1948, 1949, 1950, 1951, 1952, 1953, 1954, 1955, 1956, 1957, 1958, 1959, 1960, 1961, 1962, 1963, 1964, ...]. 
+2: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+3: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+Writing to "Slovenia input template"
+Writing to sheet "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Created Drive file:
+  * SI06.11.2020_cases&deaths: 1DD9stIa3cJqKNNmDBhJreRjdDdsYbcCMq_VGlxnkDrk
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI06.11.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI06.11.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Deleting these sheet(s) from "SI06.11.2020_cases&deaths":
+* Sheet1
