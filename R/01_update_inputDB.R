@@ -159,6 +159,11 @@ if (nrow(rubric) > 0){
     bind_rows(inputDB) %>% 
     sort_input_data()
   
+  # TR: added 09.11.2020 because some people seem to reserve blocks in the database with NAs. hmm.
+  inputDB_out <- 
+    inputDB_out %>% 
+    filter(!is.na(Value))
+  
   saveRDS(inputDB_out, here("Data","inputDB.rds"))
   
   #saveRDS(inputDB, here("Data","inputDB_i.rds"))
