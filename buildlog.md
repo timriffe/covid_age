@@ -55,3 +55,91 @@ filter( Code == 'US_TX13.09.2020', Sex == 'b', Measure == 'Cases' )
 # Age harmonization 
  Mon Nov 09 02:45:32 2020 
 
+filter( Code == 'TR03.08.2020', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'TR05.07.2020', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'TR05.10.2020', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'TR07.09.2020', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'TR10.08.2020', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'TR12.07.2020', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'TR12.10.2020', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'TR14.09.2020', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'TR17.08.2020', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'TR19.07.2020', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'TR19.10.2020', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'TR21.09.2020', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'TR24.08.2020', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'TR26.07.2020', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'TR28.06.2020', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'TR28.09.2020', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'TR31.08.2020', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'PK10.03.2020', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'PK11.03.2020', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'PK12.03.2020', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'PK13.03.2020', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'PK14.03.2020', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'PK15.03.2020', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'PK16.03.2020', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'PK17.03.2020', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'PS31.11.2020', Sex == 'b', Measure == 'Cases' )
+filter( Code == 'PK10.03.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'PK11.03.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'PK12.03.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'PK13.03.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'PK14.03.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'PK15.03.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'PK16.03.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'PK17.03.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'TR03.08.2020', Sex == 'f', Measure == 'Cases' )
+filter( Code == 'TR05.07.2020', Sex == 'f', Measure == 'Cases' )
+filter( Code == 'TR05.10.2020', Sex == 'f', Measure == 'Cases' )
+filter( Code == 'TR07.09.2020', Sex == 'f', Measure == 'Cases' )
+filter( Code == 'TR10.08.2020', Sex == 'f', Measure == 'Cases' )
+filter( Code == 'TR12.07.2020', Sex == 'f', Measure == 'Cases' )
+filter( Code == 'TR12.10.2020', Sex == 'f', Measure == 'Cases' )
+filter( Code == 'TR14.09.2020', Sex == 'f', Measure == 'Cases' )
+filter( Code == 'TR17.08.2020', Sex == 'f', Measure == 'Cases' )
+filter( Code == 'TR19.07.2020', Sex == 'f', Measure == 'Cases' )
+filter( Code == 'TR19.10.2020', Sex == 'f', Measure == 'Cases' )
+filter( Code == 'TR21.09.2020', Sex == 'f', Measure == 'Cases' )
+filter( Code == 'TR24.08.2020', Sex == 'f', Measure == 'Cases' )
+filter( Code == 'TR26.07.2020', Sex == 'f', Measure == 'Cases' )
+filter( Code == 'TR28.06.2020', Sex == 'f', Measure == 'Cases' )
+filter( Code == 'TR28.09.2020', Sex == 'f', Measure == 'Cases' )
+filter( Code == 'TR31.08.2020', Sex == 'f', Measure == 'Cases' )
+filter( Code == 'CO_NSA08.08.2020', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'PK10.03.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'PK11.03.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'PK12.03.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'PK13.03.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'PK14.03.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'PK15.03.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'PK16.03.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'PK17.03.2020', Sex == 'f', Measure == 'Deaths' )
+
+# Compile metadata 
+ Mon Nov 09 04:27:49 2020 
+
+
+# Building dashboards 
+ Mon Nov 09 04:49:49 2020 
+
+
+# remake coverage map 
+ Mon Nov 09 04:51:16 2020 
+
+
+# push outputs to OSF 
+ Mon Nov 09 04:55:52 2020 
+
+
+# remake coverage map 
+ Mon Nov 09 07:25:24 2020 
+
+
+# push outputs to OSF 
+ Mon Nov 09 07:29:50 2020 
+
+
+# Commit dashboards and buildlog 
+ Mon Nov 09 07:31:10 2020 
+
