@@ -22,7 +22,9 @@ Output_10 <- readRDS(here("Data","Output_10.rds"))
 Offsets   <- readRDS(here("Data","Offsets.rds"))
 Metadata  <-readRDS(here("Data","metadata_important.rds"))
 # I How aggressive is scaling? (also UNK rescaling) - time varying
-
+inputDB <- 
+  inputDB %>% 
+  filter(!is.na(Value))
 # strategy:
 
 # 1) get inputDB
@@ -217,3 +219,9 @@ FullIndicators <-
 # Marginal_sums_check %>% 
 #   group_by(Country, Region) %>% 
 #   
+
+# public file, full precision.
+header_msg <- paste("COVerAGE-DB selected data quality metrics:",timestamp(prefix = "", suffix = ""))
+write_lines(header_msg, path = here("Data","qualityMetrics.csv"))
+write_csv(inputDB, path = here("Data","qualityMetrics.csv"), append = TRUE, col_names = TRUE)
+
