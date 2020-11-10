@@ -289,7 +289,7 @@ rubric <- get_input_rubric()
 
 for(i in 1:10){
   # i <- 10
-  if (i != 10){ 
+  if (i < 10){ 
     slice <- db_final[((i - 1) * slice_size + 1) : (i * slice_size),]
     ss   <- rubric %>% filter(Short == paste0("CO_0", i)) %>% dplyr::pull(Sheet)
   } else {
