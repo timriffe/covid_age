@@ -16,7 +16,14 @@ startup::startup()
 # always work with the most uptodate repository
 repo <- git2r::repository(here())
 #init()
-git2r::pull(repo,credentials = creds)
+a <- git2r::pull(repo,credentials = creds)
+if (class(a)[1]=="try-error"){
+  a <- try(git2r::pull(repo,credentials = creds) )
+}
+if (class(a)[1]=="try-error"){
+  a <- try(git2r::pull(repo,credentials = creds) )
+}
+
 
 # Functions
 source(here("R","00_Functions.R"))
@@ -180,8 +187,14 @@ if (nrow(rubric) > 0){
   repo <- git2r::repository(here())
   #init()
   source("~/.Rprofile")
-  git2r::pull(repo,credentials = creds) 
-  
+  # make a couple attempts
+  a <- try(git2r::pull(repo,credentials = creds) )
+  if (class(a)[1]=="try-error"){
+    a <- try(git2r::pull(repo,credentials = creds) )
+  }
+  if (class(a)[1]=="try-error"){
+    a <- try(git2r::pull(repo,credentials = creds) )
+  }
   commit(repo, 
          message = "update inputDB logfile", 
          all = TRUE)
