@@ -14,7 +14,7 @@ packages_CRAN <- c("tidyverse","lubridate","gargle","ungroup","HMDHFDplus",
                    "tictoc","parallel","data.table","git2r","usethis",
                    "remotes","here","knitr","rmarkdown","googledrive","zip",
                    "cartography","rgdal","tmap","svglite",
-                   "taskscheduleR")
+                   "taskscheduleR","countrycode")
 
 # Install required CRAN packages if not available yet
 if(!sum(!p_isinstalled(packages_CRAN))==0) {
@@ -44,7 +44,7 @@ if (!p_isinstalled("parallelsugar")){
 }
 if (!p_isinstalled("osfr")){
   library(remotes)
-  install_github("ropensci/osfr")
+  install_github("ropensci/osfr", force = TRUE)
 }
 # Load the required CRAN/github packages
 p_load(packages_CRAN, character.only = TRUE)
