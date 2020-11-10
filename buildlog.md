@@ -139,3 +139,7 @@ filter( Code == 'PK17.03.2020', Sex == 'f', Measure == 'Deaths' )
 # update build series log 
  Tue Nov 10 12:39:51 2020 
 
+
+# push outputs to OSF 
+ Tue Nov 10 22:33:08 2020 
+

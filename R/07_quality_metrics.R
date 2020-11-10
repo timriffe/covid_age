@@ -180,7 +180,17 @@ OWD <- read_csv("https://covid.ourworldindata.org/data/owid-covid-data.csv",
          new_tests_smoothed) %>% 
   mutate(positivity_cumulative = total_cases / total_tests,
          positivity_new = new_cases_smoothed / new_tests_smoothed) %>% 
-  select(-total_cases, - total_tests, -new_cases_smoothed, -new_tests_smoothed)
+  select(-total_cases, - total_tests, -new_cases_smoothed, -new_tests_smoothed) %>% 
+  mutate(Region = "All")
+
+cdbcountries <- inputDB %>% 
+  filter(Region == "All") %>% 
+  group_by(Country) %>% 
+  slice(1) %>% 
+  select(Country, Short)
+
+OWD <- left_join(OWD, cdbcountries) %>% 
+  select(-Short)
 
 # 1) read in OWD data,
 # 1.1) do we capture any tests that they don't have? If so, send them an email.
@@ -207,6 +217,9 @@ OWD <- read_csv("https://covid.ourworldindata.org/data/owid-covid-data.csv",
 # NAgeCategories
 # MaxAge
 # SubPopsOffsetsIndicator
+Marginal_sums_check <-
+  Marginal_sums_check %>% 
+  select(-Code)
 
 FullIndicators <- 
   Marginal_sums_check %>% 
