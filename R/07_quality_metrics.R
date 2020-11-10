@@ -105,8 +105,8 @@ NAgeCategories <-
 
 # 1) get inputDB:
 # 1.1) select rows of known age
-# 1.2) coerge Age to integer
-# 1.2) select max Age per Country, Region, Code, Date, Sex, Measure
+# 1.2) coerce Age to integer
+# 1.3) select max Age per Country, Region, Code, Date, Sex, Measure
 
 MaxAge <-
   inputDB %>% 
