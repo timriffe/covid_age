@@ -296,6 +296,18 @@ sheet_write(db_final_6,
 
 Sys.sleep(105)
 
+sheet_write(db_final_7,
+            ss = ss_7,
+            sheet = "database")
+
+Sys.sleep(105)
+
+sheet_write(db_final_8,
+            ss = ss_8,
+            sheet = "database")
+
+Sys.sleep(105)
+
 N <- nrow(db_final_pe) + nrow(db_final_1) + nrow(db_final_2) + nrow(db_final_3) +
   nrow(db_final_4) + nrow(db_final_5) + nrow(db_final_6)  
 log_update(pp = "Peru", N = N)
@@ -313,15 +325,15 @@ date <- paste(sprintf("%02d",day(date_f)),
               year(date_f),
               sep=".")
 
-filename_c <- file.path("Data",paste0("PE", date, "cases.csv"))
-filename_d <- file.path("Data",paste0("PE", date, "deaths.csv"))
+filename_c <- file.path("Automation/temp_files",paste0("PE", date, "cases.csv"))
+filename_d <- file.path("Automation/temp_files",paste0("PE", date, "deaths.csv"))
 
 
 
 write_csv(db_c, filename_c)
 write_csv(db_d, filename_d)
 
-filename <- file.path("Data",paste0("PE", date, "cases&deaths.zip"))
+filename <- file.path("Automation/temp_files",paste0("PE", date, "cases&deaths.zip"))
 
 files <- c(filename_c, filename_d)
 zip(filename, files, compression_level = 9)
