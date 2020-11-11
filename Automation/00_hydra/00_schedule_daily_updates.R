@@ -27,7 +27,7 @@ if (grepl("acosta", auto_update_wd)){
 sched("Colombia",  tm = "12:00",email = auto_update_email, wd = auto_update_wd)
 sched("Venezuela", tm = "13:48",email = auto_update_email, wd = auto_update_wd)
 
-sched("Slovenia", tm = "15:48",email = auto_update_email, wd = auto_update_wd)
+sched("Slovenia", tm = "17:14",email = auto_update_email, wd = auto_update_wd)
 sched("German_sch", tm = "11:53",email = auto_update_email, wd = auto_update_wd)
 
 sched("CA_Montreal", tm = "16:44",email = auto_update_email, wd = auto_update_wd)

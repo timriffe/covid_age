@@ -47,6 +47,8 @@ last_date_drive <- db_drive %>%
 m_url_2 <- "https://www.health.govt.nz/our-work/diseases-and-conditions/covid-19-novel-coronavirus/covid-19-current-situation/covid-19-current-cases#age"
 m_url_3 <- getURL(m_url_2)
 
+# m_url_3 <- read_html(m_url_2)
+
 tables <- readHTMLTable(m_url_3) 
 date_f <- str_split(names(tables[1]), ",")[[1]][2] %>% dmy()
 
