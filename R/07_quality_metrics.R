@@ -105,8 +105,8 @@ NAgeCategories <-
 
 # 1) get inputDB:
 # 1.1) select rows of known age
-# 1.2) coerge Age to integer
-# 1.2) select max Age per Country, Region, Code, Date, Sex, Measure
+# 1.2) coerce Age to integer
+# 1.3) select max Age per Country, Region, Code, Date, Sex, Measure
 
 MaxAge <-
   inputDB %>% 
@@ -180,7 +180,17 @@ OWD <- read_csv("https://covid.ourworldindata.org/data/owid-covid-data.csv",
          new_tests_smoothed) %>% 
   mutate(positivity_cumulative = total_cases / total_tests,
          positivity_new = new_cases_smoothed / new_tests_smoothed) %>% 
-  select(-total_cases, - total_tests, -new_cases_smoothed, -new_tests_smoothed)
+  select(-total_cases, - total_tests, -new_cases_smoothed, -new_tests_smoothed) %>% 
+  mutate(Region = "All")
+
+cdbcountries <- inputDB %>% 
+  filter(Region == "All") %>% 
+  group_by(Country) %>% 
+  slice(1) %>% 
+  select(Country, Short)
+
+OWD <- left_join(OWD, cdbcountries) %>% 
+  select(-Short)
 
 # 1) read in OWD data,
 # 1.1) do we capture any tests that they don't have? If so, send them an email.
@@ -207,6 +217,9 @@ OWD <- read_csv("https://covid.ourworldindata.org/data/owid-covid-data.csv",
 # NAgeCategories
 # MaxAge
 # SubPopsOffsetsIndicator
+Marginal_sums_check <-
+  Marginal_sums_check %>% 
+  select(-Code)
 
 FullIndicators <- 
   Marginal_sums_check %>% 
@@ -223,5 +236,5 @@ FullIndicators <-
 # public file, full precision.
 header_msg <- paste("COVerAGE-DB selected data quality metrics:",timestamp(prefix = "", suffix = ""))
 write_lines(header_msg, path = here("Data","qualityMetrics.csv"))
-write_csv(inputDB, path = here("Data","qualityMetrics.csv"), append = TRUE, col_names = TRUE)
+write_csv(FullIndicators, path = here("Data","qualityMetrics.csv"), append = TRUE, col_names = TRUE)
 
