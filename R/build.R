@@ -44,7 +44,7 @@ source(here("R","06_data_dashes.R"))
 
 # Quality metrics
 
-# source(here("R","07_quality_metrics.R"))
+source(here("R","07_quality_metrics.R"))
 
 # ---------------------- #
 

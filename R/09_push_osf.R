@@ -10,7 +10,7 @@ logfile <- here("buildlog.md")
 
 log_section("push outputs to OSF", append = TRUE, logfile = logfile)
 
-files_data <- c("inputDB","Output_5","Output_10")
+files_data <- c("inputDB","Output_5","Output_10","qualityMetrics")
 for (fl in files_data){
   zip::zip(here("Data",paste0(fl,".zip")), 
          files = file.path("Data",paste0(fl,".csv")), 
