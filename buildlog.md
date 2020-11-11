@@ -1665,3 +1665,7 @@ filter( Code == 'PK17.03.2020', Sex == 'f', Measure == 'Deaths' )
 # remake coverage map 
  Wed Nov 11 11:43:52 2020 
 
+
+# remake coverage map 
+ Wed Nov 11 11:51:34 2020 
+
