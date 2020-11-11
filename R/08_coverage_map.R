@@ -1,6 +1,4 @@
 # TODO: maybe switch to Natural Earth map source,
-# French Guiana presently included w France, but French
-# data don't include French Guiana. Need to use
 # https://cran.r-project.org/web/packages/rnaturalearth/vignettes/what-is-a-country.html
 library(here)
 source(here("R","00_Functions.R"))
@@ -51,7 +49,7 @@ st_crs(World)
 World$name <- as.character(World$name)
 
 World$name[World$name == "Swaziland"]       <- "Eswatini"
-World$name[World$name == "United Kingdom"]  <- "UK"
+# World$name[World$name == "United Kingdom"]  <- "UK"
 World$name[World$name == "United States"]   <- "USA" 
 World$name[World$name == "Korea"] <- "South Korea"
 World$name[World$name == "Dominican Rep."]  <- "Dominican Republic"

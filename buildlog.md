@@ -1657,3 +1657,7 @@ filter( Code == 'PK17.03.2020', Sex == 'f', Measure == 'Deaths' )
 # update build series log 
  Wed Nov 11 07:31:41 2020 
 
+
+# remake coverage map 
+ Wed Nov 11 11:25:59 2020 
+
