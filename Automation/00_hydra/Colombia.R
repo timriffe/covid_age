@@ -48,11 +48,13 @@ db2 <- db %>%
          City = 'Nombre municipio',
          status = 'Estado',
          unit = 'Unidad de medida de edad') %>% 
-  mutate(Age = ifelse(unit == 1, Edad / 100, 0),
+  mutate(Age = case_when(unit != 1 ~ 0,
+                         unit == 1 & Edad <= 100 ~ Edad, 
+                         unit == 1 & Edad > 100 ~ 100),
          Region = str_to_title(Region),
          Region = ifelse(Region == "Sta Marta D.e.", "Santa Marta", Region)) 
 
-unique(db2$Region)
+unique(db2$Age)
 
 cities <- c("MEDELLIN",
             "CALI")
@@ -281,25 +283,37 @@ db_final_co <- db_final %>%
 
 # slicing the database by some regions 
 ############################################
+slices <- 10
 dims <- db_final %>% dim() 
-slice_size <- ceiling(dims[1]/10) 
+slice_size <- ceiling(dims[1]/slices) 
 
 # TR: pull urls from rubric instead
 rubric <- get_input_rubric()
 
-for(i in 1:10){
-  # i <- 10
-  if (i < 10){ 
+for(i in 1 : slices){
+  if (i < slices){ 
     slice <- db_final[((i - 1) * slice_size + 1) : (i * slice_size),]
-    ss   <- rubric %>% filter(Short == paste0("CO_0", i)) %>% dplyr::pull(Sheet)
+    ss   <- rubric %>% filter(Short == paste0("CO_", sprintf("%02d",i))) %>% dplyr::pull(Sheet)
   } else {
     slice <- db_final[((i - 1) * slice_size + 1) : dims[1],]
-    ss   <- rubric %>% filter(Short == paste0("CO_", i)) %>% dplyr::pull(Sheet)
+    ss   <- rubric %>% filter(Short == paste0("CO_", sprintf("%02d",i))) %>% dplyr::pull(Sheet)
   }
-  write_sheet(slice, 
+  
+  hm <- try(write_sheet(slice, 
               ss = ss,
-              sheet = "database")
-  Sys.sleep(105)
+              sheet = "database"))
+  if (class(hm)[1] == "try-error"){
+    hm <- try(write_sheet(slice, 
+                          ss = ss,
+                          sheet = "database"))
+  }
+  if (class(hm)[1] == "try-error"){
+    Sys.sleep(120)
+    hm <- try(write_sheet(slice, 
+                          ss = ss,
+                          sheet = "database"))
+  }
+  Sys.sleep(120)
   
 }
 
