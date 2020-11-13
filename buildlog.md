@@ -1642,3 +1642,15 @@ filter( Code == 'PK17.03.2020', Sex == 'f', Measure == 'Deaths' )
 # push outputs to OSF 
  Fri Nov 13 05:00:53 2020 
 
+
+# remake coverage map 
+ Fri Nov 13 09:18:36 2020 
+
+
+# push outputs to OSF 
+ Fri Nov 13 09:23:04 2020 
+
+
+# Commit dashboards and buildlog 
+ Fri Nov 13 09:24:31 2020 
+
