@@ -69,7 +69,7 @@ have_in_idb <-
   select(Country, Region) %>% 
   distinct() %>% 
   group_by(Country) %>% 
-  mutate(coverage = ifelse(n()>1,"National and subnanational","National"),
+  mutate(coverage = ifelse(n()>1,"National and subnational","National"),
          indb = TRUE) %>% 
   ungroup() %>% 
   select(Country, coverage) %>% 
