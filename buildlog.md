@@ -1,22 +1,22 @@
 
 # New build log 
- Sun Nov 15 02:00:07 2020 
+ Mon Nov 16 02:00:08 2020 
 
 
 # prep (resolve_UNKUNK) 
- Sun Nov 15 02:00:26 2020 
+ Mon Nov 16 02:00:27 2020 
 
 
 # A (convert_fractions_sexes) 
- Sun Nov 15 02:03:29 2020 
+ Mon Nov 16 02:03:32 2020 
 
 
 # B (redistribute_unknown_age) 
- Sun Nov 15 02:05:56 2020 
+ Mon Nov 16 02:05:59 2020 
 
 
 # C (rescale_to_total) 
- Sun Nov 15 02:14:17 2020 
+ Mon Nov 16 02:14:29 2020 
 
 filter( Code == 'CO_Other09.04.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'CO_Other09.04.2020', Sex == 'f', Measure == 'Cases' )
@@ -1528,34 +1528,34 @@ filter( Code == 'CO_VAC28.10.2020', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'CO_VAC28.10.2020', Sex == 'm', Measure == 'Deaths' )
 
 # D (infer_cases_from_deaths_and_ascfr) 
- Sun Nov 15 02:26:13 2020 
+ Mon Nov 16 02:26:34 2020 
 
 
 # E (infer_deaths_from_cases_and_ascfr) 
- Sun Nov 15 02:29:00 2020 
+ Mon Nov 16 02:29:23 2020 
 
 
 # G (redistribute_unknown_sex) 
- Sun Nov 15 02:31:47 2020 
+ Mon Nov 16 02:32:11 2020 
 
 
 # H (rescale_sexes) 
- Sun Nov 15 02:34:39 2020 
+ Mon Nov 16 02:35:08 2020 
 
 
 # I (infer_both_sex) 
- Sun Nov 15 02:35:59 2020 
+ Mon Nov 16 02:36:29 2020 
 
 
 # J (maybe_lower_closeout) 
- Sun Nov 15 02:39:12 2020 
+ Mon Nov 16 02:39:45 2020 
 
 filter( Code == 'US_TX10.09.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_TX11.09.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_TX13.09.2020', Sex == 'b', Measure == 'Cases' )
 
 # Age harmonization 
- Sun Nov 15 02:52:27 2020 
+ Mon Nov 16 02:53:11 2020 
 
 filter( Code == 'CO01.08.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'CO02.08.2020', Sex == 'b', Measure == 'Cases' )
@@ -1625,35 +1625,3 @@ filter( Code == 'PK14.03.2020', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'PK15.03.2020', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'PK16.03.2020', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'PK17.03.2020', Sex == 'f', Measure == 'Deaths' )
-
-# Compile metadata 
- Sun Nov 15 04:50:39 2020 
-
-
-# Building dashboards 
- Sun Nov 15 05:13:11 2020 
-
-
-# remake coverage map 
- Sun Nov 15 05:17:05 2020 
-
-
-# push outputs to OSF 
- Sun Nov 15 05:21:39 2020 
-
-
-# remake coverage map 
- Sun Nov 15 09:13:40 2020 
-
-
-# push outputs to OSF 
- Sun Nov 15 09:18:09 2020 
-
-
-# Commit dashboards and buildlog 
- Sun Nov 15 09:19:44 2020 
-
-
-# update build series log 
- Sun Nov 15 09:19:52 2020 
-
