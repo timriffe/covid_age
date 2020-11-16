@@ -69,7 +69,7 @@ have_in_idb <-
   select(Country, Region) %>% 
   distinct() %>% 
   group_by(Country) %>% 
-  mutate(coverage = ifelse(n()>1,"National and regional","National"),
+  mutate(coverage = ifelse(n()>1,"National and subnanational","National"),
          indb = TRUE) %>% 
   ungroup() %>% 
   select(Country, coverage) %>% 
@@ -100,7 +100,7 @@ map_joined <- left_join(world_rob, db_coverage,
 map_joined$coverage[is.na(map_joined$coverage)] <- "Not included yet"
 
 
-cols_data <- c("National and regional" = "grey10", "National" = "grey50", "Forthcoming" = "#A3d3d3","Not included yet" = "grey90")
+cols_data <- c("National and subnational" = "grey10", "National" = "#9477bf", "Forthcoming" = "#e9afdd","Not included yet" = "grey90")
 
 map_joined<-
   map_joined %>% 

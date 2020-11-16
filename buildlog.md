@@ -1653,3 +1653,15 @@ filter( Code == 'PK17.03.2020', Sex == 'f', Measure == 'Deaths' )
 # Commit dashboards and buildlog 
  Mon Nov 16 09:18:47 2020 
 
+
+# update build series log 
+ Mon Nov 16 09:18:55 2020 
+
+
+# remake coverage map 
+ Mon Nov 16 09:39:41 2020 
+
+
+# remake coverage map 
+ Mon Nov 16 11:57:02 2020 
+
