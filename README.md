@@ -22,8 +22,6 @@ A draft Method Protocol is available [here](https://osf.io/jcnw3/)
 
 A dash overview of which steps are applied to each country-region-date subset of data can be found [here](https://timriffe.github.io/covid_age/DataSteps.html).  
 
-This does not yet give an overview of age-group harmonization performed, but we'll add this soon. Further details will be spelled out in a methods protocol, presently in preparation.
-
 ## Documentation
 Source documentation is presently being gathered and standardized, and we will find a slick way of displaying it when it's further along. All data results are provisional and may change if we decide to change particular sources, or if we change our minds about how to split age groups, etc. So **please always use the most up-to-date version**.
 
