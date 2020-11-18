@@ -2,9 +2,7 @@
 #install.packages("osfr")
 library(here)
 source(here("R","00_Functions.R"))
-library(osfr)
-library(lubridate)
-library(zip)
+
 # TR: let's start zipping, it's time. Can delete the .csv files after a while.
 logfile <- here("buildlog.md")
 
