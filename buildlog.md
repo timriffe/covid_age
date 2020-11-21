@@ -1,22 +1,22 @@
 
 # New build log 
- Fri Nov 20 02:00:08 2020 
+ Sat Nov 21 02:00:08 2020 
 
 
 # prep (resolve_UNKUNK) 
- Fri Nov 20 02:00:31 2020 
+ Sat Nov 21 02:00:27 2020 
 
 
 # A (convert_fractions_sexes) 
- Fri Nov 20 02:04:11 2020 
+ Sat Nov 21 02:03:38 2020 
 
 
 # B (redistribute_unknown_age) 
- Fri Nov 20 02:07:01 2020 
+ Sat Nov 21 02:06:11 2020 
 
 
 # C (rescale_to_total) 
- Fri Nov 20 02:17:03 2020 
+ Sat Nov 21 02:15:00 2020 
 
 filter( Code == 'CO_Other09.04.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'CO_Other09.04.2020', Sex == 'f', Measure == 'Cases' )
@@ -1528,34 +1528,34 @@ filter( Code == 'CO_VAC28.10.2020', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'CO_VAC28.10.2020', Sex == 'm', Measure == 'Deaths' )
 
 # D (infer_cases_from_deaths_and_ascfr) 
- Fri Nov 20 02:30:49 2020 
+ Sat Nov 21 02:27:24 2020 
 
 
 # E (infer_deaths_from_cases_and_ascfr) 
- Fri Nov 20 02:34:08 2020 
+ Sat Nov 21 02:30:18 2020 
 
 
 # G (redistribute_unknown_sex) 
- Fri Nov 20 02:37:22 2020 
+ Sat Nov 21 02:33:09 2020 
 
 
 # H (rescale_sexes) 
- Fri Nov 20 02:40:50 2020 
+ Sat Nov 21 02:36:09 2020 
 
 
 # I (infer_both_sex) 
- Fri Nov 20 02:42:24 2020 
+ Sat Nov 21 02:37:32 2020 
 
 
 # J (maybe_lower_closeout) 
- Fri Nov 20 02:46:10 2020 
+ Sat Nov 21 02:40:55 2020 
 
 filter( Code == 'US_TX10.09.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_TX11.09.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_TX13.09.2020', Sex == 'b', Measure == 'Cases' )
 
 # Age harmonization 
- Fri Nov 20 03:00:59 2020 
+ Sat Nov 21 02:54:35 2020 
 
 filter( Code == 'CO01.08.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'CO02.08.2020', Sex == 'b', Measure == 'Cases' )
@@ -1605,7 +1605,6 @@ filter( Code == 'TR26.07.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'TR28.06.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'TR28.09.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'TR31.08.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'CO_NSA08.08.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'PK10.03.2020', Sex == 'm', Measure == 'Deaths' )
 filter( Code == 'PK11.03.2020', Sex == 'm', Measure == 'Deaths' )
 filter( Code == 'PK12.03.2020', Sex == 'm', Measure == 'Deaths' )
@@ -1614,6 +1613,7 @@ filter( Code == 'PK14.03.2020', Sex == 'm', Measure == 'Deaths' )
 filter( Code == 'PK15.03.2020', Sex == 'm', Measure == 'Deaths' )
 filter( Code == 'PK16.03.2020', Sex == 'm', Measure == 'Deaths' )
 filter( Code == 'PK17.03.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'CO_NSA08.08.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'CO_SAN20.08.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'CO05.10.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'CO26.07.2020', Sex == 'b', Measure == 'Deaths' )
@@ -1625,35 +1625,3 @@ filter( Code == 'PK14.03.2020', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'PK15.03.2020', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'PK16.03.2020', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'PK17.03.2020', Sex == 'f', Measure == 'Deaths' )
-
-# Compile metadata 
- Fri Nov 20 05:10:15 2020 
-
-
-# Building dashboards 
- Fri Nov 20 05:33:28 2020 
-
-
-# remake coverage map 
- Fri Nov 20 05:39:13 2020 
-
-
-# push outputs to OSF 
- Fri Nov 20 05:43:42 2020 
-
-
-# remake coverage map 
- Fri Nov 20 08:17:55 2020 
-
-
-# push outputs to OSF 
- Fri Nov 20 08:22:27 2020 
-
-
-# Commit dashboards and buildlog 
- Fri Nov 20 08:24:02 2020 
-
-
-# update build series log 
- Fri Nov 20 08:24:10 2020 
-
