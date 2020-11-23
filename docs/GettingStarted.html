@@ -402,7 +402,7 @@ inputDB &lt;-  read_csv(&quot;inputDB.zip&quot;,
                      col_types = &quot;cccccciccdc&quot;)
 
 glimpse(inputDB)</code></pre>
-<pre><code>## Rows: 4,882,962
+<pre><code>## Rows: 4,874,978
 ## Columns: 11
 ## $ Country &lt;chr&gt; &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanistan&quot;,...
 ## $ Region  &lt;chr&gt; &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;Al...
@@ -434,10 +434,6 @@ Output_10 &lt;-  read_csv(&quot;Output_10.zip&quot;,
 Output_10 &lt;- 
   Output_10 %&gt;% 
   mutate(Date = dmy(Date))</code></pre>
-<pre><code>## Warning: Problem with `mutate()` input `Date`.
-## i  33 failed to parse.
-## i Input `Date` is `dmy(Date)`.</code></pre>
-<pre><code>## Warning: 33 failed to parse.</code></pre>
 </div>
 <div id="save-out-smaller-files" class="section level2">
 <h2>Save out smaller files</h2>
