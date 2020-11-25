@@ -88,7 +88,7 @@ db_coverage <-
             forthcoming) %>% 
   # we do this because UK envelops them in map.
   filter(!Country %in% c("Northern Ireland", "Scotland","England","Wales","England and Wales")) %>% 
-  mutate(coverage = ifelse(Country == "United Kingdom","National and regional",coverage)) %>% 
+  mutate(coverage = ifelse(Country == "United Kingdom","National and subnational",coverage)) %>% 
   filter(Country != "Russia")
 
 db_coverage$Country[!db_coverage$Country %in% world_rob$name]
