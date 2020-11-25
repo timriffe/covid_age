@@ -1,7 +1,7 @@
 ---
 title: "Getting started with COVerAGE-DB datasets"
 author: "COVerAGE-DB"
-date: "6/4/2020"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: html_document
 ---
 
@@ -19,22 +19,14 @@ We are considering moving toward measure-specific files, similar to what HMD doe
 
 Details: commas are column separators, decimals are dots. When reading in, skip the first row. You can can typically read these in straight from the repository using the `raw` version. See examples.
 
-# NOTE
-File storage for this database in the middle of shifting from github to OSF exclusively. The following code works (or at least it will as soon as our OSF repo is unflagged as spam...), but it's not as slick as reading the file directly into an R `data.frame` or similar. We'll keep tinkering to figure out a better way.
-
-# R
-For `R`, we suggest using the `read_csv()` function from `readr` because it's easy to specify column classes using shorthand:
-
 ## inputDB file
 
-
-```{r}
+```{r, message = FALSE, warning = FALSE}
 library(tidyverse)
 library(readr)
 library(lubridate)
 library(ggplot2)
 library(osfr)
-
 # This downloads the file, preserving the name inputDB.csv
 osf_retrieve_file("9dsfk") %>%
   osf_download(conflicts = "overwrite") 
@@ -87,6 +79,239 @@ In <-
 write_csv(In, path = "Spain_InputDB.csv")
 ```
 
+## Common plot types {.tabset}
+
+Let's walk through some commonly made plots of this kind of data. These are a pretty random selection. Different examples are found in the tabs. Code donations gladly accepted `r emo::ji("sunglasses")`
+
+### CFR by age
+
+How can we plot log CFR by age? Subset to any population with both `Cases` and `Deaths`, select a not-so-noisy date range (eyeball). Here, we go ahead and plot a time series of ASCFR. It works OK because there has been a relatively smooth trend in how CFR has changed over time. Apparent decreases could be real or data artifacts.
+
+```{r}
+Output_10 %>% 
+  filter(Country == "Germany", 
+         Region == "All",
+         Sex == "b",
+         Date >= dmy("01.05.2020")) %>% 
+  mutate(ASCFR = Deaths / Cases) %>% 
+  filter(!is.na(ASCFR)) %>% 
+  ggplot(aes(x = Age, y = ASCFR, group = Date, color = Date)) +
+  geom_line(alpha = .2) + 
+  scale_y_log10()
+```
+
+### Age composition
+
+How about a composition plot of new cases by age over time? Here we group data to 20-year age bands, then decumulate using `New = Cases - lead(Cases)`, then convert to fractions `Frac = New / N` and plot using `geom_area()`. Could be cleaned up a bit more, but this gets it started.
+
+```{r}
+library(colorspace)
+ Output_10 %>% 
+     filter(Country == "Germany", 
+            Region == "All",
+            Date >= dmy("01.04.2020")) %>% 
+     mutate(Age20 = Age - Age %% 20) %>% 
+     group_by(Date, Age20) %>% 
+     summarize(Cases = sum(Cases)) %>% 
+     group_by(Age20) %>% 
+     arrange(Date) %>% 
+     mutate(New = Cases - lead(Cases)) %>% 
+     ungroup() %>% 
+     group_by(Date) %>% 
+     mutate(N = sum(New),
+            Frac = New / N) %>% 
+     ungroup() %>% 
+     ggplot(aes(x = Date,
+                y = Frac, 
+                fill = as.factor(Age20))) + 
+     geom_area() + 
+     scale_fill_discrete_sequential("Emrld")
+```
+
+### Positivity by age
+
+In general, taking ratios of variables is a good diagnostic tool. In the first run of this plot, we notice a major 1-day rupture early in the series. Major age crossovers since October are notable.
+
+```{r}
+Output_10 %>% 
+  filter(Country == "Denmark", 
+         Region == "All",
+         Sex == "b",
+         Date >= dmy("01.05.2020")) %>% 
+  mutate(Postivity = Cases / Tests) %>% 
+  filter(!is.na(Postivity)) %>% 
+  ggplot(aes(x = Date, y = Postivity, group = Age, color = as.factor(Age))) +
+  geom_line() +
+  scale_color_discrete_sequential("Magenta")
+```
+
+## Joing COVerAGE-DB with other major sources {.tabset}
+
+This section covers how to merge with other global database. Different sources are found in the tabs. We will use the `countrycode` package to help with matching country names sometimes.
+
+### merge with WPP
+
+Let's merge 2020 WPP population estimates to the 10-year age groups data. We'll use the `wpp2019` package for this for the time being. Let's see, how about South Africa?
+
+```{r}
+library(wpp2019)
+data(popM)
+
+Pop <-
+  popM %>% 
+  filter(name == "South Africa") %>% 
+  select(Age = age, Population = `2020`) %>% 
+  mutate(Population = Population * 1000,
+         Age = as.character(Age)) %>% 
+  separate(Age, 
+           into = c("Age",NA), 
+           sep = "-") %>% 
+  mutate(Age = ifelse(Age == "100+", 100, as.integer(Age)),
+         Age = Age - Age %% 10) %>% 
+  group_by(Age) %>% 
+  summarize(Population = sum(Population), .groups = "drop")
+
+ZA <- 
+Output_10 %>% 
+  filter(Country == "South Africa",
+         Region == "All",
+         Sex == "m") %>% 
+  left_join(Pop)
+```
+
+Let's see what we get, `Cases / Population` is not a rate per se, FYI, `Population` isn't an exposure. Handle population denominators with care. An alternative would be to decumulate `Cases`, group to weeks, and divide by `Population / 52` or some better approximation. Either way you need to remember that `Cases` are those infections that have been detected, so it's necessarily a subset of infections.
+
+```{r}
+ZA %>% 
+  filter(Date >= dmy("10.07.2020")) %>% 
+  mutate(CPop = Cases / Population) %>% 
+  ggplot(aes(x=Date,y=CPop,group=Age,color=as.factor(Age))) + 
+  geom_line() + 
+  scale_color_discrete_sequential("Magenta") + 
+  scale_y_log10()
+```
+
+### merge with OWID
+
+Out World in Data gives different kinds of testing aggregates and other interesting things  <https://github.com/owid/covid-19-data/tree/master/public/data>. COVerAGE-DB collects a lot of testing aggregates too. When not broken down by age, these are delivered in the `inputDB`. `Test` counts broken down by age pass through to the output files. Our collected testing measures could either be `Tests` or `Tested individuals`, and the only way to know is to check the metadata. OWID applies a consistent definition at this time. 
+
+First, we'll need a helper function to chop the `ISO2` codes from the `Code` column. Sorry this has a hacky solution:
+```{r}
+add_Short <- function(Code, Date) {
+  
+  # Apply elementwise
+  mapply(function(Code, Date){
+    
+    # Remove date
+    Short <- gsub(pattern = Date, replacement = "", Code)
+    
+    # Remove last character if not a letter
+    last_char <- str_sub(Short,-1)
+    if (last_char %in% c("\\.","_","-")){
+      Short <- substr(Short,1,nchar(Short)-1)
+    }
+    
+    # Return short label
+    Short
+    
+  }, Code, Date)
+  
+}
+```
+
+There are different files on the OWD github repository. Here's one that contains the full available time series for each country.
+
+```{r}
+library(countrycode)
+OWID <- read_csv("https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/testing/covid-testing-all-observations.csv",
+                col_types= "cDccccdddddddd") %>% 
+  filter(!is.na(`ISO code`)) %>% 
+  filter(! `ISO code` %in% c("OWID_KOS","OWID_WRL")) %>% 
+  mutate(ISO2 = countrycode(`ISO code`, 
+                             origin = 'iso3c', 
+                             destination = 'iso2c')) %>% 
+  select(ISO2, 
+         Date, 
+         `Short-term tests per case`, 
+         `Short-term positive rate`) 
+
+# merge for coverage with positivity
+COVwPOS <- Output_10 %>% 
+  filter(Region == "All") %>% 
+  mutate(ISO2 = add_Short(Code, Date)) %>% 
+  group_by(Country) %>% 
+  left_join(OWID) 
+
+
+```
+
+We'll add a plot using the merged data when we think of something.
+
+### merge with STMF
+
+The Short Term Mortality Fluctuations project is part of the Human Mortality Database <www.mortality.org>. They deliver all-cause deaths data standardized in wide age groups. This is what you want to use to estimate all-cause excess mortality, which may be larger or smaller than registered COVID-19 deaths, depending on the place and date. Much of the input data is given in 5-year age groups. To work with that, you need to take care of some data processing things, like redistributing deaths of unknown age. There's also a fundamental difference in that STMF is given as new deaths per week, whereas COVerAGE-DB is cumulative daily data, but it has gaps.
+
+In this example, adapted from a [2020 EDSD Data Wrangling Example](https://timriffe.github.io/EDSD2020data/Session3#exercise), we'll pick out a single country to merge, Denmark. This will require some prep on both sides of the merge. On the COVerAGE-DB side, we'll convert COVerAGE-DB data to *new* counts in *isoweeks*. On the STMF side we'll redistribute any deaths of unknown age, and we'll group input data to 10-year age groups. Then it should be ready to merge.
+
+The easier alternative is to group COVerAGE-DB data to the same large age groups, then slightly less data wrangling is required, but the age resolution is lower.
+
+First prepare STMF data. In this case there are no ages coded `"UNK"`, but we rescale to `"TOT"` just to be sure.
+```{r}
+download.file("https://www.mortality.org/Public/STMF/Inputs/STMFinput.zip", 
+              destfile ="STMFinput.zip")
+
+STMF <- 
+  read_csv(unzip("STMFinput.zip", "DNKstmf.csv")) %>% 
+  filter(Year == 2020) %>% 
+  group_by(Week, Sex) %>% 
+  # move total to column
+  mutate(TOT = Deaths[Age == "TOT"]) %>% 
+  filter(Age != "TOT") %>% 
+  mutate(dist = Deaths / sum(Deaths),
+         Deaths = dist * TOT,
+         Age = as.integer(Age),
+         Age = Age - Age %% 10) %>% 
+  group_by(Week, Sex, Age) %>% 
+  summarize(Deaths = sum(Deaths), .groups = "drop") %>% 
+  arrange(Sex, Week, Age)
+```
+
+Now prep COVerAGE-DB data to new events by week. Denmark has every Monday, which is also the start date of the ISO week definition, which is what STMF uses. Since the series is cumulative, we can just take differences between the Monday totals.
+
+```{r}
+COV <- 
+  Output_10 %>% 
+  filter(Country == "Denmark",
+         Region == "All") %>% 
+  filter(weekdays(Date) == "Monday") %>% 
+  mutate(Week = week(Date)) %>% 
+  # sort just to be sure decumulation works right
+  arrange(Sex, Age, Week) %>% 
+  group_by(Sex, Age) %>% 
+  # decumulate, pad w NA
+  mutate(cov_deaths_wk = c(diff(Deaths),NA),
+         cov_cases_wk = c(diff(Cases), NA),
+         cov_tests_wk = c(diff(Tests), NA)) %>% 
+  # keep just what we want
+  select(Sex, 
+         Week, 
+         Age, 
+         cov_deaths_wk, 
+         cov_cases_wk, 
+         cov_tests_wk)
+```
+
+Now ready to join. It would be the same if you had some excess mortality estimates done on the STMF data, for example.
+
+```{r}
+
+Joined <- left_join(COV, STMF) %>% 
+  arrange(Sex, Week, Age)
+```
+
+
+
+
 ```{r, include = FALSE}
 # cleanup
 file.remove("inputDB.zip")
@@ -96,5 +321,4 @@ file.remove("Spain_InputDB.csv")
 ```
 
 
-# Stata
-Maybe someone can help out here?
+
