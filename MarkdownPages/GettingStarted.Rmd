@@ -261,7 +261,7 @@ download.file("https://www.mortality.org/Public/STMF/Inputs/STMFinput.zip",
               destfile ="STMFinput.zip")
 
 STMF <- 
-  read_csv(unzip("STMFinput.zip", "DNKstmf.csv")) %>% 
+  read_csv(utils::unzip("STMFinput.zip", "DNKstmf.csv")) %>% 
   filter(Year == 2020) %>% 
   group_by(Week, Sex) %>% 
   # move total to column
