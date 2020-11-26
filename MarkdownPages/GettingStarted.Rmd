@@ -81,7 +81,7 @@ write_csv(In, path = "Spain_InputDB.csv")
 
 ## Common plot types {.tabset}
 
-Let's walk through some commonly made plots of this kind of data. These are a pretty random selection. Different examples are found in the tabs. Code donations gladly accepted `r emo::ji("sunglasses")`
+Let's walk through some commonly made plots of this kind of data. These are a pretty random selection. Different examples are found in the tabs. Code donations gladly accepted.
 
 ### CFR by age
 
