@@ -122,7 +122,7 @@ Output_10 %>%
 
 How about a composition plot of new cases by age over time? Here we group data to 20-year age bands, then decumulate using `New = Cases - lead(Cases)`, then convert to fractions `Frac = New / N` and plot using `geom_area()`. Could be cleaned up a bit more, but this gets it started.
 
-```{r}
+```{r, message = FALSE, warning = FALSE}
 library(colorspace)
  Output_10 %>% 
      filter(Country == "Germany", 
@@ -163,7 +163,7 @@ Output_10 %>%
   scale_color_discrete_sequential("Magenta")
 ```
 
-## Joing COVerAGE-DB with other major sources {.tabset}
+## Merging COVerAGE-DB with other major sources {.tabset}
 
 This section covers how to merge with other global database. Different sources are found in the tabs. We will use the `countrycode` package to help with matching country names sometimes.
 
