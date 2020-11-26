@@ -15,7 +15,7 @@ library(lubridate)
 library(googledrive)
 
 library(here)
-source(here("R","00_Functions.R"))
+source(here("Automation/00_Functions_automation.R"))
 
 # handle authentications
 drive_auth(email = email)

@@ -107,7 +107,7 @@ sched <- function(
   tm = "06:00", 
   email = "tim.riffe@gmail.com",
   wd = here()){
-  script <- here("Automation/00_hydra/", paste0(pp, ".R")  )
+  script <- here("Automation","00_hydra", paste0(pp, ".R")  )
   
   # modify the script to know who scehduled it and where it is
   A        <- readLines(script)
@@ -121,11 +121,25 @@ sched <- function(
   
   try(taskscheduler_delete(taskname = tskname))
   
+  st <- Sys.time()
+  hr <- lubridate::hour(st)
+  mn <- lubridate::minute(st)
+  st.in <- hr + mn / 60
+  
+  tm.in <- strsplit(tm,split=":") %>% unlist() %>% as.integer()
+  tm.in.dec <- tm.in[1] + tm.in[2] / 60
+  
+  if (tm.in.dec < st.in){
+    date.sched <- format((today() + 1), "%m/%d/%Y") 
+  } else {
+    date.sched <- format(today(), "%m/%d/%Y") 
+  }
+  
   taskscheduler_create(taskname = tskname, 
                        rscript = script, 
                        schedule = "DAILY", 
                        starttime = tm, 
-                       startdate = format(today(), "%m/%d/%Y"))
+                       startdate = date.sched)
 }
 # remove a scheduled task
 # @param pp script base name
