@@ -34,8 +34,6 @@ unique(db$Estado)
 unique(db$"Nombre municipio")
 unique(db$"Nombre departamento")
 
-
-
 test <- db %>% 
   rename(mun = "Nombre municipio") %>% 
   group_by(mun) %>% 
