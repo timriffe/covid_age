@@ -146,3 +146,21 @@ AF22.11.2020
 AF23.11.2020
 AF24.11.2020
 CR06.09.2020
+# 2020-11-26 inputDB updates 
+ Thu Nov 26 04:10:09 2020 
+
+
+# 2020-11-26 04:10:09 updates 
+ Thu Nov 26 04:10:09 2020 
+
+
+# Filter valid Measure entries: 
+ Thu Nov 26 04:26:40 2020 
+
+Valid Measures include: Cases,Deaths,Tests,ASCFR
+ 966 rows removed
+# Duplicates detected. Following `Code`s removed: 
+ Thu Nov 26 04:26:40 2020 
+
+PS12.10.2020
+US_KS25.11.2020
