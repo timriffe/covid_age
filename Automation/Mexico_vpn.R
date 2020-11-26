@@ -2,31 +2,28 @@
 # This is modified by sched()
 # ##  ###
 email <- "kikepaila@gmail.com"
-setwd("C:/Users/acosta/Documents/covid_age")
+setwd("U:/gits/covid_age")
 # ##  ###
 
 # end 
 
 # TR New: you must be in the repo environment 
-source("R/00_Functions.R")
-library(tidyverse)
-library(lubridate)
-library(googlesheets4)
-library(googledrive)
-library(rvest)
+source("Automation/00_Functions_automation.R")
 
 drive_auth(email = email)
 gs4_auth(email = email)
 
-# reading data from the website ------------------------------------------------------ 
-m_url <- "https://www.gob.mx/salud/documentos/datos-abiertos-152127"
-html <- read_html(m_url)
-# locating the links for the data
-url1 <- html_nodes(html, xpath = '/html/body/main/div/div[1]/div[4]/div/table[2]/tbody/tr[1]/td[2]/a') %>%
-  html_attr("href")
+# # reading data from the website ------------------------------------------------------ 
+# m_url <- "https://www.gob.mx/salud/documentos/datos-abiertos-152127"
+# html <- read_html(m_url)
+# # locating the links for the data
+# url1 <- html_nodes(html, xpath = '/html/body/main/div/div[1]/div[4]/div/table[2]/tbody/tr[1]/td[2]/a') %>%
+#   html_attr("href")
+# 
+# temp <- tempfile()
+# download.file(url1, "Data/temp.zip")
+# db <- read_csv("Data/temp.zip")
 
-temp <- tempfile()
-download.file(url1, "Data/temp.zip")
 db <- read_csv("Data/temp.zip")
 
 unique(db$SEXO)
@@ -35,12 +32,54 @@ unique(db$ENTIDAD_RES) %>% as.numeric() %>% sort()
 table(db$ENTIDAD_RES)
 
 # filter confirmed cases and standardize data ----------------------------------------
-lab <- db %>% 
-  filter(RESULTADO_LAB == 1)
 
-pos <- db %>% 
-  filter(CLASIFICACION_FINAL <= 3)
-unique(pos$FECHA_SINTOMAS)
+db_t <- db %>% 
+  filter(TOMA_MUESTRA == 1) %>% 
+  rename(Age = EDAD,
+         date_t = FECHA_INGRESO) %>% 
+  mutate(Sex = case_when(SEXO == 1 ~ "f",
+                         SEXO == 2 ~ "m",
+                         T ~ "UNK"),
+         Age = ifelse(Age >= 100, 100, Age),
+         Region = case_when(
+           ENTIDAD_RES == '01' ~ 'Aguascalientes',
+           ENTIDAD_RES == '02' ~ 'Baja California',
+           ENTIDAD_RES == '03' ~ 'Baja California Sur',
+           ENTIDAD_RES == '04' ~ 'Campeche',
+           ENTIDAD_RES == '05' ~ 'Coahuila de Zaragoza',
+           ENTIDAD_RES == '06' ~ 'Colima',
+           ENTIDAD_RES == '07' ~ 'Chiapas',
+           ENTIDAD_RES == '08' ~ 'Chihuahua',
+           ENTIDAD_RES == '09' ~ 'Ciudad de Mexico',
+           ENTIDAD_RES == '10' ~ 'Durango',
+           ENTIDAD_RES == '11' ~ 'Guanajuato',
+           ENTIDAD_RES == '12' ~ 'Guerrero',
+           ENTIDAD_RES == '13' ~ 'Hidalgo',
+           ENTIDAD_RES == '14' ~ 'Jalisco',
+           ENTIDAD_RES == '15' ~ 'Mexico',
+           ENTIDAD_RES == '16' ~ 'Michoacan de Ocampo',
+           ENTIDAD_RES == '17' ~ 'Morelos',
+           ENTIDAD_RES == '18' ~ 'Nayarit',
+           ENTIDAD_RES == '19' ~ 'Nuevo Leon',
+           ENTIDAD_RES == '20' ~ 'Oaxaca',
+           ENTIDAD_RES == '21' ~ 'Puebla',
+           ENTIDAD_RES == '22' ~ 'Queretaro',
+           ENTIDAD_RES == '23' ~ 'Quintana Roo',
+           ENTIDAD_RES == '24' ~ 'San Luis Potosi',
+           ENTIDAD_RES == '25' ~ 'Sinaloa',
+           ENTIDAD_RES == '26' ~ 'Sonora',
+           ENTIDAD_RES == '27' ~ 'Tabasco',
+           ENTIDAD_RES == '28' ~ 'Tamaulipas',
+           ENTIDAD_RES == '29' ~ 'Tlaxcala',
+           ENTIDAD_RES == '30' ~ 'Veracruz de Ignacio de la Llave',
+           ENTIDAD_RES == '31' ~ 'Yucatan',
+           ENTIDAD_RES == '32' ~ 'Zacatecas',
+           TRUE ~ 'Other'
+         )) %>% 
+  group_by(Sex, Age, date_t, Region) %>% 
+  summarise(new = sum(n())) %>% 
+  ungroup() 
+
 
 db2 <- db %>% 
   filter(CLASIFICACION_FINAL <= 3) %>% 
@@ -102,6 +141,10 @@ dates_d <- seq(min(db_d$date_d), max(max(db_d$date_d), max(db_c$date_c)), by = '
 
 dates_c <- seq(min(db_c$date_c), max(max(db_d$date_d), max(db_c$date_c)), by = '1 day')
 
+dates_t <- seq(ymd("2020-03-01"), max(db_t$date_t), by = '1 day')
+
+
+
 
 # deaths ---------------------------------------------------------------------------
 
@@ -111,7 +154,7 @@ db_d2 <- db_d %>%
   ungroup()
 
 db_d3 <- db_d2 %>% 
-  complete(Region, Sex, Age = ages, date_d = dates_d, fill = list(new = 0)) %>% 
+  tidyr::complete(Region, Sex, Age = ages, date_d = dates_d, fill = list(new = 0)) %>% 
   group_by(Region, Sex, Age) %>% 
   mutate(Value = cumsum(new),
          Age = as.character(Age),
@@ -127,7 +170,7 @@ db_c2 <- db_c %>%
   ungroup()
 
 db_c3 <- db_c2 %>% 
-  complete(Region, Sex, Age = ages, date_c = dates_c, fill = list(new = 0)) %>% 
+  tidyr::complete(Region, Sex, Age = ages, date_c = dates_c, fill = list(new = 0)) %>% 
   group_by(Region, Sex, Age) %>% 
   mutate(Value = cumsum(new),
          Age = as.character(Age),
@@ -135,8 +178,19 @@ db_c3 <- db_c2 %>%
   rename(date_f = date_c) %>% 
   select(-new)
 
-# template for database ------------------------------------------------------------
-db_dc <- bind_rows(db_d3, db_c3)
+# tests ---------------------------------------------------------------------------
+
+db_t2 <- db_t %>% 
+  tidyr::complete(Region, Sex, Age = ages, date_t = dates_t, fill = list(new = 0)) %>% 
+  group_by(Region, Sex, Age) %>% 
+  mutate(Value = cumsum(new),
+         Age = as.character(Age),
+         Measure = "Tests") %>% 
+  rename(date_f = date_t) %>% 
+  select(-new)
+
+# template for database -------------------------------------------------------
+db_dc <- bind_rows(db_d3, db_c3, db_t2)
 
 db_mx <- db_dc %>% 
   group_by(date_f, Sex, Age, Measure) %>% 
@@ -243,8 +297,8 @@ test <- db_final %>%
 #########################
 
 # slicing database by regions for uploading it to drive
-slices <- 9
 dims <- db_final %>% dim() 
+slices <- 9
 slice_size <- ceiling(dims[1]/slices) 
 
 # TR: pull urls from rubric instead

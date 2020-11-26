@@ -9,7 +9,7 @@ setwd("U:/gits/covid_age")
 
 # TR New: you must be in the repo environment 
 source("Automation/00_Functions_automation.R")
-
+library(jsonlite)
 drive_auth(email = email)
 gs4_auth(email = email)
 

@@ -41,8 +41,8 @@ sched("US_Virginia", tm = "19:50",email = auto_update_email, wd = auto_update_wd
 # broken
 # sched("Mexico", tm = "20:50",email = auto_♥update_email, wd = auto_update_wd)
 
-sched("US_NYC", tm = "22:38",email = auto_update_email, wd = auto_update_wd)
-sched("USA_all_deaths", tm = "01:00",email = auto_update_email, wd = auto_update_wd)
+sched("US_NYC", tm = "19:58",email = auto_update_email, wd = auto_update_wd)
+_sched("USA_all_deaths", tm = "01:00",email = auto_update_email, wd = auto_update_wd)
 sched("USA_deaths_all_states", tm = "01:10",email = auto_update_email, wd = auto_update_wd)
 
 sched("US_Texas", tm = "17:11",email = auto_update_email, wd = auto_update_wd)
