@@ -1,6 +1,4 @@
 # TODO: maybe switch to Natural Earth map source,
-# French Guiana presently included w France, but French
-# data don't include French Guiana. Need to use
 # https://cran.r-project.org/web/packages/rnaturalearth/vignettes/what-is-a-country.html
 library(here)
 source(here("R","00_Functions.R"))
@@ -51,7 +49,7 @@ st_crs(World)
 World$name <- as.character(World$name)
 
 World$name[World$name == "Swaziland"]       <- "Eswatini"
-World$name[World$name == "United Kingdom"]  <- "UK"
+# World$name[World$name == "United Kingdom"]  <- "UK"
 World$name[World$name == "United States"]   <- "USA" 
 World$name[World$name == "Korea"] <- "South Korea"
 World$name[World$name == "Dominican Rep."]  <- "Dominican Republic"
@@ -71,7 +69,7 @@ have_in_idb <-
   select(Country, Region) %>% 
   distinct() %>% 
   group_by(Country) %>% 
-  mutate(coverage = ifelse(n()>1,"National and regional","National"),
+  mutate(coverage = ifelse(n()>1,"National and subnational","National"),
          indb = TRUE) %>% 
   ungroup() %>% 
   select(Country, coverage) %>% 
@@ -90,7 +88,7 @@ db_coverage <-
             forthcoming) %>% 
   # we do this because UK envelops them in map.
   filter(!Country %in% c("Northern Ireland", "Scotland","England","Wales","England and Wales")) %>% 
-  mutate(coverage = ifelse(Country == "UK","National and regional",coverage)) %>% 
+  mutate(coverage = ifelse(Country == "United Kingdom","National and subnational",coverage)) %>% 
   filter(Country != "Russia")
 
 db_coverage$Country[!db_coverage$Country %in% world_rob$name]
@@ -102,7 +100,7 @@ map_joined <- left_join(world_rob, db_coverage,
 map_joined$coverage[is.na(map_joined$coverage)] <- "Not included yet"
 
 
-cols_data <- c("National and regional" = "grey10", "National" = "grey50", "Forthcoming" = "#A3d3d3","Not included yet" = "grey90")
+cols_data <- c("National and subnational" = "grey10", "National" = "#9477bf", "Forthcoming" = "#e9afdd","Not included yet" = "grey90")
 
 map_joined<-
   map_joined %>% 
