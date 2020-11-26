@@ -164,9 +164,8 @@ Metadata %>%
 
 
 # VI Positivity (OWD) *
-
 OWD <- read_csv("https://covid.ourworldindata.org/data/owid-covid-data.csv",
-                col_types= "cccDddddddddddddddddddddddddddddcdddddddddddddddd") %>% 
+                col_types= "cccDdddddddddddddddddddddddddddddcdddddddddddddddd") %>% 
   filter(!is.na(iso_code)) %>% 
   filter(! iso_code %in% c("OWID_KOS","OWID_WRL")) %>% 
   mutate(Short = countrycode(iso_code, 

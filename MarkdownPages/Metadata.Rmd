@@ -13,8 +13,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r, include = FALSE}
 library(DT)
+library(here)
 
 tab1 <- readRDS(here("Data","tab1.rds"))
 tab2 <- readRDS(here("Data","tab2.rds"))
 tab3 <- readRDS(here("Data","tab3.rds"))
 ```
+
+
