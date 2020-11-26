@@ -2868,3 +2868,958 @@ Writing to "SI09.11.2020_cases&deaths"
 Writing to sheet "deaths_age_sex"
 Deleting these sheet(s) from "SI09.11.2020_cases&deaths":
 * Sheet1
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Reading from "spreadsheets_rows"
+Range "'input'"
+[1] "https://www.nijz.si/sites/www.nijz.si/files/uploaded/porocilo_stevilo_potrjenih_primerov_covid-19_10112020_splet.xlsx"
+New names:
+* `` -> ...1
+* `0-4` -> `0-4...2`
+* `5-14` -> `5-14...3`
+* `15-24` -> `15-24...4`
+* `25-34` -> `25-34...5`
+* ...
+Warning messages:
+1: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+2: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+New names:
+* `` -> ...1
+* `35-44` -> `35-44...2`
+* `45-54` -> `45-54...3`
+* `55-64` -> `55-64...4`
+* `65-74` -> `65-74...5`
+* ...
+Warning messages:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 224 rows [2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035, 2036, ...]. 
+2: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+3: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+Writing to "Slovenia input template"
+Writing to sheet "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Created Drive file:
+  * SI10.11.2020_cases&deaths: 1Me5THj_h3oBYK46xSZOap0y9ZmLloST-0_fPF_bHX3s
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI10.11.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI10.11.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Deleting these sheet(s) from "SI10.11.2020_cases&deaths":
+* Sheet1
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Reading from "spreadsheets_rows"
+Range "'input'"
+[1] "https://www.nijz.si/sites/www.nijz.si/files/uploaded/porocilo_stevilo_potrjenih_primerov_covid-19_11112020_splet.xlsx"
+New names:
+* `` -> ...1
+* `0-4` -> `0-4...2`
+* `5-14` -> `5-14...3`
+* `15-24` -> `15-24...4`
+* `25-34` -> `25-34...5`
+* ...
+Warning messages:
+1: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+2: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+New names:
+* `` -> ...1
+* `35-44` -> `35-44...2`
+* `45-54` -> `45-54...3`
+* `55-64` -> `55-64...4`
+* `65-74` -> `65-74...5`
+* ...
+Warning messages:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 224 rows [2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035, 2036, ...]. 
+2: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+3: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+Writing to "Slovenia input template"
+Writing to sheet "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Created Drive file:
+  * SI11.11.2020_cases&deaths: 1TiIUdUFBv0IYbRgWGsaaiMzZxN3aBSIO8kEAw3we7nc
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI11.11.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI11.11.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Deleting these sheet(s) from "SI11.11.2020_cases&deaths":
+* Sheet1
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Reading from "spreadsheets_rows"
+Range "'input'"
+[1] "https://www.nijz.si/sites/www.nijz.si/files/uploaded/porocilo_stevilo_potrjenih_primerov_covid-19_12112020_splet.xlsx"
+New names:
+* `` -> ...1
+* `0-4` -> `0-4...2`
+* `5-14` -> `5-14...3`
+* `15-24` -> `15-24...4`
+* `25-34` -> `25-34...5`
+* ...
+Warning messages:
+1: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+2: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+New names:
+* `` -> ...1
+* `35-44` -> `35-44...2`
+* `45-54` -> `45-54...3`
+* `55-64` -> `55-64...4`
+* `65-74` -> `65-74...5`
+* ...
+Warning messages:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 226 rows [2035, 2036, 2037, 2038, 2039, 2040, 2041, 2042, 2043, 2044, 2045, 2046, 2047, 2048, 2049, 2050, 2051, 2052, 2053, 2054, ...]. 
+2: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+3: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+Writing to "Slovenia input template"
+Writing to sheet "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Created Drive file:
+  * SI12.11.2020_cases&deaths: 1soYev19yEkg5jE0fIT33-deL33Jx5_z7dfPaG3tEHmw
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI12.11.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI12.11.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Deleting these sheet(s) from "SI12.11.2020_cases&deaths":
+* Sheet1
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Reading from "spreadsheets_rows"
+Range "'input'"
+[1] "https://www.nijz.si/sites/www.nijz.si/files/uploaded/porocilo_stevilo_potrjenih_primerov_covid-19_13112020_splet.xlsx"
+New names:
+* `` -> ...1
+* `0-4` -> `0-4...2`
+* `5-14` -> `5-14...3`
+* `15-24` -> `15-24...4`
+* `25-34` -> `25-34...5`
+* ...
+Warning messages:
+1: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+2: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+New names:
+* `` -> ...1
+* `35-44` -> `35-44...2`
+* `45-54` -> `45-54...3`
+* `55-64` -> `55-64...4`
+* `65-74` -> `65-74...5`
+* ...
+Warning messages:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 228 rows [2053, 2054, 2055, 2056, 2057, 2058, 2059, 2060, 2061, 2062, 2063, 2064, 2065, 2066, 2067, 2068, 2069, 2070, 2071, 2072, ...]. 
+2: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+3: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+Writing to "Slovenia input template"
+Writing to sheet "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Created Drive file:
+  * SI13.11.2020_cases&deaths: 1Ab7riwIejznXZwbpFBnlszwx1_RjkbtapJVo1Moibno
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI13.11.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI13.11.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Deleting these sheet(s) from "SI13.11.2020_cases&deaths":
+* Sheet1
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Reading from "spreadsheets_rows"
+Range "'input'"
+[1] "https://www.nijz.si/sites/www.nijz.si/files/uploaded/porocilo_stevilo_potrjenih_primerov_covid-19_14112020_splet.xlsx"
+New names:
+* `` -> ...1
+* `0-4` -> `0-4...2`
+* `5-14` -> `5-14...3`
+* `15-24` -> `15-24...4`
+* `25-34` -> `25-34...5`
+* ...
+Warning messages:
+1: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+2: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+New names:
+* `` -> ...1
+* `35-44` -> `35-44...2`
+* `45-54` -> `45-54...3`
+* `55-64` -> `55-64...4`
+* `65-74` -> `65-74...5`
+* ...
+Warning messages:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 230 rows [2071, 2072, 2073, 2074, 2075, 2076, 2077, 2078, 2079, 2080, 2081, 2082, 2083, 2084, 2085, 2086, 2087, 2088, 2089, 2090, ...]. 
+2: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+3: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+Writing to "Slovenia input template"
+Writing to sheet "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * SI14.11.2020_cases&deaths: 1MU47WEpAmRPDYi19c2d3xhOWrUZrVSqVEeQOsmnecBE
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI14.11.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI14.11.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Deleting these sheet(s) from "SI14.11.2020_cases&deaths":
+* Sheet1
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Reading from "spreadsheets_rows"
+Range "'input'"
+[1] "https://www.nijz.si/sites/www.nijz.si/files/uploaded/porocilo_stevilo_potrjenih_primerov_covid-19_15112020_splet.xlsx"
+New names:
+* `` -> ...1
+* `0-4` -> `0-4...2`
+* `5-14` -> `5-14...3`
+* `15-24` -> `15-24...4`
+* `25-34` -> `25-34...5`
+* ...
+Warning messages:
+1: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+2: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+New names:
+* `` -> ...1
+* `35-44` -> `35-44...2`
+* `45-54` -> `45-54...3`
+* `55-64` -> `55-64...4`
+* `65-74` -> `65-74...5`
+* ...
+Warning messages:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 232 rows [2089, 2090, 2091, 2092, 2093, 2094, 2095, 2096, 2097, 2098, 2099, 2100, 2101, 2102, 2103, 2104, 2105, 2106, 2107, 2108, ...]. 
+2: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+3: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+Writing to "Slovenia input template"
+Writing to sheet "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * SI15.11.2020_cases&deaths: 1wf6NTzReHUpK8LPoO_Bk9B9INHBQjb4exCk8iF4vGwA
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI15.11.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI15.11.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Deleting these sheet(s) from "SI15.11.2020_cases&deaths":
+* Sheet1
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Reading from "spreadsheets_rows"
+Range "'input'"
+[1] "https://www.nijz.si/sites/www.nijz.si/files/uploaded/porocilo_stevilo_potrjenih_primerov_covid-19_16112020_splet.xlsx"
+New names:
+* `` -> ...1
+* `0-4` -> `0-4...2`
+* `5-14` -> `5-14...3`
+* `15-24` -> `15-24...4`
+* `25-34` -> `25-34...5`
+* ...
+Warning messages:
+1: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+2: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+New names:
+* `` -> ...1
+* `35-44` -> `35-44...2`
+* `45-54` -> `45-54...3`
+* `55-64` -> `55-64...4`
+* `65-74` -> `65-74...5`
+* ...
+Warning messages:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 234 rows [2107, 2108, 2109, 2110, 2111, 2112, 2113, 2114, 2115, 2116, 2117, 2118, 2119, 2120, 2121, 2122, 2123, 2124, 2125, 2126, ...]. 
+2: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+3: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+Writing to "Slovenia input template"
+Writing to sheet "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Created Drive file:
+  * SI16.11.2020_cases&deaths: 1ye6Fj2_-B9-10hVEgeOpYfksX9DL2-2VnjNgQuZtaPM
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI16.11.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI16.11.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Deleting these sheet(s) from "SI16.11.2020_cases&deaths":
+* Sheet1
+Lade nötiges Paket: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Reading from "spreadsheets_rows"
+Range "'input'"
+[1] "https://www.nijz.si/sites/www.nijz.si/files/uploaded/porocilo_stevilo_potrjenih_primerov_covid-19_16112020_splet.xlsx"
+New names:
+* `` -> ...1
+* `0-4` -> `0-4...2`
+* `5-14` -> `5-14...3`
+* `15-24` -> `15-24...4`
+* `25-34` -> `25-34...5`
+* ...
+Warning messages:
+1: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+2: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+New names:
+* `` -> ...1
+* `35-44` -> `35-44...2`
+* `45-54` -> `45-54...3`
+* `55-64` -> `55-64...4`
+* `65-74` -> `65-74...5`
+* ...
+Warning messages:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 234 rows [2107, 2108, 2109, 2110, 2111, 2112, 2113, 2114, 2115, 2116, 2117, 2118, 2119, 2120, 2121, 2122, 2123, 2124, 2125, 2126, ...]. 
+2: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+3: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+Writing to "Slovenia input template"
+Writing to sheet "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Files trashed:
+  * SI16.11.2020_cases&deaths: 1ye6Fj2_-B9-10hVEgeOpYfksX9DL2-2VnjNgQuZtaPM
+Created Drive file:
+  * SI16.11.2020_cases&deaths: 1kbDTDp1RaCMNaYvVNflMDEIFMnw18DSNEIoPGXajtng
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI16.11.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI16.11.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Error: Client error: (429) RESOURCE_EXHAUSTED
+  * Either out of resource quota or reaching rate limiting. The client should look for google.rpc.QuotaFailure error detail for more information.
+  * Quota exceeded for quota group 'ReadGroup' and limit 'Read requests per 100 seconds' of service 'sheets.googleapis.com' for consumer 'project_number:603366585132'.
+
+Error details:
+  * Error details of type 'google.rpc.Help' are not implemented yet.
+  * Workaround: use `tryCatch()` and inspect error payload yourself.
+  * Please open an issue at https://github.com/r-lib/gargle/issues, so we can fix.
+Backtrace:
+    x
+ 1. \-googlesheets4::sheet_delete(meta$id, "Sheet1")
+ 2.   \-googlesheets4::gs4_get(ssid)
+ 3.     \-googlesheets4:::gs4_get_impl_(as_sheets_id(ss))
+ 4.       \-gargle::response_process(raw_resp)
+ 5.         \-gargle:::stop_request_failed(error_message(resp), resp)
+Execution halted
+Loading required package: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Reading from "spreadsheets_rows"
+Range "'input'"
+[1] "https://www.nijz.si/sites/www.nijz.si/files/uploaded/porocilo_stevilo_potrjenih_primerov_covid-19_18112020_splet.xlsx"
+New names:
+* `` -> ...1
+* `0-4` -> `0-4...2`
+* `5-14` -> `5-14...3`
+* `15-24` -> `15-24...4`
+* `25-34` -> `25-34...5`
+* ...
+Warning messages:
+1: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+2: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+New names:
+* `` -> ...1
+* `35-44` -> `35-44...2`
+* `45-54` -> `45-54...3`
+* `55-64` -> `55-64...4`
+* `65-74` -> `65-74...5`
+* ...
+Warning messages:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 238 rows [2143, 2144, 2145, 2146, 2147, 2148, 2149, 2150, 2151, 2152, 2153, 2154, 2155, 2156, 2157, 2158, 2159, 2160, 2161, 2162, ...]. 
+2: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+3: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+Writing to "Slovenia input template"
+Writing to sheet "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Created Drive file:
+  * SI18.11.2020_cases&deaths: 1F3WRfWepiqRG4gBZQixcAxr7GzQe0SQlFLts4ZeYNxE
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI18.11.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI18.11.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Deleting these sheet(s) from "SI18.11.2020_cases&deaths":
+* Sheet1
+Loading required package: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Reading from "spreadsheets_rows"
+Range "'input'"
+[1] "https://www.nijz.si/sites/www.nijz.si/files/uploaded/porocilo_stevilo_potrjenih_primerov_covid-19_19112020_splet.xlsx"
+New names:
+* `` -> ...1
+* `0-4` -> `0-4...2`
+* `5-14` -> `5-14...3`
+* `15-24` -> `15-24...4`
+* `25-34` -> `25-34...5`
+* ...
+Warning messages:
+1: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+2: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+New names:
+* `` -> ...1
+* `35-44` -> `35-44...2`
+* `45-54` -> `45-54...3`
+* `55-64` -> `55-64...4`
+* `65-74` -> `65-74...5`
+* ...
+Warning messages:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 240 rows [2161, 2162, 2163, 2164, 2165, 2166, 2167, 2168, 2169, 2170, 2171, 2172, 2173, 2174, 2175, 2176, 2177, 2178, 2179, 2180, ...]. 
+2: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+3: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+Writing to "Slovenia input template"
+Writing to sheet "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Created Drive file:
+  * SI19.11.2020_cases&deaths: 1u9sUTJdrY7_xqwA9PUhy98wp2eDBQcR20SCEnsCwv2Q
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI19.11.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI19.11.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Deleting these sheet(s) from "SI19.11.2020_cases&deaths":
+* Sheet1
+Loading required package: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Reading from "spreadsheets_rows"
+Range "'input'"
+[1] "https://www.nijz.si/sites/www.nijz.si/files/uploaded/porocilo_stevilo_potrjenih_primerov_covid-19_20112020_splet.xlsx"
+New names:
+* `` -> ...1
+* `0-4` -> `0-4...2`
+* `5-14` -> `5-14...3`
+* `15-24` -> `15-24...4`
+* `25-34` -> `25-34...5`
+* ...
+Warning messages:
+1: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+2: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+New names:
+* `` -> ...1
+* `35-44` -> `35-44...2`
+* `45-54` -> `45-54...3`
+* `55-64` -> `55-64...4`
+* `65-74` -> `65-74...5`
+* ...
+Warning messages:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 242 rows [2179, 2180, 2181, 2182, 2183, 2184, 2185, 2186, 2187, 2188, 2189, 2190, 2191, 2192, 2193, 2194, 2195, 2196, 2197, 2198, ...]. 
+2: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+3: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+Writing to "Slovenia input template"
+Writing to sheet "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Created Drive file:
+  * SI20.11.2020_cases&deaths: 1V5IH_MFgA-iccWKwxXded_0UIoPEU11K5KmJkJQq144
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI20.11.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI20.11.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Deleting these sheet(s) from "SI20.11.2020_cases&deaths":
+* Sheet1
+Loading required package: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Reading from "spreadsheets_rows"
+Range "'input'"
+[1] "https://www.nijz.si/sites/www.nijz.si/files/uploaded/porocilo_stevilo_potrjenih_primerov_covid-19_21112020_splet.xlsx"
+New names:
+* `` -> ...1
+* `0-4` -> `0-4...2`
+* `5-14` -> `5-14...3`
+* `15-24` -> `15-24...4`
+* `25-34` -> `25-34...5`
+* ...
+Warning messages:
+1: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+2: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+New names:
+* `` -> ...1
+* `35-44` -> `35-44...2`
+* `45-54` -> `45-54...3`
+* `55-64` -> `55-64...4`
+* `65-74` -> `65-74...5`
+* ...
+Warning messages:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 244 rows [2197, 2198, 2199, 2200, 2201, 2202, 2203, 2204, 2205, 2206, 2207, 2208, 2209, 2210, 2211, 2212, 2213, 2214, 2215, 2216, ...]. 
+2: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+3: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+Writing to "Slovenia input template"
+Writing to sheet "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * SI21.11.2020_cases&deaths: 11-LN7rkALAyUmolRsIKcqY61dpnPW_ksM317kJKrGm8
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI21.11.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI21.11.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Deleting these sheet(s) from "SI21.11.2020_cases&deaths":
+* Sheet1
+Loading required package: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Reading from "spreadsheets_rows"
+Range "'input'"
+[1] "https://www.nijz.si/sites/www.nijz.si/files/uploaded/porocilo_stevilo_potrjenih_primerov_covid-19_22112020_splet.xlsx"
+New names:
+* `` -> ...1
+* `0-4` -> `0-4...2`
+* `5-14` -> `5-14...3`
+* `15-24` -> `15-24...4`
+* `25-34` -> `25-34...5`
+* ...
+Warning messages:
+1: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+2: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+New names:
+* `` -> ...1
+* `35-44` -> `35-44...2`
+* `45-54` -> `45-54...3`
+* `55-64` -> `55-64...4`
+* `65-74` -> `65-74...5`
+* ...
+Warning messages:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 246 rows [2215, 2216, 2217, 2218, 2219, 2220, 2221, 2222, 2223, 2224, 2225, 2226, 2227, 2228, 2229, 2230, 2231, 2232, 2233, 2234, ...]. 
+2: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+3: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+Writing to "Slovenia input template"
+Writing to sheet "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Auto-refreshing stale OAuth token.
+Created Drive file:
+  * SI22.11.2020_cases&deaths: 1PIklvcN5trtGynQ7k-B96-qfEPaXb1Sw6kqDdLn6aoY
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI22.11.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI22.11.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Deleting these sheet(s) from "SI22.11.2020_cases&deaths":
+* Sheet1
+Loading required package: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Reading from "spreadsheets_rows"
+Range "'input'"
+[1] "https://www.nijz.si/sites/www.nijz.si/files/uploaded/porocilo_stevilo_potrjenih_primerov_covid-19_23112020_splet1.xlsx"
+New names:
+* `` -> ...1
+* `0-4` -> `0-4...2`
+* `5-14` -> `5-14...3`
+* `15-24` -> `15-24...4`
+* `25-34` -> `25-34...5`
+* ...
+Warning messages:
+1: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+2: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+New names:
+* `` -> ...1
+* `35-44` -> `35-44...2`
+* `45-54` -> `45-54...3`
+* `55-64` -> `55-64...4`
+* `65-74` -> `65-74...5`
+* ...
+Warning messages:
+1: Expected 2 pieces. Missing pieces filled with `NA` in 248 rows [2233, 2234, 2235, 2236, 2237, 2238, 2239, 2240, 2241, 2242, 2243, 2244, 2245, 2246, 2247, 2248, 2249, 2250, 2251, 2252, ...]. 
+2: Problem with `mutate()` input `date_f`.
+i NAs introduced by coercion
+i Input `date_f` is `as.Date(as.integer(date_f), origin = "1899-12-30")`. 
+3: In as.Date(as.integer(date_f), origin = "1899-12-30") :
+  NAs introduced by coercion
+Writing to "Slovenia input template"
+Writing to sheet "database"
+Writing to "Hydra auto update log"
+Appending 1 row(s) to "log"
+Created Drive file:
+  * SI23.11.2020_cases&deaths: 17OmvYyn3pnudBrb_i5h1JUzGGAQSYGWGJVfzfsCT6pc
+with MIME type:
+  * application/vnd.google-apps.spreadsheet
+Writing to "SI23.11.2020_cases&deaths"
+Writing to sheet "cases_age_sex"
+Writing to "SI23.11.2020_cases&deaths"
+Writing to sheet "deaths_age_sex"
+Deleting these sheet(s) from "SI23.11.2020_cases&deaths":
+* Sheet1
+Loading required package: pacman
+Loading required package: xml2
+
+Attaching package: 'rvest'
+
+The following object is masked from 'package:purrr':
+
+    pluck
+
+The following object is masked from 'package:readr':
+
+    guess_encoding
+
+
+Attaching package: 'httr'
+
+The following objects are masked from 'package:git2r':
+
+    config, content
+
+Error: Client error: (429) RESOURCE_EXHAUSTED
+  * Either out of resource quota or reaching rate limiting. The client should look for google.rpc.QuotaFailure error detail for more information.
+  * Quota exceeded for quota group 'ReadGroup' and limit 'Read requests per 100 seconds' of service 'sheets.googleapis.com' for consumer 'project_number:603366585132'.
+
+Error details:
+  * Error details of type 'google.rpc.Help' are not implemented yet.
+  * Workaround: use `tryCatch()` and inspect error payload yourself.
+  * Please open an issue at https://github.com/r-lib/gargle/issues, so we can fix.
+Backtrace:
+     x
+  1. +-get_input_rubric() %>% filter(Short == "SI")
+  2. | \-base::eval(lhs, parent, parent)
+  3. |   \-base::eval(lhs, parent, parent)
+  4. \-global::get_input_rubric()
+  5.   +-read_sheet(ss_rubric, sheet = tab) %>% filter(!is.na(Sheet))
+  6.   | \-base::eval(lhs, parent, parent)
+  7.   |   \-base::eval(lhs, parent, parent)
+  8.   \-googlesheets4::read_sheet(ss_rubric, sheet = ta
+Execution halted

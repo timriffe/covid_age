@@ -39,7 +39,7 @@ sched("Austria", tm = "18:50",email = auto_update_email, wd = auto_update_wd)
 sched("US_Virginia", tm = "19:50",email = auto_update_email, wd = auto_update_wd)
 
 # broken
-sched("Mexico", tm = "20:50",email = auto_update_email, wd = auto_update_wd)
+# sched("Mexico", tm = "20:50",email = auto_update_email, wd = auto_update_wd)
 
 sched("US_NYC", tm = "22:38",email = auto_update_email, wd = auto_update_wd)
 sched("USA_all_deaths", tm = "01:00",email = auto_update_email, wd = auto_update_wd)
