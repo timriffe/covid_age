@@ -34,8 +34,6 @@ unique(db$Estado)
 unique(db$"Nombre municipio")
 unique(db$"Nombre departamento")
 
-
-
 test <- db %>% 
   rename(mun = "Nombre municipio") %>% 
   group_by(mun) %>% 
@@ -322,6 +320,7 @@ log_update(pp = "Colombia", N = dims[1])
 ############################################
 #### uploading metadata to Google Drive ####
 ############################################
+ss_db  <- rubric %>% filter(Short == "CO_01") %>% dplyr::pull(Source)
 
 date_f <- Sys.Date()
 date <- paste(sprintf("%02d", day(date_f)),
