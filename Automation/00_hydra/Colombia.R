@@ -205,7 +205,8 @@ db_m_reg <- db_m %>%
                             TRUE ~ Region)) %>% 
   filter(Region %in% db_inc2,
          date_f >= "2020-03-20") %>% 
-  select(Region, date_f, Sex, Age, Measure, Value) 
+  select(Region, date_f, Sex, Age, Measure, Value) %>% 
+  drop_na()
 
 unique(db_m_reg$Region) %>% sort()
 unique(db_all2$Region) %>% sort()
@@ -267,13 +268,11 @@ db_final <- db_all2 %>%
   arrange(Region, date_f, Measure, Sex, suppressWarnings(as.integer(Age))) %>% 
   select(Country, Region, Code,  Date, Sex, Age, AgeInt, Metric, Measure, Value)
 
-
 unique(db_final$Region)
+unique(db_final$Age)
 
 db_final_co <- db_final %>% 
   filter(Region == "All")
-
-
 
 ############################################
 #### uploading database to Google Drive ####
