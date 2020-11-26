@@ -281,7 +281,7 @@ log_update(pp = "Mexico", N = dims[1])
 #########################
 # Push zip file to Drive -------------------------------------------------
 #########################
-ss_db  <- rubric %>% filter(Short == "MX") %>% dplyr::pull(Source)
+ss_db  <- rubric %>% filter(Short == "MX_01") %>% dplyr::pull(Source)
 
 date_f <- db %>% 
   filter(!is.na(FECHA_ACTUALIZACION)) %>% 
