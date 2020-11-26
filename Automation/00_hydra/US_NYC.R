@@ -2,19 +2,13 @@
 # This is modified by sched()
 # ##  ###
 email <- "kikepaila@gmail.com"
-setwd("C:/Users/acosta/Documents/covid_age")
+setwd("U:/gits/covid_age")
 # ##  ###
 
 # end 
 
 # TR New: you must be in the repo environment 
-source("R/00_Functions.R")
-
-
-library(tidyverse)
-library(lubridate)
-library(googlesheets4)
-library(googledrive)
+source("Automation/00_Functions_automation.R")
 
 print(paste0("Starting data retrieval for NYC..."))
 
@@ -35,23 +29,23 @@ last_date_drive <- db_drive %>%
   dplyr::pull(date_f) %>% 
   max()
 
-
 # country <- "nyc"
 # path_out <- paste0("U:/Projects/COVerAGE-DB/Data/",country,"/")
 
-db_age <- read_csv("https://github.com/nychealth/coronavirus-data/raw/master/by-age.csv")
-db_sex <- read_csv("https://github.com/nychealth/coronavirus-data/raw/master/by-sex.csv")
-db_sum <- read_csv("https://github.com/nychealth/coronavirus-data/raw/master/summary.csv", col_names = F)
-db_tests <- read_csv("https://github.com/nychealth/coronavirus-data/raw/master/tests.csv")
-db_tested <- read_csv("https://github.com/nychealth/coronavirus-data/raw/master/tests-by-zcta.csv")
+# db_age <- read_csv("https://github.com/nychealth/coronavirus-data/raw/master/by-age.csv")
+# db_sex <- read_csv("https://github.com/nychealth/coronavirus-data/raw/master/by-sex.csv")
+# db_sum <- read_csv("https://github.com/nychealth/coronavirus-data/raw/master/summary.csv", col_names = F)
+# db_tests <- read_csv("https://github.com/nychealth/coronavirus-data/raw/master/tests.csv")
+# db_tested <- read_csv("https://github.com/nychealth/coronavirus-data/raw/master/tests-by-zcta.csv")
 
-tests <- db_tests %>% 
-  group_by() %>% 
-  summarise(sum(TOTAL_TESTS))
 
-tested <- db_tested %>% 
-  group_by() %>% 
-  summarise(sum(Total))
+db_age <- read_csv("https://github.com/nychealth/coronavirus-data/raw/master/totals/by-age.csv")
+db_sex <- read_csv("https://github.com/nychealth/coronavirus-data/raw/master/totals/by-sex.csv")
+db_sum <- read_csv("https://github.com/nychealth/coronavirus-data/raw/master/totals/summary.csv", col_names = F)
+db_tests <- read_csv("https://github.com/nychealth/coronavirus-data/raw/master/trends/testing-by-age.csv")
+
+
+# db_tested <- read_csv("https://github.com/nychealth/coronavirus-data/raw/master/tests-by-zcta.csv")
 
 date_f <- db_sum %>% 
   filter(X1 == "DATE_UPDATED") %>% 
@@ -59,30 +53,36 @@ date_f <- db_sum %>%
   mutate(date = ymd(paste("2020", m, d, sep = "/"))) %>% 
   dplyr::pull(date)
 
-d <- paste(sprintf("%02d", day(date_f)),
-              sprintf("%02d", month(date_f)),
-              year(date_f), sep = ".")
-
-
 if (date_f > last_date_drive){
 
-  db_other <- tibble(Sex = "b",
-                     Age = "TOT",
-                     Measure = c("Probable deaths", "Tests", "Tested"),
-                     Value = c(as.numeric(db_sum[4,2]), 
-                               as.numeric(tests[1,1]),
-                               as.numeric(tested[1,1])))
+  # cases by age
+  db_a2_c <- db_age %>% 
+    filter(AGE_GROUP != "0-17") %>% 
+    mutate(Age = str_sub(AGE_GROUP, 1, 2),
+           Age = case_when(Age == "0-" ~ "0",
+                           Age == "5-" ~ "5",
+                           Age == "Ci" ~ "TOT",
+                           TRUE ~ Age),
+           Sex = "b",
+           Measure = "Cases",
+           date_f = date_f) %>% 
+    rename(Value = CASE_COUNT) %>% 
+    select(date_f, Sex, Age, Measure, Value)
   
-  db_a2 <- db_age %>% 
+  # deaths by age
+  db_a2_d <- db_age %>% 
+    filter(!(AGE_GROUP %in% c("0-4", "5-12", "13-17"))) %>% 
     mutate(Age = str_sub(AGE_GROUP, 1, 2),
            Age = case_when(Age == "0-" ~ "0",
                            Age == "Ci" ~ "TOT",
                            TRUE ~ Age),
-           Sex = "b") %>% 
-    rename(Cases = CASE_COUNT,
-           Deaths = DEATH_COUNT) %>% 
-    select(Sex, Age, Cases, Deaths)
+           Sex = "b",
+           Measure = "Deaths",
+           date_f = date_f) %>% 
+    rename(Value = DEATH_COUNT) %>% 
+    select(date_f, Sex, Age, Measure, Value)
   
+  # by sex
   db_s2 <- db_sex %>% 
     rename(Sex = SEX_GROUP,
            Cases = CASE_COUNT,
@@ -90,24 +90,60 @@ if (date_f > last_date_drive){
     mutate(Sex = case_when(Sex == "Female" ~ "f",
                            Sex == "Male" ~ "m",
                            TRUE ~ "b"),
-           Age = "TOT") %>% 
-    select(Sex, Age, Cases, Deaths) %>% 
-    filter(Sex != "b")
+           Age = "TOT",
+           date_f = date_f) %>% 
+    select(date_f, Sex, Age, Cases, Deaths) %>% 
+    filter(Sex != "b") %>% 
+    gather(Cases, Deaths, key = Measure, value = Value)
   
-  db_all <- bind_rows(db_a2, db_s2) %>% 
-    gather(Cases, Deaths, key = Measure, value = Value) %>% 
-    bind_rows(db_other) %>%
+  # tests by age
+  db_t2 <- db_tests %>%
+    rename(date_f = week_ending) %>% 
+    select(date_f, starts_with("numtest")) %>% 
+    gather(-date_f, key = "Age", value = "new") %>% 
+    separate(Age, c("trash1", "Age", "trash2"), sep = "_") %>% 
+    group_by(Age) %>% 
+    mutate(Value = cumsum(new)) %>% 
+    mutate(date_f = mdy(date_f),
+           Age = case_when(Age == "all" ~ "TOT",
+                           Age == "75up" ~ "75",
+                           TRUE ~ Age),
+           Sex = "b",
+           Measure = "Tests") %>% 
+    select(date_f, Sex, Age, Measure, Value)
+  
+  # data in previous dates on cases and deaths
+  db_drive2 <- db_drive %>% 
+    filter(Measure %in% c("Cases", "Deaths")) %>% 
+    mutate(date_f = dmy(Date),
+           AgeInt = as.character(AgeInt)) %>% 
+    select(-Short)
+
+  db_all <- bind_rows(db_a2_c, db_a2_d, db_s2, db_t2) %>% 
     mutate(Country = "USA",
            Region = "NYC",
-           Code = paste0("US_NYC", d),
-           Date = d,
-           AgeInt = case_when(Age == "0" ~ "18",
-                              Age == "18" ~ "27",
-                              Age == "45" ~ "20",
-                              Age == "65" ~ "10",
+           Date = paste(sprintf("%02d", day(date_f)),
+                        sprintf("%02d", month(date_f)),
+                        year(date_f), sep = "."),
+           Code = paste0("US_NYC", Date),
+           AgeInt = case_when(Age == "0" & Measure == "Deaths" ~ "18",
+                              Age == "0" & (Measure == "Cases" | Measure == "Tests") ~ "5",
+                              Age == "5" & (Measure == "Cases" | Measure == "Tests") ~ "8",
+                              Age == "13" & (Measure == "Cases" | Measure == "Tests") ~ "5",
+                              Age == "18" ~ "7",
                               Age == "75" ~ "30",
-                              TRUE ~ ""),
+                              Age == "TOT" ~ "",
+                              TRUE ~ "10"),
            Metric = "Count") %>% 
+    bind_rows(db_drive2) %>% 
+    arrange(Country,
+            Region,
+            date_f,
+            Code,
+            Sex, 
+            Measure,
+            Metric,
+            suppressWarnings(as.integer(Age))) %>% 
     select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) 
   
   ############################################
@@ -115,9 +151,9 @@ if (date_f > last_date_drive){
   ############################################
   
   # This command append new rows at the end of the sheet
-  sheet_append(db_all,
-               ss = ss_i,
-               sheet = "database")
+  write_sheet(db_all,
+              ss = ss_i,
+              sheet = "database")
   log_update(pp = "US_NYC", N = nrow(db_all))
   ############################################
   #### uploading metadata to Google Drive ####
@@ -142,10 +178,6 @@ if (date_f > last_date_drive){
   write_sheet(db_tests, 
               ss = meta$id,
               sheet = "tests")
-  
-  write_sheet(db_tested, 
-              ss = meta$id,
-              sheet = "tested")
   
   sheet_delete(meta$id, "Sheet1")
   
