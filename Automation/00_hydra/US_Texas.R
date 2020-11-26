@@ -2,20 +2,13 @@
 # This is modified by sched()
 # ##  ###
 email <- "kikepaila@gmail.com"
-setwd("C:/Users/acosta/Documents/covid_age")
+setwd("U:/gits/covid_age")
 # ##  ###
 
 # end 
 
 # TR New: you must be in the repo environment 
-source("R/00_Functions.R")
-
-library(tidyverse)
-library(readxl)
-library(googlesheets4)
-library(googledrive)
-library(lubridate)
-library(httr)
+source("Automation/00_Functions_automation.R")
 
 drive_auth(email = email)
 gs4_auth(email = email)
@@ -83,9 +76,6 @@ if (date_f > last_date_drive){
     select(-County) %>% 
     gather(Cases, Deaths, key = "Measure", value = "Value")
 
-  
-  
-    
   # TR: this is an aggregate of all reported testing types.
    # We may wish to parse it down to a subset of these
    # db_tests <- read_xlsx(tf, 

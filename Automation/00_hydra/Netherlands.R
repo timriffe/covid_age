@@ -2,22 +2,14 @@
 # This is modified by sched()
 # ##  ###
 email <- "kikepaila@gmail.com"
-setwd("C:/Users/acosta/Documents/covid_age")
+setwd("U:/gits/covid_age")
 # ##  ###
 
 # end 
 
 # TR New: you must be in the repo environment 
-source("R/00_Functions.R")
-
-
-library(tidyverse)
-library(readr)
-library(googlesheets4)
-library(lubridate)
+source("Automation/00_Functions_automation.R")
 library(aweek)
-library(googledrive)
-
 
 # Drive credentials
 drive_auth(email = email)
@@ -208,7 +200,9 @@ out <-
 write_sheet(out, 
             ss = ss_i, 
             sheet = "database")
+
 log_update(pp = "Netherlands", N = nrow(out))
+
 Sys.sleep(100)
 ############################################
 #### uploading metadata to Google Drive ####

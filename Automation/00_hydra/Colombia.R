@@ -2,21 +2,16 @@
 # This is modified by sched()
 # ##  ###
 email <- "kikepaila@gmail.com"
-setwd("C:/Users/acosta/Documents/covid_age")
+setwd("U:/gits/covid_age")
 # ##  ###
 
 # end 
 
 # TR New: you must be in the repo environment 
-source("R/00_Functions.R")
+source("Automation/00_Functions_automation.R")
 
 Sys.setenv(LANG = "en")
 Sys.setlocale("LC_ALL","English")
-library(tidyverse)
-library(lubridate)
-library(googlesheets4)
-library(googledrive)
-library(zip)
 
 # Authorizing authentification or Drive (edit these lines with the user's email)
 drive_auth(email = email)
@@ -30,9 +25,9 @@ db <- read_csv("https://www.datos.gov.co/api/views/gt2j-8ykr/rows.csv?accessType
 db_m <- read_csv("https://www.datos.gov.co/api/views/8835-5baf/rows.csv?accessType=DOWNLOAD",
                         locale = locale(encoding = "UTF-8"))
 
-unique(db$Estado)
-unique(db$"Nombre municipio")
-unique(db$"Nombre departamento")
+# unique(db$Estado)
+# unique(db$"Nombre municipio")
+# unique(db$"Nombre departamento")
 
 test <- db %>% 
   rename(mun = "Nombre municipio") %>% 
@@ -52,7 +47,7 @@ db2 <- db %>%
          Region = str_to_title(Region),
          Region = ifelse(Region == "Sta Marta D.e.", "Santa Marta", Region)) 
 
-unique(db2$Age)
+# unique(db2$Age)
 
 cities <- c("MEDELLIN",
             "CALI")

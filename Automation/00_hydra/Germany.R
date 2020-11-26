@@ -8,14 +8,7 @@ setwd("C:/Users/acosta/Documents/covid_age")
 # end 
 
 # TR New: you must be in the repo environment 
-source("R/00_Functions.R")
-# source(..., locale="UTF-8")
-Sys.setenv(LANG = "en")
-Sys.setlocale("LC_ALL","English")
-library(tidyverse)
-library(lubridate)
-library(googlesheets4)
-library(googledrive)
+source("Automation/00_Functions_automation.R")
 
 drive_auth(email = email)
 gs4_auth(email = email)

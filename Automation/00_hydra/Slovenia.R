@@ -2,22 +2,13 @@
 # This is modified by sched()
 # ##  ###
 email <- "kikepaila@gmail.com"
-setwd("C:/Users/acosta/Documents/covid_age")
+setwd("U:/gits/covid_age")
 # ##  ###
 
 # end 
 
 # TR New: you must be in the repo environment 
-source("R/00_Functions.R")
-
-library(tidyverse)
-library(readxl)
-library(googlesheets4)
-library(googledrive)
-library(rio)
-library(lubridate)
-library(rvest)
-library(httr)
+source("Automation/00_Functions_automation.R")
 
 drive_auth(email = email)
 gs4_auth(email = email)
@@ -51,52 +42,24 @@ db_c <- rio::import(paste0("https://www.nijz.si", url),
                     skip = 2) %>%
   as_tibble() 
 
+var_names1 <- c("date_f",
+               paste0("m_", c(0, seq(5, 85, 10), "TOT")), 
+               paste0("f_", c(0, seq(5, 85, 10), "TOT")), 
+               paste0("b_", c(0, seq(5, 85, 10), "TOT")))
+               
 db_c2 <- db_c %>% 
-  rename(date_f = 1,
-         m_0 = 2,
-         m_5 = 3,
-         m_15 = 4,
-         m_25 = 5,
-         m_35 = 6,
-         m_45 = 7,
-         m_55 = 8,
-         m_65 = 9,
-         m_75 = 10,
-         m_85 = 11,
-         m_TOT = 12,
-         f_0 = 13,
-         f_5 = 14,
-         f_15 = 15,
-         f_25 = 16,
-         f_35 = 17,
-         f_45 = 18,
-         f_55 = 19,
-         f_65 = 20,
-         f_75 = 21,
-         f_85 = 22,
-         f_TOT = 23,
-         b_0 = 24,
-         b_5 = 25,
-         b_15 = 26,
-         b_25 = 27,
-         b_35 = 28,
-         b_45 = 29,
-         b_55 = 30,
-         b_65 = 31,
-         b_75 = 32,
-         b_85 = 33,
-         b_TOT = 34) %>% 
+  rename_at(vars(1:34), ~ var_names1) %>%  
   gather(-date_f, key = Age, value = new) %>% 
   separate(Age, c("Sex", "Age"), sep = "_") %>% 
-  mutate(date_f = as.Date(as.integer(date_f), origin = "1899-12-30")) %>% 
+  mutate(date_f = as_date(as.integer(date_f), origin = "1899-12-30")) %>% 
   replace_na(list(new = 0)) %>% 
   drop_na()
 
 # # test  
-# db_cases %>% 
-#   filter(Age != "TOT") %>% 
-#   group_by(Sex) %>% 
-#   summarise(sum(Value))
+db_c2 %>%
+  filter(Age != "TOT") %>%
+  group_by(Sex) %>%
+  summarise(sum(new))
 
 db_c3 <- db_c2 %>% 
   group_by(Sex, Age) %>% 
@@ -110,38 +73,29 @@ db_c3 <- db_c2 %>%
 db_d <- rio::import(paste0("https://www.nijz.si", url), 
                     sheet = "tb6", 
                     skip = 2)
-  
+
+var_names2 <- c("date_f",
+                paste0("m_", c(seq(35, 85, 10), "TOT")), 
+                paste0("f_", c(seq(45, 85, 10), "TOT")), 
+                paste0("b_", c(seq(35, 85, 10), "TOT")))
+
 db_d2 <- db_d %>% 
-  rename(date_f = 1,
-         m_45 = 2,
-         m_55 = 3,
-         m_65 = 4,
-         m_75 = 5,
-         m_85 = 6,
-         m_TOT = 7,
-         f_45 = 8,
-         f_55 = 9,
-         f_65 = 10,
-         f_75 = 11,
-         f_85 = 12,
-         f_TOT = 13,
-         b_45 = 14,
-         b_55 = 15,
-         b_65 = 16,
-         b_75 = 17,
-         b_85 = 18,
-         b_TOT = 19) %>% 
+  rename_at(vars(1:21), ~ var_names2) %>% 
+  mutate(d_format = str_length(date_f),
+         date_f = case_when(d_format == 5 ~ as_date(as.integer(date_f), origin = "1899-12-30"),
+                            d_format == 9 ~ dmy(date_f),
+                            TRUE ~ NA_Date_)) %>% 
+  drop_na(date_f) %>% 
+  select(-d_format) %>% 
   gather(-date_f, key = Age, value = new) %>% 
   separate(Age, c("Sex", "Age"), sep = "_") %>% 
-  mutate(date_f = as.Date(as.integer(date_f), origin = "1899-12-30")) %>% 
-  replace_na(list(new = 0)) %>% 
-  drop_na()
+  replace_na(list(new = 0))
 
 # # test  
-# db_d %>% 
-#   filter(Age != "TOT") %>% 
-#   group_by(Sex) %>% 
-#   summarise(sum(Value))
+db_d2 %>%
+  filter(Age != "TOT") %>%
+  group_by(Sex) %>%
+  summarise(sum(new))
 
 db_d3 <- db_d2 %>% 
   complete(date_f, 
@@ -162,7 +116,8 @@ db_all <- bind_rows(db_c3, db_d3) %>%
          Country = "Slovenia",
          Code = paste0("SI", Date),
          Region = "All",
-         AgeInt = case_when(Age == "0" & Measure == "Deaths" ~ "45", 
+         AgeInt = case_when(Age == "0" & Measure == "Deaths" & (Sex == "b" | Sex == "m") ~ "35", 
+                            Age == "0" & Measure == "Deaths" & Sex == "f" ~ "45", 
                             Age == "0" & Measure == "Cases" ~ "5", 
                             Age == "85" ~ "20",
                             Age == "TOT" ~ "",

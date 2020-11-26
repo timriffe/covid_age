@@ -1,7 +1,7 @@
 Sys.setenv(LANG = "en")
 Sys.setlocale("LC_ALL","English")
 library("taskscheduleR")
-source("R/00_Functions.R")
+source("Automation/00_Functions_automation.R")
 
 # TR: modifying this script to assume we're working inside the repository, and are relative to it.
 # should detect if it's tim, enrique, or diego.
@@ -10,7 +10,7 @@ auto_update_wd    <- here()
 if (grepl("riffe", auto_update_wd)){
    auto_update_email <- '"tim.riffe@gmail.com"'   
 }
-if (grepl("acosta", auto_update_wd)){
+if (grepl("gits", auto_update_wd)){
         auto_update_email <- '"kikepaila@gmail.com"'
 }
 
@@ -24,7 +24,7 @@ if (grepl("acosta", auto_update_wd)){
 # sched("Netherlands", "15:12")
 # delete_sched("US_New_Jersey")
 
-sched("Colombia",  tm = "12:00",email = auto_update_email, wd = auto_update_wd)
+sched("Colombia_sch",  tm = "18:36",email = auto_update_email, wd = auto_update_wd)
 sched("Venezuela", tm = "13:48",email = auto_update_email, wd = auto_update_wd)
 
 sched("Slovenia", tm = "17:14",email = auto_update_email, wd = auto_update_wd)
@@ -39,13 +39,13 @@ sched("Austria", tm = "18:50",email = auto_update_email, wd = auto_update_wd)
 sched("US_Virginia", tm = "19:50",email = auto_update_email, wd = auto_update_wd)
 
 # broken
-# sched("Mexico", tm = "20:50",email = auto_update_email, wd = auto_update_wd)
+# sched("Mexico", tm = "20:50",email = auto_♥update_email, wd = auto_update_wd)
 
 sched("US_NYC", tm = "22:38",email = auto_update_email, wd = auto_update_wd)
 sched("USA_all_deaths", tm = "01:00",email = auto_update_email, wd = auto_update_wd)
 sched("USA_deaths_all_states", tm = "01:10",email = auto_update_email, wd = auto_update_wd)
 
-sched("US_Texas", tm = "01:30",email = auto_update_email, wd = auto_update_wd)
+sched("US_Texas", tm = "17:11",email = auto_update_email, wd = auto_update_wd)
 sched("US_Wisconsin", tm = "02:10",email = auto_update_email, wd = auto_update_wd)
 sched("US_Michigan", tm = "02:40",email = auto_update_email, wd = auto_update_wd)
 
@@ -56,7 +56,6 @@ sched("Netherlands", tm = "04:00",email = auto_update_email, wd = auto_update_wd
 sched("Estonia", tm = "04:31",email = auto_update_email, wd = auto_update_wd)
 
 sched("Peru", tm = "05:31",email = auto_update_email, wd = auto_update_wd)
-
 
 # TR: back to manual execution
 
