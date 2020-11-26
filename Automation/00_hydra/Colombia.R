@@ -2,21 +2,16 @@
 # This is modified by sched()
 # ##  ###
 email <- "kikepaila@gmail.com"
-setwd("C:/Users/acosta/Documents/covid_age")
+setwd("U:/gits/covid_age")
 # ##  ###
 
 # end 
 
 # TR New: you must be in the repo environment 
-source("R/00_Functions.R")
+source("Automation/00_Functions_automation.R")
 
 Sys.setenv(LANG = "en")
 Sys.setlocale("LC_ALL","English")
-library(tidyverse)
-library(lubridate)
-library(googlesheets4)
-library(googledrive)
-library(zip)
 
 # Authorizing authentification or Drive (edit these lines with the user's email)
 drive_auth(email = email)
@@ -30,11 +25,9 @@ db <- read_csv("https://www.datos.gov.co/api/views/gt2j-8ykr/rows.csv?accessType
 db_m <- read_csv("https://www.datos.gov.co/api/views/8835-5baf/rows.csv?accessType=DOWNLOAD",
                         locale = locale(encoding = "UTF-8"))
 
-unique(db$Estado)
-unique(db$"Nombre municipio")
-unique(db$"Nombre departamento")
-
-
+# unique(db$Estado)
+# unique(db$"Nombre municipio")
+# unique(db$"Nombre departamento")
 
 test <- db %>% 
   rename(mun = "Nombre municipio") %>% 
@@ -54,7 +47,7 @@ db2 <- db %>%
          Region = str_to_title(Region),
          Region = ifelse(Region == "Sta Marta D.e.", "Santa Marta", Region)) 
 
-unique(db2$Age)
+# unique(db2$Age)
 
 cities <- c("MEDELLIN",
             "CALI")
@@ -207,7 +200,8 @@ db_m_reg <- db_m %>%
                             TRUE ~ Region)) %>% 
   filter(Region %in% db_inc2,
          date_f >= "2020-03-20") %>% 
-  select(Region, date_f, Sex, Age, Measure, Value) 
+  select(Region, date_f, Sex, Age, Measure, Value) %>% 
+  drop_na()
 
 unique(db_m_reg$Region) %>% sort()
 unique(db_all2$Region) %>% sort()
@@ -269,13 +263,11 @@ db_final <- db_all2 %>%
   arrange(Region, date_f, Measure, Sex, suppressWarnings(as.integer(Age))) %>% 
   select(Country, Region, Code,  Date, Sex, Age, AgeInt, Metric, Measure, Value)
 
-
 unique(db_final$Region)
+unique(db_final$Age)
 
 db_final_co <- db_final %>% 
   filter(Region == "All")
-
-
 
 ############################################
 #### uploading database to Google Drive ####
@@ -323,6 +315,7 @@ log_update(pp = "Colombia", N = dims[1])
 ############################################
 #### uploading metadata to Google Drive ####
 ############################################
+ss_db  <- rubric %>% filter(Short == "CO_01") %>% dplyr::pull(Source)
 
 date_f <- Sys.Date()
 date <- paste(sprintf("%02d", day(date_f)),

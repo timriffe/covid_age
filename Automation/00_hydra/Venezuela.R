@@ -2,22 +2,14 @@
 # This is modified by sched()
 # ##  ###
 email <- "kikepaila@gmail.com"
-setwd("C:/Users/acosta/Documents/covid_age")
+setwd("U:/gits/covid_age")
 # ##  ###
 
 # end 
 
 # TR New: you must be in the repo environment 
-source("R/00_Functions.R")
-
-
-library(httr)
+source("Automation/00_Functions_automation.R")
 library(jsonlite)
-library(tidyverse)
-library(googlesheets4)
-library(googledrive)
-library(lubridate)
-
 drive_auth(email = email)
 gs4_auth(email = email)
 
