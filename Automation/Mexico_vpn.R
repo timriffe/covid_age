@@ -26,12 +26,8 @@ url1 <- html_nodes(html, xpath = '/html/body/main/div/div[1]/div[4]/div/table[2]
   html_attr("href")
 
 temp <- tempfile()
-download.file(url1, temp)
-# download.file("http://datosabiertos.salud.gob.mx/gobmx/salud/datos_abiertos/datos_abiertos_covid19.zip", temp)
-
-zipdf <- unzip(temp, list = TRUE)
-csv_file <- zipdf$Name
-db <- read_csv(unz(temp, csv_file))
+download.file(url1, "Data/temp.zip")
+db <- read_csv("Data/temp.zip")
 
 unique(db$SEXO)
 unique(db$EDAD)
@@ -39,9 +35,15 @@ unique(db$ENTIDAD_RES) %>% as.numeric() %>% sort()
 table(db$ENTIDAD_RES)
 
 # filter confirmed cases and standardize data ----------------------------------------
+lab <- db %>% 
+  filter(RESULTADO_LAB == 1)
+
+pos <- db %>% 
+  filter(CLASIFICACION_FINAL <= 3)
+unique(pos$FECHA_SINTOMAS)
 
 db2 <- db %>% 
-  filter(RESULTADO_LAB == 1) %>% 
+  filter(CLASIFICACION_FINAL <= 3) %>% 
   rename(Age = EDAD,
          date_c = FECHA_SINTOMAS,
          date_d = FECHA_DEF) %>% 
@@ -145,7 +147,7 @@ db_mx <- db_dc %>%
 # 5-year age intervals for regional data -------------------------------
 
 db_dc2 <- db_dc %>% 
-  mutate(Age2 = ifelse(as.numeric(Age) <= 4, Age, as.character(floor(as.numeric(Age)/5) * 5))) %>% 
+  mutate(Age2 = as.character(floor(as.numeric(Age)/5) * 5)) %>% 
   group_by(date_f, Region, Sex, Age2, Measure) %>% 
   summarise(Value = sum(Value)) %>% 
   arrange(date_f, Region, Measure, Sex, suppressWarnings(as.integer(Age2))) %>% 
@@ -161,12 +163,6 @@ db_tot_age <- db_mx_comp %>%
   ungroup() %>% 
   mutate(Age = "TOT")
 
-db_tot_sex <- db_mx_comp %>% 
-  group_by(Region, date_f, Age, Measure) %>% 
-  summarise(Value = sum(Value)) %>% 
-  ungroup() %>% 
-  mutate(Sex = "b")
-
 db_tot <- db_mx_comp %>% 
   group_by(Region, date_f, Measure) %>% 
   summarise(Value = sum(Value)) %>% 
@@ -176,22 +172,22 @@ db_tot <- db_mx_comp %>%
 
 db_inc <- db_tot %>% 
   filter(Measure == "Deaths",
-         Value >= 100) %>% 
+         Value >= 50) %>% 
   group_by(Region) %>% 
   summarise(date_start = ymd(min(date_f)))
 
-db_all <- bind_rows(db_mx_comp, db_tot_age, db_tot_sex, db_tot)
+db_all <- bind_rows(db_mx_comp, db_tot_age, db_tot)
 
 db_all2 <- db_all %>% 
   left_join(db_inc) %>% 
   drop_na() %>% 
-  filter((Region == "All" & date_f >= "2020-03-01") | date_f >= date_start)
+  filter((Region == "All" & date_f >= "2020-03-20") | date_f >= date_start)
 
 db_final <- db_all2 %>% 
   mutate(Country = "Mexico",
          AgeInt = case_when(Age == "100" ~ "5",
                             Age == "TOT" ~ "",
-                            Region == "All" | as.numeric(Age) < 5 ~ "1",
+                            Region == "All" ~ "1",
                             TRUE ~ "5"),
          Date = paste(sprintf("%02d",day(date_f)),
                       sprintf("%02d",month(date_f)),
@@ -242,160 +238,50 @@ test <- db_final %>%
   filter(Sex == "b",
          Age == "TOT")
 
-
-# slicing database by regions for uploading it to drive ----
-
-table(db2$Region) %>% sort()
-
-
-unique(db_final$Region)
-
-db_final_mx <- db_final %>% 
-  filter(Region == "All")
-
-gr1 <- c('Ciudad de Mexico', 
-         'Aguascalientes', 
-         'Baja California', 
-         'Baja California Sur')
-
-gr2 <- c('Campeche', 
-         'Coahuila de Zaragoza', 
-         'Colima', 
-         'Chiapas')
-
-gr3 <- c('Chihuahua', 
-         'Durango',
-         'Guanajuato', 
-         'Guerrero') 
-
-gr4 <- c(
-  'Hidalgo', 
-  'Jalisco', 
-  'Mexico', 
-  'Michoacan de Ocampo'
-)
-
-gr5 <- c(
-  'Morelos', 
-  'Nayarit', 
-  'Nuevo Leon', 
-  'Oaxaca'
-)
-
-gr6 <- c(
-  'Puebla', 
-  'Queretaro', 
-  'Quintana Roo', 
-  'San Luis Potosi'
-)
-
-gr7 <- c(
-  'Sinaloa', 
-  'Sonora', 
-  'Tabasco', 
-  'Tamaulipas'
-)
-
-gr8 <- c(
-  'Tlaxcala', 
-  'Veracruz de Ignacio de la Llave', 
-  'Yucatan', 
-  'Zacatecas'
-)
-
-
-db_final_1 <- db_final %>% 
-  filter(Region %in% gr1)
-
-db_final_2 <- db_final %>% 
-  filter(Region %in% gr2)
-
-db_final_3 <- db_final %>% 
-  filter(Region %in% gr3)
-
-db_final_4 <- db_final %>% 
-  filter(Region %in% gr4)
-
-db_final_5 <- db_final %>% 
-  filter(Region %in% gr5)
-
-db_final_6 <- db_final %>% 
-  filter(Region %in% gr6)
-
-db_final_7 <- db_final %>% 
-  filter(Region %in% gr7)
-
-db_final_8 <- db_final %>% 
-  filter(Region %in% gr8)
-
-
 #########################
 # Push dataframe to Drive -------------------------------------------------
 #########################
 
+# slicing database by regions for uploading it to drive
+slices <- 9
+dims <- db_final %>% dim() 
+slice_size <- ceiling(dims[1]/slices) 
+
+# TR: pull urls from rubric instead
 rubric <- get_input_rubric()
-ss_0   <- rubric %>% filter(Short == "MX") %>% dplyr::pull(Sheet)
-ss_1   <- rubric %>% filter(Short == "MX_1") %>% dplyr::pull(Sheet)
-ss_2   <- rubric %>% filter(Short == "MX_2") %>% dplyr::pull(Sheet)
-ss_3   <- rubric %>% filter(Short == "MX_3") %>% dplyr::pull(Sheet)
-ss_4   <- rubric %>% filter(Short == "MX_4") %>% dplyr::pull(Sheet)
-ss_5   <- rubric %>% filter(Short == "MX_5") %>% dplyr::pull(Sheet)
-ss_6   <- rubric %>% filter(Short == "MX_6") %>% dplyr::pull(Sheet)
-ss_7   <- rubric %>% filter(Short == "MX_7") %>% dplyr::pull(Sheet)
-ss_8   <- rubric %>% filter(Short == "MX_8") %>% dplyr::pull(Sheet)
 
-ss_db  <- rubric %>% filter(Short == "MX") %>% dplyr::pull(Source)
+for(i in 1:slices){
+  if (i < slices){ 
+    slice <- db_final[((i - 1) * slice_size + 1) : (i * slice_size),]
+    ss   <- rubric %>% filter(Short == paste0("MX_", sprintf("%02d",i))) %>% dplyr::pull(Sheet)
+  } else {
+    slice <- db_final[((i - 1) * slice_size + 1) : dims[1],]
+    ss   <- rubric %>% filter(Short == paste0("MX_", sprintf("%02d",i))) %>% dplyr::pull(Sheet)
+  }
+  hm <- try(write_sheet(slice, 
+                        ss = ss,
+                        sheet = "database"))
+  if (class(hm)[1] == "try-error"){
+    hm <- try(write_sheet(slice, 
+                          ss = ss,
+                          sheet = "database"))
+  }
+  if (class(hm)[1] == "try-error"){
+    Sys.sleep(120)
+    hm <- try(write_sheet(slice, 
+                          ss = ss,
+                          sheet = "database"))
+  }
+  Sys.sleep(120)
+}
 
+# updating hydra automate dashboard 
+log_update(pp = "Mexico", N = dims[1])
 
-sheet_write(db_final_mx,
-            ss = ss_0,
-            sheet = "database")
-
-sheet_write(db_final_1,
-            ss = ss_1,
-            sheet = "database")
-
-sheet_write(db_final_2,
-            ss = ss_2,
-            sheet = "database")
-
-Sys.sleep(105)
-
-sheet_write(db_final_3,
-            ss = ss_3,
-            sheet = "database")
-
-sheet_write(db_final_4,
-            ss = ss_4,
-            sheet = "database")
-
-Sys.sleep(105)
-
-sheet_write(db_final_5,
-            ss = ss_5,
-            sheet = "database")
-
-sheet_write(db_final_6,
-            ss = ss_6,
-            sheet = "database")
-
-Sys.sleep(105)
-
-sheet_write(db_final_7,
-            ss = ss_7,
-            sheet = "database")
-
-sheet_write(db_final_8,
-            ss = ss_8,
-            sheet = "database")
-
-Sys.sleep(105)
-N <- nrow(db_final_mx) + nrow(db_final_1) + nrow(db_final_2) + nrow(db_final_3) +
-  nrow(db_final_4) + nrow(db_final_5) + nrow(db_final_6) + nrow(db_final_7) + nrow(db_final_8) 
-log_update(pp = "Mexico", N = N)
 #########################
 # Push zip file to Drive -------------------------------------------------
 #########################
+ss_db  <- rubric %>% filter(Short == "MX") %>% dplyr::pull(Source)
 
 date_f <- db %>% 
   filter(!is.na(FECHA_ACTUALIZACION)) %>% 

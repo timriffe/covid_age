@@ -16,7 +16,14 @@ startup::startup()
 # always work with the most uptodate repository
 repo <- git2r::repository(here())
 #init()
-git2r::pull(repo,credentials = creds)
+a <- git2r::pull(repo,credentials = creds)
+if (class(a)[1]=="try-error"){
+  a <- try(git2r::pull(repo,credentials = creds) )
+}
+if (class(a)[1]=="try-error"){
+  a <- try(git2r::pull(repo,credentials = creds) )
+}
+
 
 # Functions
 source(here("R","00_Functions.R"))
@@ -159,6 +166,11 @@ if (nrow(rubric) > 0){
     bind_rows(inputDB) %>% 
     sort_input_data()
   
+  # TR: added 09.11.2020 because some people seem to reserve blocks in the database with NAs. hmm.
+  inputDB_out <- 
+    inputDB_out %>% 
+    filter(!is.na(Value))
+  
   saveRDS(inputDB_out, here("Data","inputDB.rds"))
   
   #saveRDS(inputDB, here("Data","inputDB_i.rds"))
@@ -175,8 +187,14 @@ if (nrow(rubric) > 0){
   repo <- git2r::repository(here())
   #init()
   source("~/.Rprofile")
-  git2r::pull(repo,credentials = creds) 
-  
+  # make a couple attempts
+  a <- try(git2r::pull(repo,credentials = creds) )
+  if (class(a)[1]=="try-error"){
+    a <- try(git2r::pull(repo,credentials = creds) )
+  }
+  if (class(a)[1]=="try-error"){
+    a <- try(git2r::pull(repo,credentials = creds) )
+  }
   commit(repo, 
          message = "update inputDB logfile", 
          all = TRUE)
@@ -186,12 +204,12 @@ if (nrow(rubric) > 0){
 schedule_this <- FALSE
 if (schedule_this){
   library(taskscheduleR)
-  taskscheduleR::taskscheduler_delete("COVerAGE-DB-every-8-hour-inputDB-updates")
+  taskscheduler_delete("COVerAGE-DB-every-8-hour-inputDB-updates")
   taskscheduler_create(taskname = "COVerAGE-DB-every-8-hour-inputDB-updates", 
                        rscript = "C:/Users/riffe/Documents/covid_age/R/01_update_inputDB.R", 
                        schedule = "HOURLY", 
                        modifier = 8,
-                       starttime = "16:32",
+                       starttime = "15:00",
                        startdate = format(Sys.Date(), "%d/%m/%Y"))
   # 
 }

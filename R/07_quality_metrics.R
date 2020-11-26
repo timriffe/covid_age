@@ -1,4 +1,4 @@
-
+source(here("R","00_Functions.R"))
 # some functions internal to this script
 add_b_margin <- function(chunk){
   if (nrow(chunk) > 0){
@@ -16,14 +16,15 @@ add_b_margin <- function(chunk){
 
 
 # Script should calculate
-library(here)
-source(here("R","00_Functions.R"))
+
 inputDB   <- readRDS(here("Data","inputDB.rds"))
 Output_10 <- readRDS(here("Data","Output_10.rds"))
 Offsets   <- readRDS(here("Data","Offsets.rds"))
 Metadata  <-readRDS(here("Data","metadata_important.rds"))
 # I How aggressive is scaling? (also UNK rescaling) - time varying
-
+inputDB <- 
+  inputDB %>% 
+  filter(!is.na(Value))
 # strategy:
 
 # 1) get inputDB
@@ -90,27 +91,36 @@ Marginal_sums_check <-
 
 NAgeCategories <-
   inputDB %>% 
+  mutate(Date = dmy(Date)) %>% 
   filter(! Age %in% c("TOT","UNK")) %>% 
   group_by(Country,Region,Code,Date,Sex,Measure) %>% 
   summarize(N = n()) %>% 
   ungroup() %>% 
-  pivot_wider(names_from = Measure, values_from=N) 
-  
+  pivot_wider(names_from = Measure, values_from=N) %>% 
+  rename(cases_N_ages = Cases,
+         deaths_N_ages = Deaths,
+         tests_N_ages = Tests) %>% 
+  select(-ASCFR)
 # III Open age
 
 # 1) get inputDB:
 # 1.1) select rows of known age
-# 1.2) coerge Age to integer
-# 1.2) select max Age per Country, Region, Code, Date, Sex, Measure
+# 1.2) coerce Age to integer
+# 1.3) select max Age per Country, Region, Code, Date, Sex, Measure
 
 MaxAge <-
   inputDB %>% 
   filter(! Age %in% c("TOT","UNK")) %>% 
-  mutate(Age = as.integer(Age)) %>% 
+  mutate(Age = as.integer(Age),
+         Date = dmy(Date)) %>% 
   group_by(Country,Region,Code,Date,Sex,Measure) %>% 
   summarize(MaxAge = max(Age)) %>% 
   ungroup() %>% 
-  pivot_wider(names_from = Measure, values_from=MaxAge) 
+  pivot_wider(names_from = Measure, values_from=MaxAge) %>% 
+  rename(cases_max_age = Cases,
+         deaths_max_age = Deaths,
+         tests_max_age = Tests) %>% 
+  select(-ASCFR)
 
 # IV Offsets yes/no
 
@@ -139,10 +149,15 @@ SubPopsOffsetsIndicator <-
   
 # V Refreshing yes/no
 
+# metadata needs some cleaning before this can integrate
+
+all_regions <- c("Mexico", "Peru", "Japan", "France", "Germany", "Colombia", "Brazil")
+
 rownames(Metadata)<- NULL
+Corrections <-
 Metadata %>% 
   select(Country, `Region(s)`,`Retrospective corrections`) %>% 
-  rename("Region" = `Region(s)`, "Corrected" = `Retrospective corrections`) %>% View() 
+  rename("Region" = `Region(s)`, "Corrected" = `Retrospective corrections`)# %>% View() 
 
 # read metadata_basic.rds, this should be compiled daily with the build,
 # it comes from the metadata tabs
@@ -150,16 +165,76 @@ Metadata %>%
 
 # VI Positivity (OWD) *
 
+OWD <- read_csv("https://covid.ourworldindata.org/data/owid-covid-data.csv",
+                col_types= "cccDddddddddddddddddddddddddddddcdddddddddddddddd") %>% 
+  filter(!is.na(iso_code)) %>% 
+  filter(! iso_code %in% c("OWID_KOS","OWID_WRL")) %>% 
+  mutate(Short = countrycode(iso_code, 
+                             origin = 'iso3c', 
+                             destination = 'iso2c')) %>% 
+  select(Short, 
+         Date = date, 
+         total_cases, 
+         total_tests, 
+         new_cases_smoothed, 
+         new_tests_smoothed) %>% 
+  mutate(positivity_cumulative = total_cases / total_tests,
+         positivity_new = new_cases_smoothed / new_tests_smoothed) %>% 
+  select(-total_cases, - total_tests, -new_cases_smoothed, -new_tests_smoothed) %>% 
+  mutate(Region = "All")
+
+cdbcountries <- inputDB %>% 
+  filter(Region == "All") %>% 
+  group_by(Country) %>% 
+  slice(1) %>% 
+  select(Country, Short)
+
+OWD <- left_join(OWD, cdbcountries) %>% 
+  select(-Short)
+
 # 1) read in OWD data,
 # 1.1) do we capture any tests that they don't have? If so, send them an email.
 # 2) summarize Output_10 to totals
 # 3) merge, calculate metric Cases / Tests
 
 
-#   Non-monotonicity
-# VII Bohk-completeness metric - National only, can wait
+# VII  Non-monotonicity
+
+
+# VIII Bohk-completeness metric - National only, can wait
 
 # needs to wait because need to gather location-sex-specific lifetables. WPP can work for countries,
 # but would need to gather subnational. Might also want to provide this extra metric as output.
 
+
+
+# Merge metrics into
+# Country
+# Country - Region
+# Country - Region - Date (data only)
+
+# Marginal_sums_check
+# NAgeCategories
+# MaxAge
+# SubPopsOffsetsIndicator
+Marginal_sums_check <-
+  Marginal_sums_check %>% 
+  select(-Code)
+
+FullIndicators <- 
+  Marginal_sums_check %>% 
+  left_join(Corrections) %>% 
+  left_join(NAgeCategories) %>% 
+  left_join(MaxAge) %>% 
+  left_join(SubPopsOffsetsIndicator) %>% 
+  left_join(OWD) 
+
+# Marginal_sums_check %>% 
+#   group_by(Country, Region) %>% 
+#   
+
+# public file, full precision.
+header_msg <- paste("COVerAGE-DB selected data quality metrics:",timestamp(prefix = "", suffix = ""))
+write_lines(header_msg, path = here("Data","qualityMetrics.csv"))
+write_csv(FullIndicators, path = here("Data","qualityMetrics.csv"), append = TRUE, col_names = TRUE)
 
