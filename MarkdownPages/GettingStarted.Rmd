@@ -19,7 +19,20 @@ We are considering moving toward measure-specific files, similar to what HMD doe
 
 Details: commas are column separators, decimals are dots. When reading in, skip the first row. You can can typically read these in straight from the repository using the `raw` version. See examples.
 
-## inputDB file
+## Reading in COVerAGE-DB {.tabset}
+
+Each COVerAGE-DB file is given a random-looking `id` on OSF, which can be used to download the files from `R`. Here are the `id`s and other important file parameters for the main files, for easy copy-pasting:
+
+| File                 | `id`      | `col_types`            | `skip` |
+| -------------------- |:---------:|:----------------------:|:------:|
+| `inputDB.zip`        | `9dsfk`   | `"cccccciccdc"`        | 1      |
+| `Output_5.zip`       | `7tnfh`   | `"ccccciiddd"`         | 3      |
+| `Output_10.zip`      | `43ucn`   | `"ccccciiddd"`         | 3      |
+| `qualityMetrics.zip` | `qpfw5`   | `"ccDcdddcciiiiiildd"` | 1      |
+
+`col_types` gives the columns classes, where `c` means character, `i` is integer, `d` is double, and `D` is a proper date format. The files have headers with timestamps, so some rows need to be skipped too (`skip`) when reading in.
+
+Here are the main packages you'll want to have installed to read the files directly into an `R` session with no need to manually download or unzip.
 
 ```{r, message = FALSE, warning = FALSE}
 library(tidyverse)
@@ -27,6 +40,11 @@ library(readr)
 library(lubridate)
 library(ggplot2)
 library(osfr)
+```
+
+### `inputDB` file
+
+```{r}
 # This downloads the file, preserving the name inputDB.csv
 osf_retrieve_file("9dsfk") %>%
   osf_download(conflicts = "overwrite") 
@@ -40,7 +58,7 @@ glimpse(inputDB)
 ```
 Notice, `Age` is character because it can contain `"TOT"` or `"UNK"` values. Therefore, if you sort, it will do so alphabetically, in which case `"10"` comes before `"5"`. This is the file from which we begin the harmonization routines. Maybe you have use for it?
 
-## Output files
+### Output files
 
 Output files are friendlier for several reasons. Since measures from like subsets are next to each other, it's easier to calculate things. Since age groups are uniform, it's easy to compare subsets. Since `Age` is a proper integer it's easy to plot it in the abscissa. However, you'll still want to convert the `Date` class to use it in plotting. These come as character strigngs following the format `"DD.MM.YYYY"`, and can be converted using `lubridate::dmy()` without further ado.
 
@@ -59,7 +77,7 @@ Output_10 <-
   mutate(Date = dmy(Date))
 ```
 
-## Save out smaller files
+### Save out smaller files
 
 By now the files have got too big to handle easily in Excel. Here's a way to filter down and save out so that you can work with them in Excel if need be (a slicker interactive solution is in the works.)
 ```{r}
