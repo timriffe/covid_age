@@ -21,9 +21,9 @@ if (grepl("gits", auto_update_wd)){
 
 ## pending to add one of this for each AT member
 ## for instance:
-# if (grepl("diego", auto_update_wd)){
-#         auto_update_email <- '"kikepaila@gmail.com"'
-# }
+if (grepl("diego", auto_update_wd)){
+        auto_update_email <- '"xxxxx@gmail.com"'
+}
 
 # we assume this tasks are scheduled in a here()-aware fashion
 
