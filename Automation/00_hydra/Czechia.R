@@ -1,7 +1,7 @@
 
 # ##  ###
-email <- "tim.riffe@gmail.com"
-setwd("C:/Users/riffe/Documents/covid_age")
+email <- "kikepaila@gmail.com"
+setwd("U:/gits/covid_age")
 # ##  ###
 
 
@@ -69,7 +69,7 @@ cz_cases<-read.csv(cases_url,
          Date = as.Date(Date, "%Y-%m-%d")) %>% 
   select(-Sex2)
 
-cz_cases %>%  pull("Age") %>%  unique()
+cz_cases %>%  dplyr::pull("Age") %>%  unique()
 
 Ages_All <- c(0,1,seq(5,100,by=5))
 DateRange <- range(cz_cases$Date)
@@ -93,7 +93,7 @@ cz_cases_region_ss <-
   ungroup() %>% 
   ### complete = Turns implicit missing values into explicit missing values => chci 
   ### vektor ttech vek skupin explicitne
-  complete(Region, 
+  tidyr::complete(Region, 
            Date = Dates_All, 
            Age = Ages_All, 
            Sex, 
@@ -144,7 +144,7 @@ cz_deaths<-read.csv(deaths_url,
          Date = as.Date(Date, "%Y-%m-%d")) %>% 
   select(-Sex2)
 
-cz_deaths %>%  pull("Age") %>%  unique()
+cz_deaths %>%  dplyr::pull("Age") %>%  unique()
 
 
 # we'll use the same Ages_All
@@ -168,7 +168,7 @@ cz_deaths_region_ss <-
   summarise(Value = n(),
             .groups = "drop") %>% 
   ungroup() %>% 
-  complete(Region, 
+  tidyr::complete(Region, 
            Date = Dates_AllD, 
            Age = Ages_All, 
            Sex, 
@@ -225,7 +225,7 @@ cz_cases_all_ss <-
   ungroup() %>% 
   ### complete = Turns implicit missing values into explicit missing values => chci 
   ### vektor ttech vek skupin explicitne
-  complete(Region = "All",
+  tidyr::complete(Region = "All",
            Date = Dates_All, 
            Age = Ages_all_single, 
            Sex, 
@@ -265,7 +265,7 @@ cz_deaths_all_ss <-
   summarise(Value = n(),
             .groups = "drop") %>% 
   ungroup() %>% 
-  complete(Region = "All",
+  tidyr::complete(Region = "All",
            Date = Dates_AllD, 
            Age = Ages_all_single, 
            Sex, 

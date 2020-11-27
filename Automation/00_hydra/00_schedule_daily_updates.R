@@ -58,10 +58,13 @@ sched("Estonia", tm = "04:31",email = auto_update_email, wd = auto_update_wd)
 
 sched("Peru", tm = "05:31",email = auto_update_email, wd = auto_update_wd)
 
+sched("Czechia", tm = "06:46",email = auto_update_email, wd = auto_update_wd)
+
+
 # TR: scheduling CZ:
-if (grepl("riffe", auto_update_wd)){
-    sched("Czechia", tm = "05:01",email = auto_update_email, wd = auto_update_wd)
-}
+# if (grepl("riffe", auto_update_wd)){
+#     sched("Czechia", tm = "05:01",email = auto_update_email, wd = auto_update_wd)
+# }
 
 
  # delete_sched("Austria")
