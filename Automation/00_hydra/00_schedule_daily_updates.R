@@ -1,7 +1,8 @@
 Sys.setenv(LANG = "en")
 Sys.setlocale("LC_ALL","English")
 library("taskscheduleR")
-source("Automation/00_Functions_automation.R")
+library(here)
+source(here("Automation/00_Functions_automation.R"))
 
 # TR: modifying this script to assume we're working inside the repository, and are relative to it.
 # should detect if it's tim, enrique, or diego.
@@ -42,7 +43,7 @@ sched("US_Virginia", tm = "19:50",email = auto_update_email, wd = auto_update_wd
 # sched("Mexico", tm = "20:50",email = auto_♥update_email, wd = auto_update_wd)
 
 sched("US_NYC", tm = "19:58",email = auto_update_email, wd = auto_update_wd)
-_sched("USA_all_deaths", tm = "01:00",email = auto_update_email, wd = auto_update_wd)
+sched("USA_all_deaths", tm = "01:00",email = auto_update_email, wd = auto_update_wd)
 sched("USA_deaths_all_states", tm = "01:10",email = auto_update_email, wd = auto_update_wd)
 
 sched("US_Texas", tm = "17:11",email = auto_update_email, wd = auto_update_wd)
@@ -57,8 +58,10 @@ sched("Estonia", tm = "04:31",email = auto_update_email, wd = auto_update_wd)
 
 sched("Peru", tm = "05:31",email = auto_update_email, wd = auto_update_wd)
 
-# TR: back to manual execution
-
+# TR: scheduling CZ:
+if (grepl("riffe", auto_update_wd)){
+    sched("Czechia", tm = "05:01",email = auto_update_email, wd = auto_update_wd)
+}
 
 
  # delete_sched("Austria")
