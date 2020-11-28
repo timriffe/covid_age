@@ -209,7 +209,7 @@ if (schedule_this){
                        rscript = "C:/Users/riffe/Documents/covid_age/R/01_update_inputDB.R", 
                        schedule = "HOURLY", 
                        modifier = 8,
-                       starttime = "12:10",
+                       starttime = "23:40",
                        startdate = format(Sys.Date(), "%d/%m/%Y"))
   # 
 }
