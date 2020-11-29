@@ -1,53 +1,53 @@
 
 # New build log 
- Sat Nov 28 02:00:11 2020 
+ Sun Nov 29 02:00:09 2020 
 
 
 # prep (resolve_UNKUNK) 
- Sat Nov 28 02:00:33 2020 
+ Sun Nov 29 02:00:31 2020 
 
 
 # A (convert_fractions_sexes) 
- Sat Nov 28 02:04:27 2020 
+ Sun Nov 29 02:04:12 2020 
 
 
 # B (redistribute_unknown_age) 
- Sat Nov 28 02:07:37 2020 
+ Sun Nov 29 02:07:21 2020 
 
 
 # C (rescale_to_total) 
- Sat Nov 28 02:17:43 2020 
+ Sun Nov 29 02:17:18 2020 
 
 
 # D (infer_cases_from_deaths_and_ascfr) 
- Sat Nov 28 02:34:11 2020 
+ Sun Nov 29 02:33:38 2020 
 
 
 # E (infer_deaths_from_cases_and_ascfr) 
- Sat Nov 28 02:37:34 2020 
+ Sun Nov 29 02:36:58 2020 
 
 
 # G (redistribute_unknown_sex) 
- Sat Nov 28 02:40:55 2020 
+ Sun Nov 29 02:40:15 2020 
 
 
 # H (rescale_sexes) 
- Sat Nov 28 02:43:59 2020 
+ Sun Nov 29 02:43:25 2020 
 
 
 # I (infer_both_sex) 
- Sat Nov 28 02:46:09 2020 
+ Sun Nov 29 02:45:28 2020 
 
 
 # J (maybe_lower_closeout) 
- Sat Nov 28 02:49:56 2020 
+ Sun Nov 29 02:49:40 2020 
 
 filter( Code == 'US_TX10.09.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_TX11.09.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_TX13.09.2020', Sex == 'b', Measure == 'Cases' )
 
 # Age harmonization 
- Sat Nov 28 03:06:02 2020 
+ Sun Nov 29 03:07:38 2020 
 
 filter( Code == 'TR03.08.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'TR05.07.2020', Sex == 'f', Measure == 'Cases' )
@@ -111,33 +111,17 @@ filter( Code == 'PK16.03.2020', Sex == 'm', Measure == 'Deaths' )
 filter( Code == 'PK17.03.2020', Sex == 'm', Measure == 'Deaths' )
 
 # Compile metadata 
- Sat Nov 28 05:29:55 2020 
+ Sun Nov 29 05:39:05 2020 
 
 
 # Building dashboards 
- Sat Nov 28 05:49:16 2020 
+ Sun Nov 29 06:00:06 2020 
 
 
 # remake coverage map 
- Sat Nov 28 05:56:34 2020 
+ Sun Nov 29 06:06:53 2020 
 
 
 # push outputs to OSF 
- Sat Nov 28 06:01:05 2020 
-
-
-# remake coverage map 
- Sat Nov 28 09:50:51 2020 
-
-
-# push outputs to OSF 
- Sat Nov 28 09:55:36 2020 
-
-
-# Commit dashboards and buildlog 
- Sat Nov 28 09:57:12 2020 
-
-
-# update build series log 
- Sat Nov 28 09:57:20 2020 
+ Sun Nov 29 06:11:24 2020 
 
