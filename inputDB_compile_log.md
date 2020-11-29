@@ -1,14 +1,19 @@
 
 # 2020-11-29 inputDB updates 
- Sun Nov 29 15:40:09 2020 
+ Sun Nov 29 23:40:08 2020 
 
 
-# 2020-11-29 15:40:09 updates 
- Sun Nov 29 15:40:09 2020 
+# 2020-11-29 23:40:08 updates 
+ Sun Nov 29 23:40:08 2020 
 
 
+# Filter valid Metric entries: 
+ Mon Nov 30 00:01:50 2020 
+
+Valid Metrics include: Count,Fraction,Ratio
+ 14 rows removed
 # Duplicates detected. Following `Code`s removed: 
- Sun Nov 29 17:12:58 2020 
+ Mon Nov 30 00:01:51 2020 
 
 AF01.07.2020
 AF02.07.2020
@@ -144,3 +149,5 @@ AF25.11.2020
 AF26.11.2020
 AF27.11.2020
 AF28.11.2020
+PS12.10.2020
+US_TX27.10.2020
