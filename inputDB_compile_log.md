@@ -158,3 +158,13 @@ US_TX27.10.2020
 # 2020-11-30 07:40:09 updates 
  Mon Nov 30 07:40:09 2020 
 
+
+# Filter valid Measure entries: 
+ Mon Nov 30 08:48:08 2020 
+
+Valid Measures include: Cases,Deaths,Tests,ASCFR
+ 990 rows removed
+# Duplicates detected. Following `Code`s removed: 
+ Mon Nov 30 08:48:12 2020 
+
+PS12.10.2020
