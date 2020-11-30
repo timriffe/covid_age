@@ -64,9 +64,9 @@ if (date_f > last_date_drive) {
            Date = d,
            Country = "Venezuela",
            Code = paste0("VE", Date),
-           AgeInt = case_when(Age == "TOT" ~ "",
-                              Age == "90" ~ "15",
-                              TRUE ~ "10"),
+           AgeInt = case_when(Age == "TOT" ~ NA_real_,
+                              Age == "90" ~ 15,
+                              TRUE ~ 10),
            Metric = "Count") %>%
     select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
 
