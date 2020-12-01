@@ -38,7 +38,7 @@ if (grepl("CurrentProjects", auto_update_wd)){
 }
 
 if (grepl("diego", auto_update_wd)){
-        auto_update_email <- "gatemonte@gmail.com"
+  auto_update_email <- "gatemonte@gmail.com"
 }
 # sched("Austria", tm = "21:31",email = auto_update_email, wd = auto_update_wd)
 
