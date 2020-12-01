@@ -1,11 +1,3 @@
-# don't manually alter the below
-# This is modified by sched()
-# ##  ###
-email <- "kikepaila@gmail.com"
-setwd("U:/gits/covid_age")
-# ##  ###
-
-# end 
 
 # TR New: you must be in the repo environment 
 source("Automation/00_Functions_automation.R")

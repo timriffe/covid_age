@@ -1,12 +1,3 @@
-# don't manually alter the below
-# This is modified by sched()
-# ##  ###
-email <- "kikepaila@gmail.com"
-setwd("U:/gits/covid_age")
-# ##  ###
-
-# end 
-
 # TR New: you must be in the repo environment 
 source("Automation/00_Functions_automation.R")
 
@@ -98,7 +89,7 @@ db_d2 %>%
   summarise(sum(new))
 
 db_d3 <- db_d2 %>% 
-  complete(date_f, 
+  tidyr::complete(date_f, 
            Sex, 
            Age = c("0", as.character(seq(45, 85, 10)), "TOT"), 
            fill = list(new = 0)) %>% 

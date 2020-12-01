@@ -1,11 +1,3 @@
-# don't manually alter the below
-# This is modified by sched()
-# ##  ###
-email <- "kikepaila@gmail.com"
-setwd("C:/Users/acosta/Documents/covid_age")
-# ##  ###
-
-# end 
 
 ############################################################################
 # Deprecated!!!! Massachusetts stopped reporting age groups on August 11 :(
