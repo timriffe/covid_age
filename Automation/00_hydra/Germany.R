@@ -1,22 +1,9 @@
-# don't manually alter the below
-# This is modified by sched()
-# ##  ###
-email <- "kikepaila@gmail.com"
-setwd("C:/Users/acosta/Documents/covid_age")
-# ##  ###
-
-# end 
 
 # TR New: you must be in the repo environment 
 source("Automation/00_Functions_automation.R")
 
 drive_auth(email = email)
 gs4_auth(email = email)
-
-# TR: pull urls from rubric instead 
-de_rubric <- get_input_rubric() %>% filter(Short == "DE")
-ss_i   <- de_rubric %>% dplyr::pull(Sheet)
-ss_db  <- de_rubric %>% dplyr::pull(Source)
 
 db <- read_csv("https://opendata.arcgis.com/datasets/dd4580c810204019a7b8eb3e0b329dd6_0.csv",
                locale = locale(encoding = "UTF-8"))
@@ -175,15 +162,54 @@ db_full %>%
 #### uploading database to Google Drive ####
 ############################################
 
-write_sheet(db_full,
-            ss = ss_i,
-            sheet = "database")
+# slicing the database in smaller pieces
+############################################
+
+slices <- 3
+dims <- db_full %>% dim() 
+slice_size <- ceiling(dims[1]/slices) 
+
+# TR: pull urls from rubric instead
+rubric <- get_input_rubric()
+
+for(i in 1 : slices){
+  if (i < slices){ 
+    slice <- db_full[((i - 1) * slice_size + 1) : (i * slice_size),]
+    ss   <- rubric %>% filter(Short == paste0("DE_", sprintf("%02d",i))) %>% dplyr::pull(Sheet)
+  } else {
+    slice <- db_full[((i - 1) * slice_size + 1) : dims[1],]
+    ss   <- rubric %>% filter(Short == paste0("DE_", sprintf("%02d",i))) %>% dplyr::pull(Sheet)
+  }
+  
+  hm <- try(write_sheet(slice, 
+                        ss = ss,
+                        sheet = "database"))
+  if (class(hm)[1] == "try-error"){
+    hm <- try(write_sheet(slice, 
+                          ss = ss,
+                          sheet = "database"))
+  }
+  if (class(hm)[1] == "try-error"){
+    Sys.sleep(120)
+    hm <- try(write_sheet(slice, 
+                          ss = ss,
+                          sheet = "database"))
+  }
+  Sys.sleep(120)
+  
+}
 
 log_update(pp = "Germany", N = nrow(db_full))
 
 ############################################
 #### uploading metadata to Google Drive ####
 ############################################
+
+# pull urls from rubric instead 
+de_rubric <- get_input_rubric() %>% 
+  filter(Short == "DE_01") %>% 
+  dplyr::pull(Source)
+
 
 date_f <- Sys.Date()
 d <- paste(sprintf("%02d", day(date_f)),
