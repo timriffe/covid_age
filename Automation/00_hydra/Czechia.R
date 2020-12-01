@@ -1,20 +1,4 @@
 
-# ##  ###
-email <- "kikepaila@gmail.com"
-setwd("U:/gits/covid_age")
-# ##  ###
-
-
-
-library(tidyverse)
-library(googlesheets4)
-library(dplyr)
-library(xml2)
-library(rvest)
-library(lubridate)
-library(googledrive)
-
-library(here)
 source(here("Automation/00_Functions_automation.R"))
 
 # handle authentications
