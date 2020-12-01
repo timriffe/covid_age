@@ -1,12 +1,3 @@
-# don't manually alter the below
-# This is modified by sched()
-# ##  ###
-email <- "kikepaila@gmail.com"
-setwd("U:/gits/covid_age")
-# ##  ###
-
-# end 
-
 # TR New: you must be in the repo environment 
 source("Automation/00_Functions_automation.R")
 
@@ -109,7 +100,7 @@ all_dates <- db4 %>%
 dates_f <- seq(min(all_dates), max(all_dates), by = '1 day')
 
 db5 <- db4 %>% 
-  complete(Region, Measure, Sex, Age = ages, date_f = dates_f, fill = list(new = 0)) %>% 
+  tidyr::complete(Region, Measure, Sex, Age = ages, date_f = dates_f, fill = list(new = 0)) %>% 
   arrange(date_f, Region, Measure, Sex, suppressWarnings(as.integer(Age))) %>% 
   group_by(Region, Measure, Sex, Age) %>% 
   mutate(Value = cumsum(new)) %>% 
@@ -273,7 +264,7 @@ db_final_co <- db_final %>%
 #### uploading database to Google Drive ####
 ############################################
 
-# slicing the database by some regions 
+# slicing the database in smaller pieces
 ############################################
 slices <- 10
 dims <- db_final %>% dim() 
