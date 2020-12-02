@@ -6,7 +6,6 @@ logfile <- here("buildlog.md")
 
 log_section("remake coverage map", append = TRUE, logfile = logfile)
 
-source(here("R","00_Functions.R"))
 library(googlesheets4)
 library(tidyverse)
 library(cartography)
@@ -25,11 +24,11 @@ Sys.sleep(120)
 db_pops  <- try(get_input_rubric("input"))
 if (class(db_pops)[1] == "try-error"){
   Sys.sleep(120)
-  db_pops  <- get_input_rubric("input")
+  db_pops  <- try(get_input_rubric("input"))
 }
 if (class(db_pops)[1] == "try-error"){
   Sys.sleep(120)
-  db_pops  <- get_input_rubric("input")
+  db_pops  <- try(get_input_rubric("input"))
 }
 if (class(db_pops)[1] == "try-error"){
   Sys.sleep(120)
@@ -63,6 +62,9 @@ world_rob<-st_transform(World, "+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 
 world_rob %>% ggplot() + geom_sf()
 
 
+# all(db_pops$Country %in% World$name)
+# dbc <- db_pops$Country %>% unique()
+# dbc[!dbc%in%World$name]
 
 have_in_idb <- 
   db_input %>% 
