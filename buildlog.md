@@ -1,53 +1,53 @@
 
 # New build log 
- Tue Dec 01 02:00:08 2020 
+ Wed Dec 02 02:00:09 2020 
 
 
 # prep (resolve_UNKUNK) 
- Tue Dec 01 02:00:30 2020 
+ Wed Dec 02 02:00:32 2020 
 
 
 # A (convert_fractions_sexes) 
- Tue Dec 01 02:04:02 2020 
+ Wed Dec 02 02:04:20 2020 
 
 
 # B (redistribute_unknown_age) 
- Tue Dec 01 02:07:05 2020 
+ Wed Dec 02 02:07:38 2020 
 
 
 # C (rescale_to_total) 
- Tue Dec 01 02:16:36 2020 
+ Wed Dec 02 02:17:57 2020 
 
 
 # D (infer_cases_from_deaths_and_ascfr) 
- Tue Dec 01 02:32:17 2020 
+ Wed Dec 02 02:35:01 2020 
 
 
 # E (infer_deaths_from_cases_and_ascfr) 
- Tue Dec 01 02:35:29 2020 
+ Wed Dec 02 02:38:29 2020 
 
 
 # G (redistribute_unknown_sex) 
- Tue Dec 01 02:38:37 2020 
+ Wed Dec 02 02:41:53 2020 
 
 
 # H (rescale_sexes) 
- Tue Dec 01 02:41:39 2020 
+ Wed Dec 02 02:45:09 2020 
 
 
 # I (infer_both_sex) 
- Tue Dec 01 02:43:39 2020 
+ Wed Dec 02 02:47:19 2020 
 
 
 # J (maybe_lower_closeout) 
- Tue Dec 01 02:47:44 2020 
+ Wed Dec 02 02:51:39 2020 
 
 filter( Code == 'US_TX10.09.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_TX11.09.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_TX13.09.2020', Sex == 'b', Measure == 'Cases' )
 
 # Age harmonization 
- Tue Dec 01 03:05:23 2020 
+ Wed Dec 02 03:10:29 2020 
 
 filter( Code == 'TR03.08.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'TR05.07.2020', Sex == 'f', Measure == 'Cases' )
@@ -111,33 +111,25 @@ filter( Code == 'PK16.03.2020', Sex == 'm', Measure == 'Deaths' )
 filter( Code == 'PK17.03.2020', Sex == 'm', Measure == 'Deaths' )
 
 # Compile metadata 
- Tue Dec 01 05:31:41 2020 
+ Wed Dec 02 05:44:23 2020 
 
 
 # Building dashboards 
- Tue Dec 01 06:01:46 2020 
+ Wed Dec 02 05:59:06 2020 
 
 
 # remake coverage map 
- Tue Dec 01 06:08:21 2020 
+ Wed Dec 02 07:00:31 2020 
 
 
 # push outputs to OSF 
- Tue Dec 01 06:12:59 2020 
-
-
-# remake coverage map 
- Tue Dec 01 07:16:03 2020 
-
-
-# push outputs to OSF 
- Tue Dec 01 07:20:23 2020 
+ Wed Dec 02 07:05:09 2020 
 
 
 # Commit dashboards and buildlog 
- Tue Dec 01 07:22:08 2020 
+ Wed Dec 02 07:06:54 2020 
 
 
 # update build series log 
- Tue Dec 01 07:22:15 2020 
+ Wed Dec 02 07:07:01 2020 
 

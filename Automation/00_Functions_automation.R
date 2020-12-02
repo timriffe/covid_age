@@ -105,6 +105,7 @@ sched <- function(
   pp = "Germany", 
   tm = "21:18", 
   email = "kikepaila@gmail.com",
+  schedule = "DAILY",
   wd = here()){
   
   # create a trigger script that will source the automate script
@@ -148,7 +149,7 @@ sched <- function(
   
   taskscheduler_create(taskname = tskname, 
                        rscript = trigger_script, 
-                       schedule = "DAILY", 
+                       schedule = schedule, 
                        starttime = tm, 
                        startdate = date.sched)
 }
