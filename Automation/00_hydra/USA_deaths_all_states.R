@@ -1,7 +1,12 @@
+library(here)
+source(here("Automation/00_Functions_automation.R"))
 
-# TR New: you must be in the repo environment 
-source("Automation/00_Functions_automation.R")
+# assigning Drive credentials in the case the script is verified manually  
+if (!"email" %in% ls()){
+  email <- "cimentadaj@gmail.com"
+}
 
+# Drive credentials
 drive_auth(email = email)
 gs4_auth(email = email)
 # TR: pull urls from rubric instead 

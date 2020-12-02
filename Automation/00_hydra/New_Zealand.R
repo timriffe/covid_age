@@ -1,6 +1,11 @@
-
+library(here)
 # TR New: you must be in the repo environment 
 source("Automation/00_Functions_automation.R")
+
+# if (interactive() & !"email" %in% ls()){
+#   email <- readline(prompt="Enter Drive Email: ")
+#   cat("Drive authentication may follow\n")
+# }
 
 # Drive credentials
 drive_auth(email = email)

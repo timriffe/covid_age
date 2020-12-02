@@ -1,25 +1,16 @@
-# don't manually alter the below
-# This is modified by sched()
-# ##  ###
-email <- "kikepaila@gmail.com"
-setwd("U:/gits/covid_age")
-# ##  ###
+library(here)
+source(here("Automation/00_Functions_automation.R"))
 
-# end 
-
-# TR New: you must be in the repo environment 
-source("Automation/00_Functions_automation.R")
 library(aweek)
+
+# assigning Drive credentials in the case the script is verified manually  
+if (!"email" %in% ls()){
+  email <- "e.delfava@gmail.com"
+}
 
 # Drive credentials
 drive_auth(email = email)
 gs4_auth(email = email)
-# TR: pull urls from rubric instead 
-rubric_i <- get_input_rubric() %>% filter(Short == "NL")
-ss_i     <- rubric_i %>% dplyr::pull(Sheet)
-ss_db    <- rubric_i %>% dplyr::pull(Source)
-
-# TODO: add pdf scraping.
 
 # this is specifically for the way NL records isoweeks
 isoweek_to_date_hack <- function(ISOWEEK){
@@ -196,14 +187,14 @@ out <-
 ############################################
 #### uploading database to Google Drive ####
 ############################################
+write_rds(out, "N:/COVerAGE-DB/Automation/Hydra/Netherlands.rds")
 
-write_sheet(out, 
-            ss = ss_i, 
-            sheet = "database")
+# write_sheet(out, 
+#             ss = ss_i, 
+#             sheet = "database")
 
 log_update(pp = "Netherlands", N = nrow(out))
 
-Sys.sleep(100)
 ############################################
 #### uploading metadata to Google Drive ####
 ############################################
@@ -212,6 +203,11 @@ date_f <- Sys.Date()
 d <- paste(sprintf("%02d", day(date_f)),
            sprintf("%02d", month(date_f)),
            year(date_f), sep = ".")
+
+# TR: pull urls from rubric instead 
+rubric_i <- get_input_rubric() %>% filter(Short == "NL")
+ss_i     <- rubric_i %>% dplyr::pull(Sheet)
+ss_db    <- rubric_i %>% dplyr::pull(Source)
 
 sheet_name <- paste0("NL", d, "cases&deaths")
 

@@ -1,10 +1,12 @@
-# TR New: you must be in the repo environment 
-source("Automation/00_Functions_automation.R")
+library(here)
+source(here("Automation/00_Functions_automation.R"))
 
-Sys.setenv(LANG = "en")
-Sys.setlocale("LC_ALL","English")
+# assigning Drive credentials in the case the script is verified manually  
+if (!"email" %in% ls()){
+  email <- "kikepaila@gmail.com"
+}
 
-# Authorizing authentification or Drive (edit these lines with the user's email)
+# Drive credentials
 drive_auth(email = email)
 gs4_auth(email = email)
 
@@ -261,45 +263,48 @@ db_final_co <- db_final %>%
   filter(Region == "All")
 
 ############################################
-#### uploading database to Google Drive ####
+#### saving database in N Drive ####
 ############################################
 
-# slicing the database in smaller pieces
-############################################
-slices <- 10
-dims <- db_final %>% dim() 
-slice_size <- ceiling(dims[1]/slices) 
+write_rds(db_final, "N:/COVerAGE-DB/Automation/Hydra/Colombia.rds")
 
-# TR: pull urls from rubric instead
-rubric <- get_input_rubric()
 
-for(i in 1 : slices){
-  if (i < slices){ 
-    slice <- db_final[((i - 1) * slice_size + 1) : (i * slice_size),]
-    ss   <- rubric %>% filter(Short == paste0("CO_", sprintf("%02d",i))) %>% dplyr::pull(Sheet)
-  } else {
-    slice <- db_final[((i - 1) * slice_size + 1) : dims[1],]
-    ss   <- rubric %>% filter(Short == paste0("CO_", sprintf("%02d",i))) %>% dplyr::pull(Sheet)
-  }
-  
-  hm <- try(write_sheet(slice, 
-              ss = ss,
-              sheet = "database"))
-  if (class(hm)[1] == "try-error"){
-    hm <- try(write_sheet(slice, 
-                          ss = ss,
-                          sheet = "database"))
-  }
-  if (class(hm)[1] == "try-error"){
-    Sys.sleep(120)
-    hm <- try(write_sheet(slice, 
-                          ss = ss,
-                          sheet = "database"))
-  }
-  Sys.sleep(120)
-  
-}
-
+# # slicing the database in smaller pieces
+# ############################################
+# slices <- 10
+# dims <- db_final %>% dim() 
+# slice_size <- ceiling(dims[1]/slices) 
+# 
+# # TR: pull urls from rubric instead
+# rubric <- get_input_rubric()
+# 
+# for(i in 1 : slices){
+#   if (i < slices){ 
+#     slice <- db_final[((i - 1) * slice_size + 1) : (i * slice_size),]
+#     ss   <- rubric %>% filter(Short == paste0("CO_", sprintf("%02d",i))) %>% dplyr::pull(Sheet)
+#   } else {
+#     slice <- db_final[((i - 1) * slice_size + 1) : dims[1],]
+#     ss   <- rubric %>% filter(Short == paste0("CO_", sprintf("%02d",i))) %>% dplyr::pull(Sheet)
+#   }
+#   
+#   hm <- try(write_sheet(slice, 
+#               ss = ss,
+#               sheet = "database"))
+#   if (class(hm)[1] == "try-error"){
+#     hm <- try(write_sheet(slice, 
+#                           ss = ss,
+#                           sheet = "database"))
+#   }
+#   if (class(hm)[1] == "try-error"){
+#     Sys.sleep(120)
+#     hm <- try(write_sheet(slice, 
+#                           ss = ss,
+#                           sheet = "database"))
+#   }
+#   Sys.sleep(120)
+#   
+# }
+# 
 # updating hydra automate dashboard 
 log_update(pp = "Colombia", N = dims[1])
 

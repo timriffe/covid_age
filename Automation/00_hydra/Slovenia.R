@@ -1,13 +1,14 @@
-# TR New: you must be in the repo environment 
-source("Automation/00_Functions_automation.R")
+library(here)
+source(here("Automation/00_Functions_automation.R"))
 
+# assigning Drive credentials in the case the script is verified manually  
+if (!"email" %in% ls()){
+  email <- "ugofilippo.basellini@gmail.com"
+}
+
+# Drive credentials
 drive_auth(email = email)
 gs4_auth(email = email)
-
-SI_rubric <- get_input_rubric() %>% filter(Short == "SI")
-ss_i  <- SI_rubric %>% dplyr::pull(Sheet)
-ss_db <-  SI_rubric %>% dplyr::pull(Source)
-# reading data from Montreal and last date ent
 
 ### reading data from the website 
 m_url <- "https://www.nijz.si/sl/dnevno-spremljanje-okuzb-s-sars-cov-2-covid-19"
@@ -124,13 +125,20 @@ date_f <- db_d3 %>%
 #### uploading database to Google Drive ####
 ############################################
 # This command append new rows at the end of the sheet
-write_sheet(db_all,
-             ss = ss_i,
-             sheet = "database")
+write_rds(db_all, "N:/COVerAGE-DB/Automation/Hydra/Slovenia.rds")
+
+# write_sheet(db_all,
+#              ss = ss_i,
+#              sheet = "database")
 log_update(pp = "Slovenia", N = nrow(db_all))
 ############################################
 #### uploading metadata to Google Drive ####
 ############################################
+SI_rubric <- get_input_rubric() %>% filter(Short == "SI")
+ss_i  <- SI_rubric %>% dplyr::pull(Sheet)
+ss_db <-  SI_rubric %>% dplyr::pull(Source)
+# reading data from Montreal and last date ent
+
 
 d <- paste(sprintf("%02d", day(date_f)),
            sprintf("%02d", month(date_f)),
@@ -150,8 +158,4 @@ write_sheet(db_d,
             sheet = "deaths_age_sex")
 
 sheet_delete(meta$id, "Sheet1")
-
-
-
-
 
