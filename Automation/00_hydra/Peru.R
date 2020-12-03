@@ -190,9 +190,9 @@ out <- db_all2 %>%
   arrange(Region, date_f, Measure, Sex, suppressWarnings(as.integer(Age))) %>% 
   select(Country, Region, Code,  Date, Sex, Age, AgeInt, Metric, Measure, Value)
 
-test <- db_final %>% 
-  filter(Sex == "b",
-         Age == "TOT")
+# test <- db_final %>% 
+#   filter(Sex == "b",
+#          Age == "TOT")
 
 #########################
 # save data in N: -------------------------------------------------
