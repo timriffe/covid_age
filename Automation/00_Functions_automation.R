@@ -49,7 +49,7 @@ p_load(packages_git, character.only = TRUE)
 get_input_rubric <- function(tab = "input") {
   
   # Spreadsheet on Google Docs
-  ss_rubric <- "https://docs.google.com/spreadsheets/d/1IDQkit829LrUShH-NpeprDus20b6bso7FAOkpYvDHi4/edit#gid=0"
+  ss_rubric <- "https://docs.google.com/spreadsheets/d/15kat5Qddi11WhUPBW3Kj3faAmhuWkgtQzioaHvAGZI0/edit#gid=0"
   
   # Read spreadsheet
   input_rubric <- read_sheet(ss_rubric, sheet = tab) %>% 
@@ -72,6 +72,7 @@ get_country_inputDB <- function(ShortCode) {
   rubric <- get_input_rubric(tab = "input")
   
   # Find spreadsheet for country
+  # TR: this assumes everthing on Drive. 
   ss_i   <- rubric %>% filter(Short == ShortCode) %>% '$'(Sheet)
   
   # Load spreadsheet
