@@ -136,7 +136,7 @@ if (date_f > last_date_drive){
   ############################################
   
   # This command append new rows at the end of the sheet
-  write_sheet(db_all,
+  write_sheet(out,
               ss = ss_i,
               sheet = "database")
   log_update(pp = ctr, N = nrow(out))
