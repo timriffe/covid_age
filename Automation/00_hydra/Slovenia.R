@@ -112,12 +112,12 @@ out <- bind_rows(db_c3, db_d3) %>%
          Country = "Slovenia",
          Code = paste0("SI", Date),
          Region = "All",
-         AgeInt = case_when(Age == "0" & Measure == "Deaths" & (Sex == "b" | Sex == "m") ~ "35", 
-                            Age == "0" & Measure == "Deaths" & Sex == "f" ~ "45", 
-                            Age == "0" & Measure == "Cases" ~ "5", 
-                            Age == "85" ~ "20",
-                            Age == "TOT" ~ "",
-                            TRUE ~ "10"),
+         AgeInt = case_when(Age == "0" & Measure == "Deaths" & (Sex == "b" | Sex == "m") ~ 35L, 
+                            Age == "0" & Measure == "Deaths" & Sex == "f" ~ 45L, 
+                            Age == "0" & Measure == "Cases" ~ 5L, 
+                            Age == "85" ~ 20L,
+                            Age == "TOT" ~ NA_integer_,
+                            TRUE ~ 10L),
          Metric = "Count") %>% 
   arrange(date_f, Region, Measure, Sex, suppressWarnings(as.integer(Age))) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
