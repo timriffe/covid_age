@@ -232,10 +232,10 @@ unique(db_all2$Region) %>% sort()
 out <- db_all2 %>%
   bind_rows(db_m_reg) %>% 
   mutate(Country = "Colombia",
-         AgeInt = case_when(Age == "100" ~ "5",
-                            Age == "TOT" ~ "",
-                            Region == "All" ~ "1",
-                            TRUE ~ "5"),
+         AgeInt = case_when(Age == "100" ~ 5,
+                            Age == "TOT" ~ NA_integer_,
+                            Region == "All" ~ 1,
+                            TRUE ~ 5),
          Date = paste(sprintf("%02d",day(date_f)),
                       sprintf("%02d",month(date_f)),
                       year(date_f),
