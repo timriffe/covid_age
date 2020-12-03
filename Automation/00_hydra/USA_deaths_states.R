@@ -6,9 +6,14 @@ if (!"email" %in% ls()){
   email <- "cimentadaj@gmail.com"
 }
 
+# info country and N drive address
+ctr <- "USA_CDC"
+dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
+
 # Drive credentials
 drive_auth(email = email)
 gs4_auth(email = email)
+
 # TR: pull urls from rubric instead 
 rubric_i <- get_input_rubric() %>% filter(Short == "USA_CDC")
 ss_i     <- rubric_i %>% dplyr::pull(Sheet)
@@ -19,9 +24,9 @@ ss_db    <- rubric_i %>% dplyr::pull(Source)
 db_drive <- get_country_inputDB("USA_CDC")
 # -------------------------------------
 
-
 # info by age for each state!!
-db <- read_csv("https://data.cdc.gov/api/views/9bhg-hcku/rows.csv?accessType=DOWNLOAD")
+url <- "https://data.cdc.gov/api/views/9bhg-hcku/rows.csv?accessType=DOWNLOAD"
+db <- read_csv(url)
 
 unique(db$`Age group`)
 
@@ -231,7 +236,7 @@ db5 <- db4 %>%
   select(Country, Region, Code,  Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
   arrange(Region, Measure, Sex, suppressWarnings(as.integer(Age)))
   
-db_final <- db_drive %>% 
+out <- db_drive %>% 
   filter(Date != date_data) %>% 
   mutate(AgeInt = as.character(AgeInt)) %>% 
   select(-Short) %>% 
@@ -240,31 +245,35 @@ db_final <- db_drive %>%
 ############################################
 #### uploading database to Google Drive ####
 ############################################
-write_sheet(db_final,
+write_sheet(out,
              ss = ss_i,
              sheet = "database")
-log_update(pp = "USA_CDC", N = nrow(db5))
+log_update(pp = ctr, N = nrow(out))
 
 ############################################
 #### uploading metadata to Google Drive ####
 ############################################
-date = paste(sprintf("%02d",day(date_report)),
-             sprintf("%02d",month(date_report)),
-             year(date_report),
-             sep=".")
 
-sheet_name <- paste0("USA_CDC", date, "deaths")
+data_source <- paste0(dir_n, "Data_sources/", ctr, "/deaths_",today(), ".csv")
 
-meta <- drive_create(sheet_name,
-                     path = ss_db, 
-                     type = "spreadsheet",
-                     overwrite = T)
+download.file(url, destfile = data_source)
 
-write_sheet(db, 
-            ss = meta$id,
-            sheet = "deaths_age")
+zipname <- paste0(dir_n, 
+                  "Data_sources/", 
+                  ctr,
+                  "/", 
+                  ctr,
+                  "_data_",
+                  today(), 
+                  ".zip")
 
-sheet_delete(meta$id, "Sheet1")
+zipr(zipname, 
+     data_source, 
+     recurse = TRUE, 
+     compression_level = 9,
+     include_directories = TRUE)
 
+# clean up file chaff
+file.remove(data_source)
 
 

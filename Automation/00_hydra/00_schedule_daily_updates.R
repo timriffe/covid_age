@@ -67,7 +67,7 @@ sched("US_Michigan", tm = "02:40",email = auto_update_email, wd = auto_update_wd
 # Jorge
 sched("Venezuela", tm = "13:48",email = auto_update_email, wd = auto_update_wd)
 sched("US_Texas", tm = "17:11",email = auto_update_email, wd = auto_update_wd)
-sched("USA_deaths_all_states", tm = "01:10",email = auto_update_email, wd = auto_update_wd)
+sched("USA_deaths_states", tm = "01:10",email = auto_update_email, wd = auto_update_wd)
 # sched("New_Zealand", "17:20",email = auto_update_email, wd = auto_update_wd)
 
 # Diego
@@ -115,6 +115,8 @@ sched("Austria", tm = "21:25",email = auto_update_email, wd = auto_update_wd)
 # delete_sched("US_Wisconsin")
 # delete_sched("USA_all_deaths")
 # delete_sched("Venezuela")
+# delete_sched("USA_deaths_all_states")
+
 
 ### to list current tasks
 #########################

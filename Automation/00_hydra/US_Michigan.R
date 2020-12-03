@@ -6,9 +6,14 @@ if (!"email" %in% ls()){
   email <- "e.delfava@gmail.com"
 }
 
+# info country and N drive address
+ctr <- "US_Michigan"
+dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
+
 # Drive credentials
 drive_auth(email = email)
 gs4_auth(email = email)
+
 # TR: pull urls from rubric instead 
 rubric_i <- get_input_rubric() %>% filter(Short == "US_MI")
 ss_i     <- rubric_i %>% dplyr::pull(Sheet)
@@ -115,7 +120,7 @@ if (date_f > last_date_drive){
            Sex = "b",
            Measure = "Tests")
   
-  db_all <- db2 %>% 
+  out <- db2 %>% 
     filter(Sex != "u", Age != "Un") %>% 
     bind_rows(db_b, db_sex_t, db_t) %>% 
     gather(Cases, Deaths, key = "Measure", value = "Value") %>% 
@@ -137,37 +142,45 @@ if (date_f > last_date_drive){
   ############################################
   
   # This command append new rows at the end of the sheet
-  sheet_append(db_all,
+  sheet_append(out,
                ss = ss_i,
                sheet = "database")
-  log_update(pp = "US_Michigan", N = nrow(db_all))
+  log_update(pp = ctr, N = nrow(out))
+  
   ############################################
-  #### uploading metadata to Google Drive ####
+  #### uploading metadata to N Drive ####
   ############################################
   
-  sheet_name <- paste0("US_MI", d, "cases&deaths")
+  data_source_1 <- paste0(dir_n, "Data_sources/", ctr, "/total_",today(), ".csv")
+  data_source_2 <- paste0(dir_n, "Data_sources/", ctr, "/demo_",today(), ".csv")
+  data_source_3 <- paste0(dir_n, "Data_sources/", ctr, "/tests_",today(), ".csv")
   
-  meta <- drive_create(sheet_name,
-                       path = ss_db, 
-                       type = "spreadsheet",
-                       overwrite = T)
+  download.file(paste0(root, url1), destfile = data_source_1)
+  download.file(paste0(root, url2), destfile = data_source_2)
+  download.file(paste0(root, url3), destfile = data_source_3)
   
-    write_sheet(db_demo, 
-              ss = meta$id,
-              sheet = "cases&deaths_age_sex")
+  data_source <- c(data_source_1, data_source_2, data_source_3)
   
-  write_sheet(db_tot, 
-              ss = meta$id,
-              sheet = "cases&deaths_county")
+  zipname <- paste0(dir_n, 
+                    "Data_sources/", 
+                    ctr,
+                    "/", 
+                    ctr,
+                    "_data_",
+                    today(), 
+                    ".zip")
   
-  write_sheet(db_tests, 
-              ss = meta$id,
-              sheet = "tests_county")
+  zipr(zipname, 
+       data_source, 
+       recurse = TRUE, 
+       compression_level = 9,
+       include_directories = TRUE)
   
-  sheet_delete(meta$id, "Sheet1")
+  # clean up file chaff
+  file.remove(data_source)
 
 } else if (date_f == last_date_drive) {
   cat(paste0("no new updates so far, last date: ", date_f))
-  log_update(pp = "US_Michigan", N = 0)
+  log_update(pp = ctr, N = 0)
 }
 

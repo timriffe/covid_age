@@ -6,6 +6,10 @@ if (!"email" %in% ls()){
   email <- "e.delfava@gmail.com"
 }
 
+# info country and N drive address
+ctr <- "Czechia"
+dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
+
 # Drive credentials
 drive_auth(email = email)
 gs4_auth(email = email)
@@ -282,72 +286,40 @@ cz_spreadsheet_all <-
          Value) %>% 
     arrange(dmy(Date), Sex, Measure, Age)
 
+out <- bind_rows(cz_spreadsheet_all, cz_spreadsheet_region)
 
-write_rds(cz_spreadsheet_all, "N:/COVerAGE-DB/Automation/Hydra/Czechia.rds")
+###########################
+#### Saving data in N: ####
+###########################
 
-# # Start uploads:
-# 
-# ss_all <- ss_list %>% 
-#   filter(Region == "All") %>% 
-#   dplyr::pull(Sheet)
-# 
-# write_sheet(cz_spreadsheet_all,
-#             ss = ss_all,
-#             sheet = "database")
-# 
-# Sys.sleep(120)
-# 
-# # region loop:
-# 
-# for (i in 1:7){
-#   reg_i <- paste0("Reg",i)
-#   ss_i  <- ss_list %>% 
-#     filter(Region == reg_i) %>% 
-#     dplyr::pull(Sheet)
-#   # Two Regions at a time:
-#   ind     <- (i - 1) * 2 + 1
-#   regions <- NUTS3[c(ind, ind + 1), ]$name
-#   
-#   RegSub <- cz_spreadsheet_region %>% 
-#     filter(Region %in% regions)
-#   
-#   write_sheet(RegSub,
-#               ss = ss_i,
-#               sheet = "database")
-#   
-#   Sys.sleep(120)
-# }
-# 
+write_rds(out, paste0(dir_n, ctr, ".rds"))
+log_update(pp = ctr, N = nrow(out))
 
+#### uploading metadata to N Drive ####
 
-# Get upload urls:
-ss_list <- get_input_rubric() %>% 
-  filter(Country == "Czechia")
+data_source_c <- paste0(dir_n, "Data_sources/", ctr, "/deaths_",today(), ".csv")
+data_source_d <- paste0(dir_n, "Data_sources/", ctr, "/cases_",today(), ".csv")
 
-# make a note in the automation log
-N <- nrow(cz_spreadsheet_region) + nrow(cz_spreadsheet_all)
-log_update(pp = "Czechia", N = N)
+download.file(cases_url, destfile = data_source_c)
+download.file(deaths_url, destfile = data_source_d)
 
+data_source <- c(data_source_c, data_source_d)
 
-# upload to Drive. Best if it's a Google Sheet since it doesn't take space.
+zipname <- paste0(dir_n, 
+                  "Data_sources/", 
+                  ctr,
+                  "/", 
+                  ctr,
+                  "_data_",
+                  today(), 
+                  ".zip")
 
-# only space for one url in rubric.
-ss_sources <- ss_list %>% 
-  filter(Region == "All") %>% 
-  dplyr::pull(Source)
+zipr(zipname, 
+     data_source, 
+     recurse = TRUE, 
+     compression_level = 9,
+     include_directories = TRUE)
 
+# clean up file chaff
+file.remove(data_source)
 
-download.file(cases_url, destfile = "cz_cases.csv")
-download.file(deaths_url, destfile = "cz_deaths.csv")
-
-# this puts the .csv on the drive
-drive_put(media = "cz_cases.csv", 
-          path = ss_sources, 
-          name = "cz_cases.csv")
-
-drive_put(media = "cz_deaths.csv", 
-          path = ss_sources, 
-          name = "cz_deaths.csv")
-
-file.remove("cz_cases.csv")
-file.remove("cz_deaths.csv")

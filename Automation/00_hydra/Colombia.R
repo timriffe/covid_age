@@ -6,28 +6,57 @@ if (!"email" %in% ls()){
   email <- "kikepaila@gmail.com"
 }
 
+# info country and N drive address
+ctr <- "Colombia"
+dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
+
 # Drive credentials
 drive_auth(email = email)
 gs4_auth(email = email)
 
+# Loading data from the web
+###########################
+cases_url <- "https://www.datos.gov.co/api/views/gt2j-8ykr/rows.csv?accessType=DOWNLOAD"
+tests_url <- "https://www.datos.gov.co/api/views/8835-5baf/rows.csv?accessType=DOWNLOAD"
+
 # cases and deaths database
-db <- read_csv("https://www.datos.gov.co/api/views/gt2j-8ykr/rows.csv?accessType=DOWNLOAD",
+db <- read_csv(cases_url,
                locale = locale(encoding = "UTF-8"))
 
 # tests database
-db_m <- read_csv("https://www.datos.gov.co/api/views/8835-5baf/rows.csv?accessType=DOWNLOAD",
+db_m <- read_csv(tests_url,
                         locale = locale(encoding = "UTF-8"))
 
-# unique(db$Estado)
-# unique(db$"Nombre municipio")
-# unique(db$"Nombre departamento")
+# saving compressed data to N: drive
+data_source_c <- paste0(dir_n, "Data_sources/", ctr, "/cases_",today(), ".csv")
+data_source_t <- paste0(dir_n, "Data_sources/", ctr, "/tests_",today(), ".csv")
 
-test <- db %>% 
-  rename(mun = "Nombre municipio") %>% 
-  group_by(mun) %>% 
-  summarise(d = sum(n())) %>% 
-  arrange(-d)
-  
+download.file(cases_url, destfile = data_source_c)
+download.file(tests_url, destfile = data_source_t)
+
+data_source <- c(data_source_c, data_source_t)
+
+zipname <- paste0(dir_n, 
+                  "Data_sources/", 
+                  ctr,
+                  "/", 
+                  ctr,
+                  "_data_",
+                  today(), 
+                  ".zip")
+
+zipr(zipname, 
+     data_source, 
+     recurse = TRUE, 
+     compression_level = 9,
+     include_directories = TRUE)
+
+# clean up file chaff
+file.remove(data_source)
+
+# data transformation for COVerAGE-DB
+#####################################
+
 db2 <- db %>% 
   rename(Sex = Sexo,
          Region = 'Nombre departamento',
@@ -200,7 +229,7 @@ unique(db_m_reg$Region) %>% sort()
 unique(db_all2$Region) %>% sort()
 
 # all data together in COVerAGE-DB format -----------------------------------
-db_final <- db_all2 %>%
+out <- db_all2 %>%
   bind_rows(db_m_reg) %>% 
   mutate(Country = "Colombia",
          AgeInt = case_when(Age == "100" ~ "5",
@@ -259,83 +288,11 @@ db_final <- db_all2 %>%
 unique(db_final$Region)
 unique(db_final$Age)
 
-db_final_co <- db_final %>% 
-  filter(Region == "All")
-
 ############################################
 #### saving database in N Drive ####
 ############################################
+write_rds(out, paste0(dir_n, ctr, ".rds"))
 
-write_rds(db_final, "N:/COVerAGE-DB/Automation/Hydra/Colombia.rds")
-
-
-# # slicing the database in smaller pieces
-# ############################################
-# slices <- 10
-# dims <- db_final %>% dim() 
-# slice_size <- ceiling(dims[1]/slices) 
-# 
-# # TR: pull urls from rubric instead
-# rubric <- get_input_rubric()
-# 
-# for(i in 1 : slices){
-#   if (i < slices){ 
-#     slice <- db_final[((i - 1) * slice_size + 1) : (i * slice_size),]
-#     ss   <- rubric %>% filter(Short == paste0("CO_", sprintf("%02d",i))) %>% dplyr::pull(Sheet)
-#   } else {
-#     slice <- db_final[((i - 1) * slice_size + 1) : dims[1],]
-#     ss   <- rubric %>% filter(Short == paste0("CO_", sprintf("%02d",i))) %>% dplyr::pull(Sheet)
-#   }
-#   
-#   hm <- try(write_sheet(slice, 
-#               ss = ss,
-#               sheet = "database"))
-#   if (class(hm)[1] == "try-error"){
-#     hm <- try(write_sheet(slice, 
-#                           ss = ss,
-#                           sheet = "database"))
-#   }
-#   if (class(hm)[1] == "try-error"){
-#     Sys.sleep(120)
-#     hm <- try(write_sheet(slice, 
-#                           ss = ss,
-#                           sheet = "database"))
-#   }
-#   Sys.sleep(120)
-#   
-# }
-# 
-# updating hydra automate dashboard 
-log_update(pp = "Colombia", N = dims[1])
-
-############################################
-#### uploading metadata to Google Drive ####
-############################################
-ss_db  <- rubric %>% filter(Short == "CO_01") %>% dplyr::pull(Source)
-
-date_f <- Sys.Date()
-date <- paste(sprintf("%02d", day(date_f)),
-              sprintf("%02d", month(date_f)),
-              year(date_f), sep = ".")
-
-filename_1 <- file.path("Automation/temp_files",paste0("CO", date, "cases&deaths.csv"))
-filename_2 <- file.path("Automation/temp_files",paste0("CO", date, "tests.csv"))
-
-write_csv(db, filename_1)
-write_csv(db_m, filename_2)
-
-filename <- file.path("Automation/temp_files",paste0("CO", date, "cases&deaths.zip"))
-
-files <- c(filename_1, filename_2)
-zip(filename, files, compression_level = 9)
-
-drive_upload(
-  filename,
-  path = ss_db,
-  name = filename,
-  overwrite = TRUE)
-
-# clean up file chaff
-file.remove(c(filename_1,filename_2, filename))
-
+# updating hydra dashboard
+log_update(pp = ctr, N = nrow(out))
 
