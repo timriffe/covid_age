@@ -197,8 +197,18 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
   }
   
   # Only get countries with at least one row of data
-  rubric <- rubric %>% 
-    filter(Rows > 0)
+  # rubric <- rubric %>% 
+  #   filter(Rows > 0) # just always read all files from Hyrdra?
+  # 
+  on_hydra <- Sys.info()["nodename"] %in% c("HYDRA01","HYDRA02")
+  if ( on_hydra ){
+    
+    rubric_hydra <- rubric %>% 
+      filter(Loc == "n")
+    
+    rubric <- rubric %>% 
+      filter(Loc != "n")
+  }
   
   # Empty list for results
   input_list <- list()
@@ -312,10 +322,29 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
     }
   }
   
+  if (on_hydra){
+    hydra_path <- "N:/COVerAGE-DB/Automation/Hydra"
+    
+    local_files <-
+      rubric_hydra %>% 
+      dplyr::pull(hydra_name) %>% 
+      paste0(".rds")
+    
+    
+    hydra_data <-
+      lapply(local_files,
+             readRDS) %>% 
+      bind_rows() %>% 
+      mutate(Short = add_Short(Code, Date))
+  } else {
+    hydra_data <- tibble()
+  }
+  
   # Bind and sort
   inputDB <- 
     input_list %>% 
     bind_rows() %>% 
+    bind_rows(hydra_data) %>% 
     sort_input_data()
   
   # Return data base
@@ -410,7 +439,7 @@ compile_offsetsDB <- function() {
 get_input_rubric <- function(tab = "input") {
   
   # Spreadsheet on Google Docs
-  ss_rubric <- "https://docs.google.com/spreadsheets/d/1IDQkit829LrUShH-NpeprDus20b6bso7FAOkpYvDHi4/edit#gid=0"
+  ss_rubric <- "https://docs.google.com/spreadsheets/d/15kat5Qddi11WhUPBW3Kj3faAmhuWkgtQzioaHvAGZI0/edit#gid=0"
   
   # Read spreadsheet
   input_rubric <- read_sheet(ss_rubric, sheet = tab) %>% 
