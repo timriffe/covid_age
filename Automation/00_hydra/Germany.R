@@ -1,7 +1,12 @@
+library(here)
+source(here("Automation/00_Functions_automation.R"))
 
-# TR New: you must be in the repo environment 
-source("Automation/00_Functions_automation.R")
+# assigning Drive credentials in the case the script is verified manually  
+if (!"email" %in% ls()){
+  email <- "gatemonte@gmail.com"
+}
 
+# Drive credentials
 drive_auth(email = email)
 gs4_auth(email = email)
 
@@ -55,8 +60,7 @@ db_all <- db2 %>%
   group_by(Region, Sex, Measure, Age) %>% 
   mutate(Value = cumsum(Value)) %>% 
   ungroup() 
-  
-  
+
 # Regions acronyms from https://en.wikipedia.org/wiki/ISO_3166-2:DE
 db_region <- db_all %>% 
   mutate(Country = "Germany",
@@ -161,43 +165,44 @@ db_full %>%
 ############################################
 #### uploading database to Google Drive ####
 ############################################
+write_rds(db_full, "N:/COVerAGE-DB/Automation/Hydra/Germany.rds")
 
-# slicing the database in smaller pieces
-############################################
-
-slices <- 3
-dims <- db_full %>% dim() 
-slice_size <- ceiling(dims[1]/slices) 
-
-# TR: pull urls from rubric instead
-rubric <- get_input_rubric()
-
-for(i in 1 : slices){
-  if (i < slices){ 
-    slice <- db_full[((i - 1) * slice_size + 1) : (i * slice_size),]
-    ss   <- rubric %>% filter(Short == paste0("DE_", sprintf("%02d",i))) %>% dplyr::pull(Sheet)
-  } else {
-    slice <- db_full[((i - 1) * slice_size + 1) : dims[1],]
-    ss   <- rubric %>% filter(Short == paste0("DE_", sprintf("%02d",i))) %>% dplyr::pull(Sheet)
-  }
-  
-  hm <- try(write_sheet(slice, 
-                        ss = ss,
-                        sheet = "database"))
-  if (class(hm)[1] == "try-error"){
-    hm <- try(write_sheet(slice, 
-                          ss = ss,
-                          sheet = "database"))
-  }
-  if (class(hm)[1] == "try-error"){
-    Sys.sleep(120)
-    hm <- try(write_sheet(slice, 
-                          ss = ss,
-                          sheet = "database"))
-  }
-  Sys.sleep(120)
-  
-}
+# # slicing the database in smaller pieces
+# ############################################
+# 
+# slices <- 3
+# dims <- db_full %>% dim() 
+# slice_size <- ceiling(dims[1]/slices) 
+# 
+# # TR: pull urls from rubric instead
+# rubric <- get_input_rubric()
+# 
+# for(i in 1 : slices){
+#   if (i < slices){ 
+#     slice <- db_full[((i - 1) * slice_size + 1) : (i * slice_size),]
+#     ss   <- rubric %>% filter(Short == paste0("DE_", sprintf("%02d",i))) %>% dplyr::pull(Sheet)
+#   } else {
+#     slice <- db_full[((i - 1) * slice_size + 1) : dims[1],]
+#     ss   <- rubric %>% filter(Short == paste0("DE_", sprintf("%02d",i))) %>% dplyr::pull(Sheet)
+#   }
+#   
+#   hm <- try(write_sheet(slice, 
+#                         ss = ss,
+#                         sheet = "database"))
+#   if (class(hm)[1] == "try-error"){
+#     hm <- try(write_sheet(slice, 
+#                           ss = ss,
+#                           sheet = "database"))
+#   }
+#   if (class(hm)[1] == "try-error"){
+#     Sys.sleep(120)
+#     hm <- try(write_sheet(slice, 
+#                           ss = ss,
+#                           sheet = "database"))
+#   }
+#   Sys.sleep(120)
+#   
+# }
 
 log_update(pp = "Germany", N = nrow(db_full))
 

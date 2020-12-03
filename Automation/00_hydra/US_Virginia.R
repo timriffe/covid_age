@@ -1,33 +1,32 @@
+library(here)
+source(here("Automation/00_Functions_automation.R"))
 
-# TR New: you must be in the repo environment 
-source("Automation/00_Functions_automation.R")
+# assigning Drive user in case the script is verified manually  
+if (!"email" %in% ls()){
+  email <- "ugofilippo.basellini@gmail.com"
+}
 
+# Drive credentials
 drive_auth(email = email)
 gs4_auth(email = email)
 
-# TR: pull urls from rubric instead 
-rubric_i <- get_input_rubric() %>% filter(Short == "US_VA")
-ss_i     <- rubric_i %>% dplyr::pull(Sheet)
-ss_db    <- rubric_i %>% dplyr::pull(Source)
-
-
-# reading data from Drive and last date entered 
-db_drive <- get_country_inputDB("US_VA")
-
-last_date_drive <- db_drive %>% 
-  mutate(date_f = dmy(Date)) %>% 
-  drop_na(date_f) %>% 
-  dplyr::pull(date_f) 
-
-max(last_date_drive)
-
+# # reading data from Drive and last date entered 
+# db_drive <- get_country_inputDB("US_VA")
+# # extracting the last date updated
+# last_date_drive <- db_drive %>% 
+#   mutate(date_f = dmy(Date)) %>% 
+#   drop_na(date_f) %>% 
+#   dplyr::pull(date_f)
+# 
+# max(last_date_drive)
+# 
 # reading data from the website
 url_age <- "https://data.virginia.gov/api/views/uktn-mwig/rows.csv?accessType=DOWNLOAD"
 db_age <- read_csv(url_age)
-
+# 
 date_f <- mdy(max(db_age$`Report Date`))
-
-if (!(date_f %in% last_date_drive)){
+# 
+# if (!(date_f %in% last_date_drive)){
 
   url_sex   <- "https://data.virginia.gov/api/views/tdt3-q47w/rows.csv?accessType=DOWNLOAD"
   url_tests <- "https://data.virginia.gov/api/views/3u5k-c2gr/rows.csv?accessType=DOWNLOAD"
@@ -65,15 +64,7 @@ if (!(date_f %in% last_date_drive)){
     summarise(Value = sum(new)) %>% 
     ungroup() %>% 
     mutate(Sex = "b")
-    # ungroup() %>% 
-    # group_by(Age, Measure) %>% 
-    # mutate(Value = cumsum(new),
-    #        Sex = "b") %>% 
-    
-    
-    
-  
-  
+
   db_sex2 <- db_sex %>% 
     rename(date = "Report Date",
            Cases = "Number of Cases",
@@ -129,14 +120,17 @@ if (!(date_f %in% last_date_drive)){
   ############################################
   #### uploading database to Google Drive ####
   ############################################
-  write_sheet(db_all, 
-              ss = ss_i,
-              sheet = "database")
+  write_rds(db_all, "N:/COVerAGE-DB/Automation/Hydra/US_Virginia.rds")
+  
   log_update(pp = "US_Virginia", N = nrow(db_all))
   
   ############################################
   #### uploading metadata to Google Drive ####
   ############################################
+  # TR: pull urls from rubric instead 
+  rubric_i <- get_input_rubric() %>% filter(Short == "US_VA")
+  ss_i     <- rubric_i %>% dplyr::pull(Sheet)
+  ss_db    <- rubric_i %>% dplyr::pull(Source)
   
   sheet_name <- paste0("US_VA", d, "cases&deaths")
   
@@ -159,7 +153,7 @@ if (!(date_f %in% last_date_drive)){
   
   sheet_delete(meta$id, "Sheet1")
 
-} else if (date_f %in% last_date_drive) {
-  cat(paste0("no new updates so far, last date: ", date_f))
-  log_update(pp = "US_Virginia", N = 0)
-}
+# } else if (date_f %in% last_date_drive) {
+#   cat(paste0("no new updates so far, last date: ", date_f))
+#   log_update(pp = "US_Virginia", N = 0)
+# }

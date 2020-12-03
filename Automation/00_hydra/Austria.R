@@ -1,3 +1,10 @@
+library(here)
+source(here("Automation/00_Functions_automation.R"))
+
+# assigning Drive credentials in the case the script is verified manually  
+if (!"email" %in% ls()){
+  email <- "kikepaila@gmail.com"
+}
 
 drive_auth(email = email)
 gs4_auth(email = email)

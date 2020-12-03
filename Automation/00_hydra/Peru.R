@@ -1,26 +1,16 @@
+library(here)
+source(here("Automation/00_Functions_automation.R"))
 
-# TR New: you must be in the repo environment 
-source("Automation/00_Functions_automation.R")
+# assigning Drive credentials in the case the script is verified manually  
+if (!"email" %in% ls()){
+  email <- "gatemonte@gmail.com"
+}
 
+# Drive credentials
 drive_auth(email = email)
 gs4_auth(email = email)
 
-rubric <- get_input_rubric()
-ss_0   <- rubric %>% filter(Short == "PE") %>% dplyr::pull(Sheet)
-ss_1   <- rubric %>% filter(Short == "PE_1") %>% dplyr::pull(Sheet)
-ss_2   <- rubric %>% filter(Short == "PE_2") %>% dplyr::pull(Sheet)
-ss_3   <- rubric %>% filter(Short == "PE_3") %>% dplyr::pull(Sheet)
-ss_4   <- rubric %>% filter(Short == "PE_4") %>% dplyr::pull(Sheet)
-ss_5   <- rubric %>% filter(Short == "PE_5") %>% dplyr::pull(Sheet)
-ss_6   <- rubric %>% filter(Short == "PE_6") %>% dplyr::pull(Sheet)
-ss_7   <- rubric %>% filter(Short == "PE_7") %>% dplyr::pull(Sheet)
-ss_8   <- rubric %>% filter(Short == "PE_8") %>% dplyr::pull(Sheet)
-
-ss_db  <- rubric %>% filter(Short == "PE") %>% dplyr::pull(Source)
-
-# ---------
-
-
+# load data
 m_url1 <- "https://www.datosabiertos.gob.pe/dataset/casos-positivos-por-covid-19-ministerio-de-salud-minsa"
 m_url2 <- "https://www.datosabiertos.gob.pe/dataset/fallecidos-por-covid-19-ministerio-de-salud-minsa"
 
@@ -200,99 +190,11 @@ test <- db_final %>%
   filter(Sex == "b",
          Age == "TOT")
 
-
-# slicing database by regions to uploading it to drive
-
-table(db_final$Region) %>% sort()
-
-unique(db_final$Region)
-
-regions <- db_final %>% dplyr::pull(Region) %>% unique()
-
-db_final_pe <- db_final %>% 
-  filter(Region == "All")
-
-db_final_1 <- db_final %>% 
-  filter(Region %in% regions[2:5])
-
-db_final_2 <- db_final %>% 
-  filter(Region %in% regions[6:8])
-
-db_final_3 <- db_final %>% 
-  filter(Region %in% regions[9:12])
-
-db_final_4 <- db_final %>% 
-  filter(Region %in% regions[13:14])
-
-db_final_5 <- db_final %>% 
-  filter(Region %in% regions[15:16])
-
-db_final_6 <- db_final %>% 
-  filter(Region %in% regions[17:19])
-
-db_final_7 <- db_final %>% 
-  filter(Region %in% regions[20:23])
-
-db_final_8 <- db_final %>% 
-  filter(Region %in% regions[24:length(regions)])
-
 #########################
 # Push dataframe to Drive -------------------------------------------------
 #########################
 
-sheet_write(db_final_pe,
-            ss = ss_0,
-            sheet = "database")
-
-Sys.sleep(105)
-
-sheet_write(db_final_1,
-            ss = ss_1,
-            sheet = "database")
-
-Sys.sleep(105)
-
-sheet_write(db_final_2,
-            ss = ss_2,
-            sheet = "database")
-
-Sys.sleep(105)
-
-sheet_write(db_final_3,
-            ss = ss_3,
-            sheet = "database")
-
-Sys.sleep(105)
-
-sheet_write(db_final_4,
-            ss = ss_4,
-            sheet = "database")
-
-Sys.sleep(105)
-
-sheet_write(db_final_5,
-            ss = ss_5,
-            sheet = "database")
-
-Sys.sleep(105)
-
-sheet_write(db_final_6,
-            ss = ss_6,
-            sheet = "database")
-
-Sys.sleep(105)
-
-sheet_write(db_final_7,
-            ss = ss_7,
-            sheet = "database")
-
-Sys.sleep(105)
-
-sheet_write(db_final_8,
-            ss = ss_8,
-            sheet = "database")
-
-Sys.sleep(105)
+write_rds(db_final, "N:/COVerAGE-DB/Automation/Hydra/Peru.rds")
 
 N <- nrow(db_final_pe) + nrow(db_final_1) + nrow(db_final_2) + nrow(db_final_3) +
   nrow(db_final_4) + nrow(db_final_5) + nrow(db_final_6)  
@@ -300,6 +202,9 @@ log_update(pp = "Peru", N = N)
 #########################
 # Push zip file to Drive -------------------------------------------------
 #########################
+
+rubric <- get_input_rubric()
+ss_db  <- rubric %>% filter(Short == "PE") %>% dplyr::pull(Source)
 
 date_f <- db_d2 %>% 
   filter(!is.na(date_f)) %>% 
@@ -313,8 +218,6 @@ date <- paste(sprintf("%02d",day(date_f)),
 
 filename_c <- file.path("Automation/temp_files",paste0("PE", date, "cases.csv"))
 filename_d <- file.path("Automation/temp_files",paste0("PE", date, "deaths.csv"))
-
-
 
 write_csv(db_c, filename_c)
 write_csv(db_d, filename_d)

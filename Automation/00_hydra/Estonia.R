@@ -1,14 +1,14 @@
+library(here)
+source(here("Automation/00_Functions_automation.R"))
 
-# TR New: you must be in the repo environment 
-source("Automation/00_Functions_automation.R")
+# assigning Drive credentials in the case the script is verified manually  
+if (!"email" %in% ls()){
+  email <- "e.delfava@gmail.com"
+}
 
 # Drive credentials
 drive_auth(email = email)
 gs4_auth(email = email)
-# TR: pull urls from rubric instead 
-rubric_i <- get_input_rubric() %>% filter(Short == "EE")
-ss_i     <- rubric_i %>% dplyr::pull(Sheet)
-ss_db    <- rubric_i %>% dplyr::pull(Source)
 
 cols_in <- cols(
   id = col_character(),
@@ -88,14 +88,21 @@ db_all <- bind_rows(db3, db5) %>%
 ############################################
 #### uploading database to Google Drive ####
 ############################################
-# This command replace the whole sheet
-write_sheet(db_all, 
-            ss = ss_i,
-            sheet = "database")
+# # This command replace the whole sheet
+# write_sheet(db_all, 
+#             ss = ss_i,
+#             sheet = "database")
+
+write_rds(db_all, "N:/COVerAGE-DB/Automation/Hydra/Estonia.rds")
+
 log_update(pp = "Estonia", N = nrow(db_all))
 #############################################
 #### saving metadata in the Drive folder ####
 #############################################
+# TR: pull urls from rubric instead 
+rubric_i <- get_input_rubric() %>% filter(Short == "EE")
+ss_i     <- rubric_i %>% dplyr::pull(Sheet)
+ss_db    <- rubric_i %>% dplyr::pull(Source)
 
 date_f <- Sys.Date()
 d <- paste(sprintf("%02d", day(date_f)),
