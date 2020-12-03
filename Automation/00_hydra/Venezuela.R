@@ -1,7 +1,17 @@
-
-# TR New: you must be in the repo environment
-source("Automation/00_Functions_automation.R")
+library(here)
 library(jsonlite)
+source(here("Automation/00_Functions_automation.R"))
+
+# assigning Drive user in case the script is verified manually  
+if (!"email" %in% ls()){
+  email <- "cimentadaj@gmail.com"
+}
+
+# info country and N drive address
+ctr <- "Venezuela"
+dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
+
+# Drive credentials
 drive_auth(email = email)
 gs4_auth(email = email)
 
@@ -35,7 +45,7 @@ d <- paste(sprintf("%02d", day(date_f)), sprintf("%02d", month(date_f)), year(da
 
 if (date_f > last_date_drive) {
 
-  db <-
+  out <-
     b$Confirmed$ByAgeRange %>%
     bind_cols %>%
     gather(key = age_g, value = Value) %>%
@@ -62,29 +72,34 @@ if (date_f > last_date_drive) {
            Metric = "Count") %>%
     select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
 
-  db
+  out
 
   ############################################
   #### uploading database to Google Drive ####
   ############################################
 
   # This command append new rows at the end of the sheet
-  sheet_append(db,
+  sheet_append(out,
                ss = ss_i,
                sheet = "database")
-  log_update(pp = "Venezuela", N = nrow(db))
+  log_update(pp = ctr, N = nrow(out))
+  
+  
   ############################################
   #### uploading metadata to Google Drive ####
   ############################################
-  temp <- tempfile(fileext = ".txt")
-  writeLines(a, temp)
-  drive_upload(
-    temp,
-    path = ss_db,
-    name = paste0("VE", d, "_cases.txt"),
-    overwrite = TRUE)
-  unlink(temp)
+  data_source <- paste0(dir_n, 
+                        "Data_sources/", 
+                        ctr,
+                        "/", 
+                        ctr,
+                        "_data_",
+                        today(), 
+                        ".txt")
+  
+  writeLines(a, data_source)
 
 } else {
   cat(paste0("no new updates so far, last date: ", date_f))
+  log_update(pp = "Venezuela", N = 0)
 }

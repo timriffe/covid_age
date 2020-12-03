@@ -1,26 +1,20 @@
+library(here)
+source(here("Automation/00_Functions_automation.R"))
 
-# TR New: you must be in the repo environment 
-source("Automation/00_Functions_automation.R")
+# assigning Drive credentials in the case the script is verified manually  
+if (!"email" %in% ls()){
+  email <- "gatemonte@gmail.com"
+}
 
+# info country and N drive address
+ctr <- "Peru"
+dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
+
+# Drive credentials
 drive_auth(email = email)
 gs4_auth(email = email)
 
-rubric <- get_input_rubric()
-ss_0   <- rubric %>% filter(Short == "PE") %>% dplyr::pull(Sheet)
-ss_1   <- rubric %>% filter(Short == "PE_1") %>% dplyr::pull(Sheet)
-ss_2   <- rubric %>% filter(Short == "PE_2") %>% dplyr::pull(Sheet)
-ss_3   <- rubric %>% filter(Short == "PE_3") %>% dplyr::pull(Sheet)
-ss_4   <- rubric %>% filter(Short == "PE_4") %>% dplyr::pull(Sheet)
-ss_5   <- rubric %>% filter(Short == "PE_5") %>% dplyr::pull(Sheet)
-ss_6   <- rubric %>% filter(Short == "PE_6") %>% dplyr::pull(Sheet)
-ss_7   <- rubric %>% filter(Short == "PE_7") %>% dplyr::pull(Sheet)
-ss_8   <- rubric %>% filter(Short == "PE_8") %>% dplyr::pull(Sheet)
-
-ss_db  <- rubric %>% filter(Short == "PE") %>% dplyr::pull(Source)
-
-# ---------
-
-
+# load data
 m_url1 <- "https://www.datosabiertos.gob.pe/dataset/casos-positivos-por-covid-19-ministerio-de-salud-minsa"
 m_url2 <- "https://www.datosabiertos.gob.pe/dataset/fallecidos-por-covid-19-ministerio-de-salud-minsa"
 
@@ -28,16 +22,16 @@ html1 <- read_html(m_url1)
 html2 <- read_html(m_url2)
 
 # locating the links for Excel files
-url1 <- html_nodes(html1, xpath = '//*[@id="data-and-resources"]/div/div/ul/li/div/span/a') %>%
+cases_url <- html_nodes(html1, xpath = '//*[@id="data-and-resources"]/div/div/ul/li/div/span/a') %>%
   html_attr("href")
 
-url2 <- html_nodes(html2, xpath = '//*[@id="data-and-resources"]/div/div/ul/li/div/span/a') %>%
+deaths_url <- html_nodes(html2, xpath = '//*[@id="data-and-resources"]/div/div/ul/li/div/span/a') %>%
   html_attr("href")
 
-db_c <- read_delim(url1, delim = ";") %>% 
+db_c <- read_delim(cases_url, delim = ";") %>% 
   as_tibble()
 
-db_d <- read_delim(url2, delim = ";") %>% 
+db_d <- read_delim(deaths_url, delim = ";") %>% 
   as_tibble()
 
 # deaths ----------------------------------------------
@@ -153,7 +147,7 @@ db_all2 <- db_all %>%
   drop_na() %>% 
   filter((Region == "All" & date_f >= "2020-03-01") | date_f >= date_start)
 
-db_final <- db_all2 %>% 
+out <- db_all2 %>% 
   mutate(Country = "Peru",
          AgeInt = case_when(Age == "100" ~ "5",
                             Age == "TOT" ~ "",
@@ -200,138 +194,42 @@ test <- db_final %>%
   filter(Sex == "b",
          Age == "TOT")
 
-
-# slicing database by regions to uploading it to drive
-
-table(db_final$Region) %>% sort()
-
-unique(db_final$Region)
-
-regions <- db_final %>% dplyr::pull(Region) %>% unique()
-
-db_final_pe <- db_final %>% 
-  filter(Region == "All")
-
-db_final_1 <- db_final %>% 
-  filter(Region %in% regions[2:5])
-
-db_final_2 <- db_final %>% 
-  filter(Region %in% regions[6:8])
-
-db_final_3 <- db_final %>% 
-  filter(Region %in% regions[9:12])
-
-db_final_4 <- db_final %>% 
-  filter(Region %in% regions[13:14])
-
-db_final_5 <- db_final %>% 
-  filter(Region %in% regions[15:16])
-
-db_final_6 <- db_final %>% 
-  filter(Region %in% regions[17:19])
-
-db_final_7 <- db_final %>% 
-  filter(Region %in% regions[20:23])
-
-db_final_8 <- db_final %>% 
-  filter(Region %in% regions[24:length(regions)])
-
 #########################
-# Push dataframe to Drive -------------------------------------------------
+# save data in N: -------------------------------------------------
 #########################
 
-sheet_write(db_final_pe,
-            ss = ss_0,
-            sheet = "database")
+write_rds(out, paste0(dir_n, ctr, ".rds"))
 
-Sys.sleep(105)
+log_update(pp = ctr, N = nrow(out))
 
-sheet_write(db_final_1,
-            ss = ss_1,
-            sheet = "database")
-
-Sys.sleep(105)
-
-sheet_write(db_final_2,
-            ss = ss_2,
-            sheet = "database")
-
-Sys.sleep(105)
-
-sheet_write(db_final_3,
-            ss = ss_3,
-            sheet = "database")
-
-Sys.sleep(105)
-
-sheet_write(db_final_4,
-            ss = ss_4,
-            sheet = "database")
-
-Sys.sleep(105)
-
-sheet_write(db_final_5,
-            ss = ss_5,
-            sheet = "database")
-
-Sys.sleep(105)
-
-sheet_write(db_final_6,
-            ss = ss_6,
-            sheet = "database")
-
-Sys.sleep(105)
-
-sheet_write(db_final_7,
-            ss = ss_7,
-            sheet = "database")
-
-Sys.sleep(105)
-
-sheet_write(db_final_8,
-            ss = ss_8,
-            sheet = "database")
-
-Sys.sleep(105)
-
-N <- nrow(db_final_pe) + nrow(db_final_1) + nrow(db_final_2) + nrow(db_final_3) +
-  nrow(db_final_4) + nrow(db_final_5) + nrow(db_final_6)  
-log_update(pp = "Peru", N = N)
 #########################
 # Push zip file to Drive -------------------------------------------------
 #########################
 
-date_f <- db_d2 %>% 
-  filter(!is.na(date_f)) %>% 
-  dplyr::pull(date_f) %>% 
-  max()
+# saving compressed data to N: drive
+data_source_c <- paste0(dir_n, "Data_sources/", ctr, "/cases_",today(), ".csv")
+data_source_d <- paste0(dir_n, "Data_sources/", ctr, "/deaths_",today(), ".csv")
 
-date <- paste(sprintf("%02d",day(date_f)),
-              sprintf("%02d",month(date_f)),
-              year(date_f),
-              sep=".")
+download.file(cases_url, destfile = data_source_c)
+download.file(deaths_url, destfile = data_source_d)
 
-filename_c <- file.path("Automation/temp_files",paste0("PE", date, "cases.csv"))
-filename_d <- file.path("Automation/temp_files",paste0("PE", date, "deaths.csv"))
+data_source <- c(data_source_c, data_source_d)
 
+zipname <- paste0(dir_n, 
+                  "Data_sources/", 
+                  ctr,
+                  "/", 
+                  ctr,
+                  "_data_",
+                  today(), 
+                  ".zip")
 
+zipr(zipname, 
+     data_source, 
+     recurse = TRUE, 
+     compression_level = 9,
+     include_directories = TRUE)
 
-write_csv(db_c, filename_c)
-write_csv(db_d, filename_d)
-
-filename <- file.path("Automation/temp_files",paste0("PE", date, "cases&deaths.zip"))
-
-files <- c(filename_c, filename_d)
-zip(filename, files, compression_level = 9)
-
-drive_upload(
-  filename,
-  path = ss_db,
-  name = filename,
-  overwrite = T)
-
-
-file.remove(filename)
-file.remove(filename_c)
-file.remove(filename_d)
+# clean up file chaff
+file.remove(data_source)
 

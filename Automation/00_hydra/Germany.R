@@ -1,11 +1,22 @@
+library(here)
+source(here("Automation/00_Functions_automation.R"))
 
-# TR New: you must be in the repo environment 
-source("Automation/00_Functions_automation.R")
+# assigning Drive credentials in the case the script is verified manually  
+if (!"email" %in% ls()){
+  email <- "gatemonte@gmail.com"
+}
 
+# info country and N drive address
+ctr <- "Germany"
+dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
+
+# Drive credentials
 drive_auth(email = email)
 gs4_auth(email = email)
 
-db <- read_csv("https://opendata.arcgis.com/datasets/dd4580c810204019a7b8eb3e0b329dd6_0.csv",
+cases_url <- "https://opendata.arcgis.com/datasets/dd4580c810204019a7b8eb3e0b329dd6_0.csv"
+
+db <- read_csv(cases_url,
                locale = locale(encoding = "UTF-8"))
 
 unique(db$Geschlecht)
@@ -55,8 +66,7 @@ db_all <- db2 %>%
   group_by(Region, Sex, Measure, Age) %>% 
   mutate(Value = cumsum(Value)) %>% 
   ungroup() 
-  
-  
+
 # Regions acronyms from https://en.wikipedia.org/wiki/ISO_3166-2:DE
 db_region <- db_all %>% 
   mutate(Country = "Germany",
@@ -124,7 +134,7 @@ db_germany <- db_all %>%
 db_full <- bind_rows(db_germany, db_region) 
   
 # Remove days where cumulative sum is 0.
-db_full <-
+out <-
   db_full %>% 
   group_by(Region, Measure, date_f = dmy(Date)) %>% 
   mutate(N = sum(Value)) %>% 
@@ -142,7 +152,7 @@ db_full <-
 # comparison with aggregate data reported online in 
 # https://www.rki.de/DE/Content/InfAZ/N/Neuartiges_Coronavirus/Fallzahlen.html
 
-last_date <- db_full %>% 
+last_date <- out %>% 
   mutate(date_f = dmy(Date)) %>% 
   group_by() %>% 
   summarise(date_f = max(date_f)) %>% 
@@ -150,7 +160,7 @@ last_date <- db_full %>%
         sprintf("%02d", month(date_f)),
         year(date_f), sep = "."))
 
-db_full %>% 
+out %>% 
   filter(Date == last_date$Date) %>% 
   group_by(Region, Measure) %>% 
   summarize(N = sum(Value)) %>% 
@@ -161,71 +171,33 @@ db_full %>%
 ############################################
 #### uploading database to Google Drive ####
 ############################################
+write_rds(out, paste0(dir_n, ctr, ".rds"))
 
-# slicing the database in smaller pieces
-############################################
-
-slices <- 3
-dims <- db_full %>% dim() 
-slice_size <- ceiling(dims[1]/slices) 
-
-# TR: pull urls from rubric instead
-rubric <- get_input_rubric()
-
-for(i in 1 : slices){
-  if (i < slices){ 
-    slice <- db_full[((i - 1) * slice_size + 1) : (i * slice_size),]
-    ss   <- rubric %>% filter(Short == paste0("DE_", sprintf("%02d",i))) %>% dplyr::pull(Sheet)
-  } else {
-    slice <- db_full[((i - 1) * slice_size + 1) : dims[1],]
-    ss   <- rubric %>% filter(Short == paste0("DE_", sprintf("%02d",i))) %>% dplyr::pull(Sheet)
-  }
-  
-  hm <- try(write_sheet(slice, 
-                        ss = ss,
-                        sheet = "database"))
-  if (class(hm)[1] == "try-error"){
-    hm <- try(write_sheet(slice, 
-                          ss = ss,
-                          sheet = "database"))
-  }
-  if (class(hm)[1] == "try-error"){
-    Sys.sleep(120)
-    hm <- try(write_sheet(slice, 
-                          ss = ss,
-                          sheet = "database"))
-  }
-  Sys.sleep(120)
-  
-}
-
-log_update(pp = "Germany", N = nrow(db_full))
+log_update(pp = ctr, N = nrow(out))
 
 ############################################
 #### uploading metadata to Google Drive ####
 ############################################
 
-# pull urls from rubric instead 
-de_rubric <- get_input_rubric() %>% 
-  filter(Short == "DE_01") %>% 
-  dplyr::pull(Source)
+data_source <- paste0(dir_n, "Data_sources/", ctr, "/cases&deaths_",today(), ".csv")
 
+download.file(cases_url, destfile = data_source)
 
-date_f <- Sys.Date()
-d <- paste(sprintf("%02d", day(date_f)),
-           sprintf("%02d", month(date_f)),
-           year(date_f), sep = ".")
+zipname <- paste0(dir_n, 
+                  "Data_sources/", 
+                  ctr,
+                  "/", 
+                  ctr,
+                  "_data_",
+                  today(), 
+                  ".zip")
 
-sheet_name <- paste0("DE", d, "cases&deaths")
+zipr(zipname, 
+     data_source, 
+     recurse = TRUE, 
+     compression_level = 9,
+     include_directories = TRUE)
 
-meta <- drive_create(sheet_name, 
-                     path = ss_db, 
-                     type = "spreadsheet",
-                     overwrite = TRUE)
-
-write_sheet(db, 
-            ss = meta$id,
-            sheet = "cases&deaths_age_sex")
-
-sheet_delete(meta$id, "Sheet1")
+# clean up file chaff
+file.remove(data_source)
 

@@ -1,3 +1,4 @@
+library(here)
 
 ############################################################################
 # Deprecated!!!! Massachusetts stopped reporting age groups on August 11 :(
@@ -7,6 +8,11 @@
 # TR New: you must be in the repo environment 
 source("Automation/00_Functions_automation.R")
 
+# info country and N drive address
+ctr <- "Sweden"
+dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
+
+# Drive credentials
 drive_auth(email = email)
 gs4_auth(email = email)
 
@@ -215,19 +221,17 @@ last_date <- paste(sprintf("%02d", day(last_date_f)),
 ############################################
 #### uploading database to Google Drive ####
 ############################################
+write_rds(db_all, "N:/COVerAGE-DB/Automation/Hydra/US_Massachusetts.rds")
+
+log_update(pp = "US_Massachusetts", N = nrow(db_all))
+############################################
+#### uploading metadata to Google Drive ####
+############################################
 
 # TR: pull urls from rubric instead 
 us_ma_rubric <- get_input_rubric() %>% filter(Short == "US_MA")
 ss_i   <- us_ma_rubric %>% dplyr::pull(Sheet)
 ss_db  <- us_ma_rubric %>% dplyr::pull(Source)
-
-write_sheet(db_all,
-            ss = ss_i,
-            sheet = "database")
-log_update(pp = "US_Massachusetts", N = nrow(db_all))
-############################################
-#### uploading metadata to Google Drive ####
-############################################
 
 sheet_name <- paste0("US_MA_", last_date_f, "_cases&deaths")
 

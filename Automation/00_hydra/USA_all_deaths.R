@@ -1,18 +1,22 @@
+library(here)
+source(here("Automation/00_Functions_automation.R"))
 
-# TR New: you must be in the repo environment
-source("Automation/00_Functions_automation.R")
+# assigning Drive credentials in the case the script is verified manually  
+if (!"email" %in% ls()){
+  email <- "ugofilippo.basellini@gmail.com"
+}
 
+# info country and N drive address
+ctr <- "USA_all_deaths"
+dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
+
+# Drive credentials
 drive_auth(email = email)
 gs4_auth(email = email)
-# TR: pull urls from rubric instead
-rubric_i <- get_input_rubric() %>% filter(Short == "US")
-ss_i     <- rubric_i %>% dplyr::pull(Sheet)
-ss_db    <- rubric_i %>% dplyr::pull(Source)
 
 # info by age
-# hm <- read_csv("https://data.cdc.gov/api/views/9bhg-hcku/rows.csv?accessType=DOWNLOAD")
-db <- read_csv("https://data.cdc.gov/api/views/vsak-wrfu/rows.csv?accessType=DOWNLOAD")
-# to <- read_csv("https://data.cdc.gov/api/views/r8kw-7aab/rows.csv?accessType=DOWNLOAD")
+url <- "https://data.cdc.gov/api/views/vsak-wrfu/rows.csv?accessType=DOWNLOAD"
+db <- read_csv(url)
 
 db2 <- db %>%
   select("Age Group", "Sex", "End Week", "COVID-19 Deaths") %>%
@@ -43,7 +47,7 @@ db3 <- db2 %>%
   group_by(Sex, Age) %>%
   mutate(Value = cumsum(New))
 
-db_all <- db3 %>%
+out <- db3 %>%
   filter(date_f > "2020-02-29") %>%
   mutate(Country = "USA",
          Region = "All",
@@ -59,48 +63,32 @@ db_all <- db3 %>%
 ############################################
 #### uploading database to Google Drive ####
 ############################################
+write_rds(out, paste0(dir_n, ctr, ".rds"))
 
-write_sheet(db_all,
-            ss = ss_i,
-            sheet = "database")
-log_update(pp = "USA_all_deaths", N = nrow(db_all))
-Sys.sleep(100)
+log_update(pp = ctr, N = nrow(out))
+
 ############################################
-#### uploading metadata to Google Drive ####
+#### uploading metadata to N Drive ####
 ############################################
 
-date_f <- Sys.Date()
-d <- paste(sprintf("%02d", day(date_f)),
-           sprintf("%02d", month(date_f)),
-           year(date_f), sep = ".")
+data_source <- paste0(dir_n, "Data_sources/", ctr, "/deaths_",today(), ".csv")
 
-sheet_name <- paste0("US_All_", d, "cases&deaths")
+download.file(url, destfile = data_source)
 
-meta <- drive_create(sheet_name,
-                     path = ss_db,
-                     type = "spreadsheet",
-                     overwrite = TRUE)
+zipname <- paste0(dir_n, 
+                  "Data_sources/", 
+                  ctr,
+                  "/", 
+                  ctr,
+                  "_data_",
+                  today(), 
+                  ".zip")
 
-write_sheet(db,
-            ss = meta$id,
-            sheet = "deaths_age")
+zipr(zipname, 
+     data_source, 
+     recurse = TRUE, 
+     compression_level = 9,
+     include_directories = TRUE)
 
-write_sheet(to,
-            ss = meta$id,
-            sheet = "deaths_all")
-
-sheet_delete(meta$id, "Sheet1")
-
-Sys.sleep(100)
-# uploading data for INED
-# TR: not sure where this leads to, seems to be exact same place, overwriting the previous?
-meta2 <- drive_create(sheet_name,
-                     path = "https://drive.google.com/drive/folders/1t2_JQaVJEPWEZxAqhe8TxEDkIrYeMLCF?usp=sharing",
-                     type = "spreadsheet",
-                     overwrite = TRUE)
-
-write_sheet(db,
-            ss = meta2$id,
-            sheet = "deaths_age")
-
-sheet_delete(meta2$id, "Sheet1")
+# clean up file chaff
+file.remove(data_source)

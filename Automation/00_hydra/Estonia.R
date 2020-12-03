@@ -1,14 +1,18 @@
+library(here)
+source(here("Automation/00_Functions_automation.R"))
 
-# TR New: you must be in the repo environment 
-source("Automation/00_Functions_automation.R")
+# assigning Drive credentials in the case the script is verified manually  
+if (!"email" %in% ls()){
+  email <- "e.delfava@gmail.com"
+}
+
+# info country and N drive address
+ctr <- "Estonia"
+dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 # Drive credentials
 drive_auth(email = email)
 gs4_auth(email = email)
-# TR: pull urls from rubric instead 
-rubric_i <- get_input_rubric() %>% filter(Short == "EE")
-ss_i     <- rubric_i %>% dplyr::pull(Sheet)
-ss_db    <- rubric_i %>% dplyr::pull(Source)
 
 cols_in <- cols(
   id = col_character(),
@@ -23,7 +27,6 @@ cols_in <- cols(
 )
 
 db <- read_csv("https://opendata.digilugu.ee/opendata_covid19_test_results.csv", col_types = cols_in)
-
 
 db2 <- db %>% 
   rename(Sex = Gender) %>% 
@@ -85,32 +88,34 @@ db_all <- bind_rows(db3, db5) %>%
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
   sort_input_data()
 
-############################################
-#### uploading database to Google Drive ####
-############################################
-# This command replace the whole sheet
-write_sheet(db_all, 
-            ss = ss_i,
-            sheet = "database")
+###########################
+#### Saving data in N: ####
+###########################
+
+# database
+write_rds(db_all, paste0(dir_n, ctr, ".rds"))
 log_update(pp = "Estonia", N = nrow(db_all))
-#############################################
-#### saving metadata in the Drive folder ####
-#############################################
 
-date_f <- Sys.Date()
-d <- paste(sprintf("%02d", day(date_f)),
-           sprintf("%02d", month(date_f)),
-           year(date_f), sep = ".")
+# datasource
+data_source <- paste0(dir_n, "Data_sources/", ctr, "/cases&tests_",today(), ".csv")
 
-sheet_name <- paste0("EE", d, "_cases&tests")
+write_csv(db, data_source)
 
-meta <- drive_create(sheet_name, 
-                     path = ss_db, 
-                     type = "spreadsheet",
-                     overwrite = T)
+zipname <- paste0(dir_n, 
+                  "Data_sources/", 
+                  ctr,
+                  "/", 
+                  ctr,
+                  "_data_",
+                  today(), 
+                  ".zip")
 
-write_sheet(db, 
-            ss = meta$id,
-            sheet = "cases&tests")
+zipr(zipname, 
+     data_source, 
+     recurse = TRUE, 
+     compression_level = 9,
+     include_directories = TRUE)
 
-sheet_delete(meta$id, "Sheet1")
+# clean up file chaff
+file.remove(data_source)
+

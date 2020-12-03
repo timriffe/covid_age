@@ -10,12 +10,6 @@ setwd("U:/gits/covid_age")
 # TR New: you must be in the repo environment 
 source("Automation/00_Functions_automation.R")
 
-library(tidyverse)
-library(googlesheets4)
-library(googledrive)
-library(rvest)
-library(lubridate)
-
 # Authorizing authentification or Drive (edit these lines with the user's email)
 drive_auth(email = email)
 gs4_auth(email = email)

@@ -1,30 +1,22 @@
-
+library(here)
 source(here("Automation/00_Functions_automation.R"))
 
-# handle authentications
+# assigning Drive credentials in the case the script is verified manually  
+if (!"email" %in% ls()){
+  email <- "e.delfava@gmail.com"
+}
+
+# info country and N drive address
+ctr <- "Czechia"
+dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
+
+# Drive credentials
 drive_auth(email = email)
 gs4_auth(email = email)
-
-# Get upload urls:
-ss_list <- get_input_rubric() %>% 
-  filter(Country == "Czechia")
-
 
 ###########################################
 ################ CASES ####################
 ###########################################
-
-# NUTS 3 codes
-# NUTS3 <- data.frame(
-#   code = c("CZ010", "CZ020", "CZ031", "CZ032", 
-#            "CZ041", "CZ042", "CZ051", "CZ052", 
-#            "CZ053", "CZ063", "CZ064", "CZ071", 
-#            "CZ072", "CZ080"), 
-#   name = c("Prague", "Central Bohemian Region", "South Bohemian Region", "Plzen Region", 
-#            "Karlovy Vary Region", "Usti nad Labe Region", "Liberec Region", "Hradec Kralove Region", 
-#            "Pardubice Region", "Vysocina Region", "South Moravian Region", "Olomouc Region", 
-#            "Zlin Region", "Moravian-Silesian Region")
-# )
 
 NUTS3 <- tibble(
   code = c("CZ010", "CZ020", "CZ031", "CZ032", 
@@ -294,67 +286,40 @@ cz_spreadsheet_all <-
          Value) %>% 
     arrange(dmy(Date), Sex, Measure, Age)
 
+out <- bind_rows(cz_spreadsheet_all, cz_spreadsheet_region)
 
+###########################
+#### Saving data in N: ####
+###########################
 
+write_rds(out, paste0(dir_n, ctr, ".rds"))
+log_update(pp = ctr, N = nrow(out))
 
-# Start uploads:
+#### uploading metadata to N Drive ####
 
-ss_all <- ss_list %>% 
-  filter(Region == "All") %>% 
-  dplyr::pull(Sheet)
+data_source_c <- paste0(dir_n, "Data_sources/", ctr, "/deaths_",today(), ".csv")
+data_source_d <- paste0(dir_n, "Data_sources/", ctr, "/cases_",today(), ".csv")
 
-write_sheet(cz_spreadsheet_all,
-            ss = ss_all,
-            sheet = "database")
+download.file(cases_url, destfile = data_source_c)
+download.file(deaths_url, destfile = data_source_d)
 
-Sys.sleep(120)
+data_source <- c(data_source_c, data_source_d)
 
-# region loop:
+zipname <- paste0(dir_n, 
+                  "Data_sources/", 
+                  ctr,
+                  "/", 
+                  ctr,
+                  "_data_",
+                  today(), 
+                  ".zip")
 
-for (i in 1:7){
-  reg_i <- paste0("Reg",i)
-  ss_i  <- ss_list %>% 
-    filter(Region == reg_i) %>% 
-    dplyr::pull(Sheet)
-  # Two Regions at a time:
-  ind     <- (i - 1) * 2 + 1
-  regions <- NUTS3[c(ind, ind + 1), ]$name
-  
-  RegSub <- cz_spreadsheet_region %>% 
-    filter(Region %in% regions)
-  
-  write_sheet(RegSub,
-              ss = ss_i,
-              sheet = "database")
-  
-  Sys.sleep(120)
-}
+zipr(zipname, 
+     data_source, 
+     recurse = TRUE, 
+     compression_level = 9,
+     include_directories = TRUE)
 
+# clean up file chaff
+file.remove(data_source)
 
-# make a note in the automation log
-N <- nrow(cz_spreadsheet_region) + nrow(cz_spreadsheet_all)
-log_update(pp = "Czechia", N = N)
-
-
-# upload to Drive. Best if it's a Google Sheet since it doesn't take space.
-
-# only space for one url in rubric.
-ss_sources <- ss_list %>% 
-  filter(Region == "All") %>% 
-  dplyr::pull(Source)
-
-
-download.file(cases_url, destfile = "cz_cases.csv")
-download.file(deaths_url, destfile = "cz_deaths.csv")
-
-# this puts the .csv on the drive
-drive_put(media = "cz_cases.csv", 
-          path = ss_sources, 
-          name = "cz_cases.csv")
-
-drive_put(media = "cz_deaths.csv", 
-          path = ss_sources, 
-          name = "cz_deaths.csv")
-
-file.remove("cz_cases.csv")
-file.remove("cz_deaths.csv")

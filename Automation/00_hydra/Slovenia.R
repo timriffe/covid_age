@@ -1,13 +1,18 @@
-# TR New: you must be in the repo environment 
-source("Automation/00_Functions_automation.R")
+library(here)
+source(here("Automation/00_Functions_automation.R"))
 
+# assigning Drive credentials in the case the script is verified manually  
+if (!"email" %in% ls()){
+  email <- "ugofilippo.basellini@gmail.com"
+}
+
+# info country and N drive address
+ctr <- "Slovenia"
+dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
+
+# Drive credentials
 drive_auth(email = email)
 gs4_auth(email = email)
-
-SI_rubric <- get_input_rubric() %>% filter(Short == "SI")
-ss_i  <- SI_rubric %>% dplyr::pull(Sheet)
-ss_db <-  SI_rubric %>% dplyr::pull(Source)
-# reading data from Montreal and last date ent
 
 ### reading data from the website 
 m_url <- "https://www.nijz.si/sl/dnevno-spremljanje-okuzb-s-sars-cov-2-covid-19"
@@ -100,7 +105,7 @@ db_d3 <- db_d2 %>%
   mutate(Measure = "Deaths")
 
 
-db_all <- bind_rows(db_c3, db_d3) %>% 
+out <- bind_rows(db_c3, db_d3) %>% 
   mutate(Date = paste(sprintf("%02d", day(date_f)),
                       sprintf("%02d", month(date_f)),
                       year(date_f), sep = "."),
@@ -120,38 +125,33 @@ db_all <- bind_rows(db_c3, db_d3) %>%
 date_f <- db_d3 %>% 
   dplyr::pull(date_f) %>% 
   max()
-############################################
-#### uploading database to Google Drive ####
-############################################
-# This command append new rows at the end of the sheet
-write_sheet(db_all,
-             ss = ss_i,
-             sheet = "database")
-log_update(pp = "Slovenia", N = nrow(db_all))
-############################################
-#### uploading metadata to Google Drive ####
-############################################
 
-d <- paste(sprintf("%02d", day(date_f)),
-           sprintf("%02d", month(date_f)),
-           year(date_f), sep = ".")
-
-meta <- drive_create(paste0("SI", d, "_cases&deaths"),
-                     path = ss_db, 
-                     type = "spreadsheet",
-                     overwrite = T)
-
-write_sheet(db_c, 
-            ss = meta$id,
-            sheet = "cases_age_sex")
-
-write_sheet(db_d, 
-            ss = meta$id,
-            sheet = "deaths_age_sex")
-
-sheet_delete(meta$id, "Sheet1")
+###########################
+#### Saving data in N: ####
+###########################
+write_rds(out, paste0(dir_n, ctr, ".rds"))
+log_update(pp = ctr, N = nrow(out))
 
 
+data_source <- paste0(dir_n, "Data_sources/", ctr, "/cases&deaths_",today(), ".xlsx")
 
+download.file(paste0("https://www.nijz.si", url), destfile = data_source)
 
+zipname <- paste0(dir_n, 
+                  "Data_sources/", 
+                  ctr,
+                  "/", 
+                  ctr,
+                  "_data_",
+                  today(), 
+                  ".zip")
+
+zipr(zipname, 
+     data_source, 
+     recurse = TRUE, 
+     compression_level = 9,
+     include_directories = TRUE)
+
+# clean up file chaff
+file.remove(data_source)
 
