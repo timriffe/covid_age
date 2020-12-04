@@ -229,7 +229,7 @@ log_update(pp = "Philippines", N = N)
 ############################################
 ### save artifacts                       ###
 ############################################
-files <- c("Data/PH_Cases.csv","Data/PH_Tests.csv","Data/PHREADME.pdf")
+files <- c("Data/PH_Cases.csv","Data/PH_Tests.csv","Data/PH_README.pdf")
 #ex_files <- c(paste0(PH_dir, files))
 
 zipname <- paste0(dir_n, 
