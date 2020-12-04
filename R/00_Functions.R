@@ -203,7 +203,8 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
   on_hydra <- Sys.info()["nodename"] %in% c("HYDRA01","HYDRA02")
   if ( on_hydra ){
     
-    rubric_hydra <- rubric %>% 
+    rubric_hydra <- 
+      get_input_rubric(tab = "input") %>% 
       filter(Loc == "n")
     
     rubric <- rubric %>% 
