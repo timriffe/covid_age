@@ -124,7 +124,7 @@ Cases <- IN %>%
   group_by(Date, Age, Sex) %>% 
   summarize(Value = n()) %>% 
   ungroup() %>% 
-  complete(Date = dates, Age = ages, Sex, fill = list(Value = 0)) %>% 
+  tidyr::complete(Date = dates, Age = ages, Sex, fill = list(Value = 0)) %>% 
   arrange(Sex, Age, Date) %>% 
   group_by(Sex, Age) %>% 
   mutate(Value = cumsum(Value)) %>% 
@@ -167,7 +167,7 @@ Deaths <- IN %>%
   group_by(Date, Age, Sex) %>% 
   summarize(Value = n()) %>% 
   ungroup() %>% 
-  complete(Date = dates, Age = ages, Sex, fill = list(Value = 0)) %>% 
+  tidyr::complete(Date = dates, Age = ages, Sex, fill = list(Value = 0)) %>% 
   arrange(Sex, Age, Date) %>% 
   group_by(Sex, Age) %>% 
   mutate(Value = cumsum(Value)) %>% 
@@ -186,7 +186,7 @@ Deaths <- IN %>%
          Age = ifelse(is.na(Age),"UNK",as.character(Age)),
          AgeInt = ifelse(Age == "UNK",NA,AgeInt),
          AgeInt = suppressWarnings(as.integer(AgeInt))) %>% 
-  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
+  dplyr::select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
   sort_input_data()
 
 
@@ -207,7 +207,7 @@ Tests <-
          Sex = "b",
          Age = "TOT",
          Code = paste0("PH",Date)) %>% 
-  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
+  dplyr::select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
   
 out <-
   rbind(Deaths,Cases,Tests) %>% 
