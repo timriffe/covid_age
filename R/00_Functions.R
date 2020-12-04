@@ -203,7 +203,8 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
   on_hydra <- Sys.info()["nodename"] %in% c("HYDRA01","HYDRA02")
   if ( on_hydra ){
     
-    rubric_hydra <- rubric %>% 
+    rubric_hydra <- 
+      get_input_rubric(tab = "input") %>% 
       filter(Loc == "n")
     
     rubric <- rubric %>% 
@@ -330,14 +331,15 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
       dplyr::pull(hydra_name) %>% 
       paste0(".rds")
     
-    
+    local_files <-  file.path(hydra_path,local_files)
     hydra_data <-
-      lapply(file.path(hydra_path,local_files),
+      lapply(local_files,
              readRDS) %>% 
       lapply(function(X){
         X %>% 
           ungroup() %>% 
-          mutate(Age = as.character(Age))
+          mutate(Age = as.character(Age),
+                 AgeInt = as.integer(AgeInt))
       }) %>% 
       bind_rows() %>% 
       mutate(Short = add_Short(Code, Date))
