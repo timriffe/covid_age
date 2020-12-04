@@ -239,10 +239,10 @@ add_Short <- function(Code, Date) {
 
 There are different files on the OWD github repository. Here's one that contains the full available time series for each country.
 
-```{r}
+```{r, message = FALSE, warning = FALSE}
 library(countrycode)
 OWID <- read_csv("https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/testing/covid-testing-all-observations.csv",
-                col_types= "cDccccdddddddd") %>% 
+                col_types= "ccDcccdddddddd") %>% 
   filter(!is.na(`ISO code`)) %>% 
   filter(! `ISO code` %in% c("OWID_KOS","OWID_WRL")) %>% 
   mutate(ISO2 = countrycode(`ISO code`, 
