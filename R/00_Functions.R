@@ -330,14 +330,15 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
       dplyr::pull(hydra_name) %>% 
       paste0(".rds")
     
-    
+    local_files <-  file.path(hydra_path,local_files)
     hydra_data <-
-      lapply(file.path(hydra_path,local_files),
+      lapply(local_files,
              readRDS) %>% 
       lapply(function(X){
         X %>% 
           ungroup() %>% 
-          mutate(Age = as.character(Age))
+          mutate(Age = as.character(Age),
+                 AgeInt = as.integer(AgeInt))
       }) %>% 
       bind_rows() %>% 
       mutate(Short = add_Short(Code, Date))
