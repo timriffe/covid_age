@@ -53,31 +53,31 @@ if (grepl("diego", auto_update_wd)){
 #################################################
 
 # Ugo
-sched("Slovenia", tm = "17:14",email = auto_update_email, wd = auto_update_wd)
-sched("US_Virginia", tm = "19:50",email = auto_update_email, wd = auto_update_wd)
-sched("USA_all_deaths", tm = "01:00",email = auto_update_email, wd = auto_update_wd)
+sched("Slovenia", tm = "09:50",email = auto_update_email, wd = auto_update_wd)
+sched("US_Virginia", tm = "09:55",email = auto_update_email, wd = auto_update_wd)
+sched("USA_all_deaths", tm = "10:00",email = auto_update_email, wd = auto_update_wd)
 # sched("Belgium", tm = "19:50",email = auto_update_email, wd = auto_update_wd)
 
 # Emanuele
-sched("Netherlands", tm = "04:00",email = auto_update_email, wd = auto_update_wd)
-sched("Estonia", tm = "04:31",email = auto_update_email, wd = auto_update_wd)
-sched("Czechia", tm = "06:46",email = auto_update_email, wd = auto_update_wd)
+sched("Netherlands", tm = "09:40",email = auto_update_email, wd = auto_update_wd)
+sched("Estonia", tm = "09:45",email = auto_update_email, wd = auto_update_wd)
+sched("Czechia", tm = "09:50",email = auto_update_email, wd = auto_update_wd)
 sched("US_Michigan", tm = "02:40",email = auto_update_email, wd = auto_update_wd)
 
 # Jorge
-sched("Venezuela", tm = "13:48",email = auto_update_email, wd = auto_update_wd)
-sched("US_Texas", tm = "17:11",email = auto_update_email, wd = auto_update_wd)
+sched("Venezuela", tm = "09:31",email = auto_update_email, wd = auto_update_wd)
+sched("US_Texas", tm = "09:32",email = auto_update_email, wd = auto_update_wd)
 sched("USA_deaths_states", tm = "01:10",email = auto_update_email, wd = auto_update_wd)
 # sched("New_Zealand", "17:20",email = auto_update_email, wd = auto_update_wd)
 
 # Diego
-sched("Sweden", tm = "17:02",email = auto_update_email, wd = auto_update_wd)
-sched("Peru", tm = "05:31",email = auto_update_email, wd = auto_update_wd)
-sched("Germany", tm = "20:49",email = auto_update_email, wd = auto_update_wd)
+sched("Sweden", tm = "12:00",email = auto_update_email, wd = auto_update_wd)
+sched("Peru", tm = "09:40",email = auto_update_email, wd = auto_update_wd)
+sched("Germany", tm = "09:35",email = auto_update_email, wd = auto_update_wd)
 # sched("US_Massachusetts", tm = "17:04",email = auto_update_email, wd = auto_update_wd)
 
 # Enrique
-sched("Colombia",  tm = "20:25",email = auto_update_email, wd = auto_update_wd)
+sched("Colombia",  tm = "09:30",email = auto_update_email, wd = auto_update_wd)
 sched("US_NYC", tm = "19:58",email = auto_update_email, wd = auto_update_wd)
 sched("Austria", tm = "21:25",email = auto_update_email, wd = auto_update_wd)
 sched("ES_Basque_Country", tm = "11:00",email = auto_update_email, wd = auto_update_wd, sch = "WEEKLY")
