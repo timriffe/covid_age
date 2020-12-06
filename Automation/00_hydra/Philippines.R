@@ -1,10 +1,11 @@
-source("R/00_Functions.R")
+source("Automation/00_Functions_automation.R")
 library(tidyverse)
 library(googlesheets4)
+library(googledrive)
 library(lubridate)
 library(readr)
 library(rvest)
-library(urlshorteneR)
+library(longurl)
 library(pdftools)
 
 # info country and N drive address
@@ -20,24 +21,20 @@ bit.ly_url <- "bit.ly/DataDropPH"
 
 # these auth keys given in the package documentation...
 # no idea if it's problematic to use them or not.
-bitly_token <-
-  bitly_auth(
-    key = "be03aead58f23bc1aee6e1d7b7a1d99d62f0ede8",
-    secret = "f9c6a3b18968e991e35f466e90c7d883cc176073"
-  )
-drive_readme_url <- bitly_expand_link(bitlink_id = bit.ly_url, 
-                               showRequestURL = FALSE)
+
+drive_readme_url <- longurl::expand_urls(bit.ly_url)
 
 # Download the README pdf that contains the link!
-drive_id_shorter <- drive_readme_url$long_url %>% 
+drive_id_shorter <- drive_readme_url$expanded_url %>% 
   gsub(pattern = "https://drive.google.com/drive/folders/",
        replacement = "") %>% 
   gsub(pattern = "?usp=sharing",
        replacement = "") %>% 
-  as_id() %>% 
+  googledrive::as_id() %>% 
   drive_ls() %>% 
   filter(grepl(name,pattern = "READ ME FIRST")) %>% 
-  drive_download(path = "Data/PH_README.pdf")
+  drive_download(path = "Data/PH_README.pdf",
+                 overwrite=TRUE)
 
 # read as text ()
 PDF_TEXT <- pdf_text("Data/PH_README.pdf")
@@ -46,20 +43,20 @@ PAGE     <- PDF_TEXT[grepl(PDF_TEXT,pattern = "https://bit.ly/")] %>%
   '[['(1) 
 
 folder_bitly_url <- PAGE[grepl(PAGE,pattern="https://bit")] %>% 
-  gsub(pattern = "https://", replacement = "")
+  gsub(pattern = "https://", replacement = "") %>% 
+  gsub(pattern = "\r",replacement= "")
 
-drive_folder_url <- 
-  bitly_expand_link(bitlink_id = folder_bitly_url, 
-                    showRequestURL = FALSE)
+drive_folder_url <- longurl::expand_urls(folder_bitly_url)
+
 
 # Drive info for all folder contents
 drive_contents <-
-  drive_folder_url$long_url %>% 
+  drive_folder_url$expanded_url %>% 
   gsub(pattern = "https://drive.google.com/drive/folders/",
        replacement = "") %>% 
   gsub(pattern = "?usp=sharing",
        replacement = "") %>% 
-  as_id() %>% 
+  googledrive::as_id() %>% 
   drive_ls() 
 
 # Drive info for Case file
@@ -74,10 +71,12 @@ tests_url <-
 
 # Download Cases
 case_url %>% 
-  drive_download(path = "Data/PH_Cases.csv")
+  drive_download(path = "Data/PH_Cases.csv",
+                 overwrite = TRUE)
 # Download Tests
 tests_url %>% 
-  drive_download(path = "Data/PH_Tests.csv")
+  drive_download(path = "Data/PH_Tests.csv",
+                 overwrite = TRUE)
 
 
 # Check for updates: open xlsx in drive, convert to google docs, then copy url here
@@ -241,7 +240,7 @@ zipname <- paste0(dir_n,
                   today(), 
                   ".zip")
 
-zipr(zipname,
+zip::zipr(zipname,
      files = files, 
      recurse = TRUE, 
      compression_level = 9,
