@@ -149,10 +149,10 @@ db_all2 <- db_all %>%
 
 out <- db_all2 %>% 
   mutate(Country = "Peru",
-         AgeInt = case_when(Age == "100" ~ "5",
-                            Age == "TOT" ~ "",
-                            Region == "All" | as.numeric(Age) < 5 ~ "1",
-                            TRUE ~ "5"),
+         AgeInt = case_when(Age == "100" ~ 5L,
+                            Age == "TOT" ~ NA_integer_,
+                            Region == "All" | as.numeric(Age) < 5 ~ 1L,
+                            TRUE ~ 5L),
          Date = paste(sprintf("%02d",day(date_f)),
                       sprintf("%02d",month(date_f)),
                       year(date_f),
@@ -190,9 +190,9 @@ out <- db_all2 %>%
   arrange(Region, date_f, Measure, Sex, suppressWarnings(as.integer(Age))) %>% 
   select(Country, Region, Code,  Date, Sex, Age, AgeInt, Metric, Measure, Value)
 
-test <- db_final %>% 
-  filter(Sex == "b",
-         Age == "TOT")
+# test <- db_final %>% 
+#   filter(Sex == "b",
+#          Age == "TOT")
 
 #########################
 # save data in N: -------------------------------------------------

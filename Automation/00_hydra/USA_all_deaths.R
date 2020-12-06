@@ -32,12 +32,12 @@ db2 <- db %>%
          Sex = case_when(Sex == "Female" ~ "f",
                          Sex == "Male" ~ "m",
                          Sex == "All Sex" ~ "b"),
-         AgeInt = case_when(Age == "TOT" ~ "",
-                            Age == "0" ~ "1",
-                            Age == "1" ~ "4",
-                            Age == "5" ~ "10",
-                            Age == "85" ~ "20",
-                            TRUE ~ "10"),
+         AgeInt = case_when(Age == "TOT" ~ NA_integer_,
+                            Age == "0" ~ 1L,
+                            Age == "1" ~ 4L,
+                            Age == "5" ~ 10L,
+                            Age == "85" ~ 20L,
+                            TRUE ~ 10L),
          date_f = make_date(d = str_sub(date_f, 4, 5), m = str_sub(date_f, 1, 2), y = 2020)) %>%
   select(date_f, Sex, Age, AgeInt, New) %>%
   arrange(date_f, Sex, Age) %>%

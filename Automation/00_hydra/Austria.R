@@ -26,7 +26,7 @@ db_drive2 <- db_drive %>%
 last_date_drive <- max(db_drive2$date_f)
 
 # loading data from the website 
-data_source <- paste0(dir_n, "Data_sources/", ctr, "/", ctr, "_data_", today(), ".zip")
+source_data <- paste0(dir_n, "Data_sources/", ctr, "/", ctr, "_data_", today(), ".zip")
 download.file("https://info.gesundheitsministerium.at/data/data.zip", data_source)
 
 db_c_age <- read_csv2(unz(source_data, "Altersverteilung.csv"))

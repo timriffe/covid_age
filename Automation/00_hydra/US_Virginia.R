@@ -97,10 +97,10 @@ out <- bind_rows(db_age2, db_sex2, db_tests2) %>%
                       year(date_f),
                       sep="."),
          Code = paste0("US_VA", Date),
-         AgeInt = case_when(Age == "TOT" ~ "",
-                            Age == "UNK" ~ "",
-                            Age == "80" ~ "25",
-                            TRUE ~ "10"),
+         AgeInt = case_when(Age == "TOT" ~ NA_integer_,
+                            Age == "UNK" ~ NA_integer_,
+                            Age == "80" ~ 25L,
+                            TRUE ~ 10L),
          Metric = "Count") %>% 
   arrange(Region, date_f, Measure, Sex, suppressWarnings(as.integer(Age))) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
