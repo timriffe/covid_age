@@ -40,43 +40,49 @@ if (grepl("CurrentProjects", auto_update_wd)){
 if (grepl("diego", auto_update_wd)){
   auto_update_email <- "gatemonte@gmail.com"
 }
-# sched("Austria", tm = "21:31",email = auto_update_email, wd = auto_update_wd)
 
-# we assume this tasks are scheduled in a here()-aware fashion
-
-# sched() is a modified version of the original function taskscheduler_create() 
-# from the taskscheduleR package. It modifies each script to add the local path of 
-# the project, user email, delete previous task, etc. 
+# sched() is a funtion that generates and schedules a trigger script 
+# for each collection script. The trigger script has two purposes. 
+# First, it includes the information of the local path of the project and 
+# the Drive user credentials. Second, it calls the collection script ensuring
+# that it is executed using the proper encoding format (UTF-8). 
+# When scheduling the trigger script on hydra, the sched() function also 
+# deletes tasks that were scheduled in the past with same name. 
 # See "Automation/00_Functions_automation.R" for more details
 
 # current scripts working on hydra by participant
 #################################################
 
 # Ugo
+##############
 sched("Slovenia", tm = "17:14",email = auto_update_email, wd = auto_update_wd)
 sched("US_Virginia", tm = "19:50",email = auto_update_email, wd = auto_update_wd)
 sched("USA_all_deaths", tm = "01:00",email = auto_update_email, wd = auto_update_wd)
 # sched("Belgium", tm = "19:50",email = auto_update_email, wd = auto_update_wd)
 
 # Emanuele
+##############
 sched("Netherlands", tm = "04:00",email = auto_update_email, wd = auto_update_wd)
 sched("Estonia", tm = "04:31",email = auto_update_email, wd = auto_update_wd)
 sched("Czechia", tm = "06:46",email = auto_update_email, wd = auto_update_wd)
 sched("US_Michigan", tm = "02:40",email = auto_update_email, wd = auto_update_wd)
 
 # Jorge
+##############
 sched("Venezuela", tm = "13:48",email = auto_update_email, wd = auto_update_wd)
 sched("US_Texas", tm = "17:11",email = auto_update_email, wd = auto_update_wd)
 sched("USA_deaths_all_states", tm = "01:10",email = auto_update_email, wd = auto_update_wd)
 # sched("New_Zealand", "17:20",email = auto_update_email, wd = auto_update_wd)
 
 # Diego
+##############
 sched("Sweden", tm = "17:02",email = auto_update_email, wd = auto_update_wd)
 sched("Peru", tm = "05:31",email = auto_update_email, wd = auto_update_wd)
 sched("Germany", tm = "20:49",email = auto_update_email, wd = auto_update_wd)
 # sched("US_Massachusetts", tm = "17:04",email = auto_update_email, wd = auto_update_wd)
 
 # Enrique
+##############
 sched("Colombia",  tm = "20:25",email = auto_update_email, wd = auto_update_wd)
 sched("US_NYC", tm = "19:58",email = auto_update_email, wd = auto_update_wd)
 sched("Austria", tm = "21:25",email = auto_update_email, wd = auto_update_wd)
