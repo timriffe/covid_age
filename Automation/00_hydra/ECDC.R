@@ -26,7 +26,8 @@ ss_db <- rubric %>%
   dplyr::pull(Source)
 
 # Which weeks does the sheet already contain?
-ECDCin <- get_country_inputDB("ECDC")
+ECDCin <- get_country_inputDB("ECDC") %>% 
+  select(-Short)
 
 dates_in  <- ECDCin %>% 
   dplyr::pull(Date) %>% 
@@ -187,6 +188,7 @@ for (week_i in weeks_collect){
 
 ECDCout <-
   ECDCout %>% 
+  select(-Short) %>% 
   sort_input_data()
 N <- nrow(ECDCout) - nrow(ECDCin)
 
