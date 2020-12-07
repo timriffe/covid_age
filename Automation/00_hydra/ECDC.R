@@ -94,88 +94,88 @@ for (week_i in weeks_collect){
        
  
   
-ECDC_i <- 
-   IN %>% 
-   matrix(ncol=6, dimnames = 
-            list(NULL, c("Outcome","Country","Sex","Age","Value","X"))) %>%
-  as_tibble() %>% 
-  separate(col = Outcome, 
-           into = c("maybe", "Measure"),
-           sep = " ") %>% 
-  mutate(maybe = gsub(maybe, pattern = "\\[|\\]", replacement = ""),
-         Measure = gsub(Measure, pattern = "\\[|\\]", replacement = ""),
-         Country = gsub(Country, pattern = "\\[|\\]", replacement = ""),
-         Sex  = gsub(Sex, pattern = "\\[|\\]", replacement = ""),
-         Age  = gsub(Age, pattern = "\\[|\\]", replacement = ""),
-         Value  = gsub(Value, pattern = "\\[|\\]", replacement = ""),
-         maybe = tolower(maybe),
-         Measure = tolower(Measure),
-         Measure = case_when(
-           maybe == "all" ~ "all",
-           maybe == "fatal" ~ "dead",
-           TRUE ~ Measure
-         )) %>% 
-  select(-X) %>% 
-  filter(Measure %in% c("all","dead")) %>% 
-  mutate(Sex =tolower(Sex),
-         Age = recode(Age,
-          "&lt;10yr" = "0",
-          "10-19yr" = "10",
-          "20-29yr" = "20",
-          "30-39yr" = "30",
-          "40-49yr" = "40",
-          "50-59yr" = "50",
-          "60-69yr" = "60",
-          "70-79yr" = "70",
-          "70-79yr" = "70",
-          "80+yr" = "80"
-         ),
-         Measure = recode(Measure,
-            "all" = "Cases",
-            "dead" = "Deaths"),
-         Value = gsub(Value, pattern = "n &lt; ",replacement = ""),
-         Value = ifelse(Value == "null", NA, Value),
-         Value = as.integer(Value)) %>% 
-  filter(Country != "EU/EEA and the UK") %>% 
-  mutate(Region = "All",
-         Date = Date_i,
-         Date = paste(sprintf("%02d",day(Date)),    
-                      sprintf("%02d",month(Date)),  
-                      year(Date),sep="."),
-         Metric = "Count",
-         Short =  recode(Country,
-           "Austria" = "AT",
-           "Belgium" = "BE",
-           "Bulgaria" = "BG",
-           "Croatia" = "HR",
-           "Cyprus" = "CY",
-           "Czechia" = "CZ",
-           "Denmark" = "DK",
-           "Estonia" = "EE",
-           "Finland" = "FI",
-           "France" = "FR",
-           "Germany" = "DE",
-           "Hungary" = "HU",
-           "Iceland" = "IS",
-           "Ireland" = "IE",
-           "Italy" = "IT",
-           "Latvia" = "LV",
-           "Lithuania" = "LT",
-           "Luxembourg" = "LU",
-           "Malta" = "MT",
-           "Netherlands" = "NL",
-           "Norway" = "NO",
-           "Poland" = "PL",
-           "Portugal" = "PT",
-           "Romania" = "RO",
-           "Slovakia" = "SK",
-           "Sweden" = "SE",
-           "United Kingdom" = "GB"),
-         Code = paste0(Short,"_ECDC_",Date),
-         AgeInt = ifelse(Age == "80", 25, 10)) %>% 
-  select(-Short) %>% 
-  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
-  filter(!is.na(Value))
+  ECDC_i <- 
+    IN %>% 
+    matrix(ncol=6, dimnames = 
+          list(NULL, c("Outcome","Country","Sex","Age","Value","X"))) %>%
+    as_tibble() %>% 
+    separate(col = Outcome, 
+             into = c("maybe", "Measure"),
+             sep = " ") %>% 
+    mutate(maybe = gsub(maybe, pattern = "\\[|\\]", replacement = ""),
+           Measure = gsub(Measure, pattern = "\\[|\\]", replacement = ""),
+           Country = gsub(Country, pattern = "\\[|\\]", replacement = ""),
+           Sex  = gsub(Sex, pattern = "\\[|\\]", replacement = ""),
+           Age  = gsub(Age, pattern = "\\[|\\]", replacement = ""),
+           Value  = gsub(Value, pattern = "\\[|\\]", replacement = ""),
+           maybe = tolower(maybe),
+           Measure = tolower(Measure),
+           Measure = case_when(
+             maybe == "all" ~ "all",
+             maybe == "fatal" ~ "dead",
+             TRUE ~ Measure
+           )) %>% 
+    select(-X) %>% 
+    filter(Measure %in% c("all","dead")) %>% 
+    mutate(Sex =tolower(Sex),
+           Age = recode(Age,
+            "&lt;10yr" = "0",
+            "10-19yr" = "10",
+            "20-29yr" = "20",
+            "30-39yr" = "30",
+            "40-49yr" = "40",
+            "50-59yr" = "50",
+            "60-69yr" = "60",
+            "70-79yr" = "70",
+            "70-79yr" = "70",
+            "80+yr" = "80"
+           ),
+           Measure = recode(Measure,
+              "all" = "Cases",
+              "dead" = "Deaths"),
+           Value = gsub(Value, pattern = "n &lt; ",replacement = ""),
+           Value = ifelse(Value == "null", NA, Value),
+           Value = as.integer(Value)) %>% 
+    filter(Country != "EU/EEA and the UK") %>% 
+    mutate(Region = "All",
+           Date = Date_i,
+           Date = paste(sprintf("%02d",day(Date)),    
+                        sprintf("%02d",month(Date)),  
+                        year(Date),sep="."),
+           Metric = "Count",
+           Short =  recode(Country,
+             "Austria" = "AT",
+             "Belgium" = "BE",
+             "Bulgaria" = "BG",
+             "Croatia" = "HR",
+             "Cyprus" = "CY",
+             "Czechia" = "CZ",
+             "Denmark" = "DK",
+             "Estonia" = "EE",
+             "Finland" = "FI",
+             "France" = "FR",
+             "Germany" = "DE",
+             "Hungary" = "HU",
+             "Iceland" = "IS",
+             "Ireland" = "IE",
+             "Italy" = "IT",
+             "Latvia" = "LV",
+             "Lithuania" = "LT",
+             "Luxembourg" = "LU",
+             "Malta" = "MT",
+             "Netherlands" = "NL",
+             "Norway" = "NO",
+             "Poland" = "PL",
+             "Portugal" = "PT",
+             "Romania" = "RO",
+             "Slovakia" = "SK",
+             "Sweden" = "SE",
+             "United Kingdom" = "GB"),
+           Code = paste0(Short,"_ECDC_",Date),
+           AgeInt = ifelse(Age == "80", 25, 10)) %>% 
+    select(-Short) %>% 
+    select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
+    filter(!is.na(Value))
        
   ECDCout <- 
     ECDCout %>% 
