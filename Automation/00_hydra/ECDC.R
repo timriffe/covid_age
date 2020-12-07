@@ -32,20 +32,21 @@ dates_in  <- ECDCin %>%
   dplyr::pull(Date) %>% 
   dmy() 
 yr_wk_in <-
-  paste(year(dates_in),isoweek(dates_in),sep="-")
+  paste(year(dates_in),isoweek(dates_in),sep="-") %>% 
+  unique()
 
 # which weeks are available to add?
- files_have <- c(" Week 47, 2020-age-sex-pyramids.txt",   " Week 47, 2020-age-specific-rates.txt",
-  " Week 48, 2020-age-sex-pyramids.txt",   " Week 48, 2020-age-specific-rates.txt",
-  "2.4.9-data-week-43.txt"             ,   "2.4.9-data-week-44.txt"              ,
-  "Week 43, 2020-age-sex-pyramids.txt"       ,   "Week 44, 2020-age-sex-pyramids.txt"        ,
-  "Week 45, 2020-age-sex-pyramids.txt"       ,   "age-specific-rates-week-43.txt"      ,
-  "age-specific-rates-week-44.txt"     ,   "age-specific-rates-Week-45.txt"      ,
-  "python-script.py"                   ,   "python.bat"                          ,
-  "selenium-3.141.0.tar"               ,   "selenium-3.141.0.tar.gz"              ,
-  "TESSy data quality-week-43.txt"     ,   "TESSy data quality-week-44.txt"      ,
-  "Week 46, 2020-age-sex-pyramids.txt" ,   "Week 46, 2020-age-specific-rates.txt",
-  "Week 47, 2020-age-sex-pyramids.txt" ,   "Week 47, 2020-age-specific-rates.txt")
+ # files_have <- c(" Week 47, 2020-age-sex-pyramids.txt",   " Week 47, 2020-age-specific-rates.txt",
+ #  " Week 48, 2020-age-sex-pyramids.txt",   " Week 48, 2020-age-specific-rates.txt",
+ #  "2.4.9-data-week-43.txt"             ,   "2.4.9-data-week-44.txt"              ,
+ #  "Week 43, 2020-age-sex-pyramids.txt"       ,   "Week 44, 2020-age-sex-pyramids.txt"        ,
+ #  "Week 45, 2020-age-sex-pyramids.txt"       ,   "age-specific-rates-week-43.txt"      ,
+ #  "age-specific-rates-week-44.txt"     ,   "age-specific-rates-Week-45.txt"      ,
+ #  "python-script.py"                   ,   "python.bat"                          ,
+ #  "selenium-3.141.0.tar"               ,   "selenium-3.141.0.tar.gz"              ,
+ #  "TESSy data quality-week-43.txt"     ,   "TESSy data quality-week-44.txt"      ,
+ #  "Week 46, 2020-age-sex-pyramids.txt" ,   "Week 46, 2020-age-specific-rates.txt",
+ #  "Week 47, 2020-age-sex-pyramids.txt" ,   "Week 47, 2020-age-specific-rates.txt")
 files_have <- dir_n_source %>% dir()
 age_sex_pyramids <- files_have[grepl(pattern = "age-sex-pyramids",files_have)] 
   
@@ -64,41 +65,56 @@ yr_wk_avail <- paste(years_avail, weeks_avail, sep = "-")
 weeks_collect <-
   yr_wk_avail[!yr_wk_avail %in% yr_wk_in] %>% 
   unique()
-
+#####################################################
+# parse the text dumps
+#####################################################
 ECDCout <- ECDCin
 for (week_i in weeks_collect){
+  cat(week_i,"\n")
+  
   yr_pick <- week_i %>% substr(1,4)
-  wk_pick <- week_i  %>% substr(6,nchar(week_i))
+  wk_pick <- week_i %>% substr(6,nchar(week_i)) %>% as.integer()
   
   this_file <- age_sex_pyramids[grepl(age_sex_pyramids, pattern = yr_pick) & 
-                                  grepl(age_sex_pyramids, pattern = wk_pick)][1]
+                                grepl(age_sex_pyramids, pattern = wk_pick)][1]
   
-  all_days  <- seq(ymd(paste0(this_year,"-01-01")),ymd(paste(yr_pick,"12-31",sep="-")),by="days")
+  all_days  <- seq(ymd(paste0(yr_pick,"-01-01")),
+                   ymd(paste0(yr_pick,"-12-31")),
+                   by = "days")
   Sundays   <- all_days[weekdays(all_days) == "Sunday"]
   Date_i    <- Sundays[isoweek(Sundays) == wk_pick]
   
 
-  IN <- readLines(this_file) %>% 
-  gsub(pattern = "\\[\\[", replacement = "") %>% 
-  gsub(pattern = '\\]\\]', replacement = "") %>% 
-  gsub(pattern = '\\"', replacement = "") %>% 
-  strsplit(split=",") %>% 
-  '[['(1)
-
+  IN <- suppressWarnings(readLines(file.path(dir_n_source,this_file))) %>% 
+          gsub(pattern = "\\[\\[", replacement = "") %>% 
+          gsub(pattern = '\\]\\]', replacement = "") %>% 
+          gsub(pattern = '\\"', replacement = "") %>% 
+          strsplit(split=",") %>% 
+          '[['(1)
+       
+ 
+  
 ECDC_i <- 
    IN %>% 
-   matrix(nrow=28*90, dimnames = 
+   matrix(ncol=6, dimnames = 
             list(NULL, c("Outcome","Country","Sex","Age","Value","X"))) %>%
   as_tibble() %>% 
   separate(col = Outcome, 
-           into = c(NA, "Measure"),
+           into = c("maybe", "Measure"),
            sep = " ") %>% 
-  mutate(Measure = gsub(Measure, pattern = "\\[|\\]", replacement = ""),
+  mutate(maybe = gsub(maybe, pattern = "\\[|\\]", replacement = ""),
+         Measure = gsub(Measure, pattern = "\\[|\\]", replacement = ""),
          Country = gsub(Country, pattern = "\\[|\\]", replacement = ""),
          Sex  = gsub(Sex, pattern = "\\[|\\]", replacement = ""),
          Age  = gsub(Age, pattern = "\\[|\\]", replacement = ""),
-         Value  = gsub(Value, pattern = "\\[|\\]", replacement = "")
-         ) %>% 
+         Value  = gsub(Value, pattern = "\\[|\\]", replacement = ""),
+         maybe = tolower(maybe),
+         Measure = tolower(Measure),
+         Measure = case_when(
+           maybe == "all" ~ "all",
+           maybe == "fatal" ~ "dead",
+           TRUE ~ Measure
+         )) %>% 
   select(-X) %>% 
   filter(Measure %in% c("all","dead")) %>% 
   mutate(Sex =tolower(Sex),
@@ -118,6 +134,7 @@ ECDC_i <-
             "all" = "Cases",
             "dead" = "Deaths"),
          Value = gsub(Value, pattern = "n &lt; ",replacement = ""),
+         Value = ifelse(Value == "null", NA, Value),
          Value = as.integer(Value)) %>% 
   filter(Country != "EU/EEA and the UK") %>% 
   mutate(Region = "All",
@@ -157,26 +174,34 @@ ECDC_i <-
          Code = paste0(Short,"_ECDC_",Date),
          AgeInt = ifelse(Age == "80", 25, 10)) %>% 
   select(-Short) %>% 
-  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
+  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
+  filter(!is.na(Value))
        
   ECDCout <- 
     ECDCout %>% 
     bind_rows(ECDC_i)
 }
 
+###################################################
+# prep output!
+
 ECDCout <-
   ECDCout %>% 
   sort_input_data()
+N <- nrow(ECDCout) - nrow(ECDCin)
 
+# So, this can be scheduled daily, it just won't do anything 6 days per week..
+if (N > 0){
 # write it out!
-write_sheet(ECDCout, 
+  write_sheet(ECDCout, 
             ss = ss_i,
             sheet = "database")  
 
-N <- nrow(ECDCout) - nrow(ECDCin)
-if (N > 0){
+
   log_update(pp = ctr, N = N)
 }
 
 
+
+###################################################
 
