@@ -6,14 +6,18 @@ if (!"email" %in% ls()){
   email <- "cimentadaj@gmail.com"
 }
 
+# info country and N drive address
+ctr <- "US_Texas"
+dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
+
 # Drive credentials
 drive_auth(email = email)
 gs4_auth(email = email)
+
 # TR: pull urls from rubric instead
 rubric_i <- get_input_rubric() %>% filter(Short == "US_TX")
 ss_i     <- rubric_i %>% dplyr::pull(Sheet)
 ss_db    <- rubric_i %>% dplyr::pull(Source)
-
 
 # reading data from Drive and last date entered
 db_drive <- get_country_inputDB("US_TX")
@@ -34,7 +38,7 @@ loc_date2 <- str_locate(date_text, '\\)')[1] - 1
 date_f  <- mdy(str_sub(date_text, loc_date1, loc_date2))
 
 if (date_f > last_date_drive){
-
+  
   url <- "https://dshs.texas.gov/coronavirus/TexasCOVID19Demographics.xlsx.asp"
   httr::GET(url, write_disk(tf <- tempfile(fileext = ".xlsx")))
 
@@ -42,25 +46,25 @@ if (date_f > last_date_drive){
                         sheet = "Cases by Age Group",
                         skip = 0) %>%
     as_tibble()
-
-
+  
+  
   db_c_sex <- read_xlsx(tf,
                         sheet = "Cases by Gender",
                         skip = 0) %>%
     as_tibble()
-
+  
   db_d_age <- read_xlsx(tf,
                         sheet = "Fatalities by Age Group",
                         skip = 0) %>%
     as_tibble()
-
+  
   db_d_sex <- read_xlsx(tf,
                         sheet = "Fatalities by Gender",
                         skip = 0) %>%
     as_tibble()
-
-
+  
   url_t <- "https://dshs.texas.gov/coronavirus/TexasCOVID19CaseCountData.xlsx"
+  
   db_totals <- rio::import(url_t,
                            sheet = "Case and Fatalities",
                            skip = 1) %>%
@@ -182,7 +186,7 @@ if (date_f > last_date_drive){
                 sprintf("%02d", month(date_f)),
                 year(date_f), sep = ".")
 
-  db_all <- bind_rows(db_cases, db_deaths, db_totals) %>%
+  out <- bind_rows(db_cases, db_deaths, db_totals) %>%
     mutate(Country = "USA",
            Region = "Texas",
            Code = paste0("US_TX", date),
@@ -205,40 +209,41 @@ if (date_f > last_date_drive){
   #### uploading database to Google Drive ####
   ############################################
   # This command append new rows at the end of the sheet
-  sheet_append(db_all,
+  sheet_append(out,
                ss = ss_i,
                sheet = "database")
-  log_update(pp = "US_Texas", N = nrow(db_all))
+  log_update(pp = ctr, N = nrow(out))
   ############################################
   #### uploading metadata to Google Drive ####
   ############################################
 
-  # still to modify to Texas version!
 
-  sheet_name <- paste0("US_TX", date, "cases&deaths")
+  data_source_1 <- paste0(dir_n, "Data_sources/", ctr, "/cases&deaths_",today(), ".xlsx")
+  data_source_2 <- paste0(dir_n, "Data_sources/", ctr, "/totals_",today(), ".xlsx")
+  
+  httr::GET(url, write_disk(data_source_1))
+  download.file(url_t, destfile = data_source_2)
 
-  meta <- drive_create(sheet_name,
-               path = "https://drive.google.com/drive/folders/1OM6vpNTwT84lZkKe3Hy0uMEDWO8vKvzq?usp=sharing",
-               type = "spreadsheet")
-
-  write_sheet(db_c_age,
-              ss = meta$id,
-              sheet = "cases_age")
-
-  write_sheet(db_c_sex,
-              ss = meta$id,
-              sheet = "cases_sex")
-
-  write_sheet(db_d_age,
-              ss = meta$id,
-              sheet = "deaths_age")
-
-  write_sheet(db_d_sex,
-              ss = meta$id,
-              sheet = "deaths_sex")
-
-
-  sheet_delete(meta$id, "Sheet1")
+  data_source <- c(data_source_1, data_source_2)
+  
+  zipname <- paste0(dir_n, 
+                    "Data_sources/", 
+                    ctr,
+                    "/", 
+                    ctr,
+                    "_data_",
+                    today(), 
+                    ".zip")
+  
+  zipr(zipname, 
+       data_source, 
+       recurse = TRUE, 
+       compression_level = 9,
+       include_directories = TRUE)
+  
+  # clean up file chaff
+  file.remove(data_source)
+  
 
 } else if (date_f == last_date_drive) {
   cat(paste0("no new updates so far, last date: ", date_f))

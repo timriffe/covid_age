@@ -6,6 +6,10 @@ if (!"email" %in% ls()){
   email <- "ugofilippo.basellini@gmail.com"
 }
 
+# info country and N drive address
+ctr <- "Slovenia"
+dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
+
 # Drive credentials
 drive_auth(email = email)
 gs4_auth(email = email)
@@ -101,19 +105,19 @@ db_d3 <- db_d2 %>%
   mutate(Measure = "Deaths")
 
 
-db_all <- bind_rows(db_c3, db_d3) %>% 
+out <- bind_rows(db_c3, db_d3) %>% 
   mutate(Date = paste(sprintf("%02d", day(date_f)),
                       sprintf("%02d", month(date_f)),
                       year(date_f), sep = "."),
          Country = "Slovenia",
          Code = paste0("SI", Date),
          Region = "All",
-         AgeInt = case_when(Age == "0" & Measure == "Deaths" & (Sex == "b" | Sex == "m") ~ "35", 
-                            Age == "0" & Measure == "Deaths" & Sex == "f" ~ "45", 
-                            Age == "0" & Measure == "Cases" ~ "5", 
-                            Age == "85" ~ "20",
-                            Age == "TOT" ~ "",
-                            TRUE ~ "10"),
+         AgeInt = case_when(Age == "0" & Measure == "Deaths" & (Sex == "b" | Sex == "m") ~ 35L, 
+                            Age == "0" & Measure == "Deaths" & Sex == "f" ~ 45L, 
+                            Age == "0" & Measure == "Cases" ~ 5L, 
+                            Age == "85" ~ 20L,
+                            Age == "TOT" ~ NA_integer_,
+                            TRUE ~ 10L),
          Metric = "Count") %>% 
   arrange(date_f, Region, Measure, Sex, suppressWarnings(as.integer(Age))) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
@@ -121,41 +125,33 @@ db_all <- bind_rows(db_c3, db_d3) %>%
 date_f <- db_d3 %>% 
   dplyr::pull(date_f) %>% 
   max()
-############################################
-#### uploading database to Google Drive ####
-############################################
-# This command append new rows at the end of the sheet
-write_rds(db_all, "N:/COVerAGE-DB/Automation/Hydra/Slovenia.rds")
 
-# write_sheet(db_all,
-#              ss = ss_i,
-#              sheet = "database")
-log_update(pp = "Slovenia", N = nrow(db_all))
-############################################
-#### uploading metadata to Google Drive ####
-############################################
-SI_rubric <- get_input_rubric() %>% filter(Short == "SI")
-ss_i  <- SI_rubric %>% dplyr::pull(Sheet)
-ss_db <-  SI_rubric %>% dplyr::pull(Source)
-# reading data from Montreal and last date ent
+###########################
+#### Saving data in N: ####
+###########################
+write_rds(out, paste0(dir_n, ctr, ".rds"))
+log_update(pp = ctr, N = nrow(out))
 
 
-d <- paste(sprintf("%02d", day(date_f)),
-           sprintf("%02d", month(date_f)),
-           year(date_f), sep = ".")
+data_source <- paste0(dir_n, "Data_sources/", ctr, "/cases&deaths_",today(), ".xlsx")
 
-meta <- drive_create(paste0("SI", d, "_cases&deaths"),
-                     path = ss_db, 
-                     type = "spreadsheet",
-                     overwrite = T)
+download.file(paste0("https://www.nijz.si", url), destfile = data_source)
 
-write_sheet(db_c, 
-            ss = meta$id,
-            sheet = "cases_age_sex")
+zipname <- paste0(dir_n, 
+                  "Data_sources/", 
+                  ctr,
+                  "/", 
+                  ctr,
+                  "_data_",
+                  today(), 
+                  ".zip")
 
-write_sheet(db_d, 
-            ss = meta$id,
-            sheet = "deaths_age_sex")
+zipr(zipname, 
+     data_source, 
+     recurse = TRUE, 
+     compression_level = 9,
+     include_directories = TRUE)
 
-sheet_delete(meta$id, "Sheet1")
+# clean up file chaff
+file.remove(data_source)
 

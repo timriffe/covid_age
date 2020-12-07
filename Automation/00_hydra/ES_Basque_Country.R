@@ -1,26 +1,22 @@
-# don't manually alter the below
-# This is modified by sched()
-# ##  ###
-email <- "tim.riffe@gmail.com"
-setwd("U:/gits/covid_age")
-# ##  ###
-
-# prelims
 library(here)
-library(readr)
-library(readxl)
-library(here)
-library(tidyverse)
-library(lubridate)
+source(here("Automation/00_Functions_automation.R"))
 
-source("Automation/00_Functions_automation.R")
+# assigning Drive credentials in the case the script is verified manually  
+if (!"email" %in% ls()){
+  email <- "tim.riffe@gmail.com"
+}
 
+# info country and N drive address
+ctr <- "ES_Basque_Country"
+dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
+
+# Drive credentials
 drive_auth(email = email)
 gs4_auth(email = email)
 
-
 # get current state of database
-PVin <- get_country_inputDB("ES_PV")
+PVin <- get_country_inputDB("ES_PV") %>% 
+  select(-Short)
 
 # get drive links
 ES_PV_meta <- 
@@ -41,7 +37,6 @@ ss_m <- ES_PV_meta %>%
 #   mutate(Code = paste0("ES_PV_", Date)) %>% 
 #   select(-Short)
 
-
 # get file list from open web folder:
 PVfiles <- readLines("https://opendata.euskadi.eus/contenidos/ds_informes_estudios/covid_19_2020/opendata/historico-situacion-epidemiologica.txt")
 
@@ -54,6 +49,7 @@ PVdownloads <- PVfiles[grepl(PVfiles,pattern="situacion-epidemiologica.xlsx")]
 #   gsub(pattern="/situacion-epidemiologica.xlsx",replacement = "")
 
 # custom function to extract proper date from the url string.
+
 PVdate <- function(xurl){
   pathdate <-
     xurl %>% 
@@ -68,32 +64,30 @@ PVdate <- function(xurl){
   lubridate::ymd(paste(y,m,d,sep="."))
 }
 
-ES_PV_dir <- here("Data","ES_PV")
-if (!dir.exists(ES_PV_dir)){
-  dir.create(ES_PV_dir)
-}
+ES_PV_dir <- paste0(dir_n, "Data_sources/", ctr, "/")
+# if (!dir.exists(ES_PV_dir)){
+#   dir.create(ES_PV_dir)
+# }
+
+xurl <- "https://opendata.euskadi.eus/contenidos/ds_informes_estudios/covid_19_2020/opendata/1120/22/situacion-epidemiologica.xlsx"
 
 # Download all situation report excel files
-lapply(PVdownloads,function(xurl){
+lapply(PVdownloads, function(xurl){
   refdate <- PVdate(xurl)
-  destfile <- here("Data",
-                   "ES_PV",
-                   paste0("situacion-epidemiologica",refdate,".xlsx"))
-  
-  download.file(xurl, destfile = destfile, quiet = TRUE)
+  destfile <- paste0(ES_PV_dir, "/situacion-epidemiologica",refdate,".xlsx")
+  download.file(xurl, destfile = destfile, mode="wb")
 })
-
-
 
 # list of excel files
 files <- dir(ES_PV_dir)
+files <- files[grepl(files,pattern = ".xlsx")]
 
 # read_excel(here("Data","ES_PV",files[1]),sheet = "03") %>% 
 #   colnames()
 
 # check correct columns present
 all_colnames <- lapply(files, function(x){
-  names_in <- read_excel(here("Data","ES_PV",x),sheet = "03",n_max = 12) %>% 
+  names_in <- read_excel(paste0(ES_PV_dir, x), sheet = "03", n_max = 12) %>% 
     colnames()
   all(c("Kasu positiboak / Positivos" , 
         "Hildakoak / Fallecidos(*)" ) %in% 
@@ -106,7 +100,7 @@ files_b <- files[all_colnames]
 # and which have age and sex?
 sex_colnames <-
   lapply(files, function(x){
-    names_in <- read_excel(here("Data","ES_PV",x),sheet = "03",n_max = 12) %>% 
+    names_in <- read_excel(paste0(ES_PV_dir, x), sheet = "03",n_max = 12) %>% 
       colnames()
     all(c("Kasu positiboak / Positivos" , "Hildakoak / Fallecidos(*)","Emakumezkoak: Kasu positiboak / Mujeres: Positivos" ) %in% names_in)
   }) %>% unlist()
@@ -119,7 +113,7 @@ files_fm <- files[sex_colnames]
 Tables_b <-
   lapply(files_b, function(x){
     Date <- gsub(pattern = "situacion-epidemiologica",replacement = "",x) %>% as_date()
-    read_excel(here("Data","ES_PV",x),sheet = "03",n_max = 12) %>% 
+    read_excel(paste0(ES_PV_dir, x),sheet = "03",n_max = 12) %>% 
       select(Age = `Adina / Edad`,
              Cases_b = `Kasu positiboak / Positivos`,
              Deaths_b = `Hildakoak / Fallecidos(*)`) %>% 
@@ -138,7 +132,7 @@ Tables_m_f <- lapply(files_fm, function(x){
                x) %>% 
     as_date()
   
-  read_excel(here("Data","ES_PV",x),sheet = "03",n_max = 12) %>% 
+  read_excel(paste0(ES_PV_dir, x),sheet = "03",n_max = 12) %>% 
     select(Age = `Adina / Edad`,
            Cases_f = `Emakumezkoak: Kasu positiboak / Mujeres: Positivos`,
            Cases_m = `Gizonezkoak: Kasu positiboak / Hombres: Positivos`,
@@ -187,7 +181,7 @@ Table <-
 most_recent_for_totals <- rev(files)[1]
 
 TOT <- 
-  read_excel(here("Data","ES_PV",most_recent_for_totals),
+  read_excel(paste0(ES_PV_dir, most_recent_for_totals),
              sheet = "01",
              skip = 1) %>% 
   select(Date = `Data / Fecha`,
@@ -250,24 +244,24 @@ write_sheet(PVout,ss = ss_i, sheet = "database")
 log_update(pp = "ES_Basque Country", N = N)
 
 # For now just zip all the spreadsheets and upload as such
+ex_files <- c(paste0(ES_PV_dir, files))
 
-zip_these_files <- file.path(ES_PV_dir,
-                             dir(ES_PV_dir))
-zip_these_files <- zip_these_files[grepl(zip_these_files,pattern = ".xlsx")]
-utils::zip(here("Data",
-                "ES_PV",
-                "ES_PV.zip"),
-         files = zip_these_files)
+zipname <- paste0(dir_n, 
+                  "Data_sources/", 
+                  ctr,
+                  "/", 
+                  ctr,
+                  "_data_",
+                  today(), 
+                  ".zip")
 
+zipr(zipname,
+     files = ex_files, 
+     recurse = TRUE, 
+     compression_level = 9,
+     include_directories = TRUE)
 
-Sys.sleep(100)
-drive_put(media = here("Data",
-               "ES_PV",
-               "ES_PV.zip"),
-          path = as_dribble(ss_m))
-
-file.remove(here("Data",
-                 "ES_PV",
-                 "ES_PV.zip"))
+file.remove(ex_files)
 
 gc()
+

@@ -6,10 +6,15 @@ if (!"email" %in% ls()){
   email <- "gatemonte@gmail.com"
 }
 
+# info country and N drive address
+ctr <- "Sweden"
+dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
+
 # Drive credentials
 drive_auth(email = email)
 gs4_auth(email = email)
-# TR: pull urls from rubric instead 
+
+# data from drive 
 rubric_i <- get_input_rubric() %>% filter(Short == "SE")
 ss_i     <- rubric_i %>% dplyr::pull(Sheet)
 ss_db    <- rubric_i %>% dplyr::pull(Source)
@@ -19,18 +24,19 @@ print(paste0("Starting data retrieval for Sweden..."))
 ############################
 # When using it daily
 ############################
+data_source <- paste0(dir_n, "Data_sources/", ctr, "/cases&deaths_",today(), ".xlsx")
 
 url <- "https://www.arcgis.com/sharing/rest/content/items/b5e7488e117749c19881cce45db13f7e/data"
-httr::GET(url, write_disk(tf <- tempfile(fileext = ".xlsx")))
+httr::GET(url, write_disk(data_source))
 
 # date from the data directly, last reported date in the sheet 'Antal per dag region'
 
-date_f <- read_xlsx(tf, sheet = 1) %>% 
+date_f <- read_xlsx(data_source, sheet = 1) %>% 
   dplyr::pull(Statistikdatum) %>% 
   max() %>% 
   ymd()
 
-# reading data from Montreal and last date entered 
+# reading data from Drive and last date entered 
 db_drive <- get_country_inputDB("SE")
 
 last_date_drive <- db_drive %>% 
@@ -46,8 +52,8 @@ if (date_f > last_date_drive){
                 sprintf("%02d", month(date_f)),
                 year(date_f), sep = ".")
   
-  db_sex <- read_xlsx(tf, sheet = 5)
-  db_age <- read_xlsx(tf, sheet = 6)
+  db_sex <- read_xlsx(data_source, sheet = 5)
+  db_age <- read_xlsx(data_source, sheet = 6)
   
   # Get data by sex
   
@@ -84,7 +90,7 @@ if (date_f > last_date_drive){
     ) %>% 
     select(Sex, Age, Cases, Deaths)
   
-  db_all <- 
+  out <- 
     bind_rows(db_s2, db_a2) %>% 
     gather(Cases, Deaths, key = Measure, value = Value) %>% 
     mutate(Country = "Sweden",
@@ -102,37 +108,31 @@ if (date_f > last_date_drive){
   ############################################
   #### uploading database to Google Drive ####
   ############################################
-  sheet_append(db_all,
+  sheet_append(out,
                ss = ss_i,
                sheet = "database")
   log_update(pp = "Sweden", N = nrow(db_all))
+  
   ############################################
-  #### uploading metadata to Google Drive ####
+  #### uploading metadata to N Drive ####
   ############################################
-  sheet_name <- paste0("SE", date, "cases&deaths")
+  zipname <- paste0(dir_n, 
+                    "Data_sources/", 
+                    ctr,
+                    "/", 
+                    ctr,
+                    "_data_",
+                    today(), 
+                    ".zip")
   
-  meta <- drive_create(sheet_name,
-                       path = ss_db, 
-                       type = "spreadsheet",
-                       overwrite = T)
+  zipr(zipname, 
+       data_source, 
+       recurse = TRUE, 
+       compression_level = 9,
+       include_directories = TRUE)
   
-  write_sheet(db_age, 
-              ss = meta$id,
-              sheet = "cases&deaths_age")
-  
-  write_sheet(db_sex, 
-              ss = meta$id,
-              sheet = "cases&deaths_sex")
-  
-  sheet_delete(meta$id, "Sheet1")
-  
-  # uploading the whole excel file for INED
-  file_name <- paste0("SE", date, "cases&deaths.xlsx")
-  drive_upload(
-    tf,
-    path = "https://drive.google.com/drive/folders/1JS5pzekf-dmuYs6-K3rPsBv3pbtXdRA2?usp=sharing",
-    name = file_name,
-    overwrite = T)
+  # clean up file chaff
+  file.remove(data_source)
   
 } else if (date_f == last_date_drive) {
   cat(paste0("no new updates so far, last date: ", date_f))

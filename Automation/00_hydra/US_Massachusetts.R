@@ -8,6 +8,11 @@ library(here)
 # TR New: you must be in the repo environment 
 source("Automation/00_Functions_automation.R")
 
+# info country and N drive address
+ctr <- "Sweden"
+dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
+
+# Drive credentials
 drive_auth(email = email)
 gs4_auth(email = email)
 

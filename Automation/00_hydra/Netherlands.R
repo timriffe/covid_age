@@ -8,6 +8,10 @@ if (!"email" %in% ls()){
   email <- "e.delfava@gmail.com"
 }
 
+# info country and N drive address
+ctr <- "Netherlands"
+dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
+
 # Drive credentials
 drive_auth(email = email)
 gs4_auth(email = email)
@@ -24,9 +28,9 @@ isoweek_to_date_hack <- function(ISOWEEK){
   out
 }
 
-NL_url <- "https://data.rivm.nl/covid-19/COVID-19_casus_landelijk.csv"
+cases_url <- "https://data.rivm.nl/covid-19/COVID-19_casus_landelijk.csv"
 
-NL <- read_delim(NL_url, delim = ";")
+NL <- read_delim(cases_url, delim = ";")
 
 dates_all <- seq(dmy("01.03.2020"), today(), by = "days")
 
@@ -187,40 +191,46 @@ out <-
 ############################################
 #### uploading database to Google Drive ####
 ############################################
-write_rds(out, "N:/COVerAGE-DB/Automation/Hydra/Netherlands.rds")
+write_rds(out, paste0(dir_n, ctr, ".rds"))
 
-# write_sheet(out, 
-#             ss = ss_i, 
-#             sheet = "database")
-
-log_update(pp = "Netherlands", N = nrow(out))
+log_update(pp = ctr, N = nrow(out))
 
 ############################################
 #### uploading metadata to Google Drive ####
 ############################################
 
-date_f <- Sys.Date()
-d <- paste(sprintf("%02d", day(date_f)),
-           sprintf("%02d", month(date_f)),
-           year(date_f), sep = ".")
+data_source <- paste0(dir_n, "Data_sources/", ctr, "/cases&deaths_",today(), ".csv")
 
-# TR: pull urls from rubric instead 
-rubric_i <- get_input_rubric() %>% filter(Short == "NL")
-ss_i     <- rubric_i %>% dplyr::pull(Sheet)
-ss_db    <- rubric_i %>% dplyr::pull(Source)
+download.file(cases_url, destfile = data_source)
 
-sheet_name <- paste0("NL", d, "cases&deaths")
+zipname <- paste0(dir_n, 
+                  "Data_sources/", 
+                  ctr,
+                  "/", 
+                  ctr,
+                  "_data_",
+                  today(), 
+                  ".zip")
 
-meta <- drive_create(sheet_name, 
-                     path = ss_db, 
-                     type = "spreadsheet",
-                     overwrite = T)
+zipr(zipname, 
+     data_source, 
+     recurse = TRUE, 
+     compression_level = 9,
+     include_directories = TRUE)
 
-write_sheet(NL, 
-            ss = meta$id,
-            sheet = "cases&deaths_sex_age")
+# clean up file chaff
+file.remove(data_source)
 
-sheet_delete(meta$id, "Sheet1")
+
+
+# end!
+
+
+
+
+
+
+
 
 # out %>% 
 #   mutate(Date = dmy(Date)) %>% 
