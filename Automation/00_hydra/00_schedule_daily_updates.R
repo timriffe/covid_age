@@ -40,13 +40,14 @@ if (grepl("CurrentProjects", auto_update_wd)){
 if (grepl("diego", auto_update_wd)){
   auto_update_email <- "gatemonte@gmail.com"
 }
-# sched("Austria", tm = "21:31",email = auto_update_email, wd = auto_update_wd)
 
-# we assume this tasks are scheduled in a here()-aware fashion
-
-# sched() is a modified version of the original function taskscheduler_create() 
-# from the taskscheduleR package. It modifies each script to add the local path of 
-# the project, user email, delete previous task, etc. 
+# sched() is a funtion that generates and schedules a trigger script 
+# for each collection script. The trigger script has two purposes. 
+# First, it includes the information of the local path of the project and 
+# the Drive user credentials. Second, it calls the collection script ensuring
+# that it is executed using the proper encoding format (UTF-8). 
+# When scheduling the trigger script on hydra, the sched() function also 
+# deletes tasks that were scheduled in the past with same name. 
 # See "Automation/00_Functions_automation.R" for more details
 
 # current scripts working on hydra by participant
