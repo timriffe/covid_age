@@ -120,7 +120,9 @@ sched("Norway", tm = "16:11",email = auto_update_email, wd = auto_update_wd)
 # delete_sched("USA_all_deaths")
 # delete_sched("Venezuela")
 # delete_sched("USA_deaths_all_states")
-# delete_sched("Philippines.R")
+# delete_sched("Philippines")
+# delete_sched("Scotland")
+# delete_sched("Norway")
 
 
 ### to list current tasks
