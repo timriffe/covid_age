@@ -78,10 +78,12 @@ sched("Germany", tm = "09:35",email = auto_update_email, wd = auto_update_wd)
 
 # Enrique
 sched("Colombia",  tm = "09:30",email = auto_update_email, wd = auto_update_wd)
-sched("US_NYC", tm = "19:58",email = auto_update_email, wd = auto_update_wd)
+sched("US_NYC", tm = "13:58",email = auto_update_email, wd = auto_update_wd)
 sched("Austria", tm = "21:25",email = auto_update_email, wd = auto_update_wd)
 sched("ES_Basque_Country", tm = "11:00",email = auto_update_email, wd = auto_update_wd, sch = "WEEKLY")
-# sched("Norway", tm = "02:10",email = auto_update_email, wd = auto_update_wd)
+sched("Philippines", tm = "10:00",email = auto_update_email, wd = auto_update_wd)
+sched("Scotland", tm = "12:10",email = auto_update_email, wd = auto_update_wd)
+sched("Norway", tm = "16:11",email = auto_update_email, wd = auto_update_wd)
 # sched("CA_Montreal", tm = "02:10",email = auto_update_email, wd = auto_update_wd)
 # sched("Mexico", tm = "02:10",email = auto_update_email, wd = auto_update_wd)
 # sched("US_Wisconsin", tm = "02:10",email = auto_update_email, wd = auto_update_wd)
@@ -117,6 +119,7 @@ sched("ES_Basque_Country", tm = "11:00",email = auto_update_email, wd = auto_upd
 # delete_sched("USA_all_deaths")
 # delete_sched("Venezuela")
 # delete_sched("USA_deaths_all_states")
+# delete_sched("Philippines.R")
 
 
 ### to list current tasks
