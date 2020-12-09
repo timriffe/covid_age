@@ -53,8 +53,8 @@ files_have <- files_have[!grepl(files_have,
 files_Deaths <- files_have[grepl(pattern = "Death.txt",files_have)] 
 files_tests  <- files_have[grepl(pattern = "Sample-test.txt",files_have)] 
 
-
-read_AF_deaths <- function(path){
+if (length(files_Deaths) > 0){
+  read_AF_deaths <- function(path){
   
   Date <- path %>% 
     str_split(pattern="/") %>% 
@@ -99,34 +99,97 @@ read_AF_deaths <- function(path){
                  names_to = "Measure",
                  values_to = "Value")
 }
-
-# Read in, filter down if necessary, finalize
-AutoCollected <-
-  lapply(file.path(dir_n_source,files_Deaths), 
-         read_AF_deaths) %>% 
-  bind_rows() %>% 
-  filter(!Date %in% dates_in) %>% 
-  mutate(Country = "Afghanistan",
-         Region = "All",
-         Metric = "Count",
-         Date = paste(sprintf("%02d",day(Date)),    
+  
+  read_AF_tests <- function(path){
+    
+    Date <- path %>% 
+      str_split(pattern="/") %>% 
+      unlist() %>% 
+      rev() %>% 
+      '['(1) %>% 
+      gsub(pattern = " ", replacement = "") %>% 
+      substr(1,8) %>% 
+      dmy()
+    
+    Datec <-  paste(sprintf("%02d",day(Date)),    
                       sprintf("%02d",month(Date)),  
-                      year(Date),sep="."),
-         Code = paste0("AF",Date)) %>% 
-  select(all_of(colnames(AFin))) %>% 
-  sort_input_data()
+                      year(Date),sep=".")
+    tests <- 
+      suppressWarnings(readLines(path)) %>% 
+      str_split(pattern=" ") %>% 
+      unlist() %>% 
+      rev() %>% 
+      '['(1) %>% 
+      gsub(pattern = ",", replacement = "") %>% 
+      as.integer()
+    
+    tibble(Country = "Afghanistan",
+           Region = "All",
+           Code = paste0("AF",Datec),
+           Date = Datec, 
+           Sex = "b", 
+           Age = "TOT", 
+           AgeInt = NA_integer_, 
+           Metric = "Count",
+           Measure = "Tests",
+           Value = tests)
+  }
+  # Read in, filter down if necessary, finalize
+  AutoCollected <-
+    lapply(file.path(dir_n_source,files_Deaths), 
+           read_AF_deaths) %>% 
+    bind_rows() %>% 
+    filter(!Date %in% dates_in) %>% 
+    mutate(Country = "Afghanistan",
+           Region = "All",
+           Metric = "Count",
+           Date = paste(sprintf("%02d",day(Date)),    
+                        sprintf("%02d",month(Date)),  
+                        year(Date),sep="."),
+           Code = paste0("AF",Date)) %>% 
+    select(all_of(colnames(AFin))) %>% 
+    sort_input_data()
+  
+  Tests <- 
+    lapply(file.path(dir_n_source,files_tests),
+           read_AF_tests) %>% 
+    bind_rows()
+    
+  # stick together
+  AutoCollected <-
+    AutoCollected %>% 
+    bind_rows(Tests)
+  # Append to Drive
+  
+  sheet_append(ss = ss_i, AutoCollected, sheet = "database")
+  
+  # update log
+  N <- nrow(AutoCollected)
+  log_update("Afghanistan", N)
+  
+  # save source data to archive
+  
+  data_source <- file.path(dir_n_source, files_Deaths)
+  
+  zipname <- paste0(dir_n, 
+                    "Data_sources/", 
+                    ctr,
+                    "/", 
+                    ctr,
+                    "_data_",
+                    today(), 
+                    ".zip")
+  
+  zipr(zipname, 
+       data_source, 
+       recurse = TRUE, 
+       compression_level = 9,
+       include_directories = TRUE)
+  
+  
+}
 
-# Append to Drive
 
-sheet_append(ss = ss_i, AutoCollected, sheet = "database")
-
-# update log
-N <- nrow(AutoCollected)
-log_update("Afghanistan", N)
-
-
-# requires logging of captured data still, which isn't captured in a rectangular way.
-# the source data is captured on Hydra, so we have it anyway.
 
 
 
