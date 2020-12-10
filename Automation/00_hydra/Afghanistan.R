@@ -180,7 +180,7 @@ if (length(files_Deaths) > 0){
                     today(), 
                     ".zip")
   
-  zipr(zipname, 
+  zip::zipr(zipname, 
        data_source, 
        recurse = TRUE, 
        compression_level = 9,
