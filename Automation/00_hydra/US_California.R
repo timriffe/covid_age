@@ -10,7 +10,7 @@ if (!"email" %in% ls()){
 
 # info country and N drive address
 ctr          <- "US_California" # it's a placeholder
-dir_n        <- "N:/COVerAGE-DB/Automation/Hydra"
+dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 # Drive credentials
 drive_auth(email = email)
@@ -34,8 +34,9 @@ Tests <-
 
 
 # read in data by age
+url1 <- "https://data.ca.gov/dataset/590188d5-8545-4c93-a9a0-e230f0db7290/resource/339d1c4d-77ab-44a2-9b40-745e64e335f2/download/case_demographics_age.csv"
 CAage_in <- 
-  read_csv("https://data.ca.gov/dataset/590188d5-8545-4c93-a9a0-e230f0db7290/resource/339d1c4d-77ab-44a2-9b40-745e64e335f2/download/case_demographics_age.csv") 
+  read_csv(url1) 
 
 CAage <-
   CAage_in %>% 
@@ -65,8 +66,9 @@ CAage <-
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
 
 # By Sex
+url2 <- "https://data.ca.gov/dataset/590188d5-8545-4c93-a9a0-e230f0db7290/resource/ee01b266-0a04-4494-973e-93497452e85f/download/case_demographics_sex.csv"
 CAsex_in <-
-  read_csv("https://data.ca.gov/dataset/590188d5-8545-4c93-a9a0-e230f0db7290/resource/ee01b266-0a04-4494-973e-93497452e85f/download/case_demographics_sex.csv")  
+  read_csv(url2)  
 
 CAsex <-
   CAsex_in%>% 
@@ -101,21 +103,27 @@ write_sheet(ss = ss_i,
             sheet = "database")
 
 N <- nrow(CAage) + nrow(CAsex)
-log_update(pp = ctr, N = nrow(out))
+log_update(pp = ctr, N = N)
 
 # store
 
-storage_dir <- file.path(dir_n, "Data_sources",ctr)
+# storage_dir <- file.path(dir_n, "Data_sources",ctr)
+# 
+# if (!dir.exists(storage_dir)){
+#   dir.create(storage_dir)
+# }
+# 
+# data_source_1 <- file.path(storage_dir,paste0("age_",today(), ".csv"))
+# data_source_2 <- file.path(storage_dir,paste0("sex_",today(), ".csv"))
 
-if (!dir.exists(storage_dir)){
-  dir.create(storage_dir)
-}
+# write_csv(CAage_in, path = data_source_1)
+# write_csv(CAsex_in, path = data_source_2)
 
-data_source_1 <- file.path(storage_dir,paste0("/age_",today(), ".csv"))
-data_source_2 <- file.path(storage_dir,paste0("/sex_",today(), ".csv"))
+data_source_1 <- paste0(dir_n, "Data_sources/", ctr, "/age_",today(), ".csv")
+data_source_2 <- paste0(dir_n, "Data_sources/", ctr, "/sex_",today(), ".csv")
 
-write_csv(CAage_in, path = data_source_1)
-write_csv(CAsex_in, path = data_source_2)
+download.file(url1, destfile = data_source_1)
+download.file(url2, destfile = data_source_2)
 
 data_source <- c(data_source_1, data_source_2)
 

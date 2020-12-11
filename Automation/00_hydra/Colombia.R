@@ -285,8 +285,8 @@ out <- db_all2 %>%
   arrange(Region, date_f, Measure, Sex, suppressWarnings(as.integer(Age))) %>% 
   select(Country, Region, Code,  Date, Sex, Age, AgeInt, Metric, Measure, Value)
 
-# unique(db_final$Region)
-# unique(db_final$Age)
+unique(out$Region)
+unique(out$Age)
 
 ############################################
 #### saving database in N Drive ####
