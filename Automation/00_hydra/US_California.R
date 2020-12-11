@@ -101,7 +101,7 @@ write_sheet(ss = ss_i,
             sheet = "database")
 
 N <- nrow(CAage) + nrow(CAsex)
-log_update(pp = ctr, N = nrow(out))
+log_update(pp = ctr, N = N)
 
 # store
 
@@ -128,11 +128,10 @@ zipname <- paste0(dir_n,
                   today(), 
                   ".zip")
 
-zipr(zipname, 
-     data_source, 
-     recurse = TRUE, 
+zip::zip(zipfile = zipname, 
+     files=data_source, 
      compression_level = 9,
-     include_directories = TRUE)
+     mode = "cherry-pick")
 
 # clean up file chaff
 file.remove(data_source)
