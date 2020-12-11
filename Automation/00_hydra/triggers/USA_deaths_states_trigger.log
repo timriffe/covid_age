@@ -94,3 +94,248 @@ Content type 'text/csv; charset=utf-8' length unknown
 ........
 downloaded 358 KB
 
+here() starts at U:/gits/covid_age
+Loading required package: pacman
+Auto-refreshing stale OAuth token.
+Reading from "input_rubric"
+Range "'input'"
+Reading from "input_rubric"
+Range "'input'"
+Reading from "USA_deaths_all_states.R"
+Range "'database'"
+Parsed with column specification:
+cols(
+  `Data as of` = col_character(),
+  `Start week` = col_character(),
+  `End Week` = col_character(),
+  State = col_character(),
+  Sex = col_character(),
+  `Age group` = col_character(),
+  `COVID-19 Deaths` = col_double(),
+  `Total Deaths` = col_double(),
+  `Pneumonia Deaths` = col_double(),
+  `Pneumonia and COVID-19 Deaths` = col_double(),
+  `Influenza Deaths` = col_double(),
+  `Pneumonia, Influenza, or COVID-19 Deaths` = col_double(),
+  Footnote = col_character()
+)
+`summarise()` ungrouping output (override with `.groups` argument)
+`summarise()` ungrouping output (override with `.groups` argument)
+Joining, by = "State"
+`summarise()` regrouping output by 'State' (override with `.groups` argument)
+Joining, by = c("State", "Sex")
+Joining, by = c("Age", "Sex")
+Joining, by = c("State", "Sex")
+`summarise()` regrouping output by 'State' (override with `.groups` argument)
+Writing to "USA_deaths_all_states.R"
+Writing to sheet "database"
+Writing to "Hydra auto-update dashboard"
+Appending 1 row(s) to "log"
+trying URL 'https://data.cdc.gov/api/views/9bhg-hcku/rows.csv?accessType=DOWNLOAD'
+Content type 'text/csv; charset=utf-8' length unknown
+.......... .......... .......... .......... ..........
+.......... .......... .......... .......... ..........
+.......... .......... .......... .......... ..........
+.......... .......... .......... .......... ..........
+.......... .......... .......... .......... ..........
+.......... .......... .......... .......... ..........
+.......... .......... .......... .......... ..........
+........
+downloaded 358 KB
+
+here() starts at U:/gits/covid_age
+Loading required package: pacman
+Auto-refreshing stale OAuth token.
+Reading from "input_rubric"
+Range "'input'"
+Reading from "input_rubric"
+Range "'input'"
+Reading from "USA_deaths_all_states.R"
+Range "'database'"
+Parsed with column specification:
+cols(
+  `Data as of` = col_character(),
+  `Start week` = col_character(),
+  `End Week` = col_character(),
+  State = col_character(),
+  Sex = col_character(),
+  `Age group` = col_character(),
+  `COVID-19 Deaths` = col_double(),
+  `Total Deaths` = col_double(),
+  `Pneumonia Deaths` = col_double(),
+  `Pneumonia and COVID-19 Deaths` = col_double(),
+  `Influenza Deaths` = col_double(),
+  `Pneumonia, Influenza, or COVID-19 Deaths` = col_double(),
+  Footnote = col_character()
+)
+`summarise()` ungrouping output (override with `.groups` argument)
+`summarise()` ungrouping output (override with `.groups` argument)
+Joining, by = "State"
+`summarise()` regrouping output by 'State' (override with `.groups` argument)
+Joining, by = c("State", "Sex")
+Joining, by = c("Age", "Sex")
+Joining, by = c("State", "Sex")
+`summarise()` regrouping output by 'State' (override with `.groups` argument)
+Writing to "USA_deaths_all_states.R"
+Writing to sheet "database"
+Writing to "Hydra auto-update dashboard"
+Appending 1 row(s) to "log"
+trying URL 'https://data.cdc.gov/api/views/9bhg-hcku/rows.csv?accessType=DOWNLOAD'
+Content type 'text/csv; charset=utf-8' length unknown
+.......... .......... .......... .......... ..........
+.......... .......... .......... .......... ..........
+.......... .......... .......... .......... ..........
+.......... .......... .......... .......... ..........
+.......... .......... .......... .......... ..........
+.......... .......... .......... .......... ..........
+.......... .......... .......... .......... ..........
+........
+downloaded 358 KB
+
+here() starts at U:/gits/covid_age
+Loading required package: pacman
+Auto-refreshing stale OAuth token.
+Reading from "input_rubric"
+Range "'input'"
+Reading from "input_rubric"
+Range "'input'"
+Reading from "USA_deaths_all_states.R"
+Range "'database'"
+Parsed with column specification:
+cols(
+  `Data as of` = col_character(),
+  `Start week` = col_character(),
+  `End Week` = col_character(),
+  State = col_character(),
+  Sex = col_character(),
+  `Age group` = col_character(),
+  `COVID-19 Deaths` = col_double(),
+  `Total Deaths` = col_double(),
+  `Pneumonia Deaths` = col_double(),
+  `Pneumonia and COVID-19 Deaths` = col_double(),
+  `Influenza Deaths` = col_double(),
+  `Pneumonia, Influenza, or COVID-19 Deaths` = col_double(),
+  Footnote = col_character()
+)
+`summarise()` ungrouping output (override with `.groups` argument)
+`summarise()` ungrouping output (override with `.groups` argument)
+Joining, by = "State"
+`summarise()` regrouping output by 'State' (override with `.groups` argument)
+Joining, by = c("State", "Sex")
+Joining, by = c("Age", "Sex")
+Joining, by = c("State", "Sex")
+`summarise()` regrouping output by 'State' (override with `.groups` argument)
+Writing to "USA_deaths_all_states.R"
+Writing to sheet "database"
+Writing to "Hydra auto-update dashboard"
+Appending 1 row(s) to "log"
+trying URL 'https://data.cdc.gov/api/views/9bhg-hcku/rows.csv?accessType=DOWNLOAD'
+Content type 'text/csv; charset=utf-8' length unknown
+.......... .......... .......... .......... ..........
+.......... .......... .......... .......... ..........
+.......... .......... .......... .......... ..........
+.......... .......... .......... .......... ..........
+.......... .......... .......... .......... ..........
+.......... .......... .......... .......... ..........
+.......... .......... .......... .......... ..........
+........
+downloaded 358 KB
+
+here() starts at U:/gits/covid_age
+Loading required package: pacman
+Auto-refreshing stale OAuth token.
+Reading from "input_rubric"
+Range "'input'"
+Reading from "input_rubric"
+Range "'input'"
+Reading from "USA_deaths_all_states.R"
+Range "'database'"
+Parsed with column specification:
+cols(
+  `Data as of` = col_character(),
+  `Start week` = col_character(),
+  `End Week` = col_character(),
+  State = col_character(),
+  Sex = col_character(),
+  `Age group` = col_character(),
+  `COVID-19 Deaths` = col_double(),
+  `Total Deaths` = col_double(),
+  `Pneumonia Deaths` = col_double(),
+  `Pneumonia and COVID-19 Deaths` = col_double(),
+  `Influenza Deaths` = col_double(),
+  `Pneumonia, Influenza, or COVID-19 Deaths` = col_double(),
+  Footnote = col_character()
+)
+`summarise()` ungrouping output (override with `.groups` argument)
+`summarise()` ungrouping output (override with `.groups` argument)
+Joining, by = "State"
+`summarise()` regrouping output by 'State' (override with `.groups` argument)
+Joining, by = c("State", "Sex")
+Joining, by = c("Age", "Sex")
+Joining, by = c("State", "Sex")
+`summarise()` regrouping output by 'State' (override with `.groups` argument)
+Writing to "USA_deaths_all_states.R"
+Writing to sheet "database"
+Writing to "Hydra auto-update dashboard"
+Appending 1 row(s) to "log"
+trying URL 'https://data.cdc.gov/api/views/9bhg-hcku/rows.csv?accessType=DOWNLOAD'
+Content type 'text/csv; charset=utf-8' length unknown
+.......... .......... .......... .......... ..........
+.......... .......... .......... .......... ..........
+.......... .......... .......... .......... ..........
+.......... .......... .......... .......... ..........
+.......... .......... .......... .......... ..........
+.......... .......... .......... .......... ..........
+.......... .......... .......... .......... ..........
+........
+downloaded 358 KB
+
+here() starts at U:/gits/covid_age
+Loading required package: pacman
+Auto-refreshing stale OAuth token.
+Reading from "input_rubric"
+Range "'input'"
+Reading from "input_rubric"
+Range "'input'"
+Reading from "USA_deaths_all_states.R"
+Range "'database'"
+Parsed with column specification:
+cols(
+  `Data as of` = col_character(),
+  `Start week` = col_character(),
+  `End Week` = col_character(),
+  State = col_character(),
+  Sex = col_character(),
+  `Age group` = col_character(),
+  `COVID-19 Deaths` = col_double(),
+  `Total Deaths` = col_double(),
+  `Pneumonia Deaths` = col_double(),
+  `Pneumonia and COVID-19 Deaths` = col_double(),
+  `Influenza Deaths` = col_double(),
+  `Pneumonia, Influenza, or COVID-19 Deaths` = col_double(),
+  Footnote = col_character()
+)
+`summarise()` ungrouping output (override with `.groups` argument)
+`summarise()` ungrouping output (override with `.groups` argument)
+Joining, by = "State"
+`summarise()` regrouping output by 'State' (override with `.groups` argument)
+Joining, by = c("State", "Sex")
+Joining, by = c("Age", "Sex")
+Joining, by = c("State", "Sex")
+`summarise()` regrouping output by 'State' (override with `.groups` argument)
+Writing to "USA_deaths_all_states.R"
+Writing to sheet "database"
+Writing to "Hydra auto-update dashboard"
+Appending 1 row(s) to "log"
+trying URL 'https://data.cdc.gov/api/views/9bhg-hcku/rows.csv?accessType=DOWNLOAD'
+Content type 'text/csv; charset=utf-8' length unknown
+.......... .......... .......... .......... ..........
+.......... .......... .......... .......... ..........
+.......... .......... .......... .......... ..........
+.......... .......... .......... .......... ..........
+.......... .......... .......... .......... ..........
+.......... .......... .......... .......... ..........
+.......... .......... .......... .......... ..........
+........
+downloaded 358 KB
+
