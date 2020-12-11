@@ -14,16 +14,14 @@ drive_auth(email = email)
 gs4_auth(email = email)
 
 # # reading data from the website ------------------------------------------------------ 
-# m_url <- "https://www.gob.mx/salud/documentos/datos-abiertos-152127"
-# html <- read_html(m_url)
-# # locating the links for the data
-# url1 <- html_nodes(html, xpath = '/html/body/main/div/div[1]/div[4]/div/table[2]/tbody/tr[1]/td[2]/a') %>%
-#   html_attr("href")
+m_url <- "https://www.gob.mx/salud/documentos/datos-abiertos-152127"
+html <- read_html(m_url)
+# locating the links for the data
+url1 <- html_nodes(html, xpath = '/html/body/main/div/div[1]/div[4]/div/table[2]/tbody/tr[1]/td[2]/a') %>%
+  html_attr("href")
 # 
 # temp <- tempfile()
-# download.file(url1, "Data/temp.zip")
-# db <- read_csv("Data/temp.zip")
-
+download.file(url1, "Data/temp.zip")
 db <- read_csv("Data/temp.zip")
 
 unique(db$SEXO)
@@ -34,7 +32,7 @@ table(db$ENTIDAD_RES)
 # filter confirmed cases and standardize data ----------------------------------------
 
 db_t <- db %>% 
-  filter(TOMA_MUESTRA == 1) %>% 
+  filter(TOMA_MUESTRA_LAB == 1) %>% 
   rename(Age = EDAD,
          date_t = FECHA_INGRESO) %>% 
   mutate(Sex = case_when(SEXO == 1 ~ "f",

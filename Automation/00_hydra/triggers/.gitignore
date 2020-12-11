@@ -21,10 +21,17 @@ Germany_trigger.log
 Slovenia_trigger.log
 Colombia_trigger.log
 Czechia_trigger.log
-
+USA_deaths_states_trigger.log
+ES_Basque_Country_trigger.log
+Philippines_trigger.log
+Scotland_trigger.log
+Norway_trigger.log
+US_California_trigger.log
+US_California_trigger.R
 
 CA_Montreal_trigger.R
 Colombia_trigger.R
+USA_deaths_states_trigger.R
 Germany_trigger.R
 USA_all_deaths_trigger.R
 US_NYC_trigger.R
@@ -46,5 +53,9 @@ Germany_trigger.R
 Slovenia_trigger.R
 Colombia_trigger.R
 Czechia_trigger.R
+ES_Basque_Country_trigger.R
+Philippines_trigger.R
+Scotland_trigger.R
+Norway_trigger.R
 
 .Rhistory
