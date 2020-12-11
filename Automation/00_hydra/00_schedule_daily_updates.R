@@ -21,26 +21,6 @@ if (grepl("gits", auto_update_wd)){
   auto_update_email <- "kikepaila@gmail.com"
 }
 
-if (grepl("Nepomuceno", auto_update_wd)){
-  auto_update_email <- "mariliare@gmail.com"
-}
-
-if (grepl("basellini", auto_update_wd)){
-  auto_update_email <- "ugofilippo.basellini@gmail.com"
-}
-
-if (grepl("cimentadaj", auto_update_wd)){
-  auto_update_email <- "cimentadaj@gmail.com"
-}
-
-if (grepl("CurrentProjects", auto_update_wd)){
-  auto_update_email <- "e.delfava@gmail.com"
-}
-
-if (grepl("diego", auto_update_wd)){
-  auto_update_email <- "gatemonte@gmail.com"
-}
-
 # sched() is a funtion that generates and schedules a trigger script 
 # for each collection script. The trigger script has two purposes. 
 # First, it includes the information of the local path of the project and 
@@ -85,12 +65,11 @@ sched("ES_Basque_Country", tm = "11:00",email = auto_update_email, wd = auto_upd
 sched("Philippines", tm = "10:00",email = auto_update_email, wd = auto_update_wd)
 sched("Scotland", tm = "12:10",email = auto_update_email, wd = auto_update_wd)
 sched("Norway", tm = "16:11",email = auto_update_email, wd = auto_update_wd)
-# sched("CA_Montreal", tm = "02:10",email = auto_update_email, wd = auto_update_wd)
-# sched("Mexico", tm = "02:10",email = auto_update_email, wd = auto_update_wd)
-# sched("US_Wisconsin", tm = "02:10",email = auto_update_email, wd = auto_update_wd)
+sched("US_California", tm = "07:50",email = auto_update_email, wd = auto_update_wd)
 
 ## broken scripts:
 ##################
+# sched("US_Wisconsin", tm = "02:10",email = auto_update_email, wd = auto_update_wd)
 
 ### scripts working outside hydra because of VPN:
 #################################################
@@ -120,7 +99,9 @@ sched("Norway", tm = "16:11",email = auto_update_email, wd = auto_update_wd)
 # delete_sched("USA_all_deaths")
 # delete_sched("Venezuela")
 # delete_sched("USA_deaths_all_states")
-# delete_sched("Philippines.R")
+# delete_sched("Philippines")
+# delete_sched("Scotland")
+# delete_sched("Norway")
 
 
 ### to list current tasks

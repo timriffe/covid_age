@@ -1,26 +1,26 @@
 
-# 2020-12-07 inputDB updates 
- Mon Dec 07 20:01:09 2020 
+# 2020-12-10 inputDB updates 
+ Thu Dec 10 20:01:08 2020 
 
 
-# 2020-12-07 20:01:09 updates 
- Mon Dec 07 20:01:09 2020 
+# 2020-12-10 20:01:08 updates 
+ Thu Dec 10 20:01:08 2020 
 
 
 # Filter valid Metric entries: 
- Mon Dec 07 20:41:06 2020 
+ Thu Dec 10 20:45:20 2020 
 
 Valid Metrics include: Count,Fraction,Ratio
  14 rows removed
 # Filter valid Sex entries: 
- Mon Dec 07 20:41:08 2020 
+ Thu Dec 10 20:45:22 2020 
 
 Valid Sex values include: m,f,b,UNK
- 284 rows removed
+ 289 rows removed
 # Duplicates detected. Following `Code`s removed: 
- Mon Dec 07 20:41:19 2020 
+ Thu Dec 10 20:45:32 2020 
 
-CA_AB30.11.2020
+CA_ON09.12.2020
 NO25.06.2020
 NO26.06.2020
 NO29.06.2020
@@ -138,77 +138,34 @@ NO01.12.2020
 NO02.12.2020
 NO03.12.2020
 NO04.12.2020
-ES_PV_21.03.2020
-ES_PV_22.03.2020
-ES_PV_23.03.2020
-ES_PV_24.03.2020
-ES_PV_25.03.2020
-ES_PV_26.03.2020
-ES_PV_27.03.2020
-ES_PV_28.03.2020
-ES_PV_29.03.2020
-ES_PV_30.03.2020
-ES_PV_31.03.2020
-ES_PV_01.04.2020
-ES_PV_02.04.2020
-ES_PV_03.04.2020
-ES_PV_04.04.2020
-ES_PV_05.04.2020
-ES_PV_06.04.2020
-ES_PV_07.04.2020
-ES_PV_08.04.2020
-ES_PV_09.04.2020
-ES_PV_10.04.2020
-ES_PV_11.04.2020
-ES_PV_12.04.2020
-ES_PV_13.04.2020
-ES_PV_15.04.2020
-ES_PV_16.04.2020
-ES_PV_17.04.2020
-ES_PV_18.04.2020
-ES_PV_19.04.2020
-ES_PV_20.04.2020
-ES_PV_21.04.2020
-ES_PV_22.04.2020
-ES_PV_23.04.2020
-ES_PV_24.04.2020
-ES_PV_25.04.2020
-ES_PV_26.04.2020
-ES_PV_27.04.2020
-ES_PV_28.04.2020
-ES_PV_29.04.2020
-ES_PV_30.04.2020
-ES_PV_01.05.2020
-ES_PV_02.05.2020
-ES_PV_03.05.2020
-ES_PV_04.05.2020
-ES_PV_05.05.2020
-ES_PV_06.05.2020
-ES_PV_07.05.2020
-ES_PV_08.05.2020
-ES_PV_09.05.2020
-ES_PV_10.05.2020
-ES_PV_11.05.2020
+NO07.12.2020
+NO08.12.2020
+NO09.12.2020
+NO10.12.2020
+PS12.10.2020
+GB_SCO_29.03.2020
 US_TX27.10.2020
 VE02.12.2020
-# 2020-12-08 inputDB updates 
- Tue Dec 08 04:01:08 2020 
+# 2020-12-11 inputDB updates 
+ Fri Dec 11 04:01:08 2020 
 
 
-# 2020-12-08 04:01:08 updates 
- Tue Dec 08 04:01:08 2020 
+# 2020-12-11 04:01:08 updates 
+ Fri Dec 11 04:01:08 2020 
 
 
 # Filter valid Measure entries: 
- Tue Dec 08 04:18:59 2020 
+ Fri Dec 11 04:24:18 2020 
 
 Valid Measures include: Cases,Deaths,Tests,ASCFR
- 1038 rows removed
+ 1062 rows removed
+# Filter valid Sex entries: 
+ Fri Dec 11 04:24:18 2020 
+
+Valid Sex values include: m,f,b,UNK
+ 1 rows removed
 # Duplicates detected. Following `Code`s removed: 
- Tue Dec 08 04:19:10 2020 
+ Fri Dec 11 04:24:30 2020 
 
 PS12.10.2020
-US_KS25.11.2020
-US_KS27.11.2020
-US_KS04.12.2020
-US_KS07.12.2020
+US_CA_10.04.2020
