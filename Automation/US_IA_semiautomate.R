@@ -2,6 +2,24 @@
 # main url: "https://iowacovid19tracker.org/downloadable-data"
 # Just to find a way to automatically download the full csv.
 
+# Manual procedure:
+
+# 1)
+# Iowa Testing Data & Percent Change
+# Show: All
+# download csv
+
+# 2) 
+# Age Groups
+# Show: All
+# download csv
+
+# 3)
+# Biological Sex
+# Show: All
+# download csv
+
+#
 
 library(here)
 source(here("Automation/00_Functions_automation.R"))
