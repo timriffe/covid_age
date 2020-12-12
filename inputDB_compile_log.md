@@ -143,3 +143,20 @@ NO09.12.2020
 NO10.12.2020
 NO11.12.2020
 US_TX27.10.2020
+# 2020-12-12 inputDB updates 
+ Sat Dec 12 04:01:08 2020 
+
+
+# 2020-12-12 04:01:08 updates 
+ Sat Dec 12 04:01:08 2020 
+
+
+# Filter valid Measure entries: 
+ Sat Dec 12 04:25:06 2020 
+
+Valid Measures include: Cases,Deaths,Tests,ASCFR
+ 1070 rows removed
+# Duplicates detected. Following `Code`s removed: 
+ Sat Dec 12 04:25:18 2020 
+
+PS12.10.2020
