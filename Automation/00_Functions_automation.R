@@ -214,4 +214,23 @@ add_Short <- function(Code, Date) {
   
 }
 
+# function to extract data from web 
+##################################
+
+scraplinks <- function(url){
+  # Create an html document from the url
+  webpage <- xml2::read_html(url)
+  # Extract the URLs
+  url_ <- webpage %>%
+    rvest::html_nodes("a") %>%
+    rvest::html_attr("href")
+  # Extract the link text
+  link_ <- webpage %>%
+    rvest::html_nodes("a") %>%
+    rvest::html_text()
+  return(tibble(link = link_, url = url_))
+}
+
+
+
 
