@@ -22,7 +22,8 @@ ss_db    <- rubric_i %>% dplyr::pull(Source)
 
 # read in current 
 ME_in <- get_country_inputDB("US_ME") %>% 
-  select(-Short)
+  select(-Short) %>% 
+  mutate(Code = paste0("US_ME_",Date))
 
 date_max <-
   ME_in %>% 
@@ -73,9 +74,10 @@ Sex <-
 
 MEout <-
   bind_rows(Age,Sex)  %>% 
-  pivot_longer(Cases:Deaths, names_to = "Measure", values_to = "Value")
+  pivot_longer(Cases:Deaths, names_to = "Measure", values_to = "Value") %>% 
+  mutate(Value = as.double(Value))
 
-date_new <- out$Date %>% unique()
+date_new <- MEout$Date %>% unique()
 
 if (date_new > date_max){
   MEout <-
@@ -121,6 +123,8 @@ if (date_new > date_max){
             recurse = TRUE, 
             compression_level = 9,
             include_directories = TRUE)
+  
+  file.remove(data_source)
   
 }
 
