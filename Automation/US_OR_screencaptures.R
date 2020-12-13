@@ -28,7 +28,12 @@ webshot(url = cases_url,
         delay = 10)
 
 
+if (!"email" %in% ls()){
+  email <- "tim.riffe@gmail.com"
+}
+gs4_auth(email = email)
 
+log_update("US_Oregon",N = "captured")
 
 schedule.this <- FALSE
 if (schedule.this){
