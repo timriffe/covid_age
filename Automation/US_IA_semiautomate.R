@@ -2,6 +2,10 @@
 # main url: "https://iowacovid19tracker.org/downloadable-data"
 # Just to find a way to automatically download the full csv.
 
+# For now, download to:
+
+# Automation/Iowa
+
 # Manual procedure:
 
 # 1)
@@ -32,6 +36,7 @@ if (!"email" %in% ls()){
 # info country and N drive address
 ctr          <- "US_Iowa" # it's a placeholder
 dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
+dir_n_source <- "N:/COVerAGE-DB/Automation/Iowa"
 
 # Drive credentials
 drive_auth(email = email)
@@ -49,8 +54,11 @@ ss_db <- rubric %>%
 
 
 # read in local downloaded files.
-AgeIN <- read_csv("Data/Statewide Age Group Demographics.csv") 
+AgeIN <- read_csv(file.path(dir_n_source,"Statewide Age Group Demographics.csv")) 
+SexIN <- read_csv(file.path(dir_n_source,"Statewide Biological Sex Demographics.csv")) 
+TestsIN <- read_csv(file.path(dir_n_source,"Iowa Testing Data  Percent Change.csv")) 
 
+# Now process to inputDB format
 Age <-
   AgeIN %>% 
   select(Date, 
@@ -106,8 +114,6 @@ Age <-
          Code = paste0("US_IA_",Date)
   )
 
-TestsIN <-
-  read_csv("Data/Iowa Testing Data  Percent Change.csv")
 
 Tests <- 
   TestsIN %>% 
@@ -130,9 +136,6 @@ Tests <-
                       year(Date), sep = "."),
          Code = paste0("US_IA_", Date))
 
-
-SexIN <- 
-  read_csv("Data/Statewide Biological Sex Demographics.csv") 
 
 Sex <- SexIN %>% 
    select(Date, 
@@ -178,12 +181,12 @@ data_source_2 <- paste0(dir_n, "Data_sources/", ctr, "/sex_",today(), ".csv")
 data_source_3 <- paste0(dir_n, "Data_sources/", ctr, "/tests_",today(), ".csv")
 
 
-write_csv(AgeIN, file = date_source_1)
-write_csv(SexIN, file = date_source_2)
-write_csv(TestsIN, file = date_source_3)
+write_csv(AgeIN, path = data_source_1)
+write_csv(SexIN, path = data_source_2)
+write_csv(TestsIN, path = data_source_3)
 
 
-data_source <- c(data_source_1, data_source_2, date_source_3)
+data_source <- c(data_source_1, data_source_2, data_source_3)
 
 zipname <- paste0(dir_n, 
                   "Data_sources/", 
@@ -194,11 +197,18 @@ zipname <- paste0(dir_n,
                   today(), 
                   ".zip")
 
-zipr(zipname, 
+zip::zipr(zipname, 
      data_source, 
      recurse = TRUE, 
      compression_level = 9,
      include_directories = TRUE)
 
+
+# -------------------------------
 # clean up file chaff
 file.remove(data_source)
+# source file rm:
+file_source <- dir(dir_n_source)
+file_rm <- file_source[grepl(file_source,pattern=".csv")]
+file.remove(file.path(dir_n_source, file_rm))
+
