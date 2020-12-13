@@ -189,7 +189,7 @@ if (length(files_Deaths) > 0){
   
 }
 
-
+log_update("Afghanistan", N=0)
 
 
 

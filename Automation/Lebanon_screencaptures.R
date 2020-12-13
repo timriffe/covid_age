@@ -1,6 +1,4 @@
-https://corona.ministryinfo.gov.lb/
-  
-  
+
   #install.packages("webshot")
   library(webshot)
 library(lubridate)
