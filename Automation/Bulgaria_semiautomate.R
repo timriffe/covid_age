@@ -32,12 +32,38 @@ BGdrive <- get_country_inputDB("BG") %>%
 
 # Manual download from here: (to be automated in future)
 # https://data.egov.bg/data/resourceView/8f62cfcf-a979-46d4-8317-4e1ab9cbd6a8?fbclid=IwAR2mla-loksQXfbhIw1BAOzyXxyupB9aQPkxXQOqb7yhHbUVmldOlhyjnfY
-# button in lower left corner, specify csv.
+# button in lower left corner, specify csv. This one is the age-specific data
 
-age_name_csv      <- "Разпределение по дата и по възрастови групи.csv"
-age_file_path_csv <- file.path("Data",age_name_csv)
+# Totals of various kinds:
+# This one is the time series of totals
+# https://data.egov.bg/data/resourceView/e59f95dd-afde-43af-83c8-ea2916badd19
+
+
+age_name_csv          <- "Разпределение по дата и по възрастови групи.csv"
+age_file_path_csv     <- file.path("Data", age_name_csv)
 BG_age_in             <- read_csv(age_file_path_csv)
 
+
+totals_name_csv       <-"Обща статистика за разпространението.csv"
+totals_file_path_csv  <- file.path("Data", totals_name_csv)
+BG_TOT_in             <- read_csv(totals_file_path_csv)
+# ------------------------------------
+# Translations
+#"Дата"                     "Date"
+#"Направени тестове"        "Tests"
+#"Тестове за денонощие"     "New Tests"
+#"Потвърдени случаи"        "Cases"
+#"Активни случаи"           "Active cases"
+#"Нови случаи за денонощие" "New cases"
+#"Хоспитализирани"          "Hospitalized"
+#"В интензивно отделение"   "ICU"
+#"Излекувани"               "Recovered" 
+#"Излекувани за денонощие"  "New recovered"
+#"Починали"                 "Deaths"
+#"Починали за денонощие"    "New deaths"
+# -------------------------------------
+
+# Now process the data
 
 
 BG_cases_out <-
@@ -75,25 +101,7 @@ BG_cases_out <-
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)
   
-# Totals of various kinds:
-totals_name_csv       <-"Обща статистика за разпространението.csv"
-totals_file_path_csv  <- file.path("Data",totals_name_csv)
-BG_TOT_in             <- read_csv(totals_file_path_csv)
-# ------------------------------------
-# Translations
-#"Дата"                     "Date"
-#"Направени тестове"        "Tests"
-#"Тестове за денонощие"     "New Tests"
-#"Потвърдени случаи"        "Cases"
-#"Активни случаи"           "Active cases"
-#"Нови случаи за денонощие" "New cases"
-#"Хоспитализирани"          "Hospitalized"
-#"В интензивно отделение"   "ICU"
-#"Излекувани"               "Recovered" 
-#"Излекувани за денонощие"  "New recovered"
-#"Починали"                 "Deaths"
-#"Починали за денонощие"    "New deaths"
-# -------------------------------------
+
 BG_TOT_out <-
   BG_TOT_in %>% 
   select(Date = Дата,
