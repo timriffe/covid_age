@@ -40,11 +40,13 @@ BGdrive <- get_country_inputDB("BG") %>%
 
 
 age_name_csv          <- "Разпределение по дата и по възрастови групи.csv"
+Encoding(age_name_csv) <-"UTF-8"
 age_file_path_csv     <- file.path("Data", age_name_csv)
 BG_age_in             <- read_csv(age_file_path_csv)
 
 
 totals_name_csv       <-"Обща статистика за разпространението.csv"
+Encoding(totals_name_csv) <-"UTF-8"
 totals_file_path_csv  <- file.path("Data", totals_name_csv)
 BG_TOT_in             <- read_csv(totals_file_path_csv)
 # ------------------------------------
