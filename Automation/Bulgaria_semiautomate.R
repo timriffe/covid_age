@@ -39,14 +39,24 @@ BGdrive <- get_country_inputDB("BG") %>%
 # https://data.egov.bg/data/resourceView/e59f95dd-afde-43af-83c8-ea2916badd19
 
 
-age_name_csv          <- "Разпределение по дата и по възрастови групи.csv"
-age_file_path_csv     <- file.path(dir_n_source, age_name_csv)
-BG_age_in             <- read_csv(age_file_path_csv)
+age_name_csv           <- "Разпределение по дата и по възрастови групи.csv"
+Encoding(age_name_csv) <-"UTF-8"
+age_file_path_csv      <- file.path(dir_n_source, age_name_csv)
+
+# This sucessfully reads the file in, but column headers will be distorted:
+# tmp <- tempfile(fileext = ".csv",tmpdir =dir_n_source)
+# file.link(age_file_path_csv, tmp)
+# BG_age_in              <- read_csv(tmp, 
+#                                    locale = readr::locale(encoding = "UTF-8"))
+BG_age_in              <- read_csv(age_file_path_csv) # Fails on Hydra
 
 
-totals_name_csv       <-"Обща статистика за разпространението.csv"
-totals_file_path_csv  <- file.path(dir_n_source, totals_name_csv)
-BG_TOT_in             <- read_csv(totals_file_path_csv)
+totals_name_csv        <-"Обща статистика за разпространението.csv"
+Encoding(totals_name_csv) <-"UTF-8"
+totals_file_path_csv   <- file.path(dir_n_source, totals_name_csv)
+totals_file_path_csv   <- file.path("Data", totals_name_csv)
+
+BG_TOT_in              <- read_csv(totals_file_path_csv)
 # ------------------------------------
 # Translations
 #"Дата"                     "Date"
