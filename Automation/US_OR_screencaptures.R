@@ -4,6 +4,8 @@ library(webshot)
 library(lubridate)
 #install_phantomjs()
 
+source("Automation/00_Functions_automation.R")
+
 
 deaths_url <- "https://public.tableau.com/profile/oregon.health.authority.covid.19#!/vizhome/OregonCOVID-19CaseDemographicsandDiseaseSeverityStatewide-SummaryTable/DemographicDataSummaryTable"
 cases_url  <- "https://public.tableau.com/profile/oregon.health.authority.covid.19#!/vizhome/OregonCOVID-19Update/CaseandTesting"
