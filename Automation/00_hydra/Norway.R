@@ -1,4 +1,3 @@
-
 source("Automation/00_Functions_automation.R")
 library(lubridate)
 library(RCurl)
@@ -65,7 +64,7 @@ deaths_urls <- paste0("https://raw.githubusercontent.com/folkehelseinstituttet/s
 death_data_urls <- rep(FALSE, length(deaths_urls))
 for (i in 1:length(deaths_urls)){
   death_data_urls[i] <- url.exists(deaths_urls[i])
-  cat(i,"\n")
+  cat(100*i/length(deaths_urls),"%\n")
 }
 
 ###########################################################
@@ -73,8 +72,8 @@ for (i in 1:length(deaths_urls)){
 ###########################################################
 
 # Cases and Tests are a single time series
-Cases_in  <- read_csv(rev(case_urls[case_data_urls])[1])
-Tests_in  <- read_csv(rev(test_urls[test_data_urls])[1])
+Cases_in  <- try(read_csv(rev(case_urls[case_data_urls])[1]))
+Tests_in  <- try(read_csv(rev(test_urls[test_data_urls])[1]))
 
 # Deaths need to be read in in a loop, because they 
 # don't contain proper dates
@@ -241,11 +240,26 @@ log_update(pp = "Norway", N = N)
 # log source files
 ###########################################################
 
-write_csv(Deaths_in,"Data/NO_deaths.csv")
-write_csv(Cases_in,"Data/NO_cases.csv")
-write_csv(Tests_in,"Data/NO_tests.csv")
+data_source_1 <- paste0(dir_n, 
+                        "Data_sources/", 
+                        ctr,
+                        "/NO_deaths.csv")
 
-files <- c("Data/NO_deaths.csv","Data/NO_cases.csv","Data/NO_tests.csv")
+data_source_2 <- paste0(dir_n, 
+                        "Data_sources/", 
+                        ctr,
+                        "/NO_cases.csv")
+
+data_source_3 <- paste0(dir_n, 
+                        "Data_sources/", 
+                        ctr,
+                        "/NO_tests.csv")
+
+write_csv(Deaths_in, data_source_1)
+write_csv(Cases_in, data_source_2)
+write_csv(Tests_in, data_source_3)
+
+data_source <- c(data_source_1, data_source_2, data_source_3)
 #ex_files <- c(paste0(PH_dir, files))
 
 zipname <- paste0(dir_n, 
@@ -258,7 +272,7 @@ zipname <- paste0(dir_n,
                   ".zip")
 
 zip::zipr(zipname,
-          files = files, 
+          files = data_source, 
           recurse = TRUE, 
           compression_level = 9,
           include_directories = TRUE)

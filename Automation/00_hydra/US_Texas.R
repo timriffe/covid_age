@@ -27,11 +27,12 @@ last_date_drive <- db_drive %>%
   dplyr::pull(date_f) %>%
   max()
 
-# reading data from the website
+# reading "Last updated" date from the website
 m_url     <- "https://dshs.texas.gov/coronavirus/additionaldata/"
 html      <- read_html(m_url)
+# xpath extracted when inspecting the date element
 date_text <-
-  html_nodes(html, xpath = '//*[@id="ctl00_ContentPlaceHolder1_uxContent"]/p[3]/b/i') %>%
+  html_nodes(html, xpath = '//*[@id="ctl00_ContentPlaceHolder1_uxContent"]/h6[1]/b') %>%
   html_text()
 loc_date1 <- str_locate(date_text, "Last updated: ")[2] + 1
 loc_date2 <- str_locate(date_text, '\\)')[1] - 1

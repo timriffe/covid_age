@@ -29,11 +29,11 @@ last_date_drive <- max(db_drive2$date_f)
 data_source <- paste0(dir_n, "Data_sources/", ctr, "/", ctr, "_data_", today(), ".zip")
 download.file("https://info.gesundheitsministerium.at/data/data.zip", data_source)
 
-db_c_age <- read_csv2(unz(source_data, "Altersverteilung.csv"))
-db_c_sex <- read_csv2(unz(source_data, "Geschlechtsverteilung.csv"))
-db_d_age <- read_csv2(unz(source_data, "AltersverteilungTodesfaelle.csv"))
-db_d_sex <- read_csv2(unz(source_data, "VerstorbenGeschlechtsverteilung.csv"))
-db_tests <- read_csv2(unz(source_data, "AllgemeinDaten.csv"))
+db_c_age <- read_csv2(unz(data_source, "Altersverteilung.csv"))
+db_c_sex <- read_csv2(unz(data_source, "Geschlechtsverteilung.csv"))
+db_d_age <- read_csv2(unz(data_source, "AltersverteilungTodesfaelle.csv"))
+db_d_sex <- read_csv2(unz(data_source, "VerstorbenGeschlechtsverteilung.csv"))
+db_tests <- read_csv2(unz(data_source, "AllgemeinDaten.csv"))
 
 date_f <- db_c_age$Timestamp[1] %>% 
   str_sub(1,10) %>% 

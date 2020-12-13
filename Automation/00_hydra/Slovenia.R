@@ -19,7 +19,7 @@ m_url <- "https://www.nijz.si/sl/dnevno-spremljanje-okuzb-s-sars-cov-2-covid-19"
 html <- read_html(m_url)
 
 # locating the links for Excel files
-url <- html_nodes(html, xpath = '//*[@id="node-5056"]/div[4]/div/div/div/p[8]/a') %>%
+url <- html_nodes(html, xpath = '//*[@id="node-5056"]/div[4]/div/div/div/p[7]/a') %>%
   html_attr("href")
 
 paste0("https://www.nijz.si", url)
