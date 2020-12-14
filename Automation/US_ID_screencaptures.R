@@ -2,7 +2,8 @@
 #install.packages("webshot")
 library(webshot)
 library(lubridate)
-source("Automation/00_Functions_automation.R")
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
+
 #install_phantomjs()
 if (!"email" %in% ls()){
   email <- "tim.riffe@gmail.com"
