@@ -54,8 +54,10 @@ BG_age_in              <- read_csv(tmp)
 #                                    col_names = F) # Fails on Hydra
 
 
+
 totals_name_csv        <-"Обща статистика за разпространението.csv"
-# Encoding(totals_name_csv) <-"UTF-8"
+Encoding(totals_name_csv) <-"UTF-8"
+
 totals_file_path_csv   <- file.path(dir_n_source, totals_name_csv)
 # 
 # BG_TOT_in              <- read_csv(totals_file_path_csv)
