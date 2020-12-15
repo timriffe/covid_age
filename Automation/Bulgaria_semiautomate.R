@@ -39,25 +39,41 @@ BGdrive <- get_country_inputDB("BG") %>%
 # This one is the time series of totals
 # https://data.egov.bg/data/resourceView/e59f95dd-afde-43af-83c8-ea2916badd19
 
-
 age_name_csv           <- "Разпределение по дата и по възрастови групи.csv"
-Encoding(age_name_csv) <-"UTF-8"
+# Encoding(age_name_csv) <-"UTF-8"
 age_file_path_csv      <- file.path(dir_n_source, age_name_csv)
 
 # This sucessfully reads the file in, but column headers will be distorted:
-# tmp <- tempfile(fileext = ".csv",tmpdir =dir_n_source)
-# file.link(age_file_path_csv, tmp)
-# BG_age_in              <- read_csv(tmp, 
+tmp <- tempfile(fileext = ".csv", tmpdir = dir_n_source)
+file.link(age_file_path_csv, tmp)
+# BG_age_in              <- read_csv(tmp,
 #                                    locale = readr::locale(encoding = "UTF-8"))
-BG_age_in              <- read_csv(age_file_path_csv) # Fails on Hydra
+BG_age_in              <- read_csv(tmp)
+
+# BG_age_in              <- read_csv(age_file_path_csv,
+#                                    col_names = F) # Fails on Hydra
 
 
 totals_name_csv        <-"Обща статистика за разпространението.csv"
-Encoding(totals_name_csv) <-"UTF-8"
+# Encoding(totals_name_csv) <-"UTF-8"
 totals_file_path_csv   <- file.path(dir_n_source, totals_name_csv)
-totals_file_path_csv   <- file.path("Data", totals_name_csv)
+# 
+# BG_TOT_in              <- read_csv(totals_file_path_csv)
 
-BG_TOT_in              <- read_csv(totals_file_path_csv)
+tmp <- tempfile(fileext = ".csv",tmpdir = dir_n_source)
+file.link(totals_file_path_csv, tmp)
+# BG_TOT_in              <- read_csv(tmp,
+#                                    locale = readr::locale(encoding = "UTF-8"))
+BG_TOT_in              <- read_csv(tmp)
+
+# list.files(dir_n_source, "*.csv")
+
+
+
+
+
+
+
 # ------------------------------------
 # Translations
 #"Дата"                     "Date"
@@ -76,13 +92,12 @@ BG_TOT_in              <- read_csv(totals_file_path_csv)
 
 # Now process the data
 
-
 BG_cases_out <-
   BG_age_in %>% 
-  pivot_longer(`0 - 19`:`90+`,
+  pivot_longer(-1,
                names_to = "Age",
                values_to = "Value") %>% 
-  rename('Date' = "Дата") %>% 
+  rename('Date' = 1) %>% 
   mutate(Age = case_when(
     Age == "0 - 19" ~ "0",
     Age == "20 - 29" ~ "20",
@@ -101,7 +116,7 @@ BG_cases_out <-
       TRUE ~ 10L),
     Measure = "Cases",
     Metric = "Count",
-    Date = date_in,
+    Date = mdy(Date),
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
@@ -112,13 +127,12 @@ BG_cases_out <-
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)
   
-
 BG_TOT_out <-
   BG_TOT_in %>% 
-  select(Date = Дата,
-         Tests = `Направени тестове`,
-         Cases = `Потвърдени случаи`,
-         Deaths = Починали) %>% 
+  select(Date = 1,
+         Tests = 2,
+         Cases = 4,
+         Deaths = 11) %>% 
   pivot_longer(Tests:Deaths, names_to = "Measure", values_to = "Value") %>% 
   mutate(Sex = "b",
          Age = "TOT",

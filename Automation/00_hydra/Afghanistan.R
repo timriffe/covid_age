@@ -56,49 +56,49 @@ files_tests  <- files_have[grepl(pattern = "Sample-test.txt",files_have)]
 if (length(files_Deaths) > 0){
   read_AF_deaths <- function(path){
   
-  Date <- path %>% 
-    str_split(pattern="/") %>% 
-    unlist() %>% 
-    rev() %>% 
-    '['(1) %>% 
-  gsub(pattern = " ", replacement = "") %>% 
-    substr(1,8) %>% 
-    dmy()
-  
-  incoming<-
-  suppressWarnings(readLines(path)) %>% 
-    gsub(pattern = ",years", replacement = "") %>% 
-    str_split(pattern=",") %>% 
-    unlist() %>% 
-    '['(-1)
-  
-  incoming[!grepl(incoming,pattern="\\%")] %>% 
-    matrix(ncol=4,byrow=TRUE,dimnames=list(NULL,c("Age","Cases","Hospitalizations","Deaths"))) %>% 
-    '['(-1,) %>% 
-    as_tibble() %>% 
-    mutate(Age = recode(Age,
-                        "0-9" = "0",
-                        "10-19" = "10",
-                        "20-29" = "20",
-                        "30-39" = "30",
-                        "40-49" = "40",
-                        "50-59" = "50",
-                        "60-69" = "60",
-                        "70-79" = "70",
-                        "80+" = "80",
-                        "Total" = "TOT"),
-           Cases = as.integer(Cases),
-           Deaths = as.integer(Deaths)) %>% 
-    select(-Hospitalizations) %>% 
-    mutate(AgeInt = case_when(Age == "TOT" ~ NA_integer_,
-                              Age == "80" ~ 25L,
-                              TRUE ~ 10L),
-           Sex = "b",
-           Date = Date) %>% 
-    pivot_longer(Cases:Deaths,
-                 names_to = "Measure",
-                 values_to = "Value")
-}
+    Date <- path %>% 
+      str_split(pattern="/") %>% 
+      unlist() %>% 
+      rev() %>% 
+      '['(1) %>% 
+    gsub(pattern = " ", replacement = "") %>% 
+      substr(1,8) %>% 
+      dmy()
+    
+    incoming<-
+    suppressWarnings(readLines(path)) %>% 
+      gsub(pattern = ",years", replacement = "") %>% 
+      str_split(pattern=",") %>% 
+      unlist() %>% 
+      '['(-1)
+    
+    incoming[!grepl(incoming,pattern="\\%")] %>% 
+      matrix(ncol=4,byrow=TRUE,dimnames=list(NULL,c("Age","Cases","Hospitalizations","Deaths"))) %>% 
+      '['(-1,) %>% 
+      as_tibble() %>% 
+      mutate(Age = recode(Age,
+                          "0-9" = "0",
+                          "10-19" = "10",
+                          "20-29" = "20",
+                          "30-39" = "30",
+                          "40-49" = "40",
+                          "50-59" = "50",
+                          "60-69" = "60",
+                          "70-79" = "70",
+                          "80+" = "80",
+                          "Total" = "TOT"),
+             Cases = as.integer(Cases),
+             Deaths = as.integer(Deaths)) %>% 
+      select(-Hospitalizations) %>% 
+      mutate(AgeInt = case_when(Age == "TOT" ~ NA_integer_,
+                                Age == "80" ~ 25L,
+                                TRUE ~ 10L),
+             Sex = "b",
+             Date = Date) %>% 
+      pivot_longer(Cases:Deaths,
+                   names_to = "Measure",
+                   values_to = "Value")
+  }
   
   read_AF_tests <- function(path){
     
@@ -169,27 +169,32 @@ if (length(files_Deaths) > 0){
   
   # save source data to archive
   
-  data_source <- file.path(dir_n_source, files_Deaths)
+  ## something is killing the session when trying to compress, I think is the space
+  ## at the beginning of the file name
+  ## I will avoid this step because we have the source files in N drive anyway
   
-  zipname <- paste0(dir_n, 
-                    "Data_sources/", 
-                    ctr,
-                    "/", 
-                    ctr,
-                    "_data_",
-                    today(), 
-                    ".zip")
+  # data_source <- file.path(dir_n_source, files_Deaths)
+  # 
+  # zipname <- paste0(dir_n, 
+  #                   "Data_sources/", 
+  #                   ctr,
+  #                   "/", 
+  #                   ctr,
+  #                   "_data_",
+  #                   today(), 
+  #                   ".zip")
+  # 
+  # zip::zipr(zipname, 
+  #      data_source, 
+  #      recurse = TRUE, 
+  #      compression_level = 9,
+  #      include_directories = TRUE)
   
-  zip::zipr(zipname, 
-       data_source, 
-       recurse = TRUE, 
-       compression_level = 9,
-       include_directories = TRUE)
   
-  
+} else {
+  log_update("Afghanistan", N=0)
 }
 
-log_update("Afghanistan", N=0)
 
 
 

@@ -29,11 +29,9 @@ date_max <-
   ME_in %>% 
   dplyr::pull(Date) %>% 
   dmy() %>% 
-  max()
+  max(){}
 
 ME_data <- "https://gateway.maine.gov/dhhs-apps/mecdc_covid/Maine_COVID19_Summary.xlsx"
-
-library("rio")
 
 ME_age <- import(ME_data, sheet = "cases_by_age")
 ME_sex <- import(ME_data, sheet = "cases_by_sex")
@@ -126,8 +124,7 @@ if (date_new > date_max){
   
   file.remove(data_source)
   
+} else {
+  # Otherwise, show that the script ran but didn't update.
+  log_update("US_Maine", N = 0)
 }
-
-# Otherwise, show that the script ran but didn't update.
-log_update("US_Maine", N = 0)
-
