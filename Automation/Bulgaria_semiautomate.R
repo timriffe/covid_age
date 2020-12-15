@@ -51,7 +51,7 @@ age_file_path_csv      <- file.path(dir_n_source, age_name_csv)
 BG_age_in              <- read_csv(age_file_path_csv) # Fails on Hydra
 
 
-totals_name_csv        <-"Обща статистика за разпространението.csv"
+  totals_name_csv        <-"Обща статистика за разпространението.csv"
 Encoding(totals_name_csv) <-"UTF-8"
 totals_file_path_csv   <- file.path(dir_n_source, totals_name_csv)
 totals_file_path_csv   <- file.path("Data", totals_name_csv)
