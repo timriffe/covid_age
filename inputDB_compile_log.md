@@ -1,26 +1,25 @@
 
-# 2020-12-10 inputDB updates 
- Thu Dec 10 20:01:08 2020 
+# 2020-12-14 inputDB updates 
+ Mon Dec 14 20:01:22 2020 
 
 
-# 2020-12-10 20:01:08 updates 
- Thu Dec 10 20:01:08 2020 
+# 2020-12-14 20:01:22 updates 
+ Mon Dec 14 20:01:22 2020 
 
 
 # Filter valid Metric entries: 
- Thu Dec 10 20:45:20 2020 
+ Mon Dec 14 20:38:37 2020 
 
 Valid Metrics include: Count,Fraction,Ratio
  14 rows removed
 # Filter valid Sex entries: 
- Thu Dec 10 20:45:22 2020 
+ Mon Dec 14 20:38:39 2020 
 
 Valid Sex values include: m,f,b,UNK
- 289 rows removed
+ 294 rows removed
 # Duplicates detected. Following `Code`s removed: 
- Thu Dec 10 20:45:32 2020 
+ Mon Dec 14 20:38:58 2020 
 
-CA_ON09.12.2020
 NO25.06.2020
 NO26.06.2020
 NO29.06.2020
@@ -142,30 +141,8 @@ NO07.12.2020
 NO08.12.2020
 NO09.12.2020
 NO10.12.2020
-PS12.10.2020
+NO11.12.2020
+NO14.12.2020
 GB_SCO_29.03.2020
 US_TX27.10.2020
 VE02.12.2020
-# 2020-12-11 inputDB updates 
- Fri Dec 11 04:01:08 2020 
-
-
-# 2020-12-11 04:01:08 updates 
- Fri Dec 11 04:01:08 2020 
-
-
-# Filter valid Measure entries: 
- Fri Dec 11 04:24:18 2020 
-
-Valid Measures include: Cases,Deaths,Tests,ASCFR
- 1062 rows removed
-# Filter valid Sex entries: 
- Fri Dec 11 04:24:18 2020 
-
-Valid Sex values include: m,f,b,UNK
- 1 rows removed
-# Duplicates detected. Following `Code`s removed: 
- Fri Dec 11 04:24:30 2020 
-
-PS12.10.2020
-US_CA_10.04.2020
