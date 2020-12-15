@@ -15,14 +15,15 @@ drive_auth(email = email)
 gs4_auth(email = email)
 
 ### reading data from the website 
+# detecting the link to the xlsx file in the website
+# this is a more stable method than using the xpath
 m_url <- "https://www.nijz.si/sl/dnevno-spremljanje-okuzb-s-sars-cov-2-covid-19"
-html <- read_html(m_url)
 
-# locating the links for Excel files
-url <- html_nodes(html, xpath = '//*[@id="node-5056"]/div[4]/div/div/div/p[8]/a') %>%
-  html_attr("href")
+url <- paste0("https://www.nijz.si", 
+       scraplinks(m_url) %>% 
+         filter(str_detect(url, ".xlsx")) %>% 
+         dplyr::pull(url))
 
-paste0("https://www.nijz.si", url)
 # tb4 cases
 # tb6 deaths
 
@@ -33,7 +34,7 @@ paste0("https://www.nijz.si", url)
 ### Cases
 ##############
 
-db_c <- rio::import(paste0("https://www.nijz.si", url), 
+db_c <- rio::import(url, 
                     sheet = "tb4", 
                     skip = 2) %>%
   as_tibble() 
@@ -66,7 +67,7 @@ db_c3 <- db_c2 %>%
 
 ### deaths
 ##############
-db_d <- rio::import(paste0("https://www.nijz.si", url), 
+db_d <- rio::import(url, 
                     sheet = "tb6", 
                     skip = 2)
 
@@ -135,7 +136,7 @@ log_update(pp = ctr, N = nrow(out))
 
 data_source <- paste0(dir_n, "Data_sources/", ctr, "/cases&deaths_",today(), ".xlsx")
 
-download.file(paste0("https://www.nijz.si", url), destfile = data_source)
+download.file(url, destfile = data_source)
 
 zipname <- paste0(dir_n, 
                   "Data_sources/", 
