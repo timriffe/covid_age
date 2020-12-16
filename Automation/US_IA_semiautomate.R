@@ -25,7 +25,7 @@
 
 #
 
-library(here)
+
 source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
 
 library(lubridate)
@@ -38,6 +38,7 @@ if (!"email" %in% ls()){
 ctr          <- "US_Iowa" # it's a placeholder
 dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 dir_n_source <- "N:/COVerAGE-DB/Automation/Iowa"
+# dir_n_source <- "Data/Iowa"
 
 # Drive credentials
 drive_auth(email = email)

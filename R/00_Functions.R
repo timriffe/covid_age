@@ -2169,3 +2169,10 @@ log_update <- function(pp, N){
 
 Sys.setenv(LANG = "en")
 Sys.setlocale("LC_ALL","English")
+
+# useful for automated capture
+ddmmyyyy <- function(Date,sep = "."){
+  paste(sprintf("%02d",day(Date)),
+        sprintf("%02d",month(Date)),  
+        year(Date),sep=sep)
+}
