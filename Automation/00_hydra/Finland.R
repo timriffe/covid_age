@@ -1,5 +1,5 @@
 
-#install.packages("webshot")
+
 library(webshot)
 library(lubridate)
 library(httr)
@@ -39,12 +39,14 @@ fi_deaths_url <-
   read_html("https://thl.fi/en/web/infectious-diseases-and-vaccinations/what-s-new/coronavirus-covid-19-latest-updates/situation-update-on-coronavirus#Coronavirus-related_deaths") %>% 
   html_nodes(xpath = xpath) %>% 
   html_attr("src")
+fi_deaths_url <- paste0("https://thl.fi/", fi_deaths_url)
+
 
 webshot(fi_deaths_url,
         file = fi_deaths_png,
         delay = 2)
 drive_put(media = fi_deaths_png,
-          path = ss_db)
+          path = googledrive::as_id(ss_db))
 
 # -------------------------------------
 # Now get cases:
@@ -108,12 +110,14 @@ FI_in <- get_country_inputDB("FI") %>%
   select(-Short) %>% 
   sort_input_data()
 
+# filter and merge
 FI_out <-
   FI_in %>% 
   filter(Measure != "Cases") %>% 
   bind_rows(Cases) %>% 
   sort_input_data()
 
+# push to drive
 write_sheet(FI_out,
             ss = ss_i,
             sheet = "database")
@@ -126,7 +130,7 @@ log_update("Finland",N = nrow(Cases))
 
 data_cases <- paste0(dir_n, "Data_sources/", ctr, "/cases_",today(), ".csv")
 
-write_csv(Cases, data_source_1 )
+write_csv(Cases, data_cases )
 
 zipname <- paste0(dir_n, 
                   "Data_sources/", 
@@ -144,7 +148,7 @@ zipr(zipname,
      include_directories = TRUE)
 
 # clean up file chaff
-file.remove(data_source)
+file.remove(data_cases)
 
 
 
