@@ -12,6 +12,9 @@ if (!"email" %in% ls()){
 gs4_auth(email = email)
 drive_auth(email = email)
 
+ctr <- "Finland"
+dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
+
 rubric <- get_input_rubric() %>% 
      filter(Country == "Finland")
 
@@ -25,7 +28,7 @@ source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functio
 rubric <- get_input_rubric() %>% 
   filter(Country == "Finland")
 
-fi_deaths_png  <- paste0("N:/COVerAGE-DB/Automation/Hydra/Data_sources/Finland/Finland_deaths_",today(),".png")
+fi_deaths_png  <- paste0(dir_n,"Data_sources/",ctr,"/Finland_deaths_",today(),".png")
 
 # First, get screen capture of Finland deaths, save local and to drive:
 
@@ -117,7 +120,31 @@ write_sheet(FI_out,
 
 log_update("Finland",N = nrow(Cases))
 
+############################################
+#### uploading metadata to N Drive ####
+############################################
 
+data_cases <- paste0(dir_n, "Data_sources/", ctr, "/cases_",today(), ".csv")
+
+write_csv(Cases, data_source_1 )
+
+zipname <- paste0(dir_n, 
+                  "Data_sources/", 
+                  ctr,
+                  "/", 
+                  ctr,
+                  "_cases_",
+                  today(), 
+                  ".zip")
+
+zipr(zipname, 
+     data_cases, 
+     recurse = TRUE, 
+     compression_level = 9,
+     include_directories = TRUE)
+
+# clean up file chaff
+file.remove(data_source)
 
 
 
