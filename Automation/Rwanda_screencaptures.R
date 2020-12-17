@@ -10,13 +10,13 @@ source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/0
 
 
 
-cases_url  <- "https://corona.ministryinfo.gov.lb/"
+cases_url  <- "https://gis.rbc.gov.rw/portal/apps/opsdashboard/index.html#/59872985985446bbaf8c394ad857c5cd"
 
 cases_png  <- paste0("N:/COVerAGE-DB/Automation/Hydra/Data_sources/Rwanda/Rwanda_cases_",today(),".png")
 
 
 
-webshot(url= "https://gis.rbc.gov.rw/portal/apps/opsdashboard/index.html#/59872985985446bbaf8c394ad857c5cd",
+webshot(url= cases_url,
         file = cases_png,
         delay = 60)
 
