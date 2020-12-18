@@ -55,7 +55,8 @@ weeks_avail <-
   age_sex_pyramids %>% 
   gsub(pattern = " ", replacement = "") %>% 
   substr(start=5,stop=6) %>% 
-  readr::parse_number()
+  readr::parse_number() %>% 
+  sort()
 years_avail <- 
   age_sex_pyramids %>% 
   gsub(pattern = " ", replacement = "") %>% 
@@ -70,6 +71,8 @@ weeks_collect <-
 # parse the text dumps
 #####################################################
 ECDCout <- ECDCin
+# week_i <- "2020-48"
+
 for (week_i in weeks_collect){
   cat(week_i,"\n")
   
@@ -93,8 +96,6 @@ for (week_i in weeks_collect){
           strsplit(split=",") %>% 
           '[['(1)
        
- 
-  
   ECDC_i <- 
     IN %>% 
     matrix(ncol=6, dimnames = 
@@ -177,19 +178,33 @@ for (week_i in weeks_collect){
     select(-Short) %>% 
     select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
     filter(!is.na(Value))
-       
+
   ECDCout <- 
     ECDCout %>% 
     bind_rows(ECDC_i)
+  
 }
 
-###################################################
-# prep output!
+# provisional fix weeks 48 and 49
+#################################
+
+unique(ECDCout$Country)  
+unique(ECDCout$Sex)  
+
+exc1 <- c("P1: to 2020-07-31", "P2: from 2020-08-01")
+exc2 <- c("p1: to 2020-07-31", "p2: from 2020-08-01")
 
 ECDCout <-
   ECDCout %>% 
-  select(-Short) %>% 
+  filter(!(Country %in% exc1 | Sex %in% exc2)) 
+
+
+###################################################
+# prep output!
+ECDCout <-
+  ECDCout %>% 
   sort_input_data()
+
 N <- nrow(ECDCout) - nrow(ECDCin)
 
 # So, this can be scheduled daily, it just won't do anything 6 days per week..
@@ -202,8 +217,6 @@ if (N > 0){
 
   log_update(pp = ctr, N = N)
 }
-
-
 
 ###################################################
 

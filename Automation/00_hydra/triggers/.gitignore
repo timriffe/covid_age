@@ -16,7 +16,6 @@ US_Texas_trigger.log
 US_Wisconsin_trigger.log
 Austria_trigger.log
 New_Zealand_trigger.log
-USA_deaths_all_states_trigger.log
 Germany_trigger.log
 Slovenia_trigger.log
 Colombia_trigger.log
@@ -27,11 +26,8 @@ Scotland_trigger.log
 Norway_trigger.log
 US_California_trigger.log
 US_California_trigger.R
-USA_deaths_states_trigger.log
-
 CA_Montreal_trigger.R
 Colombia_trigger.R
-USA_deaths_states_trigger.R
 Germany_trigger.R
 USA_all_deaths_trigger.R
 US_NYC_trigger.R
@@ -48,7 +44,6 @@ US_Texas_trigger.R
 US_Wisconsin_trigger.R
 Austria_trigger.R
 New_Zealand_trigger.R
-USA_deaths_all_states_trigger.R
 Germany_trigger.R
 Slovenia_trigger.R
 Colombia_trigger.R
@@ -57,5 +52,13 @@ ES_Basque_Country_trigger.R
 Philippines_trigger.R
 Scotland_trigger.R
 Norway_trigger.R
-
+Afghanistan_trigger.log
+Afghanistan_trigger.R
+US_Maine_trigger.R
+US_Maine_trigger.log
+ECDC_trigger.R
+ECDC_trigger.log
+USA_deaths_states_trigger.log
+USA_deaths_states_trigger.R
 .Rhistory
+USA_deaths_states_trigger.log
