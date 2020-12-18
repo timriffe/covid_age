@@ -40,6 +40,7 @@ BGdrive <- get_country_inputDB("BG") %>%
 # https://data.egov.bg/data/resourceView/e59f95dd-afde-43af-83c8-ea2916badd19
 
 age_name_csv           <- "Разпределение по дата и по възрастови групи.csv"
+# "BG_age_2020-12-15.csv"
 # Encoding(age_name_csv) <-"UTF-8"
 age_file_path_csv      <- file.path(dir_n_source, age_name_csv)
 
@@ -53,8 +54,9 @@ BG_age_in              <- read_csv(tmp)
 # BG_age_in              <- read_csv(age_file_path_csv,
 #                                    col_names = F) # Fails on Hydra
 
-
 totals_name_csv        <-"Обща статистика за разпространението.csv"
+# "BG_total_2020-12-15.csv"
+
 # Encoding(totals_name_csv) <-"UTF-8"
 totals_file_path_csv   <- file.path(dir_n_source, totals_name_csv)
 # 
@@ -67,11 +69,6 @@ file.link(totals_file_path_csv, tmp)
 BG_TOT_in              <- read_csv(tmp)
 
 # list.files(dir_n_source, "*.csv")
-
-
-
-
-
 
 
 # ------------------------------------
