@@ -27,11 +27,10 @@ ss_i <- rubric %>%
 ss_db <- rubric %>% 
   dplyr::pull(Source)
 
-
 BGdrive <- get_country_inputDB("BG") %>% 
   select(-Short)
 
-# Manual download from here: (to be automated in future)
+# autodownloads happening in python from here:
 # https://data.egov.bg/data/resourceView/8f62cfcf-a979-46d4-8317-4e1ab9cbd6a8?fbclid=IwAR2mla-loksQXfbhIw1BAOzyXxyupB9aQPkxXQOqb7yhHbUVmldOlhyjnfY
 # button in lower left corner, specify csv. This one is the age-specific data
 
@@ -39,7 +38,22 @@ BGdrive <- get_country_inputDB("BG") %>%
 # This one is the time series of totals
 # https://data.egov.bg/data/resourceView/e59f95dd-afde-43af-83c8-ea2916badd19
 
-age_name_csv           <- "Разпределение по дата и по възрастови групи.csv"
+BG_files <- dir(dir_n_source) 
+BG_csvs <- 
+  BG_files[grepl(BG_files,pattern = ".csv")] %>% 
+  str_split(pattern = "-") %>% 
+  do.call("rbind",.)
+
+date_i <- BG_csvs[,2] %>% 
+  gsub(pattern = ".csv",
+       replacement = "") %>% 
+  ymd() %>% 
+  max() %>% 
+  as.character() %>% 
+  gsub(pattern = "-", replacement = "")
+
+
+age_name_csv           <- paste0("BG_age-",date_i,".csv")
 # Encoding(age_name_csv) <-"UTF-8"
 age_file_path_csv      <- file.path(dir_n_source, age_name_csv)
 
@@ -52,22 +66,20 @@ BG_age_in              <- read_csv(tmp)
 
 # BG_age_in              <- read_csv(age_file_path_csv,
 #                                    col_names = F) # Fails on Hydra
+unlink(tmp)
 
 
-
-totals_name_csv        <-"Обща статистика за разпространението.csv"
-Encoding(totals_name_csv) <-"UTF-8"
-
+totals_name_csv         <- paste0("BG_total-",date_i,".csv")
 totals_file_path_csv   <- file.path(dir_n_source, totals_name_csv)
 # 
 # BG_TOT_in              <- read_csv(totals_file_path_csv)
 
-tmp <- tempfile(fileext = ".csv",tmpdir = dir_n_source)
-file.link(totals_file_path_csv, tmp)
+tmp2 <- tempfile(fileext = ".csv",tmpdir = dir_n_source)
+file.link(totals_file_path_csv, tmp2)
 # BG_TOT_in              <- read_csv(tmp,
 #                                    locale = readr::locale(encoding = "UTF-8"))
-BG_TOT_in              <- read_csv(tmp)
-
+BG_TOT_in              <- read_csv(tmp2)
+unlink(tmp2)
 # list.files(dir_n_source, "*.csv")
 
 
@@ -118,7 +130,7 @@ BG_cases_out <-
       TRUE ~ 10L),
     Measure = "Cases",
     Metric = "Count",
-    Date = mdy(Date),
+    Date = ymd(Date),
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
@@ -173,8 +185,8 @@ log_update("Bulgaria", N = nrow(BG_out))
 data_source_1 <- paste0(dir_n, "Data_sources/", ctr, "/cases_age_",today(), ".csv")
 data_source_2 <- paste0(dir_n, "Data_sources/", ctr, "/totals_",today(), ".csv")
 
-write_csv(BG_age_in, path = data_source_1)
-write_csv(BG_TOT_in, path = data_source_2)
+write_csv(BG_age_in, file = data_source_1)
+write_csv(BG_TOT_in, file = data_source_2)
 
 data_source <- c(data_source_1, data_source_2)
 
