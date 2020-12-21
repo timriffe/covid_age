@@ -36,8 +36,10 @@ drive_put(media = file_out,
 
 
 log_update("El_Salvador",N = "captured")
-
-
+# document.querySelector("#ecb6c8f2-75e1-4a0f-aae4-87ebb7d0958b > div.ContentBlock__ContentWrapper-sizwox-2.haiZJd > div > div:nth-child(38) > div > div > div > div > svg")
+# #ecb6c8f2-75e1-4a0f-aae4-87ebb7d0958b > div.ContentBlock__ContentWrapper-sizwox-2.haiZJd > div > div:nth-child(38) > div > div > div > div > svg
+# /html/body/div[2]/div/div[1]/div[1]/div[1]/div/div/div/div[1]/div/div[38]/div/div/div/div/svg
+#ecb6c8f2-75e1-4a0f-aae4-87ebb7d0958b > div.ContentBlock__ContentWrapper-sizwox-2.haiZJd > div > div:nth-child(38) > div > div > div > div > svg
 schedule.this <- FALSE
 if (schedule.this){
   library(taskscheduleR)
