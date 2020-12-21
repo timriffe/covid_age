@@ -29,7 +29,7 @@ driver.get(URL)
 driver.set_window_size(1920,4500)
 sleep(25)
 
-element = driver.find_element_by_xpath('//*[@id="ecb6c8f2-75e1-4a0f-aae4-87ebb7d0958b"]')
+element = driver.find_element_by_xpath('//*[@id="ecb6c8f2-75e1-4a0f-aae4-87ebb7d0958b"]/div[1]/div/div[35]/div/div/div/div/div/div/div/div/div/div/div/div/div/span/span')
 
 actions = ActionChains(driver)
 actions.move_to_element(element).perform()
