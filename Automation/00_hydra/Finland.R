@@ -1,3 +1,5 @@
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
 
 
 library(webshot)
@@ -21,9 +23,6 @@ rubric <- get_input_rubric() %>%
 ss_i  <- rubric$Sheet
 ss_db <- rubric$Source
 
-
-source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
-source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
 
 rubric <- get_input_rubric() %>% 
   filter(Country == "Finland")
