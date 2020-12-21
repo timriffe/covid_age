@@ -1,7 +1,4 @@
 
-
-
-
 source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
 
 library(lubridate)

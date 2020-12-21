@@ -20,8 +20,16 @@ if (!"email" %in% ls()){
   email <- "tim.riffe@gmail.com"
 }
 gs4_auth(email = email)
+drive_auth(email = email)
 
 log_update("Albania",N = "captured")
+
+ss_db <- get_input_rubric() %>% 
+  filter(Country == "Albania") %>% 
+  dplyr::pull("Source")
+
+drive_put(media= al_demo_pdf,
+          path = as_id(ss_db))
 
 
 schedule.this <- FALSE
