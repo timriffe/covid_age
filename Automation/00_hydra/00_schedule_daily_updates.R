@@ -69,6 +69,7 @@ sched("US_California", tm = "07:50",email = auto_update_email, wd = auto_update_
 sched("Afghanistan", tm = "06:35",email = auto_update_email, wd = auto_update_wd)
 sched("US_Maine", tm = "06:46",email = auto_update_email, wd = auto_update_wd)
 sched("ECDC", tm = "08:37",email = auto_update_email, wd = auto_update_wd, sch = "WEEKLY")
+sched("Finland", tm = "11:44",email = auto_update_email, wd = auto_update_wd, sch = "WEEKLY")
 
 
 

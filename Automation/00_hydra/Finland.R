@@ -1,9 +1,6 @@
-
-
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
+# webshot::install_phantomjs()
 library(webshot)
-library(lubridate)
-library(httr)
-library(rvest)
 #install_phantomjs()
 
 if (!"email" %in% ls()){
@@ -20,7 +17,6 @@ rubric <- get_input_rubric() %>%
 
 ss_i  <- rubric$Sheet
 ss_db <- rubric$Source
-
 
 source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
 source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
@@ -40,7 +36,6 @@ fi_deaths_url <-
   html_nodes(xpath = xpath) %>% 
   html_attr("src")
 fi_deaths_url <- paste0("https://thl.fi/", fi_deaths_url)
-
 
 webshot(fi_deaths_url,
         file = fi_deaths_png,
