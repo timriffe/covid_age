@@ -19,13 +19,22 @@ gs4_auth(email = email)
 # this is a more stable method than using the xpath
 m_url <- "https://www.nijz.si/sl/dnevno-spremljanje-okuzb-s-sars-cov-2-covid-19"
 
-url <- paste0("https://www.nijz.si", 
-       scraplinks(m_url) %>% 
-         filter(str_detect(url, ".xlsx")) %>% 
-         dplyr::pull(url))
+# capture all links with excel files
+links <- scraplinks(m_url) %>% 
+  filter(str_detect(url, "xlsx")) %>% 
+  select(url)
 
-# tb4 cases
-# tb6 deaths
+# capture link with cases data by age
+cases_url <- paste0("https://www.nijz.si", 
+                    links %>% 
+                      filter(str_detect(url, "dnevni_prikazi")) %>% 
+                      dplyr::pull(url))
+
+# capture link with deaths data by age
+deaths_url <- paste0("https://www.nijz.si", 
+                    links %>% 
+                      filter(str_detect(url, "umrli")) %>% 
+                      dplyr::pull(url))
 
 ###############################
 ### daily collection automation
@@ -34,21 +43,23 @@ url <- paste0("https://www.nijz.si",
 ### Cases
 ##############
 
-db_c <- rio::import(url, 
-                    sheet = "tb4", 
+db_c <- rio::import(cases_url, 
+                    sheet = "Tabela 4", 
                     skip = 2) %>%
   as_tibble() 
 
 var_names1 <- c("date_f",
                paste0("m_", c(0, seq(5, 85, 10), "TOT")), 
                paste0("f_", c(0, seq(5, 85, 10), "TOT")), 
+               paste0("u_", c(0, seq(5, 85, 10), "TOT")), 
                paste0("b_", c(0, seq(5, 85, 10), "TOT")))
                
 db_c2 <- db_c %>% 
-  rename_at(vars(1:34), ~ var_names1) %>%  
+  rename_at(vars(1:45), ~ var_names1) %>%  
   gather(-date_f, key = Age, value = new) %>% 
   separate(Age, c("Sex", "Age"), sep = "_") %>% 
-  mutate(date_f = as_date(as.integer(date_f), origin = "1899-12-30")) %>% 
+  filter(Sex != "u") %>% 
+  mutate(date_f = dmy(date_f)) %>% 
   replace_na(list(new = 0)) %>% 
   drop_na()
 
@@ -67,23 +78,20 @@ db_c3 <- db_c2 %>%
 
 ### deaths
 ##############
-db_d <- rio::import(url, 
-                    sheet = "tb6", 
-                    skip = 2)
+db_d <- rio::import(deaths_url, 
+                    sheet = "Tabela 5", 
+                    skip = 2) %>% 
+  select(-1)
 
 var_names2 <- c("date_f",
-                paste0("m_", c(seq(35, 85, 10), "TOT")), 
-                paste0("f_", c(seq(45, 85, 10), "TOT")), 
-                paste0("b_", c(seq(35, 85, 10), "TOT")))
+                paste0("m_", c(0, seq(5, 85, 10))), 
+                paste0("f_", c(0, seq(5, 85, 10))),
+                "m_TOT", "f_TOT", "b_TOT")
 
 db_d2 <- db_d %>% 
-  rename_at(vars(1:21), ~ var_names2) %>% 
-  mutate(d_format = str_length(date_f),
-         date_f = case_when(d_format == 5 ~ as_date(as.integer(date_f), origin = "1899-12-30"),
-                            d_format == 9 ~ dmy(date_f),
-                            TRUE ~ NA_Date_)) %>% 
+  rename_at(vars(1:24), ~ var_names2) %>% 
+  mutate(date_f = dmy(date_f)) %>% 
   drop_na(date_f) %>% 
-  select(-d_format) %>% 
   gather(-date_f, key = Age, value = new) %>% 
   separate(Age, c("Sex", "Age"), sep = "_") %>% 
   replace_na(list(new = 0))
@@ -96,14 +104,16 @@ db_d2 %>%
 
 db_d3 <- db_d2 %>% 
   tidyr::complete(date_f, 
-           Sex, 
-           Age = c("0", as.character(seq(45, 85, 10)), "TOT"), 
+           Sex = c("m", "f"), 
+           Age = c("0", as.character(seq(5, 85, 10)), "TOT"), 
            fill = list(new = 0)) %>% 
   group_by(Sex, Age) %>% 
   mutate(Value = cumsum(new)) %>% 
   select(-new) %>% 
   ungroup() %>% 
-  mutate(Measure = "Deaths")
+  mutate(Measure = "Deaths") %>% 
+  arrange(Sex, suppressWarnings(as.integer(Age)), date_f)
+  
 
 
 out <- bind_rows(db_c3, db_d3) %>% 
@@ -123,7 +133,7 @@ out <- bind_rows(db_c3, db_d3) %>%
   arrange(date_f, Region, Measure, Sex, suppressWarnings(as.integer(Age))) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
 
-date_f <- db_d3 %>% 
+date_f <- db_c3 %>% 
   dplyr::pull(date_f) %>% 
   max()
 
