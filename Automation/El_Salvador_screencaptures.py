@@ -29,7 +29,7 @@ driver.get(URL)
 driver.set_window_size(1920,4500)
 sleep(25)
 
-element = driver.find_element_by_xpath('//*[@id="ecb6c8f2-75e1-4a0f-aae4-87ebb7d0958b"]')
+element = driver.find_element_by_css_selector('#ecb6c8f2-75e1-4a0f-aae4-87ebb7d0958b > div.ContentBlock__ContentWrapper-sizwox-2.haiZJd > div > div:nth-child(38) > div > div > div > div > svg')
 
 actions = ActionChains(driver)
 actions.move_to_element(element).perform()
