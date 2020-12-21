@@ -150,3 +150,23 @@ NO18.12.2020
 GB_SCO_29.03.2020
 US_TX27.10.2020
 VE02.12.2020
+# 2020-12-21 inputDB updates 
+ Mon Dec 21 04:01:08 2020 
+
+
+# 2020-12-21 04:01:08 updates 
+ Mon Dec 21 04:01:08 2020 
+
+
+# Filter valid Measure entries: 
+ Mon Dec 21 04:33:25 2020 
+
+Valid Measures include: Cases,Deaths,Tests,ASCFR
+ 27 rows removed
+# Duplicates detected. Following `Code`s removed: 
+ Mon Dec 21 04:33:39 2020 
+
+FR_IDF18.05.2020
+FR_NOR15.05.2020
+PS12.10.2020
+US_FL02.12.2020
