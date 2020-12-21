@@ -52,3 +52,4 @@ if (schedule.this){
 
 
 
+# webshot::webshot("https://e.infogram.com/_/fx5xud0FhM7Z9NS6qpxs?src=embed&v=1?parent_url=https%3A%2F%2Fcovid19.gob.sv%2F","test.pdf",delay=45)

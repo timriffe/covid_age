@@ -17,25 +17,20 @@ options=Options()
 #options.add_argument("--enable-javascript")
 options.add_argument("--headless")
 driver = webdriver.Chrome(options=options,executable_path = path) #Path of Chrome Driver
-#driver = webdriver.Chrome(chrome_options=options) #Path of Chrome Driver
+#driver = webdriver.Chrome("/usr/bin/chromedriver",chrome_options=options) #Path of Chrome Driver
 
-
-URL = 'https://covid19.gob.sv/'
+URL = 'https://e.infogram.com/_/fx5xud0FhM7Z9NS6qpxs?src=embed'
 
 driver.get(URL)
 
-# S = lambda X: driver.execute_script('return document.body.parentNode.scroll'+X)
-# driver.set_window_size(1920,S('Height')) # May need manual adjustment
 driver.set_window_size(1920,4500)
 sleep(25)
 
-element = driver.find_element_by_xpath('//*[@id="ecb6c8f2-75e1-4a0f-aae4-87ebb7d0958b"]/div[1]/div/div[35]/div/div/div/div/div/div/div/div/div/div/div/div/div/span/span')
-
-actions = ActionChains(driver)
-actions.move_to_element(element).perform()
 
 sleep(5)
 driver.get_screenshot_as_file('N:/COVerAGE-DB/Automation/Hydra/Data_sources/El_Salvador/El_Salvador_demo.png')
+#driver.get_screenshot_as_file('test.png')
+
 #driver.set_window_size(1920,4500)
 
 driver.quit()
