@@ -143,10 +143,12 @@ date_f <- db_c3 %>%
 write_rds(out, paste0(dir_n, ctr, ".rds"))
 log_update(pp = ctr, N = nrow(out))
 
+# saving data sources
+data_source_c <- paste0(dir_n, "Data_sources/", ctr, "/cases_",today(), ".xlsx")
+data_source_d <- paste0(dir_n, "Data_sources/", ctr, "/deaths_",today(), ".xlsx")
 
-data_source <- paste0(dir_n, "Data_sources/", ctr, "/cases&deaths_",today(), ".xlsx")
-
-download.file(url, destfile = data_source)
+download.file(cases_url, destfile = data_source_c)
+download.file(deaths_url, destfile = data_source_d)
 
 zipname <- paste0(dir_n, 
                   "Data_sources/", 
@@ -156,6 +158,8 @@ zipname <- paste0(dir_n,
                   "_data_",
                   today(), 
                   ".zip")
+
+data_source <- c(data_source_c, data_source_d)
 
 zipr(zipname, 
      data_source, 

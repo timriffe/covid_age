@@ -177,8 +177,8 @@ if (nrow(rubric) > 0){
   
   # public file, full precision.
   header_msg <- paste("COVerAGE-DB input database, filtered after some simple checks:",timestamp(prefix = "", suffix = ""))
-  write_lines(header_msg, path = here("Data","inputDB.csv"))
-  write_csv(inputDB_out, path = here("Data","inputDB.csv"), append = TRUE, col_names = TRUE)
+  write_lines(header_msg, file = here("Data","inputDB.csv"))
+  write_csv(inputDB_out, file = here("Data","inputDB.csv"), append = TRUE, col_names = TRUE)
   
   # push logfile to github:
   library(usethis)
@@ -209,8 +209,8 @@ if (schedule_this){
                        rscript = "C:/Users/riffe/Documents/covid_age/R/01_update_inputDB.R", 
                        schedule = "HOURLY", 
                        modifier = 8,
-                       starttime = "20:01",
-                       startdate = format(Sys.Date(), "%d/%m/%Y"))
+                       starttime = "04:01",
+                       startdate = format(Sys.Date()+1, "%d/%m/%Y"))
   # 
 }
 

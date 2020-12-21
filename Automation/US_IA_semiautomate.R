@@ -25,7 +25,7 @@
 
 #
 
-library(here)
+
 source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
 
 library(lubridate)
@@ -38,6 +38,7 @@ if (!"email" %in% ls()){
 ctr          <- "US_Iowa" # it's a placeholder
 dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 dir_n_source <- "N:/COVerAGE-DB/Automation/Iowa"
+# dir_n_source <- "Data/Iowa"
 
 # Drive credentials
 drive_auth(email = email)
@@ -59,9 +60,13 @@ AgeIN <- read_csv(file.path(dir_n_source,"Statewide Age Group Demographics.csv")
 SexIN <- read_csv(file.path(dir_n_source,"Statewide Biological Sex Demographics.csv")) 
 TestsIN <- read_csv(file.path(dir_n_source,"Iowa Testing Data  Percent Change.csv")) 
 
+AgeINfiltered <- 
+  AgeIN %>% 
+  filter(!Date %in% c("08/29/2020","09/19/2020","10/09/2020","10/16/2020"))
+
 # Now process to inputDB format
 Age <-
-  AgeIN %>% 
+  AgeINfiltered %>%
   select(Date, 
          starts_with("Deaths: Cumulative"), 
          starts_with("Positives: Cumulative")) %>% 
@@ -112,7 +117,8 @@ Age <-
                sprintf("%02d",month(Date)),  
                year(Date),sep="."),
          Metric = "Count",
-         Code = paste0("US_IA_",Date)
+         Code = paste0("US_IA_",Date),
+         Sex = "b"
   )
 
 
@@ -135,7 +141,8 @@ Tests <-
          Date = paste(sprintf("%02d", day(Date)),    
                       sprintf("%02d", month(Date)),  
                       year(Date), sep = "."),
-         Code = paste0("US_IA_", Date))
+         Code = paste0("US_IA_", Date),
+         Sex = "b")
 
 
 Sex <- SexIN %>% 
@@ -210,6 +217,33 @@ zip::zipr(zipname,
 file.remove(data_source)
 # source file rm:
 file_source <- dir(dir_n_source)
-file_rm <- file_source[grepl(file_source,pattern=".csv")]
+file_rm     <- file_source[grepl(file_source,pattern=".csv")]
 file.remove(file.path(dir_n_source, file_rm))
+
+# Oct 9th is repeated, and Oct 10th is missing. The second Oct 9 is surely larger.
+#AgeIN %>% filter(Date %in% c("10/08/2020","10/09/2020","10/10/2020","10/11/2020")) %>% View()
+# AgeIN %>% filter(Date %in% c("08/28/2020","08/29/2020")) %>% View()
+#  AgeIN %>% 
+#    group_by(Date) %>% 
+#    mutate(n=n()) %>% 
+#    ungroup() %>% 
+#    filter(n>1) %>% 
+#    View()
+#  AgeINfiltered %>% 
+#    mutate(Date = mdy(Date)) %>% 
+#    ggplot(aes(x = Date, y = `Positives: Cumulative Age Groups`)) + 
+#    geom_line()
+# # 
+#  AgeINfiltered %>% 
+#    mutate(Date = mdy(Date),
+#           MyNew = lead(`Deaths: Cumulative 41-60`) - `Deaths: Cumulative 41-60`) %>% 
+#    ggplot(aes(x = Date, y = MyNew)) + 
+#    geom_line()
+# # 
+#  AgeINfiltered %>% 
+#    mutate(Date = mdy(Date),
+#           MyNew = lead(`Positives: Cumulative Age Groups`) - `Positives: Cumulative Age Groups`) %>%   filter(MyNew < 0)
+# "2020-08-29"
+# "2020-10-15"
+
 
