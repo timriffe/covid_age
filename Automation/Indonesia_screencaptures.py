@@ -12,17 +12,9 @@ from selenium.webdriver.chrome.options import Options
 from time import sleep
 
 options=Options()
-options.add_argument("--enable-javascript")
 #options.add_argument("--headless")
 options.add_argument('--headless')
-#options.add_argument('--start-maximized')
-options.addArguments("start-maximized"); #// https://stackoverflow.com/a/26283818/1689770
-options.addArguments("enable-automation"); #// https://stackoverflow.com/a/43840128/1689770
-options.addArguments("--no-sandbox"); //https:#//stackoverflow.com/a/50725918/1689770
-options.addArguments("--disable-infobars"); #//https://stackoverflow.com/a/43840128/1689770
-options.addArguments("--disable-dev-shm-usage"); #//https://stackoverflow.com/a/50725918/1689770
-options.addArguments("--disable-browser-side-navigation"); #//https://stackoverflow.com/a/49123152/1689770
-options.addArguments("--disable-gpu"); #//https://stackoverflow.com/questions/51959986/how-to-solve-selenium-chromedriver-timed-out-receiving-message-from-renderer-exc
+
 
 #driver = webdriver.Chrome('/usr/bin/chromedriver',options=options)
 driver = webdriver.Chrome(options=options,executable_path = path) #Path of Chrome Driver
@@ -31,15 +23,15 @@ driver = webdriver.Chrome(options=options,executable_path = path) #Path of Chrom
 
 #driver = webdriver.Chrome()
 driver.get("https://covid19.go.id/peta-sebaran")
-sleep(10)
+sleep(30)
 
    
 #the element with longest height on page
-ele=driver.find_element("xpath", '//*[@id="onlymaxheight"]/section[3]')
-total_height = ele.size["height"]+1000
+# ele=driver.find_element("xpath", '//*[@id="onlymaxheight"]/section[3]')
+# total_height = ele.size["height"]+1000
 
-driver.set_window_size(1920, total_height)      #the trick
-sleep(2)
+driver.set_window_size(1920, 6000)     
+sleep(15)
 #driver.save_screenshot("test.png")
 #driver.quit()
 

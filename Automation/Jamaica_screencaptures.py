@@ -23,12 +23,13 @@ driver = webdriver.Chrome(options=options,executable_path = path) #Path of Chrom
 URL = 'https://jamcovid19.moh.gov.jm/index.html'
 
 driver.get(URL)
-sleep(3)
+sleep(25)
 driver.find_element_by_xpath('//button[@class="btn btn-warning d-block mx-auto btn-continue"]').click()
-sleep(1)
+sleep(3)
 # S = lambda X: driver.execute_script('return document.body.parentNode.scroll'+X)
 # driver.set_window_size(1920,S('Height')) # May need manual adjustment
 driver.set_window_size(1920,4500)
+sleep(3)
 driver.find_element_by_tag_name('body').screenshot('N:/COVerAGE-DB/Automation/Hydra/Data_sources/Jamaica/jamaica_demo.png')
 #driver.set_window_size(1920,4500)
 #driver.get_screenshot_as_file("N:/COVerAGE-DB/Automation/Hydra/Data_sources/Jamaica/jamaica_demo2.png")
