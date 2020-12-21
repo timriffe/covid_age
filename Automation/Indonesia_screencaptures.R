@@ -3,7 +3,7 @@ source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/0
 library(lubridate)
 library(reticulate)
 
-
+# conda_create("coveragedb")
 if (!"email" %in% ls()){
   email <- "tim.riffe@gmail.com"
 }
@@ -22,7 +22,7 @@ py_run_string("import selenium")
 
 
 py_file <- "C:/Users/riffe/Documents/covid_age/Automation/Indonesia_screencaptures.py"
-
+# py_file <- "Automation/Indonesia_screencaptures.py"
 source_python(file=py_file)
 #py_run_file("C:/Users/riffe/Documents/covid_age/Automation/US_AZ_screencaptures.py")
 #py_run_file("Automation/US_AZ_screencaptures.py")
