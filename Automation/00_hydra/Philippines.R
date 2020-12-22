@@ -1,10 +1,4 @@
 source("Automation/00_Functions_automation.R")
-library(tidyverse)
-library(googlesheets4)
-library(googledrive)
-library(lubridate)
-library(readr)
-library(rvest)
 library(longurl)
 library(pdftools)
 
