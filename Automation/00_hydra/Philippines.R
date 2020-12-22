@@ -1,6 +1,4 @@
-<<<<<<< HEAD
 source("Automation/00_Functions_automation.R")
-=======
 source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
 library(tidyverse)
 library(googlesheets4)
@@ -8,7 +6,6 @@ library(googledrive)
 library(lubridate)
 library(readr)
 library(rvest)
->>>>>>> 3daf3045e1a8d86114973bc8f9996d1e6858437a
 library(longurl)
 library(pdftools)
 
