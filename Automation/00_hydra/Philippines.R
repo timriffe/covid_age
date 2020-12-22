@@ -40,7 +40,8 @@ drive_id_shorter <- drive_readme_url$expanded_url %>%
 PDF_TEXT <- pdf_text("Data/PH_README.pdf")
 PAGE     <- PDF_TEXT[grepl(PDF_TEXT,pattern = "bit.ly/")] 
 LINES <- capture.output(cat(PAGE)) %>% 
-  gsub(pattern =" ", replacement = "")
+  gsub(pattern =" ", replacement = "") %>% 
+  gsub(pattern = "\r", replacement = "")
 ind <- which(grepl(LINES, pattern = "LinktoDOHDataDrop"))+ 1
 
 folder_bitly_url <- LINES[ind]
