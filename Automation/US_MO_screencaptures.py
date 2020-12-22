@@ -34,7 +34,7 @@ driver.get_screenshot_as_file("N:/COVerAGE-DB/Automation/Hydra/Data_sources/US_M
 
 driver.quit()
 
-URL2 = 'https://showmestrong.mo.gov/data/public-health/
+URL2 = 'https://showmestrong.mo.gov/data/public-health/'
 driver = webdriver.Chrome(options=options,executable_path = path)
 driver.get(URL2)
 sleep(25)
