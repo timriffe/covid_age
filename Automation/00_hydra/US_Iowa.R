@@ -1,12 +1,6 @@
-
+# TR
 # main url: "https://iowacovid19tracker.org/downloadable-data"
-# Just to find a way to automatically download the full csv.
-
-# For now, download to:
-
 # Automation/Iowa
-
-# Manual procedure:
 
 # 1)
 # Iowa Testing Data & Percent Change
@@ -22,9 +16,6 @@
 # Biological Sex
 # Show: All
 # download csv
-
-#
-
 
 source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
 
@@ -55,10 +46,27 @@ ss_db <- rubric %>%
   dplyr::pull(Source)
 
 
+# determine most recent date captured:
+all_files <- dir(dir_n_source)
+csvs <- all_files[grepl(all_files,pattern="US_IA_age")]
+max_date <-
+  str_split(csvs,pattern = "-") %>% 
+  lapply("[",2) %>% 
+  unlist() %>% 
+  gsub(pattern = ".csv", replacement = "") %>% 
+  ymd() %>% 
+  max()
+
+datestring <- max_date %>% as.character() %>% gsub(pattern = "-", replacement = "")
+
+age_csv   <- file.path(dir_n_source,paste0("US_IA_age-",datestring,".csv"))
+sex_csv   <- file.path(dir_n_source,paste0("US_IA_sex-",datestring,".csv"))
+tests_csv <- file.path(dir_n_source,paste0("US_IA_tests-",datestring,".csv"))
+
 # read in local downloaded files.
-AgeIN <- read_csv(file.path(dir_n_source,"Statewide Age Group Demographics.csv")) 
-SexIN <- read_csv(file.path(dir_n_source,"Statewide Biological Sex Demographics.csv")) 
-TestsIN <- read_csv(file.path(dir_n_source,"Iowa Testing Data  Percent Change.csv")) 
+AgeIN   <- read_csv(age_csv) 
+SexIN   <- read_csv(sex_csv) 
+TestsIN <- read_csv(tests_csv) 
 
 AgeINfiltered <- 
   AgeIN %>% 
@@ -189,9 +197,9 @@ data_source_2 <- paste0(dir_n, "Data_sources/", ctr, "/sex_",today(), ".csv")
 data_source_3 <- paste0(dir_n, "Data_sources/", ctr, "/tests_",today(), ".csv")
 
 
-write_csv(AgeIN, path = data_source_1)
-write_csv(SexIN, path = data_source_2)
-write_csv(TestsIN, path = data_source_3)
+write_csv(AgeIN, file = data_source_1)
+write_csv(SexIN, file = data_source_2)
+write_csv(TestsIN, file = data_source_3)
 
 
 data_source <- c(data_source_1, data_source_2, data_source_3)
@@ -215,10 +223,10 @@ zip::zipr(zipname,
 # -------------------------------
 # clean up file chaff
 file.remove(data_source)
-# source file rm:
-file_source <- dir(dir_n_source)
-file_rm     <- file_source[grepl(file_source,pattern=".csv")]
-file.remove(file.path(dir_n_source, file_rm))
+# # source file rm:
+# file_source <- dir(dir_n_source)
+# file_rm     <- file_source[grepl(file_source,pattern=".csv")]
+# file.remove(file.path(dir_n_source, file_rm))
 
 # Oct 9th is repeated, and Oct 10th is missing. The second Oct 9 is surely larger.
 #AgeIN %>% filter(Date %in% c("10/08/2020","10/09/2020","10/10/2020","10/11/2020")) %>% View()
