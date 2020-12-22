@@ -576,3 +576,39 @@ filter( Code == 'PK14.03.2020', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'PK15.03.2020', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'PK16.03.2020', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'PK17.03.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'PK10.03.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'PK11.03.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'PK12.03.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'PK13.03.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'PK14.03.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'PK15.03.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'PK16.03.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'PK17.03.2020', Sex == 'm', Measure == 'Deaths' )
+
+# Compile metadata 
+ Tue Dec 22 06:54:50 2020 
+
+
+# Building dashboards 
+ Tue Dec 22 07:07:48 2020 
+
+
+# remake coverage map 
+ Tue Dec 22 07:13:23 2020 
+
+
+# push outputs to OSF 
+ Tue Dec 22 07:17:46 2020 
+
+
+# remake coverage map 
+ Tue Dec 22 07:25:02 2020 
+
+
+# push outputs to OSF 
+ Tue Dec 22 07:30:27 2020 
+
+
+# Commit dashboards and buildlog 
+ Tue Dec 22 07:33:34 2020 
+
