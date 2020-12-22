@@ -48,7 +48,7 @@ date_i <- BG_csvs[,2] %>%
   gsub(pattern = ".csv",
        replacement = "") %>% 
   ymd() %>% 
-  max() %>% 
+  max(na.rm=TRUE) %>% 
   as.character() %>% 
   gsub(pattern = "-", replacement = "")
 
