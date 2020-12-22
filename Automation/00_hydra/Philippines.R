@@ -1,4 +1,14 @@
+<<<<<<< HEAD
 source("Automation/00_Functions_automation.R")
+=======
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
+library(tidyverse)
+library(googlesheets4)
+library(googledrive)
+library(lubridate)
+library(readr)
+library(rvest)
+>>>>>>> 3daf3045e1a8d86114973bc8f9996d1e6858437a
 library(longurl)
 library(pdftools)
 
@@ -32,13 +42,16 @@ drive_id_shorter <- drive_readme_url$expanded_url %>%
 
 # read as text ()
 PDF_TEXT <- pdf_text("Data/PH_README.pdf")
-PAGE     <- PDF_TEXT[grepl(PDF_TEXT,pattern = "https://bit.ly/")] %>% 
-  strsplit(, split = "\n") %>% 
-  '[['(1) 
+PAGE     <- PDF_TEXT[grepl(PDF_TEXT,pattern = "bit.ly/")] 
+LINES <- capture.output(cat(PAGE)) %>% 
+  gsub(pattern =" ", replacement = "") %>% 
+  gsub(pattern = "\r", replacement = "")
+ind <- which(grepl(LINES, pattern = "LinktoDOHDataDrop"))+ 1
 
-folder_bitly_url <- PAGE[grepl(PAGE,pattern="https://bit")] %>% 
-  gsub(pattern = "https://", replacement = "") %>% 
-  gsub(pattern = "\r",replacement= "")
+folder_bitly_url <- LINES[ind]
+# folder_bitly_url <- PAGE[grepl(PAGE,pattern="https://bit")] %>% 
+#   gsub(pattern = "https://", replacement = "") %>% 
+#   gsub(pattern = "\r",replacement= "")
 
 drive_folder_url <- longurl::expand_urls(folder_bitly_url)
 

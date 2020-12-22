@@ -1,5 +1,11 @@
 source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
+<<<<<<< HEAD
 # webshot::install_phantomjs()
+=======
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
+
+
+>>>>>>> 3daf3045e1a8d86114973bc8f9996d1e6858437a
 library(webshot)
 #install_phantomjs()
 
@@ -18,8 +24,11 @@ rubric <- get_input_rubric() %>%
 ss_i  <- rubric$Sheet
 ss_db <- rubric$Source
 
+<<<<<<< HEAD
 source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
 source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
+=======
+>>>>>>> 3daf3045e1a8d86114973bc8f9996d1e6858437a
 
 rubric <- get_input_rubric() %>% 
   filter(Country == "Finland")
@@ -30,18 +39,31 @@ fi_deaths_png  <- paste0(dir_n,"Data_sources/",ctr,"/Finland_deaths_",today(),".
 
 xpath <- '//*[@id="portlet_com_liferay_journal_content_web_portlet_JournalContentPortlet_INSTANCE_8bWCjC9jscyt"]/div/div[2]/div/div[2]/p[16]/span[1]/span/span/span/i/span/span/span/img'
 
+arcgis_url <-"https://experience.arcgis.com/experience/92e9bb33fac744c9a084381fc35aa3c7"
+# This one for giving a click inside the arcgis dashboard.
+xpath_ember184 <- "/html/body/div/div/div[2]/div/div/div/margin-container/full-container/div[20]/margin-container/full-container/div/nav/span[3]/a/div"
 
-fi_deaths_url <-
-  read_html("https://thl.fi/en/web/infectious-diseases-and-vaccinations/what-s-new/coronavirus-covid-19-latest-updates/situation-update-on-coronavirus#Coronavirus-related_deaths") %>% 
-  html_nodes(xpath = xpath) %>% 
-  html_attr("src")
-fi_deaths_url <- paste0("https://thl.fi/", fi_deaths_url)
-
+<<<<<<< HEAD
 webshot(fi_deaths_url,
         file = fi_deaths_png,
         delay = 2)
 drive_put(media = fi_deaths_png,
           path = googledrive::as_id(ss_db))
+=======
+
+# fi_deaths_url <-
+#   read_html("https://thl.fi/en/web/infectious-diseases-and-vaccinations/what-s-new/coronavirus-covid-19-latest-updates/situation-update-on-coronavirus#Coronavirus-related_deaths") %>% 
+#   html_nodes(xpath = xpath) %>% 
+#   html_attr("src")
+# fi_deaths_url <- paste0("https://thl.fi/", fi_deaths_url)
+# 
+# 
+# webshot(fi_deaths_url,
+#         file = fi_deaths_png,
+#         delay = 2)
+# drive_put(media = fi_deaths_png,
+#           path = googledrive::as_id(ss_db))
+>>>>>>> 3daf3045e1a8d86114973bc8f9996d1e6858437a
 
 # -------------------------------------
 # Now get cases:
