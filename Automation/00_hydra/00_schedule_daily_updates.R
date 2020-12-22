@@ -58,6 +58,7 @@ sched("Afghanistan", tm = "06:35",email = auto_update_email, wd = auto_update_wd
 sched("ECDC", tm = "08:37",email = auto_update_email, wd = auto_update_wd, sch = "WEEKLY")
 sched("Finland", tm = "11:44",email = auto_update_email, wd = auto_update_wd, sch = "WEEKLY")
 sched("US_Wisconsin", tm = "13:02",email = auto_update_email, wd = auto_update_wd)
+sched("Bulgaria", tm = "10:41",email = auto_update_email, wd = auto_update_wd)
 # sched("New_Zealand", "17:20",email = auto_update_email, wd = auto_update_wd)
 # sched("Belgium", tm = "19:50",email = auto_update_email, wd = auto_update_wd)
 

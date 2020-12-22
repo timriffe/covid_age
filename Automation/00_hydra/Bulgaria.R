@@ -72,9 +72,7 @@ BG_age_in              <- read_csv(tmp)
 #                                    col_names = F) # Fails on Hydra
 totals_name_csv        <-"Обща статистика за разпространението.csv"
 Encoding(totals_name_csv) <-"UTF-8"
-
 unlink(tmp)
-
 
 totals_name_csv         <- paste0("BG_total-",date_i,".csv")
 
@@ -188,8 +186,8 @@ log_update("Bulgaria", N = nrow(BG_out))
 data_source_1 <- paste0(dir_n, "Data_sources/", ctr, "/cases_age_",today(), ".csv")
 data_source_2 <- paste0(dir_n, "Data_sources/", ctr, "/totals_",today(), ".csv")
 
-write_csv(BG_age_in, file = data_source_1)
-write_csv(BG_TOT_in, file = data_source_2)
+write_csv(BG_age_in, data_source_1)
+write_csv(BG_TOT_in, data_source_2)
 
 data_source <- c(data_source_1, data_source_2)
 
