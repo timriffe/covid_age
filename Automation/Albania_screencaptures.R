@@ -8,17 +8,19 @@ source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/0
 
 # makes empty capture
 al_demo_url <- "https://coronavirus.al/statistika/"
+
 al_demo_pdf  <- paste0("N:/COVerAGE-DB/Automation/Hydra/Data_sources/Albania/Albania_",today(),".pdf")
 
 
-library(webshot)
+if (!"email" %in% ls()){
+  email <- "tim.riffe@gmail.com"
+  al_demo_pdf  <- paste0("Data/Albania_",today(),".pdf")
+  
+}
 webshot(al_demo_url,
         al_demo_pdf,
         delay= 10)
 
-if (!"email" %in% ls()){
-  email <- "tim.riffe@gmail.com"
-}
 gs4_auth(email = email)
 drive_auth(email = email)
 
