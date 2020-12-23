@@ -33,6 +33,9 @@ ss_db <- get_input_rubric() %>%
 drive_put(media= al_demo_pdf,
           path = as_id(ss_db))
 
+if (al_demo_pdf == paste0("Data/Albania_",today(),".pdf")){
+  file.remove(al_demo_pdf)
+}
 
 schedule.this <- FALSE
 if (schedule.this){
