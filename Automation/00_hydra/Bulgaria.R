@@ -38,6 +38,9 @@ BGdrive <- get_country_inputDB("BG") %>%
 # This one is the time series of totals
 # https://data.egov.bg/data/resourceView/e59f95dd-afde-43af-83c8-ea2916badd19
 
+age_name_csv           <- "Разпределение по дата и по възрастови групи.csv"
+# "BG_age_2020-12-15.csv"
+
 BG_files <- dir(dir_n_source) 
 BG_csvs <- 
   BG_files[grepl(BG_files,pattern = ".csv")] %>% 
@@ -54,6 +57,7 @@ date_i <- BG_csvs[,2] %>%
 
 
 age_name_csv           <- paste0("BG_age-",date_i,".csv")
+
 # Encoding(age_name_csv) <-"UTF-8"
 age_file_path_csv      <- file.path(dir_n_source, age_name_csv)
 
@@ -66,10 +70,12 @@ BG_age_in              <- read_csv(tmp)
 
 # BG_age_in              <- read_csv(age_file_path_csv,
 #                                    col_names = F) # Fails on Hydra
+totals_name_csv        <-"Обща статистика за разпространението.csv"
+Encoding(totals_name_csv) <-"UTF-8"
 unlink(tmp)
 
-
 totals_name_csv         <- paste0("BG_total-",date_i,".csv")
+
 totals_file_path_csv   <- file.path(dir_n_source, totals_name_csv)
 # 
 # BG_TOT_in              <- read_csv(totals_file_path_csv)
@@ -81,11 +87,6 @@ file.link(totals_file_path_csv, tmp2)
 BG_TOT_in              <- read_csv(tmp2)
 unlink(tmp2)
 # list.files(dir_n_source, "*.csv")
-
-
-
-
-
 
 
 # ------------------------------------
@@ -185,8 +186,8 @@ log_update("Bulgaria", N = nrow(BG_out))
 data_source_1 <- paste0(dir_n, "Data_sources/", ctr, "/cases_age_",today(), ".csv")
 data_source_2 <- paste0(dir_n, "Data_sources/", ctr, "/totals_",today(), ".csv")
 
-write_csv(BG_age_in, file = data_source_1)
-write_csv(BG_TOT_in, file = data_source_2)
+write_csv(BG_age_in, data_source_1)
+write_csv(BG_TOT_in, data_source_2)
 
 data_source <- c(data_source_1, data_source_2)
 

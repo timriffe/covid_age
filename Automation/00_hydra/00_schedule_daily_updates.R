@@ -32,32 +32,20 @@ if (grepl("gits", auto_update_wd)){
 
 # current scripts working on hydra by participant
 #################################################
-
-# Ugo
 sched("Slovenia", tm = "09:50",email = auto_update_email, wd = auto_update_wd)
 sched("US_Virginia", tm = "09:55",email = auto_update_email, wd = auto_update_wd)
 sched("USA_all_deaths", tm = "10:00",email = auto_update_email, wd = auto_update_wd)
-# sched("Belgium", tm = "19:50",email = auto_update_email, wd = auto_update_wd)
-
-# Emanuele
 sched("Netherlands", tm = "09:40",email = auto_update_email, wd = auto_update_wd)
 sched("Estonia", tm = "09:45",email = auto_update_email, wd = auto_update_wd)
 sched("Czechia", tm = "09:50",email = auto_update_email, wd = auto_update_wd)
 sched("US_Michigan", tm = "02:40",email = auto_update_email, wd = auto_update_wd)
-
-# Jorge
 sched("Venezuela", tm = "09:31",email = auto_update_email, wd = auto_update_wd)
 sched("US_Texas", tm = "09:32",email = auto_update_email, wd = auto_update_wd)
 sched("USA_deaths_states", tm = "08:34",email = auto_update_email, wd = auto_update_wd)
-# sched("New_Zealand", "17:20",email = auto_update_email, wd = auto_update_wd)
-
-# Diego
 sched("Sweden", tm = "12:00",email = auto_update_email, wd = auto_update_wd)
 sched("Peru", tm = "09:40",email = auto_update_email, wd = auto_update_wd)
 sched("Germany", tm = "09:35",email = auto_update_email, wd = auto_update_wd)
-# sched("US_Massachusetts", tm = "17:04",email = auto_update_email, wd = auto_update_wd)
-
-# Enrique
+sched("US_Massachusetts", tm = "08:18",email = auto_update_email, wd = auto_update_wd)
 sched("Colombia",  tm = "09:30",email = auto_update_email, wd = auto_update_wd)
 sched("US_NYC", tm = "13:58",email = auto_update_email, wd = auto_update_wd)
 sched("Austria", tm = "21:25",email = auto_update_email, wd = auto_update_wd)
@@ -67,14 +55,17 @@ sched("Scotland", tm = "12:10",email = auto_update_email, wd = auto_update_wd)
 sched("Norway", tm = "16:11",email = auto_update_email, wd = auto_update_wd)
 sched("US_California", tm = "07:50",email = auto_update_email, wd = auto_update_wd)
 sched("Afghanistan", tm = "06:35",email = auto_update_email, wd = auto_update_wd)
-sched("US_Maine", tm = "06:46",email = auto_update_email, wd = auto_update_wd)
 sched("ECDC", tm = "08:37",email = auto_update_email, wd = auto_update_wd, sch = "WEEKLY")
-
+sched("Finland", tm = "11:44",email = auto_update_email, wd = auto_update_wd, sch = "WEEKLY")
+sched("US_Wisconsin", tm = "13:02",email = auto_update_email, wd = auto_update_wd)
+sched("Bulgaria", tm = "10:41",email = auto_update_email, wd = auto_update_wd)
+# sched("New_Zealand", "17:20",email = auto_update_email, wd = auto_update_wd)
+# sched("Belgium", tm = "19:50",email = auto_update_email, wd = auto_update_wd)
 
 
 ## broken scripts:
 ##################
-# sched("US_Wisconsin", tm = "02:10",email = auto_update_email, wd = auto_update_wd)
+# sched("New_Zealand", tm = "02:10",email = auto_update_email, wd = auto_update_wd)
 
 ### scripts working outside hydra because of VPN:
 #################################################

@@ -1,11 +1,6 @@
 source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
 source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
-
-
 library(webshot)
-library(lubridate)
-library(httr)
-library(rvest)
 #install_phantomjs()
 
 if (!"email" %in% ls()){
@@ -23,7 +18,6 @@ rubric <- get_input_rubric() %>%
 ss_i  <- rubric$Sheet
 ss_db <- rubric$Source
 
-
 rubric <- get_input_rubric() %>% 
   filter(Country == "Finland")
 
@@ -37,6 +31,11 @@ arcgis_url <-"https://experience.arcgis.com/experience/92e9bb33fac744c9a084381fc
 # This one for giving a click inside the arcgis dashboard.
 xpath_ember184 <- "/html/body/div/div/div[2]/div/div/div/margin-container/full-container/div[20]/margin-container/full-container/div/nav/span[3]/a/div"
 
+webshot(fi_deaths_url,
+        file = fi_deaths_png,
+        delay = 2)
+drive_put(media = fi_deaths_png,
+          path = googledrive::as_id(ss_db))
 
 # fi_deaths_url <-
 #   read_html("https://thl.fi/en/web/infectious-diseases-and-vaccinations/what-s-new/coronavirus-covid-19-latest-updates/situation-update-on-coronavirus#Coronavirus-related_deaths") %>% 

@@ -29,7 +29,7 @@ date_max <-
   ME_in %>% 
   dplyr::pull(Date) %>% 
   dmy() %>% 
-  max(){}
+  max()
 
 ME_data <- "https://gateway.maine.gov/dhhs-apps/mecdc_covid/Maine_COVID19_Summary.xlsx"
 

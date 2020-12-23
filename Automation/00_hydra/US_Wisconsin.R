@@ -2,12 +2,20 @@
 # TR New: you must be in the repo environment 
 source("Automation/00_Functions_automation.R")
 
+# info country and N drive address
+ctr <- "US_Wisconsin"
+dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
+
 drive_auth(email = email)
 gs4_auth(email = email)
 # TR: pull urls from rubric instead 
 rubric_i <- get_input_rubric() %>% filter(Short == "US_WI")
 ss_i     <- rubric_i %>% dplyr::pull(Sheet)
 ss_db    <- rubric_i %>% dplyr::pull(Source)
+
+
+db0 <- read_csv("https://opendata.arcgis.com/datasets/859602b5d427456f821de3830f89301c_11.csv?outSR=%7B%22latestWkid%22%3A3857%2C%22wkid%22%3A102100%7D")
+
 
 cols <- structure(list(cols = list(OBJECTID = structure(list(), class = c("collector_double", 
 "collector")), GEOID = structure(list(), class = c("collector_double",
@@ -116,7 +124,7 @@ cols <- structure(list(cols = list(OBJECTID = structure(list(), class = c("colle
 "collector")), skip = 1), class = "col_spec")
 # reading directly from the web
 # https://data.dhsgis.wi.gov/datasets/covid-19-historical-data-table/data
-db0 <- read_csv("https://opendata.arcgis.com/datasets/b913e9591eae4912b33dc5b4e88646c5_10.csv",col_types =cols)
+db0 <- read_csv("https://opendata.arcgis.com/datasets/859602b5d427456f821de3830f89301c_11.csv",col_types =cols)
 
 db <- db0 %>% 
   filter(GEOID == "55")
@@ -141,7 +149,7 @@ db2 <- db %>%
   replace_na(list(Value = 0))
 
 # filling age, sex, etc. (no data by age before the 29th of March)
-db3 <- db2 %>% 
+out <- db2 %>% 
   mutate(Measure = case_when(str_sub(var, 1, 1) == "P" ~ "Cases", 
                              str_sub(var, 1, 1) == "D" ~ "Deaths", 
                              str_sub(var, 1, 1) == "T" ~ "Tests"),
@@ -166,31 +174,36 @@ db3 <- db2 %>%
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) 
 
 ############################################
-#### uploading database to Google Drive ####
+#### saving database in N Drive ####
 ############################################
+write_rds(out, paste0(dir_n, ctr, ".rds"))
 
-write_sheet(db3, 
-            ss = ss_i,
-            sheet = "database")
-log_update(pp = "US_Wisconsin", N = nrow(db3))
-############################################
-#### uploading metadata to Google Drive ####
-############################################
+# updating hydra dashboard
+log_update(pp = ctr, N = nrow(out))
 
-date_end_f <- paste(sprintf("%02d", day(date_end)),
-                    sprintf("%02d", month(date_end)),
-                    year(date_end), sep = ".")
+data_source <- paste0(dir_n, 
+                      "Data_sources/", 
+                      ctr,
+                      "/cases_deaths.csv")
 
-sheet_name <- paste0("US_WI", date_end_f, "cases&deaths")
+write_csv(db0, data_source)
 
-meta <- drive_create(sheet_name, 
-             path = ss_db, 
-             type = "spreadsheet",
-             overwrite = TRUE)
+#ex_files <- c(paste0(PH_dir, files))
 
-write_sheet(db, 
-            ss = meta$id,
-            sheet = "cases&deaths")
+zipname <- paste0(dir_n, 
+                  "Data_sources/", 
+                  ctr,
+                  "/", 
+                  ctr,
+                  "_data_",
+                  today(), 
+                  ".zip")
 
-sheet_delete(meta$id, "Sheet1")
+zip::zipr(zipname,
+          files = data_source, 
+          recurse = TRUE, 
+          compression_level = 9,
+          include_directories = TRUE)
+
+file.remove(data_source)
 
