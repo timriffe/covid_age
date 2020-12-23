@@ -6,8 +6,11 @@ library(lubridate)
 
 # driver$server$stop() 
 
+path_chrome_dr <- "N:/COVerAGE-DB/Automation/chromedriver.exe"
+"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
+startServer(args = c("-Dwebdriver.chrome.driver=N:/COVerAGE-DB/Automation/hydra/chromedriver.exe"))
 driver <- RSelenium::rsDriver(browser = "chrome",
-                              port = 4574L,
+                              port = 4590L,
                               chromever =
                                 system2(command = "wmic",
                                         args = 'datafile where name="C:\\\\Program Files (x86)\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe" get Version /value',
@@ -25,7 +28,43 @@ driver <- RSelenium::rsDriver(browser = "chrome",
                                 max() %>%
                                 as.character())
 
-remote_driver <- driver[["client"]] 
+
+
+driver <- RSelenium::rsDriver(browser = "chrome",
+                              port = 4591L,
+                              chromever =
+                                system2(command = "wmic",
+                                        args = 'datafile where name="N:/COVerAGE-DB/Automation/hydra/chromedriver.exe" get Version /value',
+                                        stdout = TRUE,
+                                        stderr = TRUE) %>%
+                                stringr::str_extract(pattern = "(?<=Version=)\\d+\\.\\d+\\.\\d+\\.") %>%
+                                magrittr::extract(!is.na(.)) %>%
+                                stringr::str_replace_all(pattern = "\\.",
+                                                         replacement = "\\\\.") %>%
+                                paste0("^",  .) %>%
+                                stringr::str_subset(string =
+                                                      binman::list_versions(appname = "chromedriver") %>%
+                                                      dplyr::last()) %>% 
+                                as.numeric_version() %>%
+                                max() %>%
+                                as.character(),
+                              check = TRUE)
+
+driver <- RSelenium::rsDriver(browser = "chrome",
+                              port = 4579L,
+                              chromever = "86.0.4240.198")
+
+
+
+driver <- rsDriver(browser=c("chrome"),
+                   chromever = "86.0.4240.198")
+
+driver <- RSelenium::rsDriver(browser = "chrome",
+                              port = 4582L,
+                              chromever =
+                                ☻)
+
+remote_driver <- driver[["client"]]
 remote_driver$navigate("https://www.covid.is/data")
 
 frame1 <- remote_driver$findElements("css", "iframe")
@@ -59,5 +98,6 @@ db2 <- db %>%
                          TRUE ~ Age))
 
 
-
+cprof <- getChromeProfile("C:\Program Files (x86)\Google\Chrome\Application\ Data", "Profile 1")
+remDr <- remoteDriver(browserName = "chrome", extraCapabilities = cprof)
 
