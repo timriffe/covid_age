@@ -44,7 +44,7 @@ deaths_url <- paste0("https://www.nijz.si",
 ##############
 
 db_c <- rio::import(cases_url, 
-                    sheet = "Tabela 4", 
+                    sheet = "Tabela 5", 
                     skip = 2) %>%
   as_tibble() 
 
