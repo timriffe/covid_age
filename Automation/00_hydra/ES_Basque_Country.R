@@ -180,12 +180,13 @@ Table <-
 # Get totals from first tab (includes PCR totals)
 most_recent_for_totals <- rev(files)[1]
 
+tbl_vars(TOT)
 TOT <- 
   read_excel(paste0(ES_PV_dir, most_recent_for_totals),
              sheet = "01",
              skip = 1) %>% 
   select(Date = `Data / Fecha`,
-         Tests = `PCR guztira / PCR totales`,
+         Tests = 'PCR-dun pertsona bakarrak / Personas únicas con PCR',
          Cases = `Kasu positiboak guztira / Casos positivos totales`,
          Deaths = `Hildakoak / Fallecidos`) %>% 
   filter(Date >= min(Table$Date),
