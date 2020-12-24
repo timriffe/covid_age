@@ -62,7 +62,7 @@ sched("Bulgaria", tm = "10:41",email = auto_update_email, wd = auto_update_wd)
 sched("Denmark", tm = "09:29",email = auto_update_email, wd = auto_update_wd)
 sched("US_Iowa", tm = "09:40",email = auto_update_email, wd = auto_update_wd)
 sched("Belgium", tm = "14:30",email = auto_update_email, wd = auto_update_wd)
-# sched("New_Zealand", "17:20",email = auto_update_email, wd = auto_update_wd)
+sched("New_Zealand", "10:03",email = auto_update_email, wd = auto_update_wd)
 # sched("Belgium", tm = "19:50",email = auto_update_email, wd = auto_update_wd)
 
 
