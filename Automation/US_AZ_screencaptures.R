@@ -27,11 +27,22 @@ source_python(file=py_file)
 #py_run_file("C:/Users/riffe/Documents/covid_age/Automation/US_AZ_screencaptures.py")
 #py_run_file("Automation/US_AZ_screencaptures.py")
 
-file_out <- paste0("N:/COVerAGE-DB/Automation/Hydra/Data_sources/US_Arizona/US_AZ_demo_",today(),".png")
-file.rename("N:/COVerAGE-DB/Automation/Hydra/Data_sources/US_Arizona/US_AZ_demo.png",
-            file_out)
+cases_out <- paste0("N:/COVerAGE-DB/Automation/Hydra/Data_sources/US_Arizona/US_AZ_cases_",today(),".png")
+file.rename("N:/COVerAGE-DB/Automation/Hydra/Data_sources/US_Arizona/US_AZ_cases.png",
+            cases_out)
+deaths_out <- paste0("N:/COVerAGE-DB/Automation/Hydra/Data_sources/US_Arizona/US_AZ_deaths_",today(),".png")
+file.rename("N:/COVerAGE-DB/Automation/Hydra/Data_sources/US_Arizona/US_AZ_deaths.png",
+            deaths_out)
+tests_out <- paste0("N:/COVerAGE-DB/Automation/Hydra/Data_sources/US_Arizona/US_AZ_tests_",today(),".png")
+file.rename("N:/COVerAGE-DB/Automation/Hydra/Data_sources/US_Arizona/US_AZ_tests.png",
+            tests_out)
 
-drive_put(media = file_out,
+
+drive_put(media = cases_out,
+          path = googledrive::as_id(ss_db))
+drive_put(media = deaths_out,
+          path = googledrive::as_id(ss_db))
+drive_put(media = tests_out,
           path = googledrive::as_id(ss_db))
 
 
