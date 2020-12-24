@@ -1,4 +1,4 @@
-
+# TODO add click on subwindow maximize in upper right corner
 
 path = "N:\COVerAGE-DB\Automation\chromedriver.exe"
 from selenium.webdriver.common.keys import Keys
@@ -11,7 +11,7 @@ options=Options()
 #options.add_argument("--enable-javascript")
 options.add_argument("--headless")
 driver = webdriver.Chrome(options=options,executable_path = path) #Path of Chrome Driver
-driver = webdriver.Chrome("/usr/bin/chromedriver",options=options) #Path of Chrome Driver
+#driver = webdriver.Chrome("/usr/bin/chromedriver",options=options) #Path of Chrome Driver
 
 URL = 'https://gismoldova.maps.arcgis.com/apps/opsdashboard/index.html#/d274da857ed345efa66e1fbc959b021b'
 
