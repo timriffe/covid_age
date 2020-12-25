@@ -16,7 +16,8 @@ library(pacman)
 packages_CRAN <- c("tidyverse","lubridate","gargle","rvest","httr","readxl",
                    "tictoc","parallel","data.table","git2r","usethis", "rio",
                    "remotes","here","googledrive","zip", "XML", "RCurl",
-                   "taskscheduleR","countrycode", "xml2", "dplyr", "xml2")
+                   "taskscheduleR","countrycode", "xml2", "dplyr", "xml2",
+                   "reticulate")
 
 # Install required CRAN packages if not available yet
 if(!sum(!p_isinstalled(packages_CRAN))==0) {
