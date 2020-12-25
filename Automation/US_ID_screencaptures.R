@@ -9,6 +9,7 @@ if (!"email" %in% ls()){
   email <- "tim.riffe@gmail.com"
 }
 gs4_auth(email = email)
+drive_auth(email = email)
 
 deaths_url <- "https://public.tableau.com/profile/idaho.division.of.public.health#!/vizhome/DPHIdahoCOVID-19Dashboard/DeathDemographics"
 cases_url  <- "https://public.tableau.com/profile/idaho.division.of.public.health#!/vizhome/DPHIdahoCOVID-19Dashboard/Demographics"
@@ -32,6 +33,17 @@ webshot(url = cases_url,
 
 
 log_update(pp = "US_Idaho", N = "captured")
+
+drive_auth(email = email)
+ss_db <- get_input_rubric() %>% 
+  filter(Region == "Idaho") %>% 
+  dplyr::pull(Source)
+
+drive_put(media = deaths_png,
+          path = as_id(ss_db))
+
+drive_put(media = cases_png,
+          path = as_id(ss_db))
 
 schedule.this <- FALSE
 if (schedule.this){
