@@ -29,6 +29,12 @@ gs4_auth(email = email)
 
 log_update("Rwanda",N = "captured")
 
+ss_db <- ss_db <- get_input_rubric() %>% 
+  filter(Country == "Rwanda") %>% 
+  dplyr::pull("Source")
+
+drive_put(media = cases_png,
+          path = as_id(ss_db))
 
 schedule.this <- FALSE
 if (schedule.this){

@@ -13,14 +13,14 @@ dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 # https://www.mspbs.gov.py/reporte-covid19.html
 
 # microdata of cases
-cases_url <- "https://public.tableau.com/vizql/w/COVID19PY-Registros/v/Descargardatos/vudcsv/sessions/15AC27FC45FA44A18DA1E2982DBF0CF2-0:0/views/7713620505763405234_2641841674343653269?summary=true"
+cases_url <- "https://public.tableau.com/vizql/w/COVID19PY-Registros/v/Descargardatos/vudcsv/sessions/52EEB3C9FA874E309A25F19F916A635F-0:0/views/7713620505763405234_2641841674343653269?summary=true"
 data_source_c <- paste0(dir_n, "Data_sources/", ctr, "/cases_",today(), ".csv")
-download.file(deaths_url, destfile = data_source_d)
+download.file(cases_url, destfile = data_source_c)
 
 # microdata of deaths
-deaths_url <- "https://public.tableau.com/vizql/w/COVID19PY-Registros/v/FALLECIDOS/vudcsv/sessions/F2346EFBD1024EFA9684EB4E4B3D2836-0:0/views/7713620505763405234_5043410824490810379?summary=true"
+deaths_url <- "https://public.tableau.com/vizql/w/COVID19PY-Registros/v/FALLECIDOS/vudcsv/sessions/631990AB3BD242268F6316E1C905CA8B-0:0/views/7713620505763405234_5043410824490810379?summary=true"
 data_source_d <- paste0(dir_n, "Data_sources/", ctr, "/deaths_",today(), ".csv")
-download.file(cases_url, destfile = data_source_c)
+download.file(deaths_url, destfile = data_source_d)
 
 db_c <- read_csv(data_source_c)
 db_d <- read_csv(data_source_d)
@@ -35,41 +35,45 @@ tests2 <- tests %>%
   filter(Measure == "Tests") %>% 
   select(date_f, Sex, Age, Measure, Value)
 
+unique(db_c$'Departamento Residencia') %>% sort()
+unique(db_c$'Distrito Residencia') %>% sort()
 
-
-
-unique(db$Edad) %>% sort()
+unique(db_c2$Region) %>% sort()
+unique(db_c$Edad) %>% sort()
 
 db_c2 <- db_c %>% 
   rename(date_f = "Fecha Confirmacion",
-         Sex = Sexo) %>% 
-  select(date_f, Sex, Edad) %>% 
-  mutate(date_f = mdy(date_f),
+         Sex = Sexo,
+         Region = 'Departamento Residencia') %>% 
+  select(Region, date_f, Sex, Edad) %>% 
+  mutate(Region = str_to_title(Region),
+         date_f = mdy(date_f),
          Sex = case_when(Sex == "MASCULINO" ~ "m",
                          Sex == "FEMENINO" ~ "f",
                          TRUE ~ "UNK"),
-         Age = case_when(Edad <= 100 ~ as.character(floor(Edad/5)*5), 
-                         Edad > 100 & Edad < 120 ~ "100",
-                         Edad >= 120 ~"UNK")) %>% 
-  group_by(date_f, Sex, Age) %>% 
+         Age = case_when(Edad <= 100 ~ Edad, 
+                         Edad > 100 & Edad < 120 ~ 100,
+                         Edad >= 120 ~ 999)) %>% 
+  group_by(Region, date_f, Sex, Age) %>% 
   summarise(new = sum(n())) %>% 
   ungroup() %>% 
   mutate(Measure = "Cases")
 
-
 db_d2 <- db_d %>% 
   rename(date_f = 2,
          Sex = Sexo,
-         Edad = 'Sum of Edad') %>% 
-  select(date_f, Sex, Edad) %>% 
-  mutate(date_f = mdy(date_f),
+         Edad = 'Sum of Edad',
+         Region = 'Departamento Residencia') %>% 
+  select(Region, date_f, Sex, Edad) %>% 
+  mutate(Region = str_to_title(Region),
+         date_f = mdy(date_f),
          Sex = case_when(Sex == "MASCULINO" ~ "m",
                          Sex == "FEMENINO" ~ "f",
                          TRUE ~ "UNK"),
-         Age = case_when(Edad <= 100 ~ as.character(floor(Edad/5)*5), 
-                         Edad > 100 & Edad < 120 ~ "100",
-                         Edad >= 120 ~"UNK")) %>% 
-  group_by(date_f, Sex, Age) %>% 
+         Age = case_when(Edad <= 100 ~ Edad, 
+                         Edad > 100 & Edad < 120 ~ 100,
+                         Edad >= 120 ~ 999)) %>% 
+  group_by(Region, date_f, Sex, Age) %>% 
   summarise(new = sum(n())) %>% 
   ungroup() %>% 
   mutate(Measure = "Deaths")
@@ -80,41 +84,62 @@ sexes <- unique(db$Sex)
 dates_f <- unique(db$date_f) %>% sort()
 ages <- unique(db$Age) %>% sort()
 
+unique(db$Region)
+
 db2 <- db %>% 
-  complete(Sex, Age = ages, date_f = dates_f, Measure, fill = list(new = 0)) %>% 
-  arrange(suppressWarnings(as.integer(Age)), Sex, Measure, date_f) %>% 
-  group_by(Measure, Sex, Age) %>% 
+  tidyr::complete(date_f = dates_f, Region, Sex, Age = ages, Measure, fill = list(new = 0)) %>% 
+  arrange(Region, suppressWarnings(as.integer(Age)), Sex, Measure, date_f) %>% 
+  group_by(Region, Measure, Sex, Age) %>% 
   mutate(Value = cumsum(new)) %>% 
   ungroup()
 
-db_tot_sex <- db2 %>% 
-  group_by(date_f, Measure, Sex) %>% 
+db_reg <- db2 %>% 
+  mutate(Age = case_when(Age >= 5 ~ floor(Age / 5) * 5,
+                         Age < 1 ~ 0,
+                         Age >= 1 & Age < 5 ~ 1)) %>% 
+  group_by(date_f, Region, Measure, Sex, Age) %>% 
+  summarise(Value = sum(Value)) %>% 
+  ungroup() %>% 
+  mutate(Age = as.character(Age))
+
+db_nal <- db2 %>% 
+  group_by(date_f, Measure, Sex, Age) %>% 
+  summarise(Value = sum(Value)) %>% 
+  ungroup() %>% 
+  mutate(Region = "All") %>% 
+  filter(Age != "UNK")
+
+db_tot_sex <- bind_rows(db_reg, db_nal) %>% 
+  group_by(date_f, Region, Measure, Sex) %>% 
   summarise(Value = sum(Value)) %>% 
   ungroup() %>% 
   mutate(Age = "TOT")
 
 # Starting the report in the date in which cases and deaths for all ages are more than 50
-db3 <- db2 %>% 
-  group_by(date_f, Measure) %>% 
-  mutate(All_ages = sum(Value)) %>% 
-  filter(All_ages >= 50) %>% 
+
+db3 <- bind_rows(db_reg, db_nal) %>% 
+  group_by(date_f, Region, Measure) %>% 
+  filter(sum(Value) >= 50) %>% 
   ungroup() %>% 
-  filter(Age != "UNK") %>% 
-  select(-new, -All_ages) %>% 
+  filter(Age < 105) %>% 
+  mutate(Age = as.character(Age)) %>% 
   bind_rows(db_tot_sex, tests2)
 
 out <- db3 %>%
-  mutate(Region = "All",
-         Date = paste(sprintf("%02d", day(date_f)),
+  mutate(Date = paste(sprintf("%02d", day(date_f)),
                       sprintf("%02d", month(date_f)),
                       year(date_f), sep = "."),
          Country = "Paraguay",
          Code = paste0("PY_", Date),
-         AgeInt = case_when(Age == "TOT" ~ NA_real_, 
-                            TRUE ~ 5),
+         AgeInt = case_when(Region == "All" & !(Age %in% c("TOT", "100")) ~ 1,
+                            Region != "All" & !(Age %in% c("0", "1", "TOT")) ~ 5,
+                            Region != "All" & Age == "0" ~ 1,
+                            Region != "All" & Age == "1" ~ 4,
+                            Age == "100" ~ 5,
+                            Age == "TOT" ~ NA_real_),
          Metric = "Count") %>% 
   # bind_rows(deaths2) %>% 
-  arrange(date_f, Sex, Measure, suppressWarnings(as.integer(Age))) %>% 
+  arrange(Region, date_f, Sex, Measure, suppressWarnings(as.integer(Age))) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) 
 
 # total cummulative values
@@ -123,8 +148,6 @@ date_end <- max(dates_f)
 date_end_format <- paste(sprintf("%02d", day(date_end)),
                          sprintf("%02d", month(date_end)),
                          year(date_end), sep = ".")
-
-
 
 write_rds(out, paste0(dir_n, ctr, ".rds"))
 

@@ -9,9 +9,17 @@ dir_n <- "Data/"
 
 
 
+<<<<<<< HEAD
 system("taskkill /im java.exe /f", intern=FALSE, ignore.stdout=FALSE)
 driver <- RSelenium::rsDriver(browser = "chrome",
                               port = 4601L,
+=======
+path_chrome_dr <- "N:/COVerAGE-DB/Automation/chromedriver.exe"
+"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
+startServer(args = c("-Dwebdriver.chrome.driver=N:/COVerAGE-DB/Automation/hydra/chromedriver.exe"))
+driver <- RSelenium::rsDriver(browser = "chrome",
+                              port = 4590L,
+>>>>>>> 4e23c54c37fa421a2384a64ffb59b2b3c7590686
                               chromever =
                                 system2(command = "wmic",
                                         args = 'datafile where name="C:\\\\Program Files (x86)\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe" get Version /value',
@@ -29,7 +37,43 @@ driver <- RSelenium::rsDriver(browser = "chrome",
                                 max() %>%
                                 as.character())
 
-remote_driver <- driver[["client"]] 
+
+
+driver <- RSelenium::rsDriver(browser = "chrome",
+                              port = 4591L,
+                              chromever =
+                                system2(command = "wmic",
+                                        args = 'datafile where name="N:/COVerAGE-DB/Automation/hydra/chromedriver.exe" get Version /value',
+                                        stdout = TRUE,
+                                        stderr = TRUE) %>%
+                                stringr::str_extract(pattern = "(?<=Version=)\\d+\\.\\d+\\.\\d+\\.") %>%
+                                magrittr::extract(!is.na(.)) %>%
+                                stringr::str_replace_all(pattern = "\\.",
+                                                         replacement = "\\\\.") %>%
+                                paste0("^",  .) %>%
+                                stringr::str_subset(string =
+                                                      binman::list_versions(appname = "chromedriver") %>%
+                                                      dplyr::last()) %>% 
+                                as.numeric_version() %>%
+                                max() %>%
+                                as.character(),
+                              check = TRUE)
+
+driver <- RSelenium::rsDriver(browser = "chrome",
+                              port = 4579L,
+                              chromever = "86.0.4240.198")
+
+
+
+driver <- rsDriver(browser=c("chrome"),
+                   chromever = "86.0.4240.198")
+
+driver <- RSelenium::rsDriver(browser = "chrome",
+                              port = 4582L,
+                              chromever =
+                                ☻)
+
+remote_driver <- driver[["client"]]
 remote_driver$navigate("https://www.covid.is/data")
 # remote_driver$navigate('https://e.infogram.com/deaf4fd6-0ce9-4b82-97ae-11e34a045060?parent_url=https%3A%2F%2Fwww.covid.is%2Fdata&amp;src=embed#async_embed%22')
 
@@ -52,10 +96,15 @@ file.remove("C:/Users/kikep/Downloads/Sheet 1.csv")
 button <- remote_driver$findElement(using = "xpath", '/html/body/div[2]/div/div[1]/div[1]/div[1]/div/div/div/div[1]/div/div[48]/div/a/span[2]')
 button$clickElement()
 
+<<<<<<< HEAD
 data_source2 <- paste0(dir_n, ctr, "/", ctr, "_data_cases_deaths_", today(), ".csv")
 file.copy("C:/Users/kikep/Downloads/Sheet 1.csv", data_source2)
 file.remove("C:/Users/kikep/Downloads/Sheet 1.csv")
 
+=======
+cprof <- getChromeProfile("C:\Program Files (x86)\Google\Chrome\Application\ Data", "Profile 1")
+remDr <- remoteDriver(browserName = "chrome", extraCapabilities = cprof)
+>>>>>>> 4e23c54c37fa421a2384a64ffb59b2b3c7590686
 
 # 
 # 
