@@ -1,29 +1,24 @@
 
-# 2020-12-24 inputDB updates 
- Thu Dec 24 20:01:15 2020 
+# 2020-12-25 inputDB updates 
+ Fri Dec 25 20:01:08 2020 
 
 
-# 2020-12-24 20:01:15 updates 
- Thu Dec 24 20:01:15 2020 
+# 2020-12-25 20:01:08 updates 
+ Fri Dec 25 20:01:08 2020 
 
 
 # Filter valid Measure entries: 
- Thu Dec 24 20:37:07 2020 
+ Fri Dec 25 20:23:06 2020 
 
 Valid Measures include: Cases,Deaths,Tests,ASCFR
  26 rows removed
-# Filter valid Metric entries: 
- Thu Dec 24 20:37:07 2020 
-
-Valid Metrics include: Count,Fraction,Ratio
- 14 rows removed
 # Filter valid Sex entries: 
- Thu Dec 24 20:37:08 2020 
+ Fri Dec 25 20:23:06 2020 
 
 Valid Sex values include: m,f,b,UNK
  303 rows removed
 # Duplicates detected. Following `Code`s removed: 
- Thu Dec 24 20:37:21 2020 
+ Fri Dec 25 20:23:20 2020 
 
 BE_VLG01.03.2020
 BE_VLG02.03.2020
@@ -323,6 +318,7 @@ BE_VLG20.12.2020
 BE_VLG21.12.2020
 BE_VLG22.12.2020
 BE_VLG23.12.2020
+BE_VLG24.12.2020
 BE_VLGNA.NA.NA
 BE_WAL01.03.2020
 BE_WAL02.03.2020
@@ -622,8 +618,8 @@ BE_WAL20.12.2020
 BE_WAL21.12.2020
 BE_WAL22.12.2020
 BE_WAL23.12.2020
+BE_WAL24.12.2020
 BE_WALNA.NA.NA
-LB13.12.2020
 NO25.06.2020
 NO26.06.2020
 NO29.06.2020
@@ -1039,4 +1035,3 @@ PY_21.12.2020
 CH23.12.2020
 US_FL02.12.2020
 US_TX27.10.2020
-VE02.12.2020
