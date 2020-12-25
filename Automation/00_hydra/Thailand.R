@@ -1,0 +1,83 @@
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
+library(tidyverse)
+library(lubridate)
+if (!"email" %in% ls()){
+  email <- "tim.riffe@gmail.com"
+}
+# info country and N drive address
+ctr   <- "Thailand"
+dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
+
+drive_auth(email = email)
+gs4_auth(email = email)
+
+# TR: pull urls from rubric instead 
+at_rubric <- get_input_rubric() %>% filter(Short == "TH")
+ss_i   <- at_rubric %>% dplyr::pull(Sheet)
+ss_db  <- at_rubric %>% dplyr::pull(Source)
+
+
+cases_url <- "https://raw.githubusercontent.com/pluz85/Covid19TH-DailyData/master/dataset/csv/cases.csv"
+
+TH <- read_csv(cases_url)
+
+
+Ages <- as.character(0:100,"UNK")
+
+Cases <-
+  TH %>% 
+  select(Date = ConfirmDate,
+         Age = Age,
+         Sex = GenderEn) %>% 
+  mutate(Date = as_date(Date),
+         Age = ifelse(sign(Age) == -1, -Age,Age), # one case of -34 must mean 34, right?
+         Age = ifelse(is.na(Age),"UNK",as.character(Age)),
+         Sex = recode(Sex,
+                      "Unknown" = "UNK",
+                      "Male" = "m",
+                      "Female" = "f")) %>% 
+  group_by(Date, Sex, Age) %>% 
+  summarize(Value = n(), .groups="drop") %>% 
+  tidyr::complete(Date, Sex, Age = Ages, fill = list(Value = 0)) %>% 
+  arrange(Sex, Age, Date) %>% 
+  group_by(Sex, Age) %>% 
+  mutate(Value = cumsum(Value)) %>% 
+  ungroup() %>%
+  mutate(Country = "Thailand",
+         Region = "All",
+         Date = ddmmyyyy(Date),
+         Metric = "Count",
+         Measure = "Cases",
+         AgeInt = case_when(Age == "UNK" ~ NA_integer_,
+                            Age == "100" ~ 5L,
+                            TRUE ~ 1L),
+         Code = paste0("TH",Date)) %>% 
+  sort_input_data() %>% 
+  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
+  filter(!(Sex == "UNK" & Value == 0),
+         !(Age == "UNK" & Value == 0))
+
+# Save and log
+write_rds(Cases, paste0(dir_n, ctr, ".rds"))
+log_update("Thailand", N = nrow(Cases))
+
+# Archive inputs
+data_source <- paste0(dir_n, "Data_sources/", ctr, "/cases_age_",today(), ".csv")
+write_csv(TH, data_source)
+zipname <- paste0(dir_n, 
+                  "Data_sources/", 
+                  ctr,
+                  "/", 
+                  ctr,
+                  "_data_",
+                  today(), 
+                  ".zip")
+zip::zipr(zipname, 
+          data_source, 
+          recurse = TRUE, 
+          compression_level = 9,
+          include_directories = TRUE)
+
+file.remove(data_source)
+# end
