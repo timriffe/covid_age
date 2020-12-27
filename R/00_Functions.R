@@ -14,7 +14,7 @@ packages_CRAN <- c("tidyverse","lubridate","gargle","ungroup","HMDHFDplus",
                    "tictoc","parallel","data.table","git2r","usethis",
                    "remotes","here","knitr","rmarkdown","googledrive","zip",
                    "cartography","rgdal","tmap","svglite",
-                   "taskscheduleR","countrycode","wpp2019")
+                   "countrycode","wpp2019")
 
 # Install required CRAN packages if not available yet
 if(!sum(!p_isinstalled(packages_CRAN))==0) {
@@ -347,6 +347,10 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
     hydra_data <- tibble()
   }
   
+  # remove readings with 0 rows (earmarked for collection)
+  
+  NROWS      <- lapply(input_list, nrow) %>% unlist()
+  input_list <- input_list[NROWS != 0]
   # Bind and sort
   inputDB <- 
     input_list %>% 
