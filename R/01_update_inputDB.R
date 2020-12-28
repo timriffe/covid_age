@@ -5,7 +5,8 @@ library(here)
 change_here <- function(new_path){
   new_root <- here:::.root_env
   
-  new_root$f <- function(...){file.path(new_path, ...)}
+  new_root$f <- function(...){file.pa
+    th(new_path, ...)}
   
   assignInNamespace(".root_env", new_root, ns = "here")
 }
@@ -209,7 +210,7 @@ if (schedule_this){
                        rscript = "C:/Users/riffe/Documents/covid_age/R/01_update_inputDB.R", 
                        schedule = "HOURLY", 
                        modifier = 8,
-                       starttime = "04:01",
+                       starttime = "10:01",
                        startdate = format(Sys.Date()+1, "%d/%m/%Y"))
   # 
 }
