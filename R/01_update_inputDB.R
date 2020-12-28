@@ -152,6 +152,21 @@ if (nrow(rubric) > 0){
     }
   }
   
+  n <- is.na(dmy(inputDB$Date))
+  # sum(n)
+  if (sum(n) > 0){
+    rmcodes <- inputDB %>% filter(n) %>% dplyr::pull(Code) %>% unique()
+    inputDB <- inputDB %>% filter(!Code%in%rmcodes)
+    if (length(rmcodes)>0){
+      log_section("Bad Dates detected. Following `Code`s removed:", 
+                  append = TRUE, 
+                  logfile = logfile)
+      cat(paste(rmcodes, collapse = "\n"), 
+          file = logfile, 
+          append = TRUE)
+    }
+  }
+  
   # -------------------------------------- #
   # now swap out data in inputDB files
   
@@ -170,7 +185,7 @@ if (nrow(rubric) > 0){
   # TR: added 09.11.2020 because some people seem to reserve blocks in the database with NAs. hmm.
   inputDB_out <- 
     inputDB_out %>% 
-    filter(!is.na(Value))
+    filter(!is.na(Value)) 
   
   saveRDS(inputDB_out, here("Data","inputDB.rds"))
   
