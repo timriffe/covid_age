@@ -15,7 +15,7 @@ from time import sleep
 options=Options()
 #options.add_argument("--enable-javascript")
 options.add_argument("--headless")
-driver = webdriver.Chrome(chrome_options=options,executable_path = path) #Path of Chrome Driver
+driver = webdriver.Chrome(options=options,executable_path = path) #Path of Chrome Driver
 #driver = webdriver.Chrome("/usr/bin/chromedriver",chrome_options=options) #Path of Chrome Driver
 
 aus_url = 'https://www.health.gov.au/news/health-alerts/novel-coronavirus-2019-ncov-health-alert/coronavirus-covid-19-current-situation-and-case-numbers#COVID-19-summary-statistics'
