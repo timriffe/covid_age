@@ -1,6 +1,6 @@
 source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
 source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
-library(webshot)
+# library(webshot)
 #install_phantomjs()
 
 if (!"email" %in% ls()){
@@ -21,21 +21,21 @@ ss_db <- rubric$Source
 rubric <- get_input_rubric() %>% 
   filter(Country == "Finland")
 
-fi_deaths_png  <- paste0(dir_n,"Data_sources/",ctr,"/Finland_deaths_",today(),".png")
+#fi_deaths_png  <- paste0(dir_n,"Data_sources/",ctr,"/Finland_deaths_",today(),".png")
 
 # First, get screen capture of Finland deaths, save local and to drive:
 
-xpath <- '//*[@id="portlet_com_liferay_journal_content_web_portlet_JournalContentPortlet_INSTANCE_8bWCjC9jscyt"]/div/div[2]/div/div[2]/p[16]/span[1]/span/span/span/i/span/span/span/img'
+#xpath <- '//*[@id="portlet_com_liferay_journal_content_web_portlet_JournalContentPortlet_INSTANCE_8bWCjC9jscyt"]/div/div[2]/div/div[2]/p[16]/span[1]/span/span/span/i/span/span/span/img'
 
-arcgis_url <-"https://experience.arcgis.com/experience/92e9bb33fac744c9a084381fc35aa3c7"
+#arcgis_url <-"https://experience.arcgis.com/experience/92e9bb33fac744c9a084381fc35aa3c7"
 # This one for giving a click inside the arcgis dashboard.
-xpath_ember184 <- "/html/body/div/div/div[2]/div/div/div/margin-container/full-container/div[20]/margin-container/full-container/div/nav/span[3]/a/div"
+#xpath_ember184 <- "/html/body/div/div/div[2]/div/div/div/margin-container/full-container/div[20]/margin-container/full-container/div/nav/span[3]/a/div"
 
-webshot(fi_deaths_url,
-        file = fi_deaths_png,
-        delay = 2)
-drive_put(media = fi_deaths_png,
-          path = googledrive::as_id(ss_db))
+#webshot(fi_deaths_url,
+        #file = fi_deaths_png,
+        #delay = 2)
+#drive_put(media = fi_deaths_png,
+         #path = googledrive::as_id(ss_db))
 
 # fi_deaths_url <-
 #   read_html("https://thl.fi/en/web/infectious-diseases-and-vaccinations/what-s-new/coronavirus-covid-19-latest-updates/situation-update-on-coronavirus#Coronavirus-related_deaths") %>% 
