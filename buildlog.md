@@ -1,47 +1,47 @@
 
 # New build log 
- Mon Dec 28 12:00:32 2020 
+ Tue Dec 29 02:00:08 2020 
 
 
 # prep (resolve_UNKUNK) 
- Mon Dec 28 12:00:53 2020 
+ Tue Dec 29 02:00:31 2020 
 
 
 # A (convert_fractions_sexes) 
- Mon Dec 28 12:04:21 2020 
+ Tue Dec 29 02:03:57 2020 
 
 
 # B (redistribute_unknown_age) 
- Mon Dec 28 12:06:52 2020 
+ Tue Dec 29 02:06:23 2020 
 
 
 # C (rescale_to_total) 
- Mon Dec 28 12:15:45 2020 
+ Tue Dec 29 02:15:08 2020 
 
 filter( Code == 'PY_26.04.2020', Sex == 'b', Measure == 'Tests' )
 
 # D (infer_cases_from_deaths_and_ascfr) 
- Mon Dec 28 12:26:32 2020 
+ Tue Dec 29 02:25:43 2020 
 
 
 # E (infer_deaths_from_cases_and_ascfr) 
- Mon Dec 28 12:30:10 2020 
+ Tue Dec 29 02:29:19 2020 
 
 
 # G (redistribute_unknown_sex) 
- Mon Dec 28 12:33:47 2020 
+ Tue Dec 29 02:32:52 2020 
 
 
 # H (rescale_sexes) 
- Mon Dec 28 12:37:09 2020 
+ Tue Dec 29 02:36:07 2020 
 
 
 # I (infer_both_sex) 
- Mon Dec 28 12:38:48 2020 
+ Tue Dec 29 02:37:45 2020 
 
 
 # J (maybe_lower_closeout) 
- Mon Dec 28 12:41:55 2020 
+ Tue Dec 29 02:40:48 2020 
 
 filter( Code == 'US_CA_28.04.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_CA_28.04.2020', Sex == 'b', Measure == 'Deaths' )
@@ -532,7 +532,7 @@ filter( Code == 'US_TX11.09.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_TX13.09.2020', Sex == 'b', Measure == 'Cases' )
 
 # Age harmonization 
- Mon Dec 28 13:04:33 2020 
+ Tue Dec 29 02:50:15 2020 
 
 filter( Code == 'TH23.12.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'PK10.03.2020', Sex == 'b', Measure == 'Deaths' )
@@ -567,8 +567,8 @@ filter( Code == 'TH20.03.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'TH23.12.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'TH27.03.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'TH01.04.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'US_FL05.08.2029', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'TH04.04.2020', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'US_FL05.08.2029', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_FL31.07.2029', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'TH20.03.2020', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'TH23.12.2020', Sex == 'm', Measure == 'Cases' )
@@ -614,25 +614,29 @@ filter( Code == 'PK16.03.2020', Sex == 'm', Measure == 'Deaths' )
 filter( Code == 'PK17.03.2020', Sex == 'm', Measure == 'Deaths' )
 
 # Compile metadata 
- Mon Dec 28 18:33:15 2020 
-
-
-# Compile metadata 
- Mon Dec 28 18:36:38 2020 
+ Tue Dec 29 07:13:06 2020 
 
 
 # Building dashboards 
- Mon Dec 28 20:49:58 2020 
+ Tue Dec 29 07:30:25 2020 
 
 
 # remake coverage map 
- Mon Dec 28 22:19:03 2020 
+ Tue Dec 29 07:35:10 2020 
 
 
 # push outputs to OSF 
- Mon Dec 28 22:27:54 2020 
+ Tue Dec 29 07:39:39 2020 
+
+
+# remake coverage map 
+ Tue Dec 29 09:13:17 2020 
+
+
+# push outputs to OSF 
+ Tue Dec 29 09:17:42 2020 
 
 
 # Commit dashboards and buildlog 
- Mon Dec 28 22:30:05 2020 
+ Tue Dec 29 09:19:36 2020 
 
