@@ -28,7 +28,7 @@ if (schedule_this){
                        rscript = "C:/Users/riffe/Documents/covid_age/R/build_pre.R", 
                        schedule = "DAILY", 
                        starttime = "02:00",
-                       startdate = format(Sys.Date() + 1, "%d/%m/%Y"))
+                       startdate = format(Sys.Date() , "%d/%m/%Y"))
 }
 
 #

@@ -33,8 +33,20 @@ if (!"email" %in% ls()){
   email <- "tim.riffe@gmail.com"
 }
 gs4_auth(email = email)
-
+drive_auth(email = email)
 log_update("US_Oregon",N = "captured")
+
+
+ss_db <- get_input_rubric() %>% 
+  filter(Region == "Oregon") %>% 
+  dplyr::pull(Source)
+
+drive_put(media = deaths_png,
+          path = as_id(ss_db))
+
+drive_put(media = cases_png,
+          path = as_id(ss_db))
+
 
 schedule.this <- FALSE
 if (schedule.this){

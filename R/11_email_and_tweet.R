@@ -33,4 +33,5 @@ OUT <- bind_rows(append_this, IN)
 write_sheet(OUT, ss = ss, sheet = "build log")
 
 # we can then set up this sheet to send notification when updated.
-
+rm(list=ls())
+gc()

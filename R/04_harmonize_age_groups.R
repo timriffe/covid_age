@@ -122,8 +122,8 @@ outputCounts_5_1e5_rounded <-
 
 # Save csv
 header_msg <- paste("Counts of Cases, Deaths, and Tests in harmonized 5-year age groups\nBuilt:",timestamp(prefix="",suffix=""),"\nReproducible with: ",paste0("https://github.com/timriffe/covid_age/commit/",system("git rev-parse HEAD", intern=TRUE)))
-write_lines(header_msg, file = here("Data","Output_5.csv"))
-write_csv(outputCounts_5_1e5_rounded, file = here("Data","Output_5.csv"), append = TRUE, col_names = TRUE)
+write_lines(header_msg, path = here("Data","Output_5.csv"))
+write_csv(outputCounts_5_1e5_rounded, path = here("Data","Output_5.csv"), append = TRUE, col_names = TRUE)
 
 
 
@@ -157,8 +157,8 @@ outputCounts_10_rounded <-
 
 # Save CSV
 header_msg <- paste("Counts of Cases, Deaths, and Tests in harmonized 10-year age groups\nBuilt:",timestamp(prefix="",suffix=""),"\nReproducible with: ",paste0("https://github.com/timriffe/covid_age/commit/",system("git rev-parse HEAD", intern=TRUE)))
-write_lines(header_msg, file = here("Data","Output_10.csv"))
-write_csv(outputCounts_10_rounded, file = here("Data","Output_10.csv"), append = TRUE, col_names = TRUE)
+write_lines(header_msg, path = here("Data","Output_10.csv"))
+write_csv(outputCounts_10_rounded, path = here("Data","Output_10.csv"), append = TRUE, col_names = TRUE)
 
 # Save binary
 

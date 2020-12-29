@@ -26,9 +26,15 @@ if (!"email" %in% ls()){
   email <- "tim.riffe@gmail.com"
 }
 gs4_auth(email = email)
+drive_auth(email = email)
 
 log_update("Palestine",N = "captured")
 
+ss_db <- ss_db <- get_input_rubric() %>% 
+  filter(Country == "Palestine") %>% 
+  dplyr::pull(Source)
+drive_put(ps_demo_png,
+          path = as_id(ss_db))
 
 schedule.this <- FALSE
 if (schedule.this){

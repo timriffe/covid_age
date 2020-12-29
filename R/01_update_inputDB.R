@@ -5,7 +5,8 @@ library(here)
 change_here <- function(new_path){
   new_root <- here:::.root_env
   
-  new_root$f <- function(...){file.path(new_path, ...)}
+  new_root$f <- function(...){file.pa
+    th(new_path, ...)}
   
   assignInNamespace(".root_env", new_root, ns = "here")
 }
@@ -151,6 +152,21 @@ if (nrow(rubric) > 0){
     }
   }
   
+  n <- is.na(dmy(inputDB$Date))
+  # sum(n)
+  if (sum(n) > 0){
+    rmcodes <- inputDB %>% filter(n) %>% dplyr::pull(Code) %>% unique()
+    inputDB <- inputDB %>% filter(!Code%in%rmcodes)
+    if (length(rmcodes)>0){
+      log_section("Bad Dates detected. Following `Code`s removed:", 
+                  append = TRUE, 
+                  logfile = logfile)
+      cat(paste(rmcodes, collapse = "\n"), 
+          file = logfile, 
+          append = TRUE)
+    }
+  }
+  
   # -------------------------------------- #
   # now swap out data in inputDB files
   
@@ -169,7 +185,7 @@ if (nrow(rubric) > 0){
   # TR: added 09.11.2020 because some people seem to reserve blocks in the database with NAs. hmm.
   inputDB_out <- 
     inputDB_out %>% 
-    filter(!is.na(Value))
+    filter(!is.na(Value)) 
   
   saveRDS(inputDB_out, here("Data","inputDB.rds"))
   
@@ -177,8 +193,8 @@ if (nrow(rubric) > 0){
   
   # public file, full precision.
   header_msg <- paste("COVerAGE-DB input database, filtered after some simple checks:",timestamp(prefix = "", suffix = ""))
-  write_lines(header_msg, file = here("Data","inputDB.csv"))
-  write_csv(inputDB_out, file = here("Data","inputDB.csv"), append = TRUE, col_names = TRUE)
+  write_lines(header_msg, path = here("Data","inputDB.csv"))
+  write_csv(inputDB_out, path = here("Data","inputDB.csv"), append = TRUE, col_names = TRUE)
   
   # push logfile to github:
   library(usethis)
@@ -209,7 +225,7 @@ if (schedule_this){
                        rscript = "C:/Users/riffe/Documents/covid_age/R/01_update_inputDB.R", 
                        schedule = "HOURLY", 
                        modifier = 8,
-                       starttime = "04:01",
+                       starttime = "16:01",
                        startdate = format(Sys.Date()+1, "%d/%m/%Y"))
   # 
 }

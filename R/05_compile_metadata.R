@@ -22,10 +22,8 @@ log_section("Compile metadata",
 
 gs4_auth(email = "tim.riffe@gmail.com")
 
-ss_rubric <- "https://docs.google.com/spreadsheets/d/1IDQkit829LrUShH-NpeprDus20b6bso7FAOkpYvDHi4/edit#gid=0"
-rubric <- read_sheet(ss_rubric, sheet = "input") %>% 
-  filter(!is.na(Sheet),
-         Rows > 0)
+
+rubric <- get_input_rubric()
 
 metadata_tabs <- list()
 for (i in 1:nrow(rubric)){
