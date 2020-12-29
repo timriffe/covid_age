@@ -1,29 +1,28 @@
-
-# this script download Mexican data using vpn, to process it and saving it 
 source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
 
-# # reading data from the website ------------------------------------------------------ 
-m_url <- "https://www.gob.mx/salud/documentos/datos-abiertos-152127"
-html <- read_html(m_url)
-# locating the links for the data
-url1 <- html_nodes(html, xpath = '/html/body/main/div/div[1]/div[4]/div/table[2]/tbody/tr[1]/td[2]/a') %>%
-  html_attr("href")
+# assigning Drive credentials in the case the script is verified manually  
+if (!"email" %in% ls()){
+  email <- "kikepaila@gmail.com"
+}
 
+# info country and N drive address
+ctr <- "Belgium"
+dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 
-# downloading mexico data to nextcloud
-dir <- "Data/Mexico/"
-dir <- "C:/Users/kikep/Nextcloud/Projects/COVID_19/COVerAGE-DB/mexico/"
-data_source <- paste0(dir, "mexico_data_", today(), ".zip")
-download.file(url1, destfile = data_source)
+# Drive credentials
+drive_auth(email = email)
+gs4_auth(email = email)
 
+# Loading data from nextcloud
+#############################
+source_dir <- "U:/nextcloud/Projects/COVID_19/COVerAGE-DB/mexico"
+file_names <- list.files(source_dir, pattern = "\\.zip$")
+file_names <- "mexico_data_2020-12-29.zip"
 
+all_dates <- ymd(str_sub(file_names, 13, 22))
+last_date <- max(all_dates) 
 
-
-
-
-
-
-
+data_source <- paste0(source_dir, "/mexico_data_", last_date, ".zip")
 
 db <- read_csv(data_source)
 
@@ -238,7 +237,7 @@ db_all2 <- db_all %>%
   drop_na() %>% 
   filter((Region == "All" & date_f >= "2020-03-20") | date_f >= date_start)
 
-out <- db_all2 %>% 
+db_final <- db_all2 %>% 
   mutate(Country = "Mexico",
          AgeInt = case_when(Age == "100" ~ "5",
                             Age == "TOT" ~ "",
@@ -289,6 +288,72 @@ out <- db_all2 %>%
   arrange(Region, date_f, Measure, Sex, suppressWarnings(as.integer(Age))) %>% 
   select(Country, Region, Code,  Date, Sex, Age, AgeInt, Metric, Measure, Value)
 
-# saving output to nextcloud
-write_rds(out, "Data/Mexico/mexico.rds")
+test <- db_final %>% 
+  filter(Sex == "b",
+         Age == "TOT")
+
+#########################
+# Push dataframe to Drive -------------------------------------------------
+#########################
+
+# slicing database by regions for uploading it to drive
+dims <- db_final %>% dim() 
+slices <- 9
+slice_size <- ceiling(dims[1]/slices) 
+
+# TR: pull urls from rubric instead
+rubric <- get_input_rubric()
+
+for(i in 1:slices){
+  if (i < slices){ 
+    slice <- db_final[((i - 1) * slice_size + 1) : (i * slice_size),]
+    ss   <- rubric %>% filter(Short == paste0("MX_", sprintf("%02d",i))) %>% dplyr::pull(Sheet)
+  } else {
+    slice <- db_final[((i - 1) * slice_size + 1) : dims[1],]
+    ss   <- rubric %>% filter(Short == paste0("MX_", sprintf("%02d",i))) %>% dplyr::pull(Sheet)
+  }
+  hm <- try(write_sheet(slice, 
+                        ss = ss,
+                        sheet = "database"))
+  if (class(hm)[1] == "try-error"){
+    hm <- try(write_sheet(slice, 
+                          ss = ss,
+                          sheet = "database"))
+  }
+  if (class(hm)[1] == "try-error"){
+    Sys.sleep(120)
+    hm <- try(write_sheet(slice, 
+                          ss = ss,
+                          sheet = "database"))
+  }
+  Sys.sleep(120)
+}
+
+# updating hydra automate dashboard 
+log_update(pp = "Mexico", N = dims[1])
+
+#########################
+# Push zip file to Drive -------------------------------------------------
+#########################
+ss_db  <- rubric %>% filter(Short == "MX_01") %>% dplyr::pull(Source)
+
+date_f <- db %>% 
+  filter(!is.na(FECHA_ACTUALIZACION)) %>% 
+  dplyr::pull(FECHA_ACTUALIZACION) %>% 
+  max()
+
+date <- paste(sprintf("%02d",day(date_f)),
+              sprintf("%02d",month(date_f)),
+              year(date_f),
+              sep=".")
+
+filename <- paste0("MX", date, "cases&deaths.zip")
+
+drive_upload(
+  temp,
+  path = ss_db,
+  name = filename,
+  overwrite = T)
+
+unlink(temp)
 

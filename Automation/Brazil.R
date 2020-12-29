@@ -1,7 +1,4 @@
 source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
-library(here)
-source(here("Automation/00_Functions_automation.R"))
-
 library(RSelenium)
 library(rvest)
 
@@ -52,7 +49,6 @@ date_lb <- remote_driver$findElement(using = "xpath", '//*[@id="app"]/div[2]/div
 date_lb2 <- date_lb$findElement(using='css selector',"body")$getElementText()[[1]]
 date_f <- str_sub(date_lb2, -10) %>% dmy()
 
-Sys.sleep(3)
 data_source1 <- paste0(dir_n, ctr, "/", ctr, "_data_deaths_", today(), ".csv")
 file.copy("C:/Users/kikep/Downloads/obitos-2020.csv", data_source1, T)
 file.remove("C:/Users/kikep/Downloads/obitos-2020.csv")
@@ -85,36 +81,26 @@ db3 <-
   select(-trash)
          
   
-db_sex <- 
-  db3 %>% 
+db_sex <- db3 %>% 
   group_by(reg, Age) %>% 
   summarise(Value = sum(Value)) %>% 
   ungroup() %>% 
   mutate(Sex = "b") %>% 
   filter(Age != "UNK")
 
-db_age <- 
-  db3 %>% 
+db_age <- db3 %>% 
   group_by(reg, Sex) %>% 
   summarise(Value = sum(Value)) %>% 
   ungroup() %>% 
   mutate(Age = "TOT") %>% 
   filter(Sex != "i")
 
-db_sex_age <- 
-  db3 %>% 
-  group_by(reg) %>% 
-  summarise(Value = sum(Value)) %>% 
-  ungroup() %>% 
-  mutate(Age = "TOT",
-         Sex = "b") %>% 
-  filter(Sex != "i")
-
-db4 <- 
-  db3 %>% 
+out <- db3 %>% 
   filter(Sex != "i" & Age != "UNK") %>% 
-  bind_rows(db_age, db_sex, db_sex_age) %>% 
-  mutate(Region = case_when(reg == 'AC' ~ 'Acre',
+  bind_rows(db_age, db_sex) %>% 
+  mutate(date_f = date_f,
+         Country = "Brazil",
+         Region = case_when(reg == 'AC' ~ 'Acre',
                             reg == 'AL' ~ 'Alagoas',
                             reg == 'AP' ~ 'Amapa',
                             reg == 'AM' ~ 'Amazonas',
@@ -141,23 +127,7 @@ db4 <-
                             reg == 'SP' ~ 'Sao Paulo',
                             reg == 'SE' ~ 'Sergipe',
                             reg == 'TO' ~ 'Tocantins',
-                            TRUE ~ "other")) 
-
-
-db5 <- 
-  db4 %>%
-  group_by(Age, Sex) %>% 
-  summarise(Value = sum(Value)) %>% 
-  ungroup() %>% 
-  mutate(Region = "All",
-         reg = "")
-  
-unique(db5$Age)
-
-out <- 
-  bind_rows(db4, db5) %>%   
-  mutate(Country = "Brazil",
-         date_f = date_f,
+                            TRUE ~ "other"),
          Date = paste(sprintf("%02d",day(date_f)),
                       sprintf("%02d",month(date_f)),
                       year(date_f),
@@ -167,11 +137,10 @@ out <-
                             Age == "TOT" ~ NA_real_,
                             TRUE ~ 10),
          Metric = "Count",
-         Measure = "Deaths") %>% 
+         Measure = "Deaths") %>%
   arrange(Region, date_f, Measure, Sex, suppressWarnings(as.integer(Age))) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
 
-unique(out$Region)
 
 ############################################
 #### uploading database to Google Drive ####
@@ -194,7 +163,7 @@ write_sheet(db,
             sheet = "data")
 
 sheet_delete(meta$id, "Sheet1")
- 
+
 
 
 
