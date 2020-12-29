@@ -6,7 +6,7 @@ if (!"email" %in% ls()){
 }
 
 # info country and N drive address
-ctr <- "Belgium"
+ctr <- "Mexico"
 dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 # Drive credentials
@@ -15,16 +15,24 @@ gs4_auth(email = email)
 
 # Loading data from nextcloud
 #############################
-source_dir <- "U:/nextcloud/Projects/COVID_19/COVerAGE-DB/mexico"
+source_dir <- "U:/nextcloud/Projects/COVID_19/COVerAGE-DB/Mexico"
 file_names <- list.files(source_dir, pattern = "\\.zip$")
-file_names <- "mexico_data_2020-12-29.zip"
 
+ctr_dir <- paste0(dir_n, "Data_sources/", ctr)
+file_names_already <- list.files(ctr_dir, pattern = "\\.zip$")
+
+# only coping new data 
+new_data <- file_names[!(file_names %in% file_names_already)]
+dest_dir <- paste0(dir_n, "Data_sources/", ctr, "/", new_data)
+file.copy(paste0(source_dir, "/", new_data), dest_dir, T)
+
+# choosing the last date to update the database
 all_dates <- ymd(str_sub(file_names, 13, 22))
 last_date <- max(all_dates) 
-
 data_source <- paste0(source_dir, "/mexico_data_", last_date, ".zip")
 
-db <- read_csv(data_source)
+db <- 
+  read_csv(data_source)
 
 unique(db$SEXO)
 unique(db$EDAD)
@@ -237,7 +245,7 @@ db_all2 <- db_all %>%
   drop_na() %>% 
   filter((Region == "All" & date_f >= "2020-03-20") | date_f >= date_start)
 
-db_final <- db_all2 %>% 
+out <- db_all2 %>% 
   mutate(Country = "Mexico",
          AgeInt = case_when(Age == "100" ~ "5",
                             Age == "TOT" ~ "",
@@ -293,67 +301,12 @@ test <- db_final %>%
          Age == "TOT")
 
 #########################
-# Push dataframe to Drive -------------------------------------------------
-#########################
+# Saving output in N:/ drive 
+############################
 
-# slicing database by regions for uploading it to drive
-dims <- db_final %>% dim() 
-slices <- 9
-slice_size <- ceiling(dims[1]/slices) 
+write_rds(out, paste0(dir_n, ctr, ".rds"))
 
-# TR: pull urls from rubric instead
-rubric <- get_input_rubric()
+# updating hydra dashboard
+log_update(pp = ctr, N = nrow(out))
 
-for(i in 1:slices){
-  if (i < slices){ 
-    slice <- db_final[((i - 1) * slice_size + 1) : (i * slice_size),]
-    ss   <- rubric %>% filter(Short == paste0("MX_", sprintf("%02d",i))) %>% dplyr::pull(Sheet)
-  } else {
-    slice <- db_final[((i - 1) * slice_size + 1) : dims[1],]
-    ss   <- rubric %>% filter(Short == paste0("MX_", sprintf("%02d",i))) %>% dplyr::pull(Sheet)
-  }
-  hm <- try(write_sheet(slice, 
-                        ss = ss,
-                        sheet = "database"))
-  if (class(hm)[1] == "try-error"){
-    hm <- try(write_sheet(slice, 
-                          ss = ss,
-                          sheet = "database"))
-  }
-  if (class(hm)[1] == "try-error"){
-    Sys.sleep(120)
-    hm <- try(write_sheet(slice, 
-                          ss = ss,
-                          sheet = "database"))
-  }
-  Sys.sleep(120)
-}
-
-# updating hydra automate dashboard 
-log_update(pp = "Mexico", N = dims[1])
-
-#########################
-# Push zip file to Drive -------------------------------------------------
-#########################
-ss_db  <- rubric %>% filter(Short == "MX_01") %>% dplyr::pull(Source)
-
-date_f <- db %>% 
-  filter(!is.na(FECHA_ACTUALIZACION)) %>% 
-  dplyr::pull(FECHA_ACTUALIZACION) %>% 
-  max()
-
-date <- paste(sprintf("%02d",day(date_f)),
-              sprintf("%02d",month(date_f)),
-              year(date_f),
-              sep=".")
-
-filename <- paste0("MX", date, "cases&deaths.zip")
-
-drive_upload(
-  temp,
-  path = ss_db,
-  name = filename,
-  overwrite = T)
-
-unlink(temp)
-
+file.remove(paste0(source_dir, "/", file_names))
