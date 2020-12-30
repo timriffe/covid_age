@@ -258,7 +258,8 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
     X <- try(read_sheet(ss_i, 
                         sheet = "database", 
                         na = "NA", 
-                        col_types = "cccccciccd"))
+                        col_types = "cccccciccd",
+                        range = "database!A:J"))
     
     # If error
     if (class(X)[1] == "try-error") {
@@ -271,7 +272,8 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
       X <- try(read_sheet(ss_i, 
                           sheet = "database", 
                           na = "NA", 
-                          col_types = "cccccciccd"))
+                          col_types = "cccccciccd",
+                          range = "database!A:J"))
       
     }
     
@@ -310,7 +312,8 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
       X <- try(read_sheet(ss_i, 
                           sheet = "database", 
                           na = "NA", 
-                          col_types = "cccccciccd"))
+                          col_types = "cccccciccd",
+                          range = "database!A:J"))
       if (class(X)[1] == "try-error"){
         cat(i, "on 3rd try still didn't load\n")
       } else {
@@ -479,7 +482,8 @@ get_country_inputDB <- function(ShortCode) {
   out <- read_sheet(ss_i, 
                     sheet = "database", 
                     na = "NA", 
-                    col_types= "cccccciccd")
+                    col_types= "cccccciccd",
+                    range = "database!A:J")
   
   # Assign short code
   out$Short <- add_Short(out$Code,out$Date)
