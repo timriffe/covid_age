@@ -60,7 +60,7 @@ rubric <- get_rubric_update_window(hours_from, hours_to)
 if (nrow(rubric) > 0){
   # read in modified data templates (this is the slowest part)
   inputDB <- compile_inputDB(rubric, hours = Inf)
-  
+  #saveRDS(here("Data","inputDBhold.rds"))
   # what data combinations have we read in?
   codesIN     <- with(inputDB, paste(Country, Region, Measure, Short)) %>% unique()
   
@@ -185,10 +185,12 @@ if (nrow(rubric) > 0){
   # TR: added 09.11.2020 because some people seem to reserve blocks in the database with NAs. hmm.
   inputDB_out <- 
     inputDB_out %>% 
-    filter(!is.na(Value)) 
+    filter(!is.na(Value),
+           !is.na(Region),
+           !is.na(Country)) 
   
   saveRDS(inputDB_out, here("Data","inputDB.rds"))
-  
+
   #saveRDS(inputDB, here("Data","inputDB_i.rds"))
   
   # public file, full precision.
