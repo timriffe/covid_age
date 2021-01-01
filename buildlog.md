@@ -628,3 +628,11 @@ filter( Code == 'BR_PI29.12.2020', Sex == 'f', Measure == 'Deaths' )
 # remake coverage map 
  Fri Jan 01 11:08:03 2021 
 
+
+# push outputs to OSF 
+ Fri Jan 01 11:12:28 2021 
+
+
+# Commit dashboards and buildlog 
+ Fri Jan 01 11:14:19 2021 
+
