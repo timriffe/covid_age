@@ -608,3 +608,23 @@ filter( Code == 'BR_AP25.12.2020', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'BR_AP29.12.2020', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'BR_PI25.12.2020', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'BR_PI29.12.2020', Sex == 'f', Measure == 'Deaths' )
+
+# Compile metadata 
+ Fri Jan 01 04:32:51 2021 
+
+
+# Building dashboards 
+ Fri Jan 01 04:44:37 2021 
+
+
+# remake coverage map 
+ Fri Jan 01 04:49:41 2021 
+
+
+# push outputs to OSF 
+ Fri Jan 01 04:54:06 2021 
+
+
+# remake coverage map 
+ Fri Jan 01 11:08:03 2021 
+
