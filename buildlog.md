@@ -701,3 +701,35 @@ filter( Code == 'PK15.03.2020', Sex == 'm', Measure == 'Deaths' )
 filter( Code == 'PK16.03.2020', Sex == 'm', Measure == 'Deaths' )
 filter( Code == 'PK17.03.2020', Sex == 'm', Measure == 'Deaths' )
 filter( Code == 'SZ.05.12.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'BR_AP25.12.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'BR_AP29.12.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'BR_PI25.12.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'BR_PI29.12.2020', Sex == 'f', Measure == 'Deaths' )
+
+# Compile metadata 
+ Sun Jan 03 04:33:15 2021 
+
+
+# Building dashboards 
+ Sun Jan 03 04:47:09 2021 
+
+
+# remake coverage map 
+ Sun Jan 03 04:52:54 2021 
+
+
+# push outputs to OSF 
+ Sun Jan 03 04:57:19 2021 
+
+
+# remake coverage map 
+ Sun Jan 03 10:26:41 2021 
+
+
+# push outputs to OSF 
+ Sun Jan 03 10:31:05 2021 
+
+
+# Commit dashboards and buildlog 
+ Sun Jan 03 10:32:54 2021 
+

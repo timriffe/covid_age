@@ -364,7 +364,7 @@ summary {
 
 <h1 class="title toc-ignore">Getting started with COVerAGE-DB datasets</h1>
 <h4 class="author">COVerAGE-DB</h4>
-<h4 class="date">02 January, 2021</h4>
+<h4 class="date">03 January, 2021</h4>
 
 </div>
 
@@ -437,17 +437,17 @@ inputDB &lt;-  read_csv(&quot;inputDB.zip&quot;,
 glimpse(inputDB)</code></pre>
 <pre><code>## Rows: 6,507,187
 ## Columns: 11
-## $ Country &lt;chr&gt; &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afgha...
-## $ Region  &lt;chr&gt; &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All...
-## $ Code    &lt;chr&gt; &quot;AF01.07.2020&quot;, &quot;AF01.07.2020&quot;, &quot;AF01.07.2020&quot;, &quot;AF01.07.2020&quot;, &quot;AF01.07.2020&quot;, &quot;...
-## $ Date    &lt;chr&gt; &quot;01.07.2020&quot;, &quot;01.07.2020&quot;, &quot;01.07.2020&quot;, &quot;01.07.2020&quot;, &quot;01.07.2020&quot;, &quot;01.07.2020...
-## $ Sex     &lt;chr&gt; &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;...
-## $ Age     &lt;chr&gt; &quot;0&quot;, &quot;10&quot;, &quot;20&quot;, &quot;30&quot;, &quot;40&quot;, &quot;50&quot;, &quot;60&quot;, &quot;70&quot;, &quot;80&quot;, &quot;TOT&quot;, &quot;0&quot;, &quot;10&quot;, &quot;20&quot;, &quot;30&quot;...
-## $ AgeInt  &lt;int&gt; 10, 10, 10, 10, 10, 10, 10, 10, 25, NA, 10, 10, 10, 10, 10, 10, 10, 10, 25, NA, N...
-## $ Metric  &lt;chr&gt; &quot;Count&quot;, &quot;Count&quot;, &quot;Count&quot;, &quot;Count&quot;, &quot;Count&quot;, &quot;Count&quot;, &quot;Count&quot;, &quot;Count&quot;, &quot;Count&quot;, ...
-## $ Measure &lt;chr&gt; &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, ...
-## $ Value   &lt;dbl&gt; 169, 1525, 7948, 7592, 5362, 3747, 2267, 840, 301, 29751, 0, 5, 18, 54, 117, 161,...
-## $ Short   &lt;chr&gt; &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;, &quot;AF...</code></pre>
+## $ Country &lt;chr&gt; &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanistan&quot;,...
+## $ Region  &lt;chr&gt; &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;Al...
+## $ Code    &lt;chr&gt; &quot;AF01.07.2020&quot;, &quot;AF01.07.2020&quot;, &quot;AF01.07.2020&quot;, &quot;AF01.07.20...
+## $ Date    &lt;chr&gt; &quot;01.07.2020&quot;, &quot;01.07.2020&quot;, &quot;01.07.2020&quot;, &quot;01.07.2020&quot;, &quot;01...
+## $ Sex     &lt;chr&gt; &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;,...
+## $ Age     &lt;chr&gt; &quot;0&quot;, &quot;10&quot;, &quot;20&quot;, &quot;30&quot;, &quot;40&quot;, &quot;50&quot;, &quot;60&quot;, &quot;70&quot;, &quot;80&quot;, &quot;TOT&quot;,...
+## $ AgeInt  &lt;int&gt; 10, 10, 10, 10, 10, 10, 10, 10, 25, NA, 10, 10, 10, 10, 10,...
+## $ Metric  &lt;chr&gt; &quot;Count&quot;, &quot;Count&quot;, &quot;Count&quot;, &quot;Count&quot;, &quot;Count&quot;, &quot;Count&quot;, &quot;Coun...
+## $ Measure &lt;chr&gt; &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Case...
+## $ Value   &lt;dbl&gt; 169, 1525, 7948, 7592, 5362, 3747, 2267, 840, 301, 29751, 0...
+## $ Short   &lt;chr&gt; &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;,...</code></pre>
 <p>Notice, <code>Age</code> is character because it can contain <code>&quot;TOT&quot;</code> or <code>&quot;UNK&quot;</code> values. Therefore, if you sort, it will do so alphabetically, in which case <code>&quot;10&quot;</code> comes before <code>&quot;5&quot;</code>. This is the file from which we begin the harmonization routines. Maybe you have use for it?</p>
 </div>
 <div id="output-files" class="section level3">
@@ -477,9 +477,12 @@ Out &lt;-
   filter(Country == &quot;Spain&quot;, Region == &quot;All&quot;)
 
 # save it out
-write_csv(Out, path = &quot;Spain_Output_10.csv&quot;)
-
-# or for the inputDB
+write_csv(Out, path = &quot;Spain_Output_10.csv&quot;)</code></pre>
+<pre><code>## Warning: The `path` argument of `write_csv()` is deprecated as of readr 1.4.0.
+## Please use the `file` argument instead.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_warnings()` to see where this warning was generated.</code></pre>
+<pre class="r"><code># or for the inputDB
 In &lt;- 
   inputDB %&gt;% 
   filter(Country == &quot;Spain&quot;, Region == &quot;All&quot;)
@@ -573,7 +576,8 @@ Pop &lt;-
 <pre><code>## Warning: Problem with `mutate()` input `Age`.
 ## i NAs introduced by coercion
 ## i Input `Age` is `ifelse(Age == &quot;100+&quot;, 100, as.integer(Age))`.</code></pre>
-<pre><code>## Warning in ifelse(Age == &quot;100+&quot;, 100, as.integer(Age)): NAs introduced by coercion</code></pre>
+<pre><code>## Warning in ifelse(Age == &quot;100+&quot;, 100, as.integer(Age)): NAs introduced by
+## coercion</code></pre>
 <pre class="r"><code>ZA &lt;- 
 Output_10 %&gt;% 
   filter(Country == &quot;South Africa&quot;,
@@ -661,7 +665,7 @@ STMF &lt;-
   summarize(Deaths = sum(Deaths), .groups = &quot;drop&quot;) %&gt;% 
   arrange(Sex, Week, Age)</code></pre>
 <pre><code>## 
-## -- Column specification ------------------------------------------------------------------------------
+## -- Column specification --------------------------------------------------------
 ## cols(
 ##   PopCode = col_character(),
 ##   Area = col_double(),
