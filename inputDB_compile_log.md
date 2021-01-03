@@ -1,19 +1,24 @@
 
-# 2021-01-02 inputDB updates 
- Sat Jan 02 19:01:08 2021 
+# 2021-01-03 inputDB updates 
+ Sun Jan 03 03:01:08 2021 
 
 
-# 2021-01-02 19:01:08 updates 
- Sat Jan 02 19:01:08 2021 
+# 2021-01-03 03:01:08 updates 
+ Sun Jan 03 03:01:08 2021 
 
 
+# Filter valid Measure entries: 
+ Sun Jan 03 03:20:30 2021 
+
+Valid Measures include: Cases,Deaths,Tests,ASCFR
+ 1192 rows removed
 # Filter valid Sex entries: 
- Sat Jan 02 19:17:20 2021 
+ Sun Jan 03 03:20:30 2021 
 
 Valid Sex values include: m,f,b,UNK
  368 rows removed
 # Duplicates detected. Following `Code`s removed: 
- Sat Jan 02 19:17:39 2021 
+ Sun Jan 03 03:20:48 2021 
 
 BE_VLG01.03.2020
 BE_VLG02.03.2020
@@ -631,8 +636,8 @@ BE_WAL30.12.2020
 BE_WAL31.12.2020
 BE_WAL01.01.2021
 BE_WALNA.NA.NA
-CA_ONNA
 LB13.12.2020
+GB_NIR11.12.2020
 NO25.06.2020
 NO26.06.2020
 NO29.06.2020
@@ -766,6 +771,7 @@ NO23.12.2020
 NO28.12.2020
 NO29.12.2020
 NO30.12.2020
+PS12.10.2020
 PY_07.03.2020
 PY_10.03.2020
 PY_12.03.2020
@@ -1047,11 +1053,8 @@ PY_18.12.2020
 PY_19.12.2020
 PY_20.12.2020
 PY_21.12.2020
-GB_SCO_29.03.2020
-US_TX27.10.2020
-VE02.12.2020
 # Bad Dates detected. Following `Code`s removed: 
- Sat Jan 02 19:17:40 2021 
+ Sun Jan 03 03:20:49 2021 
 
 BENA.NA.NA
 BE_BRUNA.NA.NA
