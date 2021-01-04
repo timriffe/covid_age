@@ -232,6 +232,11 @@ scraplinks <- function(url){
   return(tibble(link = link_, url = url_))
 }
 
-
+# useful for automated capture
+ddmmyyyy <- function(Date,sep = "."){
+  paste(sprintf("%02d",day(Date)),
+        sprintf("%02d",month(Date)),  
+        year(Date),sep=sep)
+}
 
 
