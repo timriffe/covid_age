@@ -706,3 +706,31 @@ filter( Code == 'BR_AP25.12.2020', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'BR_AP29.12.2020', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'BR_PI25.12.2020', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'BR_PI29.12.2020', Sex == 'f', Measure == 'Deaths' )
+
+# Compile metadata 
+ Mon Jan 04 04:32:15 2021 
+
+
+# Building dashboards 
+ Mon Jan 04 04:45:31 2021 
+
+
+# remake coverage map 
+ Mon Jan 04 04:51:20 2021 
+
+
+# push outputs to OSF 
+ Mon Jan 04 04:55:48 2021 
+
+
+# remake coverage map 
+ Mon Jan 04 08:04:52 2021 
+
+
+# push outputs to OSF 
+ Mon Jan 04 08:09:17 2021 
+
+
+# Commit dashboards and buildlog 
+ Mon Jan 04 08:11:29 2021 
+
