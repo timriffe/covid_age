@@ -4,7 +4,7 @@ if (!"email" %in% ls()){
 }
 
 source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
-# source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
 
 ctr <- "Spain"
 dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
@@ -46,7 +46,7 @@ dim(IN)
 glimpse(IN)
 IN$grupo_edad %>% unique()
 
-ES_Age <-
+in2 <-
   IN %>% 
   select(Short = provincia_iso, 
          Sex = sexo, 
@@ -148,12 +148,24 @@ ES_Age <-
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
   sort_input_data() 
 
+nal <- in2 %>% 
+  mutate(Date = dmy(Date)) %>% 
+  group_by(Country, Date, Sex, Age, AgeInt, Metric, Measure) %>% 
+  summarise(Value = sum(Value)) %>% 
+  mutate(Region = "All",
+         Date = ddmmyyyy(Date),
+         Code = paste("ES", Date, sep="_")) %>% 
+  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
+
+out <- bind_rows(nal, in2)
+
+# saving data into N drive
 write_rds(out, paste0(dir_n, ctr, ".rds"))
 
 # updating hydra dashboard
 log_update(pp = ctr, N = nrow(out))
 
-ES_Age %>% 
+out %>% 
   filter(Region == "Madrid", 
          Measure == "Deaths") %>% 
   group_by(Date) %>% 

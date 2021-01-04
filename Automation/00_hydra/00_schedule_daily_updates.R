@@ -63,11 +63,9 @@ sched("Denmark", tm = "09:29",email = auto_update_email, wd = auto_update_wd)
 sched("US_Iowa", tm = "09:40",email = auto_update_email, wd = auto_update_wd)
 sched("Belgium", tm = "14:30",email = auto_update_email, wd = auto_update_wd)
 sched("New_Zealand", "10:03",email = auto_update_email, wd = auto_update_wd)
-# sched("Belgium", tm = "19:50",email = auto_update_email, wd = auto_update_wd)
-
-sched("Mexico", "17:09",email = auto_update_email, wd = auto_update_wd)
-sched("Thailand", "17:09",email = auto_update_email, wd = auto_update_wd)
-O
+sched("Mexico", "17:23",email = auto_update_email, wd = auto_update_wd)
+sched("Thailand", "17:15",email = auto_update_email, wd = auto_update_wd)
+sched("Spain", "10:01",email = auto_update_email, wd = auto_update_wd)
 ## broken scripts:
 ##################
 # sched("New_Zealand", tm = "02:10",email = auto_update_email, wd = auto_update_wd)
