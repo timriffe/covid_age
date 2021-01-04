@@ -234,6 +234,10 @@ FullIndicators <-
 
 # public file, full precision.
 header_msg <- paste("COVerAGE-DB selected data quality metrics:",timestamp(prefix = "", suffix = ""))
-write_lines(header_msg, path = here("Data","qualityMetrics.csv"))
-write_csv(FullIndicators, path = here("Data","qualityMetrics.csv"), append = TRUE, col_names = TRUE)
+data.table::fwrite(as.list(header_msg), 
+                   file = here("Data","qualityMetrics.csv"))
+data.table::fwrite(FullIndicators, 
+                   file = here("Data","qualityMetrics.csv"), 
+                   append = TRUE, 
+                   col.names = TRUE)
 
