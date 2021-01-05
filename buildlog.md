@@ -734,3 +734,7 @@ filter( Code == 'BR_PI29.12.2020', Sex == 'f', Measure == 'Deaths' )
 # Commit dashboards and buildlog 
  Tue Jan 05 07:52:17 2021 
 
+
+# update build series log 
+ Tue Jan 05 07:52:24 2021 
+
