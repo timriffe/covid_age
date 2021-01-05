@@ -1,46 +1,46 @@
 
 # New build log 
- Mon Jan 04 01:00:08 2021 
+ Tue Jan 05 01:00:08 2021 
 
 
 # prep (resolve_UNKUNK) 
- Mon Jan 04 01:00:33 2021 
+ Tue Jan 05 01:00:32 2021 
 
 
 # A (convert_fractions_sexes) 
- Mon Jan 04 01:04:05 2021 
+ Tue Jan 05 01:04:04 2021 
 
 
 # B (redistribute_unknown_age) 
- Mon Jan 04 01:06:33 2021 
+ Tue Jan 05 01:06:32 2021 
 
 
 # C (rescale_to_total) 
- Mon Jan 04 01:15:33 2021 
+ Tue Jan 05 01:15:31 2021 
 
 
 # D (infer_cases_from_deaths_and_ascfr) 
- Mon Jan 04 01:26:31 2021 
+ Tue Jan 05 01:26:28 2021 
 
 
 # E (infer_deaths_from_cases_and_ascfr) 
- Mon Jan 04 01:30:05 2021 
+ Tue Jan 05 01:30:02 2021 
 
 
 # G (redistribute_unknown_sex) 
- Mon Jan 04 01:33:40 2021 
+ Tue Jan 05 01:33:35 2021 
 
 
 # H (rescale_sexes) 
- Mon Jan 04 01:37:02 2021 
+ Tue Jan 05 01:36:54 2021 
 
 
 # I (infer_both_sex) 
- Mon Jan 04 01:38:42 2021 
+ Tue Jan 05 01:38:34 2021 
 
 
 # J (maybe_lower_closeout) 
- Mon Jan 04 01:41:50 2021 
+ Tue Jan 05 01:41:43 2021 
 
 filter( Code == 'US_CA_28.04.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_CA_28.04.2020', Sex == 'b', Measure == 'Deaths' )
@@ -545,7 +545,7 @@ filter( Code == 'US_TX11.09.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_TX13.09.2020', Sex == 'b', Measure == 'Cases' )
 
 # Age harmonization 
- Mon Jan 04 01:51:29 2021 
+ Tue Jan 05 01:51:22 2021 
 
 filter( Code == 'BR_TO25.12.2020', Sex == 'm', Measure == 'Deaths' )
 filter( Code == 'BR_TO29.12.2020', Sex == 'm', Measure == 'Deaths' )
@@ -708,29 +708,29 @@ filter( Code == 'BR_PI25.12.2020', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'BR_PI29.12.2020', Sex == 'f', Measure == 'Deaths' )
 
 # Compile metadata 
- Mon Jan 04 04:32:15 2021 
+ Tue Jan 05 04:32:31 2021 
 
 
 # Building dashboards 
- Mon Jan 04 04:45:31 2021 
+ Tue Jan 05 04:45:04 2021 
 
 
 # remake coverage map 
- Mon Jan 04 04:51:20 2021 
+ Tue Jan 05 04:50:52 2021 
 
 
 # push outputs to OSF 
- Mon Jan 04 04:55:48 2021 
+ Tue Jan 05 04:55:16 2021 
 
 
 # remake coverage map 
- Mon Jan 04 08:04:52 2021 
+ Tue Jan 05 07:46:02 2021 
 
 
 # push outputs to OSF 
- Mon Jan 04 08:09:17 2021 
+ Tue Jan 05 07:50:26 2021 
 
 
 # Commit dashboards and buildlog 
- Mon Jan 04 08:11:29 2021 
+ Tue Jan 05 07:52:17 2021 
 
