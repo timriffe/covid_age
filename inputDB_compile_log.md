@@ -1,26 +1,26 @@
 
 # 2021-01-06 inputDB updates 
- Wed Jan 06 19:01:08 2021 
+ Wed Jan 06 22:45:16 2021 
 
 
-# 2021-01-06 19:01:08 updates 
- Wed Jan 06 19:01:08 2021 
+# 2021-01-06 22:45:17 updates 
+ Wed Jan 06 22:45:17 2021 
 
 
-# Filter valid Metric entries: 
- Wed Jan 06 19:27:54 2021 
+# Filter valid Measure entries: 
+ Wed Jan 06 23:34:16 2021 
 
-Valid Metrics include: Count,Fraction,Ratio
- 14 rows removed
+Valid Measures include: Cases,Deaths,Tests,ASCFR
+ 1208 rows removed
 # Filter valid Sex entries: 
- Wed Jan 06 19:27:55 2021 
+ Wed Jan 06 23:34:21 2021 
 
 Valid Sex values include: m,f,b,UNK
  317 rows removed
 # Duplicates detected. Following `Code`s removed: 
- Wed Jan 06 19:28:19 2021 
+ Wed Jan 06 23:34:41 2021 
 
-LB13.12.2020
+GB_NIR11.12.2020
 NO25.06.2020
 NO26.06.2020
 NO29.06.2020
@@ -157,11 +157,10 @@ NO30.12.2020
 NO04.01.2021
 NO05.01.2021
 NO06.01.2021
-CH23.12.2020
-US_TX27.10.2020
-VE02.12.2020
+PS12.10.2020
+US_FL02.12.2020
 # Bad Dates detected. Following `Code`s removed: 
- Wed Jan 06 19:28:22 2021 
+ Wed Jan 06 23:34:43 2021 
 
 BENA.NA.NA
 BE_BRUNA.NA.NA
