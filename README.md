@@ -35,7 +35,7 @@ If you know of sources for other populations, please either email, Tweet, or lea
 
 ## Citation
 
-Please cite using the OSF repository, which has a doi. All collaborators are coauthors (see full list below), but this short form is preferred:
+Please cite the medRxiv paper also listing the OSF repository, which has a doi. All collaborators are coauthors (see full list below), but this short form is preferred:
 
 COVeAGE-DB: A database of age-structured COVID-19 cases and deaths.
 Tim Riffe, Enrique Acosta, The COVerAGE-DB team

@@ -77,6 +77,9 @@ db_c2 <- db_c %>%
          Region = ifelse(is.na(Region), "UNK", Region)) %>% 
   select(-trash) %>% 
   replace_na(list(Date = last_date)) %>% 
+  group_by(Date,Measure,Age,Sex,Region) %>% 
+  summarize(new = sum(new)) %>% 
+  ungroup() %>% 
   tidyr::complete(Date, Region, Measure, Sex, Age, fill = list(new = 0)) %>% 
   arrange(Date) %>% 
   group_by(Region, Sex, Age, Measure) %>% 
@@ -135,6 +138,8 @@ db_t2 <- db_t %>%
          new = TESTS_ALL) %>% 
   mutate(Date = ymd(Date),
          Region = ifelse(is.na(Region), "UNK", Region)) %>% 
+  group_by(Region, Date) %>% 
+  summarize(new = sum(new), .groups = "drop") %>% 
   tidyr::complete(Date, Region, fill = list(new = 0)) %>% 
   arrange(Date) %>% 
   group_by(Region) %>% 
