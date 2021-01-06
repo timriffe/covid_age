@@ -633,3 +633,104 @@ filter( Code == 'PK14.03.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'PK15.03.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'PK16.03.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'PK17.03.2020', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'NL02.08.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'NL03.01.2021', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'NL03.05.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'NL04.10.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'NL05.07.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'NL06.09.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'NL07.06.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'NL08.03.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'NL08.11.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'NL09.08.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'NL12.07.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'NL13.09.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'NL13.12.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'NL15.03.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'NL15.11.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'NL16.08.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'NL18.10.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'NL19.07.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'NL20.09.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'NL21.06.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'NL22.03.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'NL22.11.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'NL23.08.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'NL24.05.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'NL26.07.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'NL28.06.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'NL29.03.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'NL30.08.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'NL31.05.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'NL02.08.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'NL03.01.2021', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'NL03.05.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'NL04.10.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'NL05.07.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'NL06.09.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'NL07.06.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'NL08.03.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'NL08.11.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'NL09.08.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'NL12.07.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'NL13.09.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'NL13.12.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'NL14.06.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'NL15.03.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'NL15.11.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'NL16.08.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'NL17.05.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'NL18.10.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'NL19.07.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'NL20.09.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'NL21.06.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'NL22.03.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'NL22.11.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'NL23.08.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'NL24.05.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'NL25.10.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'NL26.07.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'NL28.06.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'NL29.03.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'NL30.08.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'NL31.05.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'PK10.03.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'PK11.03.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'PK12.03.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'PK13.03.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'PK14.03.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'PK15.03.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'PK16.03.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'PK17.03.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'BR_AP25.12.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'BR_AP29.12.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'BR_PI25.12.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'BR_PI29.12.2020', Sex == 'f', Measure == 'Deaths' )
+
+# Compile metadata 
+ Wed Jan 06 05:20:07 2021 
+
+
+# Building dashboards 
+ Wed Jan 06 05:34:35 2021 
+
+
+# remake coverage map 
+ Wed Jan 06 05:41:18 2021 
+
+
+# push outputs to OSF 
+ Wed Jan 06 05:45:44 2021 
+
+
+# remake coverage map 
+ Wed Jan 06 08:22:03 2021 
+
+
+# push outputs to OSF 
+ Wed Jan 06 08:26:29 2021 
+
+
+# Commit dashboards and buildlog 
+ Wed Jan 06 08:28:46 2021 
+
