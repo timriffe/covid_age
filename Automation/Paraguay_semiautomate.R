@@ -13,12 +13,12 @@ dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 # https://www.mspbs.gov.py/reporte-covid19.html
 
 # microdata of cases
-cases_url <- "https://public.tableau.com/vizql/w/COVID19PY-Registros/v/Descargardatos/vudcsv/sessions/52EEB3C9FA874E309A25F19F916A635F-0:0/views/7713620505763405234_2641841674343653269?summary=true"
+cases_url <- "https://public.tableau.com/vizql/w/COVID19PY-Registros/v/Descargardatos/vudcsv/sessions/6B132EFAAA3A469CB3293FBA252A3B86-0:0/views/7713620505763405234_2641841674343653269?summary=true"
 data_source_c <- paste0(dir_n, "Data_sources/", ctr, "/cases_",today(), ".csv")
 download.file(cases_url, destfile = data_source_c)
 
 # microdata of deaths
-deaths_url <- "https://public.tableau.com/vizql/w/COVID19PY-Registros/v/FALLECIDOS/vudcsv/sessions/631990AB3BD242268F6316E1C905CA8B-0:0/views/7713620505763405234_5043410824490810379?summary=true"
+deaths_url <- "https://public.tableau.com/vizql/w/COVID19PY-Registros/v/FALLECIDOS/vudcsv/sessions/4C85B7320611421197D3B27901128537-0:0/views/7713620505763405234_5043410824490810379?summary=true"
 data_source_d <- paste0(dir_n, "Data_sources/", ctr, "/deaths_",today(), ".csv")
 download.file(deaths_url, destfile = data_source_d)
 
@@ -30,10 +30,11 @@ tests <- read_sheet(ss = "https://docs.google.com/spreadsheets/d/10XayKoMKOOOJrZ
                     sheet = "database_deaths_tests")
 
 tests2 <- tests %>% 
-  mutate(date_f = dmy(Date)) %>% 
+  mutate(date_f = dmy(Date),
+         Region = "All") %>% 
   drop_na(Value) %>% 
   filter(Measure == "Tests") %>% 
-  select(date_f, Sex, Age, Measure, Value)
+  select(Region, date_f, Sex, Age, Measure, Value)
 
 unique(db_c$'Departamento Residencia') %>% sort()
 unique(db_c$'Distrito Residencia') %>% sort()
@@ -100,7 +101,7 @@ db_reg <- db2 %>%
   group_by(date_f, Region, Measure, Sex, Age) %>% 
   summarise(Value = sum(Value)) %>% 
   ungroup() %>% 
-  mutate(Age = as.character(Age))
+  drop_na(Region)
 
 db_nal <- db2 %>% 
   group_by(date_f, Measure, Sex, Age) %>% 
@@ -125,12 +126,37 @@ db3 <- bind_rows(db_reg, db_nal) %>%
   mutate(Age = as.character(Age)) %>% 
   bind_rows(db_tot_sex, tests2)
 
+unique(db_reg$Region)
+unique(db_nal$Region)
+unique(db_tot_sex$Region)
+
+unique(db3$Region)
+
 out <- db3 %>%
   mutate(Date = paste(sprintf("%02d", day(date_f)),
                       sprintf("%02d", month(date_f)),
                       year(date_f), sep = "."),
          Country = "Paraguay",
-         Code = paste0("PY_", Date),
+         short = case_when(Region == 'Asuncion' ~ 'ASU',
+                           Region == 'Central' ~ '16',
+                           Region == 'Caaguazu' ~ '10',
+                           Region == 'Alto Parana' ~ '13',
+                           Region == 'San Pedro' ~ '19',
+                           Region == 'Itapua' ~ '5',
+                           Region == 'Paraguari' ~ '6',
+                           Region == 'Concepcion' ~ '14',
+                           Region == 'Cordillera' ~ '11',
+                           Region == 'Guaira' ~ '1',
+                           Region == 'Pte. Hayes' ~ '3',
+                           Region == 'Canindeyu' ~ '4',
+                           Region == 'Amambay' ~ '7',
+                           Region == 'Caazapa' ~ '8',
+                           Region == 'Boqueron' ~ '12',
+                           Region == 'Misiones' ~ '9',
+                           Region == 'Alto Paraguay' ~ '15',
+                           Region == 'Ñeembucu' ~ '2',
+                           Region == 'All' ~ ''),
+         Code = paste0("PY_", short, "_", Date),
          AgeInt = case_when(Region == "All" & !(Age %in% c("TOT", "100")) ~ 1,
                             Region != "All" & !(Age %in% c("0", "1", "TOT")) ~ 5,
                             Region != "All" & Age == "0" ~ 1,
@@ -141,6 +167,8 @@ out <- db3 %>%
   # bind_rows(deaths2) %>% 
   arrange(Region, date_f, Sex, Measure, suppressWarnings(as.integer(Age))) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) 
+
+unique(out$Region)
 
 # total cummulative values
 date_end <- max(dates_f)
@@ -174,3 +202,4 @@ zipr(zipname,
 
 # clean up file chaff
 file.remove(data_source)
+
