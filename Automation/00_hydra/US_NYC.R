@@ -35,7 +35,7 @@ db_tests <- read_csv("https://github.com/nychealth/coronavirus-data/raw/master/t
 date_f <- db_sum %>% 
   filter(X1 == "DATE_UPDATED") %>% 
   separate(X2, c("m", "d")) %>% 
-  mutate(date = ymd(paste("2020", m, d, sep = "/"))) %>% 
+  mutate(date = ymd(paste("2021", m, d, sep = "/"))) %>% 
   dplyr::pull(date)
 
 if (date_f > last_date_drive){

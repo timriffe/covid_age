@@ -7,6 +7,10 @@ library(googledrive)
 
 source(here::here("Automation/00_Functions_automation.R"))
 
+if (! "email" %in% ls()){
+  email <- "tim.riffe@gmail.com"
+}
+
 # handle authentications
 drive_auth(email = email)
 gs4_auth(email = email)

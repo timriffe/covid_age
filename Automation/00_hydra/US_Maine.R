@@ -33,8 +33,8 @@ date_max <-
 
 ME_data <- "https://gateway.maine.gov/dhhs-apps/mecdc_covid/Maine_COVID19_Summary.xlsx"
 
-ME_age <- import(ME_data, sheet = "cases_by_age")
-ME_sex <- import(ME_data, sheet = "cases_by_sex")
+ME_age <- rio::import(ME_data, sheet = "cases_by_age")
+ME_sex <- rio::import(ME_data, sheet = "cases_by_sex")
 
 Age <-
   ME_age %>% 
