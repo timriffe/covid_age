@@ -9,6 +9,7 @@ if (!"email" %in% ls()){
 # info country and N drive address
 ctr <- "Belgium"
 dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
+# dir_n <- "Data/Belgium/"
 
 # Drive credentials
 drive_auth(email = email)
@@ -53,6 +54,10 @@ file.remove(data_source)
 # Building database
 ################### 
 # mortality data only at regional level, not provincial, so all data in Regional...
+last_date <- db_c %>%
+  mutate(last_d = max(ymd(DATE), na.rm = T)) %>% 
+  dplyr::pull(last_d) %>% 
+  max()
 
 db_c2 <- db_c %>% 
   select(Region = REGION,
@@ -71,8 +76,10 @@ db_c2 <- db_c %>%
                          TRUE ~ "UNK"),
          Region = ifelse(is.na(Region), "UNK", Region)) %>% 
   select(-trash) %>% 
+  replace_na(list(Date = last_date)) %>% 
   group_by(Date,Measure,Age,Sex,Region) %>% 
   summarize(new = sum(new)) %>% 
+  ungroup() %>% 
   tidyr::complete(Date, Region, Measure, Sex, Age, fill = list(new = 0)) %>% 
   arrange(Date) %>% 
   group_by(Region, Sex, Age, Measure) %>% 
@@ -97,6 +104,7 @@ db_d2 <- db_d %>%
                          TRUE ~ "UNK"),
          Region = ifelse(is.na(Region), "UNK", Region)) %>% 
   select(-trash) %>% 
+  replace_na(list(Date = last_date)) %>% 
   tidyr::complete(Date, Region, Measure, Sex, Age, fill = list(new = 0)) %>% 
   arrange(Date) %>% 
   group_by(Region, Sex, Age, Measure) %>% 
@@ -181,6 +189,7 @@ out <- bind_rows(db_nal,
 unique(out$Region)
 unique(out$Age)
 unique(out$Sex)
+unique(out$Date)
 
 ############################################
 #### saving database in N Drive ####

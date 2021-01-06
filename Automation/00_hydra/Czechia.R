@@ -31,7 +31,7 @@ NUTS3 <- tibble(
 # Getting the data from the Health Ministery website
 cases_url <- "https://onemocneni-aktualne.mzcr.cz/api/v2/covid-19/osoby.csv" 
 
-cz_cases<-read.csv(cases_url, 
+cz_cases <- read.csv(cases_url, 
                    header = TRUE, 
                    col.names = c("Date",
                                  "Age", # exact age
@@ -51,9 +51,13 @@ Ages_All <- c(0,1,seq(5,100,by=5))
 DateRange <- range(cz_cases$Date)
 Dates_All <- seq(DateRange[1],DateRange[2],by="days")
 
+# extracting NUTS3 from LAU1 when NUTS3 is empty
+cz_cases2 <- cz_cases %>% 
+  mutate(NUTS3 = ifelse(NUTS3 == "", str_sub(LAU1, 1, 5), NUTS3))
+
 ### DATA ON NUTS3 level
 cz_cases_region_ss <- 
-  cz_cases %>% 
+  cz_cases2 %>% 
   select("NUTS3",  "Date", "Sex", "Age") %>% 
   mutate(Region = as.factor(NUTS3),
          # grouping age
@@ -189,7 +193,7 @@ cz_spreadsheet_region <-
 Ages_all_single <- 0:100
 
 cz_cases_all_ss <- 
-  cz_cases %>% 
+  cz_cases2 %>% 
   select("NUTS3",  "Date", "Sex", "Age") %>% 
   mutate(Region = "All",
          # grouping age
@@ -288,6 +292,7 @@ cz_spreadsheet_all <-
 
 out <- bind_rows(cz_spreadsheet_all, cz_spreadsheet_region)
 
+unique(out$Region)
 ###########################
 #### Saving data in N: ####
 ###########################

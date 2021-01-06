@@ -149,10 +149,12 @@ db_all2 <- db_all %>%
 
 out <- db_all2 %>% 
   mutate(Country = "Peru",
-         AgeInt = case_when(Age == "100" ~ 5L,
-                            Age == "TOT" ~ NA_integer_,
-                            Region == "All" | as.numeric(Age) < 5 ~ 1L,
-                            TRUE ~ 5L),
+         AgeInt = case_when(Region == "All" & !(Age %in% c("TOT", "100")) ~ 1,
+                            Region != "All" & !(Age %in% c("0", "1", "TOT")) ~ 5,
+                            Region != "All" & Age == "0" ~ 1,
+                            Region != "All" & Age == "1" ~ 4,
+                            Age == "100" ~ 5,
+                            Age == "TOT" ~ NA_real_),
          Date = paste(sprintf("%02d",day(date_f)),
                       sprintf("%02d",month(date_f)),
                       year(date_f),

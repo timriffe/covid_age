@@ -47,7 +47,7 @@ sched("Peru", tm = "09:40",email = auto_update_email, wd = auto_update_wd)
 sched("Germany", tm = "09:35",email = auto_update_email, wd = auto_update_wd)
 sched("US_Massachusetts", tm = "08:18",email = auto_update_email, wd = auto_update_wd)
 sched("Colombia",  tm = "09:30",email = auto_update_email, wd = auto_update_wd)
-sched("US_NYC", tm = "13:58",email = auto_update_email, wd = auto_update_wd)
+sched("US_NYC", tm = "08:15",email = auto_update_email, wd = auto_update_wd)
 sched("Austria", tm = "21:25",email = auto_update_email, wd = auto_update_wd)
 sched("ES_Basque_Country", tm = "11:00",email = auto_update_email, wd = auto_update_wd, sch = "WEEKLY")
 sched("Philippines", tm = "10:00",email = auto_update_email, wd = auto_update_wd)
@@ -58,14 +58,14 @@ sched("Afghanistan", tm = "06:35",email = auto_update_email, wd = auto_update_wd
 sched("ECDC", tm = "08:37",email = auto_update_email, wd = auto_update_wd, sch = "WEEKLY")
 sched("Finland", tm = "11:44",email = auto_update_email, wd = auto_update_wd, sch = "WEEKLY")
 sched("US_Wisconsin", tm = "13:02",email = auto_update_email, wd = auto_update_wd)
-sched("Bulgaria", tm = "10:41",email = auto_update_email, wd = auto_update_wd)
+sched("Bulgaria", tm = "08:24",email = auto_update_email, wd = auto_update_wd)
 sched("Denmark", tm = "09:29",email = auto_update_email, wd = auto_update_wd)
 sched("US_Iowa", tm = "09:40",email = auto_update_email, wd = auto_update_wd)
 sched("Belgium", tm = "14:30",email = auto_update_email, wd = auto_update_wd)
 sched("New_Zealand", "10:03",email = auto_update_email, wd = auto_update_wd)
-# sched("Belgium", tm = "19:50",email = auto_update_email, wd = auto_update_wd)
-
-
+sched("Mexico", "17:23",email = auto_update_email, wd = auto_update_wd)
+sched("Thailand", "17:15",email = auto_update_email, wd = auto_update_wd)
+sched("Spain", "10:01",email = auto_update_email, wd = auto_update_wd)
 ## broken scripts:
 ##################
 # sched("New_Zealand", tm = "02:10",email = auto_update_email, wd = auto_update_wd)
@@ -101,7 +101,7 @@ sched("New_Zealand", "10:03",email = auto_update_email, wd = auto_update_wd)
 # delete_sched("Philippines")
 # delete_sched("Scotland")
 # delete_sched("Norway")
-# delete_sched("Bulgaria_semiautomate")
+delete_sched("ES_Basque_Country")
 
 
 ### to list current tasks
