@@ -94,11 +94,9 @@ CAsex <-
 CAout <- bind_rows(CAage, CAsex, Tests) %>% 
   sort_input_data()
 
-n <- CAout %>% 
-  select(Code,Sex,Age,Measure,Metric) %>% 
-  duplicated()
+n <- duplicated(CAout[,c("Code","Sex","Age","Measure","Metric")]) 
 CAout <- 
-  CAout[-n, ]
+  CAout[!n, ]
 
 # push to drive
 
