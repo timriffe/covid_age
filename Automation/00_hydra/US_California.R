@@ -48,6 +48,7 @@ CAage <-
                       "18-49" = "18",
                       "50-64" = "50",
                       "65 and Older" = "65",
+                      "65+" = "65",
                       "Unknown" = "UNK",
                       "Missing" = "UNK"),
          Sex = "b",
