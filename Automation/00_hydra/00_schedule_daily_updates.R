@@ -101,7 +101,7 @@ sched("Spain", "10:01",email = auto_update_email, wd = auto_update_wd)
 # delete_sched("Philippines")
 # delete_sched("Scotland")
 # delete_sched("Norway")
-delete_sched("ES_Basque_Country")
+delete_sched("US_Iowa")
 
 
 ### to list current tasks
