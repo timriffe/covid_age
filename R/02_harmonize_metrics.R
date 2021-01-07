@@ -22,6 +22,7 @@ icols   <- icolsIN[icolsIN != "AgeInt"]
 
 Z <-
   inputDB %>% 
+  # TR: This removes sex-totals that are fractions.
   filter(!(Age == "TOT" & Metric == "Fraction"),
          !(Age == "UNK" & Value == 0),
          !(Sex == "UNK" & Value == 0),
