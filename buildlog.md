@@ -164,3 +164,7 @@ filter( Code == 'SZ.05.12.2020', Sex == 'm', Measure == 'Deaths' )
 # Commit dashboards and buildlog 
  Sun Jan 10 08:41:10 2021 
 
+
+# update build series log 
+ Sun Jan 10 08:41:17 2021 
+
