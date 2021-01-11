@@ -14,7 +14,7 @@ cases_url  <- "https://corona.ministryinfo.gov.lb/"
 cases_png  <- paste0("N:/COVerAGE-DB/Automation/Hydra/Data_sources/Lebanon/Lebanon_cases_",today(),".png")
 
 
-webshot(url = cases_url,
+webshot::webshot(url = cases_url,
         file = cases_png,
         vwidth = 500,
         vheight = 2500, 

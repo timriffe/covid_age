@@ -17,12 +17,12 @@ ks_deaths_png  <- paste0("N:/COVerAGE-DB/Automation/Hydra/Data_sources/US_Kansas
 
 
 
-webshot(url = ks_cases_url,
+webshot::webshot(url = ks_cases_url,
         file=ks_cases_png,
         delay = 15,
         vwidth=1000,
         vheight=3000)
-webshot(url = ks_deaths_url,
+webshot::webshot(url = ks_deaths_url,
         file=ks_deaths_png,
         delay = 15,
         vwidth=1000,
