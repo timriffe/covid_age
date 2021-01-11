@@ -3,6 +3,7 @@
 library(lubridate)
 library(rvest)
 library(httr)
+library(webshot)
 #install_phantomjs()
 
 source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
@@ -13,7 +14,6 @@ source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/0
 cases_url  <- "https://guineasalud.org/estadisticas/"
 
 cases_png  <- paste0("N:/COVerAGE-DB/Automation/Hydra/Data_sources/Equatorial_Guinea/GQ_cases_age_sex",today(),".png")
-cases_png <- "test.png"
 
 
 image_url <-
@@ -21,7 +21,9 @@ image_url <-
   html_nodes(css = "body > div.wrapper > div > div > div > div.full_width > div > div:nth-child(1) > div > div > div > div > div:nth-child(6) > div > div > div:nth-child(2) > div > div > div.wpb_single_image.wpb_content_element.vc_align_left > div > div > img") %>% 
   html_attr("src")
 
-download.file(image_url, cases_png)
+webshot(image_url,
+        file = cases_png,
+        delay = 5)
 
 
 if (!"email" %in% ls()){
