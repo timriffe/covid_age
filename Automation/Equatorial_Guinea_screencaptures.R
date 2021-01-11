@@ -3,6 +3,7 @@
 library(lubridate)
 library(rvest)
 library(httr)
+library(webshot)
 #install_phantomjs()
 
 source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
@@ -13,7 +14,6 @@ source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/0
 cases_url  <- "https://guineasalud.org/estadisticas/"
 
 cases_png  <- paste0("N:/COVerAGE-DB/Automation/Hydra/Data_sources/Equatorial_Guinea/GQ_cases_age_sex",today(),".png")
-cases_png <- "test.png"
 
 
 image_url <-
@@ -22,9 +22,9 @@ image_url <-
   html_attr("src")
 
 webshot(image_url,
-        file = "test.png",
-        delay = 5
-        )
+        file = cases_png,
+        delay = 5)
+
 
 
 if (!"email" %in% ls()){
@@ -42,3 +42,13 @@ drive_put(cases_png,
           path = as_id(ss_db))
 
 log_update("Equatorial_Guinea",N = "captured")
+
+schedule.this <- FALSE
+if (schedule.this){
+  library(taskscheduleR)
+  taskscheduler_delete("COVerAGE-DB-Equatorial_Guinea_screencaptures")
+  taskscheduler_create(taskname = "COVerAGE-DB-Equatorial_Guinea_screencaptures", 
+                       rscript = "C:/Users/riffe/Documents/covid_age/Automation/Equatorial_Guinea_screencaptures.R", 
+                       schedule = "DAILY", 
+                       starttime = format(Sys.time() + 61, "%H:%M"))
+}
