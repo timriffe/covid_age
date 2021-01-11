@@ -39,3 +39,13 @@ drive_put(cases_png,
           path = as_id(ss_db))
 
 log_update("Equatorial_Guinea",N = "captured")
+
+schedule.this <- FALSE
+if (schedule.this){
+  library(taskscheduleR)
+  taskscheduler_delete("COVerAGE-DB-Equatorial_Guinea_screencaptures")
+  taskscheduler_create(taskname = "COVerAGE-DB-Equatorial_Guinea_screencaptures", 
+                       rscript = "C:/Users/riffe/Documents/covid_age/Automation/Equatorial_Guinea_screencaptures.R", 
+                       schedule = "DAILY", 
+                       starttime = format(Sys.time() + 61, "%H:%M"))
+}
