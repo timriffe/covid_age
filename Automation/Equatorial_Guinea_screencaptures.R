@@ -21,7 +21,10 @@ image_url <-
   html_nodes(css = "body > div.wrapper > div > div > div > div.full_width > div > div:nth-child(1) > div > div > div > div > div:nth-child(6) > div > div > div:nth-child(2) > div > div > div.wpb_single_image.wpb_content_element.vc_align_left > div > div > img") %>% 
   html_attr("src")
 
-download.file(image_url, cases_png)
+webshot(image_url,
+        file = "test.png",
+        delay = 5
+        )
 
 
 if (!"email" %in% ls()){
