@@ -102,6 +102,7 @@ db_region <- db_all %>%
   arrange(Region, date_f, Measure, Sex, suppressWarnings(as.integer(Age))) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
 
+unique(db_all$date_f)
 # codes for regions
 db_region %>% 
   mutate(short = str_sub(Code, 1, 6)) %>% 

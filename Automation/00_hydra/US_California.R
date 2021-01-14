@@ -1,7 +1,7 @@
 
 
-library(here)
-source(here("Automation/00_Functions_automation.R"))
+
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
 library(lubridate)
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
@@ -32,7 +32,6 @@ Tests <-
   filter(Measure == "Tests") %>% 
   select(-Short)
 
-
 # read in data by age
 url1 <- "https://data.ca.gov/dataset/590188d5-8545-4c93-a9a0-e230f0db7290/resource/339d1c4d-77ab-44a2-9b40-745e64e335f2/download/case_demographics_age.csv"
 CAage_in <- 
@@ -49,14 +48,14 @@ CAage <-
                       "18-49" = "18",
                       "50-64" = "50",
                       "65 and Older" = "65",
-                      "Unknown" = "UNK"),
+                      "65+" = "65",
+                      "Unknown" = "UNK",
+                      "Missing" = "UNK"),
          Sex = "b",
          Country = "USA",
          Region = "California",
          Metric = "Count",
-         Date = paste(sprintf("%02d",day(Date)),    
-                      sprintf("%02d",month(Date)),  
-                      year(Date),sep="."),
+         Date = ddmmyyyy(Date),
          Code = paste0("US_CA_",Date),
          AgeInt = case_when(Age == "0" ~ 18L,
                             Age == "18" ~ 32L,
@@ -95,6 +94,10 @@ CAsex <-
 # bind together
 CAout <- bind_rows(CAage, CAsex, Tests) %>% 
   sort_input_data()
+
+n <- duplicated(CAout[,c("Code","Sex","Age","Measure","Metric")]) 
+CAout <- 
+  CAout[!n, ]
 
 # push to drive
 

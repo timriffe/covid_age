@@ -53,8 +53,14 @@ hours_to   <- 2
 
 
 # which templates were updated within last hours_from hours?
-#rubric <- get_input_rubric()
+
+# at least at first seems like Namibia gets passed over
+# changed Short code to _NA but still. Check again in a few days.
+# Until then always load Namibia.
+rubric <- get_input_rubric()
+NAM    <- rubric %>% filter(Country == "Namibia")
 rubric <- get_rubric_update_window(hours_from, hours_to)
+rubric <- bind_rows(rubric, NAM)
 
 if (nrow(rubric) > 0){
   # read in modified data templates (this is the slowest part)
