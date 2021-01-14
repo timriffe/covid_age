@@ -97,14 +97,24 @@ if (date_f > last_date_drive){
            Measure = "Tests") %>% 
     select(date_f, Sex, Age, Measure, Value)
   
-  # data in previous dates on cases and deaths
-  db_drive2 <- db_drive %>% 
-    filter(Measure %in% c("Cases", "Deaths")) %>% 
+  tests_drive <- db_drive %>% 
+    filter(Measure == "Tests") %>% 
     mutate(date_f = dmy(Date),
            AgeInt = as.character(AgeInt)) %>% 
-    select(-Short)
+    dplyr::pull(date_f) %>% 
+    unique
+  
+  db_t3 <- db_t2 %>% 
+    filter(!(date_f %in% tests_drive))
+  
+  # data in previous dates on cases and deaths
+  # db_drive2 <- db_drive %>% 
+  #   filter(Measure %in% c("Cases", "Deaths")) %>% 
+  #   mutate(date_f = dmy(Date),
+  #          AgeInt = as.character(AgeInt)) %>% 
+  #   select(-Short)
 
-  out <- bind_rows(db_a2_c, db_a2_d, db_s2, db_t2) %>% 
+  out <- bind_rows(db_a2_c, db_a2_d, db_s2, db_t3) %>% 
     mutate(Country = "USA",
            Region = "NYC",
            Date = paste(sprintf("%02d", day(date_f)),
@@ -120,7 +130,7 @@ if (date_f > last_date_drive){
                               Age == "TOT" ~ "",
                               TRUE ~ "10"),
            Metric = "Count") %>% 
-    bind_rows(db_drive2) %>% 
+    # bind_rows(db_drive2) %>% 
     arrange(Country,
             Region,
             date_f,
@@ -136,7 +146,7 @@ if (date_f > last_date_drive){
   ############################################
   
   # This command append new rows at the end of the sheet
-  write_sheet(out,
+  sheet_append(out,
               ss = ss_i,
               sheet = "database")
   log_update(pp = ctr, N = nrow(out))
