@@ -155,7 +155,7 @@ I <- H[ , try_step(process_function = infer_both_sex,
         by = list(Code, Measure), 
         .SDcols = icols][,..icols]
 
-
+  
 ### Adjust closeout age #############################################
 
 # Log

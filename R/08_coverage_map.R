@@ -54,6 +54,9 @@ World$name[World$name == "Korea"] <- "South Korea"
 World$name[World$name == "Dominican Rep."]  <- "Dominican Republic"
 World$name[World$name == "Czech Rep." ]     <- "Czechia"
 World$name[World$name == "Central African Rep." ]     <- "Central African Republic"
+World$name[World$name == "Eq. Guinea" ]     <- "Equatorial Guinea"
+World$name[World$name == "S. Sudan" ]     <- "South Sudan"
+
 # remove Antarctica
 World <- World[!World$name == "Antarctica",]
 

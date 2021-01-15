@@ -18,14 +18,14 @@ cases_url  <- "https://public.tableau.com/profile/idaho.division.of.public.healt
 deaths_png <- paste0("N:/COVerAGE-DB/Automation/Hydra/Data_sources/US_Idaho/US_ID_deaths_",today(),".png")
 cases_png  <- paste0("N:/COVerAGE-DB/Automation/Hydra/Data_sources/US_Idaho/US_ID_cases_",today(),".png")
 
-webshot(url = deaths_url,
+webshot::webshot(url = deaths_url,
         file = deaths_png,
         vwidth = 800,
         vheight = 800, 
         delay = 10)
 
 
-webshot(url = cases_url,
+webshot::webshot(url = cases_url,
         file = cases_png,
         vwidth = 500,
         vheight = 800, 
