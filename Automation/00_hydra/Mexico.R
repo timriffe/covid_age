@@ -29,7 +29,7 @@ file.copy(paste0(source_dir, "/", new_data), dest_dir, T)
 
 if (identical(new_data, character(0))){
   print("no new updates")
-  log_update(pp = ctr, N = nrow(out))
+  log_update(pp = ctr, N = 0)
   
 } else {
   # choosing the last date to update the database

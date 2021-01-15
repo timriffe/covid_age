@@ -73,7 +73,7 @@ sched("US_Oregon", "12:18",email = auto_update_email, wd = auto_update_wd)
 
 ### scripts working outside hydra because of VPN:
 #################################################
-◘# sched("CA_Montreal", tm = "16:44",email = auto_update_email, wd = auto_update_wd)
+# sched("CA_Montreal", tm = "16:44",email = auto_update_email, wd = auto_update_wd)
 # sched("Mexico", tm = "16:44",email = auto_update_email, wd = auto_update_wd)
 
 ### function to delete tasks
