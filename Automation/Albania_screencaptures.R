@@ -17,7 +17,7 @@ if (!"email" %in% ls()){
   al_demo_pdf  <- paste0("Data/Albania_",today(),".pdf")
   
 }
-webshot(al_demo_url,
+webshot::webshot(al_demo_url,
         al_demo_pdf,
         delay= 10)
 

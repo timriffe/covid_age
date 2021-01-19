@@ -3,7 +3,8 @@ source(here("Automation/00_Functions_automation.R"))
 
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
-  email <- "kikepaila@gmail.com"
+  # email <- "kikepaila@gmail.com"
+  email <- "gatemonte@gmail.com"
 }
 
 # info country and N drive address
@@ -16,7 +17,7 @@ gs4_auth(email = email)
 
 # data from the input rubric
 rubric_i <- get_input_rubric() %>% filter(Short == "US_MA")
-ss_i     <- rubric_i %>% dplyr::pull(Sheet)
+ss_i <- rubric_i %>% dplyr::pull(Sheet)
 
 # reading data from Drive and last date entered 
 db_drive <- get_country_inputDB("US_MA") 
@@ -63,24 +64,40 @@ url <-
   select(url2) %>% 
   dplyr::pull()
 
+# DIEGO UPDATE 20210115:
+# The data format change in the webiste. Up to Dec 2020the data file was a zip file with different
+# Excel files inside, but it seems that since Jan 2021, the download is a sinlge Excel sheet
+
+# OLD CODE(2020) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# data_source <- 
+#   paste0(dir_n, "Data_sources/", ctr, "/", ctr, "_data_", date, ".zip")
+
+# download.file(url, destfile = data_source, mode="wb")
+# 
+# data_source1 <- "CasesByAge.xlsx"
+# unzip(zipfile = data_source, files = data_source1, exdir=".")
+# age <- read_xlsx(data_source1)
+# 
+# data_source2 <- "CasesByDate.xlsx"
+# unzip(zipfile = data_source, files = data_source2, exdir=".")
+# cases_t <- read_xlsx(data_source2)
+# 
+# data_source3 <- "DateOfDeath.xlsx"
+# unzip(zipfile = data_source, files = data_source3, exdir=".")
+# deaths_t <- read_xlsx(data_source3)
+# 
+# file.remove(c(data_source1, data_source2, data_source3))
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# NEW CODE ~~~~~~~~~~~~~
 data_source <- 
-  paste0(dir_n, "Data_sources/", ctr, "/", ctr, "_data_", date, ".zip")
+  paste0(dir_n, "Data_sources/", ctr, "/", ctr, "_data_", date, ".xlsx")
 
 download.file(url, destfile = data_source, mode="wb")
 
-data_source1 <- "CasesByAge.xlsx"
-unzip(zipfile = data_source, files = data_source1, exdir=".")
-age <- read_xlsx(data_source1)
-
-data_source2 <- "CasesByDate.xlsx"
-unzip(zipfile = data_source, files = data_source2, exdir=".")
-cases_t <- read_xlsx(data_source2)
-
-data_source3 <- "DateOfDeath.xlsx"
-unzip(zipfile = data_source, files = data_source3, exdir=".")
-deaths_t <- read_xlsx(data_source3)
-
-file.remove(c(data_source1, data_source2, data_source3))
+age <- read_xlsx(data_source, sheet = "CasesbyAge")
+cases_t <- read_xlsx(data_source, sheet = "Cases (Report Date)")
+deaths_t <- read_xlsx(data_source, sheet = "DateofDeath")
 
 age2 <- age %>% 
   select(1:9) %>% 
