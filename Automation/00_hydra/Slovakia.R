@@ -9,7 +9,7 @@ if (!"email" %in% ls()){
 }
 
 # info country and N drive address
-ctr <- "Slovakia"
+ctr   <- "Slovakia"
 dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 # dir_n <- "Data/Belgium/"
 
