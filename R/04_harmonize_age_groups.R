@@ -74,7 +74,9 @@ outputCounts_5_1e5 <- iLout1e5 %>%
                       mutate(date = dmy(Date)) %>% 
                       # Sort
                       arrange(Country, Region, date, Sex, Age) %>% 
-                      select(-date) 
+                      select(-date) %>% 
+                      # ensure columns in standard order:
+                      select(Country, Region, Code, Date, Sex, Age, AgeInt, Cases, Deaths, Tests)
 
 # Save binary
 
