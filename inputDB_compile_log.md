@@ -1,28 +1,31 @@
 
-# 2021-01-22 inputDB updates 
- Fri Jan 22 19:01:09 2021 
+# 2021-01-23 inputDB updates 
+ Sat Jan 23 11:01:09 2021 
 
 
-# 2021-01-22 19:01:09 updates 
- Fri Jan 22 19:01:09 2021 
+# 2021-01-23 11:01:09 updates 
+ Sat Jan 23 11:01:09 2021 
 
 
 # Filter valid Measure entries: 
- Fri Jan 22 19:32:23 2021 
+ Sat Jan 23 11:12:28 2021 
 
 Valid Measures include: Cases,Deaths,Tests,ASCFR
- 754 rows removed
+ 806 rows removed
 # Filter valid Metric entries: 
- Fri Jan 22 19:32:24 2021 
+ Sat Jan 23 11:12:29 2021 
 
 Valid Metrics include: Count,Fraction,Ratio
  14 rows removed
+# Filter valid Sex entries: 
+ Sat Jan 23 11:12:30 2021 
+
+Valid Sex values include: m,f,b,UNK
+ 1 rows removed
 # Duplicates detected. Following `Code`s removed: 
- Fri Jan 22 19:32:53 2021 
+ Sat Jan 23 11:13:00 2021 
 
 DK07.01.2021
-LB13.12.2020
-GB_SCO_29.03.2020
 US07.03.2020
 US14.03.2020
 US21.03.2020
@@ -68,66 +71,3 @@ US19.12.2020
 US26.12.2020
 US_TX27.10.2020
 VE02.12.2020
-# 2021-01-23 inputDB updates 
- Sat Jan 23 03:01:09 2021 
-
-
-# 2021-01-23 03:01:09 updates 
- Sat Jan 23 03:01:09 2021 
-
-
-# Filter valid Measure entries: 
- Sat Jan 23 03:19:37 2021 
-
-Valid Measures include: Cases,Deaths,Tests,ASCFR
- 2126 rows removed
-# Duplicates detected. Following `Code`s removed: 
- Sat Jan 23 03:20:03 2021 
-
-DK07.01.2021
-GB_NIR11.12.2020
-PS12.10.2020
-US07.03.2020
-US14.03.2020
-US21.03.2020
-US28.03.2020
-US04.04.2020
-US11.04.2020
-US18.04.2020
-US25.04.2020
-US02.05.2020
-US09.05.2020
-US16.05.2020
-US23.05.2020
-US30.05.2020
-US06.06.2020
-US13.06.2020
-US20.06.2020
-US27.06.2020
-US04.07.2020
-US11.07.2020
-US18.07.2020
-US25.07.2020
-US01.08.2020
-US08.08.2020
-US15.08.2020
-US22.08.2020
-US29.08.2020
-US05.09.2020
-US12.09.2020
-US19.09.2020
-US26.09.2020
-US03.10.2020
-US10.10.2020
-US17.10.2020
-US24.10.2020
-US31.10.2020
-US07.11.2020
-US14.11.2020
-US21.11.2020
-US28.11.2020
-US05.12.2020
-US12.12.2020
-US19.12.2020
-US26.12.2020
-US_FL02.12.2020
