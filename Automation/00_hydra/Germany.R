@@ -53,7 +53,7 @@ regions <- unique(db2$Region)
 date_range <- range(db2$date_f)
 
 # we can expand on days too
-dates   <- seq(date_range[1],date_range[2],by="days")
+dates   <- seq(date_range[1], date_range[2], by="days")
 
 # TR: This replaces a big manual loop
 db_all <- db2 %>% 
