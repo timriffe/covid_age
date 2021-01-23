@@ -17,9 +17,10 @@ ps_demo_url <- "https://corona.ps/details"
 
 ps_demo_png  <- paste0("N:/COVerAGE-DB/Automation/Hydra/Data_sources/Palestine/Palestine_",today(),".png")
 
-webshot(url= ps_demo_url,
+webshot::webshot(url= ps_demo_url,
         file = ps_demo_png,
-        delay = 10)
+        delay = 10,
+        selector = "#age-chart")
 
 
 if (!"email" %in% ls()){
