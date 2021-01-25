@@ -80,37 +80,37 @@ outputCounts_5_1e5 <- iLout1e5 %>%
 
 # Save binary
 
-if (hours < Inf){
-  outputCounts_5_1e5_hold <- readRDS(here("Data","Output_5.rds"))
-  outputCounts_5_1e5_out <-
-    outputCounts_5_1e5_hold %>% 
-    pivot_longer(cols = Cases:Tests,
-                 names_to = "Measure",
-                 values_to = "Value") %>% 
-    filter(!is.na(Value)) %>% 
-    mutate(Short = add_Short(Code,Date),
-           checkid = paste(Country,Region,Measure,Short)) %>% 
-    # remove anything we had before that we just re-processed.
-    # unfortunately also throws out anything that didn't throw an
-    # error previous time but did so this time.
-    filter(!checkid %in% codes_in) %>% 
-    pivot_wider(names_from = Measure,
-                values_from = Value) %>% 
-    # append the stuff we just processed
-    bind_rows(outputCounts_5_1e5) %>% 
-    # Get date into correct format
-    mutate(date = dmy(Date)) %>% 
-    # Sort
-    arrange(Country, Region, date, Sex, Age) %>% 
-    select(-date, -Short, -checkid)
-  
-  saveRDS(outputCounts_5_1e5_out, here("Data","Output_5.rds"))
-  
-  outputCounts_5_1e5 <- outputCounts_5_1e5_out
-  
-} else {
+# if (hours < Inf){
+#   outputCounts_5_1e5_hold <- readRDS(here("Data","Output_5.rds"))
+#   outputCounts_5_1e5_out <-
+#     outputCounts_5_1e5_hold %>% 
+#     pivot_longer(cols = Cases:Tests,
+#                  names_to = "Measure",
+#                  values_to = "Value") %>% 
+#     filter(!is.na(Value)) %>% 
+#     mutate(Short = add_Short(Code,Date),
+#            checkid = paste(Country,Region,Measure,Short)) %>% 
+#     # remove anything we had before that we just re-processed.
+#     # unfortunately also throws out anything that didn't throw an
+#     # error previous time but did so this time.
+#     filter(!checkid %in% codes_in) %>% 
+#     pivot_wider(names_from = Measure,
+#                 values_from = Value) %>% 
+#     # append the stuff we just processed
+#     bind_rows(outputCounts_5_1e5) %>% 
+#     # Get date into correct format
+#     mutate(date = dmy(Date)) %>% 
+#     # Sort
+#     arrange(Country, Region, date, Sex, Age) %>% 
+#     select(-date, -Short, -checkid)
+#   
+#   saveRDS(outputCounts_5_1e5_out, here("Data","Output_5.rds"))
+#   
+#   outputCounts_5_1e5 <- outputCounts_5_1e5_out
+#   
+# } else {
   saveRDS(outputCounts_5_1e5, here("Data","Output_5.rds"))
-}
+# }
 
 
 
