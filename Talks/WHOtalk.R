@@ -165,6 +165,21 @@ ContinentWeightedMeans <-
             CasePrev = CaseTOT / PopTOT * 1e6,
             .groups = "drop") 
 
+
+
+#################################################
+# Let's be brave and get some headline numbers
+#################################################
+World_Infer <-
+  Prev %>% 
+  left_join(select(ContinentWeightedMeans,Region,Age,CaseRegion = CasePrev), by = c("Age","Region")) %>% 
+  mutate(CasesFill = (CaseRegion * Pop) / sum((CaseRegion * Pop)) * total_cases,
+         CasesInfer = ifelse(is.na(Cases),CasesFill,Cases)) %>% 
+  group_by(Age) %>% 
+  summarize(Cases = sum(CasesInfer, na.rm=TRUE))
+  
+View(World_Infer)
+
 # Indeed, changes rankings within age. This one better.
 
 ###############################################
