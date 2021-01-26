@@ -150,3 +150,36 @@ filter( Code == 'TR26.10.2020', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'TR28.06.2020', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'TR28.09.2020', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'TR31.08.2020', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'BR_SP25.12.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'BR_SP29.12.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'BR_TO25.12.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'BR_TO29.12.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'PK10.03.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'PK11.03.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'PK12.03.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'PK13.03.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'PK14.03.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'PK15.03.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'PK16.03.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'PK17.03.2020', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'PK10.03.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'PK11.03.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'PK12.03.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'PK13.03.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'PK14.03.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'PK15.03.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'PK16.03.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'PK17.03.2020', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'SZ14.10.2020', Sex == 'm', Measure == 'Deaths' )
+
+# remake coverage map 
+ Tue Jan 26 07:29:14 2021 
+
+
+# push outputs to OSF 
+ Tue Jan 26 07:33:46 2021 
+
+
+# Commit dashboards and buildlog 
+ Tue Jan 26 07:36:18 2021 
+
