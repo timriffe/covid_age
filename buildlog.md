@@ -203,3 +203,15 @@ filter( Code == 'SZ14.10.2020', Sex == 'm', Measure == 'Deaths' )
 # push outputs to OSF 
  Tue Jan 26 08:02:34 2021 
 
+
+# remake coverage map 
+ Tue Jan 26 11:48:13 2021 
+
+
+# push outputs to OSF 
+ Tue Jan 26 11:52:52 2021 
+
+
+# Commit dashboards and buildlog 
+ Tue Jan 26 11:55:13 2021 
+
