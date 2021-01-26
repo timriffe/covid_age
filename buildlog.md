@@ -183,3 +183,23 @@ filter( Code == 'SZ14.10.2020', Sex == 'm', Measure == 'Deaths' )
 # Commit dashboards and buildlog 
  Tue Jan 26 07:36:18 2021 
 
+
+# update build series log 
+ Tue Jan 26 07:36:25 2021 
+
+
+# Compile metadata 
+ Tue Jan 26 07:37:25 2021 
+
+
+# Building dashboards 
+ Tue Jan 26 07:50:00 2021 
+
+
+# remake coverage map 
+ Tue Jan 26 07:57:56 2021 
+
+
+# push outputs to OSF 
+ Tue Jan 26 08:02:34 2021 
+

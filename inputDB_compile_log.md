@@ -1,28 +1,31 @@
 
-# 2021-01-25 inputDB updates 
- Mon Jan 25 19:01:09 2021 
+# 2021-01-26 inputDB updates 
+ Tue Jan 26 11:01:10 2021 
 
 
-# 2021-01-25 19:01:10 updates 
- Mon Jan 25 19:01:10 2021 
+# 2021-01-26 11:01:10 updates 
+ Tue Jan 26 11:01:10 2021 
 
 
 # Filter valid Measure entries: 
- Mon Jan 25 19:24:34 2021 
+ Tue Jan 26 11:16:14 2021 
 
 Valid Measures include: Cases,Deaths,Tests,ASCFR
- 1126 rows removed
+ 1092 rows removed
 # Filter valid Metric entries: 
- Mon Jan 25 19:24:36 2021 
+ Tue Jan 26 11:16:16 2021 
 
 Valid Metrics include: Count,Fraction,Ratio
  14 rows removed
-# Duplicates detected. Following `Code`s removed: 
- Mon Jan 25 19:25:03 2021 
+# Filter valid Sex entries: 
+ Tue Jan 26 11:16:17 2021 
 
-AF29.11.2020
+Valid Sex values include: m,f,b,UNK
+ 1 rows removed
+# Duplicates detected. Following `Code`s removed: 
+ Tue Jan 26 11:16:42 2021 
+
 DK07.01.2021
-LB13.12.2020
 US07.03.2020
 US14.03.2020
 US21.03.2020
@@ -68,67 +71,3 @@ US19.12.2020
 US26.12.2020
 US_TX27.10.2020
 VE02.12.2020
-# 2021-01-26 inputDB updates 
- Tue Jan 26 03:01:09 2021 
-
-
-# 2021-01-26 03:01:09 updates 
- Tue Jan 26 03:01:09 2021 
-
-
-# Filter valid Measure entries: 
- Tue Jan 26 04:05:15 2021 
-
-Valid Measures include: Cases,Deaths,Tests,ASCFR
- 3556 rows removed
-# Duplicates detected. Following `Code`s removed: 
- Tue Jan 26 04:05:56 2021 
-
-DK07.01.2021
-LB13.12.2020
-GB_NIR11.12.2020
-PS12.10.2020
-US07.03.2020
-US14.03.2020
-US21.03.2020
-US28.03.2020
-US04.04.2020
-US11.04.2020
-US18.04.2020
-US25.04.2020
-US02.05.2020
-US09.05.2020
-US16.05.2020
-US23.05.2020
-US30.05.2020
-US06.06.2020
-US13.06.2020
-US20.06.2020
-US27.06.2020
-US04.07.2020
-US11.07.2020
-US18.07.2020
-US25.07.2020
-US01.08.2020
-US08.08.2020
-US15.08.2020
-US22.08.2020
-US29.08.2020
-US05.09.2020
-US12.09.2020
-US19.09.2020
-US26.09.2020
-US03.10.2020
-US10.10.2020
-US17.10.2020
-US24.10.2020
-US31.10.2020
-US07.11.2020
-US14.11.2020
-US21.11.2020
-US28.11.2020
-US05.12.2020
-US12.12.2020
-US19.12.2020
-US26.12.2020
-US_FL02.12.2020
