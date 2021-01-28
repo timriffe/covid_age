@@ -178,7 +178,7 @@ US_IA_out <-
   bind_rows(Age, Tests, Sex) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
   sort_input_data()
-¹
+
 # upload to Drive
 write_sheet(US_IA_out,
             ss = ss_i,
@@ -194,9 +194,9 @@ data_source_1 <- paste0(dir_n, "Data_sources/", ctr, "/age_",today(), ".csv")
 data_source_2 <- paste0(dir_n, "Data_sources/", ctr, "/sex_",today(), ".csv")
 data_source_3 <- paste0(dir_n, "Data_sources/", ctr, "/tests_",today(), ".csv")
 
-write_csv(AgeIN, file = data_source_1)
-write_csv(SexIN, file = data_source_2)
-write_csv(TestsIN, file = data_source_3)
+write_csv(AgeIN, data_source_1)
+write_csv(SexIN, data_source_2)
+write_csv(TestsIN, data_source_3)
 
 data_source <- c(data_source_1, data_source_2, data_source_3)
 

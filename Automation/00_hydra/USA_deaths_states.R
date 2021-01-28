@@ -35,7 +35,7 @@ ages1 <- c("All Ages", "Under 1 year", "1-4 years", "5-14 years", "15-24 years",
 ages2 <- c("All Ages", "0-17 years", "18-29 years", "30-49 years", "50-64 years", "65-74 years", "75-84 years", "85 years and over")
 
 date_report <- mdy(db$`Data as of`[1])
-date_f <- mdy(db$`End Week`[1])
+date_f <- mdy(db$`End Date`[1])
 
 db2 <- db %>% 
   select("State", "Age group", "Sex", "COVID-19 Deaths") %>% 

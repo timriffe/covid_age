@@ -6,6 +6,7 @@ library(tidyverse)
 
 if (! "email" %in% ls()){
   email <- "tim.riffe@gmail.com"
+  email <- "kikepaila@gmail.com"
 }
 
 # info country and N drive address
@@ -42,6 +43,11 @@ check_dates <- seq(today()-7,today(),by="days")
 
 case_urls <- paste0("https://raw.githubusercontent.com/folkehelseinstituttet/surveillance_data/master/covid19/data_covid19_msis_by_time_sex_age_",as.character(check_dates),".csv")
 
+library(RCurl)
+
+url.exists(case_urls[8])
+cases_test <- read_csv(case_urls[1])
+
 case_data_urls <- rep(FALSE, length(case_urls))
 for (i in 1:length(case_urls)){
   case_data_urls[i] <- url.exists(case_urls[i])
@@ -49,6 +55,7 @@ for (i in 1:length(case_urls)){
 }
 
 test_urls <- paste0("https://raw.githubusercontent.com/folkehelseinstituttet/surveillance_data/master/covid19/data_covid19_lab_by_time_",as.character(check_dates),".csv")
+tests_test <- read_csv(test_urls[1])
 
 test_data_urls <- rep(FALSE, length(test_urls))
 for (i in 1:length(test_urls)){
@@ -61,6 +68,11 @@ for (i in 1:length(test_urls)){
 check_dates_deaths <- seq(ymd("2020-01-01"),today(),by="days")
 
 deaths_urls <- paste0("https://raw.githubusercontent.com/folkehelseinstituttet/surveillance_data/master/covid19/data_covid19_demographics_",as.character(check_dates_deaths),".csv")
+
+deaths_test <- read_csv(deaths_urls[385])
+
+
+
 death_data_urls <- rep(FALSE, length(deaths_urls))
 for (i in 1:length(deaths_urls)){
   death_data_urls[i] <- url.exists(deaths_urls[i])
