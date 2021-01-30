@@ -102,7 +102,7 @@ write_csv(In, path = "Spain_InputDB.csv")
 
 The process of reading and filtering COVerAGE-DB files is automated in the `covidAgeData` package. It's not yet available in CRAN, but can be installed from github via the `remotes` package.
 ```{r, eval = FALSE}
-remotes::install_github("https://github.com/eshom/covid-age-data")
+remotes::install_github("eshom/covid-age-data")
 ```
 ```{r}
 # This downloads and reads in one line
