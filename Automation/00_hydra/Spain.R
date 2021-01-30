@@ -45,7 +45,7 @@ file.remove(data_source)
 dim(IN)
 glimpse(IN)
 IN$grupo_edad %>% unique()
-
+unique(IN$sexo) 
 in2 <-
   IN %>% 
   select(Short = provincia_iso, 

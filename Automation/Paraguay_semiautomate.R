@@ -12,18 +12,20 @@ dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 # open connexion for the link
 # https://www.mspbs.gov.py/reporte-covid19.html
 
+
+
 # microdata of cases
-cases_url <- "https://public.tableau.com/vizql/w/COVID19PY-Registros/v/Descargardatos/vudcsv/sessions/6B132EFAAA3A469CB3293FBA252A3B86-0:0/views/7713620505763405234_2641841674343653269?summary=true"
+cases_url <- "https://public.tableau.com/vizql/w/COVID19PY-Registros/v/Descargardatos/vudcsv/sessions/2C7362412666438D8C58372332E934E5-0:0/views/7713620505763405234_2641841674343653269?summary=true"
 data_source_c <- paste0(dir_n, "Data_sources/", ctr, "/cases_",today(), ".csv")
 download.file(cases_url, destfile = data_source_c)
 
 # microdata of deaths
-deaths_url <- "https://public.tableau.com/vizql/w/COVID19PY-Registros/v/FALLECIDOS/vudcsv/sessions/4C85B7320611421197D3B27901128537-0:0/views/7713620505763405234_5043410824490810379?summary=true"
+deaths_url <- "https://public.tableau.com/vizql/w/COVID19PY-Registros/v/FALLECIDOS/vudcsv/sessions/DEA03F3CBF404D01AB8A30EC23D0F73B-0:0/views/7713620505763405234_5043410824490810379?summary=true"
 data_source_d <- paste0(dir_n, "Data_sources/", ctr, "/deaths_",today(), ".csv")
 download.file(deaths_url, destfile = data_source_d)
 
-db_c <- read_csv(data_source_c)
-db_d <- read_csv(data_source_d)
+db_c <- read_csv2(data_source_c)
+db_d <- read_csv2(data_source_d)
 
 # data from deaths and tests
 tests <- read_sheet(ss = "https://docs.google.com/spreadsheets/d/10XayKoMKOOOJrZBPcUbd_SIZgBIC5eNt9ei4oVVw-SY/edit#gid=0",
@@ -42,13 +44,16 @@ unique(db_c$'Distrito Residencia') %>% sort()
 unique(db_c2$Region) %>% sort()
 unique(db_c$Edad) %>% sort()
 
+
 db_c2 <- db_c %>% 
   rename(date_f = "Fecha Confirmacion",
          Sex = Sexo,
          Region = 'Departamento Residencia') %>% 
   select(Region, date_f, Sex, Edad) %>% 
   mutate(Region = str_to_title(Region),
-         date_f = mdy(date_f),
+         date_f = as.character(date_f),
+         date_f = ifelse(str_length(date_f) == 7, paste0("0", date_f), date_f),
+         date_f = dmy(date_f),
          Sex = case_when(Sex == "MASCULINO" ~ "m",
                          Sex == "FEMENINO" ~ "f",
                          TRUE ~ "UNK"),
@@ -63,11 +68,11 @@ db_c2 <- db_c %>%
 db_d2 <- db_d %>% 
   rename(date_f = 2,
          Sex = Sexo,
-         Edad = 'Sum of Edad',
+         Edad = 'Summe von Edad',
          Region = 'Departamento Residencia') %>% 
   select(Region, date_f, Sex, Edad) %>% 
   mutate(Region = str_to_title(Region),
-         date_f = mdy(date_f),
+         date_f = dmy(date_f),
          Sex = case_when(Sex == "MASCULINO" ~ "m",
                          Sex == "FEMENINO" ~ "f",
                          TRUE ~ "UNK"),

@@ -2,6 +2,9 @@ library(here)
 source(here("Automation/00_Functions_automation.R"))
 
 library(aweek)
+library(ISOweek)
+
+
 
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
@@ -117,10 +120,9 @@ Cases2 <-
 # Prepare Deaths:
 
 # Assume Unknown Date of death is 1 week after Date_statistics
-
-all_weeks <- 3:week(today())
-all_dates <- (all_weeks + 202000) %>% isoweek_to_date_hack()
-
+today_week <- str_sub(ISOweek(today()), 7, 8) %>% as.numeric()
+all_dates <- ISOweek::ISOweek2date(c(paste0(2020, "-W", sprintf("%02d",(3:53)), "-7"), 
+                                     paste0(2021, "-W", sprintf("%02d",(1:today_week)), "-7")))
 
 all_ages <- c("0","50","60","70","80","90","UNK")
 
