@@ -12,13 +12,15 @@ dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 # open connexion for the link
 # https://www.mspbs.gov.py/reporte-covid19.html
 
+
+
 # microdata of cases
-cases_url <- "https://public.tableau.com/vizql/w/COVID19PY-Registros/v/Descargardatos/vudcsv/sessions/1326BE001BAF4E66AFC941FE000F5E6A-0:0/views/7713620505763405234_2641841674343653269?summary=true"
+cases_url <- "https://public.tableau.com/vizql/w/COVID19PY-Registros/v/Descargardatos/vudcsv/sessions/2C7362412666438D8C58372332E934E5-0:0/views/7713620505763405234_2641841674343653269?summary=true"
 data_source_c <- paste0(dir_n, "Data_sources/", ctr, "/cases_",today(), ".csv")
 download.file(cases_url, destfile = data_source_c)
 
 # microdata of deaths
-deaths_url <- "https://public.tableau.com/vizql/w/COVID19PY-Registros/v/FALLECIDOS/vudcsv/sessions/E81755FAF1594DBDA7A5BC8E9949798A-0:0/views/7713620505763405234_5043410824490810379?summary=true"
+deaths_url <- "https://public.tableau.com/vizql/w/COVID19PY-Registros/v/FALLECIDOS/vudcsv/sessions/DEA03F3CBF404D01AB8A30EC23D0F73B-0:0/views/7713620505763405234_5043410824490810379?summary=true"
 data_source_d <- paste0(dir_n, "Data_sources/", ctr, "/deaths_",today(), ".csv")
 download.file(deaths_url, destfile = data_source_d)
 
