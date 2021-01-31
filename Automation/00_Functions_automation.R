@@ -17,7 +17,7 @@ packages_CRAN <- c("tidyverse","lubridate","gargle","rvest","httr","readxl",
                    "tictoc","parallel","data.table","git2r","usethis", "rio",
                    "remotes","here","googledrive","zip", "XML", "RCurl",
                    "taskscheduleR","countrycode", "xml2", "dplyr", "xml2",
-                   "reticulate")
+                   "reticulate", "rjson")
 
 # Install required CRAN packages if not available yet
 if(!sum(!p_isinstalled(packages_CRAN))==0) {
@@ -185,7 +185,7 @@ sort_input_data <- function(X) {
             Metric,
             suppressWarnings(as.integer(Age))) %>% 
     # Drop extra date variable
-    select(-Date2)
+    select(Country, Region, Code,  Date, Sex, Age, AgeInt, Metric, Measure, Value)
   
 }
 

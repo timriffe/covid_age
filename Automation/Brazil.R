@@ -42,16 +42,16 @@ driver <- RSelenium::rsDriver(browser = "chrome",
 remote_driver <- driver[["client"]] 
 remote_driver$navigate(url)
 # locate button and click it
-button <- remote_driver$findElement(using = "xpath", '//*[@id="app"]/div[2]/div/div/div[2]/div/div[2]/div[2]/div[2]/a')
+button <- remote_driver$findElement(using = "xpath", '/html/body/div[1]/div[2]/div/div/div[2]/div/div[2]/div[1]/div[2]/a')
 button$clickElement()
 
-date_lb <- remote_driver$findElement(using = "xpath", '//*[@id="app"]/div[2]/div/div/div[2]/div/div[2]/div[2]/div[2]/p/p[1]')
+date_lb <- remote_driver$findElement(using = "xpath", '/html/body/div[1]/div[2]/div/div/div[2]/div/div[2]/div[1]/div[2]/p/p[1]')
 date_lb2 <- date_lb$findElement(using='css selector',"body")$getElementText()[[1]]
 date_f <- str_sub(date_lb2, -10) %>% dmy()
 
 data_source1 <- paste0(dir_n, ctr, "/", ctr, "_data_deaths_", today(), ".csv")
-file.copy("C:/Users/kikep/Downloads/obitos-2020.csv", data_source1, T)
-file.remove("C:/Users/kikep/Downloads/obitos-2020.csv")
+file.copy("C:/Users/kikep/Downloads/obitos-2021.csv", data_source1, T)
+file.remove("C:/Users/kikep/Downloads/obitos-2021.csv")
 
 db <- read_csv(data_source1)
 

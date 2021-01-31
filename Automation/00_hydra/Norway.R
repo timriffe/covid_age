@@ -1,11 +1,8 @@
 source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
-library(lubridate)
-library(RCurl)
-library(readr)
-library(tidyverse)
 
 if (! "email" %in% ls()){
-  email <- "tim.riffe@gmail.com"
+  # email <- "tim.riffe@gmail.com"
+  email <- "kikepaila@gmail.com"
 }
 
 # info country and N drive address
@@ -26,15 +23,17 @@ ss_i <- rubric %>%
 ss_db <- rubric %>% 
   dplyr::pull(Source)
 
-###########################################################
-# Read in current Norway data
-###########################################################
-NOin <- get_country_inputDB("NO") %>% 
-  select(-Short)
+# Read in current Norway data ####
+##################################
 
-###########################################################
-# Detect files to capture
-###########################################################
+# db_drive <- get_country_inputDB("NO") %>% 
+#   select(-Short)
+
+db_drive <- read_sheet("https://docs.google.com/spreadsheets/d/1b-vhrc3ZAW-Mp5FU31QI-1tRj3r0E5Ew-Nkb-fHqpmA/", 
+                       sheet = "database")
+
+# Detect files to capture ####
+##############################
 
 # Cases and Tests only from recent days, because these contain
 # longer time series.
@@ -42,59 +41,47 @@ check_dates <- seq(today()-7,today(),by="days")
 
 case_urls <- paste0("https://raw.githubusercontent.com/folkehelseinstituttet/surveillance_data/master/covid19/data_covid19_msis_by_time_sex_age_",as.character(check_dates),".csv")
 
-case_data_urls <- rep(FALSE, length(case_urls))
-for (i in 1:length(case_urls)){
-  case_data_urls[i] <- url.exists(case_urls[i])
-  cat(i,"\n")
+skip_to_next <- TRUE
+for (l in rev(case_urls)){
+  tryCatch({
+    print(l)
+    db_c <- read_csv(l)
+  }, error=function(e){ skip_to_next <<- FALSE})
+  
+  if(skip_to_next) { break } 
 }
+
 
 test_urls <- paste0("https://raw.githubusercontent.com/folkehelseinstituttet/surveillance_data/master/covid19/data_covid19_lab_by_time_",as.character(check_dates),".csv")
-
-test_data_urls <- rep(FALSE, length(test_urls))
-for (i in 1:length(test_urls)){
-  test_data_urls[i] <- url.exists(test_urls[i])
-  cat(i,"\n")
+skip_to_next <- TRUE
+for (l in rev(test_urls)){
+  tryCatch({
+    print(l)
+    db_t <- read_csv(l)
+  }, error=function(e){ skip_to_next <<- FALSE})
+  
+  if(skip_to_next) { break } 
 }
 
-# Deaths need to be grabbed on a per day basis, 
-# so we need to check lots of dates
-check_dates_deaths <- seq(ymd("2020-01-01"),today(),by="days")
+death_dates <- seq(today() - 15, today(),by="days")
+db_d_all <- tibble()
 
-deaths_urls <- paste0("https://raw.githubusercontent.com/folkehelseinstituttet/surveillance_data/master/covid19/data_covid19_demographics_",as.character(check_dates_deaths),".csv")
-death_data_urls <- rep(FALSE, length(deaths_urls))
-for (i in 1:length(deaths_urls)){
-  death_data_urls[i] <- url.exists(deaths_urls[i])
-  cat(100*i/length(deaths_urls),"%\n")
+for (i in 1:31){
+  skip_to_next <- FALSE
+  tryCatch({
+    print(l)
+    db_d <- read_csv(paste0("https://raw.githubusercontent.com/folkehelseinstituttet/surveillance_data/master/covid19/data_covid19_demographics_",as.character(death_dates[i]),".csv"))
+  }, error=function(e){ skip_to_next <<- TRUE})
+  if(skip_to_next) { next } 
+  db_d_all <- db_d_all %>% 
+    bind_rows(db_d %>%
+    mutate(Date = death_dates[i]))
 }
 
+# do some preliminary formatting ####
 ###########################################################
-# Read in detected files
-###########################################################
-
-# Cases and Tests are a single time series
-Cases_in  <- try(read_csv(rev(case_urls[case_data_urls])[1]))
-Tests_in  <- try(read_csv(rev(test_urls[test_data_urls])[1]))
-
-# Deaths need to be read in in a loop, because they 
-# don't contain proper dates
-DL <- list()
-j <- 1
-for (i in 1:length(deaths_urls)){
-  if (death_data_urls[i]){
-    DL[[j]] <- read_csv(deaths_urls[i]) %>% 
-      mutate(Date = check_dates_deaths[i])
-    j <- j + 1
-  }
-}
-Deaths_in <- bind_rows(DL)
-
-# Deaths_in <- vroom(deaths_urls[death_data_urls])
-
-###########################################################
-# do some preliminary formatting
-###########################################################
-Cases <-
-  Cases_in %>% 
+db_c2 <-
+  db_c %>% 
   mutate(Age = recode(age,
       "0-9" = "0",
       "10-19" = "10",
@@ -122,8 +109,8 @@ Cases <-
          AgeInt = ifelse(Age == "90", 15, 10))
 
 # Total Tests
-Tests <-
-  Tests_in %>% 
+db_t2 <-
+  db_t %>% 
   mutate(Age = "TOT",
          Sex = "TOT",
          n = n_pos + n_neg) %>% 
@@ -158,8 +145,8 @@ get_zero <- function(chunk){
   chunk
 }
 
-Deaths <-
-  Deaths_in %>% 
+db_d2 <-
+  db_d_all %>% 
   mutate(Age = recode(age,
                       "0-39" = "0",
                       "40-49" = "40",
@@ -194,51 +181,56 @@ Deaths <-
                             TRUE ~ 10L)) %>% 
   filter(Age != "TOT")
 
-###########################################################
-# Merge files, create more columns
-###########################################################
+# Merge files, create more columns ####
+#######################################
 
 captured <- 
-  Deaths %>% 
-  bind_rows(Cases) %>% 
-  bind_rows(Tests) %>% 
+  db_d2 %>% 
+  bind_rows(db_c2) %>% 
+  bind_rows(db_t2) %>% 
   mutate(Date = paste(sprintf("%02d",day(Date)),    
                       sprintf("%02d",month(Date)),  
                       year(Date),sep="."),
          Code = paste0("NO",Date)) 
 
-###########################################################
-# bind data, only keeping Deaths prior to just-captured deaths
+# bind data, only keeping Deaths prior to just-captured deaths ####
 # treat cases and tests as completely refreshing
 ###########################################################
 
-minD <- 
-  Deaths %>% 
-  dplyr::pull(Date) %>% 
-  min()
-
-NOout <- 
-  NOin %>% 
-  filter(Measure == "Deaths",
-         dmy(Date) < minD) %>% 
-  bind_rows(captured) %>% 
+db_d3 <- db_drive %>%
+  mutate(Value = as.double(Value)) %>% 
+  filter(Measure == "Deaths") %>% 
+  bind_rows(db_d2 %>% 
+              mutate(Date = paste(sprintf("%02d",day(Date)),    
+                                  sprintf("%02d",month(Date)),  
+                                  year(Date),sep="."),
+                     Code = paste0("NO",Date))) %>% 
+  unique() %>% 
   sort_input_data()
 
-###########################################################
-# Push to Drive
-###########################################################
+out <- 
+  bind_rows(db_c2, db_t2) %>% 
+  mutate(Date = paste(sprintf("%02d",day(Date)),    
+                      sprintf("%02d",month(Date)),  
+                      year(Date),sep="."),
+         Code = paste0("NO",Date)) %>% 
+  bind_rows(db_d3) %>% 
+    sort_input_data()
 
-write_sheet(NOout,
+  
+# Push to Drive ####
+####################
+
+write_sheet(out,
             ss_i,
             sheet = "database")
 
-N <- nrow(captured)
+N <- nrow(out) - nrow(db_drive)
 log_update(pp = "Norway", N = N)
 
 
-###########################################################
-# log source files
-###########################################################
+# log source files ####
+#######################
 
 data_source_1 <- paste0(dir_n, 
                         "Data_sources/", 
@@ -255,9 +247,9 @@ data_source_3 <- paste0(dir_n,
                         ctr,
                         "/NO_tests.csv")
 
-write_csv(Deaths_in, data_source_1)
-write_csv(Cases_in, data_source_2)
-write_csv(Tests_in, data_source_3)
+write_csv(db_d_all, data_source_1)
+write_csv(db_c, data_source_2)
+write_csv(db_t, data_source_3)
 
 data_source <- c(data_source_1, data_source_2, data_source_3)
 #ex_files <- c(paste0(PH_dir, files))
@@ -277,8 +269,6 @@ zip::zipr(zipname,
           compression_level = 9,
           include_directories = TRUE)
 
-file.remove(files)
-
-
+file.remove(data_source)
 
 
