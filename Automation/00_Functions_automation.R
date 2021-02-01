@@ -52,10 +52,31 @@ get_input_rubric <- function(tab = "input") {
   # Spreadsheet on Google Docs
   ss_rubric <- "https://docs.google.com/spreadsheets/d/15kat5Qddi11WhUPBW3Kj3faAmhuWkgtQzioaHvAGZI0/edit#gid=0"
   
-  # Read spreadsheet
-  input_rubric <- read_sheet(ss_rubric, sheet = tab) %>% 
-    # Drop if no source spreadsheet
-    filter(!is.na(Sheet))
+  input_rubric <- try(read_sheet(ss_rubric, sheet = tab) %>% 
+             # Drop if no source spreadsheet
+             filter(!is.na(Sheet)))
+  
+  # If error
+  if (class(input_rubric)[1] == "try-error") {
+    
+    Sys.sleep(120)
+    
+    # Try to load again
+    input_rubric <- try(read_sheet(ss_rubric, sheet = tab) %>% 
+                          # Drop if no source spreadsheet
+                          filter(!is.na(Sheet)))
+    
+    if (class(input_rubric)[1] == "try-error") {
+      
+      Sys.sleep(120)
+      
+      # Try to load again
+      input_rubric <- try(read_sheet(ss_rubric, sheet = tab) %>% 
+                            # Drop if no source spreadsheet
+                            filter(!is.na(Sheet)))
+      
+    }
+  }
   
   # Return tibble
   input_rubric
