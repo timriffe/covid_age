@@ -79,8 +79,10 @@ get_country_inputDB <- function(ShortCode) {
   # Load spreadsheet
   out <- read_sheet(ss_i, 
                     sheet = "database", 
-                    na = "NA", 
-                    col_types= "cccccciccd")
+                    na = "NA")
+  
+  # , 
+  # col_types= "cccccciccd"
   
   # Assign short code
   out$Short <- add_Short(out$Code,out$Date)
