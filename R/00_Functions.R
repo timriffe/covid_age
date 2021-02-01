@@ -25,14 +25,17 @@ if(!sum(!p_isinstalled(packages_CRAN))==0) {
 }
 
 # Reuired github packages
-packages_git <- c("googlesheets4","DemoTools","parallelsugar","osfr")
+packages_git <- c("googlesheets4","DemoTools","parallelsugar","osfr","covidAgeData")
 
 # install from github if necessary
 if (!p_isinstalled("googlesheets4")) {
   library(remotes)
   install_github("tidyverse/googlesheets4")
 }
-
+if (!p_isinstalled("covidAgeData")) {
+  library(remotes)
+  install_github("eshom/covid-age-data")
+}
 if (!p_isinstalled("DemoTools")) {
   library(remotes)
   install_github("timriffe/DemoTools")

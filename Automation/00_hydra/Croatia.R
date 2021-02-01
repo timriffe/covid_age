@@ -5,9 +5,17 @@ library(rjson)
 library(tidyverse)
 IN_json <- fromJSON(file="https://www.koronavirus.hr/json/?action=po_osobama")
 
+<<<<<<< HEAD
+
+IN <- bind_rows(IN_json) 
+IN2 <- IN %>% 
+  select(Sex = spol, dob, Date = Datum, Region = Zupanija) %>%  # Regions = Counties
+  group_by(Sex, dob, Date, Zupanja) %>% 
+=======
 IN <- bind_rows(IN_json) %>% 
   select(Sex = spol, dob, Date = Datum, Region = Zupanija) %>%  # Regions = Counties
   group_by(Sex, dob, Date, Region) %>% 
+>>>>>>> a75117a67d86cab3411e64197a0df079db73c6c5
   summarize(new = n(),.groups = "drop") %>% 
   mutate(Measure = "Cases")
 
