@@ -258,7 +258,10 @@ SCout <-
   filter(N > 1) %>% 
   select(-N)
   
-
+n <- duplicated(SCout[, c("Date", "Sex","Measure","Age")])
+SCout <- 
+  SCout %>% 
+  dplyr::filter(!n)
 # -----------------------------
 ## overwrite sheet 
 sheet_write(SCout,
