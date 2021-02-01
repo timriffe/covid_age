@@ -146,7 +146,7 @@ sct <-
                  '25 to 44' = "25",
                  '45 to 64' = "45",
                  '65 to 74' = "65",
-                 '75 to 84' = "74",
+                 '75 to 84' = "75",
                  '85plus' = "85"),
     Sex = recode(Sex,'Female' = 'f',
                  'Male' = 'm',
@@ -159,7 +159,7 @@ sct <-
       Age == "25" ~ 20,
       Age == "45" ~ 20,
       Age == "65" ~ 10,
-      Age == "74" ~ 10,
+      Age == "75" ~ 10,
       Age == "85" ~ 20)) %>% 
   select(-Negative) %>% 
   pivot_longer(Cases:Tests,
