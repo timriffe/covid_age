@@ -104,7 +104,11 @@ sched("Cambodia", "20:32",email = auto_update_email, wd = auto_update_wd)
 # delete_sched("Philippines")
 # delete_sched("Scotland")
 # delete_sched("Norway")
+<<<<<<< HEAD
+# delete_sched("Slovakia")
+=======
 # delete_sched("Thailand")
+>>>>>>> a75117a67d86cab3411e64197a0df079db73c6c5
 
 
 ### to list current tasks
