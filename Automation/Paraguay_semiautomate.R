@@ -11,9 +11,6 @@ dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 # open connexion for the link
 # https://www.mspbs.gov.py/reporte-covid19.html
-
-
-
 # microdata of cases
 cases_url <- "https://public.tableau.com/vizql/w/COVID19PY-Registros/v/Descargardatos/vudcsv/sessions/2C7362412666438D8C58372332E934E5-0:0/views/7713620505763405234_2641841674343653269?summary=true"
 data_source_c <- paste0(dir_n, "Data_sources/", ctr, "/cases_",today(), ".csv")
