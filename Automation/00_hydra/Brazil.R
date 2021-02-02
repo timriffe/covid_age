@@ -59,7 +59,7 @@ remote_driver <- driver[["client"]]
 remote_driver$navigate(url)
 
 # read date
-date_lb <- remote_driver$findElement(using = "xpath", '//*[@id="app"]/div[2]/div/div/div[2]/div/div[2]/div[2]/div[2]/p/p[1]')
+date_lb <- remote_driver$findElement(using = "xpath", '/html/body/div[1]/div[2]/div/div/div[2]/div/div[2]/div[1]/div[2]/p/p[1]')
 date_lb2 <- date_lb$findElement(using='css selector',"body")$getElementText()[[1]]
 date_f <- str_sub(date_lb2, -10) %>% dmy()
 
@@ -181,7 +181,7 @@ if (date_f > last_date_drive){
                         sprintf("%02d",month(date_f)),
                         year(date_f),
                         sep="."),
-           Code = paste0("BR_", reg, Date),
+           Code = paste0("BR_TRC_", reg, Date),
            AgeInt = case_when(Age == "100" ~ 5,
                               Age == "TOT" ~ NA_real_,
                               TRUE ~ 10),
