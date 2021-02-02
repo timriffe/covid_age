@@ -56,7 +56,8 @@ weeks_avail <-
   gsub(pattern = " ", replacement = "") %>% 
   substr(start=5,stop=6) %>% 
   readr::parse_number() %>% 
-  sort()
+  sprintf("%02d",.)
+
 years_avail <- 
   age_sex_pyramids %>% 
   gsub(pattern = " ", replacement = "") %>% 
@@ -73,11 +74,83 @@ weeks_collect <-
 ECDCout <- ECDCin
 # week_i <- "2020-48"
 
+PrepIN <-
+  function(Invec){
+    
+    possible_cols <- 4:12
+    zsums <- rep(0,length(possible_cols))
+    i<- 0
+    for (dimguess in possible_cols){
+     
+      i <- i+1
+      if (length(Invec)%% dimguess == 0){
+        X <- matrix(Invec,ncol = dimguess)
+        zsums[i] <- max(colSums(X == "0"))
+      }
+  
+    }
+    ncols <- possible_cols[which.max(zsums)]
+    X <- matrix(Invec, ncol = ncols)
+    
+    Countries <- X %in% c("Croatia","Germany") 
+    Age       <- grepl(X,pattern = "60-69")
+    Measure   <- X %in% c("All cases","Mild")
+    Sex       <- X %in% c("M","F")
+    Value     <- X == "0"
+   
+    
+    dim(Countries) <- dim(X)
+    dim(Age)       <- dim(X)
+    dim(Measure)   <- dim(X)
+    dim(Sex)       <- dim(X)
+    dim(Value)     <- dim(X)
+    
+    Countryi       <- colSums(Countries) %>% which.max()
+    Agei           <- colSums(Age) %>% which.max()
+    Measurei       <- colSums(Measure) %>% which.max()
+    Sexi           <- colSums(Sex) %>% which.max()
+    Valuei         <- colSums(Value) %>% which.max()
+    
+    column_names   <- paste0("V",1:ncols)
+    column_names[c(Countryi,Agei,Measurei,Sexi,Valuei)] <- c("Country","Age","Measure","Sex","Value")
+    
+    if (ncols > 6){
+      Period      <- grepl(X,pattern = "P1")
+      dim(Period) <- dim(X)
+      Periodi     <- colSums(Period) %>% which.max()
+      column_names[Periodi] <- "Period"
+    }
+    
+    colnames(X)    <- column_names
+    
+    # Problem: can we just parse Value, and Period, if present? 
+    # This way we can aggregate P1 and P2 if necessary and deliver
+    # something standard.
+    
+    # TR: leaving off here, deciding to do a straight aggregation step in 
+    # here, which will be innocuous if there are 6 columns and do the right thing
+    # if periods are split. However, it requires some prelim parsing to happen in
+    # here too. Still in progress.
+    Y <-
+      X %>% 
+      as.tibble() %>% 
+      mutate( Value  = gsub(Value, pattern = "\\[|\\]", replacement = ""),
+              Value = gsub(Value, pattern = "n &lt; ",replacement = ""),
+              Value = ifelse(Value == "null", NA, Value),
+              Value = as.integer(Value),
+              Measure = gsub(Measure, pattern = "\\[|\\]", replacement = ""),
+              Country = gsub(Country, pattern = "\\[|\\]", replacement = ""),
+              Sex  = gsub(Sex, pattern = "\\[|\\]", replacement = ""),
+              Age  = gsub(Age, pattern = "\\[|\\]", replacement = "")) 
+    
+    
+  }
+
 for (week_i in weeks_collect){
   cat(week_i,"\n")
   
   yr_pick <- week_i %>% substr(1,4)
-  wk_pick <- week_i %>% substr(6,nchar(week_i)) %>% as.integer()
+  wk_pick <- week_i %>% substr(6,nchar(week_i)) 
   
   this_file <- age_sex_pyramids[grepl(age_sex_pyramids, pattern = yr_pick) & 
                                 grepl(age_sex_pyramids, pattern = wk_pick)][1]
@@ -86,7 +159,7 @@ for (week_i in weeks_collect){
                    ymd(paste0(yr_pick,"-12-31")),
                    by = "days")
   Sundays   <- all_days[weekdays(all_days) == "Sunday"]
-  Date_i    <- Sundays[isoweek(Sundays) == wk_pick]
+  Date_i    <- Sundays[isoweek(Sundays) == as.integer(wk_pick)]
   
 
   IN <- suppressWarnings(readLines(file.path(dir_n_source,this_file))) %>% 
@@ -95,11 +168,13 @@ for (week_i in weeks_collect){
           gsub(pattern = '\\"', replacement = "") %>% 
           strsplit(split=",") %>% 
           '[['(1)
-       
-  ECDC_i <- 
+   
+  #ECDC_i <- 
+  INmat <-
     IN %>% 
-    matrix(ncol=6, dimnames = 
-          list(NULL, c("Outcome","Country","Sex","Age","Value","X"))) %>%
+    matrix(ncol=7) 
+  
+  
     as_tibble() %>% 
     separate(col = Outcome, 
              into = c("maybe", "Measure"),
@@ -118,7 +193,9 @@ for (week_i in weeks_collect){
              TRUE ~ Measure
            )) %>% 
     select(-X) %>% 
-    filter(Measure %in% c("all","dead")) %>% 
+    filter(Measure %in% c("all","dead"))
+  
+  # %>% 
     mutate(Sex =tolower(Sex),
            Age = recode(Age,
             "&lt;10yr" = "0",
@@ -172,7 +249,8 @@ for (week_i in weeks_collect){
              "Romania" = "RO",
              "Slovakia" = "SK",
              "Sweden" = "SE",
-             "United Kingdom" = "GB"),
+             "United Kingdom" = "GB",
+             TRUE ~ "Code ME!"),
            Code = paste0(Short,"_ECDC_",Date),
            AgeInt = ifelse(Age == "80", 25, 10)) %>% 
     select(-Short) %>% 
