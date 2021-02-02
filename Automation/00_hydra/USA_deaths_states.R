@@ -242,6 +242,8 @@ out <- db_drive %>%
   select(-Short) %>% 
   bind_rows(db5)
 
+unique(out$Region)
+
 ############################################
 #### uploading database to Google Drive ####
 ############################################
