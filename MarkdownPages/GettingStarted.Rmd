@@ -104,15 +104,22 @@ The process of reading and filtering COVerAGE-DB files is automated in the `covi
 ```{r, eval = FALSE}
 remotes::install_github("eshom/covid-age-data")
 ```
-```{r}
+```{r, message = FALSE}
 # This downloads and reads in one line
 inputDB <- download_covid("inputDB", progress = FALSE)
 
+
+```
+
+```{r, eval = FALSE, include = FALSE}
 # You can get a specific version as well. We only save the file temporarily
 # in this case.
-download_covid_version("inputDB", 1, temp = TRUE, progress = FALSE) %>%
-  head()
+
+# TR: this function needs a fix
+# download_covid_version("inputDB", 1, temp = TRUE, progress = FALSE) %>%
+#   head()
 ```
+
 
 `covidAgeData` includes wrappers for either very fast in-memory data subsetting, or slower, but memory efficient subsetting. The next example demonstrates both methods on `inputDB`.
 ```{r}
