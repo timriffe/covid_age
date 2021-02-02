@@ -63,11 +63,13 @@ years_avail <-
   gsub(pattern = " ", replacement = "") %>% 
   substr(start=8,stop=11) %>% 
   as.integer()
-yr_wk_avail <- paste(years_avail, weeks_avail, sep = "-")
+yr_wk_avail <- paste(years_avail, weeks_avail, sep = "-") %>% unique()
 
 weeks_collect <-
   yr_wk_avail[!yr_wk_avail %in% yr_wk_in] %>% 
   unique()
+
+weeks_collect <- weeks_collect[weeks_collect != "2020-53"]
 #####################################################
 # parse the text dumps
 #####################################################
@@ -114,13 +116,6 @@ PrepIN <-
     column_names   <- paste0("V",1:ncols)
     column_names[c(Countryi,Agei,Measurei,Sexi,Valuei)] <- c("Country","Age","Measure","Sex","Value")
     
-    if (ncols > 6){
-      Period      <- grepl(X,pattern = "P1")
-      dim(Period) <- dim(X)
-      Periodi     <- colSums(Period) %>% which.max()
-      column_names[Periodi] <- "Period"
-    }
-    
     colnames(X)    <- column_names
     
     # Problem: can we just parse Value, and Period, if present? 
@@ -135,17 +130,20 @@ PrepIN <-
       X %>% 
       as.tibble() %>% 
       mutate( Value  = gsub(Value, pattern = "\\[|\\]", replacement = ""),
-              Value = gsub(Value, pattern = "n &lt; ",replacement = ""),
+              Value = gsub(Value, pattern = "n &lt; ",replacement = "1"),
               Value = ifelse(Value == "null", NA, Value),
               Value = as.integer(Value),
               Measure = gsub(Measure, pattern = "\\[|\\]", replacement = ""),
               Country = gsub(Country, pattern = "\\[|\\]", replacement = ""),
               Sex  = gsub(Sex, pattern = "\\[|\\]", replacement = ""),
-              Age  = gsub(Age, pattern = "\\[|\\]", replacement = "")) 
+              Age  = gsub(Age, pattern = "\\[|\\]", replacement = "")) %>% 
+      group_by(Country, Measure, Sex, Age) %>% 
+      summarize(Value = sum(Value), .groups = "drop")
     
-    
+    Y
   }
 
+if (length(weeks_collect) > 0){
 for (week_i in weeks_collect){
   cat(week_i,"\n")
   
@@ -167,35 +165,18 @@ for (week_i in weeks_collect){
           gsub(pattern = '\\]\\]', replacement = "") %>% 
           gsub(pattern = '\\"', replacement = "") %>% 
           strsplit(split=",") %>% 
-          '[['(1)
+          '[['(1) %>% 
+    PrepIN()
    
-  #ECDC_i <- 
-  INmat <-
+  ECDC_i <-
     IN %>% 
-    matrix(ncol=7) 
-  
-  
-    as_tibble() %>% 
-    separate(col = Outcome, 
-             into = c("maybe", "Measure"),
-             sep = " ") %>% 
-    mutate(maybe = gsub(maybe, pattern = "\\[|\\]", replacement = ""),
-           Measure = gsub(Measure, pattern = "\\[|\\]", replacement = ""),
-           Country = gsub(Country, pattern = "\\[|\\]", replacement = ""),
-           Sex  = gsub(Sex, pattern = "\\[|\\]", replacement = ""),
-           Age  = gsub(Age, pattern = "\\[|\\]", replacement = ""),
-           Value  = gsub(Value, pattern = "\\[|\\]", replacement = ""),
-           maybe = tolower(maybe),
-           Measure = tolower(Measure),
+    mutate(Measure = tolower(Measure),
            Measure = case_when(
-             maybe == "all" ~ "all",
-             maybe == "fatal" ~ "dead",
+             Measure == "all cases" ~ "Cases",
+             Measure == "fatal" ~ "Deaths",
              TRUE ~ Measure
            )) %>% 
-    select(-X) %>% 
-    filter(Measure %in% c("all","dead"))
-  
-  # %>% 
+    filter(Measure %in% c("Cases","Deaths")) %>% 
     mutate(Sex =tolower(Sex),
            Age = recode(Age,
             "&lt;10yr" = "0",
@@ -208,21 +189,13 @@ for (week_i in weeks_collect){
             "70-79yr" = "70",
             "70-79yr" = "70",
             "80+yr" = "80"
-           ),
-           Measure = recode(Measure,
-              "all" = "Cases",
-              "dead" = "Deaths"),
-           Value = gsub(Value, pattern = "n &lt; ",replacement = ""),
-           Value = ifelse(Value == "null", NA, Value),
-           Value = as.integer(Value)) %>% 
-    filter(Country != "EU/EEA and the UK") %>% 
+           )) %>% 
+    filter( !grepl(Country, pattern = "EU/EEA")) %>% 
     mutate(Region = "All",
            Date = Date_i,
-           Date = paste(sprintf("%02d",day(Date)),    
-                        sprintf("%02d",month(Date)),  
-                        year(Date),sep="."),
+           Date = ddmmyyyy(Date),
            Metric = "Count",
-           Short =  recode(Country,
+           Short = recode(Country,
              "Austria" = "AT",
              "Belgium" = "BE",
              "Bulgaria" = "BG",
@@ -249,11 +222,9 @@ for (week_i in weeks_collect){
              "Romania" = "RO",
              "Slovakia" = "SK",
              "Sweden" = "SE",
-             "United Kingdom" = "GB",
-             TRUE ~ "Code ME!"),
+             "United Kingdom" = "GB"),
            Code = paste0(Short,"_ECDC_",Date),
            AgeInt = ifelse(Age == "80", 25, 10)) %>% 
-    select(-Short) %>% 
     select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
     filter(!is.na(Value))
 
@@ -262,26 +233,15 @@ for (week_i in weeks_collect){
     bind_rows(ECDC_i)
   
 }
-
-# provisional fix weeks 48 and 49
-#################################
-
-unique(ECDCout$Country)  
-unique(ECDCout$Sex)  
-
-exc1 <- c("P1: to 2020-07-31", "P2: from 2020-08-01")
-exc2 <- c("p1: to 2020-07-31", "p2: from 2020-08-01")
-
-ECDCout <-
-  ECDCout %>% 
-  filter(!(Country %in% exc1 | Sex %in% exc2)) 
-
+}
 
 ###################################################
 # prep output!
 ECDCout <-
   ECDCout %>% 
-  sort_input_data()
+  sort_input_data() %>% 
+  filter(Country != "United Kingdom") %>% 
+  filter(Date != "17.01.2021")
 
 N <- nrow(ECDCout) - nrow(ECDCin)
 
@@ -296,5 +256,36 @@ if (N > 0){
   log_update(pp = ctr, N = N)
 }
 
+do_this <- FALSE
+if (do_this){
+ECDCout %>% 
+  mutate(Date = dmy(Date)) %>% 
+  group_by(Country, Date, Measure) %>% 
+  summarize(N = sum(Value)) %>% 
+  filter(Measure == "Deaths") %>% 
+  ggplot(aes(x=Date,y=N,group = Country,color = Country)) + 
+  geom_line()
+
+ECDCout %>% 
+  filter(Country == "Austria", Measure == "Cases", Sex == "f") %>% 
+  mutate(Date = dmy(Date)) %>% 
+  select(-Code) %>% 
+  pivot_wider(names_from = Date, values_from = Value) %>% 
+  View()
+    
+  
+ECDCout %>% 
+  select(-Code) %>% 
+  mutate(Date = dmy(Date),
+         Age = as.integer(Age)) %>% 
+  group_by(Country, Date, Age, Measure) %>% 
+  summarize(Value = sum(Value),.groups = "drop") %>% 
+  pivot_wider(names_from = "Measure", values_from = "Value") %>% 
+  mutate(CFR = Deaths / Cases) %>% 
+  ggplot(aes(x=Age, y = CFR, group = Country)) + 
+  geom_line() + 
+    facet_wrap(~Date) + 
+  scale_y_log10()
+}
 ###################################################
 
