@@ -78,11 +78,31 @@ idb <-
   idb %>% 
   filter(Country != "Brazil")
 
+# detect TRC
+
 BRA <-
   BRA %>% 
-  mutate(Short = add_Short(Code,Date))
+  mutate(isTRC = grepl(Code, pattern = "TRC"))
 
-BRA$Short %>% unique()
+# detect overlap
+BRA <-
+  BRA %>% 
+  group_by(Region, Date, Sex, Measure) %>% 
+  mutate(overlap = any(isTRC) & any(!isTRC)) %>% 
+  ungroup()
+
+# over overlap, remove !isTRC
+BRA <-
+  BRA %>% 
+  filter(!(overlap & !isTRC)) %>% 
+  select(-isTRC, -overlap)
+
+# append
+
+idb <- idb %>% 
+  bind_rows(BRA)
+
+
 # -------------------------------------- #
 # Resolve Italy bol / info               #
 # -------------------------------------- #
