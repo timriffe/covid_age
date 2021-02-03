@@ -4,6 +4,10 @@ logfile <- here("buildlog.md")
 
 idb <- readRDS("Data/inputDB.rds")
 
+idb <- idb %>% 
+  mutate(Date = dmy(Date),
+         Date = ddmmyyyy(Date))
+
 # -------------------------------------- #
 # Resolve US CDC state sources           #
 # -------------------------------------- #
@@ -58,7 +62,8 @@ USA <-
   USA %>% 
   filter(!(overlap & !isCDC)) %>% 
   select(-isCDC, -overlap, -week, -year) %>% 
-  mutate(Date = ddmmyyyy(Date))
+  mutate(Date = ddmmyyyy(Date),
+         Code = gsub(Code, pattern = "CDC_", replacement = ""))
 
 # 6) append
 
@@ -95,25 +100,133 @@ BRA <-
 BRA <-
   BRA %>% 
   filter(!(overlap & !isTRC)) %>% 
-  select(-isTRC, -overlap)
+  select(-isTRC, -overlap) %>% 
+  mutate(Code = gsub(Code,pattern = "TRC_", replacement = ""))
 
 # append
 
 idb <- idb %>% 
   bind_rows(BRA)
 
-
 # -------------------------------------- #
 # Resolve Italy bol / info               #
 # -------------------------------------- #
-# daily
+# daily. 
+# rule: discard 'info' for days in which they overlap
+
+IT <- idb %>% 
+  filter(Country == "Italy",
+         (grepl(Code, pattern = "info") | grepl(Code, pattern = "bol")))
+
+idb <- 
+  idb %>% 
+  filter(!(
+    Country == "Italy" & (grepl(Code, pattern = "bol") | grepl(Code, pattern = "info"))
+  ))
+
+# Bolettino id variable
+IT <- 
+  IT %>% 
+  mutate(isBOL = grepl(Code, pattern = "bol"))
+
+# overlap variable
+IT <-
+  IT %>% 
+  group_by(Date) %>% 
+  mutate(overlap = any(isBOL) & any(!isBOL)) %>% 
+  ungroup()
+
+# remove overlapy & !isBOL
+IT <-
+  IT %>% 
+  filter(!(overlap & !isBOL)) %>% 
+  # rewrite Code
+  mutate(Code = paste0("IT",Date))
+
+# append
+
+idb <-
+  idb %>% 
+  bind_rows(IT)
 
 # -------------------------------------- #
 # Resolve ECDC                           #
 # -------------------------------------- #
 # weekly.
 
+ever_ecdc_countries <-
+  idb %>% 
+  filter(grepl(Code, pattern = "ECDC")) %>% 
+  dplyr::pull(Country) %>% 
+  unique()
+
+ECDC <- idb %>% 
+  filter(Country %in% ever_ecdc_countries & Region == "All")
+
+idb <-
+  idb %>% 
+  filter(!(Country %in% ever_ecdc_countries & Region == "All"))
+
+# define week and isoyear
+ECDC <-
+  ECDC %>% 
+  mutate(Date = dmy(Date),
+         week = week(Date),
+         year = isoyear(Date)) 
+
+# id ECDC
+ECDC <-
+  ECDC %>% 
+  mutate(isECDC = grepl(Code, pattern = "ECDC_"))
+
+# overlap within week?
+# by Country, year, week, Sex, Measure
+
+ECDC <-
+  ECDC %>% 
+  group_by(Country, year, week, Sex, Measure) %>% 
+  mutate(overlap = any(isECDC) & any(!isECDC)) %>% 
+  ungroup()
+
+# if there is overlap, then keep !isECDC
+
+ECDC <- 
+  ECDC %>% 
+  filter(!(overlap & isECDC))
+
+# remove extra columns, recode Date
+
+ECDC <- 
+  ECDC %>% 
+  mutate(Date = ddmmyyyy(Date)) %>% 
+  select(-year, -week) %>% 
+  mutate(Code = gsub(Code, pattern = "ECDC_", replacement = ""))
+
+# Append:
+idb <-
+  idb %>% 
+  bind_rows(ECDC)
+
+# --------------------------------------------------- #
+# here, Code column should no longer identify source. #
+# --------------------------------------------------- #
+
+idb <-
+  idb %>% 
+  mutate(Short = add_Short(Code, Date))
+
+idb$Short %>% unique() %>% sort() %>% View()
+
+idb %>% 
+  group_by(Country, Region, Date, Sex, Measure, Age) %>% 
+  summarize(n=n()) %>% 
+  filter(n > 1)
+
+# idb %>% 
+#   filter(Region == "Wisconsin") %>% 
+#   dplyr::pull(Date) %>% 
+#   unique()
 
 
-# here, Code column should no longer identify source.
+
 # end
