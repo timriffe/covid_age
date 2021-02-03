@@ -19,7 +19,34 @@ VE_rubric <- get_input_rubric() %>% filter(Short == "VE")
 ss_i  <- VE_rubric %>% dplyr::pull(Sheet)
 ss_db <-  VE_rubric %>% dplyr::pull(Source)
 # reading data from Montreal and last date entered
-db_drive <- read_sheet(ss_i, sheet = "database")
+
+db_drive <- try(read_sheet(ss_i, sheet = "database"))
+
+# If error
+if (class(db_drive)[1] == "try-error") {
+  
+  Sys.sleep(120)
+  
+  # Try to load again
+  db_drive <- try(db_drive <- read_sheet(ss_i, sheet = "database"))
+  
+  if (class(db_drive)[1] == "try-error") {
+    
+    Sys.sleep(120)
+    
+    # Try to load again
+    db_drive <- try(db_drive <- read_sheet(ss_i, sheet = "database"))
+    
+    if (class(db_drive)[1] == "try-error") {
+      
+      Sys.sleep(120)
+      
+      # Try to load again
+      db_drive <- try(read_sheet(ss_i, sheet = "database"))
+      
+    }
+  }
+}
 
 last_date_drive <-
   db_drive %>%
@@ -79,9 +106,45 @@ if (date_f > last_date_drive) {
   ############################################
 
   # This command append new rows at the end of the sheet
-  sheet_append(out,
-               ss = ss_i,
-               sheet = "database")
+  
+  
+  X <- try(sheet_append(out,
+                   ss = ss_i,
+                   sheet = "database"))
+  
+  # If error
+  if (class(X)[1] == "try-error") {
+    
+    Sys.sleep(120)
+    
+    # Try to load again
+    X <- try(sheet_append(out,
+                          ss = ss_i,
+                          sheet = "database"))
+   
+    if (class(X)[1] == "try-error") {
+      
+      Sys.sleep(120)
+      
+      # Try to load again
+      X <- try(sheet_append(out,
+                            ss = ss_i,
+                            sheet = "database"))
+      
+      if (class(X)[1] == "try-error") {
+        
+        Sys.sleep(120)
+        
+        # Try to load again
+        X <- try(sheet_append(out,
+                              ss = ss_i,
+                              sheet = "database"))
+        
+      }
+    }
+  }
+
+  
   log_update(pp = ctr, N = nrow(out))
   
   

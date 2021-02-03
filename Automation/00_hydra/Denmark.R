@@ -138,6 +138,7 @@ db_drive_tots <- db_drive2 %>%
   mutate(Age = "TOT")
 
 db_drive_all <- db_drive2 %>% 
+  mutate(Age = as.character(Age)) %>% 
   filter(Age != "UNK") %>% 
   select(Date, Sex, Age, Measure, Value) %>% 
   bind_rows(db_drive_tots) %>% 
@@ -168,8 +169,7 @@ out <- db_no_zip %>%
                             TRUE ~ 10L),
          Metric = "Count") %>% 
   arrange(date_f, Region, Measure, Sex, suppressWarnings(as.integer(Age))) %>% 
-  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
-
+  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) 
 
 ###########################
 #### Saving data in N: ####

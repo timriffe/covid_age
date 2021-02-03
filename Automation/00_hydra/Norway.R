@@ -30,7 +30,8 @@ ss_db <- rubric %>%
 #   select(-Short)
 
 db_drive <- read_sheet("https://docs.google.com/spreadsheets/d/1b-vhrc3ZAW-Mp5FU31QI-1tRj3r0E5Ew-Nkb-fHqpmA/", 
-                       sheet = "database")
+                       sheet = "database") %>% 
+  mutate(Date = dmy(Date))
 
 # Detect files to capture ####
 ##############################
@@ -63,10 +64,10 @@ for (l in rev(test_urls)){
   if(skip_to_next) { break } 
 }
 
-death_dates <- seq(today() - 15, today(),by="days")
+death_dates <- seq(today() - 400, today(),by="days")
 db_d_all <- tibble()
 
-for (i in 1:31){
+for (i in 1:401){
   skip_to_next <- FALSE
   tryCatch({
     print(l)
@@ -93,7 +94,10 @@ db_c2 <-
       "70-79" = "70",
       "80-89" = "80",
       "90+" = "90"),
-      Sex = ifelse(sex == "male","m","f")) %>% 
+      Sex = case_when(sex == "male" ~ "m",
+                      sex == "female" ~ "f",
+                      sex == "total" ~ "b",
+                      TRUE ~ "o")) %>% 
   arrange(Sex, Age, date) %>% 
   group_by(Sex, Age) %>% 
   mutate(Value = cumsum(n)) %>% 
@@ -135,11 +139,11 @@ db_t2 <-
 #   View()
 
 get_zero <- function(chunk){
-  if (!"0" %in% chunk$age){
+  if (!"0" %in% chunk$Age){
     chunk <- chunk %>% 
     slice(1) %>% 
-    mutate(age = "0",
-           n=0) %>% 
+    mutate(Age = "0",
+           n = 0) %>% 
     bind_rows(chunk)
   }
   chunk
@@ -163,7 +167,7 @@ db_d2 <-
   group_by(Sex, Date) %>% 
   do(get_zero(chunk = .data)) %>% 
   ungroup() %>% 
-  arrange(Sex, Age, Date) %>% 
+  arrange(Date, Sex, Age) %>% 
   group_by(Sex, Age) %>% 
   mutate(Value = cumsum(n)) %>% 
   ungroup() %>% 
@@ -197,25 +201,32 @@ captured <-
 # treat cases and tests as completely refreshing
 ###########################################################
 
-db_d3 <- db_drive %>%
-  mutate(Value = as.double(Value)) %>% 
-  filter(Measure == "Deaths") %>% 
-  bind_rows(db_d2 %>% 
-              mutate(Date = paste(sprintf("%02d",day(Date)),    
-                                  sprintf("%02d",month(Date)),  
-                                  year(Date),sep="."),
-                     Code = paste0("NO",Date))) %>% 
-  unique() %>% 
-  sort_input_data()
+dates_db_c2 <- db_c2 %>% 
+  dplyr::pull(Date) %>% 
+  unique()
+
+dates_db_t2 <- db_t2 %>% 
+  dplyr::pull(Date) %>% 
+  unique()
+
+dates_db_d2 <- db_d2 %>% 
+  dplyr::pull(Date) %>% 
+  unique()
+
+db_drive2 <- db_drive %>%
+  filter(!(Date %in% dates_db_d2 & Measure == "Deaths"),
+         !(Date %in% dates_db_c2 & Measure == "Cases"),
+         !(Date %in% dates_db_t2 & Measure == "Tests")) %>% 
+  mutate(Value = as.double(Value)) 
 
 out <- 
-  bind_rows(db_c2, db_t2) %>% 
+  bind_rows(db_drive2, db_d2, db_c2, db_t2) %>% 
   mutate(Date = paste(sprintf("%02d",day(Date)),    
                       sprintf("%02d",month(Date)),  
                       year(Date),sep="."),
          Code = paste0("NO",Date)) %>% 
-  bind_rows(db_d3) %>% 
-    sort_input_data()
+  sort_input_data()
+
 
   
 # Push to Drive ####
