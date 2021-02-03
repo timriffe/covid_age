@@ -219,7 +219,7 @@ idb$Short %>% unique() %>% sort() %>% View()
 
 idb %>% 
   group_by(Country, Region, Date, Sex, Measure, Age) %>% 
-  summarize(n=n()) %>% 
+  summarize(n=n(), .groups = "drop") %>% 
   filter(n > 1)
 
 # idb %>% 
