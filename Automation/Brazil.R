@@ -16,6 +16,25 @@ rubric_i <- get_input_rubric() %>% filter(Short == "BR_all")
 ss_i     <- rubric_i %>% dplyr::pull(Sheet)
 ss_db    <- rubric_i %>% dplyr::pull(Source)
 
+db_drive <- get_country_inputDB("BR_all")
+db_drive <- read_sheet("https://docs.google.com/spreadsheets/d/1Qo4ggcV2eTy7k_dOmII5GIRdcvEIgl5xFylInPyy6ys/edit#gid=1095937002",
+           sheet = "database")
+
+db_drive2 <- db_drive %>% 
+  group_by(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
+  mutate(seq = 1:n())
+# col_types = cols(.default = "c")
+# db_drive2 <- db_drive %>% 
+#   unique
+# 
+# write_sheet(db_drive2, 
+#             ss = ss_i,
+#             sheet = "database")
+
+db_drive2 <- db_drive %>% 
+  mutate(date_f = dmy(Date))
+last_date_drive <- max(db_drive2$date_f)
+
 # donloading file
 url <- "https://transparencia.registrocivil.org.br/dados-covid-download"
 
