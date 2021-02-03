@@ -34,6 +34,8 @@ date_text <-
 loc_date1 <- str_locate(date_text, "as of ")[2] + 1
 loc_date2 <- str_locate(date_text, ",")[1] - 1
 date1     <- paste0(str_sub(date_text, loc_date1, loc_date2), " 2021")
+# temporal fix for typo in website
+date1 <- str_replace(date1, "Febuary", "February")
 date_f    <- mdy(date1)
 
 if (date_f > last_date_drive){

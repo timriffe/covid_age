@@ -55,7 +55,7 @@ sched("Scotland", tm = "12:10",email = auto_update_email, wd = auto_update_wd)
 sched("Norway", tm = "16:11",email = auto_update_email, wd = auto_update_wd)
 sched("US_California", tm = "07:50",email = auto_update_email, wd = auto_update_wd)
 sched("Afghanistan", tm = "06:35",email = auto_update_email, wd = auto_update_wd)
-sched("ECDC", tm = "08:37",email = auto_update_email, wd = auto_update_wd, sch = "WEEKLY")
+sched("ECDC", tm = "15:51",email = auto_update_email, wd = auto_update_wd, sch = "WEEKLY")
 sched("Finland", tm = "11:44",email = auto_update_email, wd = auto_update_wd, sch = "WEEKLY")
 sched("US_Wisconsin", tm = "13:02",email = auto_update_email, wd = auto_update_wd)
 sched("Bulgaria", tm = "08:24",email = auto_update_email, wd = auto_update_wd)
@@ -69,6 +69,7 @@ sched("Spain", "10:01",email = auto_update_email, wd = auto_update_wd)
 sched("US_Oregon", "12:18",email = auto_update_email, wd = auto_update_wd)
 sched("Slovakia", "18:28",email = auto_update_email, wd = auto_update_wd)
 sched("Cambodia", "20:32",email = auto_update_email, wd = auto_update_wd)
+sched("Brazil", "16:29",email = auto_update_email, wd = auto_update_wd)
 ## broken scripts:
 ##################
 # sched("New_Zealand", tm = "02:10",email = auto_update_email, wd = auto_update_wd)
@@ -104,11 +105,10 @@ sched("Cambodia", "20:32",email = auto_update_email, wd = auto_update_wd)
 # delete_sched("Philippines")
 # delete_sched("Scotland")
 # delete_sched("Norway")
-<<<<<<< HEAD
+# delete_sched("ECDC")
 # delete_sched("Slovakia")
-=======
 # delete_sched("Thailand")
->>>>>>> a75117a67d86cab3411e64197a0df079db73c6c5
+
 
 
 ### to list current tasks

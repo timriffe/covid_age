@@ -5,8 +5,6 @@ library(rjson)
 library(tidyverse)
 IN_json <- fromJSON(file="https://www.koronavirus.hr/json/?action=po_osobama")
 
-
-
 IN <- bind_rows(IN_json) 
 IN2 <- IN %>% 
   select(Sex = spol, dob, Date = Datum, Region = Zupanija) %>%  # Regions = Counties
