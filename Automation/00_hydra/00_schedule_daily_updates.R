@@ -69,6 +69,7 @@ sched("Spain", "10:01",email = auto_update_email, wd = auto_update_wd)
 sched("US_Oregon", "12:18",email = auto_update_email, wd = auto_update_wd)
 sched("Slovakia", "18:28",email = auto_update_email, wd = auto_update_wd)
 sched("Cambodia", "20:32",email = auto_update_email, wd = auto_update_wd)
+sched("Brazil", "16:29",email = auto_update_email, wd = auto_update_wd)
 ## broken scripts:
 ##################
 # sched("New_Zealand", tm = "02:10",email = auto_update_email, wd = auto_update_wd)
