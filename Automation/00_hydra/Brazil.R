@@ -1,4 +1,6 @@
-source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
+# source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
+library(here)
+source(here("Automation/00_Functions_automation.R"))
 
 library(RSelenium)
 library(rvest)
@@ -6,8 +8,6 @@ library(rvest)
 email <- "kikepaila@gmail.com"
 
 ctr <- "Brazil"
-dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
-dir_n <- "Data/"
 
 # Drive credentials
 drive_auth(email = email)
@@ -20,16 +20,9 @@ ss_db    <- rubric_i %>% dplyr::pull(Source)
 
 db_drive <- get_country_inputDB("BR_all")
 
-# col_types = cols(.default = "c")
-# db_drive2 <- db_drive %>% 
-#   unique
-# 
-# write_sheet(db_drive2, 
-#             ss = ss_i,
-#             sheet = "database")
-
 db_drive2 <- db_drive %>% 
   mutate(date_f = dmy(Date))
+
 last_date_drive <- max(db_drive2$date_f)
 
 # donloading file
@@ -58,6 +51,8 @@ driver <- RSelenium::rsDriver(browser = "chrome",
 remote_driver <- driver[["client"]] 
 remote_driver$navigate(url)
 
+Sys.sleep(30)
+
 # read date
 date_lb <- remote_driver$findElement(using = "xpath", '/html/body/div[1]/div[2]/div/div/div[2]/div/div[2]/div[1]/div[2]/p/p[1]')
 date_lb2 <- date_lb$findElement(using='css selector',"body")$getElementText()[[1]]
@@ -65,18 +60,13 @@ date_f <- str_sub(date_lb2, -10) %>% dmy()
 
 if (date_f > last_date_drive){
   
-  
   # locate button and click it
-  button <- remote_driver$findElement(using = "xpath", '//*[@id="app"]/div[2]/div/div/div[2]/div/div[2]/div[2]/div[2]/a')
+  button <- remote_driver$findElement(using = "xpath", '//*[@id="app"]/div[2]/div/div/div[2]/div/div[2]/div[1]/div[2]/a')
   button$clickElement()
   
-  
   Sys.sleep(3)
-  data_source1 <- paste0(dir_n, ctr, "/", ctr, "_data_deaths_", today(), ".csv")
-  file.copy("C:/Users/kikep/Downloads/obitos-2020.csv", data_source1, T)
-  file.remove("C:/Users/kikep/Downloads/obitos-2020.csv")
-
-  db <- read_csv(data_source1)
+  
+  db <- read_csv("C:/Users/kikep/Downloads/obitos-2021.csv")
   
   db2 <- 
     db %>% 
@@ -100,12 +90,19 @@ if (date_f > last_date_drive){
                            TRUE ~ Age),
            Sex = case_when(Sex == "F" ~ "f",
                            Sex == "M" ~ "m",
-                           Sex == "I" ~ "i")) %>% 
+                           TRUE ~ "o")) %>% 
     select(-trash)
-           
-    
-  db_sex <- 
+  
+  regs <- unique(db3$reg)
+  ages <- db3 %>% arrange(suppressWarnings(as.integer(Age))) %>% dplyr::pull(Age) %>% unique()
+  sexs <- unique(db3$Sex)
+  
+  db4 <- 
     db3 %>% 
+    tidyr::complete(reg = regs, Age = ages, Sex = sexs, fill = list(Value = 0))
+  
+  db_sex <- 
+    db4 %>% 
     group_by(reg, Age) %>% 
     summarise(Value = sum(Value)) %>% 
     ungroup() %>% 
@@ -113,25 +110,24 @@ if (date_f > last_date_drive){
     filter(Age != "UNK")
   
   db_age <- 
-    db3 %>% 
+    db4 %>% 
     group_by(reg, Sex) %>% 
     summarise(Value = sum(Value)) %>% 
     ungroup() %>% 
     mutate(Age = "TOT") %>% 
-    filter(Sex != "i")
+    filter(Sex != "o")
   
   db_sex_age <- 
-    db3 %>% 
+    db4 %>% 
     group_by(reg) %>% 
     summarise(Value = sum(Value)) %>% 
     ungroup() %>% 
     mutate(Age = "TOT",
-           Sex = "b") %>% 
-    filter(Sex != "i")
+           Sex = "b")
   
-  db4 <- 
-    db3 %>% 
-    filter(Sex != "i" & Age != "UNK") %>% 
+  db5 <- 
+    db4 %>% 
+    filter(Sex != "o" & Age != "UNK") %>% 
     bind_rows(db_age, db_sex, db_sex_age) %>% 
     mutate(Region = case_when(reg == 'AC' ~ 'Acre',
                               reg == 'AL' ~ 'Alagoas',
@@ -163,18 +159,18 @@ if (date_f > last_date_drive){
                               TRUE ~ "other")) 
   
   
-  db5 <- 
-    db4 %>%
+  db6 <- 
+    db5 %>%
     group_by(Age, Sex) %>% 
     summarise(Value = sum(Value)) %>% 
     ungroup() %>% 
     mutate(Region = "All",
            reg = "")
-    
-  unique(db5$Age)
+  
+  unique(db6$Age)
   
   out <- 
-    bind_rows(db4, db5) %>%   
+    bind_rows(db6, db5) %>%   
     mutate(Country = "Brazil",
            date_f = date_f,
            Date = paste(sprintf("%02d",day(date_f)),
@@ -187,8 +183,7 @@ if (date_f > last_date_drive){
                               TRUE ~ 10),
            Metric = "Count",
            Measure = "Deaths") %>% 
-    arrange(Region, date_f, Measure, Sex, suppressWarnings(as.integer(Age))) %>% 
-    select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
+    sort_input_data()
   
   unique(out$Region)
   
@@ -197,23 +192,26 @@ if (date_f > last_date_drive){
   ############################################
   
   sheet_append(out,
-              ss = ss_i,
-              sheet = "database")
+               ss = ss_i,
+               sheet = "database")
   log_update(pp = ctr, N = nrow(out))
   
   
   sheet_name <- paste0(ctr, "_all_deaths_", today())
   meta <- drive_create(sheet_name,
-               path = ss_db, 
-               type = "spreadsheet",
-               overwrite = TRUE)
+                       path = ss_db, 
+                       type = "spreadsheet",
+                       overwrite = TRUE)
   
   write_sheet(db,
               ss = meta$id,
               sheet = "data")
   
   sheet_delete(meta$id, "Sheet1")
- 
+  
+  file.remove("C:/Users/kikep/Downloads/obitos-2021.csv")
+  
+  
 } else if (date_f == last_date_drive) {
   cat(paste0("no new updates so far, last date: ", date_f))
   log_update(pp = ctr, N = 0)
