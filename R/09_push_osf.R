@@ -43,7 +43,9 @@ cdb_files <- c("inputDB.rds","inputDBhold.rds",
                 "Output_10.rds","Offsets.rds")
 files_from <- file.path("Data",cdb_files)
 
-file.copy(from = files_from, to = "N://COVerAGE-DB/Data")
+file.copy(from = files_from, 
+          to = "N://COVerAGE-DB/Data", 
+          overwrite = TRUE)
 
 
 # # On Friday's we archive the build.
