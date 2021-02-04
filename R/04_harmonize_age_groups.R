@@ -12,8 +12,6 @@ n.cores <- round(6 + (detectCores() - 8)/8)
 inputCounts <- readRDS(here("Data","inputCounts.rds"))
 inputCounts$Metric <- NULL
 
-codes_in <- with(inputCounts, paste(Country,Region,Measure,Short)) %>% unique()
-
 # Offsets
 Offsets     <- readRDS(here("Data","Offsets.rds"))
 
