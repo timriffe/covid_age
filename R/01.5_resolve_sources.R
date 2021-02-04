@@ -211,16 +211,19 @@ idb <-
 # here, Code column should no longer identify source. #
 # --------------------------------------------------- #
 
-idb <-
-  idb %>% 
-  mutate(Short = add_Short(Code, Date))
+saveRDS(idb,file= "Data/inputDBresolved.rds")
 
-idb$Short %>% unique() %>% sort() %>% View()
 
-idb %>% 
-  group_by(Country, Region, Date, Sex, Measure, Age) %>% 
-  summarize(n=n(), .groups = "drop") %>% 
-  filter(n > 1)
+# idb <-
+#   idb %>% 
+#   mutate(Short = add_Short(Code, Date))
+# 
+# idb$Short %>% unique() %>% sort() %>% View()
+# 
+# idb %>% 
+#   group_by(Country, Region, Date, Sex, Measure, Age) %>% 
+#   summarize(n=n(), .groups = "drop") %>% 
+#   filter(n > 1)
 
 # idb %>% 
 #   filter(Region == "Wisconsin") %>% 
