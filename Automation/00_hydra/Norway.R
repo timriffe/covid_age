@@ -227,8 +227,6 @@ out <-
          Code = paste0("NO",Date)) %>% 
   sort_input_data()
 
-
-  
 # Push to Drive ####
 ####################
 
