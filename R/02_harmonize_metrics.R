@@ -7,11 +7,9 @@ logfile <- here("buildlog.md")
 
 ### Get data ########################################################
 
-if (hours < Inf){
-  inputDB <- readRDS(here("Data","inputDB_i.rds"))
-} else {
-  inputDB <- readRDS(here("Data","inputDB.rds"))
-}
+
+inputDB <- readRDS(here("Data","inputDBresolved.rds"))
+
 
 # this script transforms the inputDB as required, and produces standardized measures and metrics
 

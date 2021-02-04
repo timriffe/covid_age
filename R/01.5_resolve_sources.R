@@ -2,6 +2,8 @@ library(here)
 source(here("R","00_Functions.R"))
 logfile <- here("buildlog.md")
 
+log_section("begin resolution of multiple sources per population", logfile = logfile)
+
 idb <- readRDS("Data/inputDB.rds")
 
 idb <- idb %>% 
@@ -28,6 +30,7 @@ idb <- idb %>%
 # always prefer CDC if there is overlap within a week.
 # This might mean throwing out more than one day of 
 # death data collected from the state. We should be
+log_section("Resolve USA CDC overlaps", logfile = logfile)
 
 # 1: subset idb to US states, deaths 
 
@@ -80,15 +83,19 @@ idb <-
   idb %>% 
   bind_rows(USA)
 
+cat("USA CDC resolved\n",nrow(USAout),"rows removed\n", file = logfile, append = TRUE)
+
 # -------------------------------------- #
 # Resolve Brazil states                  #                
 # -------------------------------------- #
 # daily
 # rule: always prefer TRC if there is overlap within a day
+log_section("Resolve Brazil TRC overlaps", logfile = logfile)
+
 
 BRA <- idb %>% 
   filter(Country == "Brazil")
-
+n1 <- nrow(BRA)
 idb <- 
   idb %>% 
   filter(Country != "Brazil")
@@ -116,20 +123,25 @@ BRA <-
   select(-isTRC, -overlap) %>% 
   mutate(Code = gsub(Code, pattern = "TRC_", replacement = ""))
 
+n2 <- nrow(BRA)
+
 # append
 idb <- idb %>% 
   bind_rows(BRA)
+cat("Brazil TRC resolved\n",n1-n2,"rows removed\n", file = logfile, append = TRUE)
+
 
 # -------------------------------------- #
 # Resolve Italy bol / info               #
 # -------------------------------------- #
 # daily. 
 # rule: discard 'info' for days in which they overlap
+log_section("Resolve Italy Bollettino and Infografico", logfile = logfile)
 
 IT <- idb %>% 
   filter(Country == "Italy",
          (grepl(Code, pattern = "info") | grepl(Code, pattern = "bol")))
-
+n1 <- nrow(IT)
 idb <- 
   idb %>% 
   filter(!(
@@ -159,11 +171,13 @@ IT <-
   select(-isBOL, -overlap) %>% 
   # rewrite Code
   mutate(Code = paste0("IT",Date))
-
+n2 <- nrow(IT)
 # append
 idb <-
   idb %>% 
   bind_rows(IT)
+cat("Italy resolved\n",n1-n2,"rows removed\n", file = logfile, append = TRUE)
+
 
 # -------------------------------------- #
 # Resolve ECDC                           #
@@ -172,15 +186,18 @@ idb <-
 # rule: always prefer national source if there is overlap within a week.
 # This might mean throwing out more than one day of 
 # death data collected from the state. 
+log_section("Resolve ECDC overlaps", logfile = logfile)
+
 
 ever_ecdc_countries <-
   idb %>% 
   filter(grepl(Code, pattern = "ECDC")) %>% 
   dplyr::pull(Country) %>% 
   unique()
-
+ 
 ECDC <- idb %>% 
   filter(Country %in% ever_ecdc_countries & Region == "All")
+n1   <- nrow(ECDC)
 
 idb <-
   idb %>% 
@@ -222,11 +239,12 @@ ECDC <-
   mutate(Date = ddmmyyyy(Date)) %>% 
   select(-year, -week, -overlap, -isECDC) %>% 
   mutate(Code = gsub(Code, pattern = "ECDC_", replacement = ""))
-
+n2 <- nrow(ECDC)
 # Append:
 idb <-
   idb %>% 
   bind_rows(ECDC)
+cat("ECDC resolved\n",n1-n2,"rows removed\n", file = logfile, append = TRUE)
 
 # --------------------------------------------------- #
 # here, Code column should no longer identify source. #
