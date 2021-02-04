@@ -36,9 +36,14 @@ for (i in 1:length(files)){
   Sys.sleep(2)
 }
 
+################################################
+# also copy rds files to N://COVerAGE-DB/Data
+cdb_files <- c("inputDB.rds","inputDBhold.rds",
+                "inputCounts.rds","Output_5.rds",
+                "Output_10.rds","Offsets.rds")
+files_from <- file.path("Data",cdb_files)
 
-#push_current(files_data_zipped)
-
+file.copy(from = files_from, to = "N://COVerAGE-DB/Data")
 
 
 # # On Friday's we archive the build.
