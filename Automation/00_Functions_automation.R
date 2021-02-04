@@ -102,6 +102,34 @@ get_country_inputDB <- function(ShortCode) {
                     sheet = "database", 
                     na = "NA")
   
+  
+  out <- try(read_sheet(ss_i, 
+                        sheet = "database", 
+                        na = "NA"))
+  
+  # If error
+  if (class(out)[1] == "try-error") {
+    
+    Sys.sleep(120)
+    
+    # Try to load again
+    out <- try(read_sheet(ss_i, 
+                          sheet = "database", 
+                          na = "NA"))
+    
+    if (class(out)[1] == "try-error") {
+      
+      Sys.sleep(120)
+      
+      # Try to load again
+      out <- try(read_sheet(ss_i, 
+                            sheet = "database", 
+                            na = "NA"))
+      
+    }
+  }
+  
+  # A problem with the amount of columns
   # , 
   # col_types= "cccccciccd"
   
@@ -200,8 +228,8 @@ sort_input_data <- function(X) {
     mutate(Date2 = dmy(Date)) %>% 
     # Sort data
     arrange(Country,
-            Region,
             Date2,
+            Region,
             Code,
             Sex, 
             Measure,

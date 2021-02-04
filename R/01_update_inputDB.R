@@ -177,7 +177,8 @@ if (nrow(rubric) > 0){
   
   ids_new       <- with(inputDB, paste(Country,Region,Measure,Short))
   
-  inputDB_prior <- readRDS(here("Data","inputDB.rds"))
+  inputDB_prior <- readRDS(here("Data","inputDB.rds")) %>% 
+    mutate(Short = add_Short(Code,Date))
   
   inputDB_out <-
     inputDB_prior %>% 
