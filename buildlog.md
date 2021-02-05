@@ -1,46 +1,74 @@
 
 # New build log 
- Thu Feb 04 01:00:46 2021 
+ Fri Feb 05 01:00:10 2021 
 
+
+# begin resolution of multiple sources per population 
+ Fri Feb 05 01:00:10 2021 
+
+
+# Resolve USA CDC overlaps 
+ Fri Feb 05 01:00:56 2021 
+
+USA CDC resolved
+ 0 rows removed
+
+# Resolve Brazil TRC overlaps 
+ Fri Feb 05 01:01:02 2021 
+
+Brazil TRC resolved
+ 858 rows removed
+
+# Resolve Italy Bollettino and Infografico 
+ Fri Feb 05 01:01:06 2021 
+
+Italy resolved
+ 229 rows removed
+
+# Resolve ECDC overlaps 
+ Fri Feb 05 01:01:14 2021 
+
+ECDC resolved
+ 2970 rows removed
 
 # prep (resolve_UNKUNK) 
- Thu Feb 04 01:02:21 2021 
+ Fri Feb 05 01:02:26 2021 
 
 
 # A (convert_fractions_sexes) 
- Thu Feb 04 01:27:52 2021 
+ Fri Feb 05 01:07:11 2021 
 
 
 # B (redistribute_unknown_age) 
- Thu Feb 04 01:40:17 2021 
+ Fri Feb 05 01:10:20 2021 
 
 
 # C (rescale_to_total) 
- Thu Feb 04 03:16:06 2021 
+ Fri Feb 05 01:24:51 2021 
 
 
 # D (infer_cases_from_deaths_and_ascfr) 
- Thu Feb 04 04:12:18 2021 
+ Fri Feb 05 01:39:52 2021 
 
 
 # E (infer_deaths_from_cases_and_ascfr) 
- Thu Feb 04 04:31:27 2021 
+ Fri Feb 05 01:43:58 2021 
 
 
 # G (redistribute_unknown_sex) 
- Thu Feb 04 05:06:13 2021 
+ Fri Feb 05 01:48:05 2021 
 
 
 # H (rescale_sexes) 
- Thu Feb 04 05:24:18 2021 
+ Fri Feb 05 01:54:43 2021 
 
 
 # I (infer_both_sex) 
- Thu Feb 04 05:28:31 2021 
+ Fri Feb 05 01:56:18 2021 
 
 
 # J (maybe_lower_closeout) 
- Thu Feb 04 05:41:56 2021 
+ Fri Feb 05 02:01:06 2021 
 
 filter( Code == 'NZ15.01.2021', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'GB_SCO_21.01.2021', Sex == 'f', Measure == 'Cases' )
@@ -160,279 +188,19 @@ filter( Code == 'GB_SCO_02.02.2021', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'GB_SCO_02.02.2021', Sex == 'f', Measure == 'Tests' )
 filter( Code == 'GB_SCO_02.02.2021', Sex == 'm', Measure == 'Tests' )
 filter( Code == 'GB_SCO_02.02.2021', Sex == 'b', Measure == 'Tests' )
+filter( Code == 'GB_SCO_03.02.2021', Sex == 'f', Measure == 'Cases' )
+filter( Code == 'GB_SCO_03.02.2021', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'GB_SCO_03.02.2021', Sex == 'b', Measure == 'Cases' )
+filter( Code == 'GB_SCO_03.02.2021', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'GB_SCO_03.02.2021', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'GB_SCO_03.02.2021', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'GB_SCO_03.02.2021', Sex == 'f', Measure == 'Tests' )
+filter( Code == 'GB_SCO_03.02.2021', Sex == 'm', Measure == 'Tests' )
+filter( Code == 'GB_SCO_03.02.2021', Sex == 'b', Measure == 'Tests' )
 filter( Code == 'US_TX10.09.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_TX11.09.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_TX13.09.2020', Sex == 'b', Measure == 'Cases' )
 
 # Age harmonization 
- Thu Feb 04 06:12:43 2021 
-
-filter( Code == 'PE_CUS26.01.2021', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'PE_ANC26.01.2021', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'PE_ANC28.01.2021', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'PE_CUS26.01.2021', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'PE_LIM26.01.2021', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'PE_LIM27.01.2021', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'PE_LIM28.01.2021', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'PE_LIM29.01.2021', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'NL03.02.2021', Sex == 'b', Measure == 'Deaths' )
-filter( Code == 'PE_LIM27.01.2021', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'PE26.01.2021', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'BR_TRC_AC14.01.2021', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_AL14.01.2021', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_AP01.02.2021', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_AP03.01.2021', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_AP06.01.2021', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_AP14.01.2021', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_AP25.12.2020', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_AP26.12.2020', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_AP29.12.2020', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_CE14.01.2021', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_DF14.01.2021', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_GO14.01.2021', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_MA14.01.2021', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_MS14.01.2021', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_MT14.01.2021', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_PA14.01.2021', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_PB14.01.2021', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_PE14.01.2021', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_PI01.02.2021', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_PI03.01.2021', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_PI06.01.2021', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_PI14.01.2021', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_PI25.12.2020', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_PI26.12.2020', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_PI29.12.2020', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_PR14.01.2021', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_RO14.01.2021', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_RR14.01.2021', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_RS14.01.2021', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_SC14.01.2021', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_TO14.01.2021', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'PE_LIM28.01.2021', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'PE27.01.2021', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'PE_ANC26.01.2021', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'PE_ANC28.01.2021', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'PE26.01.2021', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'PE27.01.2021', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'PE28.01.2021', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'PE_LIM26.01.2021', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'PE_LIM27.01.2021', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'PE_LIM28.01.2021', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'PE28.01.2021', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'NL03.02.2021', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'PE_LIM29.01.2021', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'PK10.03.2020', Sex == 'b', Measure == 'Deaths' )
-filter( Code == 'PK11.03.2020', Sex == 'b', Measure == 'Deaths' )
-filter( Code == 'PK12.03.2020', Sex == 'b', Measure == 'Deaths' )
-filter( Code == 'PK13.03.2020', Sex == 'b', Measure == 'Deaths' )
-filter( Code == 'PK14.03.2020', Sex == 'b', Measure == 'Deaths' )
-filter( Code == 'PE26.01.2021', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'PK15.03.2020', Sex == 'b', Measure == 'Deaths' )
-filter( Code == 'PK16.03.2020', Sex == 'b', Measure == 'Deaths' )
-filter( Code == 'PE27.01.2021', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'PK17.03.2020', Sex == 'b', Measure == 'Deaths' )
-filter( Code == 'PE28.01.2021', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'PE29.01.2021', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'PE29.01.2021', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'PS02.01.2022', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'PS02.01.2023', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'PS02.01.2024', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'PS02.01.2025', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'PS02.01.2026', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'PS02.01.2027', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'PS02.01.2028', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'TH03.01.2021', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'TH24.11.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'TH30.12.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'TR03.08.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'TR05.07.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'TR05.10.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'TR07.09.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'TR10.08.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'TR12.07.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'TR12.10.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'TR14.09.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'TR17.08.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'TR19.07.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'TR19.10.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'TR21.09.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'TR24.08.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'TR26.07.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'TR26.10.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'TR28.06.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'TR28.09.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'TR31.08.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'BR_TRC_AP14.01.2021', Sex == 'b', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_CE14.01.2021', Sex == 'b', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_GO14.01.2021', Sex == 'b', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_MA14.01.2021', Sex == 'b', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_MS14.01.2021', Sex == 'b', Measure == 'Deaths' )
-filter( Code == 'US_IN10.03.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'BR_TRC_MT14.01.2021', Sex == 'b', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_PA14.01.2021', Sex == 'b', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_PE14.01.2021', Sex == 'b', Measure == 'Deaths' )
-filter( Code == 'US_IN13.03.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'BR_TRC_PI14.01.2021', Sex == 'b', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_PR14.01.2021', Sex == 'b', Measure == 'Deaths' )
-filter( Code == 'US_IN15.03.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'BR_TRC_RO14.01.2021', Sex == 'b', Measure == 'Deaths' )
-filter( Code == 'US_IN17.03.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'BR_TRC_RR14.01.2021', Sex == 'b', Measure == 'Deaths' )
-filter( Code == 'US_IN18.03.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'US_IN19.03.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'US_IN20.03.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'US_IN21.03.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'BR_TRC_TO14.01.2021', Sex == 'b', Measure == 'Deaths' )
-filter( Code == 'US_IN22.03.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'US_IN24.03.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'PE_ANC26.01.2021', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'TH01.04.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'TH01.12.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'TH03.01.2021', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'TH04.04.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'TH15.12.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'TH20.03.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'TH22.09.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'TH24.11.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'TH27.03.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'TH01.04.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'TH01.12.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'TH30.12.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'TH04.04.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'TH15.12.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'TH20.03.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'TH22.09.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'US_IN10.03.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'US_IN13.03.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'US_IN15.03.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'US_IN17.03.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'US_IN18.03.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'US_IN19.03.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'US_IN20.03.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'US_IN21.03.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'US_IN22.03.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'US_IN24.03.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'TH27.03.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'TR03.08.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'TR05.07.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'TR05.10.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'TR07.09.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'TR10.08.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'TR12.07.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'TR12.10.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'TR14.09.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'TR17.08.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'TR19.07.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'TR19.10.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'TR21.09.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'TR24.08.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'TR26.07.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'TR26.10.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'TR28.06.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'TR28.09.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'TR31.08.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'US_IN06.03.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'US_IN08.03.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'US_IN09.03.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'US_IN10.03.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'US_IN11.03.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'US_IN12.03.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'US_IN13.03.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'US_IN15.03.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'US_IN16.03.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'US_IN17.03.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'US_IN18.03.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'US_IN19.03.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'US_IN20.03.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'US_IN21.03.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'US_IN22.03.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'US_IN23.03.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'US_IN24.03.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'US_VT21.01.2021', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'US_VT26.01.2021', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'PK10.03.2020', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'PK11.03.2020', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'PK12.03.2020', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'PK13.03.2020', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'PK14.03.2020', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'PK15.03.2020', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'PK16.03.2020', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'PK17.03.2020', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_AP14.01.2021', Sex == 'm', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_CE14.01.2021', Sex == 'm', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_ES14.01.2021', Sex == 'm', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_GO14.01.2021', Sex == 'm', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_MA14.01.2021', Sex == 'm', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_MG14.01.2021', Sex == 'm', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_MS14.01.2021', Sex == 'm', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_MT14.01.2021', Sex == 'm', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_PA14.01.2021', Sex == 'm', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_PE14.01.2021', Sex == 'm', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_PI14.01.2021', Sex == 'm', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_PR14.01.2021', Sex == 'm', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_RN14.01.2021', Sex == 'm', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_RO14.01.2021', Sex == 'm', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_RR14.01.2021', Sex == 'm', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_TO01.02.2021', Sex == 'm', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_TO03.01.2021', Sex == 'm', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_TO06.01.2021', Sex == 'm', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_TO14.01.2021', Sex == 'm', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_TO25.12.2020', Sex == 'm', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_TO26.12.2020', Sex == 'm', Measure == 'Deaths' )
-filter( Code == 'BR_TRC_TO29.12.2020', Sex == 'm', Measure == 'Deaths' )
-filter( Code == 'NL03.02.2021', Sex == 'm', Measure == 'Deaths' )
-filter( Code == 'PK10.03.2020', Sex == 'm', Measure == 'Deaths' )
-filter( Code == 'PK11.03.2020', Sex == 'm', Measure == 'Deaths' )
-filter( Code == 'PK12.03.2020', Sex == 'm', Measure == 'Deaths' )
-filter( Code == 'PK13.03.2020', Sex == 'm', Measure == 'Deaths' )
-filter( Code == 'PK14.03.2020', Sex == 'm', Measure == 'Deaths' )
-filter( Code == 'PK15.03.2020', Sex == 'm', Measure == 'Deaths' )
-filter( Code == 'PK16.03.2020', Sex == 'm', Measure == 'Deaths' )
-filter( Code == 'PK17.03.2020', Sex == 'm', Measure == 'Deaths' )
-filter( Code == 'AR03.06.2020', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'AR06.06.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'AR09.06.2020', Sex == 'm', Measure == 'Deaths' )
-filter( Code == 'AR18.10.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'AF10.11.2020', Sex == 'b', Measure == 'Deaths' )
-filter( Code == 'AR22.03.2020', Sex == 'm', Measure == 'Deaths' )
-filter( Code == 'AF21.12.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'AL01.12.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'AF01.07.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'DZ04.08.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'AR-B19.07.2020', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'AR-B08.06.2020', Sex == 'm', Measure == 'Deaths' )
-filter( Code == 'AR-B01.09.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'AR-B12.04.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'AR-B23.04.2020', Sex == 'm', Measure == 'Cases' )
-filter( Code == 'AR-B05.03.2020', Sex == 'f', Measure == 'Deaths' )
-filter( Code == 'AR-B15.10.2020', Sex == 'f', Measure == 'Cases' )
-filter( Code == 'AR-B26.11.2020', Sex == 'b', Measure == 'Cases' )
-
-# Compile metadata 
- Thu Feb 04 19:39:00 2021 
-
-
-# Building dashboards 
- Thu Feb 04 19:55:24 2021 
-
-
-# remake coverage map 
- Thu Feb 04 20:24:52 2021 
-
-
-# push outputs to OSF 
- Thu Feb 04 20:29:54 2021 
-
-
-# remake coverage map 
- Thu Feb 04 21:14:24 2021 
-
-
-# push outputs to OSF 
- Thu Feb 04 21:18:55 2021 
-
-
-# Commit dashboards and buildlog 
- Thu Feb 04 21:21:28 2021 
+ Fri Feb 05 02:13:01 2021 
 

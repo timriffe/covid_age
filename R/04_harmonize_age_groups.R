@@ -3,7 +3,7 @@
 
 source(here("R","00_Functions.R"))
 logfile <- here("buildlog.md")
-n.cores <- round(6 + (detectCores() - 8)/8)
+n.cores <- round(6 + (detectCores() - 8)/5)
 
 
 ### Load data #######################################################
