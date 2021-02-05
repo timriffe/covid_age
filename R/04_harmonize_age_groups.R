@@ -15,10 +15,13 @@ inputCounts$Metric <- NULL
 # Offsets
 Offsets     <- readRDS(here("Data","Offsets.rds"))
 
-# Sort count data
+# Sort count data, add group ids.
 inputCounts <- 
   inputCounts %>% 
-  arrange(Country, Region, Measure, Sex, Age)
+  arrange(Country, Region, Measure, Sex, Age) %>% 
+  group_by(Code, Sex, Measure) %>% 
+  mutate(id = group_indices()) %>% 
+  ungroup()
 
 # Split counts into chunks
 iL <- split(inputCounts,
