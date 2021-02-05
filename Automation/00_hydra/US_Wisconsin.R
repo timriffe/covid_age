@@ -172,10 +172,10 @@ out <- db2 %>%
          Country = "USA", 
          Region = "Wisconsin",
          Metric = "Count",
-         Date = paste0(sprintf("%02d", day(date_f)), ".", sprintf("%02d", month(date_f)), year(date_f)),
+         Date = ddmmyyyy(date_f),
          Code = paste0("US_WI_", Date)) %>% 
   filter(date_f >= as_date("2020-03-29")) %>% 
-  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) 
+  sort_input_data()
 
 ############################################
 #### saving database in N Drive ####

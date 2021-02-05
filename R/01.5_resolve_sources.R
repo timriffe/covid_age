@@ -1,4 +1,4 @@
-
+library(here)
 source(here("R","00_Functions.R"))
 logfile <- here("buildlog.md")
 
@@ -9,6 +9,18 @@ idb <- readRDS("Data/inputDB.rds")
 idb <- idb %>% 
   mutate(Date = dmy(Date),
          Date = ddmmyyyy(Date))
+
+# Trying with the inputDB in OSF
+# osf_retrieve_file("9dsfk") %>%
+#   osf_download(conflicts = "overwrite",
+#                path = "Data") 
+# 
+# # This reads it in
+# idb <-  read_csv("Data/inputDB.zip",
+#                  skip = 1,
+#                  col_types = cols(.default = "c")) %>% 
+#   mutate(Date = dmy(Date),
+#          Date = ddmmyyyy(Date))
 
 # -------------------------------------- #
 # Resolve US CDC state sources           #
@@ -43,13 +55,11 @@ USA<-
          year = isoyear(Date)) 
 
 # 3: create binary source column (CDC or no)
-
 USA <- 
   USA %>% 
   mutate(isCDC = grepl(Code, pattern = "CDC"))
 
 # 4: create column for overlap
-
 USA <-
   USA %>% 
   group_by(Region, Sex, year, week) %>% 
@@ -69,7 +79,6 @@ USA <-
          Code = gsub(Code, pattern = "CDC_", replacement = ""))
 
 # 6) append
-
 idb <-
   idb %>% 
   bind_rows(USA)
@@ -80,7 +89,9 @@ cat("USA CDC resolved\n",nrow(USAout),"rows removed\n", file = logfile, append =
 # Resolve Brazil states                  #                
 # -------------------------------------- #
 # daily
+# rule: always prefer TRC if there is overlap within a day
 log_section("Resolve Brazil TRC overlaps", logfile = logfile)
+
 
 BRA <- idb %>% 
   filter(Country == "Brazil")
@@ -90,7 +101,6 @@ idb <-
   filter(Country != "Brazil")
 
 # detect TRC
-
 BRA <-
   BRA %>% 
   mutate(isTRC = grepl(Code, pattern = "TRC"))
@@ -103,14 +113,19 @@ BRA <-
   ungroup()
 
 # over overlap, remove !isTRC
+BRAout <- 
+  BRA %>% 
+  filter(overlap & !isTRC)
+
 BRA <-
   BRA %>% 
   filter(!(overlap & !isTRC)) %>% 
   select(-isTRC, -overlap) %>% 
-  mutate(Code = gsub(Code,pattern = "TRC_", replacement = ""))
-n2 <- nrow(BRA)
-# append
+  mutate(Code = gsub(Code, pattern = "TRC_", replacement = ""))
 
+n2 <- nrow(BRA)
+
+# append
 idb <- idb %>% 
   bind_rows(BRA)
 cat("Brazil TRC resolved\n",n1-n2,"rows removed\n", file = logfile, append = TRUE)
@@ -146,14 +161,18 @@ IT <-
   ungroup()
 
 # remove overlapy & !isBOL
+ITout <- 
+  IT %>% 
+  filter(overlap & !isBOL)
+
 IT <-
   IT %>% 
   filter(!(overlap & !isBOL)) %>% 
+  select(-isBOL, -overlap) %>% 
   # rewrite Code
   mutate(Code = paste0("IT",Date))
 n2 <- nrow(IT)
 # append
-
 idb <-
   idb %>% 
   bind_rows(IT)
@@ -164,7 +183,11 @@ cat("Italy resolved\n",n1-n2,"rows removed\n", file = logfile, append = TRUE)
 # Resolve ECDC                           #
 # -------------------------------------- #
 # weekly.
+# rule: always prefer national source if there is overlap within a week.
+# This might mean throwing out more than one day of 
+# death data collected from the state. 
 log_section("Resolve ECDC overlaps", logfile = logfile)
+
 
 ever_ecdc_countries <-
   idb %>% 
@@ -202,17 +225,19 @@ ECDC <-
   ungroup()
 
 # if there is overlap, then keep !isECDC
+ECDCout <- 
+  ECDC %>% 
+  filter(overlap & isECDC)
 
 ECDC <- 
   ECDC %>% 
   filter(!(overlap & isECDC))
 
 # remove extra columns, recode Date
-
 ECDC <- 
   ECDC %>% 
   mutate(Date = ddmmyyyy(Date)) %>% 
-  select(-year, -week) %>% 
+  select(-year, -week, -overlap, -isECDC) %>% 
   mutate(Code = gsub(Code, pattern = "ECDC_", replacement = ""))
 n2 <- nrow(ECDC)
 # Append:
@@ -243,7 +268,6 @@ saveRDS(idb,file= "Data/inputDBresolved.rds")
 #   filter(Region == "Wisconsin") %>% 
 #   dplyr::pull(Date) %>% 
 #   unique()
-
 
 
 # end
