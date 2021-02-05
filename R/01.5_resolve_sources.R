@@ -150,7 +150,8 @@ IT <-
   IT %>% 
   filter(!(overlap & !isBOL)) %>% 
   # rewrite Code
-  mutate(Code = paste0("IT",Date))
+  mutate(Code = paste0("IT",Date)) %>% 
+  select(-overlap, -isBOL)
 n2 <- nrow(IT)
 # append
 
@@ -212,7 +213,7 @@ ECDC <-
 ECDC <- 
   ECDC %>% 
   mutate(Date = ddmmyyyy(Date)) %>% 
-  select(-year, -week) %>% 
+  select(-year, -week, -isCDC, -overlap) %>% 
   mutate(Code = gsub(Code, pattern = "ECDC_", replacement = ""))
 n2 <- nrow(ECDC)
 # Append:
