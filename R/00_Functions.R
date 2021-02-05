@@ -157,6 +157,7 @@ try_step <- function(process_function,
                      chunk, 
                      byvars = c("Code","Sex"),
                      logfile = "buildlog.md", 
+                     write_log = TRUE,
                      ...) {
   
   # Try function on chunc
@@ -165,11 +166,12 @@ try_step <- function(process_function,
   # If error happens...
   if (class(out)[1] == "try-error"){
     
-    # ...write error to log
-    log_processing_error(chunk = chunk, 
-                         byvars = byvars,
-                         logfile = logfile)
-    
+    if (write_log){
+      # ...write error to log
+      log_processing_error(chunk = chunk, 
+                           byvars = byvars,
+                           logfile = logfile)
+    }
     # ... return empty chunk
     out <- chunk[0]
   }
@@ -1868,7 +1870,7 @@ harmonize_age_p <- function(chunk, Offsets, N = 5,
   .Date    <- chunk %>% '$'(Date) %>% "[["(1)
   .Sex     <- chunk %>% '$'(Sex) %>% "[["(1)
   .Measure <- chunk %>% '$'(Measure) %>% "[["(1)
-  
+  .id      <- chunk %>% '$'(id) %>% "[["(1)
   # Harmonize age
   out <- harmonize_age(chunk, Offsets = Offsets, N = N, 
                        OAnew = OAnew, lambda = lambda)
@@ -1879,9 +1881,10 @@ harmonize_age_p <- function(chunk, Offsets, N = 5,
                         Code = .Code,
                         Date = .Date,
                         Sex = .Sex,
-                        Measure = .Measure) %>% 
+                        Measure = .Measure,
+                        id = .id) %>% 
         select(Country, Region, Code, Date, Sex, 
-               Measure, Age, AgeInt, Value)
+               Measure, Age, AgeInt, Value, id)
   
   # Output
   out

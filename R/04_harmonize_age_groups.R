@@ -52,6 +52,7 @@ iLout1e5 <- mclapply(iL,
                       OAnew = 100,
                       lambda = 1e5,
                       logfile = logfile,
+                      write_log = FALSE,
                       mc.cores = n.cores)
 # rmelements <-
 #   iLout1e5 %>% lapply(function(X){
