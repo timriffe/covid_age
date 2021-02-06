@@ -252,7 +252,6 @@ cat("ECDC resolved\n",n1-n2,"rows removed\n", file = logfile, append = TRUE)
 
 saveRDS(idb,file= "Data/inputDBresolved.rds")
 
-
 # idb <-
 #   idb %>% 
 #   mutate(Short = add_Short(Code, Date))
