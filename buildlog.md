@@ -238,3 +238,15 @@ filter( Code == 'US_TX13.09.2020', Sex == 'b', Measure == 'Cases' )
 # push outputs to OSF 
  Sun Feb 07 14:30:39 2021 
 
+
+# remake coverage map 
+ Sun Feb 07 19:46:12 2021 
+
+
+# push outputs to OSF 
+ Sun Feb 07 19:50:43 2021 
+
+
+# Commit dashboards and buildlog 
+ Sun Feb 07 19:53:13 2021 
+
