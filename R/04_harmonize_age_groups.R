@@ -59,8 +59,6 @@ print(object.size(iL),units = "Mb")
 # toc()
 
 # install.packages("doParallel")
-library(doParallel)
-library(foreach)
 no_cores <- 3 # this is artifically low..
 cl <- makeCluster(no_cores)
 clusterEvalQ(cl,
