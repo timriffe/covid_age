@@ -1,11 +1,15 @@
 
 ### Clean up & functions ############################################
-source("raw.githubusercontent.com/timriffe/covid_age/R/00_Functions.R")
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
 
-logfile <- here("buildlog.md")
-n.cores <- round(6 + (detectCores() - 8)/5)
+# what I want:
+# n.cores <- round(6 + (detectCores() - 8)/5)
+
+# what appears to work
 n.cores  <- 3 # override
-n.cores <- 10
+
+# test size
+how_many_chunks_needed_to_test <- 500
 ### Load data #######################################################
 
 # Count data
@@ -22,41 +26,48 @@ inputCounts <-
   inputCounts %>% 
   arrange(Country, Region, Date, Measure, Sex, Age) %>% 
   group_by(Code, Sex, Measure, Date) %>% 
-  mutate(id = cur_group_id(),
-         core_id = sample(1:n.cores, size = 1,replace = TRUE)) %>% 
-  ungroup() 
+  mutate(id = cur_group_id()) %>% 
+  ungroup() %>% 
+  filter(id < how_many_chunks_needed_to_test) 
 
-# Extra step to make the data smaller:
-how_many_chunks_needed_to_test <- 500
+
+# split into n.cores chunks
+
+n_cores <- c(3,6,12,24)
+timings <- list()
+
+for (i in 1:4){
 inputCounts <-
   inputCounts %>% 
-  filter(id < how_many_chunks_needed_to_test)
+  mutate(core_id = sample(1:n_cores[i],
+                          size = 1,
+                          replace = TRUE))
 
 # Split counts into big chunks
 iL <- split(inputCounts,
             inputCounts$core_id,
             drop = TRUE)
 
-
-# install.packages("doParallel")
-cl <- makeCluster(n.cores)
-clusterEvalQ(cl,
-             {source("R/00_Functions.R");
-               Offsets = readRDS("Data/Offsets.rds"); # i don't know how else to 
-                                                      # pre-load this object, but this works
-               N=5;
-               lambda = 1e-5; 
-               OAnew = 100})
-#clusterEvalQ(cl,ls())
-iLout1e5 <-parLapply(cl, 
-          iL, 
-          harmonize_age_p_bigchunks, 
-          Offsets = Offsets, 
-          N = 5,          # technically no need to preload these pars above I think
-          lambda = 1e-5, 
-          OAnew = 100)
-stopCluster(cl)
-
+timings[[i]] <- system.time({
+  cl <- makeCluster(n_cores[i])
+  clusterEvalQ(cl,
+               {source("R/00_Functions.R");
+                 Offsets = readRDS("Data/Offsets.rds"); # i don't know how else to 
+                                                        # pre-load this object, but this works
+                 N=5;
+                 lambda = 1e-5; 
+                 OAnew = 100})
+  #clusterEvalQ(cl,ls())
+  iLout1e5 <-parLapply(cl, 
+            iL, 
+            harmonize_age_p_bigchunks, 
+            Offsets = Offsets, 
+            N = 5,          # technically no need to preload these pars above I think
+            lambda = 1e-5, 
+            OAnew = 100)
+  stopCluster(cl)
+})
+}
 # lines after this not relevant. This is the big piece
 
 
