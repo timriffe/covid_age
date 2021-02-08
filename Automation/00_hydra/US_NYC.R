@@ -1,8 +1,14 @@
+library(here)
+source(here("Automation/00_Functions_automation.R"))
 
-# TR New: you must be in the repo environment 
-source("Automation/00_Functions_automation.R")
+# assigning Drive credentials in the case the script is verified manually  
+if (!"email" %in% ls()){
+  email <- "kikepaila@gmail.com"
+}
 
-print(paste0("Starting data retrieval for NYC..."))
+# info country and N drive address
+ctr <- "US_NYC"
+dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 # Drive credentials
 drive_auth(email = email)
@@ -21,28 +27,15 @@ last_date_drive <- db_drive %>%
   dplyr::pull(date_f) %>% 
   max()
 
-# country <- "nyc"
-# path_out <- paste0("U:/Projects/COVerAGE-DB/Data/",country,"/")
-
-# db_age <- read_csv("https://github.com/nychealth/coronavirus-data/raw/master/by-age.csv")
-# db_sex <- read_csv("https://github.com/nychealth/coronavirus-data/raw/master/by-sex.csv")
-# db_sum <- read_csv("https://github.com/nychealth/coronavirus-data/raw/master/summary.csv", col_names = F)
-# db_tests <- read_csv("https://github.com/nychealth/coronavirus-data/raw/master/tests.csv")
-# db_tested <- read_csv("https://github.com/nychealth/coronavirus-data/raw/master/tests-by-zcta.csv")
-
-
 db_age <- read_csv("https://github.com/nychealth/coronavirus-data/raw/master/totals/by-age.csv")
 db_sex <- read_csv("https://github.com/nychealth/coronavirus-data/raw/master/totals/by-sex.csv")
 db_sum <- read_csv("https://github.com/nychealth/coronavirus-data/raw/master/totals/summary.csv", col_names = F)
 db_tests <- read_csv("https://github.com/nychealth/coronavirus-data/raw/master/trends/testing-by-age.csv")
 
-
-# db_tested <- read_csv("https://github.com/nychealth/coronavirus-data/raw/master/tests-by-zcta.csv")
-
 date_f <- db_sum %>% 
   filter(X1 == "DATE_UPDATED") %>% 
   separate(X2, c("m", "d")) %>% 
-  mutate(date = ymd(paste("2020", m, d, sep = "/"))) %>% 
+  mutate(date = ymd(paste("2021", m, d, sep = "/"))) %>% 
   dplyr::pull(date)
 
 if (date_f > last_date_drive){
@@ -104,14 +97,24 @@ if (date_f > last_date_drive){
            Measure = "Tests") %>% 
     select(date_f, Sex, Age, Measure, Value)
   
-  # data in previous dates on cases and deaths
-  db_drive2 <- db_drive %>% 
-    filter(Measure %in% c("Cases", "Deaths")) %>% 
+  tests_drive <- db_drive %>% 
+    filter(Measure == "Tests") %>% 
     mutate(date_f = dmy(Date),
            AgeInt = as.character(AgeInt)) %>% 
-    select(-Short)
+    dplyr::pull(date_f) %>% 
+    unique
+  
+  db_t3 <- db_t2 %>% 
+    filter(!(date_f %in% tests_drive))
+  
+  # data in previous dates on cases and deaths
+  # db_drive2 <- db_drive %>% 
+  #   filter(Measure %in% c("Cases", "Deaths")) %>% 
+  #   mutate(date_f = dmy(Date),
+  #          AgeInt = as.character(AgeInt)) %>% 
+  #   select(-Short)
 
-  db_all <- bind_rows(db_a2_c, db_a2_d, db_s2, db_t2) %>% 
+  out <- bind_rows(db_a2_c, db_a2_d, db_s2, db_t3) %>% 
     mutate(Country = "USA",
            Region = "NYC",
            Date = paste(sprintf("%02d", day(date_f)),
@@ -127,7 +130,7 @@ if (date_f > last_date_drive){
                               Age == "TOT" ~ "",
                               TRUE ~ "10"),
            Metric = "Count") %>% 
-    bind_rows(db_drive2) %>% 
+    # bind_rows(db_drive2) %>% 
     arrange(Country,
             Region,
             date_f,
@@ -143,37 +146,44 @@ if (date_f > last_date_drive){
   ############################################
   
   # This command append new rows at the end of the sheet
-  write_sheet(db_all,
+  sheet_append(out,
               ss = ss_i,
               sheet = "database")
-  log_update(pp = "US_NYC", N = nrow(db_all))
+  log_update(pp = ctr, N = nrow(out))
+  
   ############################################
-  #### uploading metadata to Google Drive ####
+  #### uploading metadata to N Drive ####
   ############################################
-  # setwd("C:/Users/kikep/Dropbox/covid_age/automated_COVerAge-DB/NYC_data")
   
-  sheet_name <- paste0("US_NYC", d, "cases&deaths")
+  data_source_a <- paste0(dir_n, "Data_sources/", ctr, "/age_",today(), ".csv")
+  data_source_s <- paste0(dir_n, "Data_sources/", ctr, "/sex_",today(), ".csv")
+  data_source_to <- paste0(dir_n, "Data_sources/", ctr, "/summary_",today(), ".csv")
+  data_source_te <- paste0(dir_n, "Data_sources/", ctr, "/tests_",today(), ".csv")
   
-  meta <- drive_create(sheet_name,
-                       path = ss_db, 
-                       type = "spreadsheet",
-                       overwrite = T)
+  write_csv(db_age, data_source_a)
+  write_csv(db_sex, data_source_s)
+  write_csv(db_sum, data_source_to)
+  write_csv(db_tests, data_source_te)
   
-  write_sheet(db_age, 
-              ss = meta$id,
-              sheet = "cases_deaths_age")
+  data_source <- c(data_source_a, data_source_s, data_source_to, data_source_te)
   
-  write_sheet(db_sex, 
-              ss = meta$id,
-              sheet = "cases_deaths_sex")
+  zipname <- paste0(dir_n, 
+                    "Data_sources/", 
+                    ctr,
+                    "/", 
+                    ctr,
+                    "_data_",
+                    today(), 
+                    ".zip")
   
-  write_sheet(db_tests, 
-              ss = meta$id,
-              sheet = "tests")
+  zipr(zipname, 
+       data_source, 
+       recurse = TRUE, 
+       compression_level = 9,
+       include_directories = TRUE)
   
-  sheet_delete(meta$id, "Sheet1")
-  
-  print(paste("NC data saved!", Sys.Date()))
+  # clean up file chaff
+  file.remove(data_source)
   
 } else if (date_f == last_date_drive) {
   cat(paste0("no new updates so far, last date: ", date_f))

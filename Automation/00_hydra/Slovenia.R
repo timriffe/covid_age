@@ -1,25 +1,40 @@
-# TR New: you must be in the repo environment 
-source("Automation/00_Functions_automation.R")
+library(here)
+source(here("Automation/00_Functions_automation.R"))
 
+# assigning Drive credentials in the case the script is verified manually  
+if (!"email" %in% ls()){
+  email <- "ugofilippo.basellini@gmail.com"
+}
+
+# info country and N drive address
+ctr <- "Slovenia"
+dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
+
+# Drive credentials
 drive_auth(email = email)
 gs4_auth(email = email)
 
-SI_rubric <- get_input_rubric() %>% filter(Short == "SI")
-ss_i  <- SI_rubric %>% dplyr::pull(Sheet)
-ss_db <-  SI_rubric %>% dplyr::pull(Source)
-# reading data from Montreal and last date ent
-
 ### reading data from the website 
+# detecting the link to the xlsx file in the website
+# this is a more stable method than using the xpath
 m_url <- "https://www.nijz.si/sl/dnevno-spremljanje-okuzb-s-sars-cov-2-covid-19"
-html <- read_html(m_url)
 
-# locating the links for Excel files
-url <- html_nodes(html, xpath = '//*[@id="node-5056"]/div[4]/div/div/div/p[7]/a') %>%
-  html_attr("href")
+# capture all links with excel files
+links <- scraplinks(m_url) %>% 
+  filter(str_detect(url, "xlsx")) %>% 
+  select(url)
 
-paste0("https://www.nijz.si", url)
-# tb4 cases
-# tb6 deaths
+# capture link with cases data by age
+cases_url <- paste0("https://www.nijz.si", 
+                    links %>% 
+                      filter(str_detect(url, "dnevni_prikazi")) %>% 
+                      dplyr::pull(url))
+
+# capture link with deaths data by age
+deaths_url <- paste0("https://www.nijz.si", 
+                    links %>% 
+                      filter(str_detect(url, "umrli")) %>% 
+                      dplyr::pull(url))
 
 ###############################
 ### daily collection automation
@@ -28,21 +43,23 @@ paste0("https://www.nijz.si", url)
 ### Cases
 ##############
 
-db_c <- rio::import(paste0("https://www.nijz.si", url), 
-                    sheet = "tb4", 
+db_c <- rio::import(cases_url, 
+                    sheet = "Tabela 5", 
                     skip = 2) %>%
   as_tibble() 
 
 var_names1 <- c("date_f",
                paste0("m_", c(0, seq(5, 85, 10), "TOT")), 
                paste0("f_", c(0, seq(5, 85, 10), "TOT")), 
+               paste0("u_", c(0, seq(5, 85, 10), "TOT")), 
                paste0("b_", c(0, seq(5, 85, 10), "TOT")))
                
 db_c2 <- db_c %>% 
-  rename_at(vars(1:34), ~ var_names1) %>%  
+  rename_at(vars(1:45), ~ var_names1) %>%  
   gather(-date_f, key = Age, value = new) %>% 
   separate(Age, c("Sex", "Age"), sep = "_") %>% 
-  mutate(date_f = as_date(as.integer(date_f), origin = "1899-12-30")) %>% 
+  filter(Sex != "u") %>% 
+  mutate(date_f = dmy(date_f)) %>% 
   replace_na(list(new = 0)) %>% 
   drop_na()
 
@@ -61,23 +78,20 @@ db_c3 <- db_c2 %>%
 
 ### deaths
 ##############
-db_d <- rio::import(paste0("https://www.nijz.si", url), 
-                    sheet = "tb6", 
-                    skip = 2)
+db_d <- rio::import(deaths_url, 
+                    sheet = "Tabela 5", 
+                    skip = 2) %>% 
+  select(-1)
 
 var_names2 <- c("date_f",
-                paste0("m_", c(seq(35, 85, 10), "TOT")), 
-                paste0("f_", c(seq(45, 85, 10), "TOT")), 
-                paste0("b_", c(seq(35, 85, 10), "TOT")))
+                paste0("m_", c(0, seq(5, 85, 10))), 
+                paste0("f_", c(0, seq(5, 85, 10))),
+                "m_TOT", "f_TOT", "b_TOT")
 
 db_d2 <- db_d %>% 
-  rename_at(vars(1:21), ~ var_names2) %>% 
-  mutate(d_format = str_length(date_f),
-         date_f = case_when(d_format == 5 ~ as_date(as.integer(date_f), origin = "1899-12-30"),
-                            d_format == 9 ~ dmy(date_f),
-                            TRUE ~ NA_Date_)) %>% 
+  rename_at(vars(1:24), ~ var_names2) %>% 
+  mutate(date_f = dmy(date_f)) %>% 
   drop_na(date_f) %>% 
-  select(-d_format) %>% 
   gather(-date_f, key = Age, value = new) %>% 
   separate(Age, c("Sex", "Age"), sep = "_") %>% 
   replace_na(list(new = 0))
@@ -90,68 +104,69 @@ db_d2 %>%
 
 db_d3 <- db_d2 %>% 
   tidyr::complete(date_f, 
-           Sex, 
-           Age = c("0", as.character(seq(45, 85, 10)), "TOT"), 
+           Sex = c("m", "f"), 
+           Age = c("0", as.character(seq(5, 85, 10)), "TOT"), 
            fill = list(new = 0)) %>% 
   group_by(Sex, Age) %>% 
   mutate(Value = cumsum(new)) %>% 
   select(-new) %>% 
   ungroup() %>% 
-  mutate(Measure = "Deaths")
+  mutate(Measure = "Deaths") %>% 
+  arrange(Sex, suppressWarnings(as.integer(Age)), date_f)
+  
 
 
-db_all <- bind_rows(db_c3, db_d3) %>% 
+out <- bind_rows(db_c3, db_d3) %>% 
   mutate(Date = paste(sprintf("%02d", day(date_f)),
                       sprintf("%02d", month(date_f)),
                       year(date_f), sep = "."),
          Country = "Slovenia",
          Code = paste0("SI", Date),
          Region = "All",
-         AgeInt = case_when(Age == "0" & Measure == "Deaths" & (Sex == "b" | Sex == "m") ~ "35", 
-                            Age == "0" & Measure == "Deaths" & Sex == "f" ~ "45", 
-                            Age == "0" & Measure == "Cases" ~ "5", 
-                            Age == "85" ~ "20",
-                            Age == "TOT" ~ "",
-                            TRUE ~ "10"),
+         AgeInt = case_when(Age == "0" & Measure == "Deaths" & (Sex == "b" | Sex == "m") ~ 35L, 
+                            Age == "0" & Measure == "Deaths" & Sex == "f" ~ 45L, 
+                            Age == "0" & Measure == "Cases" ~ 5L, 
+                            Age == "85" ~ 20L,
+                            Age == "TOT" ~ NA_integer_,
+                            TRUE ~ 10L),
          Metric = "Count") %>% 
   arrange(date_f, Region, Measure, Sex, suppressWarnings(as.integer(Age))) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
 
-date_f <- db_d3 %>% 
+date_f <- db_c3 %>% 
   dplyr::pull(date_f) %>% 
   max()
-############################################
-#### uploading database to Google Drive ####
-############################################
-# This command append new rows at the end of the sheet
-write_sheet(db_all,
-             ss = ss_i,
-             sheet = "database")
-log_update(pp = "Slovenia", N = nrow(db_all))
-############################################
-#### uploading metadata to Google Drive ####
-############################################
 
-d <- paste(sprintf("%02d", day(date_f)),
-           sprintf("%02d", month(date_f)),
-           year(date_f), sep = ".")
+###########################
+#### Saving data in N: ####
+###########################
+write_rds(out, paste0(dir_n, ctr, ".rds"))
+log_update(pp = ctr, N = nrow(out))
 
-meta <- drive_create(paste0("SI", d, "_cases&deaths"),
-                     path = ss_db, 
-                     type = "spreadsheet",
-                     overwrite = T)
+# saving data sources
+data_source_c <- paste0(dir_n, "Data_sources/", ctr, "/cases_",today(), ".xlsx")
+data_source_d <- paste0(dir_n, "Data_sources/", ctr, "/deaths_",today(), ".xlsx")
 
-write_sheet(db_c, 
-            ss = meta$id,
-            sheet = "cases_age_sex")
+download.file(cases_url, destfile = data_source_c)
+download.file(deaths_url, destfile = data_source_d)
 
-write_sheet(db_d, 
-            ss = meta$id,
-            sheet = "deaths_age_sex")
+zipname <- paste0(dir_n, 
+                  "Data_sources/", 
+                  ctr,
+                  "/", 
+                  ctr,
+                  "_data_",
+                  today(), 
+                  ".zip")
 
-sheet_delete(meta$id, "Sheet1")
+data_source <- c(data_source_c, data_source_d)
 
+zipr(zipname, 
+     data_source, 
+     recurse = TRUE, 
+     compression_level = 9,
+     include_directories = TRUE)
 
-
-
+# clean up file chaff
+file.remove(data_source)
 

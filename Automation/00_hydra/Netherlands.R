@@ -1,25 +1,23 @@
-# don't manually alter the below
-# This is modified by sched()
-# ##  ###
-email <- "kikepaila@gmail.com"
-setwd("U:/gits/covid_age")
-# ##  ###
+library(here)
+source(here("Automation/00_Functions_automation.R"))
 
-# end 
-
-# TR New: you must be in the repo environment 
-source("Automation/00_Functions_automation.R")
 library(aweek)
+library(ISOweek)
+
+
+
+# assigning Drive credentials in the case the script is verified manually  
+if (!"email" %in% ls()){
+  email <- "e.delfava@gmail.com"
+}
+
+# info country and N drive address
+ctr <- "Netherlands"
+dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 # Drive credentials
 drive_auth(email = email)
 gs4_auth(email = email)
-# TR: pull urls from rubric instead 
-rubric_i <- get_input_rubric() %>% filter(Short == "NL")
-ss_i     <- rubric_i %>% dplyr::pull(Sheet)
-ss_db    <- rubric_i %>% dplyr::pull(Source)
-
-# TODO: add pdf scraping.
 
 # this is specifically for the way NL records isoweeks
 isoweek_to_date_hack <- function(ISOWEEK){
@@ -33,9 +31,9 @@ isoweek_to_date_hack <- function(ISOWEEK){
   out
 }
 
-NL_url <- "https://data.rivm.nl/covid-19/COVID-19_casus_landelijk.csv"
+cases_url <- "https://data.rivm.nl/covid-19/COVID-19_casus_landelijk.csv"
 
-NL <- read_delim(NL_url, delim = ";")
+NL <- read_delim(cases_url, delim = ";")
 
 dates_all <- seq(dmy("01.03.2020"), today(), by = "days")
 
@@ -122,10 +120,9 @@ Cases2 <-
 # Prepare Deaths:
 
 # Assume Unknown Date of death is 1 week after Date_statistics
-
-all_weeks <- 3:week(today())
-all_dates <- (all_weeks + 202000) %>% isoweek_to_date_hack()
-
+today_week <- str_sub(ISOweek(today()), 7, 8) %>% as.numeric()
+all_dates <- ISOweek::ISOweek2date(c(paste0(2020, "-W", sprintf("%02d",(3:53)), "-7"), 
+                                     paste0(2021, "-W", sprintf("%02d",(1:today_week)), "-7")))
 
 all_ages <- c("0","50","60","70","80","90","UNK")
 
@@ -196,35 +193,46 @@ out <-
 ############################################
 #### uploading database to Google Drive ####
 ############################################
+write_rds(out, paste0(dir_n, ctr, ".rds"))
 
-write_sheet(out, 
-            ss = ss_i, 
-            sheet = "database")
+log_update(pp = ctr, N = nrow(out))
 
-log_update(pp = "Netherlands", N = nrow(out))
-
-Sys.sleep(100)
 ############################################
 #### uploading metadata to Google Drive ####
 ############################################
 
-date_f <- Sys.Date()
-d <- paste(sprintf("%02d", day(date_f)),
-           sprintf("%02d", month(date_f)),
-           year(date_f), sep = ".")
+data_source <- paste0(dir_n, "Data_sources/", ctr, "/cases&deaths_",today(), ".csv")
 
-sheet_name <- paste0("NL", d, "cases&deaths")
+download.file(cases_url, destfile = data_source)
 
-meta <- drive_create(sheet_name, 
-                     path = ss_db, 
-                     type = "spreadsheet",
-                     overwrite = T)
+zipname <- paste0(dir_n, 
+                  "Data_sources/", 
+                  ctr,
+                  "/", 
+                  ctr,
+                  "_data_",
+                  today(), 
+                  ".zip")
 
-write_sheet(NL, 
-            ss = meta$id,
-            sheet = "cases&deaths_sex_age")
+zipr(zipname, 
+     data_source, 
+     recurse = TRUE, 
+     compression_level = 9,
+     include_directories = TRUE)
 
-sheet_delete(meta$id, "Sheet1")
+# clean up file chaff
+file.remove(data_source)
+
+
+
+# end!
+
+
+
+
+
+
+
 
 # out %>% 
 #   mutate(Date = dmy(Date)) %>% 

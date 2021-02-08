@@ -14,7 +14,7 @@ packages_CRAN <- c("tidyverse","lubridate","gargle","ungroup","HMDHFDplus",
                    "tictoc","parallel","data.table","git2r","usethis",
                    "remotes","here","knitr","rmarkdown","googledrive","zip",
                    "cartography","rgdal","tmap","svglite",
-                   "taskscheduleR","countrycode","wpp2019")
+                   "countrycode","wpp2019")
 
 # Install required CRAN packages if not available yet
 if(!sum(!p_isinstalled(packages_CRAN))==0) {
@@ -25,14 +25,17 @@ if(!sum(!p_isinstalled(packages_CRAN))==0) {
 }
 
 # Reuired github packages
-packages_git <- c("googlesheets4","DemoTools","parallelsugar","osfr")
+packages_git <- c("googlesheets4","DemoTools","parallelsugar","osfr","covidAgeData")
 
 # install from github if necessary
 if (!p_isinstalled("googlesheets4")) {
   library(remotes)
   install_github("tidyverse/googlesheets4")
 }
-
+if (!p_isinstalled("covidAgeData")) {
+  library(remotes)
+  install_github("eshom/covid-age-data")
+}
 if (!p_isinstalled("DemoTools")) {
   library(remotes)
   install_github("timriffe/DemoTools")
@@ -154,6 +157,7 @@ try_step <- function(process_function,
                      chunk, 
                      byvars = c("Code","Sex"),
                      logfile = "buildlog.md", 
+                     write_log = TRUE,
                      ...) {
   
   # Try function on chunc
@@ -162,11 +166,12 @@ try_step <- function(process_function,
   # If error happens...
   if (class(out)[1] == "try-error"){
     
-    # ...write error to log
-    log_processing_error(chunk = chunk, 
-                         byvars = byvars,
-                         logfile = logfile)
-    
+    if (write_log){
+      # ...write error to log
+      log_processing_error(chunk = chunk, 
+                           byvars = byvars,
+                           logfile = logfile)
+    }
     # ... return empty chunk
     out <- chunk[0]
   }
@@ -197,8 +202,19 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
   }
   
   # Only get countries with at least one row of data
-  rubric <- rubric %>% 
-    filter(Rows > 0)
+  # rubric <- rubric %>% 
+  #   filter(Rows > 0) # just always read all files from Hyrdra?
+  # 
+  on_hydra <- Sys.info()["nodename"] %in% c("HYDRA01","HYDRA02")
+  if ( on_hydra ){
+    
+    rubric_hydra <- 
+      get_input_rubric(tab = "input") %>% 
+      filter(Loc == "n")
+    
+    rubric <- rubric %>% 
+      filter(Loc != "n")
+  }
   
   # Empty list for results
   input_list <- list()
@@ -247,7 +263,8 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
     X <- try(read_sheet(ss_i, 
                         sheet = "database", 
                         na = "NA", 
-                        col_types = "cccccciccd"))
+                        col_types = "cccccciccd",
+                        range = "database!A:J"))
     
     # If error
     if (class(X)[1] == "try-error") {
@@ -260,7 +277,8 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
       X <- try(read_sheet(ss_i, 
                           sheet = "database", 
                           na = "NA", 
-                          col_types = "cccccciccd"))
+                          col_types = "cccccciccd",
+                          range = "database!A:J"))
       
     }
     
@@ -299,7 +317,8 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
       X <- try(read_sheet(ss_i, 
                           sheet = "database", 
                           na = "NA", 
-                          col_types = "cccccciccd"))
+                          col_types = "cccccciccd",
+                          range = "database!A:J"))
       if (class(X)[1] == "try-error"){
         cat(i, "on 3rd try still didn't load\n")
       } else {
@@ -312,10 +331,39 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
     }
   }
   
+  if (on_hydra){
+    hydra_path <- "N:/COVerAGE-DB/Automation/Hydra"
+    
+    local_files <-
+      rubric_hydra %>% 
+      dplyr::pull(hydra_name) %>% 
+      paste0(".rds")
+    
+    local_files <-  file.path(hydra_path,local_files)
+    hydra_data <-
+      lapply(local_files,
+             readRDS) %>% 
+      lapply(function(X){
+        X %>% 
+          ungroup() %>% 
+          mutate(Age = as.character(Age),
+                 AgeInt = as.integer(AgeInt))
+      }) %>% 
+      bind_rows() %>% 
+      mutate(Short = add_Short(Code, Date))
+  } else {
+    hydra_data <- tibble()
+  }
+  
+  # remove readings with 0 rows (earmarked for collection)
+  
+  NROWS      <- lapply(input_list, nrow) %>% unlist()
+  input_list <- input_list[NROWS != 0]
   # Bind and sort
   inputDB <- 
     input_list %>% 
     bind_rows() %>% 
+    bind_rows(hydra_data) %>% 
     sort_input_data()
   
   # Return data base
@@ -410,7 +458,7 @@ compile_offsetsDB <- function() {
 get_input_rubric <- function(tab = "input") {
   
   # Spreadsheet on Google Docs
-  ss_rubric <- "https://docs.google.com/spreadsheets/d/1IDQkit829LrUShH-NpeprDus20b6bso7FAOkpYvDHi4/edit#gid=0"
+  ss_rubric <- "https://docs.google.com/spreadsheets/d/15kat5Qddi11WhUPBW3Kj3faAmhuWkgtQzioaHvAGZI0/edit#gid=0"
   
   # Read spreadsheet
   input_rubric <- read_sheet(ss_rubric, sheet = tab) %>% 
@@ -439,7 +487,8 @@ get_country_inputDB <- function(ShortCode) {
   out <- read_sheet(ss_i, 
                     sheet = "database", 
                     na = "NA", 
-                    col_types= "cccccciccd")
+                    col_types= "cccccciccd",
+                    range = "database!A:J")
   
   # Assign short code
   out$Short <- add_Short(out$Code,out$Date)
@@ -1821,7 +1870,7 @@ harmonize_age_p <- function(chunk, Offsets, N = 5,
   .Date    <- chunk %>% '$'(Date) %>% "[["(1)
   .Sex     <- chunk %>% '$'(Sex) %>% "[["(1)
   .Measure <- chunk %>% '$'(Measure) %>% "[["(1)
-  
+  # .id      <- chunk %>% '$'(id) %>% "[["(1)
   # Harmonize age
   out <- harmonize_age(chunk, Offsets = Offsets, N = N, 
                        OAnew = OAnew, lambda = lambda)
@@ -1839,6 +1888,51 @@ harmonize_age_p <- function(chunk, Offsets, N = 5,
   # Output
   out
 }
+# @param chunk Data chunk
+# @param Offsets Tibble/data frame with offsets
+# @param N integer Age interval width
+# @param OAnew integer Open age interval
+# @param lambda Lambda value for PCLM
+harmonize_age_p_del <- function(chunk, 
+                                Offsets, 
+                                N = 5, 
+                                OAnew = 100, 
+                                lambda = 100){
+  out <- try(harmonize_age_p(chunk = chunk, 
+                             Offsets = Offsets, 
+                             N = N, 
+                             OAnew = OAnew, 
+                             lambda = lambda))
+  if (class(out)[1] == "try-error"){
+    out <- chunk[0]
+  }
+  out
+}
+
+# @param bigchunk Data with id variable indicating subsets, roughly 1/33 of the inputCounts
+# @param Offsets Tibble/data frame with offsets
+# @param N integer Age interval width
+# @param OAnew integer Open age interval
+# @param lambda Lambda value for PCLM 
+harmonize_age_p_bigchunks <- function(bigchunk,
+                                      Offsets, 
+                                      N = 5, 
+                                      OAnew = 100, 
+                                      lambda = 100){
+  bigchunk <- bigchunk %>% 
+    arrange(.data$id,.data$Age)
+    
+  innerL <- split(bigchunk, list(bigchunk$id)) 
+  out <- lapply(innerL,
+                harmonize_age_p_del,
+                Offsets = Offsets,
+                OAnew = OAnew,
+                N = N,
+                lambda = lambda) %>% 
+    do.call("rbind",.)
+  out
+}
+
 
 
 ### rescale_sexes_post()
@@ -2133,3 +2227,10 @@ log_update <- function(pp, N){
 
 Sys.setenv(LANG = "en")
 Sys.setlocale("LC_ALL","English")
+
+# useful for automated capture
+ddmmyyyy <- function(Date,sep = "."){
+  paste(sprintf("%02d",day(Date)),
+        sprintf("%02d",month(Date)),  
+        year(Date),sep=sep)
+}

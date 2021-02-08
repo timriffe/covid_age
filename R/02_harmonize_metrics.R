@@ -7,11 +7,9 @@ logfile <- here("buildlog.md")
 
 ### Get data ########################################################
 
-if (hours < Inf){
-  inputDB <- readRDS(here("Data","inputDB_i.rds"))
-} else {
-  inputDB <- readRDS(here("Data","inputDB.rds"))
-}
+
+inputDB <- readRDS(here("Data","inputDBresolved.rds"))
+
 
 # this script transforms the inputDB as required, and produces standardized measures and metrics
 
@@ -22,6 +20,7 @@ icols   <- icolsIN[icolsIN != "AgeInt"]
 
 Z <-
   inputDB %>% 
+  # TR: This removes sex-totals that are fractions.
   filter(!(Age == "TOT" & Metric == "Fraction"),
          !(Age == "UNK" & Value == 0),
          !(Sex == "UNK" & Value == 0),
@@ -154,7 +153,7 @@ I <- H[ , try_step(process_function = infer_both_sex,
         by = list(Code, Measure), 
         .SDcols = icols][,..icols]
 
-
+  
 ### Adjust closeout age #############################################
 
 # Log

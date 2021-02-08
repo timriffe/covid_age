@@ -1,31 +1,57 @@
-# TR New: you must be in the repo environment 
-source("Automation/00_Functions_automation.R")
+
+# 1. Preamble ---------------
+
+library(here)
+source(here("Automation/00_Functions_automation.R"))
+
+# assigning Drive credentials in the case the script is verified manually  
+if (!"email" %in% ls()){
+  email <- "gatemonte@gmail.com"
+}
+
+# info country and N drive address
+ctr <- "Sweden"
+dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 # Drive credentials
 drive_auth(email = email)
 gs4_auth(email = email)
-# TR: pull urls from rubric instead 
+
+# data from drive 
 rubric_i <- get_input_rubric() %>% filter(Short == "SE")
 ss_i     <- rubric_i %>% dplyr::pull(Sheet)
 ss_db    <- rubric_i %>% dplyr::pull(Source)
 
 print(paste0("Starting data retrieval for Sweden..."))
 
-############################
+# ~~~~~~~~~~~~~~~~~~~
 # When using it daily
-############################
+# ~~~~~~~~~~~~~~~~~~~
+
+# 2. Save data to disk ---------
+
+# 2.1. Cases and deaths ~~~~~~ =================
+
+data_source <- paste0(dir_n, "Data_sources/", ctr, "/cases&deaths_",today(), ".xlsx")
 
 url <- "https://www.arcgis.com/sharing/rest/content/items/b5e7488e117749c19881cce45db13f7e/data"
-httr::GET(url, write_disk(tf <- tempfile(fileext = ".xlsx")))
+httr::GET(url, write_disk(data_source))
+
+# 2.2. Vaccination =========
+
+data_source_vac <- paste0(dir_n, "Data_sources/", ctr, "/vaccination_",today(), ".xlsx")
+
+url_vac <- "https://fohm.maps.arcgis.com/sharing/rest/content/items/fc749115877443d29c2a49ea9eca77e9/data"
+httr::GET(url_vac, write_disk(data_source_vac))
 
 # date from the data directly, last reported date in the sheet 'Antal per dag region'
 
-date_f <- read_xlsx(tf, sheet = 1) %>% 
+date_f <- read_xlsx(data_source, sheet = 1) %>% 
   dplyr::pull(Statistikdatum) %>% 
   max() %>% 
   ymd()
 
-# reading data from Montreal and last date entered 
+# reading data from Drive and last date entered 
 db_drive <- get_country_inputDB("SE")
 
 last_date_drive <- db_drive %>% 
@@ -33,6 +59,7 @@ last_date_drive <- db_drive %>%
   dplyr::pull(date_f) %>% 
   max()
 
+# 3. Process data ---------- 
 # process data and upload it only if the reported date is more recent than the date in Drive
 
 if (date_f > last_date_drive){
@@ -41,8 +68,10 @@ if (date_f > last_date_drive){
                 sprintf("%02d", month(date_f)),
                 year(date_f), sep = ".")
   
-  db_sex <- read_xlsx(tf, sheet = 5)
-  db_age <- read_xlsx(tf, sheet = 6)
+  # 3.1. Cases and deaths ==========
+  
+  db_sex <- read_xlsx(data_source, sheet = 5)
+  db_age <- read_xlsx(data_source, sheet = 6)
   
   # Get data by sex
   
@@ -79,7 +108,7 @@ if (date_f > last_date_drive){
     ) %>% 
     select(Sex, Age, Cases, Deaths)
   
-  db_all <- 
+  out_cases <- 
     bind_rows(db_s2, db_a2) %>% 
     gather(Cases, Deaths, key = Measure, value = Value) %>% 
     mutate(Country = "Sweden",
@@ -92,42 +121,116 @@ if (date_f > last_date_drive){
              , TRUE ~ "10"
            ), Metric = "Count"
     ) %>% 
-    select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) 
+    select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
   
-  ############################################
-  #### uploading database to Google Drive ####
-  ############################################
-  sheet_append(db_all,
+  # 3.2. Vaccines ================
+  
+  vac_sex <- read_xlsx(data_source_vac, sheet = 4)
+  vac_age <- read_xlsx(data_source_vac, sheet = 3)
+  
+  # Get data by sex
+  
+  vac_s2 <-
+    vac_sex %>% 
+    select(
+      Sex = starts_with("K")
+      , Value = `Antal vaccinerade`
+      , Measure = Dosnummer
+    ) %>% 
+    # filter(!grepl("^t", Sex, ignore.case = T)) %>% 
+    mutate(
+      Sex = case_when(
+        grepl("^m", Sex, ignore.case = T) ~ "m",
+        grepl("^k", Sex, ignore.case = T) ~ "f"
+        # grepl("^t", Sex, ignore.case = T) ~ "UNK"
+      ) 
+      , Measure = case_when(
+        grepl("1", Measure, ignore.case = T) ~ "Vaccination1"
+        , grepl("2", Measure, ignore.case = T) ~ "Vaccination2"
+      )
+      , Age = "TOT"
+      , AgeInt = ""
+      # Add empty row for UNK
+      , Sex = ifelse(is.na(Sex), "UNK", Sex)
+      , AgeInt = ifelse(Sex == "UNK", "", AgeInt)
+      , Value = ifelse(Sex == "UNK", 0, Value)
+    ) %>% 
+    select(Sex, Age, AgeInt, Measure, Value) %>% 
+    arrange(Sex)
+  
+  # Get data by age
+  
+  vac_a2 <-
+    vac_age %>% 
+      filter(grepl("Sverige", Region)) %>% 
+    select(
+      Value = contains("antal")
+      , Measure = Dosnummer
+      , Age = ends_with("ldersgrupp")
+    ) %>% 
+      # filter(!grepl("^Total", Age)) %>% 
+    mutate(
+      Measure = case_when(
+        grepl("1", Measure, ignore.case = T) ~ "Vaccination1"
+        , grepl("2", Measure, ignore.case = T) ~ "Vaccination2"
+      )
+      , Age_low = as.numeric(str_extract(Age, "^[0-9]{2}"))
+      , Age_high = as.numeric(str_extract(Age, "[0-9]{2}$"))
+      , Age = as.character(Age_low)
+      , AgeInt = as.character(ifelse(!is.na(Age_high), Age_high-Age_low+1, 15))
+      , Sex = "b"
+      # Add empty row for UNK
+      , Age = ifelse(is.na(Age), "UNK", Age)
+      , AgeInt = ifelse(Age == "UNK", "", AgeInt)
+      , Value = ifelse(Age == "UNK", 0, Value)
+    ) %>%  
+    select(Sex, Age, AgeInt, Measure, Value)
+  
+  out_vac <-
+    bind_rows(vac_s2, vac_a2) %>% 
+    mutate(Country = "Sweden",
+           Region = "All",
+           Code = paste0("SE", date),
+           Date = date,
+           Metric = "Count"
+    ) %>% 
+    select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
+    arrange(Measure)
+  
+  # 3.3. Consolidate ==========
+  
+  out <- bind_rows(out_cases, out_vac)
+  
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # uploading database to Google Drive 
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  sheet_append(out,
                ss = ss_i,
                sheet = "database")
-  log_update(pp = "Sweden", N = nrow(db_all))
-  ############################################
-  #### uploading metadata to Google Drive ####
-  ############################################
-  sheet_name <- paste0("SE", date, "cases&deaths")
+  log_update(pp = "Sweden", N = nrow(out))
   
-  meta <- drive_create(sheet_name,
-                       path = ss_db, 
-                       type = "spreadsheet",
-                       overwrite = T)
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # Uploading metadata to N Drive  =====
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   
-  write_sheet(db_age, 
-              ss = meta$id,
-              sheet = "cases&deaths_age")
+  zipname <- paste0(dir_n, 
+                    "Data_sources/", 
+                    ctr,
+                    "/", 
+                    ctr,
+                    "_data_",
+                    today(), 
+                    ".zip")
+
+  zipr(zipname, 
+       c(data_source, data_source_vac), 
+       recurse = TRUE, 
+       compression_level = 9,
+       include_directories = TRUE)
   
-  write_sheet(db_sex, 
-              ss = meta$id,
-              sheet = "cases&deaths_sex")
-  
-  sheet_delete(meta$id, "Sheet1")
-  
-  # uploading the whole excel file for INED
-  file_name <- paste0("SE", date, "cases&deaths.xlsx")
-  drive_upload(
-    tf,
-    path = "https://drive.google.com/drive/folders/1JS5pzekf-dmuYs6-K3rPsBv3pbtXdRA2?usp=sharing",
-    name = file_name,
-    overwrite = T)
+  # clean up file chaff
+  file.remove(data_source)
+  file.remove(data_source_vac)
   
 } else if (date_f == last_date_drive) {
   cat(paste0("no new updates so far, last date: ", date_f))

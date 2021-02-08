@@ -21,72 +21,59 @@ if (grepl("gits", auto_update_wd)){
   auto_update_email <- "kikepaila@gmail.com"
 }
 
-if (grepl("Nepomuceno", auto_update_wd)){
-  auto_update_email <- "mariliare@gmail.com"
-}
-
-if (grepl("basellini", auto_update_wd)){
-  auto_update_email <- "ugofilippo.basellini@gmail.com"
-}
-
-if (grepl("cimentadaj", auto_update_wd)){
-  auto_update_email <- "cimentadaj@gmail.com"
-}
-
-if (grepl("CurrentProjects", auto_update_wd)){
-  auto_update_email <- "e.delfava@gmail.com"
-}
-
-if (grepl("diego", auto_update_wd)){
-  auto_update_email <- "gatemonte@gmail.com"
-}
-# sched("Austria", tm = "21:31",email = auto_update_email, wd = auto_update_wd)
-
-# we assume this tasks are scheduled in a here()-aware fashion
-
-# sched() is a modified version of the original function taskscheduler_create() 
-# from the taskscheduleR package. It modifies each script to add the local path of 
-# the project, user email, delete previous task, etc. 
+# sched() is a funtion that generates and schedules a trigger script 
+# for each collection script. The trigger script has two purposes. 
+# First, it includes the information of the local path of the project and 
+# the Drive user credentials. Second, it calls the collection script ensuring
+# that it is executed using the proper encoding format (UTF-8). 
+# When scheduling the trigger script on hydra, the sched() function also 
+# deletes tasks that were scheduled in the past with same name. 
 # See "Automation/00_Functions_automation.R" for more details
 
 # current scripts working on hydra by participant
 #################################################
-
-# Ugo
-sched("Slovenia", tm = "17:14",email = auto_update_email, wd = auto_update_wd)
-sched("US_Virginia", tm = "19:50",email = auto_update_email, wd = auto_update_wd)
-sched("USA_all_deaths", tm = "01:00",email = auto_update_email, wd = auto_update_wd)
-# sched("Belgium", tm = "19:50",email = auto_update_email, wd = auto_update_wd)
-
-# Emanuele
-sched("Netherlands", tm = "04:00",email = auto_update_email, wd = auto_update_wd)
-sched("Estonia", tm = "04:31",email = auto_update_email, wd = auto_update_wd)
-sched("Czechia", tm = "06:46",email = auto_update_email, wd = auto_update_wd)
+sched("Slovenia", tm = "09:50",email = auto_update_email, wd = auto_update_wd)
+sched("US_Virginia", tm = "09:55",email = auto_update_email, wd = auto_update_wd)
+sched("USA_all_deaths", tm = "10:00",email = auto_update_email, wd = auto_update_wd)
+sched("Netherlands", tm = "09:40",email = auto_update_email, wd = auto_update_wd)
+sched("Estonia", tm = "09:45",email = auto_update_email, wd = auto_update_wd)
+sched("Czechia", tm = "09:50",email = auto_update_email, wd = auto_update_wd)
 sched("US_Michigan", tm = "02:40",email = auto_update_email, wd = auto_update_wd)
-
-# Jorge
-sched("Venezuela", tm = "13:48",email = auto_update_email, wd = auto_update_wd)
-sched("US_Texas", tm = "17:11",email = auto_update_email, wd = auto_update_wd)
-sched("USA_deaths_all_states", tm = "01:10",email = auto_update_email, wd = auto_update_wd)
-# sched("New_Zealand", "17:20",email = auto_update_email, wd = auto_update_wd)
-
-# Diego
-sched("Sweden", tm = "17:02",email = auto_update_email, wd = auto_update_wd)
-sched("Peru", tm = "05:31",email = auto_update_email, wd = auto_update_wd)
-sched("Germany", tm = "20:49",email = auto_update_email, wd = auto_update_wd)
-# sched("US_Massachusetts", tm = "17:04",email = auto_update_email, wd = auto_update_wd)
-
-# Enrique
-sched("Colombia",  tm = "20:25",email = auto_update_email, wd = auto_update_wd)
-sched("US_NYC", tm = "19:58",email = auto_update_email, wd = auto_update_wd)
+sched("Venezuela", tm = "09:31",email = auto_update_email, wd = auto_update_wd)
+sched("US_Texas", tm = "09:32",email = auto_update_email, wd = auto_update_wd)
+sched("USA_deaths_states", tm = "08:34",email = auto_update_email, wd = auto_update_wd)
+sched("Sweden", tm = "12:00",email = auto_update_email, wd = auto_update_wd)
+sched("Peru", tm = "09:40",email = auto_update_email, wd = auto_update_wd)
+sched("Germany", tm = "09:35",email = auto_update_email, wd = auto_update_wd)
+sched("US_Massachusetts", tm = "08:18",email = auto_update_email, wd = auto_update_wd)
+sched("Colombia",  tm = "09:30",email = auto_update_email, wd = auto_update_wd)
+sched("US_NYC", tm = "08:15",email = auto_update_email, wd = auto_update_wd)
 sched("Austria", tm = "21:25",email = auto_update_email, wd = auto_update_wd)
-# sched("Norway", tm = "02:10",email = auto_update_email, wd = auto_update_wd)
-# sched("CA_Montreal", tm = "02:10",email = auto_update_email, wd = auto_update_wd)
-# sched("Mexico", tm = "02:10",email = auto_update_email, wd = auto_update_wd)
-# sched("US_Wisconsin", tm = "02:10",email = auto_update_email, wd = auto_update_wd)
-
+sched("ES_Basque_Country", tm = "11:00",email = auto_update_email, wd = auto_update_wd, sch = "WEEKLY")
+sched("Philippines", tm = "10:00",email = auto_update_email, wd = auto_update_wd)
+sched("Scotland", tm = "12:10",email = auto_update_email, wd = auto_update_wd)
+sched("Norway", tm = "16:11",email = auto_update_email, wd = auto_update_wd)
+sched("US_California", tm = "07:50",email = auto_update_email, wd = auto_update_wd)
+sched("Afghanistan", tm = "06:35",email = auto_update_email, wd = auto_update_wd)
+sched("ECDC", tm = "15:57",email = auto_update_email, wd = auto_update_wd, sch = "WEEKLY")
+sched("Finland", tm = "11:44",email = auto_update_email, wd = auto_update_wd, sch = "WEEKLY")
+sched("US_Wisconsin", tm = "13:02",email = auto_update_email, wd = auto_update_wd)
+sched("Bulgaria", tm = "08:24",email = auto_update_email, wd = auto_update_wd)
+sched("Denmark", tm = "09:29",email = auto_update_email, wd = auto_update_wd)
+# sched("US_Iowa"•, tm = "09:40",email = auto_update_email, wd = auto_update_wd)
+sched("Belgium", tm = "14:30",email = auto_update_email, wd = auto_update_wd)
+sched("New_Zealand", "10:03",email = auto_update_email, wd = auto_update_wd)
+sched("Mexico", "17:23",email = auto_update_email, wd = auto_update_wd)
+sched("Thailand", "11:50",email = auto_update_email, wd = auto_update_wd)
+sched("Spain", "10:01",email = auto_update_email, wd = auto_update_wd)
+sched("US_Oregon", "12:18",email = auto_update_email, wd = auto_update_wd)
+sched("Slovakia", "18:28",email = auto_update_email, wd = auto_update_wd)
+sched("Cambodia", "20:32",email = auto_update_email, wd = auto_update_wd)
+sched("GB_NIR", "19:02",email = auto_update_email, wd = auto_update_wd)
+sched("Brazil", "16:29",email = auto_update_email, wd = auto_update_wd)
 ## broken scripts:
 ##################
+# sched("New_Zealand", tm = "02:10",email = auto_update_email, wd = auto_update_wd)
 
 ### scripts working outside hydra because of VPN:
 #################################################
@@ -115,6 +102,16 @@ sched("Austria", tm = "21:25",email = auto_update_email, wd = auto_update_wd)
 # delete_sched("US_Wisconsin")
 # delete_sched("USA_all_deaths")
 # delete_sched("Venezuela")
+# delete_sched("USA_deaths_all_states")
+# delete_sched("Philippines")
+# delete_sched("Scotland")
+# delete_sched("Norway")
+# delete_sched("ECDC")
+# delete_sched("Slovakia")
+# delete_sched("Thailand")
+delete_sched("GB_NIR")
+
+
 
 ### to list current tasks
 #########################

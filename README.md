@@ -35,7 +35,7 @@ If you know of sources for other populations, please either email, Tweet, or lea
 
 ## Citation
 
-Please cite using the OSF repository, which has a doi. All collaborators are coauthors (see full list below), but this short form is preferred:
+Please cite the medRxiv paper also listing the OSF repository, which has a doi. All collaborators are coauthors (see full list below), but this short form is preferred:
 
 COVeAGE-DB: A database of age-structured COVID-19 cases and deaths.
 Tim Riffe, Enrique Acosta, The COVerAGE-DB team
@@ -43,7 +43,7 @@ medRxiv 2020.09.18.20197228; doi: https://doi.org/10.1101/2020.09.18.20197228 Da
 
 
 ## The team (so far), alphabetical by last name
-José Manuel Aburto, Enrique Acosta, Diego Alburez-Gutierrez, Anna Altová, Ainhoa Alustiza, Ugofilippo Basellini, Simona Bignami, Didier Breton, Eungang Choi, Jorge Cimentada, Gonzalo De Armas, Emanuele Del Fava, Alicia Delgado, Alicia Delgado, Viorela Diaconu, Jessica Donzowa, Christian Dudel, Vanessa Sophie Ernst, Antonia Fröhlich, Alain Gagnon, Mariana Garcia Cristómo, Victor M. Garcia-Guerrero, Armando González-Díaz, Irwin Hecker, Dagnon Eric Koba, Marina Kolobova, Mine Kühn, Mélanie Lépori, Chia Liu, Andrea Lozer, Mădălina Manea, Lilian Marey, Muntasir Masum, Ryohei Mogi, Céline Monicolle, Saskia Morwinsky, Waqar Muhammad Ali, Ronald Musizvingoza, Mikko Myrskylä, Marília R. Nepomuceno, Michelle Nickel, Natalie Nitsche, Anna Oksuzyan, Samuel Oladele, Emmanuel Olamijuwon, Oluwafunke Omodara, Soumaila Ouedraogo, Mariana Paredes, Marius Pascariu, Manuel Piriz, Raquel Pollero, Larbi Qanni, Larbi Qanni, Federico Rehermann, Filipe Ribeiro, Tim Riffe, Silvia Rizzi, Francisco Rowe, Adil R. Sarhan, Isaac Sasson, Jiaxin Shi, Erez Shomron, Rafael Silva-Ramirez, Cosmo Strozza, Catalina Torres, Sergi Trias-Llimos, Fumiya Uchikoshi, Alyson van Raalte, Paola Vazquez-Castillo, Estevão Vilela, Iván Williams, Virginia Zarulli
+José Manuel Aburto, Enrique Acosta, Diego Alburez-Gutierrez, Anna Altová, Ainhoa Alustiza, Ugofilippo Basellini, Simona Bignami, Didier Breton, Eungang Choi, Jorge Cimentada, Gonzalo De Armas, Emanuele Del Fava, Alicia Delgado, Alicia Delgado, Viorela Diaconu, Jessica Donzowa, Christian Dudel, Vanessa Sophie Ernst, Antonia Fröhlich, Alain Gagnon, Mariana Garcia Cristómo, Victor M. Garcia-Guerrero, Armando González-Díaz, Irwin Hecker, Dagnon Eric Koba, Marina Kolobova, Mine Kühn, Mélanie Lépori, Chia Liu, Andrea Lozer, Mădălina Manea, Lilian Marey, Muntasir Masum, Ryohei Mogi, Céline Monicolle, Saskia Morwinsky, Waqar Muhammad Ali, Ronald Musizvingoza, Mikko Myrskylä, Marília R. Nepomuceno, Michelle Nickel, Natalie Nitsche, Anna Oksuzyan, Samuel Oladele, Emmanuel Olamijuwon, Oluwafunke Omodara, Soumaila Ouedraogo, Mariana Paredes, Marius Pascariu, Manuel Piriz, Raquel Pollero, Larbi Qanni, Larbi Qanni, Federico Rehermann, Filipe Ribeiro, Tim Riffe, Silvia Rizzi, Francisco Rowe, Adil R. Sarhan, Isaac Sasson, Jonas Schöley, Jiaxin Shi, Erez Shomron, Rafael Silva-Ramirez, Cosmo Strozza, Catalina Torres, Sergi Trias-Llimos, Fumiya Uchikoshi, Alyson van Raalte, Paola Vazquez-Castillo, Estevão Vilela, Iván Williams, Virginia Zarulli
 
 (and a few more people at the moment have made commitments. )
 

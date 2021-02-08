@@ -1,3 +1,14 @@
+library(here)
+source(here("Automation/00_Functions_automation.R"))
+
+# assigning Drive credentials in the case the script is verified manually  
+if (!"email" %in% ls()){
+  email <- "kikepaila@gmail.com"
+}
+
+# info country and N drive address
+ctr <- "Austria"
+dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 drive_auth(email = email)
 gs4_auth(email = email)
@@ -14,21 +25,15 @@ db_drive2 <- db_drive %>%
 
 last_date_drive <- max(db_drive2$date_f)
 
+# loading data from the website 
+data_source <- paste0(dir_n, "Data_sources/", ctr, "/", ctr, "_data_", today(), ".zip")
+download.file("https://info.gesundheitsministerium.at/data/data.zip", data_source)
 
-# reading data from the website 
-
-temp <- tempfile()
-
-download.file("https://info.gesundheitsministerium.at/data/data.zip", temp)
-db_c_age <- read_csv2(unz(temp, "Altersverteilung.csv"))
-db_c_sex <- read_csv2(unz(temp, "Geschlechtsverteilung.csv"))
-
-db_d_age <- read_csv2(unz(temp, "AltersverteilungTodesfaelle.csv"))
-db_d_sex <- read_csv2(unz(temp, "VerstorbenGeschlechtsverteilung.csv"))
-
-db_tests <- read_csv2(unz(temp, "AllgemeinDaten.csv"))
-
-unlink(temp)
+db_c_age <- read_csv2(unz(data_source, "Altersverteilung.csv"))
+db_c_sex <- read_csv2(unz(data_source, "Geschlechtsverteilung.csv"))
+db_d_age <- read_csv2(unz(data_source, "AltersverteilungTodesfaelle.csv"))
+db_d_sex <- read_csv2(unz(data_source, "VerstorbenGeschlechtsverteilung.csv"))
+db_tests <- read_csv2(unz(data_source, "AllgemeinDaten.csv"))
 
 date_f <- db_c_age$Timestamp[1] %>% 
   str_sub(1,10) %>% 
@@ -38,9 +43,7 @@ d <- paste(sprintf("%02d", day(date_f)),
            sprintf("%02d", month(date_f)),
            year(date_f), sep = ".")
 
-
-
-
+# verify if new data is not already included in Drive
 if (date_f > last_date_drive){
   
   db_c_age2 <- db_c_age %>% 
@@ -98,7 +101,7 @@ if (date_f > last_date_drive){
            Age = "TOT",
            Measure = "Tests")
     
-  db_all <- bind_rows(db_deaths, db_cases, db_tests2) %>% 
+  out <- bind_rows(db_deaths, db_cases, db_tests2) %>% 
     mutate(Country = "Austria",
            Region = "All",
            Code = paste0("AT", d),
@@ -113,48 +116,14 @@ if (date_f > last_date_drive){
   #### uploading database to Google Drive ####
   ############################################
   # This command append new rows at the end of the sheet
-  sheet_append(db_all,
+  sheet_append(out,
                ss = ss_i,
                sheet = "database")
-  log_update(pp = "Austria", N = nrow(db_all))
-  ############################################
-  #### uploading metadata to Google Drive ####
-  ############################################
-  
-  sheet_name <- paste0("AT", d, "cases&deaths")
-  
-  meta <- drive_create(sheet_name, 
-               path = ss_db, 
-               type = "spreadsheet",
-               overwrite = T)
-  
-  write_sheet(db_c_age, 
-              ss = meta$id,
-              sheet = "cases_age")
-  
-  write_sheet(db_c_sex, 
-              ss = meta$id,
-              sheet = "cases_sex")
-  
-  write_sheet(db_d_age, 
-              ss = meta$id,
-              sheet = "deaths_age")
-  
-  Sys.sleep(105)
-  
-  write_sheet(db_d_sex, 
-              ss = meta$id,
-              sheet = "deaths_sex")
-  
-  write_sheet(db_tests, 
-              ss = meta$id,
-              sheet = "tests")
-  
-  sheet_delete(meta$id, "Sheet1")
+  log_update(pp = ctr, N = nrow(out))
   
 } else if (date_f == last_date_drive) {
   cat(paste0("no new updates so far, last date: ", date_f))
-  log_update(pp = "Austria", N = 0)
+  log_update(pp = ctr, N = 0)
 }
 
   

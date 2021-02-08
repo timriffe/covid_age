@@ -2,19 +2,13 @@
 # This is modified by sched()
 # ##  ###
 email <- "kikepaila@gmail.com"
-setwd("U:/gits/covid_age")
+# setwd("U:/gits/covid_age")
 # ##  ###
 
 # end 
 
 # TR New: you must be in the repo environment 
 source("Automation/00_Functions_automation.R")
-
-library(tidyverse)
-library(googlesheets4)
-library(googledrive)
-library(rvest)
-library(lubridate)
 
 # Authorizing authentification or Drive (edit these lines with the user's email)
 drive_auth(email = email)
@@ -39,7 +33,9 @@ date_text <-
   html_text()
 loc_date1 <- str_locate(date_text, "as of ")[2] + 1
 loc_date2 <- str_locate(date_text, ",")[1] - 1
-date1     <- paste0(str_sub(date_text, loc_date1, loc_date2), " 2020")
+date1     <- paste0(str_sub(date_text, loc_date1, loc_date2), " 2021")
+# temporal fix for typo in website
+date1 <- str_replace(date1, "Febuary", "February")
 date_f    <- mdy(date1)
 
 if (date_f > last_date_drive){

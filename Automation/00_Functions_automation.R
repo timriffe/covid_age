@@ -16,7 +16,8 @@ library(pacman)
 packages_CRAN <- c("tidyverse","lubridate","gargle","rvest","httr","readxl",
                    "tictoc","parallel","data.table","git2r","usethis", "rio",
                    "remotes","here","googledrive","zip", "XML", "RCurl",
-                   "taskscheduleR","countrycode", "xml2", "dplyr", "xml2")
+                   "taskscheduleR","countrycode", "xml2", "dplyr", "xml2",
+                   "reticulate", "rjson")
 
 # Install required CRAN packages if not available yet
 if(!sum(!p_isinstalled(packages_CRAN))==0) {
@@ -49,12 +50,33 @@ p_load(packages_git, character.only = TRUE)
 get_input_rubric <- function(tab = "input") {
   
   # Spreadsheet on Google Docs
-  ss_rubric <- "https://docs.google.com/spreadsheets/d/1IDQkit829LrUShH-NpeprDus20b6bso7FAOkpYvDHi4/edit#gid=0"
+  ss_rubric <- "https://docs.google.com/spreadsheets/d/15kat5Qddi11WhUPBW3Kj3faAmhuWkgtQzioaHvAGZI0/edit#gid=0"
   
-  # Read spreadsheet
-  input_rubric <- read_sheet(ss_rubric, sheet = tab) %>% 
-    # Drop if no source spreadsheet
-    filter(!is.na(Sheet))
+  input_rubric <- try(read_sheet(ss_rubric, sheet = tab) %>% 
+             # Drop if no source spreadsheet
+             filter(!is.na(Sheet)))
+  
+  # If error
+  if (class(input_rubric)[1] == "try-error") {
+    
+    Sys.sleep(120)
+    
+    # Try to load again
+    input_rubric <- try(read_sheet(ss_rubric, sheet = tab) %>% 
+                          # Drop if no source spreadsheet
+                          filter(!is.na(Sheet)))
+    
+    if (class(input_rubric)[1] == "try-error") {
+      
+      Sys.sleep(120)
+      
+      # Try to load again
+      input_rubric <- try(read_sheet(ss_rubric, sheet = tab) %>% 
+                            # Drop if no source spreadsheet
+                            filter(!is.na(Sheet)))
+      
+    }
+  }
   
   # Return tibble
   input_rubric
@@ -72,13 +94,44 @@ get_country_inputDB <- function(ShortCode) {
   rubric <- get_input_rubric(tab = "input")
   
   # Find spreadsheet for country
+  # TR: this assumes everthing on Drive. 
   ss_i   <- rubric %>% filter(Short == ShortCode) %>% '$'(Sheet)
   
   # Load spreadsheet
   out <- read_sheet(ss_i, 
                     sheet = "database", 
-                    na = "NA", 
-                    col_types= "cccccciccd")
+                    na = "NA")
+  
+  
+  out <- try(read_sheet(ss_i, 
+                        sheet = "database", 
+                        na = "NA"))
+  
+  # If error
+  if (class(out)[1] == "try-error") {
+    
+    Sys.sleep(120)
+    
+    # Try to load again
+    out <- try(read_sheet(ss_i, 
+                          sheet = "database", 
+                          na = "NA"))
+    
+    if (class(out)[1] == "try-error") {
+      
+      Sys.sleep(120)
+      
+      # Try to load again
+      out <- try(read_sheet(ss_i, 
+                            sheet = "database", 
+                            na = "NA"))
+      
+    }
+  }
+  
+  # A problem with the amount of columns
+  # , 
+  # col_types= "cccccciccd"
   
   # Assign short code
   out$Short <- add_Short(out$Code,out$Date)
@@ -105,7 +158,7 @@ sched <- function(
   pp = "Germany", 
   tm = "21:18", 
   email = "kikepaila@gmail.com",
-  schedule = "DAILY",
+  sch = "DAILY",
   wd = here()){
   
   # create a trigger script that will source the automate script
@@ -149,7 +202,7 @@ sched <- function(
   
   taskscheduler_create(taskname = tskname, 
                        rscript = trigger_script, 
-                       schedule = schedule, 
+                       schedule = sch, 
                        starttime = tm, 
                        startdate = date.sched)
 }
@@ -175,15 +228,15 @@ sort_input_data <- function(X) {
     mutate(Date2 = dmy(Date)) %>% 
     # Sort data
     arrange(Country,
-            Region,
             Date2,
+            Region,
             Code,
             Sex, 
             Measure,
             Metric,
             suppressWarnings(as.integer(Age))) %>% 
     # Drop extra date variable
-    select(-Date2)
+    select(Country, Region, Code,  Date, Sex, Age, AgeInt, Metric, Measure, Value)
   
 }
 
@@ -211,6 +264,30 @@ add_Short <- function(Code, Date) {
     
   }, Code, Date)
   
+}
+
+# function to extract data from web 
+##################################
+
+scraplinks <- function(url){
+  # Create an html document from the url
+  webpage <- xml2::read_html(url)
+  # Extract the URLs
+  url_ <- webpage %>%
+    rvest::html_nodes("a") %>%
+    rvest::html_attr("href")
+  # Extract the link text
+  link_ <- webpage %>%
+    rvest::html_nodes("a") %>%
+    rvest::html_text()
+  return(tibble(link = link_, url = url_))
+}
+
+# useful for automated capture
+ddmmyyyy <- function(Date,sep = "."){
+  paste(sprintf("%02d",day(Date)),
+        sprintf("%02d",month(Date)),  
+        year(Date),sep=sep)
 }
 
 

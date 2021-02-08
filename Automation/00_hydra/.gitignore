@@ -1,3 +1,4 @@
+triggers/
 CA_Montreal.log
 Colombia.log
 Germany.log
@@ -23,3 +24,5 @@ Slovenia.log
 .Rhistory
 Colombia_sch.log
 Czechia.log
+triggers/USA_deaths_states_trigger.log
+
