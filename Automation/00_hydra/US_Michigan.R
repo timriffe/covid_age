@@ -24,7 +24,7 @@ db_drive <- get_country_inputDB("US_MI")
 db_drive2 <- db_drive %>% 
   mutate(date_f = dmy(Date))
 
-last_date_drive <- max(db_drive2$date_f)
+last_date_drive <- max(db_drive2$date_f, na.rm = T)
 
 # reading data from the website 
 ### source
