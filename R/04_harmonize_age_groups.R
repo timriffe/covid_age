@@ -4,7 +4,7 @@ source(here::here("R","00_Functions.R"))
 library(parallelsugar)
 logfile <- here("buildlog.md")
 n.cores <- round(6 + (detectCores() - 8)/5)
-
+n.cores  <- 3
 
 ### Load data #######################################################
 
@@ -17,12 +17,13 @@ Offsets     <- readRDS(here("Data","Offsets.rds"))
 # print(object.size(Offsets),units = "Mb")
 # 2.1 Mb
 # Sort count data, add group ids.
+
 inputCounts <- 
   inputCounts %>% 
   arrange(Country, Region, Date, Measure, Sex, Age) %>% 
   group_by(Code, Sex, Measure, Date) %>% 
   mutate(id = cur_group_id(),
-         core_id = sample(1:3,size=1,replace = TRUE)) %>% 
+         core_id = sample(1:n.cores,size=1,replace = TRUE)) %>% 
   ungroup() 
 
 # nr rows per core
@@ -59,8 +60,7 @@ print(object.size(iL),units = "Mb")
 # toc()
 
 # install.packages("doParallel")
-no_cores <- 3 # this is artifically low..
-cl <- makeCluster(no_cores)
+cl <- makeCluster(n.cores)
 clusterEvalQ(cl,
              {source("R/00_Functions.R");
 Offsets = readRDS("Data/Offsets.rds");N=5;lambda = 1e-5; OAnew = 100})
