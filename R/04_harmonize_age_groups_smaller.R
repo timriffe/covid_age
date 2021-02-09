@@ -51,9 +51,9 @@ iL <- split(inputCounts,
 timings[[i]] <- system.time({
   cl <- makeCluster(n_cores[i])
   clusterEvalQ(cl,
-               {source("R/00_Functions.R");
-                 Offsets = readRDS("Data/Offsets.rds"); # i don't know how else to 
-                                                        # pre-load this object, but this works
+               {source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R");
+                 Offsets = readRDS("N://COVerAGE-DB/Data/Offsets.rds"); # i don't know how else to 
+                                   # pre-load this object, but this works
                  N=5;
                  lambda = 1e5; 
                  OAnew = 100})
