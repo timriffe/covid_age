@@ -28,21 +28,12 @@ print(paste0("Starting data retrieval for Sweden..."))
 # When using it daily
 # ~~~~~~~~~~~~~~~~~~~
 
-# 2. Save data to disk ---------
-
-# 2.1. Cases and deaths ~~~~~~ =================
+# 2. Is there new cases/deaths data? =================
 
 data_source <- paste0(dir_n, "Data_sources/", ctr, "/cases&deaths_",today(), ".xlsx")
 
 url <- "https://www.arcgis.com/sharing/rest/content/items/b5e7488e117749c19881cce45db13f7e/data"
 httr::GET(url, write_disk(data_source))
-
-# 2.2. Vaccination =========
-
-data_source_vac <- paste0(dir_n, "Data_sources/", ctr, "/vaccination_",today(), ".xlsx")
-
-url_vac <- "https://fohm.maps.arcgis.com/sharing/rest/content/items/fc749115877443d29c2a49ea9eca77e9/data"
-httr::GET(url_vac, write_disk(data_source_vac))
 
 # date from the data directly, last reported date in the sheet 'Antal per dag region'
 
@@ -55,6 +46,7 @@ date_f <- read_xlsx(data_source, sheet = 1) %>%
 db_drive <- get_country_inputDB("SE")
 
 last_date_drive <- db_drive %>% 
+  filter(Measure %in% c("Cases","Deaths")) %>% 
   mutate(date_f = dmy(Date)) %>% 
   dplyr::pull(date_f) %>% 
   max()
@@ -123,84 +115,124 @@ if (date_f > last_date_drive){
     ) %>% 
     select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
   
+  data_source_zip <-  data_source
+  
   # 3.2. Vaccines ================
   
-  vac_sex <- read_xlsx(data_source_vac, sheet = 4)
-  vac_age <- read_xlsx(data_source_vac, sheet = 3)
+  # First, see if there is new vaccine data
   
-  # Get data by sex
+  data_source_vac <- paste0(dir_n, "Data_sources/", ctr, "/vaccination_",today(), ".xlsx")
   
-  vac_s2 <-
-    vac_sex %>% 
-    select(
-      Sex = starts_with("K")
-      , Value = `Antal vaccinerade`
-      , Measure = Dosnummer
-    ) %>% 
-    # filter(!grepl("^t", Sex, ignore.case = T)) %>% 
-    mutate(
-      Sex = case_when(
-        grepl("^m", Sex, ignore.case = T) ~ "m",
-        grepl("^k", Sex, ignore.case = T) ~ "f"
-        # grepl("^t", Sex, ignore.case = T) ~ "UNK"
-      ) 
-      , Measure = case_when(
-        grepl("1", Measure, ignore.case = T) ~ "Vaccination1"
-        , grepl("2", Measure, ignore.case = T) ~ "Vaccination2"
-      )
-      , Age = "TOT"
-      , AgeInt = ""
-      # Add empty row for UNK
-      , Sex = ifelse(is.na(Sex), "UNK", Sex)
-      , AgeInt = ifelse(Sex == "UNK", "", AgeInt)
-      , Value = ifelse(Sex == "UNK", 0, Value)
-    ) %>% 
-    select(Sex, Age, AgeInt, Measure, Value) %>% 
-    arrange(Sex)
+  url_vac <- "https://fohm.maps.arcgis.com/sharing/rest/content/items/fc749115877443d29c2a49ea9eca77e9/data"
+  httr::GET(url_vac, write_disk(data_source_vac))
   
-  # Get data by age
   
-  vac_a2 <-
-    vac_age %>% 
+  # date_f_vac <- read_xlsx(data_source_vac, sheet = 1) %>% 
+  #   dplyr::pull(Statistikdatum) %>% 
+  #   max() %>% 
+  #   ymd()
+  
+  # In vaccine file, the date is not actually stored in 
+  # any of the sheets, but, at the time pf writing (20210209)
+  # it is only stored in the sheet name
+  
+  date_f_vac_temp <- excel_sheets(data_source_vac)
+  date_f_vac_temp <- date_f_vac_temp[grepl("[0-9]{4}$", date_f_vac_temp)]
+  date_f_vac_temp <- trimws(gsub("FOHM", "", date_f_vac_temp))
+  date_f_vac <- dmy(date_f_vac_temp)
+  
+  last_date_drive_vac <- db_drive %>% 
+    filter(Measure %in% "Vaccination1") %>% 
+    mutate(date_f = dmy(Date)) %>% 
+    dplyr::pull(date_f) %>% 
+    max()
+  
+  update_vaccines <- date_f_vac > last_date_drive_vac
+  
+  if (update_vaccines){
+  print("New vaccination data available - updating..")  
+    
+    vac_sex <- read_xlsx(data_source_vac, sheet = 4)
+    vac_age <- read_xlsx(data_source_vac, sheet = 3)
+    
+    # Get data by sex
+    
+    vac_s2 <-
+      vac_sex %>% 
+      select(
+        Sex = starts_with("K")
+        , Value = `Antal vaccinerade`
+        , Measure = Dosnummer
+      ) %>% 
+      # filter(!grepl("^t", Sex, ignore.case = T)) %>% 
+      mutate(
+        Sex = case_when(
+          grepl("^m", Sex, ignore.case = T) ~ "m",
+          grepl("^k", Sex, ignore.case = T) ~ "f"
+          # grepl("^t", Sex, ignore.case = T) ~ "UNK"
+        ) 
+        , Measure = case_when(
+          grepl("1", Measure, ignore.case = T) ~ "Vaccination1"
+          , grepl("2", Measure, ignore.case = T) ~ "Vaccination2"
+        )
+        , Age = "TOT"
+        , AgeInt = ""
+        # Add empty row for UNK
+        , Sex = ifelse(is.na(Sex), "UNK", Sex)
+        , AgeInt = ifelse(Sex == "UNK", "", AgeInt)
+        , Value = ifelse(Sex == "UNK", 0, Value)
+      ) %>% 
+      select(Sex, Age, AgeInt, Measure, Value) %>% 
+      arrange(Sex)
+    
+    # Get data by age
+    
+    vac_a2 <-
+      vac_age %>% 
       filter(grepl("Sverige", Region)) %>% 
-    select(
-      Value = contains("antal")
-      , Measure = Dosnummer
-      , Age = ends_with("ldersgrupp")
-    ) %>% 
+      select(
+        Value = contains("antal")
+        , Measure = Dosnummer
+        , Age = ends_with("ldersgrupp")
+      ) %>% 
       # filter(!grepl("^Total", Age)) %>% 
-    mutate(
-      Measure = case_when(
-        grepl("1", Measure, ignore.case = T) ~ "Vaccination1"
-        , grepl("2", Measure, ignore.case = T) ~ "Vaccination2"
-      )
-      , Age_low = as.numeric(str_extract(Age, "^[0-9]{2}"))
-      , Age_high = as.numeric(str_extract(Age, "[0-9]{2}$"))
-      , Age = as.character(Age_low)
-      , AgeInt = as.character(ifelse(!is.na(Age_high), Age_high-Age_low+1, 15))
-      , Sex = "b"
-      # Add empty row for UNK
-      , Age = ifelse(is.na(Age), "UNK", Age)
-      , AgeInt = ifelse(Age == "UNK", "", AgeInt)
-      , Value = ifelse(Age == "UNK", 0, Value)
-    ) %>%  
-    select(Sex, Age, AgeInt, Measure, Value)
+      mutate(
+        Measure = case_when(
+          grepl("1", Measure, ignore.case = T) ~ "Vaccination1"
+          , grepl("2", Measure, ignore.case = T) ~ "Vaccination2"
+        )
+        , Age_low = as.numeric(str_extract(Age, "^[0-9]{2}"))
+        , Age_high = as.numeric(str_extract(Age, "[0-9]{2}$"))
+        , Age = as.character(Age_low)
+        , AgeInt = as.character(ifelse(!is.na(Age_high), Age_high-Age_low+1, 15))
+        , Sex = "b"
+        # Add empty row for UNK
+        , Age = ifelse(is.na(Age), "UNK", Age)
+        , AgeInt = ifelse(Age == "UNK", "", AgeInt)
+        , Value = ifelse(Age == "UNK", 0, Value)
+      ) %>%  
+      select(Sex, Age, AgeInt, Measure, Value)
+    
+    out_vac <-
+      bind_rows(vac_s2, vac_a2) %>% 
+      mutate(Country = "Sweden",
+             Region = "All",
+             Code = paste0("SE", date),
+             Date = date,
+             Metric = "Count"
+      ) %>% 
+      select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
+      arrange(Measure)
   
-  out_vac <-
-    bind_rows(vac_s2, vac_a2) %>% 
-    mutate(Country = "Sweden",
-           Region = "All",
-           Code = paste0("SE", date),
-           Date = date,
-           Metric = "Count"
-    ) %>% 
-    select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
-    arrange(Measure)
+    out <- bind_rows(out_cases, out_vac)  
+    
+    data_source_zip <-  c(data_source_zip, data_source_vac)
+    
+  } else if(!update_vaccines){
+    out <- out_cases
+  }
   
-  # 3.3. Consolidate ==========
-  
-  out <- bind_rows(out_cases, out_vac)
-  
+
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # uploading database to Google Drive 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -221,19 +253,18 @@ if (date_f > last_date_drive){
                     "_data_",
                     today(), 
                     ".zip")
-
+  
   zipr(zipname, 
-       c(data_source, data_source_vac), 
+       data_source_zip, 
        recurse = TRUE, 
        compression_level = 9,
        include_directories = TRUE)
   
   # clean up file chaff
-  file.remove(data_source)
-  file.remove(data_source_vac)
+  file.remove(data_source_zip)
+  # file.remove(data_source_vac)
   
 } else if (date_f == last_date_drive) {
   cat(paste0("no new updates so far, last date: ", date_f))
   log_update(pp = "Sweden", N = 0)
 }
-
