@@ -55,7 +55,7 @@ timings[[i]] <- system.time({
                  Offsets = readRDS("Data/Offsets.rds"); # i don't know how else to 
                                                         # pre-load this object, but this works
                  N=5;
-                 lambda = 1e-5; 
+                 lambda = 1e5; 
                  OAnew = 100})
   #clusterEvalQ(cl,ls())
   iLout1e5 <-parLapply(cl, 
@@ -63,12 +63,43 @@ timings[[i]] <- system.time({
             harmonize_age_p_bigchunks, 
             Offsets = Offsets, 
             N = 5,          # technically no need to preload these pars above I think
-            lambda = 1e-5, 
+            lambda = 1e5, 
             OAnew = 100)
   stopCluster(cl)
 })
 }
 # lines after this not relevant. This is the big piece
+
+
+# timings parallelsugar::mclapply()
+
+timings2 <- list()
+
+for (i in 1:4){
+  inputCounts <-
+    inputCounts %>% 
+    mutate(core_id = sample(1:n_cores[i],
+                            size = 1,
+                            replace = TRUE))
+  
+  # Split counts into big chunks
+  iL <- split(inputCounts,
+              inputCounts$core_id,
+              drop = TRUE)
+  
+  timings2[[i]] <- system.time({
+  
+    #clusterEvalQ(cl,ls())
+    iLout1e5 <-parallelsugar::mclapply(
+                         iL, 
+                         harmonize_age_p_bigchunks, 
+                         Offsets = Offsets, 
+                         N = 5,          # technically no need to preload these pars above I think
+                         lambda = 1e5, 
+                         OAnew = 100,
+                         mc.cores = n_cores[i])
+  })
+}
 
 
 
@@ -153,8 +184,6 @@ for (i in 1:length(n_cores)){
                                            mc.cores = n_cores[i]))
 }
 test_resuts
-
-
 
 
 
