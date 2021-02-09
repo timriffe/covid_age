@@ -46,7 +46,7 @@ date_f <- read_xlsx(data_source, sheet = 1) %>%
 db_drive <- get_country_inputDB("SE")
 
 last_date_drive <- db_drive %>% 
-  filter(Measure %in% "Deaths") %>% 
+  filter(Measure %in% c("Cases","Deaths")) %>% 
   mutate(date_f = dmy(Date)) %>% 
   dplyr::pull(date_f) %>% 
   max()
@@ -127,10 +127,19 @@ if (date_f > last_date_drive){
   httr::GET(url_vac, write_disk(data_source_vac))
   
   
-  date_f_vac <- read_xlsx(data_source, sheet = 1) %>% 
-    dplyr::pull(Statistikdatum) %>% 
-    max() %>% 
-    ymd()
+  # date_f_vac <- read_xlsx(data_source_vac, sheet = 1) %>% 
+  #   dplyr::pull(Statistikdatum) %>% 
+  #   max() %>% 
+  #   ymd()
+  
+  # In vaccine file, the date is not actually stored in 
+  # any of the sheets, but, at the time pf writing (20210209)
+  # it is only stored in the sheet name
+  
+  date_f_vac_temp <- excel_sheets(data_source_vac)
+  date_f_vac_temp <- date_f_vac_temp[grepl("[0-9]{4}$", date_f_vac_temp)]
+  date_f_vac_temp <- trimws(gsub("FOHM", "", date_f_vac_temp))
+  date_f_vac <- dmy(date_f_vac_temp)
   
   last_date_drive_vac <- db_drive %>% 
     filter(Measure %in% "Vaccination1") %>% 
