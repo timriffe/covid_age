@@ -215,6 +215,19 @@ ECDC <-
   ECDC %>% 
   mutate(isECDC = grepl(Code, pattern = "ECDC_"))
 
+# when checking need to also add both- sex ECDC for those countries
+# where we only collect both-sex data (Finland)
+ECDCb <-
+  ECDC %>% 
+  filter(isECDC) %>% 
+  pivot_wider(names_from = "Sex", values_from = "Value") %>% 
+  mutate(b = f + m) %>% 
+  pivot_longer(names_to = "Sex", values_to = "Value") %>% 
+  filter(Sex == "b")
+  
+ECDC <- ECDC %>% 
+  bind_rows(ECDCb)
+
 # overlap within week?
 # by Country, year, week, Sex, Measure
 
