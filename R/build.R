@@ -1,10 +1,6 @@
 library(here)
 source(here::here("R","00_Functions.R"))
 
-# Set the time lag for reading in modified templates. 
-# For now leave as-is.
-hours <- Inf
-# 
 
 # TR: note, updating the inputDB is now on a separate 8-hour loop.
 # This script assumes we have a nice stable inputDB to start with.
@@ -16,12 +12,17 @@ log_section("New build log", append = FALSE)
 
 # ---------------------- #
 
+# Resolve overlapping sources
+source(here("R","01.5_resolve_sources.R"))
+
+# ---------------------- #
+
 # Harmonize Measure, Metric, and Scaling
 source(here("R","02_harmonize_metrics.R"))
 
 # ---------------------- #
 
-# Offset compilation is manual and separate for now.
+# 03 Offset compilation is manual and separate for now.
 
 # ---------------------- #
 

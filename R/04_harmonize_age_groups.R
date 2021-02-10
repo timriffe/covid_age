@@ -1,62 +1,83 @@
 
 ### Clean up & functions ############################################
-
-source(here("R","00_Functions.R"))
+source(here::here("R","00_Functions.R"))
+library(parallelsugar)
 logfile <- here("buildlog.md")
-n.cores <- round(6 + (detectCores() - 8)/8)
-
+n.cores <- round(6 + (detectCores() - 8)/5)
+n.cores  <- 3
 
 ### Load data #######################################################
 
 # Count data
 inputCounts <- readRDS(here("Data","inputCounts.rds"))
 inputCounts$Metric <- NULL
-
-codes_in <- with(inputCounts, paste(Country,Region,Measure,Short)) %>% unique()
-
+ 
 # Offsets
 Offsets     <- readRDS(here("Data","Offsets.rds"))
+# print(object.size(Offsets),units = "Mb")
+# 2.1 Mb
+# Sort count data, add group ids.
 
-# Sort count data
 inputCounts <- 
   inputCounts %>% 
-  arrange(Country, Region, Measure, Sex, Age)
+  arrange(Country, Region, Date, Measure, Sex, Age) %>% 
+  group_by(Code, Sex, Measure, Date) %>% 
+  mutate(id = cur_group_id(),
+         core_id = sample(1:n.cores,size=1,replace = TRUE)) %>% 
+  ungroup() 
 
-# Split counts into chunks
+# nr rows per core
+# inputCounts$core_id %>% table()
+
+# Number of subsets per core
+# tapply(inputCounts$id,inputCounts$core_id,function(x){x %>% unique() %>% length()})
+# Split counts into big chunks
 iL <- split(inputCounts,
-              list(inputCounts$Code,
-                   inputCounts$Sex,
-                   inputCounts$Measure),
-              drop =TRUE)
+            inputCounts$core_id,
+            drop = TRUE)
 
-# rmelements <-
-# iL %>% lapply(function(X){
-#   any(X$Measure == "Count")
-# }) %>% unlist()
-# iL <- iL[!rmelements]
 ### Age harmonization: 5-year age groups ############################
 
 # Log
 log_section("Age harmonization", 
             append = TRUE, 
             logfile = logfile)
- 
-# Apply PCLM to split into 5-year age groups
-iLout1e5 <- mclapply(iL, 
-                      FUN = try_step,
-                      process_function = harmonize_age_p,
-                      byvars = c("Code","Sex","Measure"),
-                      Offsets = Offsets,
-                      N = 5,
-                      OAnew = 100,
-                      lambda = 1e5,
-                      logfile = logfile,
-                      mc.cores = n.cores)
-# rmelements <-
-#   iLout1e5 %>% lapply(function(X){
-#     any(X$Measure == "Count")
-#   }) %>% unlist()
-# iLout1e5 <- iLout1e5[!rmelements]
+
+
+print(object.size(iL),units = "Mb")
+# 5 feb 2021 800 Mb
+# length(iL)
+# tic()
+# # Apply PCLM to split into 5-year age groups
+# iLout1e5 <- parallelsugar::mclapply_socket(
+#                      iL, 
+#                      harmonize_age_p_bigchunks,
+#                      Offsets = Offsets, # 2.1 Mb data.frame passed to each process
+#                      N = 5,
+#                      OAnew = 100,
+#                      lambda = 1e5,
+#                      mc.cores = 3)
+# toc()
+
+# install.packages("doParallel")
+cl <- makeCluster(n.cores)
+clusterEvalQ(cl,
+             {source("R/00_Functions.R");
+Offsets = readRDS("Data/Offsets.rds");N=5;lambda = 1e-5; OAnew = 100})
+#clusterEvalQ(cl,ls())
+iLout1e5 <-parLapply(cl, 
+          iL, 
+          harmonize_age_p_bigchunks, 
+          Offsets = Offsets, 
+          N = 5, 
+          lambda = 1e-5, 
+          OAnew = 100)
+stopCluster(cl)
+# source("R/00_Functions.R")
+# harmonize_age_p_bigchunks(iL[[1]],Offsets = Offsets, 
+#                           N = 5, 
+#                           lambda = 1e-5, 
+#                           OAnew = 100)
 # Edit results
 outputCounts_5_1e5 <- iLout1e5 %>% 
                       # Get into one data set
