@@ -29,6 +29,8 @@ inputCounts <-
 # nr rows per core
 # inputCounts$core_id %>% table()
 
+ids_in <- inputCounts$id %>% unique() %>% sort()
+
 # Number of subsets per core
 # tapply(inputCounts$id,inputCounts$core_id,function(x){x %>% unique() %>% length()})
 # Split counts into big chunks
@@ -44,7 +46,7 @@ log_section("Age harmonization",
             logfile = logfile)
 
 
-print(object.size(iL),units = "Mb")
+#print(object.size(iL),units = "Mb")
 # 5 feb 2021 800 Mb
 # length(iL)
 # tic()
@@ -73,15 +75,25 @@ iLout1e5 <-parLapply(cl,
           lambda = 1e-5, 
           OAnew = 100)
 stopCluster(cl)
-# source("R/00_Functions.R")
-# harmonize_age_p_bigchunks(iL[[1]],Offsets = Offsets, 
-#                           N = 5, 
-#                           lambda = 1e-5, 
-#                           OAnew = 100)
+
+out5 <- 
+  iLout1e5 %>% 
+  # Get into one data set
+  rbindlist() 
+
+ids_out  <- out5$id %>% unique() %>% sort()
+failures <- ids_in[!ids_in %in% ids_out]
+
+HarmonizationFailures <-
+  inputCounts %>% 
+  filter(id %in% failures)
+
+saveRDS(HarmonizationFailures, file = here("Data","HarmonizationFailures.rds"))
+
+
+
 # Edit results
-outputCounts_5_1e5 <- iLout1e5 %>% 
-                      # Get into one data set
-                      rbindlist() %>% 
+outputCounts_5_1e5 <- out5 %>%  
                       # Replace NaNs 
                       mutate(Value = ifelse(is.nan(Value),0,Value)) %>% 
                       # Rescale sexes
