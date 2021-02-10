@@ -67,15 +67,13 @@ years_avail <- years_avail[!naind]
 weeks_avail <- weeks_avail[!naind]
 yr_wk_avail <- paste(years_avail, weeks_avail, sep = "-") %>% unique()
 
-weeks_collect <-
-  yr_wk_avail[!yr_wk_avail %in% yr_wk_in] %>% 
-  unique()
+yr_wk_avail <- yr_wk_avail %>% unique()
 
-weeks_collect <- weeks_collect[weeks_collect != "2020-53"]
+weeks_collect <- yr_wk_avail[yr_wk_avail != "2020-53"]
 #####################################################
 # parse the text dumps
 #####################################################
-ECDCout <- ECDCin
+ECDCout <- ECDCin[0, ]
 # week_i <- "2020-48"
 
 PrepIN <-
@@ -145,7 +143,7 @@ PrepIN <-
     Y
   }
 
-if (length(weeks_collect) > 0){
+
   for (week_i in weeks_collect){
     cat(week_i,"\n")
     
@@ -236,7 +234,6 @@ if (length(weeks_collect) > 0){
       bind_rows(ECDC_i)
     
   }
-}
 
 ###################################################
 # prep output!

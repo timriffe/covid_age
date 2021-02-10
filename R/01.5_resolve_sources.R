@@ -222,7 +222,7 @@ ECDCb <-
   filter(isECDC) %>% 
   pivot_wider(names_from = "Sex", values_from = "Value") %>% 
   mutate(b = f + m) %>% 
-  pivot_longer(names_to = "Sex", values_to = "Value") %>% 
+  pivot_longer(cols = c("m","f","b"),names_to = "Sex", values_to = "Value") %>% 
   filter(Sex == "b")
   
 ECDC <- ECDC %>% 
