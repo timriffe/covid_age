@@ -49,32 +49,32 @@ log_section("Age harmonization",
 #print(object.size(iL),units = "Mb")
 # 5 feb 2021 800 Mb
 # length(iL)
-# tic()
-# # Apply PCLM to split into 5-year age groups
-# iLout1e5 <- parallelsugar::mclapply_socket(
-#                      iL, 
-#                      harmonize_age_p_bigchunks,
-#                      Offsets = Offsets, # 2.1 Mb data.frame passed to each process
-#                      N = 5,
-#                      OAnew = 100,
-#                      lambda = 1e5,
-#                      mc.cores = 3)
-# toc()
+ tic()
+ # Apply PCLM to split into 5-year age groups
+ iLout1e5 <- parallelsugar::mclapply(
+                      iL, 
+                      harmonize_age_p_bigchunks,
+                      Offsets = Offsets, # 2.1 Mb data.frame passed to each process
+                      N = 5,
+                      OAnew = 100,
+                      lambda = 1e5,
+                      mc.cores = n.cores)
+ toc()
 
 # install.packages("doParallel")
-cl <- makeCluster(n.cores)
-clusterEvalQ(cl,
-             {source("R/00_Functions.R");
-Offsets = readRDS("Data/Offsets.rds");N=5;lambda = 1e-5; OAnew = 100})
-#clusterEvalQ(cl,ls())
-iLout1e5 <-parLapply(cl, 
-          iL, 
-          harmonize_age_p_bigchunks, 
-          Offsets = Offsets, 
-          N = 5, 
-          lambda = 1e-5, 
-          OAnew = 100)
-stopCluster(cl)
+# cl <- makeCluster(n.cores)
+# clusterEvalQ(cl,
+#              {source("R/00_Functions.R");
+# Offsets = readRDS("Data/Offsets.rds");N=5;lambda = 1e-5; OAnew = 100})
+# #clusterEvalQ(cl,ls())
+# iLout1e5 <-parLapply(cl, 
+#           iL, 
+#           harmonize_age_p_bigchunks, 
+#           Offsets = Offsets, 
+#           N = 5, 
+#           lambda = 1e-5, 
+#           OAnew = 100)
+# stopCluster(cl)
 
 out5 <- 
   iLout1e5 %>% 
