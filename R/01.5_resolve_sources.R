@@ -4,7 +4,15 @@ logfile <- here("buildlog.md")
 
 log_section("begin resolution of multiple sources per population", logfile = logfile)
 
-idb <- readRDS("Data/inputDB.rds")
+check_mf <- function(Sex, isECDC){
+  if (any(isECDC)){
+    out = all(c("m","f") %in% Sex[!isECDC])
+    return( rep(out,length(Sex)))
+  }
+  rep(TRUE, length(Sex))
+}
+
+idb <- readRDS(here("Data","inputDB.rds"))
 
 idb <- idb %>% 
   mutate(Date = dmy(Date),
@@ -64,7 +72,7 @@ USA <-
   USA %>% 
   group_by(Region, Sex, year, week) %>% 
   mutate(overlap = any(isCDC) & any(!isCDC)) %>% 
-  ungroup()
+  ungroup() 
 
 # 5) remove overlap & !isCDC
 USAout <- 
@@ -215,14 +223,34 @@ ECDC <-
   ECDC %>% 
   mutate(isECDC = grepl(Code, pattern = "ECDC_"))
 
+# when checking need to also add both- sex ECDC for those countries
+# where we only collect both-sex data (Finland)
+# ECDCb <-
+#   ECDC %>% 
+#   filter(isECDC) %>% 
+#   pivot_wider(names_from = "Sex", values_from = "Value") %>% 
+#   mutate(b = f + m) %>% 
+#   pivot_longer(cols = c(m,f,b),names_to = "Sex", values_to = "Value") %>% 
+#   filter(Sex == "b")
+  
+# ECDC <- ECDC %>% 
+#   bind_rows(ECDCb)
+
 # overlap within week?
 # by Country, year, week, Sex, Measure
+
+
 
 ECDC <-
   ECDC %>% 
   group_by(Country, year, week, Sex, Measure) %>% 
   mutate(overlap = any(isECDC) & any(!isECDC)) %>% 
-  ungroup()
+  group_by(Country, year, week, Measure) %>% 
+  mutate(mf = check_mf(Sex, isECDC),
+         overlap = ifelse(mf & isECDC, TRUE, overlap)) %>% 
+  ungroup() %>% 
+  select(-mf)
+
 
 # if there is overlap, then keep !isECDC
 ECDCout <- 
@@ -232,6 +260,14 @@ ECDCout <-
 ECDC <- 
   ECDC %>% 
   filter(!(overlap & isECDC))
+
+# ECDC %>% 
+#   group_by(Country, year, week, Measure) %>% 
+#   mutate(country_sex = any(Sex!="b" & Age != "TOT" & !isECDC)) %>% 
+#   ungroup() %>% 
+#   filter(country_sex)
+
+# TR: new check: if !isECDC in subset has m,f, then remove ECDC b
 
 # remove extra columns, recode Date
 ECDC <- 

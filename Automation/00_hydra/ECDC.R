@@ -62,17 +62,18 @@ years_avail <-
   gsub(pattern = " ", replacement = "") %>% 
   substr(start=8,stop=11) %>% 
   as.integer()
+naind <- is.na(weeks_avail) | is.na(years_avail)
+years_avail <- years_avail[!naind]
+weeks_avail <- weeks_avail[!naind]
 yr_wk_avail <- paste(years_avail, weeks_avail, sep = "-") %>% unique()
 
-weeks_collect <-
-  yr_wk_avail[!yr_wk_avail %in% yr_wk_in] %>% 
-  unique()
+yr_wk_avail <- yr_wk_avail %>% unique()
 
-weeks_collect <- weeks_collect[weeks_collect != "2020-53"]
+weeks_collect <- yr_wk_avail[yr_wk_avail != "2020-53"]
 #####################################################
 # parse the text dumps
 #####################################################
-ECDCout <- ECDCin
+ECDCout <- ECDCin[0, ]
 # week_i <- "2020-48"
 
 PrepIN <-
@@ -127,7 +128,7 @@ PrepIN <-
     # here too. Still in progress.
     Y <-
       X %>% 
-      as.tibble() %>% 
+      as_tibble() %>% 
       mutate( Value  = gsub(Value, pattern = "\\[|\\]", replacement = ""),
               Value = gsub(Value, pattern = "n &lt; ",replacement = "1"),
               Value = ifelse(Value == "null", NA, Value),
@@ -142,7 +143,7 @@ PrepIN <-
     Y
   }
 
-if (length(weeks_collect) > 0){
+
   for (week_i in weeks_collect){
     cat(week_i,"\n")
     
@@ -206,6 +207,7 @@ if (length(weeks_collect) > 0){
                "Finland" = "FI",
                "France" = "FR",
                "Germany" = "DE",
+               "Greece" = "GR",
                "Hungary" = "HU",
                "Iceland" = "IS",
                "Ireland" = "IE",
@@ -232,7 +234,6 @@ if (length(weeks_collect) > 0){
       bind_rows(ECDC_i)
     
   }
-}
 
 ###################################################
 # prep output!
@@ -240,7 +241,9 @@ ECDCout <-
   ECDCout %>% 
   sort_input_data() %>% 
   filter(Country != "United Kingdom") %>% 
-  filter(Date != "17.01.2021")
+  filter(Date != "17.01.2021") %>% 
+  filter(!(Country == "Germany" & Date == "31.01.2021"))
+
 
 N <- nrow(ECDCout) - nrow(ECDCin)
 
@@ -272,7 +275,14 @@ ECDCout %>%
   pivot_wider(names_from = Date, values_from = Value) %>% 
   View()
     
-  
+
+ECDCout %>% 
+  filter(Country == "Germany", Measure == "Cases", Sex == "f") %>% 
+  mutate(Date = dmy(Date)) %>% 
+  select(-Code) %>% 
+  pivot_wider(names_from = Date, values_from = Value) %>% 
+  View()
+
 ECDCout %>% 
   select(-Code) %>% 
   mutate(Date = dmy(Date),

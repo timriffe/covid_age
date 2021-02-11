@@ -98,10 +98,10 @@ get_country_inputDB <- function(ShortCode) {
   ss_i   <- rubric %>% filter(Short == ShortCode) %>% '$'(Sheet)
   
   # Load spreadsheet
-  out <- read_sheet(ss_i, 
-                    sheet = "database", 
-                    na = "NA")
-  
+  # out <- read_sheet(ss_i, 
+  #                   sheet = "database", 
+  #                   na = "NA")
+  # 
   
   out <- try(read_sheet(ss_i, 
                         sheet = "database", 
