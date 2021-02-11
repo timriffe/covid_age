@@ -1,10 +1,10 @@
 
 ### Clean up & functions ############################################
 source(here::here("R","00_Functions.R"))
-library(parallelsugar)
+
 logfile <- here("buildlog.md")
 n.cores <- round(6 + (detectCores() - 8)/5)
-n.cores  <- 3
+# n.cores  <- 3
 
 ### Load data #######################################################
 
