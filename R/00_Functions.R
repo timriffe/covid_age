@@ -1870,6 +1870,7 @@ harmonize_age_p <- function(chunk, Offsets, N = 5,
   .Date    <- chunk %>% '$'(Date) %>% "[["(1)
   .Sex     <- chunk %>% '$'(Sex) %>% "[["(1)
   .Measure <- chunk %>% '$'(Measure) %>% "[["(1)
+  .id      <- chunk %>% '$'(id) %>% '[['(1)
   # .id      <- chunk %>% '$'(id) %>% "[["(1)
   # Harmonize age
   out <- harmonize_age(chunk, Offsets = Offsets, N = N, 
@@ -1881,9 +1882,10 @@ harmonize_age_p <- function(chunk, Offsets, N = 5,
                         Code = .Code,
                         Date = .Date,
                         Sex = .Sex,
-                        Measure = .Measure) %>% 
+                        Measure = .Measure,
+                        .id = id) %>% 
         select(Country, Region, Code, Date, Sex, 
-               Measure, Age, AgeInt, Value)
+               Measure, Age, AgeInt, Value, id)
   
   # Output
   out
