@@ -178,8 +178,12 @@ World_Infer <-
   group_by(Age) %>% 
   summarize(Cases = sum(CasesInfer, na.rm=TRUE))
   
-View(World_Infer)
-
+View(World_Infer) 
+World_Infer %>% 
+  mutate(p = Cases / sum(Cases)) %>% 
+  mutate(u20 = Age < 20) %>% 
+  group_by(u20) %>% 
+  summarize(p = sum(p))
 # Indeed, changes rankings within age. This one better.
 
 ###############################################
@@ -194,11 +198,12 @@ ContinentWeightedMeans %>%
 
 F1 <-
   F1data %>% 
-  ggplot(aes(x = Age,
+  ggplot(aes(x = Age + 2.5,
              y = CasePrev/1000, color = Region, group = Region)) + 
   geom_line(size = 1) + 
-  xlim(0,75) +
+  xlim(0,80) +
   ylab("Cases / 1000") + 
+  xlab("Age") +
   geom_text_repel( data = filter(F1data,isMax),
                    mapping = aes(label = Region),
                    nudge_x = 1,
@@ -230,16 +235,18 @@ F2data <-
 # Again as dist, for 'shape' comparability:
 F2 <- 
   F2data %>% 
-  ggplot(aes(x = Age,
+  ggplot(aes(x = Age + 2.5,
              y = CaseDist, color = Region, group = Region)) + 
   geom_line(size=1) +
-  ylab("Case prevalence % < 80") +
+  ylab("% Distribution") +
   geom_text_repel( data = filter(F2data,labHere),
                    mapping = aes(label = Region),
                    nudge_x = 0,
                    nudge_y = 0,
                    na.rm = TRUE,
                    size=6) + 
+  xlim(0,80) +
+  xlab("Age") +
   theme_minimal() +
   theme(legend.position = "none",
         axis.text=element_text(size=14),
@@ -262,35 +269,36 @@ ES <- Prev %>%
 
 F3 <-
   F2data %>% 
-  ggplot(mapping = aes(x = Age,
+  ggplot(mapping = aes(x = Age + 2.5,
              y = CaseDist)) + 
-  geom_line(mapping = aes(x = Age,
+  geom_line(mapping = aes(x = Age+ 2.5,
                           y = CaseDist, group = Region),
             alpha = .5) +
-  geom_line(mapping = aes(x = Age,
+  geom_line(mapping = aes(x = Age+ 2.5,
                 y = CaseDist), 
             data = ES, 
             color = "red", 
             linetype = "dashed",
             size = 2) + 
-  geom_line(mapping = aes(x = Age,
+  geom_line(mapping = aes(x = Age+ 2.5,
                 y = CaseDist), 
             data = Sero, 
             color = "blue", 
             size = 2) + 
-  ylab("Case prevalence % < 80") +
+  ylab("% Distribution") +
+  xlab("Age")+
+  xlim(0,80) +
   annotate("text",x = 30,y=4.5,label="Spain, serosurvey\n(~2x prevalence)",col="blue",size=6) + 
   annotate("text",x = 13,y=9.5,label="Spain, detected cases",col="red",size=6) +
   theme_minimal() +
   theme(legend.position = "none",
         axis.text=element_text(size=14),
-        axis.title=element_text(size=16)) +
-  annotate("")
+        axis.title=element_text(size=16)) 
 
 
-F1; ggsave(F1,filename = "Talks/GlobalDiscussionF1.png", width = 16, height = 9, units = "cm")
-F2; ggsave(F2,filename = "Talks/GlobalDiscussionF2.png", width = 16, height = 9, units = "cm")
-F3; ggsave(F3,filename = "Talks/GlobalDiscussionF3.png", width = 16, height = 9, units = "cm")
+F1; ggsave(F1,filename = "Talks/GlobalDiscussionF1.svg", width = 16, height = 9, units = "cm")
+F2; ggsave(F2,filename = "Talks/GlobalDiscussionF2.svg", width = 16, height = 9, units = "cm")
+F3; ggsave(F3,filename = "Talks/GlobalDiscussionF3.svg", width = 16, height = 9, units = "cm")
 #################################
 # 
 # # Again as dist, for 'shape' comparability:
@@ -364,4 +372,28 @@ F3; ggsave(F3,filename = "Talks/GlobalDiscussionF3.png", width = 16, height = 9,
 #   geom_ribbon(aes( ymin = low, ymax = high),alpha = .2) + 
 #   geom_line(data = ES, mapping = aes(x = Age, y = CasePrev/10000),color = "red")
 # 
+
+###########################################33
+# PAHO figure
+library(ggplot2)
+
+OR <- read_csv("Data/PAHO_OR.csv")
+
+ORplot <-
+  OR %>% 
+  pivot_wider(names_from = type, values_from = value:high) %>% 
+  mutate(condition = factor(condition, levels = rev(c("Lung disease", "Cardiovascular disease", "Diabetes", "Immunocompromised", "Renal disease", "Neurological disorders", "Malignancy", "Liver")))) %>% 
+  pivot_longer(value_OR:high_AdjOR,names_to = "type", values_to = "value") %>% 
+  separate(type, into = c("colname","type"), sep = "_") %>% 
+  pivot_wider(names_from = colname, values_from = value) %>% 
+  mutate(type = recode(type, "OR" = "OR", "AdjOR" = "Adjusted OR")) %>% 
+  rename(`OR type` = type) %>% 
+  ggplot(mapping = aes(x = condition, y = value, color = `OR type`)) + 
+  geom_pointrange(mapping = aes(ymin = low, ymax = high),position = position_dodge(width = .5)) +
+  scale_y_log10() +
+  labs(x = "", y = "Odds Ratio") + 
+  coord_flip() 
+
+ggsave(ORplot, filename = "Talks/PAHOfig.png", width = 16,height=9,units = "cm")
+
 

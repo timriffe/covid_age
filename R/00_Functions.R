@@ -1870,7 +1870,7 @@ harmonize_age_p <- function(chunk, Offsets, N = 5,
   .Date    <- chunk %>% '$'(Date) %>% "[["(1)
   .Sex     <- chunk %>% '$'(Sex) %>% "[["(1)
   .Measure <- chunk %>% '$'(Measure) %>% "[["(1)
-  .id      <- chunk %>% '$'(id) %>% "[["(1)
+  # .id      <- chunk %>% '$'(id) %>% "[["(1)
   # Harmonize age
   out <- harmonize_age(chunk, Offsets = Offsets, N = N, 
                        OAnew = OAnew, lambda = lambda)
@@ -1881,14 +1881,58 @@ harmonize_age_p <- function(chunk, Offsets, N = 5,
                         Code = .Code,
                         Date = .Date,
                         Sex = .Sex,
-                        Measure = .Measure,
-                        id = .id) %>% 
+                        Measure = .Measure) %>% 
         select(Country, Region, Code, Date, Sex, 
-               Measure, Age, AgeInt, Value, id)
+               Measure, Age, AgeInt, Value)
   
   # Output
   out
 }
+# @param chunk Data chunk
+# @param Offsets Tibble/data frame with offsets
+# @param N integer Age interval width
+# @param OAnew integer Open age interval
+# @param lambda Lambda value for PCLM
+harmonize_age_p_del <- function(chunk, 
+                                Offsets, 
+                                N = 5, 
+                                OAnew = 100, 
+                                lambda = 100){
+  out <- try(harmonize_age_p(chunk = chunk, 
+                             Offsets = Offsets, 
+                             N = N, 
+                             OAnew = OAnew, 
+                             lambda = lambda))
+  if (class(out)[1] == "try-error"){
+    out <- chunk[0]
+  }
+  out
+}
+
+# @param bigchunk Data with id variable indicating subsets, roughly 1/33 of the inputCounts
+# @param Offsets Tibble/data frame with offsets
+# @param N integer Age interval width
+# @param OAnew integer Open age interval
+# @param lambda Lambda value for PCLM 
+harmonize_age_p_bigchunks <- function(bigchunk,
+                                      Offsets, 
+                                      N = 5, 
+                                      OAnew = 100, 
+                                      lambda = 100){
+  bigchunk <- bigchunk %>% 
+    arrange(.data$id,.data$Age)
+    
+  innerL <- split(bigchunk, list(bigchunk$id)) 
+  out <- lapply(innerL,
+                harmonize_age_p_del,
+                Offsets = Offsets,
+                OAnew = OAnew,
+                N = N,
+                lambda = lambda) %>% 
+    do.call("rbind",.)
+  out
+}
+
 
 
 ### rescale_sexes_post()
