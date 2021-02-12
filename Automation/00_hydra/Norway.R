@@ -64,19 +64,19 @@ for (l in rev(test_urls)){
   if(skip_to_next) { break } 
 }
 
-death_dates <- seq(today() - 400, today(),by="days")
+death_dates <- seq(ymd("2020-06-01"), today(),by="days")
 db_d_all <- tibble()
 
-for (i in 1:401){
+for (i in 1:length(death_dates)){
   skip_to_next <- FALSE
   tryCatch({
-    print(l)
+    print(death_dates[i])
     db_d <- read_csv(paste0("https://raw.githubusercontent.com/folkehelseinstituttet/surveillance_data/master/covid19/data_covid19_demographics_",as.character(death_dates[i]),".csv"))
   }, error=function(e){ skip_to_next <<- TRUE})
   if(skip_to_next) { next } 
   db_d_all <- db_d_all %>% 
     bind_rows(db_d %>%
-    mutate(Date = death_dates[i]))
+    mutate(Date = death_dates[i])) 
 }
 
 # do some preliminary formatting ####
@@ -143,7 +143,7 @@ get_zero <- function(chunk){
     chunk <- chunk %>% 
     slice(1) %>% 
     mutate(Age = "0",
-           n = 0) %>% 
+           Value = 0) %>% 
     bind_rows(chunk)
   }
   chunk
@@ -151,6 +151,7 @@ get_zero <- function(chunk){
 
 db_d2 <-
   db_d_all %>% 
+  rename(Value = n) %>% 
   mutate(Age = recode(age,
                       "0-39" = "0",
                       "40-49" = "40",
@@ -168,9 +169,6 @@ db_d2 <-
   do(get_zero(chunk = .data)) %>% 
   ungroup() %>% 
   arrange(Date, Sex, Age) %>% 
-  group_by(Sex, Age) %>% 
-  mutate(Value = cumsum(n)) %>% 
-  ungroup() %>% 
   select(Date,
          Sex,
          Age, 
