@@ -267,3 +267,7 @@ filter( Code == 'US_TX13.09.2020', Sex == 'b', Measure == 'Cases' )
 # Age harmonization 
  Fri Feb 12 02:10:26 2021 
 
+
+# Age harmonization 
+ Fri Feb 12 11:34:12 2021 
+

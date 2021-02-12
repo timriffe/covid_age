@@ -1,24 +1,29 @@
 
 # 2021-02-12 inputDB updates 
- Fri Feb 12 11:01:09 2021 
+ Fri Feb 12 19:01:54 2021 
 
 
-# 2021-02-12 11:01:09 updates 
- Fri Feb 12 11:01:09 2021 
+# 2021-02-12 19:01:54 updates 
+ Fri Feb 12 19:01:54 2021 
 
 
 # Filter valid Measure entries: 
- Fri Feb 12 11:15:28 2021 
+ Fri Feb 12 20:13:09 2021 
 
 Valid Measures include: Cases,Deaths,Tests,ASCFR
- 2469 rows removed
+ 4777 rows removed
+# Filter valid Metric entries: 
+ Fri Feb 12 20:13:12 2021 
+
+Valid Metrics include: Count,Fraction,Ratio
+ 14 rows removed
 # Filter valid Sex entries: 
- Fri Feb 12 11:15:31 2021 
+ Fri Feb 12 20:13:16 2021 
 
 Valid Sex values include: m,f,b,UNK
  340 rows removed
 # Duplicates detected. Following `Code`s removed: 
- Fri Feb 12 11:15:57 2021 
+ Fri Feb 12 20:15:59 2021 
 
 NO25.06.2020
 NO26.06.2020
