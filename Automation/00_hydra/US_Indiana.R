@@ -179,7 +179,7 @@ In_death_out= Incsum_selectD %>%
                       `Unknown`="UNK"))%>% 
   mutate(AgeInt = case_when(
                       Age == "0" ~ 20L,
-                      Age == "80" ~ 35L,
+                      Age == "80" ~ 25L,
                       Age == "UNK" ~ NA_integer_,
                       TRUE ~ 10L))%>% 
   rename(Value = cum_sum,
