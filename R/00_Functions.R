@@ -1870,7 +1870,7 @@ harmonize_age_p <- function(chunk, Offsets, N = 5,
   .Date    <- chunk %>% '$'(Date) %>% "[["(1)
   .Sex     <- chunk %>% '$'(Sex) %>% "[["(1)
   .Measure <- chunk %>% '$'(Measure) %>% "[["(1)
-  .id      <- chunk %>% '$'(id) %>% '[['(1)
+  .id.      <- chunk %>% '$'(id) %>% '[['(1)
   # .id      <- chunk %>% '$'(id) %>% "[["(1)
   # Harmonize age
   out <- harmonize_age(chunk, Offsets = Offsets, N = N, 
@@ -1883,7 +1883,7 @@ harmonize_age_p <- function(chunk, Offsets, N = 5,
                         Date = .Date,
                         Sex = .Sex,
                         Measure = .Measure,
-                        .id = id) %>% 
+                        id = .id.) %>% 
         select(Country, Region, Code, Date, Sex, 
                Measure, Age, AgeInt, Value, id)
   
@@ -1906,7 +1906,7 @@ harmonize_age_p_del <- function(chunk,
                              OAnew = OAnew, 
                              lambda = lambda))
   if (class(out)[1] == "try-error"){
-    out <- chunk[0]
+    out <- chunk[0,]
   }
   out
 }
@@ -1925,14 +1925,14 @@ harmonize_age_p_bigchunks <- function(bigchunk,
     arrange(.data$id,.data$Age)
     
   innerL <- split(bigchunk, list(bigchunk$id)) 
-  out <- lapply(innerL,
+  harmonizedL <- lapply(innerL,
                 harmonize_age_p_del,
                 Offsets = Offsets,
                 OAnew = OAnew,
                 N = N,
-                lambda = lambda) %>% 
-    do.call("rbind",.)
-  out
+                lambda = lambda) 
+  out <- do.call("rbind",harmonizedL)
+  return(out)
 }
 
 
