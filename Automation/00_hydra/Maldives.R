@@ -1,0 +1,203 @@
+#Maldives 
+
+library(here)
+library(readxl)
+library(lubridate)
+library(dplyr)
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
+
+
+# assigning Drive credentials in the case the script is verified manually  
+if (!"email" %in% ls()){
+  email <- "jessica_d.1994@yahoo.de"
+}
+
+# info country and N drive address
+
+ctr          <- "Maldives" # it's a placeholder
+dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
+dir_n_source <- "N:/COVerAGE-DB/Automation/Maldives" #########################################What is this used for?  
+
+# Drive credentials
+drive_auth(email = email)
+gs4_auth(email = email)
+
+# Drive urls
+rubric <- get_input_rubric() %>% filter(Short == "MV")
+
+ss_i <- rubric %>% 
+  dplyr::pull(Sheet)
+
+ss_db <- rubric %>% 
+  dplyr::pull(Source)
+
+# reading data from Drive and last date entered 
+
+In_drive <- get_country_inputDB("MV")%>% 
+  select(-Short)
+
+
+#Download from website with python 
+#https://covid19.health.gov.mv/dashboard/list/?c=0
+#read excel file in 
+
+#Each day complete timeseries is downloaded.Read in most recent file.  
+
+#get a vector of all filenames
+files <- list.files(path="N:/COVerAGE-DB/Automation/Maldives",pattern=".xlsx",full.names = TRUE,recursive = TRUE)
+
+#get the directory names of these (for grouping)
+dirs <- dirname(files)
+
+#find the last file in each directory (i.e. latest modified time)
+lastfiles <- tapply(files,dirs,function(v) v[which.max(file.mtime(v))])
+
+Maldives<- read_excel(lastfiles)
+
+
+#####Cases#########
+
+MV= Maldives%>%
+  rename(Sex= GENDER)
+
+
+MV$Sex[MV$Sex == "Male"] <- "m"
+MV$Sex[MV$Sex == "Female"] <- "f"
+MV$Sex[is.na(MV$Sex)] <- "UNK"
+
+MV= MV %>%
+  rename(Age= AGE)
+
+#Cases
+
+MV_cases= MV %>%
+  select (Sex, Age, `CONFIRMED ON`)%>%
+  rename (Date= `CONFIRMED ON`)%>% 
+  mutate (Date = dmy(Date))%>% 
+  mutate (Count= "1") 
+
+
+# Dont count in months or days, below 1 year of Age becomes 0 
+
+MV_cases$Age[is.na(MV_cases$Age)] <- "UNK"
+
+#Months
+MV_cases$Age <- (sub(".*M", "0", MV_cases$Age))
+
+#Days
+MV_cases$Age <- (sub(".*D", "0", MV_cases$Age))
+
+#categories <- unique(MV_cases$Age) 
+#categories
+  
+
+#sum by day  
+
+MV_cases= transform(MV_cases,Count = as.numeric(Count))
+
+MV_cases_sum= aggregate(Count~Date+Age+Sex, data=MV_cases, FUN=sum) 
+
+
+#cumulative sum
+MV_cases_csum= MV_cases_sum %>%
+  group_by(Sex,Age) %>%
+  mutate(Value = cumsum(Count))
+
+
+MV_cases_out = MV_cases_csum %>%
+  mutate(
+    Date = ymd(Date),
+    Date = paste(sprintf("%02d",day(Date)),    
+                 sprintf("%02d",month(Date)),  
+                 year(Date),sep="."),
+    Code = paste0("MV",Date),
+    Country = "Maldives",
+    Region = "All",
+    Measure= "Cases",
+    Metric= "Count", 
+    AgeInt = case_when(
+      Age == "UNK" ~ NA_integer_,
+      TRUE ~ 1L))%>%
+  select(Country, Region, Code, Date, Sex, 
+         Age, AgeInt, Metric, Measure, Value)
+
+
+######Deaths######### 
+
+MV_death= MV %>%
+  select (Sex, Age, `DECEASED ON`)
+
+#only take those that died 
+
+MV_death= MV_death[complete.cases(MV_death), ]
+
+MV_death= MV_death %>%
+  rename (Date= `DECEASED ON`)%>% 
+  mutate (Date = dmy(Date))%>% 
+  mutate (Count= "1") 
+
+
+#In case someday someone with age counted in days or month dies 
+#Months
+MV_death$Age <- (sub(".*M", "0", MV_death$Age))
+#Days
+MV_death$Age <- (sub(".*D", "0", MV_death$Age))
+
+
+#sum by day  
+
+MV_death= transform(MV_death,Count = as.numeric(Count))
+
+#cumulative sum
+MV_death_csum= MV_death %>%
+  group_by(Sex,Age) %>%
+  mutate(Value = cumsum(Count))
+
+MV_death_out = MV_death_csum %>%
+  mutate(
+    Date = ymd(Date),
+    Date = paste(sprintf("%02d",day(Date)),    
+                 sprintf("%02d",month(Date)),  
+                 year(Date),sep="."),
+    Code = paste0("MV",Date),
+    Country = "Maldives",
+    Region = "All",
+    Measure= "Deaths",
+    Metric= "Count", 
+    AgeInt = case_when(
+      Age == "UNK" ~ NA_integer_,
+      TRUE ~ 1L))%>%
+  select(Country, Region, Code, Date, Sex, 
+         Age, AgeInt, Metric, Measure, Value)
+
+
+
+######combine both to one dataframe########## 
+MV_out <- bind_rows(MV_cases_out,
+                    MV_death_out)
+
+
+# In case we had earlier data, we keep it.
+###########################################Dont think we need that here, new download always has complete time series 
+#MV_out <- 
+  #In_drive %>% 
+  #filter(dmy(Date) < min(dmy(MV_out$Date))) %>% 
+  #bind_rows(MV_out) %>% 
+  #sort_input_data()
+
+# upload to Drive, overwrites
+
+write_sheet(MV_out, 
+            ss = ss_i, 
+            sheet = "database")
+
+###########################################Still not sure how to set this up with the automation sheet 
+#log_update("Maldives", N = nrow(MV_out))
+
+
+#archive: input files already saved on N 
+
+
+
+
+
