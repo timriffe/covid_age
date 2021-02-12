@@ -76,10 +76,13 @@ log_section("Age harmonization",
 #           OAnew = 100)
 # stopCluster(cl)
 
+saveRDS(iLout1e5, file = here("Data","iLout1e5.rds"))
+ 
 out5 <- 
-  iLout1e5 %>% 
+  rbindlist(iLout1e5) 
   # Get into one data set
-  do.call("rbind", .)
+saveRDS(out5, file = here("Data","Output_5_before_sex_scaling_etc.rds"))
+ rm(iL);rm(iLout1e5)
 
 ids_out  <- out5$id %>% unique() %>% sort()
 failures <- ids_in[!ids_in %in% ids_out]

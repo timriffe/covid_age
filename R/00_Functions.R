@@ -1931,7 +1931,7 @@ harmonize_age_p_bigchunks <- function(bigchunk,
                 OAnew = OAnew,
                 N = N,
                 lambda = lambda) 
-  out <- do.call("rbind",harmonizedL)
+  out <- rbindlist(harmonizedL)
   return(out)
 }
 
