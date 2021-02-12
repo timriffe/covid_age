@@ -18,12 +18,9 @@ ctr          <- "Maldives" # it's a placeholder
 dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 
-# dir_n_source <- "N:/COVerAGE-DB/Automation/Maldives" # <- that one is if 
+dir_n_source <- "N:/COVerAGE-DB/Automation/Maldives" # <- that one is if 
                                                        # Muhammad is gathering raw data
 
-# TR: this is where we store the data as-received, before
-# doing our reformatting.
-dir_n_source <- "N:/COVerAGE-DB/Automation/Hydra/Data_sources/Maldives" 
 ######################################### 
 
 # Drive credentials
