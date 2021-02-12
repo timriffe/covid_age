@@ -79,7 +79,7 @@ log_section("Age harmonization",
 out5 <- 
   iLout1e5 %>% 
   # Get into one data set
-  rbindlist() 
+  do.call("rbind", .)
 
 ids_out  <- out5$id %>% unique() %>% sort()
 failures <- ids_in[!ids_in %in% ids_out]
