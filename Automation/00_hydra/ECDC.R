@@ -1,9 +1,8 @@
-library(here)
-source(here("Automation/00_Functions_automation.R"))
-library(lubridate)
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
   email <- "tim.riffe@gmail.com"
+  email <- "kikepaila@gmail.com"
 }
 
 # info country and N drive address
@@ -63,17 +62,18 @@ years_avail <-
   gsub(pattern = " ", replacement = "") %>% 
   substr(start=8,stop=11) %>% 
   as.integer()
+naind <- is.na(weeks_avail) | is.na(years_avail)
+years_avail <- years_avail[!naind]
+weeks_avail <- weeks_avail[!naind]
 yr_wk_avail <- paste(years_avail, weeks_avail, sep = "-") %>% unique()
 
-weeks_collect <-
-  yr_wk_avail[!yr_wk_avail %in% yr_wk_in] %>% 
-  unique()
+yr_wk_avail <- yr_wk_avail %>% unique()
 
-weeks_collect <- weeks_collect[weeks_collect != "2020-53"]
+weeks_collect <- yr_wk_avail[yr_wk_avail != "2020-53"]
 #####################################################
 # parse the text dumps
 #####################################################
-ECDCout <- ECDCin
+ECDCout <- ECDCin[0, ]
 # week_i <- "2020-48"
 
 PrepIN <-
@@ -128,7 +128,7 @@ PrepIN <-
     # here too. Still in progress.
     Y <-
       X %>% 
-      as.tibble() %>% 
+      as_tibble() %>% 
       mutate( Value  = gsub(Value, pattern = "\\[|\\]", replacement = ""),
               Value = gsub(Value, pattern = "n &lt; ",replacement = "1"),
               Value = ifelse(Value == "null", NA, Value),
@@ -143,97 +143,97 @@ PrepIN <-
     Y
   }
 
-if (length(weeks_collect) > 0){
-for (week_i in weeks_collect){
-  cat(week_i,"\n")
-  
-  yr_pick <- week_i %>% substr(1,4)
-  wk_pick <- week_i %>% substr(6,nchar(week_i)) 
-  
-  this_file <- age_sex_pyramids[grepl(age_sex_pyramids, pattern = yr_pick) & 
-                                grepl(age_sex_pyramids, pattern = wk_pick)][1]
-  
-  all_days  <- seq(ymd(paste0(yr_pick,"-01-01")),
-                   ymd(paste0(yr_pick,"-12-31")),
-                   by = "days")
-  Sundays   <- all_days[weekdays(all_days) == "Sunday"]
-  Date_i    <- Sundays[isoweek(Sundays) == as.integer(wk_pick)]
-  
 
-  IN <- suppressWarnings(readLines(file.path(dir_n_source,this_file))) %>% 
-          gsub(pattern = "\\[\\[", replacement = "") %>% 
-          gsub(pattern = '\\]\\]', replacement = "") %>% 
-          gsub(pattern = '\\"', replacement = "") %>% 
-          strsplit(split=",") %>% 
-          '[['(1) %>% 
-    PrepIN()
-   
-  ECDC_i <-
-    IN %>% 
-    mutate(Measure = tolower(Measure),
-           Measure = case_when(
-             Measure == "all cases" ~ "Cases",
-             Measure == "fatal" ~ "Deaths",
-             TRUE ~ Measure
-           )) %>% 
-    filter(Measure %in% c("Cases","Deaths")) %>% 
-    mutate(Sex =tolower(Sex),
-           Age = recode(Age,
-            "&lt;10yr" = "0",
-            "10-19yr" = "10",
-            "20-29yr" = "20",
-            "30-39yr" = "30",
-            "40-49yr" = "40",
-            "50-59yr" = "50",
-            "60-69yr" = "60",
-            "70-79yr" = "70",
-            "70-79yr" = "70",
-            "80+yr" = "80"
-           )) %>% 
-    filter( !grepl(Country, pattern = "EU/EEA")) %>% 
-    mutate(Region = "All",
-           Date = Date_i,
-           Date = ddmmyyyy(Date),
-           Metric = "Count",
-           Short = recode(Country,
-             "Austria" = "AT",
-             "Belgium" = "BE",
-             "Bulgaria" = "BG",
-             "Croatia" = "HR",
-             "Cyprus" = "CY",
-             "Czechia" = "CZ",
-             "Denmark" = "DK",
-             "Estonia" = "EE",
-             "Finland" = "FI",
-             "France" = "FR",
-             "Germany" = "DE",
-             "Hungary" = "HU",
-             "Iceland" = "IS",
-             "Ireland" = "IE",
-             "Italy" = "IT",
-             "Latvia" = "LV",
-             "Lithuania" = "LT",
-             "Luxembourg" = "LU",
-             "Malta" = "MT",
-             "Netherlands" = "NL",
-             "Norway" = "NO",
-             "Poland" = "PL",
-             "Portugal" = "PT",
-             "Romania" = "RO",
-             "Slovakia" = "SK",
-             "Sweden" = "SE",
-             "United Kingdom" = "GB"),
-           Code = paste0(Short,"_ECDC_",Date),
-           AgeInt = ifelse(Age == "80", 25, 10)) %>% 
-    select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
-    filter(!is.na(Value))
-
-  ECDCout <- 
-    ECDCout %>% 
-    bind_rows(ECDC_i)
+  for (week_i in weeks_collect){
+    cat(week_i,"\n")
+    
+    yr_pick <- week_i %>% substr(1,4)
+    wk_pick <- week_i %>% substr(6,nchar(week_i)) 
+    
+    this_file <- age_sex_pyramids[grepl(age_sex_pyramids, pattern = yr_pick) & 
+                                  grepl(age_sex_pyramids, pattern = wk_pick)][1]
+    
+    all_days  <- seq(ymd(paste0(yr_pick,"-01-01")),
+                     ymd(paste0(yr_pick,"-12-31")),
+                     by = "days")
+    Sundays   <- all_days[weekdays(all_days) == "Sunday"]
+    Date_i    <- Sundays[isoweek(Sundays) == as.integer(wk_pick)]
+    
   
-}
-}
+    IN <- suppressWarnings(readLines(file.path(dir_n_source,this_file))) %>% 
+            gsub(pattern = "\\[\\[", replacement = "") %>% 
+            gsub(pattern = '\\]\\]', replacement = "") %>% 
+            gsub(pattern = '\\"', replacement = "") %>% 
+            strsplit(split=",") %>% 
+            '[['(1) %>% 
+      PrepIN()
+     
+    ECDC_i <-
+      IN %>% 
+      mutate(Measure = tolower(Measure),
+             Measure = case_when(
+               Measure == "all cases" ~ "Cases",
+               Measure == "fatal" ~ "Deaths",
+               TRUE ~ Measure
+             )) %>% 
+      filter(Measure %in% c("Cases","Deaths")) %>% 
+      mutate(Sex =tolower(Sex),
+             Age = recode(Age,
+              "&lt;10yr" = "0",
+              "10-19yr" = "10",
+              "20-29yr" = "20",
+              "30-39yr" = "30",
+              "40-49yr" = "40",
+              "50-59yr" = "50",
+              "60-69yr" = "60",
+              "70-79yr" = "70",
+              "70-79yr" = "70",
+              "80+yr" = "80"
+             )) %>% 
+      filter( !grepl(Country, pattern = "EU/EEA")) %>% 
+      mutate(Region = "All",
+             Date = Date_i,
+             Date = ddmmyyyy(Date),
+             Metric = "Count",
+             Short = recode(Country,
+               "Austria" = "AT",
+               "Belgium" = "BE",
+               "Bulgaria" = "BG",
+               "Croatia" = "HR",
+               "Cyprus" = "CY",
+               "Czechia" = "CZ",
+               "Denmark" = "DK",
+               "Estonia" = "EE",
+               "Finland" = "FI",
+               "France" = "FR",
+               "Germany" = "DE",
+               "Greece" = "GR",
+               "Hungary" = "HU",
+               "Iceland" = "IS",
+               "Ireland" = "IE",
+               "Italy" = "IT",
+               "Latvia" = "LV",
+               "Lithuania" = "LT",
+               "Luxembourg" = "LU",
+               "Malta" = "MT",
+               "Netherlands" = "NL",
+               "Norway" = "NO",
+               "Poland" = "PL",
+               "Portugal" = "PT",
+               "Romania" = "RO",
+               "Slovakia" = "SK",
+               "Sweden" = "SE",
+               "United Kingdom" = "GB"),
+             Code = paste0(Short,"_ECDC_",Date),
+             AgeInt = ifelse(Age == "80", 25, 10)) %>% 
+      select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
+      filter(!is.na(Value))
+  
+    ECDCout <- 
+      ECDCout %>% 
+      bind_rows(ECDC_i)
+    
+  }
 
 ###################################################
 # prep output!
@@ -241,7 +241,9 @@ ECDCout <-
   ECDCout %>% 
   sort_input_data() %>% 
   filter(Country != "United Kingdom") %>% 
-  filter(Date != "17.01.2021")
+  filter(Date != "17.01.2021") %>% 
+  filter(!(Country == "Germany" & Date == "31.01.2021"))
+
 
 N <- nrow(ECDCout) - nrow(ECDCin)
 
@@ -273,7 +275,14 @@ ECDCout %>%
   pivot_wider(names_from = Date, values_from = Value) %>% 
   View()
     
-  
+
+ECDCout %>% 
+  filter(Country == "Germany", Measure == "Cases", Sex == "f") %>% 
+  mutate(Date = dmy(Date)) %>% 
+  select(-Code) %>% 
+  pivot_wider(names_from = Date, values_from = Value) %>% 
+  View()
+
 ECDCout %>% 
   select(-Code) %>% 
   mutate(Date = dmy(Date),
