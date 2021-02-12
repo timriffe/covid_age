@@ -1,11 +1,11 @@
 #Maldives 
 
+
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
 library(here)
 library(readxl)
 library(lubridate)
 library(dplyr)
-source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
-
 
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
@@ -16,7 +16,15 @@ if (!"email" %in% ls()){
 
 ctr          <- "Maldives" # it's a placeholder
 dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
-dir_n_source <- "N:/COVerAGE-DB/Automation/Maldives" #########################################What is this used for?  
+
+
+# dir_n_source <- "N:/COVerAGE-DB/Automation/Maldives" # <- that one is if 
+                                                       # Muhammad is gathering raw data
+
+# TR: this is where we store the data as-received, before
+# doing our reformatting.
+dir_n_source <- "N:/COVerAGE-DB/Automation/Hydra/Data_sources/Maldives" 
+######################################### 
 
 # Drive credentials
 drive_auth(email = email)
@@ -44,7 +52,10 @@ In_drive <- get_country_inputDB("MV")%>%
 #Each day complete timeseries is downloaded.Read in most recent file.  
 
 #get a vector of all filenames
-files <- list.files(path="N:/COVerAGE-DB/Automation/Maldives",pattern=".xlsx",full.names = TRUE,recursive = TRUE)
+files <- list.files(path = dir_n_source, 
+                    pattern = ".xlsx",
+                    full.names = TRUE,
+                    recursive = TRUE)
 
 #get the directory names of these (for grouping)
 dirs <- dirname(files)
@@ -58,25 +69,18 @@ Maldives<- read_excel(lastfiles)
 #####Cases#########
 
 MV= Maldives%>%
-  rename(Sex= GENDER)
+  select(Sex= GENDER, Age = AGE,Date= `CONFIRMED ON`) %>% 
+  mutate(Sex = case_when(
+                 is.na(Sex)~ "UNK",
+                 Sex == "Male" ~ "m",
+                 Sex == "Female" ~ "f"),
+         Date = dmy(Date),
+         Count = "1")
 
 
-MV$Sex[MV$Sex == "Male"] <- "m"
-MV$Sex[MV$Sex == "Female"] <- "f"
-MV$Sex[is.na(MV$Sex)] <- "UNK"
-
-MV= MV %>%
-  rename(Age= AGE)
-
-#Cases
-
-MV_cases= MV %>%
-  select (Sex, Age, `CONFIRMED ON`)%>%
-  rename (Date= `CONFIRMED ON`)%>% 
-  mutate (Date = dmy(Date))%>% 
-  mutate (Count= "1") 
-
-
+# TR:
+# see if you can take care of Age
+# with case_when() in the abve mutate()
 # Dont count in months or days, below 1 year of Age becomes 0 
 
 MV_cases$Age[is.na(MV_cases$Age)] <- "UNK"
@@ -97,6 +101,9 @@ MV_cases= transform(MV_cases,Count = as.numeric(Count))
 
 MV_cases_sum= aggregate(Count~Date+Age+Sex, data=MV_cases, FUN=sum) 
 
+# TR: change aggregation to:
+# group_by(Date, Sex, Age) %>% 
+# summarize(Value = n()) # <- that counts rows
 
 #cumulative sum
 MV_cases_csum= MV_cases_sum %>%
