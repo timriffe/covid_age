@@ -116,7 +116,7 @@ outputCounts_5_1e5 <-
   as.data.table() %>% 
   .[, Value := nafill(Value, nan = NA, fill = 1)] %>% 
   .[, rescale_sexes_post(chunk = .SD), keyby = .(Country, Region, Code, Date, Measure, AgeInt)] %>% 
-  as.tibble() %>% 
+  as_tibble() %>% 
   pivot_wider(names_from = "Measure", values_from = "Value") %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Cases, Deaths, Tests) %>% 
   arrange(Country, Region, dmy(Date), Sex, Age) 
