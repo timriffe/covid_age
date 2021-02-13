@@ -93,27 +93,33 @@ HarmonizationFailures <-
 
 saveRDS(HarmonizationFailures, file = here("Data","HarmonizationFailures.rds"))
 
-
-
 # Edit results
-outputCounts_5_1e5 <- out5 %>%  
-                      # Replace NaNs 
-                      mutate(Value = ifelse(is.nan(Value),0,Value)) %>% 
-                      # Rescale sexes
-                      group_by(Code, Measure) %>% 
-                      do(rescale_sexes_post(chunk = .data)) %>% 
-                      ungroup() %>%
-                      # Reshape to wide
-                      pivot_wider(names_from = Measure,
-                                  values_from = Value) %>% 
-                      # Get date into correct format
-                      mutate(date = dmy(Date)) %>% 
-                      # Sort
-                      arrange(Country, Region, date, Sex, Age) %>% 
-                      select(-date) %>% 
-                      # ensure columns in standard order:
-                      select(Country, Region, Code, Date, Sex, Age, AgeInt, Cases, Deaths, Tests)
-
+# outputCounts_5_1e5 <- out5 %>%  
+#                       # Replace NaNs 
+#                       mutate(Value = ifelse(is.nan(Value),0,Value)) %>% 
+#                       # Rescale sexes
+#                       group_by(Code, Measure) %>% 
+#                       do(rescale_sexes_post(chunk = .data)) %>% 
+#                       ungroup() %>%
+#                       # Reshape to wide
+#                       pivot_wider(names_from = Measure,
+#                                   values_from = Value) %>% 
+#                       # Get date into correct format
+#                       mutate(date = dmy(Date)) %>% 
+#                       # Sort
+#                       arrange(Country, Region, date, Sex, Age) %>% 
+#                       select(-date) %>% 
+#                       # ensure columns in standard order:
+#                       select(Country, Region, Code, Date, Sex, Age, AgeInt, Cases, Deaths, Tests)
+outputCounts_5_1e5 <-
+  out5 %>% 
+  as.data.table() %>% 
+  .[, Value := nafill(Value, nan = NA, fill = 1)] %>% 
+  .[, rescale_sexes_post(chunk = .SD), keyby = .(Country, Region, Code, Date, Measure, AgeInt)] %>% 
+  as.tibble() %>% 
+  pivot_wider(names_from = "Measure", values_from = "Value") %>% 
+  select(Country, Region, Code, Date, Sex, Age, AgeInt, Cases, Deaths, Tests) %>% 
+  arrange(Country, Region, dmy(Date), Sex, Age) 
 # Save binary
 
 # if (hours < Inf){
