@@ -611,3 +611,23 @@ filter( Code == 'US_TX13.09.2020', Sex == 'b', Measure == 'Cases' )
 # Commit dashboards and buildlog 
  Sun Feb 14 11:53:05 2021 
 
+
+# update build series log 
+ Sun Feb 14 11:53:13 2021 
+
+
+# Age harmonization 
+ Sun Feb 14 14:06:06 2021 
+
+
+# remake coverage map 
+ Sun Feb 14 17:02:33 2021 
+
+
+# push outputs to OSF 
+ Sun Feb 14 17:07:06 2021 
+
+
+# Commit dashboards and buildlog 
+ Sun Feb 14 17:09:55 2021 
+

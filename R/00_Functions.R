@@ -1907,7 +1907,7 @@ harmonize_age_p_del <- function(chunk,
                              lambda = lambda))
   if (class(out)[1] == "try-error"){
     out <- chunk[0,] %>% 
-      select(Country, Region, Code, Date, Sez, Measure, Age, AgeInt, Value, id)
+      select(Country, Region, Code, Date, Sex, Measure, Age, AgeInt, Value, id)
   }
   out
 }
