@@ -1906,7 +1906,8 @@ harmonize_age_p_del <- function(chunk,
                              OAnew = OAnew, 
                              lambda = lambda))
   if (class(out)[1] == "try-error"){
-    out <- chunk[0,]
+    out <- chunk[0,] %>% 
+      select(Country, Region, Code, Date, Sex, Measure, Age, AgeInt, Value, id)
   }
   out
 }
@@ -1931,7 +1932,7 @@ harmonize_age_p_bigchunks <- function(bigchunk,
                 OAnew = OAnew,
                 N = N,
                 lambda = lambda) 
-  out <- do.call("rbind",harmonizedL)
+  out <- rbindlist(harmonizedL)
   return(out)
 }
 
@@ -1940,45 +1941,83 @@ harmonize_age_p_bigchunks <- function(bigchunk,
 ### rescale_sexes_post()
 # Rescales sex-specific counts to match combined-sex values
 # @param chunk Data chunk
-
-rescale_sexes_post <- function(chunk) {
-  
+rescale_sexes_post<- function(chunk) {
+  # TR 13.02.2021: new data.table (albeit a hacky one) redux
+  dat <- copy(chunk)
   # Get sexes in data
-  sexes  <- chunk %>% '$'(Sex) %>% unique()
+  sexes  <- dat %>% '$'(Sex) %>% unique()
   
   # Data includes b, m, f?
   maybe  <- setequal(sexes,c("b","f","m")) 
   
   # If so,
   if (maybe){
+    dat <-
+      dat %>% 
+      .[,Value := as.double(Value)] %>% 
+      dcast(Age~Sex,value.var = "Value") %>% 
+      .[,mf := m + f] %>% 
+      .[,adj := b / mf] %>% 
+      .[,adj := nafill(adj,nan = NA, fill = 1)] %>% 
+      .[,m := adj * m] %>% 
+      .[,f := adj * f] %>% 
+      .[,adj := NULL] %>% 
+      .[,mf := NULL] %>% 
+      melt(measure.vars = c("b","m","f"),
+           variable.name = "Sex",
+           value.name = "Value",
+           verbose = FALSE)
     
-    chunk <- chunk %>% 
-             # Sort by Sex and Age
-             arrange(Sex, Age) %>% 
-             # Reshape to wide
-             pivot_wider(names_from = Sex,
-                  values_from = Value) %>% 
-             # Calculate/apply adjustment
-             mutate(mf = m + f,
-              adj = b / mf,
-              adj = ifelse(mf == 0,1,adj),
-              m = adj * m,
-              f = adj * f) %>% 
-             # Drop intermediate steps
-             select(-c(mf,adj)) %>% 
-             # Reshape back to long
-             pivot_longer(cols = c("f","m","b") ,
-                   names_to = "Sex",
-                   values_to = "Value") %>% 
-             # Sort 
-             arrange(Sex,Age)
     
   } 
-  
+  icols <- c("Sex","Age","Value")
   # Output
-  return(chunk)
-  
+  dat[,..icols] %>% 
+    .[,.(Value = as.double(Value),
+         Sex = as.character(Sex),
+         Age = as.integer(Age))] %>% 
+    return()
 }
+
+# dplyr version replaced w above data.table
+# rescale_sexes_post <- function(chunk) {
+#   
+#   # Get sexes in data
+#   sexes  <- chunk %>% '$'(Sex) %>% unique()
+#   
+#   # Data includes b, m, f?
+#   maybe  <- setequal(sexes,c("b","f","m")) 
+#   
+#   # If so,
+#   if (maybe){
+#     
+#     chunk <- chunk %>% 
+#              # Sort by Sex and Age
+#              arrange(Sex, Age) %>% 
+#              # Reshape to wide
+#              pivot_wider(names_from = Sex,
+#                   values_from = Value) %>% 
+#              # Calculate/apply adjustment
+#              mutate(mf = m + f,
+#               adj = b / mf,
+#               adj = ifelse(mf == 0,1,adj),
+#               m = adj * m,
+#               f = adj * f) %>% 
+#              # Drop intermediate steps
+#              select(-c(mf,adj)) %>% 
+#              # Reshape back to long
+#              pivot_longer(cols = c("f","m","b") ,
+#                    names_to = "Sex",
+#                    values_to = "Value") %>% 
+#              # Sort 
+#              arrange(Sex,Age)
+#     
+#   } 
+#   
+#   # Output
+#   return(chunk)
+#   
+# }
 
 
 ### rescaleAgeGroups()

@@ -40,7 +40,8 @@ for (i in 1:length(files)){
 # also copy rds files to N://COVerAGE-DB/Data
 cdb_files <- c("inputDB.rds","inputDBhold.rds",
                 "inputCounts.rds","Output_5.rds",
-                "Output_10.rds","Offsets.rds")
+                "Output_10.rds","Offsets.rds","Output_5_before_sex_scaling_etc.rds",
+               "HarmonizationFailures.rds")
 files_from <- file.path("Data",cdb_files)
 
 file.copy(from = files_from, 

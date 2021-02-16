@@ -3,7 +3,7 @@
 source(here::here("R","00_Functions.R"))
 
 logfile <- here("buildlog.md")
-n.cores <- round(6 + (detectCores() - 8)/5)
+n.cores <- round(6 + (detectCores() - 8)/4)
 # n.cores  <- 3
 
 ### Load data #######################################################
@@ -76,10 +76,13 @@ log_section("Age harmonization",
 #           OAnew = 100)
 # stopCluster(cl)
 
+saveRDS(iLout1e5, file = here("Data","iLout1e5.rds"))
+ 
 out5 <- 
-  iLout1e5 %>% 
+  rbindlist(iLout1e5) 
   # Get into one data set
-  do.call("rbind", .)
+saveRDS(out5, file = here("Data","Output_5_before_sex_scaling_etc.rds"))
+ rm(iL);rm(iLout1e5)
 
 ids_out  <- out5$id %>% unique() %>% sort()
 failures <- ids_in[!ids_in %in% ids_out]
@@ -90,27 +93,33 @@ HarmonizationFailures <-
 
 saveRDS(HarmonizationFailures, file = here("Data","HarmonizationFailures.rds"))
 
-
-
 # Edit results
-outputCounts_5_1e5 <- out5 %>%  
-                      # Replace NaNs 
-                      mutate(Value = ifelse(is.nan(Value),0,Value)) %>% 
-                      # Rescale sexes
-                      group_by(Code, Measure) %>% 
-                      do(rescale_sexes_post(chunk = .data)) %>% 
-                      ungroup() %>%
-                      # Reshape to wide
-                      pivot_wider(names_from = Measure,
-                                  values_from = Value) %>% 
-                      # Get date into correct format
-                      mutate(date = dmy(Date)) %>% 
-                      # Sort
-                      arrange(Country, Region, date, Sex, Age) %>% 
-                      select(-date) %>% 
-                      # ensure columns in standard order:
-                      select(Country, Region, Code, Date, Sex, Age, AgeInt, Cases, Deaths, Tests)
-
+# outputCounts_5_1e5 <- out5 %>%  
+#                       # Replace NaNs 
+#                       mutate(Value = ifelse(is.nan(Value),0,Value)) %>% 
+#                       # Rescale sexes
+#                       group_by(Code, Measure) %>% 
+#                       do(rescale_sexes_post(chunk = .data)) %>% 
+#                       ungroup() %>%
+#                       # Reshape to wide
+#                       pivot_wider(names_from = Measure,
+#                                   values_from = Value) %>% 
+#                       # Get date into correct format
+#                       mutate(date = dmy(Date)) %>% 
+#                       # Sort
+#                       arrange(Country, Region, date, Sex, Age) %>% 
+#                       select(-date) %>% 
+#                       # ensure columns in standard order:
+#                       select(Country, Region, Code, Date, Sex, Age, AgeInt, Cases, Deaths, Tests)
+outputCounts_5_1e5 <-
+  out5 %>% 
+  as.data.table() %>% 
+  .[, Value := nafill(Value, nan = NA, fill = 1)] %>% 
+  .[, rescale_sexes_post(chunk = .SD), keyby = .(Country, Region, Code, Date, Measure, AgeInt)] %>% 
+  as_tibble() %>% 
+  pivot_wider(names_from = "Measure", values_from = "Value") %>% 
+  select(Country, Region, Code, Date, Sex, Age, AgeInt, Cases, Deaths, Tests) %>% 
+  arrange(Country, Region, dmy(Date), Sex, Age) 
 # Save binary
 
 # if (hours < Inf){
