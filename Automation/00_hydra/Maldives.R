@@ -6,6 +6,7 @@ library(here)
 library(readxl)
 library(lubridate)
 library(dplyr)
+library(tidyverse)
 
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
@@ -65,50 +66,59 @@ Maldives<- read_excel(lastfiles)
 
 #####Cases#########
 
-MV= Maldives%>%
+
+MV_cases= Maldives%>%
   select(Sex= GENDER, Age = AGE,Date= `CONFIRMED ON`) %>% 
   mutate(Sex = case_when(
-                 is.na(Sex)~ "UNK",
-                 Sex == "Male" ~ "m",
-                 Sex == "Female" ~ "f"),
-         Date = dmy(Date),
-         Count = "1")
+    is.na(Sex)~ "UNK",
+    Sex == "Male" ~ "m",
+    Sex == "Female" ~ "f"),
+    Age = case_when(
+      is.na(Age) ~ "UNK",
+      TRUE~ as.character(Age)),
+    Date = dmy(Date))
 
 
 # TR:
 # see if you can take care of Age
-# with case_when() in the abve mutate()
-# Dont count in months or days, below 1 year of Age becomes 0 
+# with case_when() in the above mutate()
 
-MV_cases$Age[is.na(MV_cases$Age)] <- "UNK"
+# JD:  I cant get this sub function in there 
 
+
+#MV= Maldives%>%
+# select(Sex= GENDER, Age = AGE,Date= `CONFIRMED ON`) %>% 
+# mutate(Sex = case_when(
+# is.na(Sex)~ "UNK",
+# Sex == "Male" ~ "m",
+# Sex == "Female" ~ "f"),
+# Age = case_when(
+# is.na(Age) ~ "UNK",
+#TRUE~ as.character(Age)),
+# Age= case_when(sub(".*M" ,"0", Age),
+#sub(".*D", "0", Age)),
+# Date = dmy(Date))
+
+
+# Dont count Age in months or days, below 1 year of Age becomes 0 
 #Months
 MV_cases$Age <- (sub(".*M", "0", MV_cases$Age))
 
 #Days
 MV_cases$Age <- (sub(".*D", "0", MV_cases$Age))
 
-#categories <- unique(MV_cases$Age) 
+#categories <- unique(MV$Age) 
 #categories
   
+#changed aggregation to summarize 
 
-#sum by day  
-
-MV_cases= transform(MV_cases,Count = as.numeric(Count))
-
-MV_cases_sum= aggregate(Count~Date+Age+Sex, data=MV_cases, FUN=sum) 
-
-# TR: change aggregation to:
-# group_by(Date, Sex, Age) %>% 
-# summarize(Value = n()) # <- that counts rows
-
-#cumulative sum
-MV_cases_csum= MV_cases_sum %>%
-  group_by(Sex,Age) %>%
-  mutate(Value = cumsum(Count))
-
-
-MV_cases_out = MV_cases_csum %>%
+MV_cases_out= MV_cases %>%
+group_by(Date, Sex, Age) %>% 
+  summarize(Value = n(), .groups="drop")%>%
+  arrange(Sex, Age, Date) %>% 
+  group_by(Sex, Age) %>% 
+  mutate(Value = cumsum(Value)) %>% 
+  ungroup() %>%
   mutate(
     Date = ymd(Date),
     Date = paste(sprintf("%02d",day(Date)),    
@@ -128,18 +138,21 @@ MV_cases_out = MV_cases_csum %>%
 
 ######Deaths######### 
 
-MV_death= MV %>%
-  select (Sex, Age, `DECEASED ON`)
+
+MV_death= Maldives%>%
+  select(Sex= GENDER, Age = AGE,Date= `DECEASED ON`) %>% 
+  mutate(Sex = case_when(
+    is.na(Sex)~ "UNK",
+    Sex == "Male" ~ "m",
+    Sex == "Female" ~ "f"),
+    Age = case_when(
+      is.na(Age) ~ "UNK",
+      TRUE~ as.character(Age)),
+    Date = dmy(Date))
 
 #only take those that died 
 
 MV_death= MV_death[complete.cases(MV_death), ]
-
-MV_death= MV_death %>%
-  rename (Date= `DECEASED ON`)%>% 
-  mutate (Date = dmy(Date))%>% 
-  mutate (Count= "1") 
-
 
 #In case someday someone with age counted in days or month dies 
 #Months
@@ -147,17 +160,13 @@ MV_death$Age <- (sub(".*M", "0", MV_death$Age))
 #Days
 MV_death$Age <- (sub(".*D", "0", MV_death$Age))
 
-
-#sum by day  
-
-MV_death= transform(MV_death,Count = as.numeric(Count))
-
-#cumulative sum
-MV_death_csum= MV_death %>%
-  group_by(Sex,Age) %>%
-  mutate(Value = cumsum(Count))
-
-MV_death_out = MV_death_csum %>%
+MV_death_out= MV_death %>%
+  group_by(Date, Sex, Age) %>% 
+  summarize(Value = n(), .groups="drop")%>%
+  arrange(Sex, Age, Date) %>% 
+  group_by(Sex, Age) %>% 
+  mutate(Value = cumsum(Value)) %>% 
+  ungroup() %>%
   mutate(
     Date = ymd(Date),
     Date = paste(sprintf("%02d",day(Date)),    
@@ -174,11 +183,10 @@ MV_death_out = MV_death_csum %>%
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)
 
-
-
 ######combine both to one dataframe########## 
 MV_out <- bind_rows(MV_cases_out,
                     MV_death_out)
+
 
 
 # In case we had earlier data, we keep it.
@@ -200,6 +208,79 @@ write_sheet(MV_out,
 
 
 #archive: input files already saved on N 
+
+########################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#############First draft 
+#cases
+#sum by day  
+#MV_cases= transform(MV_cases,Count = as.numeric(Count))
+#MV_cases_sum= aggregate(Count~Date+Age+Sex, data=MV_cases, FUN=sum) 
+#cumulative sum
+#MV_cases_csum= MV_cases_sum %>%
+#group_by(Sex,Age) %>%
+#mutate(Value = cumsum(Count))
+
+
+
+#death 
+#sum by day  
+#MV_death= transform(MV_death,Count = as.numeric(Count))
+#cumulative sum
+#MV_death_csum= MV_death %>%
+#group_by(Sex,Age) %>%
+#mutate(Value = cumsum(Count))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
