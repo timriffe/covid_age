@@ -17,6 +17,12 @@ gs4_auth(email = email)
 rubric_i <- get_input_rubric() %>% filter(Short == "CL")
 ss_i     <- rubric_i %>% dplyr::pull(Sheet)
 
+# obtaining cases and deaths data from Drive
+db_drive <- 
+  get_country_inputDB("CL") %>% 
+  select(-Short)
+
+
 # vaccination data
 ##################
 
@@ -35,9 +41,10 @@ vacc2 <-
 
 ages <- c(unique(vacc2$Age), "0")
 
-out <- 
+vacc3 <- 
   vacc2 %>% 
   tidyr::complete(Age = ages, Measure, Date, fill = list(Value = 0)) %>% 
+  filter(!Date %in% vacc_drive) %>% 
   mutate(Country = "Chile",
          Region = "CL",
          Date = ddmmyyyy(Date),
@@ -56,18 +63,20 @@ out <-
                             TRUE ~ "10"),
          AgeInt = as.integer(AgeInt),
          Metric = "Count",
-         Sex = "b") %>% 
-  # bind_rows(db_drive2) %>%
-  sort_input_data()  
-############################################
-#### uploading database to Google Drive ####
-############################################
+         Sex = "b") 
 
+# bind_rows(db_drive2) %>%
+out <- db_drive %>% 
+  filter(!Measure %in% c("Vaccination1", "Vaccination2")) %>% 
+  bind_rows(vacc3) %>% 
+  sort_input_data()
+
+################################
+#### Saving data in N drive ####
+################################
+write_rds(out, paste0(dir_n, ctr, ".rds"))
 # This command append new rows at the end of the sheet
-sheet_append(out,
-             ss = ss_i,
-             sheet = "database")
-log_update(pp = ctr, N = nrow(out))
+log_update(pp = "Chile_vaccines", N = nrow(vacc3))
 
 ############################################
 #### uploading metadata to N Drive ####
@@ -76,6 +85,3 @@ log_update(pp = ctr, N = nrow(out))
 data_source <- paste0(dir_n, "Data_sources/", ctr, "/vaccines_age_",today(), ".csv")
 
 write_csv(vacc, data_source)
-
-
-# Cases and deaths data by age =in github
