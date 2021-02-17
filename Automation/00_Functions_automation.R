@@ -105,7 +105,8 @@ get_country_inputDB <- function(ShortCode) {
   
   out <- try(read_sheet(ss_i, 
                         sheet = "database", 
-                        na = "NA"))
+                        na = "NA", 
+                        col_types= "cccccciccd"))
   
   # If error
   if (class(out)[1] == "try-error") {
@@ -115,7 +116,8 @@ get_country_inputDB <- function(ShortCode) {
     # Try to load again
     out <- try(read_sheet(ss_i, 
                           sheet = "database", 
-                          na = "NA"))
+                          na = "NA", 
+                          col_types= "cccccciccd"))
     
     if (class(out)[1] == "try-error") {
       
@@ -124,15 +126,12 @@ get_country_inputDB <- function(ShortCode) {
       # Try to load again
       out <- try(read_sheet(ss_i, 
                             sheet = "database", 
-                            na = "NA"))
+                            na = "NA", 
+                            col_types= "cccccciccd"))
       
     }
   }
-  
-  # A problem with the amount of columns
-  # , 
-  # col_types= "cccccciccd"
-  
+
   # Assign short code
   out$Short <- add_Short(out$Code,out$Date)
   

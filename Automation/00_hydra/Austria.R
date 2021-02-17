@@ -26,18 +26,14 @@ db_drive2 <- db_drive %>%
 last_date_drive <- max(db_drive2$date_f)
 
 # loading data from the website 
+# source deprecated on Jan 31 2021,
+# download.file("https://info.gesundheitsministerium.at/data/data.zip", data_source, mode = "wb")
 data_source <- paste0(dir_n, "Data_sources/", ctr, "/", ctr, "_data_", today(), ".zip")
-download.file("https://info.gesundheitsministerium.at/data/data.zip", data_source)
+download.file("https://covid19-dashboard.ages.at/data/data.zip", data_source, mode = "wb")
 
-db_c_age <- read_csv2(unz(data_source, "Altersverteilung.csv"))
-db_c_sex <- read_csv2(unz(data_source, "Geschlechtsverteilung.csv"))
-db_d_age <- read_csv2(unz(data_source, "AltersverteilungTodesfaelle.csv"))
-db_d_sex <- read_csv2(unz(data_source, "VerstorbenGeschlechtsverteilung.csv"))
-db_tests <- read_csv2(unz(data_source, "AllgemeinDaten.csv"))
-
-date_f <- db_c_age$Timestamp[1] %>% 
-  str_sub(1,10) %>% 
-  ymd()
+db_age <- read_csv2(unz(data_source, "CovidFaelle_Altersgruppe.csv"))
+meta <- read_csv2(unz(data_source, "Version.csv"))
+date_f <- meta %>% separate(CreationDate, c("date_f", "trash"), " ") %>% dplyr::pull(date_f) %>% dmy
 
 d <- paste(sprintf("%02d", day(date_f)),
            sprintf("%02d", month(date_f)),
@@ -46,80 +42,110 @@ d <- paste(sprintf("%02d", day(date_f)),
 # verify if new data is not already included in Drive
 if (date_f > last_date_drive){
   
-  db_c_age2 <- db_c_age %>% 
+  db_age2 <- db_age %>% 
+    rename(Cases = Anzahl,
+           Deaths = AnzahlTot,
+           Region = Bundesland) %>% 
     separate(Altersgruppe, c("Age", "trash"), sep = "-") %>% 
-    mutate(Age = case_when(Age == "<5" ~ "0",
-                           Age == ">84" ~ "85",
-                           TRUE ~ Age),
-           Metric = "Count",
-           Sex = "b") %>% 
-    rename(Value = Anzahl) %>% 
-    select(Sex, Age, Metric, Value)
-  
-  db_c_sex2 <- db_c_sex %>% 
-    rename(Value = "Anzahl in %") %>% 
-    mutate(Sex = case_when(Geschlecht == "weiblich" ~ "f",
-                           Geschlecht == "m?nnlich" ~ "m",
-                           TRUE ~ "UNK"),
-           Metric = "Fraction",
-           Value = Value / 100,
-           Age = "TOT") %>% 
-    select(Sex, Age, Metric, Value)
-  
-  db_cases <- bind_rows(db_c_age2, db_c_sex2) %>% 
-    mutate(Measure = "Cases")
-  
-  
-  db_d_age2 <- db_d_age %>% 
-    separate(Altersgruppe, c("Age", "trash"), sep = "-") %>% 
-    mutate(Age = case_when(Age == "<5" ~ "0",
-                           Age == ">84" ~ "85",
-                           TRUE ~ Age),
-           Metric = "Count",
-           Sex = "b") %>% 
-    rename(Value = Anzahl) %>% 
-    select(Sex, Age, Metric, Value)
-  
-  db_d_sex2 <- db_d_sex %>% 
-    rename(Value = "Anzahl in %") %>% 
-    mutate(Sex = case_when(Geschlecht == "weiblich" ~ "f",
-                           Geschlecht == "m?nnlich" ~ "m",
-                           TRUE ~ "UNK"),
-           Metric = "Fraction",
-           Value = Value / 100,
-           Age = "TOT") %>% 
-    select(Sex, Age, Metric, Value)
-  
-  db_deaths <- bind_rows(db_d_age2, db_d_sex2) %>% 
-    mutate(Measure = "Deaths")
-  
-  db_tests2 <- db_tests %>% 
-    select(GesTestungen) %>% 
-    rename(Value = GesTestungen) %>% 
-    mutate(Sex = "b",
-           Metric = "Count",
-           Age = "TOT",
-           Measure = "Tests")
-    
-  out <- bind_rows(db_deaths, db_cases, db_tests2) %>% 
     mutate(Country = "Austria",
-           Region = "All",
-           Code = paste0("AT", d),
+           Age = case_when(Age == "<5" ~ "0",
+                           Age == ">84" ~ "85",
+                           TRUE ~ Age),
+           Sex = recode(Geschlecht,
+                        "W" = "f",
+                        "M" = "m"),
            Date = d,
+           Metric = "Count",
+           Region = ifelse(Region == "Österreich", "All", Region),
+           Code = paste0(ifelse(BundeslandID < 10, paste0("AT_", BundeslandID, "_"), "AT_"), d),
            AgeInt = case_when(Age == "0" ~ "5",
                               Age == "85" ~ "20",
                               Age == "TOT" ~ "",
-                              TRUE ~ "10")) %>% 
-    select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
+                              TRUE ~ "10"),
+           AgeInt = as.integer(AgeInt)) %>% 
+    select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Cases, Deaths) %>% 
+    gather(Cases, Deaths, key = "Measure", value = "Value") %>% 
+    sort_input_data()
   
-  ############################################
-  #### uploading database to Google Drive ####
-  ############################################
+  #### updating Google Drive ####
+  ###############################
   # This command append new rows at the end of the sheet
-  sheet_append(out,
+  sheet_append(age2,
                ss = ss_i,
                sheet = "database")
-  log_update(pp = ctr, N = nrow(out))
+  
+  
+  ### vaccination data ###
+  ########################
+  vacc <- read_delim("https://info.gesundheitsministerium.gv.at/data/timeline-eimpfpass.csv", delim = ";")
+  
+  vacc2 <- vacc %>% 
+    select(Datum, Name, BundeslandID, Teilgeimpfte, Vollimmunisierte, starts_with("Gruppe")) %>% 
+    gather(-Datum, -Name, -BundeslandID, key = "Group", value = "Value") %>% 
+    rename(Date = Datum,
+           Region = Name) %>% 
+    mutate(Group = str_replace(Group, "e<24", "e_0"),
+           Group = case_when(Group == "Teilgeimpfte" ~ "Group_TOT_b_1",
+                             Group == "Vollimmunisierte" ~ "Group_TOT_b_2",
+                             TRUE ~ Group),
+           Region = ifelse(Region == "Österreich", "All", Region), 
+           Date = ymd(str_sub(Date, 1, 10))) %>% 
+    separate(Group, c("trash", "Age", "Sex", "Measure"), sep = "_") %>%  
+    mutate(Measure = paste0("Vaccination", Measure),
+           Sex = recode(Sex,
+                        "M" = "m",
+                        "W" = "f",
+                        "D" = "o"),
+           Age = recode(Age,
+                        "25-34" = "25",
+                        "35-44" = "35",
+                        "45-54" = "45",
+                        "55-64" = "55",
+                        "65-74" = "65",
+                        "75-84" = "75",
+                        ">84" = "85")) %>% 
+    select(-trash)
+  
+  unique(vacc2$Sex)
+  
+  vacc_all_sex <- vacc2 %>% 
+    filter(Age != "TOT") %>% 
+    group_by(Date, Region, BundeslandID, Age, Measure) %>% 
+    summarise(Value = sum(Value)) %>% 
+    ungroup() %>% 
+    mutate(Sex = "b")
+  
+  vacc3 <- vacc2 %>% 
+    filter(Sex != "o") %>% 
+    bind_rows(vacc_all_sex) %>% 
+    mutate(Country = "Austria",
+           Metric = "Count",
+           Date = ddmmyyyy(Date),
+           Code = paste0(ifelse(BundeslandID < 10, paste0("AT_", BundeslandID, "_"), "AT_"), Date),
+           AgeInt = case_when(Age == "0" ~ "25",
+                              Age == "85" ~ "20",
+                              Age == "TOT" ~ "",
+                              TRUE ~ "10"),
+           AgeInt = as.integer(AgeInt)) %>% 
+    sort_input_data()
+  
+  
+  ### appending last data in drive with new cases and deaths and vaccination data ####
+  ####################################################################################
+  out <- db_drive2 %>% 
+    select(-Short, -date_f) %>% 
+    bind_rows(db_age2,
+              vacc3) %>% 
+    sort_input_data()
+  
+  
+  # saving data in N drive
+  ########################
+  write_rds(out, paste0(dir_n, ctr))
+  
+  # updating hydra dashboard
+  log_update(pp = ctr, N = nrow(bind_rows(db_age2,
+                                          vacc3)))
   
 } else if (date_f == last_date_drive) {
   cat(paste0("no new updates so far, last date: ", date_f))
