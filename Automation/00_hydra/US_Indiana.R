@@ -9,7 +9,7 @@ library(dplyr)
 if (!"email" %in% ls()){
   email <- "jessica_d.1994@yahoo.de"
 }
-
+ 
 
 #open questions
 #How do I keep the manually entered vaccine data?
