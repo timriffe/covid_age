@@ -141,7 +141,7 @@ if (date_f > last_date_drive){
   
   # saving data in N drive
   ########################
-  write_rds(out, paste0(dir_n, ctr))
+  write_rds(out, paste0(dir_n, ctr, ".rds"))
   
   # updating hydra dashboard
   log_update(pp = ctr, N = nrow(bind_rows(db_age2,
