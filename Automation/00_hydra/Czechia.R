@@ -111,8 +111,9 @@ cz_cases_region_ss <-
          AgeInt, 
          Metric, 
          Measure, 
-         Value)
-
+         Value)%>%
+  mutate(Age= as.character(Age))
+ 
 
 ###########################################
 ################ DEATHS ###################
@@ -184,7 +185,8 @@ cz_deaths_region_ss <-
          AgeInt, 
          Metric, 
          Measure, 
-         Value)
+         Value)%>%
+  mutate(Age= as.character(Age))
 
 
 
@@ -309,7 +311,8 @@ cz_vaccines <- vaccines %>%
 
 cz_spreadsheet_region <-
   bind_rows(cz_cases_region_ss, 
-            cz_deaths_region_ss) %>% 
+            cz_deaths_region_ss,
+            cz_vaccines) %>% 
   left_join(NUTS3, by = c("Region" = "code")) %>% 
   select(Country, Region = name, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
   sort_input_data()
