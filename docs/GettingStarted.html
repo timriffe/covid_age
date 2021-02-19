@@ -438,17 +438,17 @@ inputDB &lt;-  read_csv(&quot;inputDB.zip&quot;,
 glimpse(inputDB)</code></pre>
 <pre><code>## Rows: 9,187,404
 ## Columns: 11
-## $ Country &lt;chr&gt; &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanistan&quot;,...
-## $ Region  &lt;chr&gt; &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;Al...
-## $ Code    &lt;chr&gt; &quot;AF01.07.2020&quot;, &quot;AF01.07.2020&quot;, &quot;AF01.07.2020&quot;, &quot;AF01.07.20...
-## $ Date    &lt;chr&gt; &quot;01.07.2020&quot;, &quot;01.07.2020&quot;, &quot;01.07.2020&quot;, &quot;01.07.2020&quot;, &quot;01...
-## $ Sex     &lt;chr&gt; &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;,...
-## $ Age     &lt;chr&gt; &quot;0&quot;, &quot;10&quot;, &quot;20&quot;, &quot;30&quot;, &quot;40&quot;, &quot;50&quot;, &quot;60&quot;, &quot;70&quot;, &quot;80&quot;, &quot;TOT&quot;,...
-## $ AgeInt  &lt;int&gt; 10, 10, 10, 10, 10, 10, 10, 10, 25, NA, 10, 10, 10, 10, 10,...
-## $ Metric  &lt;chr&gt; &quot;Count&quot;, &quot;Count&quot;, &quot;Count&quot;, &quot;Count&quot;, &quot;Count&quot;, &quot;Count&quot;, &quot;Coun...
-## $ Measure &lt;chr&gt; &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Case...
-## $ Value   &lt;dbl&gt; 169, 1525, 7948, 7592, 5362, 3747, 2267, 840, 301, 29751, 0...
-## $ Short   &lt;chr&gt; &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;,...</code></pre>
+## $ Country &lt;chr&gt; &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;...
+## $ Region  &lt;chr&gt; &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;All&quot;, &quot;A...
+## $ Code    &lt;chr&gt; &quot;AF01.07.2020&quot;, &quot;AF01.07.2020&quot;, &quot;AF01.07.2020&quot;, &quot;AF01.07.2020&quot;, &quot;AF01.07.2020&quot;, &quot;AF01.07.2020&quot;, &quot;AF01.07.2020&quot;, &quot;AF01.07....
+## $ Date    &lt;chr&gt; &quot;01.07.2020&quot;, &quot;01.07.2020&quot;, &quot;01.07.2020&quot;, &quot;01.07.2020&quot;, &quot;01.07.2020&quot;, &quot;01.07.2020&quot;, &quot;01.07.2020&quot;, &quot;01.07.2020&quot;, &quot;01.07.20...
+## $ Sex     &lt;chr&gt; &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;b&quot;, &quot;f&quot;, &quot;f&quot;, &quot;f&quot;, &quot;...
+## $ Age     &lt;chr&gt; &quot;0&quot;, &quot;10&quot;, &quot;20&quot;, &quot;30&quot;, &quot;40&quot;, &quot;50&quot;, &quot;60&quot;, &quot;70&quot;, &quot;80&quot;, &quot;TOT&quot;, &quot;0&quot;, &quot;10&quot;, &quot;20&quot;, &quot;30&quot;, &quot;40&quot;, &quot;50&quot;, &quot;60&quot;, &quot;70&quot;, &quot;80&quot;, &quot;TOT&quot;, &quot;...
+## $ AgeInt  &lt;int&gt; 10, 10, 10, 10, 10, 10, 10, 10, 25, NA, 10, 10, 10, 10, 10, 10, 10, 10, 25, NA, NA, NA, 10, 10, 10, 10, 10, 10, 10, 10, 2...
+## $ Metric  &lt;chr&gt; &quot;Count&quot;, &quot;Count&quot;, &quot;Count&quot;, &quot;Count&quot;, &quot;Count&quot;, &quot;Count&quot;, &quot;Count&quot;, &quot;Count&quot;, &quot;Count&quot;, &quot;Count&quot;, &quot;Count&quot;, &quot;Count&quot;, &quot;Count&quot;, &quot;Cou...
+## $ Measure &lt;chr&gt; &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Cases&quot;, &quot;Deaths&quot;, &quot;Deaths&quot;, &quot;Deaths&quot;, &quot;...
+## $ Value   &lt;dbl&gt; 169, 1525, 7948, 7592, 5362, 3747, 2267, 840, 301, 29751, 0, 5, 18, 54, 117, 161, 221, 95, 55, 726, 73515, 8298, 0, 2, 6,...
+## $ Short   &lt;chr&gt; &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;, &quot;AF&quot;, &quot;...</code></pre>
 <p>Notice, <code>Age</code> is character because it can contain <code>&quot;TOT&quot;</code> or <code>&quot;UNK&quot;</code> values. Therefore, if you sort, it will do so alphabetically, in which case <code>&quot;10&quot;</code> comes before <code>&quot;5&quot;</code>. This is the file from which we begin the harmonization routines. Maybe you have use for it?</p>
 </div>
 <div id="output-files" class="section level3">
@@ -499,39 +499,25 @@ inputDB &lt;- download_covid(&quot;inputDB&quot;, progress = FALSE)</code></pre>
 <p><code>covidAgeData</code> includes wrappers for either very fast in-memory data subsetting, or slower, but memory efficient subsetting. The next example demonstrates both methods on <code>inputDB</code>.</p>
 <pre class="r"><code>subset_covid(inputDB, Country = &quot;Brazil&quot;, Region = &quot;All&quot;) %&gt;%
   head()</code></pre>
-<pre><code>##   Country Region         Code       Date Sex Age AgeInt Metric Measure Value
-## 1  Brazil    All BR16.03.2020 16.03.2020   b   0     10  Count  Deaths     0
-## 2  Brazil    All BR16.03.2020 16.03.2020   b  10     10  Count  Deaths     0
-## 3  Brazil    All BR16.03.2020 16.03.2020   b  20     10  Count  Deaths     0
-## 4  Brazil    All BR16.03.2020 16.03.2020   b  30     10  Count  Deaths     0
-## 5  Brazil    All BR16.03.2020 16.03.2020   b  40     10  Count  Deaths     0
-## 6  Brazil    All BR16.03.2020 16.03.2020   b  50     10  Count  Deaths     0
-##   Short
-## 1    BR
-## 2    BR
-## 3    BR
-## 4    BR
-## 5    BR
-## 6    BR</code></pre>
+<pre><code>##   Country Region         Code       Date Sex Age AgeInt Metric Measure Value Short
+## 1  Brazil    All BR16.03.2020 16.03.2020   b   0     10  Count  Deaths     0    BR
+## 2  Brazil    All BR16.03.2020 16.03.2020   b  10     10  Count  Deaths     0    BR
+## 3  Brazil    All BR16.03.2020 16.03.2020   b  20     10  Count  Deaths     0    BR
+## 4  Brazil    All BR16.03.2020 16.03.2020   b  30     10  Count  Deaths     0    BR
+## 5  Brazil    All BR16.03.2020 16.03.2020   b  40     10  Count  Deaths     0    BR
+## 6  Brazil    All BR16.03.2020 16.03.2020   b  50     10  Count  Deaths     0    BR</code></pre>
 <pre class="r"><code># Drastically conserve memory using this memory efficient version, powered by
 # the `vroom` pacakage
 read_subset_covid(&quot;inputDB.zip&quot;, &quot;inputDB&quot;, Country = &quot;Sweden&quot;,
                   Region = &quot;All&quot;) %&gt;%
   head()</code></pre>
-<pre><code>##   Country Region         Code       Date Sex Age AgeInt Metric Measure Value
-## 1  Sweden    All SE06.04.2020 06.04.2020   b   0     10  Count   Cases    43
-## 2  Sweden    All SE06.04.2020 06.04.2020   b  10     10  Count   Cases   143
-## 3  Sweden    All SE06.04.2020 06.04.2020   b  20     10  Count   Cases   503
-## 4  Sweden    All SE06.04.2020 06.04.2020   b  30     10  Count   Cases   651
-## 5  Sweden    All SE06.04.2020 06.04.2020   b  40     10  Count   Cases   935
-## 6  Sweden    All SE06.04.2020 06.04.2020   b  50     10  Count   Cases  1291
-##   Short
-## 1    SE
-## 2    SE
-## 3    SE
-## 4    SE
-## 5    SE
-## 6    SE</code></pre>
+<pre><code>##   Country Region         Code       Date Sex Age AgeInt Metric Measure Value Short
+## 1  Sweden    All SE06.04.2020 06.04.2020   b   0     10  Count   Cases    43    SE
+## 2  Sweden    All SE06.04.2020 06.04.2020   b  10     10  Count   Cases   143    SE
+## 3  Sweden    All SE06.04.2020 06.04.2020   b  20     10  Count   Cases   503    SE
+## 4  Sweden    All SE06.04.2020 06.04.2020   b  30     10  Count   Cases   651    SE
+## 5  Sweden    All SE06.04.2020 06.04.2020   b  40     10  Count   Cases   935    SE
+## 6  Sweden    All SE06.04.2020 06.04.2020   b  50     10  Count   Cases  1291    SE</code></pre>
 </div>
 </div>
 <div id="common-plot-types" class="section level2 tabset">
@@ -620,8 +606,7 @@ Pop &lt;-
 <pre><code>## Warning: Problem with `mutate()` input `Age`.
 ## i NAs introduced by coercion
 ## i Input `Age` is `ifelse(Age == &quot;100+&quot;, 100, as.integer(Age))`.</code></pre>
-<pre><code>## Warning in ifelse(Age == &quot;100+&quot;, 100, as.integer(Age)): NAs introduced by
-## coercion</code></pre>
+<pre><code>## Warning in ifelse(Age == &quot;100+&quot;, 100, as.integer(Age)): NAs introduced by coercion</code></pre>
 <pre class="r"><code>ZA &lt;-
 Output_10 %&gt;%
   filter(Country == &quot;South Africa&quot;,
@@ -709,7 +694,7 @@ STMF &lt;-
   summarize(Deaths = sum(Deaths), .groups = &quot;drop&quot;) %&gt;%
   arrange(Sex, Week, Age)</code></pre>
 <pre><code>## 
-## -- Column specification --------------------------------------------------------
+## -- Column specification ----------------------------------------------------------------------------------------------------------------------
 ## cols(
 ##   PopCode = col_character(),
 ##   Area = col_double(),
