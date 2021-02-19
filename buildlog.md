@@ -1,74 +1,74 @@
 
 # New build log 
- Thu Feb 18 01:00:09 2021 
+ Fri Feb 19 01:00:11 2021 
 
 
 # begin resolution of multiple sources per population 
- Thu Feb 18 01:00:09 2021 
+ Fri Feb 19 01:00:11 2021 
 
 
 # Resolve USA CDC overlaps 
- Thu Feb 18 01:00:57 2021 
+ Fri Feb 19 01:00:59 2021 
 
 USA CDC resolved
  1274 rows removed
 
 # Resolve Brazil TRC overlaps 
- Thu Feb 18 01:01:03 2021 
+ Fri Feb 19 01:01:05 2021 
 
 Brazil TRC resolved
  1221 rows removed
 
 # Resolve Italy Bollettino and Infografico 
- Thu Feb 18 01:01:07 2021 
+ Fri Feb 19 01:01:09 2021 
 
 Italy resolved
  229 rows removed
 
 # Resolve ECDC overlaps 
- Thu Feb 18 01:01:16 2021 
+ Fri Feb 19 01:01:17 2021 
 
 ECDC resolved
  2862 rows removed
 
 # prep (resolve_UNKUNK) 
- Thu Feb 18 01:02:28 2021 
+ Fri Feb 19 01:02:29 2021 
 
 
 # A (convert_fractions_sexes) 
- Thu Feb 18 01:07:22 2021 
+ Fri Feb 19 01:07:18 2021 
 
 
 # B (redistribute_unknown_age) 
- Thu Feb 18 01:10:44 2021 
+ Fri Feb 19 01:10:37 2021 
 
 
 # C (rescale_to_total) 
- Thu Feb 18 01:26:32 2021 
+ Fri Feb 19 01:26:14 2021 
 
 
 # D (infer_cases_from_deaths_and_ascfr) 
- Thu Feb 18 01:42:27 2021 
+ Fri Feb 19 01:42:17 2021 
 
 
 # E (infer_deaths_from_cases_and_ascfr) 
- Thu Feb 18 01:46:53 2021 
+ Fri Feb 19 01:46:39 2021 
 
 
 # G (redistribute_unknown_sex) 
- Thu Feb 18 01:51:16 2021 
+ Fri Feb 19 01:50:58 2021 
 
 
 # H (rescale_sexes) 
- Thu Feb 18 01:58:18 2021 
+ Fri Feb 19 01:57:43 2021 
 
 
 # I (infer_both_sex) 
- Thu Feb 18 02:00:02 2021 
+ Fri Feb 19 01:59:22 2021 
 
 
 # J (maybe_lower_closeout) 
- Thu Feb 18 02:05:15 2021 
+ Fri Feb 19 02:04:21 2021 
 
 filter( Code == 'NZ15.01.2021', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'GB_SCO_21.01.2021', Sex == 'f', Measure == 'Cases' )
@@ -310,33 +310,61 @@ filter( Code == 'US_TX11.09.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_TX13.09.2020', Sex == 'b', Measure == 'Cases' )
 
 # Age harmonization 
- Thu Feb 18 02:17:01 2021 
+ Fri Feb 19 02:15:50 2021 
 
 
 # Compile metadata 
- Thu Feb 18 06:26:05 2021 
+ Fri Feb 19 07:11:50 2021 
 
 
 # Building dashboards 
- Thu Feb 18 06:40:32 2021 
+ Fri Feb 19 07:26:54 2021 
 
 
 # remake coverage map 
- Thu Feb 18 06:50:53 2021 
+ Fri Feb 19 07:36:31 2021 
 
 
 # push outputs to OSF 
- Thu Feb 18 06:55:42 2021 
+ Fri Feb 19 07:41:21 2021 
 
 
-# remake coverage map 
- Thu Feb 18 07:22:46 2021 
+# begin resolution of multiple sources per population 
+ Fri Feb 19 09:41:04 2021 
 
 
-# push outputs to OSF 
- Thu Feb 18 07:27:18 2021 
+# Resolve USA CDC overlaps 
+ Fri Feb 19 09:41:49 2021 
+
+USA CDC resolved
+ 27265 rows removed
+
+# Resolve Brazil TRC overlaps 
+ Fri Feb 19 09:41:56 2021 
+
+Brazil TRC resolved
+ 2013 rows removed
+
+# Resolve Italy Bollettino and Infografico 
+ Fri Feb 19 09:42:01 2021 
+
+Italy resolved
+ 229 rows removed
+
+# Resolve ECDC overlaps 
+ Fri Feb 19 09:42:10 2021 
+
+ECDC resolved
+ 2718 rows removed
+
+# prep (resolve_UNKUNK) 
+ Fri Feb 19 09:54:04 2021 
 
 
-# Commit dashboards and buildlog 
- Thu Feb 18 07:30:06 2021 
+# A (convert_fractions_sexes) 
+ Fri Feb 19 09:58:59 2021 
+
+
+# B (redistribute_unknown_age) 
+ Fri Feb 19 10:02:22 2021 
 
