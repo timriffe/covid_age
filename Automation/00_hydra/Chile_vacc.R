@@ -44,7 +44,7 @@ ages <- c(unique(vacc2$Age), "0")
 vacc3 <- 
   vacc2 %>% 
   tidyr::complete(Age = ages, Measure, Date, fill = list(Value = 0)) %>% 
-  filter(!Date %in% vacc_drive) %>% 
+  filter(!Date %in% db_drive) %>% 
   mutate(Country = "Chile",
          Region = "CL",
          Date = ddmmyyyy(Date),
