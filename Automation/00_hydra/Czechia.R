@@ -1,6 +1,15 @@
 library(here)
 source(here("Automation/00_Functions_automation.R"))
 
+library(tidyverse)
+library(googlesheets4)
+library(dplyr)
+library(xml2)
+library(rvest)
+library(lubridate)
+library(googledrive)
+
+
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
   email <- "e.delfava@gmail.com"
@@ -102,8 +111,9 @@ cz_cases_region_ss <-
          AgeInt, 
          Metric, 
          Measure, 
-         Value)
-
+         Value)%>%
+  mutate(Age= as.character(Age))
+ 
 
 ###########################################
 ################ DEATHS ###################
@@ -175,13 +185,134 @@ cz_deaths_region_ss <-
          AgeInt, 
          Metric, 
          Measure, 
-         Value)
+         Value)%>%
+  mutate(Age= as.character(Age))
+
+
+
+###########################################
+################ VACCINATION ##############
+###########################################
+
+vaccine_url <- "https://onemocneni-aktualne.mzcr.cz/api/v2/covid-19/ockovani.csv"
+
+vaccines <- read.csv(vaccine_url, 
+                     header = T, 
+                     encoding = "UTF-8",
+                     col.names = c("Date", 
+                                   "vaccine", # Comirnaty, Moderna, AstraZeneca
+                                   "NUTS3", 
+                                   "Region", # names of the regions
+                                   "AgeGroup",
+                                   "first_dose", 
+                                   "second_dose", 
+                                   "n_dose")) %>% 
+  mutate(Date = as.Date(Date, "%Y-%m-%d"))
+
+
+# unfortunatelly only age 80+ is registered, although the 80+ group 
+# is the group of first preference in vaccination
+
+
+#Original Code from Anna Altova 
+
+#cz_vaccines <- vaccines %>% 
+ # mutate(Region = as.factor(Region), 
+         #NUTS3 = as.factor(NUTS3)) %>% 
+  #tidyr::complete(nesting(NUTS3,Region), Date, AgeGroup, vaccine, fill = list(first_dose = 0, 
+                                                                       #second_dose = 0, 
+                                                                       #n_dose = 0)) %>% 
+  #arrange(Date, Region, NUTS3, AgeGroup, vaccine) %>%
+  #group_by(Region, NUTS3, AgeGroup, vaccine) %>% 
+  #mutate(Vaccination1 = cumsum(first_dose), 
+        # Vaccination2 = cumsum(second_dose), 
+         #Vaccinations = cumsum(n_dose)) %>% 
+  #ungroup() %>% 
+  #select(Date, Region, NUTS3, AgeGroup, VaccineType = vaccine, 
+         #Vaccination1, Vaccination2, Vaccinations) %>% 
+  #pivot_longer(-c(Date, Region, NUTS3, AgeGroup, VaccineType), names_to = "Measure", values_to = "Value") %>% 
+  #mutate(AgeGroup = na_if(AgeGroup, "neza?azeno"), 
+         #Country = "Czechia") %>% 
+  #select(Country, Region, NUTS3, Date, AgeGroup, VaccineType, Measure, Value)
+
+
+# JD Adaption to database 
+
+cz_vaccines <- vaccines %>% 
+  mutate(Region = as.factor(NUTS3)) %>%  
+  rename(Age= AgeGroup)%>% 
+  tidyr::complete(nesting(Region), Date, Age, fill = list(first_dose = 0, 
+                                                          second_dose = 0, 
+                                                          n_dose = 0)) %>% 
+  arrange(Date, Region, Age) %>%
+  group_by(Region, Age) %>% 
+  mutate(Vaccination1 = cumsum(first_dose), 
+         Vaccination2 = cumsum(second_dose), 
+         Vaccinations = cumsum(n_dose)) %>% 
+  ungroup() %>% 
+  select(Date, Region, Age, 
+         Vaccination1, Vaccination2, Vaccinations) %>% 
+  pivot_longer(-c(Date, Region, Age), names_to = "Measure", values_to = "Value") %>% 
+  mutate(Age= case_when ( 
+                  Age ==  "0-17"~"0",
+                  Age ==  "18-24"~"18",
+                  Age ==  "25-29"~"25",
+                  Age ==  "30-34"~"30",
+                  Age ==  "35-39"~"35",
+                  Age ==  "40-44"~"40",
+                  Age ==  "45-49"~"45",
+                  Age ==  "50-54"~"50",
+                  Age ==  "55-59"~"55",
+                  Age ==  "60-64"~"60",
+                  Age ==  "65-69"~"65",
+                  Age ==  "70-74"~"70",
+                  Age ==  "75-79"~"75",
+                  Age ==  "80+"~"80",
+                  Age == "nezařazeno" ~ "UNK"))%>% # not sure if best way to rename nezařazeno to UNK, returns NA is this step
+  mutate(Age = case_when(
+    is.na(Age)~ "UNK",
+    TRUE~ as.character(Age))) %>%
+  mutate(AgeInt = case_when(
+    Age == "0" ~ 18L,
+    Age == "18" ~ 7L,
+    Age == "80" ~ 25L,
+    Age == "UNK" ~ NA_integer_,
+    TRUE ~ 5L))%>% 
+  mutate(
+    Country = "Czechia",
+    Sex= "b",
+    Date = ymd(Date),
+    Date = paste(sprintf("%02d",day(Date)),    
+                 sprintf("%02d",month(Date)),  
+                 year(Date),sep="."),
+    Code = paste("CZ", Region, Date, sep = "_"),
+    Metric= "Count") %>% 
+  select(Country, Region, Code, Date, Sex, 
+         Age, AgeInt, Metric, Measure, Value)
+
+
+
+#Anna Altova:
+# comments: As of today (15 Feb 2021) only selected population groups 
+# are allowed to get the vaccine. These are people over 80 y.o., medical 
+# professionals (with the priority of those working with the COVID-19+ patients etc), 
+# members of the army helping to handle the pandemic, members of the emergency services, 
+# other workers in the critical infrastructure for the pandemic.
+# Kids <18 should not be vaccinated (although there are some according to the data)
+
+
+#JD:
+#could not combine them because of different class types for Age 
+#Did not want to mess with numeric class types for case and death
+#Maybe upload/store vaccine cases/ death separately? 
+
 
 # final spreadsheet 
 
 cz_spreadsheet_region <-
   bind_rows(cz_cases_region_ss, 
-            cz_deaths_region_ss) %>% 
+            cz_deaths_region_ss,
+            cz_vaccines) %>% 
   left_join(NUTS3, by = c("Region" = "code")) %>% 
   select(Country, Region = name, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
   sort_input_data()
@@ -304,11 +435,14 @@ log_update(pp = ctr, N = nrow(out))
 
 data_source_c <- paste0(dir_n, "Data_sources/", ctr, "/deaths_",today(), ".csv")
 data_source_d <- paste0(dir_n, "Data_sources/", ctr, "/cases_",today(), ".csv")
+data_source_v <- paste0(dir_n, "Data_sources/", ctr, "/vaccine_",today(), ".csv")
 
 download.file(cases_url, destfile = data_source_c)
 download.file(deaths_url, destfile = data_source_d)
+download.file(vaccine_url, destfile = data_source_v)
 
-data_source <- c(data_source_c, data_source_d)
+
+data_source <- c(data_source_c, data_source_d,data_source_v )
 
 zipname <- paste0(dir_n, 
                   "Data_sources/", 
