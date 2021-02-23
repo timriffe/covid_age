@@ -31,10 +31,17 @@ date_max <-
   dmy() %>% 
   max()
 
-ME_data <- "https://gateway.maine.gov/dhhs-apps/mecdc_covid/Maine_COVID19_Summary.xlsx"
+#JD 22.02.2021: Changed reporting. Sheets are now separate Excel files
 
-ME_age <- rio::import(ME_data, sheet = "cases_by_age")
-ME_sex <- rio::import(ME_data, sheet = "cases_by_sex")
+#ME_data <- "https://gateway.maine.gov/dhhs-apps/mecdc_covid/Maine_COVID19_Summary.xlsx"
+#ME_age <- rio::import(ME_data, sheet = "cases_by_age")
+#ME_sex <- rio::import(ME_data, sheet = "cases_by_sex")
+
+ME_age_url <- "https://gateway.maine.gov/dhhs-apps/mecdc_covid/cases_by_age.csv"
+ME_age<- read_csv(ME_age_url)
+
+ME_sex_url <- "https://gateway.maine.gov/dhhs-apps/mecdc_covid/cases_by_sex.csv"
+ME_sex <- read_csv(ME_sex_url)
 
 Age <-
   ME_age %>% 
@@ -61,6 +68,7 @@ Age <-
          )
          ) %>% 
   select(Date, Sex, Age, AgeInt, Cases = CASES, Deaths = DEATHS)
+
 
 Sex <-
   ME_sex %>% 
