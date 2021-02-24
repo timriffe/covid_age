@@ -1,79 +1,81 @@
 
 # New build log 
- Tue Feb 23 01:00:11 2021 
+ Wed Feb 24 01:00:08 2021 
 
 
 # begin resolution of multiple sources per population 
- Tue Feb 23 01:00:11 2021 
+ Wed Feb 24 01:00:08 2021 
 
 
 # Resolve USA CDC overlaps 
- Tue Feb 23 01:00:56 2021 
+ Wed Feb 24 01:00:55 2021 
 
 USA CDC resolved
  1185 rows removed
 
 # Resolve Brazil TRC overlaps 
- Tue Feb 23 01:01:01 2021 
+ Wed Feb 24 01:01:00 2021 
 
 Brazil TRC resolved
- 2277 rows removed
+ 2706 rows removed
 
 # Resolve Italy Bollettino and Infografico 
- Tue Feb 23 01:01:05 2021 
+ Wed Feb 24 01:01:04 2021 
 
 Italy resolved
  229 rows removed
 
 # Resolve ECDC overlaps 
- Tue Feb 23 01:01:12 2021 
+ Wed Feb 24 01:01:12 2021 
 
 ECDC resolved
- 2862 rows removed
+ 2970 rows removed
 
 # prep (resolve_UNKUNK) 
- Tue Feb 23 01:02:21 2021 
+ Wed Feb 24 01:02:21 2021 
 
 
 # A (convert_fractions_sexes) 
- Tue Feb 23 01:06:55 2021 
+ Wed Feb 24 01:07:05 2021 
 
 
 # B (redistribute_unknown_age) 
- Tue Feb 23 01:09:57 2021 
+ Wed Feb 24 01:10:13 2021 
 
 
 # C (rescale_to_total) 
- Tue Feb 23 01:24:08 2021 
+ Wed Feb 24 01:24:59 2021 
 
 
 # D (infer_cases_from_deaths_and_ascfr) 
- Tue Feb 23 01:38:55 2021 
+ Wed Feb 24 01:40:18 2021 
 
 
 # E (infer_deaths_from_cases_and_ascfr) 
- Tue Feb 23 01:42:55 2021 
+ Wed Feb 24 01:44:28 2021 
 
 
 # G (redistribute_unknown_sex) 
- Tue Feb 23 01:46:55 2021 
+ Wed Feb 24 01:48:38 2021 
 
 
 # H (rescale_sexes) 
- Tue Feb 23 01:53:13 2021 
+ Wed Feb 24 01:55:12 2021 
 
 
 # I (infer_both_sex) 
- Tue Feb 23 01:54:53 2021 
+ Wed Feb 24 01:56:58 2021 
 
 
 # J (maybe_lower_closeout) 
- Tue Feb 23 01:59:27 2021 
+ Wed Feb 24 02:01:41 2021 
 
 filter( Code == 'CA_TNT15.07.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'CA_TNT15.07.2020', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'CA_TNT15.07.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'NZ15.01.2021', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'NZ22.02.2021', Sex == 'b', Measure == 'Tests' )
+filter( Code == 'NZ23.02.2021', Sex == 'b', Measure == 'Tests' )
 filter( Code == 'GB_SCO_21.01.2021', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'GB_SCO_21.01.2021', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'GB_SCO_21.01.2021', Sex == 'b', Measure == 'Cases' )
@@ -362,42 +364,60 @@ filter( Code == 'GB_SCO_21.02.2021', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'GB_SCO_21.02.2021', Sex == 'f', Measure == 'Tests' )
 filter( Code == 'GB_SCO_21.02.2021', Sex == 'm', Measure == 'Tests' )
 filter( Code == 'GB_SCO_21.02.2021', Sex == 'b', Measure == 'Tests' )
+filter( Code == 'GB_SCO_22.02.2021', Sex == 'f', Measure == 'Cases' )
+filter( Code == 'GB_SCO_22.02.2021', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'GB_SCO_22.02.2021', Sex == 'b', Measure == 'Cases' )
+filter( Code == 'GB_SCO_22.02.2021', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'GB_SCO_22.02.2021', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'GB_SCO_22.02.2021', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'GB_SCO_22.02.2021', Sex == 'f', Measure == 'Tests' )
+filter( Code == 'GB_SCO_22.02.2021', Sex == 'm', Measure == 'Tests' )
+filter( Code == 'GB_SCO_22.02.2021', Sex == 'b', Measure == 'Tests' )
+filter( Code == 'GB_SCO_23.02.2021', Sex == 'f', Measure == 'Cases' )
+filter( Code == 'GB_SCO_23.02.2021', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'GB_SCO_23.02.2021', Sex == 'b', Measure == 'Cases' )
+filter( Code == 'GB_SCO_23.02.2021', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'GB_SCO_23.02.2021', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'GB_SCO_23.02.2021', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'GB_SCO_23.02.2021', Sex == 'f', Measure == 'Tests' )
+filter( Code == 'GB_SCO_23.02.2021', Sex == 'm', Measure == 'Tests' )
+filter( Code == 'GB_SCO_23.02.2021', Sex == 'b', Measure == 'Tests' )
 filter( Code == 'US_TX10.09.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_TX11.09.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_TX13.09.2020', Sex == 'b', Measure == 'Cases' )
 
 # Age harmonization 
- Tue Feb 23 02:10:12 2021 
+ Wed Feb 24 02:12:42 2021 
 
 
 # Compile metadata 
- Tue Feb 23 04:46:44 2021 
+ Wed Feb 24 04:44:53 2021 
 
 
 # Building dashboards 
- Tue Feb 23 05:01:59 2021 
+ Wed Feb 24 04:59:09 2021 
 
 
 # remake coverage map 
- Tue Feb 23 05:10:55 2021 
+ Wed Feb 24 05:08:12 2021 
 
 
 # push outputs to OSF 
- Tue Feb 23 05:15:27 2021 
+ Wed Feb 24 05:12:54 2021 
 
 
 # remake coverage map 
- Tue Feb 23 07:25:45 2021 
+ Wed Feb 24 07:07:46 2021 
 
 
 # push outputs to OSF 
- Tue Feb 23 07:30:19 2021 
+ Wed Feb 24 07:12:18 2021 
 
 
 # Commit dashboards and buildlog 
- Tue Feb 23 07:33:16 2021 
+ Wed Feb 24 07:15:11 2021 
 
 
 # update build series log 
- Tue Feb 23 07:33:23 2021 
+ Wed Feb 24 07:15:18 2021 
 
