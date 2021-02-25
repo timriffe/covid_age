@@ -1,5 +1,26 @@
 
-source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
+library(here)
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
+
+# assigning Drive credentials in the case the script is verified manually  
+if (!"email" %in% ls()){
+  email <- "tim.riffe@gmail.com"
+}
+
+
+# info country and N drive address
+
+ctr          <- "Hungary" # it's a placeholder
+dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
+
+
+
+# Drive credentials
+drive_auth(email = email)
+gs4_auth(email = email)
+
+
+#Downloading deaths from the website 
 
 pg <- xml2::read_html("https://koronavirus.gov.hu/elhunytak")
 
@@ -8,13 +29,12 @@ lastpg <- strsplit(rvest::html_attr(rvest::html_node(pg, xpath = "//li[@class='p
 res <- do.call(rbind, lapply(0:lastpg, function(i)
   rvest::html_table(xml2::read_html(paste0("https://koronavirus.gov.hu/elhunytak?page=", i)))[[1]]))
 
+
 names(res) <- c("ID", "Sex", "Age", "Comorbidities")
 
 unique(res$Sex)
 res$Sex <- ifelse(res$Sex%in%c("férfi", "Férfi"), "m", "f")
 
-
-saveRDS(res, paste0("Data/HU/HU_",lubridate::today(),".rds"))
 
 # Get time series for Hungary.
 library(tidyverse)
@@ -46,6 +66,7 @@ ages_all  <- 0:104
 # we expect this many rows:
 length(dates_all) *length(ages_all) * 2 
 
+
 out <-
   res %>% 
   select(-Comorbidities) %>% 
@@ -58,6 +79,10 @@ out <-
   mutate(Age = ifelse(Age > 104,104,Age)) %>% 
   group_by(date,Sex, Age) %>% 
   summarize(Value = n(), .groups = "drop") %>% 
+  arrange(Sex, Age, date) %>% 
+  group_by(Sex, Age) %>% 
+  mutate(Value = cumsum(Value)) %>% 
+  ungroup() %>%
   tidyr::complete(date = dates_all, Sex, Age = ages_all, fill = list(Value = 0)) %>% 
   mutate(Measure = "Deaths",
          Metric = "Count",
@@ -70,5 +95,34 @@ out <-
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
 
 
+#save output data
 
-  
+write_rds(out, paste0(dir_n, ctr, ".rds"))
+
+log_update(pp = ctr, N = nrow(out)) ###Is that for the automation sheet? 
+
+#archive input data 
+
+data_source <- paste0(dir_n, "Data_sources/", ctr, "/death_age_",today(), ".csv")
+
+write_csv(res, data_source)
+
+
+zipname <- paste0(dir_n, 
+                  "Data_sources/", 
+                  ctr,
+                  "/", 
+                  ctr,
+                  "_data_",
+                  today(), 
+                  ".zip")
+
+zip::zipr(zipname, 
+          data_source, 
+          recurse = TRUE, 
+          compression_level = 9,
+          include_directories = TRUE)
+
+file.remove(data_source)
+
+
