@@ -4,6 +4,13 @@ library("taskscheduleR")
 library(here)
 source(here("Automation/00_Functions_automation.R"))
 
+# commands in the git terminal to update each fork:
+# first coinfigure the upstream (only once):
+# git remote add upstream https://github.com/timriffe/covid_age.git
+# then, each time for updates: 
+# git pull upstream master
+
+
 # TR: modifying this script to assume we're working inside the repository, and 
 # are relative to it. This first part detects who is scheduling (diego, 
 # emanuele, jorge, ugo, marilia, jessica, tim, enrique, etc.)
