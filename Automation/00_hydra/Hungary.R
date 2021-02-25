@@ -24,20 +24,21 @@ gs4_auth(email = email)
 
 pg <- xml2::read_html("https://koronavirus.gov.hu/elhunytak")
 
+# How many pages do we have?
 lastpg <- strsplit(rvest::html_attr(rvest::html_node(pg, xpath = "//li[@class='pager-last']/a"), "href"), "=")[[1]][2]
 
+# iterate over pages, rbind individual results
 res <- do.call(rbind, lapply(0:lastpg, function(i)
   rvest::html_table(xml2::read_html(paste0("https://koronavirus.gov.hu/elhunytak?page=", i)))[[1]]))
 
 
 names(res) <- c("ID", "Sex", "Age", "Comorbidities")
 
-unique(res$Sex)
+# unique(res$Sex)
 res$Sex <- ifelse(res$Sex%in%c("férfi", "Férfi"), "m", "f")
 
 
 # Get time series for Hungary.
-library(tidyverse)
 
 OWD <- read_csv("https://covid.ourworldindata.org/data/owid-covid-data.csv") %>% 
   filter(location == "Hungary") %>% 
@@ -64,7 +65,7 @@ dates_all <- seq(min(Dates$date),max(Dates$date),by="days")
 ages_all  <- 0:104
 
 # we expect this many rows:
-length(dates_all) *length(ages_all) * 2 
+#length(dates_all) *length(ages_all) * 2 
 
 
 out <-
@@ -99,7 +100,7 @@ out <-
 
 write_rds(out, paste0(dir_n, ctr, ".rds"))
 
-log_update(pp = ctr, N = nrow(out)) ###Is that for the automation sheet? 
+log_update(pp = ctr, N = nrow(out)) ###Is that for the automation sheet?TR: Yes
 
 #archive input data 
 
