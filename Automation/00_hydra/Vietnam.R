@@ -1,5 +1,21 @@
 
+
 source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
+
+# assigning Drive credentials in the case the script is verified manually  
+if (!"email" %in% ls()){
+  email <- "tim.riffe@gmail.com"
+}
+
+# info country and N drive address
+ctr          <- "Vietnam" # it's a placeholder
+dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
+
+
+# Drive credentials
+drive_auth(email = email)
+gs4_auth(email = email)
+
 
 if (system("whoami",intern=TRUE) == "tim"){
   capture_path <- "Data"
@@ -26,6 +42,7 @@ thisVT <- VTcaptured[whichVT]
 # Read in the microdata
 IN <- readxl::read_xlsx(file.path(capture_path, thisVT))
 
+
 colnames(IN) <- c("x","CaseID","Age","Place","Status","Nationality")
 
 # Extract IDs from cases: 
@@ -41,6 +58,7 @@ Cases <-
 # Now we infer dates from the ordered cases and time series of new cases
 dates_cases_infer <- rep(OWD$date, times = OWD$new_cases)
 Dates_cases <- tibble(ID_new = 1:length(dates_cases_infer), date = dates_cases_infer)
+
 
 # join dates to Cases, tabulate 
 Cases2 <-
@@ -147,6 +165,33 @@ Deaths_out <-
 # I think this is ready to go
 out <- bind_rows(Deaths_out, Cases_out)
 
+#save output data
+
+write_rds(out, paste0(dir_n, ctr, ".rds"))
+
+log_update(pp = ctr, N = nrow(out)) ###Is that for the automation sheet? 
+
+#archive input data 
+
+data_source <- paste0(dir_n, "Data_sources/", ctr, "/cases_deaths_age_",today(), ".csv")
 
 
+write_csv(IN, data_source)
+
+zipname <- paste0(dir_n, 
+                  "Data_sources/", 
+                  ctr,
+                  "/", 
+                  ctr,
+                  "_data_",
+                  today(), 
+                  ".zip")
+
+zip::zipr(zipname, 
+          data_source, 
+          recurse = TRUE, 
+          compression_level = 9,
+          include_directories = TRUE)
+
+file.remove(data_source)
 
