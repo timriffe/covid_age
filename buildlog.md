@@ -1,79 +1,81 @@
 
 # New build log 
- Mon Feb 22 01:00:10 2021 
+ Thu Feb 25 01:00:10 2021 
 
 
 # begin resolution of multiple sources per population 
- Mon Feb 22 01:00:10 2021 
+ Thu Feb 25 01:00:10 2021 
 
 
 # Resolve USA CDC overlaps 
- Mon Feb 22 01:00:58 2021 
+ Thu Feb 25 01:00:57 2021 
 
 USA CDC resolved
  1185 rows removed
 
 # Resolve Brazil TRC overlaps 
- Mon Feb 22 01:01:04 2021 
+ Thu Feb 25 01:01:02 2021 
 
 Brazil TRC resolved
- 2013 rows removed
+ 2706 rows removed
 
 # Resolve Italy Bollettino and Infografico 
- Mon Feb 22 01:01:08 2021 
+ Thu Feb 25 01:01:06 2021 
 
 Italy resolved
  229 rows removed
 
 # Resolve ECDC overlaps 
- Mon Feb 22 01:01:16 2021 
+ Thu Feb 25 01:01:15 2021 
 
 ECDC resolved
- 2862 rows removed
+ 2970 rows removed
 
 # prep (resolve_UNKUNK) 
- Mon Feb 22 01:02:29 2021 
+ Thu Feb 25 01:02:24 2021 
 
 
 # A (convert_fractions_sexes) 
- Mon Feb 22 01:07:36 2021 
+ Thu Feb 25 01:07:13 2021 
 
 
 # B (redistribute_unknown_age) 
- Mon Feb 22 01:10:59 2021 
+ Thu Feb 25 01:10:25 2021 
 
 
 # C (rescale_to_total) 
- Mon Feb 22 01:27:08 2021 
+ Thu Feb 25 01:25:38 2021 
 
 
 # D (infer_cases_from_deaths_and_ascfr) 
- Mon Feb 22 01:43:38 2021 
+ Thu Feb 25 01:41:24 2021 
 
 
 # E (infer_deaths_from_cases_and_ascfr) 
- Mon Feb 22 01:48:02 2021 
+ Thu Feb 25 01:45:38 2021 
 
 
 # G (redistribute_unknown_sex) 
- Mon Feb 22 01:52:28 2021 
+ Thu Feb 25 01:49:53 2021 
 
 
 # H (rescale_sexes) 
- Mon Feb 22 01:59:36 2021 
+ Thu Feb 25 01:56:33 2021 
 
 
 # I (infer_both_sex) 
- Mon Feb 22 02:01:28 2021 
+ Thu Feb 25 01:58:20 2021 
 
 
 # J (maybe_lower_closeout) 
- Mon Feb 22 02:06:38 2021 
+ Thu Feb 25 02:03:11 2021 
 
 filter( Code == 'CA_TNT15.07.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'CA_TNT15.07.2020', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'CA_TNT15.07.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'NZ15.01.2021', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'NZ22.02.2021', Sex == 'b', Measure == 'Tests' )
+filter( Code == 'NZ23.02.2021', Sex == 'b', Measure == 'Tests' )
 filter( Code == 'GB_SCO_21.01.2021', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'GB_SCO_21.01.2021', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'GB_SCO_21.01.2021', Sex == 'b', Measure == 'Cases' )
@@ -353,10 +355,78 @@ filter( Code == 'GB_SCO_20.02.2021', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'GB_SCO_20.02.2021', Sex == 'f', Measure == 'Tests' )
 filter( Code == 'GB_SCO_20.02.2021', Sex == 'm', Measure == 'Tests' )
 filter( Code == 'GB_SCO_20.02.2021', Sex == 'b', Measure == 'Tests' )
+filter( Code == 'GB_SCO_21.02.2021', Sex == 'f', Measure == 'Cases' )
+filter( Code == 'GB_SCO_21.02.2021', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'GB_SCO_21.02.2021', Sex == 'b', Measure == 'Cases' )
+filter( Code == 'GB_SCO_21.02.2021', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'GB_SCO_21.02.2021', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'GB_SCO_21.02.2021', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'GB_SCO_21.02.2021', Sex == 'f', Measure == 'Tests' )
+filter( Code == 'GB_SCO_21.02.2021', Sex == 'm', Measure == 'Tests' )
+filter( Code == 'GB_SCO_21.02.2021', Sex == 'b', Measure == 'Tests' )
+filter( Code == 'GB_SCO_22.02.2021', Sex == 'f', Measure == 'Cases' )
+filter( Code == 'GB_SCO_22.02.2021', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'GB_SCO_22.02.2021', Sex == 'b', Measure == 'Cases' )
+filter( Code == 'GB_SCO_22.02.2021', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'GB_SCO_22.02.2021', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'GB_SCO_22.02.2021', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'GB_SCO_22.02.2021', Sex == 'f', Measure == 'Tests' )
+filter( Code == 'GB_SCO_22.02.2021', Sex == 'm', Measure == 'Tests' )
+filter( Code == 'GB_SCO_22.02.2021', Sex == 'b', Measure == 'Tests' )
+filter( Code == 'GB_SCO_23.02.2021', Sex == 'f', Measure == 'Cases' )
+filter( Code == 'GB_SCO_23.02.2021', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'GB_SCO_23.02.2021', Sex == 'b', Measure == 'Cases' )
+filter( Code == 'GB_SCO_23.02.2021', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'GB_SCO_23.02.2021', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'GB_SCO_23.02.2021', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'GB_SCO_23.02.2021', Sex == 'f', Measure == 'Tests' )
+filter( Code == 'GB_SCO_23.02.2021', Sex == 'm', Measure == 'Tests' )
+filter( Code == 'GB_SCO_23.02.2021', Sex == 'b', Measure == 'Tests' )
+filter( Code == 'GB_SCO_24.02.2021', Sex == 'f', Measure == 'Cases' )
+filter( Code == 'GB_SCO_24.02.2021', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'GB_SCO_24.02.2021', Sex == 'b', Measure == 'Cases' )
+filter( Code == 'GB_SCO_24.02.2021', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'GB_SCO_24.02.2021', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'GB_SCO_24.02.2021', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'GB_SCO_24.02.2021', Sex == 'f', Measure == 'Tests' )
+filter( Code == 'GB_SCO_24.02.2021', Sex == 'm', Measure == 'Tests' )
+filter( Code == 'GB_SCO_24.02.2021', Sex == 'b', Measure == 'Tests' )
 filter( Code == 'US_TX10.09.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_TX11.09.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_TX13.09.2020', Sex == 'b', Measure == 'Cases' )
 
 # Age harmonization 
- Mon Feb 22 02:18:22 2021 
+ Thu Feb 25 02:14:20 2021 
+
+
+# Compile metadata 
+ Thu Feb 25 04:50:02 2021 
+
+
+# Building dashboards 
+ Thu Feb 25 05:04:43 2021 
+
+
+# remake coverage map 
+ Thu Feb 25 05:14:53 2021 
+
+
+# push outputs to OSF 
+ Thu Feb 25 05:19:25 2021 
+
+
+# remake coverage map 
+ Thu Feb 25 07:13:39 2021 
+
+
+# push outputs to OSF 
+ Thu Feb 25 07:18:09 2021 
+
+
+# Commit dashboards and buildlog 
+ Thu Feb 25 07:20:47 2021 
+
+
+# update build series log 
+ Thu Feb 25 07:20:54 2021 
 
