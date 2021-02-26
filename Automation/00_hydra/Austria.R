@@ -70,7 +70,7 @@ if (date_f > last_date_drive){
   #### updating Google Drive ####
   ###############################
   # This command append new rows at the end of the sheet
-  sheet_append(age2,
+  sheet_append(db_age2,
                ss = ss_i,
                sheet = "database")
   
