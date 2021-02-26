@@ -14,6 +14,17 @@ dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 drive_auth(email = email)
 gs4_auth(email = email)
 
+# links to spreadsheet in Drive
+rubric_i <- get_input_rubric() %>% filter(Short == "IT")
+ss_i     <- rubric_i %>% dplyr::pull(Sheet)
+
+db_drive <- get_country_inputDB("IT")
+
+last_date_drive <- db_drive %>% 
+  mutate(date_f = dmy(Date)) %>% 
+  dplyr::pull(date_f) %>% 
+  max()
+
 
 # loading Excel file from the website 
 # "https://www.epicentro.iss.it/coronavirus/sars-cov-2-sorveglianza-dati"
@@ -21,193 +32,162 @@ data_source <- paste0(dir_n, "Data_sources/", ctr, "/", ctr, "_data_", today(), 
 link <- "https://www.epicentro.iss.it/coronavirus/open-data/covid_19-iss.xlsx"
 download.file(link, data_source, mode = "wb")
 
-db_age <- read_csv2(unz(data_source, "CovidFaelle_Altersgruppe.csv"))
-meta <- read_csv2(unz(data_source, "Version.csv"))
-date_f <- meta %>% separate(CreationDate, c("date_f", "trash"), " ") %>% dplyr::pull(date_f) %>% dmy
+db_age <- read_xlsx(data_source, sheet = "sesso_eta")
+# db_tot <- read_xlsx(data_source, sheet = "casi_regioni")
 
-db <- read_csv(cases_url,
-               locale = locale(encoding = "UTF-8"))
+date_f <- db_age %>% dplyr::pull(iss_date) %>% unique() %>% dmy
 
-unique(db$Geschlecht)
-unique(db$Bundesland)
+if (date_f > last_date_drive){
+  
+  db_age2 <- db_age %>% 
+    rename(Sex = 2,
+           Age = 3,
+           Deaths = 4, 
+           Cases = 5) %>% 
+    mutate(Sex = recode(Sex,
+                        "M" = "m",
+                        "F" = "f",
+                        "Non noto" = "UNK"),
+           Age = str_sub(Age, 1, 2),
+           Age = recode(Age,
+                        "0-" = "0",
+                        ">9" = "90",
+                        "No" = "UNK"),
+           Cases = recode(Cases,
+                          "<5" = "2"),
+           Deaths = recode(Deaths,
+                          "<5" = "2")) %>% 
+    gather(Cases, Deaths, key = Measure, value = Value) %>% 
+    mutate(Value = as.integer(Value)) %>% 
+    select(-iss_date)
 
-db2 <- db %>% 
-  mutate(Sex = case_when(Geschlecht == "M" ~ "m",
-                         Geschlecht == "W" ~ "f",
-                         Geschlecht == "unbekannt" ~ "UNK"),
-         Age = case_when(Altersgruppe == "A00-A04" ~ "0",
-                         Altersgruppe == "A05-A14" ~ "5",
-                         Altersgruppe == "A15-A34" ~ "15",
-                         Altersgruppe == "A35-A59" ~ "35",
-                         Altersgruppe == "A60-A79" ~ "60",
-                         Altersgruppe == "A80+" ~ "80",
-                         Altersgruppe == "unbekannt" ~ "UNK"),
-         date_f = ymd(str_sub(Meldedatum, 1, 10)),
-         Cases = ifelse(AnzahlFall < 0, 0, AnzahlFall),
-         Deaths = ifelse(AnzahlTodesfall < 0, 0, AnzahlTodesfall),
-         Region = Bundesland) %>% 
-  select(date_f, Sex, Age, Cases, Deaths, Region) %>% 
-  pivot_longer(Cases:Deaths, names_to = "Measure", values_to ="Value") %>% 
-  group_by(Region, Sex, Measure, date_f, Age) %>% 
-  summarize(Value = sum(Value)) %>% 
+  
+
+  db_sex_t <- db_age2 %>% 
+    group_by(Age, Measure) %>% 
+    summarize(Value = sum(Value)) %>% 
+    ungroup() %>% 
+    mutate(Sex = "b")
+  
+  db_tot <- db_sex_t %>% 
+    group_by(Measure, Sex) %>% 
+    summarize(Value = sum(Value)) %>% 
+    ungroup() %>% 
+    mutate(Age = "TOT")
+  
+  db_age_t <- db_age2 %>% 
+    group_by(Sex, Measure) %>% 
+    summarize(Value = sum(Value)) %>% 
+    ungroup() %>% 
+    mutate(Age = "TOT")
+  
+  out_drive <- bind_rows(db_age2, db_sex_t, db_tot, db_age_t) %>% 
+    filter(!(Age == "UNK" | Sex == "UNK")) %>% 
+    mutate(Country = "Italy",
+           Region = "All",
+           Date = ddmmyyyy(date_f),
+           Code = paste0("IT", Date),
+           AgeInt = case_when(Age == "90" ~ 15,
+                              TRUE ~ 10),
+           Metric = "Count") %>% 
+    sort_input_data()
+    
+  ############################################
+  #### uploading database to Google Drive ####
+  ############################################
+  
+  # This command append new rows at the end of the sheet
+  sheet_append(out_drive,
+               ss = ss_i,
+               sheet = "database")
+
+} 
+
+# Vaccination data
+
+vacc <- read_csv("https://raw.githubusercontent.com/italia/covid19-opendata-vaccini/master/dati/somministrazioni-vaccini-latest.csv")
+# write_rds(vacc, "")
+
+vacc2 <- vacc %>% 
+  rename(Date = 1,
+         Age = 4, 
+         Vaccines1 = prima_dose,
+         Vaccines2 = seconda_dose) %>% 
+  select(Date, Age, Vaccines1, Vaccines2) %>% 
+  gather(Vaccines1, Vaccines2, key = "Measure", value = new) %>% 
+  mutate(Age = as.integer(str_sub(Age, 1, 2))) %>% 
+  group_by(Date, Measure, Age) %>% 
+  summarise(new = sum(new)) %>% 
   ungroup()
+ages <- c(0, unique(vacc2$Age)) %>% sort()
 
-
-unique(db2$Region)
-# unique(db2$date_f)
-
-ages    <- unique(db2$Age)
-sexes   <- unique(db2$Sex)
-regions <- unique(db2$Region)
-date_range <- range(db2$date_f)
-
-# we can expand on days too
-dates   <- seq(date_range[1], date_range[2], by="days")
-
-# TR: This replaces a big manual loop
-db_all <- db2 %>% 
-  group_by(Region, Measure) %>% 
-  expand(Sex = sexes, Age = ages, date_f = dates) %>% 
-  left_join(., db2) %>% 
-  replace_na(list(Value = 0)) %>% 
+vacc3 <- vacc2 %>% 
+  tidyr::complete(Measure, Age = ages, Date, fill = list(new = 0))  %>% 
+  group_by(Measure) %>% 
+  mutate(Value = cumsum(new)) %>% 
+  arrange(Date, Measure, Age) %>% 
   ungroup() %>% 
-  arrange(Region, Sex, Measure, Age, date_f) %>% 
-  group_by(Region, Sex, Measure, Age) %>% 
-  mutate(Value = cumsum(Value)) %>% 
-  ungroup() 
-
-# Regions acronyms from https://en.wikipedia.org/wiki/ISO_3166-2:DE
-db_region <- db_all %>% 
-  mutate(Country = "Germany",
-         Code1 = case_when(Region == 'Baden-Württemberg' ~ 'DE_BW_',
-                           Region == 'Bayern' ~ 'DE_BY_',
-                           Region == 'Berlin' ~ 'DE_BE_',
-                           Region == 'Brandenburg' ~ 'DE_BB_',
-                           Region == 'Bremen' ~ 'DE_HB_',
-                           Region == 'Hamburg' ~ 'DE_HH_',
-                           Region == 'Hessen' ~ 'DE_HE_',
-                           Region == 'Mecklenburg-Vorpommern' ~ 'DE_MV_',
-                           Region == 'Niedersachsen' ~ 'DE_NI_',
-                           Region == 'Nordrhein-Westfalen' ~ 'DE_NW_',
-                           Region == 'Rheinland-Pfalz' ~ 'DE_RP_',
-                           Region == 'Saarland' ~ 'DE_SL_',
-                           Region == 'Sachsen' ~ 'DE_SN_',
-                           Region == 'Sachsen-Anhalt' ~ 'DE_ST_',
-                           Region == 'Schleswig-Holstein' ~ 'DE_SH_',
-                           Region == 'Thüringen' ~ 'DE_TH_',
-                           TRUE ~ "other"),
-         Date = paste(sprintf("%02d", day(date_f)),
-                      sprintf("%02d", month(date_f)),
-                      year(date_f), sep = "."),
-         Code = paste0(Code1, Date),
-         AgeInt = case_when(Age == "0" ~ 5,
-                            Age == "5" ~ 10,
-                            Age == "15" ~ 20,
-                            Age == "35" ~ 25,
-                            Age == "60" ~ 20,
-                            Age == "80" ~ 25,
-                            Age == "UNK" ~ NA_real_),
-         Metric = "Count") %>% 
-  arrange(Region, date_f, Measure, Sex, suppressWarnings(as.integer(Age))) %>% 
-  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
-
-unique(db_all$date_f)
-# codes for regions
-db_region %>% 
-  mutate(short = str_sub(Code, 1, 6)) %>% 
-  select(short) %>% 
-  unique()
-
-db_germany <- db_all %>% 
-  mutate(Value = replace_na(Value, 0)) %>% 
-  group_by(date_f, Measure, Sex, Age) %>% 
-  summarise(Value = sum(Value)) %>% 
-  ungroup() %>% 
-  mutate(Country = "Germany",
-         Region = "All",
-         Date = paste(sprintf("%02d", day(date_f)),
-                      sprintf("%02d", month(date_f)),
-                      year(date_f), sep = "."),
-         Code = paste0("DE_", Date),
-         AgeInt = case_when(Age == "0" ~ 5,
-                            Age == "5" ~ 10,
-                            Age == "15" ~ 20,
-                            Age == "35" ~ 25,
-                            Age == "60" ~ 20,
-                            Age == "80" ~ 25,
-                            Age == "UNK" ~ NA_real_),
-         Metric = "Count") %>% 
-  arrange(Region, date_f, Measure, Sex, suppressWarnings(as.integer(Age))) %>% 
-  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
-
-
-db_full <- bind_rows(db_germany, db_region) 
-
-# Remove days where cumulative sum is 0.
-out <-
-  db_full %>% 
-  group_by(Region, Measure, date_f = dmy(Date)) %>% 
-  mutate(N = sum(Value)) %>% 
-  filter(N > 0) %>% 
-  filter(!(Sex == "UNK" & Value == 0),
-         !(Age == "UNK" & Value == 0)) %>% 
-  ungroup() %>% 
-  select(-date_f, -N) %>% 
+  mutate(Country = "Italy",
+       Region = "All",
+       Date = ddmmyyyy(Date),
+       Code = paste0("IT", Date),
+       Sex = "b",
+       Age = as.character(Age),
+       AgeInt = case_when(Age == "90" ~ 15,
+                          Age == "0" ~ 16,
+                          Age == "16" ~ 4,
+                          TRUE ~ 10),
+       Metric = "Count") %>% 
   sort_input_data()
 
-############################################
-#### comparison with reported aggregate data
-############################################
+out <- 
+  bind_rows(out_drive, 
+            vacc3,
+            db_drive %>% select(-Short)) %>% 
+  sort_input_data()
 
-# comparison with aggregate data reported online in 
-# https://www.rki.de/DE/Content/InfAZ/N/Neuartiges_Coronavirus/Fallzahlen.html
-
-last_date <- out %>% 
-  mutate(date_f = dmy(Date)) %>% 
-  group_by() %>% 
-  summarise(date_f = max(date_f)) %>% 
-  mutate(Date = paste(sprintf("%02d", day(date_f)),
-                      sprintf("%02d", month(date_f)),
-                      year(date_f), sep = "."))
-
-out %>% 
-  filter(Date == last_date$Date) %>% 
-  group_by(Region, Measure) %>% 
-  summarize(N = sum(Value)) %>% 
-  select(Region, Measure, N) %>% 
-  pivot_wider(names_from = Measure, values_from = N)
-
-
-############################################
-#### uploading database to Google Drive ####
-############################################
+nrow(out_drive)
+nrow(vacc3)
 write_rds(out, paste0(dir_n, ctr, ".rds"))
+log_update(pp = ctr, N = nrow(out_drive) + nrow(vacc3))
 
-log_update(pp = ctr, N = nrow(out))
+# Italy adjustment of Bolletino and Infographic sources in one sheet
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# (Only Once!!!!)
 
-############################################
-#### uploading metadata to Google Drive ####
-############################################
+# db_bol <- get_country_inputDB("ITbol")
+# db_inf <- get_country_inputDB("ITinfo")
+# 
+# db_inf2 <- db_inf %>% 
+#   filter(Measure != "ASCFR") %>% 
+#   mutate(Date = dmy(Date))
+# 
+# info_dates <- db_inf2 %>% 
+#   select(Date) %>% 
+#   dplyr::pull()
+# 
+# clean_bol <- db_bol %>% 
+#   mutate(Date = dmy(Date)) %>% 
+#   filter(!(Measure == "Deaths" & Sex == "b" & Date %in% info_dates)) %>% 
+#   arrange(Date, Measure, Sex, Age)
+# 
+# out <- bind_rows(db_inf2, 
+#                  clean_bol) %>% 
+#   arrange(Date, Measure, Sex, Age) %>% 
+#   mutate(Date = ddmmyyyy(Date),
+#          Code = paste0("IT", Date)) %>% 
+#   select(-Short)
+# 
+# test <- 
+# out %>% 
+#   filter(Age == 0) %>% 
+#   group_by(Date, Measure, Sex) %>% 
+#   summarise(n())
+# 
+# sheet_append(out,
+#              ss = ss_i,
+#              sheet = "database")
 
-data_source <- paste0(dir_n, "Data_sources/", ctr, "/cases&deaths_",today(), ".csv")
 
-download.file(cases_url, destfile = data_source)
 
-zipname <- paste0(dir_n, 
-                  "Data_sources/", 
-                  ctr,
-                  "/", 
-                  ctr,
-                  "_data_",
-                  today(), 
-                  ".zip")
-
-zipr(zipname, 
-     data_source, 
-     recurse = TRUE, 
-     compression_level = 9,
-     include_directories = TRUE)
-
-# clean up file chaff
-file.remove(data_source)
 
