@@ -1,68 +1,68 @@
 
 # New build log 
- Sat Feb 27 01:00:10 2021 
+ Sun Feb 28 01:00:09 2021 
 
 
 # begin resolution of multiple sources per population 
- Sat Feb 27 01:00:10 2021 
+ Sun Feb 28 01:00:09 2021 
 
 
 # Resolve USA CDC overlaps 
- Sat Feb 27 01:00:58 2021 
+ Sun Feb 28 01:00:57 2021 
 
 USA CDC resolved
  1185 rows removed
 
 # Resolve Brazil TRC overlaps 
- Sat Feb 27 01:01:03 2021 
+ Sun Feb 28 01:01:02 2021 
 
 Brazil TRC resolved
  2706 rows removed
 
 # Resolve ECDC overlaps 
- Sat Feb 27 01:01:07 2021 
+ Sun Feb 28 01:01:06 2021 
 
 ECDC resolved
  2988 rows removed
 
 # prep (resolve_UNKUNK) 
- Sat Feb 27 01:02:19 2021 
+ Sun Feb 28 01:02:17 2021 
 
 
 # A (convert_fractions_sexes) 
- Sat Feb 27 01:07:08 2021 
+ Sun Feb 28 01:07:04 2021 
 
 
 # B (redistribute_unknown_age) 
- Sat Feb 27 01:10:21 2021 
+ Sun Feb 28 01:10:12 2021 
 
 
 # C (rescale_to_total) 
- Sat Feb 27 01:25:41 2021 
+ Sun Feb 28 01:25:18 2021 
 
 
 # D (infer_cases_from_deaths_and_ascfr) 
- Sat Feb 27 01:41:34 2021 
+ Sun Feb 28 01:41:10 2021 
 
 
 # E (infer_deaths_from_cases_and_ascfr) 
- Sat Feb 27 01:45:50 2021 
+ Sun Feb 28 01:45:23 2021 
 
 
 # G (redistribute_unknown_sex) 
- Sat Feb 27 01:50:08 2021 
+ Sun Feb 28 01:49:36 2021 
 
 
 # H (rescale_sexes) 
- Sat Feb 27 01:56:52 2021 
+ Sun Feb 28 01:56:15 2021 
 
 
 # I (infer_both_sex) 
- Sat Feb 27 01:58:40 2021 
+ Sun Feb 28 01:58:00 2021 
 
 
 # J (maybe_lower_closeout) 
- Sat Feb 27 02:03:32 2021 
+ Sun Feb 28 02:02:49 2021 
 
 filter( Code == 'CA_TNT15.07.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'CA_TNT15.07.2020', Sex == 'm', Measure == 'Cases' )
@@ -388,9 +388,9 @@ filter( Code == 'GB_SCO_24.02.2021', Sex == 'b', Measure == 'Tests' )
 filter( Code == 'GB_SCO_25.02.2021', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'GB_SCO_25.02.2021', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'GB_SCO_25.02.2021', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'GB_SCO_25.02.2021', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'GB_SCO_25.02.2021', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'GB_SCO_25.02.2021', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'GB_SCO_25.02.2021', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'GB_SCO_25.02.2021', Sex == 'f', Measure == 'Tests' )
 filter( Code == 'GB_SCO_25.02.2021', Sex == 'm', Measure == 'Tests' )
 filter( Code == 'GB_SCO_25.02.2021', Sex == 'b', Measure == 'Tests' )
@@ -403,42 +403,19 @@ filter( Code == 'GB_SCO_26.02.2021', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'GB_SCO_26.02.2021', Sex == 'f', Measure == 'Tests' )
 filter( Code == 'GB_SCO_26.02.2021', Sex == 'm', Measure == 'Tests' )
 filter( Code == 'GB_SCO_26.02.2021', Sex == 'b', Measure == 'Tests' )
+filter( Code == 'GB_SCO_27.02.2021', Sex == 'f', Measure == 'Cases' )
+filter( Code == 'GB_SCO_27.02.2021', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'GB_SCO_27.02.2021', Sex == 'b', Measure == 'Cases' )
+filter( Code == 'GB_SCO_27.02.2021', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'GB_SCO_27.02.2021', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'GB_SCO_27.02.2021', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'GB_SCO_27.02.2021', Sex == 'f', Measure == 'Tests' )
+filter( Code == 'GB_SCO_27.02.2021', Sex == 'm', Measure == 'Tests' )
+filter( Code == 'GB_SCO_27.02.2021', Sex == 'b', Measure == 'Tests' )
 filter( Code == 'US_TX10.09.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_TX11.09.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_TX13.09.2020', Sex == 'b', Measure == 'Cases' )
 
 # Age harmonization 
- Sat Feb 27 02:14:44 2021 
-
-
-# Compile metadata 
- Sat Feb 27 04:49:22 2021 
-
-
-# Building dashboards 
- Sat Feb 27 05:05:19 2021 
-
-
-# remake coverage map 
- Sat Feb 27 05:14:20 2021 
-
-
-# push outputs to OSF 
- Sat Feb 27 05:18:59 2021 
-
-
-# remake coverage map 
- Sat Feb 27 09:25:32 2021 
-
-
-# push outputs to OSF 
- Sat Feb 27 09:33:23 2021 
-
-
-# Commit dashboards and buildlog 
- Sat Feb 27 09:36:10 2021 
-
-
-# update build series log 
- Sat Feb 27 09:36:18 2021 
+ Sun Feb 28 02:13:51 2021 
 
