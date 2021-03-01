@@ -144,48 +144,48 @@ cat("Brazil TRC resolved\n",n1-n2,"rows removed\n", file = logfile, append = TRU
 # -------------------------------------- #
 # daily. 
 # rule: discard 'info' for days in which they overlap
-log_section("Resolve Italy Bollettino and Infografico", logfile = logfile)
-
-IT <- idb %>% 
-  filter(Country == "Italy",
-         (grepl(Code, pattern = "info") | grepl(Code, pattern = "bol")))
-n1 <- nrow(IT)
-idb <- 
-  idb %>% 
-  filter(!(
-    Country == "Italy" & (grepl(Code, pattern = "bol") | grepl(Code, pattern = "info"))
-  ))
-
-# Bolettino id variable
-IT <- 
-  IT %>% 
-  mutate(isBOL = grepl(Code, pattern = "bol"))
-
-# overlap variable
-IT <-
-  IT %>% 
-  group_by(Date) %>% 
-  mutate(overlap = any(isBOL) & any(!isBOL)) %>% 
-  ungroup()
-
-# remove overlapy & !isBOL
-ITout <- 
-  IT %>% 
-  filter(overlap & !isBOL)
-
-IT <-
-  IT %>% 
-  filter(!(overlap & !isBOL)) %>% 
-  select(-isBOL, -overlap) %>% 
-  # rewrite Code
-  mutate(Code = paste0("IT",Date)) 
-n2 <- nrow(IT)
-# append
-idb <-
-  idb %>% 
-  bind_rows(IT)
-cat("Italy resolved\n",n1-n2,"rows removed\n", file = logfile, append = TRUE)
-
+# log_section("Resolve Italy Bollettino and Infografico", logfile = logfile)
+# 
+# IT <- idb %>% 
+#   filter(Country == "Italy",
+#          (grepl(Code, pattern = "info") | grepl(Code, pattern = "bol")))
+# n1 <- nrow(IT)
+# idb <- 
+#   idb %>% 
+#   filter(!(
+#     Country == "Italy" & (grepl(Code, pattern = "bol") | grepl(Code, pattern = "info"))
+#   ))
+# 
+# # Bolettino id variable
+# IT <- 
+#   IT %>% 
+#   mutate(isBOL = grepl(Code, pattern = "bol"))
+# 
+# # overlap variable
+# IT <-
+#   IT %>% 
+#   group_by(Date) %>% 
+#   mutate(overlap = any(isBOL) & any(!isBOL)) %>% 
+#   ungroup()
+# 
+# # remove overlapy & !isBOL
+# ITout <- 
+#   IT %>% 
+#   filter(overlap & !isBOL)
+# 
+# IT <-
+#   IT %>% 
+#   filter(!(overlap & !isBOL)) %>% 
+#   select(-isBOL, -overlap) %>% 
+#   # rewrite Code
+#   mutate(Code = paste0("IT",Date)) 
+# n2 <- nrow(IT)
+# # append
+# idb <-
+#   idb %>% 
+#   bind_rows(IT)
+# cat("Italy resolved\n",n1-n2,"rows removed\n", file = logfile, append = TRUE)
+# 
 
 # -------------------------------------- #
 # Resolve ECDC                           #
