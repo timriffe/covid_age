@@ -1,6 +1,16 @@
+library(here)
+source(here("Automation/00_Functions_automation.R"))
 
-# Manitoba deaths
+# assigning Drive credentials in the case the script is verified manually  
+if (!"email" %in% ls()){
+  email <- "kikepaila@gmail.com"
+}
 
+# info country and N drive address
+ctr <- "CA_Manitoba"
+dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
+
+# Canadian Deaths
 db_d2020 <- read_csv("https://raw.githubusercontent.com/ccodwg/Covid19Canada/master/individual_level/mortality_2020.csv")
 db_d2021 <- read_csv("https://raw.githubusercontent.com/ccodwg/Covid19Canada/master/individual_level/mortality_2021.csv")
 
