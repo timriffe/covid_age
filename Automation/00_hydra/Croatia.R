@@ -3,6 +3,25 @@ source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/0
 # install.packages("rjson")
 library(rjson)
 library(tidyverse)
+
+
+# assigning Drive credentials in the case the script is verified manually  
+if (!"email" %in% ls()){
+  email <- "tim.riffe@gmail.com"
+}
+
+# info country and N drive address
+
+ctr          <- "Croatia" # it's a placeholder
+dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
+
+# Drive credentials
+drive_auth(email = email)
+gs4_auth(email = email)
+
+
+#N:\COVerAGE-DB\Automation\Hydra\Data_sources\Croatia
+
 IN_json <- fromJSON(file="https://www.koronavirus.hr/json/?action=po_osobama")
 
 Regions <- tibble(Zupanija = c("Bjelovarsko-bilogorska", "Brodsko-posavska"      ,
@@ -33,6 +52,7 @@ RegionCode = c("_07_","_12_","_19_","_21_","_18_","_04_","_06_","_02_",
                "_05_","_10_","_16_","_13_","_01_")) 
 
 IN <- bind_rows(IN_json) 
+
 
 IN2 <-
   IN %>% 
@@ -89,3 +109,42 @@ out <-
   ungroup() %>% 
   filter(n > 0) %>% 
   select(-n)
+
+
+#save output data
+
+write_rds(out, paste0(dir_n, ctr, ".rds"))
+
+log_update(pp = ctr, N = nrow(out)) 
+
+#archive input data 
+
+data_source <- paste0(dir_n, "Data_sources/", ctr, "/cases_age_",today(), ".csv")
+
+write_csv(IN, data_source)
+
+
+zipname <- paste0(dir_n, 
+                  "Data_sources/", 
+                  ctr,
+                  "/", 
+                  ctr,
+                  "_data_",
+                  today(), 
+                  ".zip")
+
+zip::zipr(zipname, 
+          data_source, 
+          recurse = TRUE, 
+          compression_level = 9,
+          include_directories = TRUE)
+
+file.remove(data_source)
+
+
+
+
+
+
+
+
