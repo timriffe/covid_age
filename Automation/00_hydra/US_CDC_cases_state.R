@@ -27,7 +27,7 @@ library(lubridate)
 
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
-  email <- "tim.riffe@gmail.com"
+  email <- "jessica_d.1994@yahoo.de"
 }
 gs4_auth(email = email)
 
