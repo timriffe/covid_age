@@ -25,6 +25,12 @@ library(dplyr)
 library(lubridate)
 
 
+# assigning Drive credentials in the case the script is verified manually  
+if (!"email" %in% ls()){
+  email <- "tim.riffe@gmail.com"
+}
+gs4_auth(email = email)
+
 ctr          <- "US_CDC_cases_state" # it's a placeholder
 dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
