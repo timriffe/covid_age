@@ -25,7 +25,7 @@ library(dplyr)
 library(lubridate)
 
 
-ctr          <- "CDC_cases_state" # it's a placeholder
+ctr          <- "US_CDC_cases_state" # it's a placeholder
 dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 # Read in data 
@@ -46,33 +46,37 @@ data3 <- read.csv(file= 'K:/CDC_Covid/covid_case_restricted_detailed-master_01_2
 str(data3)
 
 # Add datasets vertically
-data <- rbind(data1, data2, data3)
+IN <- rbind(data1, data2, data3)
 
-
-
+rm(data1,data2,data3);gc()
+glimpse(IN)
 states <- c("AZ","AR", "DE","GU","ID","KS","ME","MA","MN","MT","NV","NJ","NC","OK","OR","PA","SC","TN","VA")
 
-Out= data %>%
-  filter(res_state %in% states)%>%
-  select(Date=cdc_case_earliest_dt, Sex=sex, Age= age_group, State= res_state)%>%
-  mutate(Sex= case_when(is.na(Sex)~ "UNK",
+Out <-
+  IN %>%
+  filter(res_state %in% states) %>%
+  select(Date = cdc_case_earliest_dt, 
+         Sex = sex, 
+         Age = age_group, 
+         State = res_state)%>%
+  mutate(Sex =  case_when(is.na(Sex) ~ "UNK",
                         Sex== "Unknown" ~ "UNK",
                         Sex== "Missing" ~ "UNK",
                         Sex== "Other" ~ "UNK",
                         Sex== "Male" ~ "m",
                         Sex== "Female"~"f",
                         TRUE ~ as.character(Sex)),
-         Age= case_when (is.na(Age) ~ "UNK",
+         Age = case_when (is.na(Age) ~ "UNK",
                          Age== "Unknown" ~" UNK",
                          TRUE~ as.character(Age)))%>%
-  group_by(Date,Sex, Age, State) %>% 
-  summarize(Value = n(), .groups="drop")%>%
-  tidyr::complete(Date,Sex, Age, State, fill = list(Value = 0)) %>% 
-  arrange(Sex, Age, Date, State) %>% 
+  group_by(Date, Sex, Age, State) %>% 
+  summarize(Value = n(), .groups = "drop")%>%
+  tidyr::complete(Date, Sex, Age, State, fill = list(Value = 0)) %>% 
+  arrange(Sex, Age, State, Date) %>% 
   group_by(Sex, Age, State) %>% 
   mutate(Value = cumsum(Value)) %>% 
   ungroup()%>%
-  mutate(Age=recode(Age, 
+  mutate(Age = recode(Age, 
                   `0 - 9 Years`="0",
                   `10 - 19 Years`="10",
                   `20 - 29 Years`="20",
