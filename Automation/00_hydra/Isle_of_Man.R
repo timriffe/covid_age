@@ -34,6 +34,8 @@ In_cases= read.csv("https://covid19.gov.im/media/1466/age-gender-travelhistory-d
 #class(In_cases)
 setDT(In_cases)
 
+
+# TR: pivot_longer() does this, so no need to go via data.table, not that big
 In_cases_long <- In_cases %>%
   select(- gender.male, -gender.female, -travelhistory.no, -travelhistory.yes, Date=date) %>% 
   melt( id.vars = c("Date"),
