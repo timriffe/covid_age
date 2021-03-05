@@ -6,7 +6,7 @@ source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/0
 library(lubridate)
 library(dplyr)
 library(stringr)
-library(data.table)
+
 
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
@@ -31,18 +31,9 @@ In_cases= read.csv("https://covid19.gov.im/media/1466/age-gender-travelhistory-d
 #reshape wide to long
 
 
-#class(In_cases)
-setDT(In_cases)
-
-
-# TR: pivot_longer() does this, so no need to go via data.table, not that big
-In_cases_long <- In_cases %>%
+Cases_out= In_cases%>%
   select(- gender.male, -gender.female, -travelhistory.no, -travelhistory.yes, Date=date) %>% 
-  melt( id.vars = c("Date"),
-        variable.name = "Age",
-        value.name = "Value")
-
-Cases_out= In_cases_long%>%
+  pivot_longer(!Date, names_to= "Age", values_to= "Value")%>%
   mutate(
     Age = case_when(
       is.na(Age) ~ "UNK",
@@ -69,12 +60,13 @@ Cases_out= In_cases_long%>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("IM_All",Date),
+    Code = paste0("IM",Date),
     Country = "Isle of Man",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)%>%
   mutate(AgeInt= as.character(AgeInt))
+
 
 
 #Totals by sex 
@@ -101,7 +93,7 @@ Cases_out_sex= In_cases_sex%>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("IM_All",Date),
+    Code = paste0("IM",Date),
     Country = "Isle of Man",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -127,7 +119,7 @@ mutate(
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("IM_All",Date),
+    Code = paste0("IM",Date),
     Country = "Isle of Man",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -149,7 +141,7 @@ death_total= In_total %>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("IM_All",Date),
+    Code = paste0("IM",Date),
     Country = "Isle of Man",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -170,7 +162,7 @@ test_total= In_total %>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("IM_All",Date),
+    Code = paste0("IM",Date),
     Country = "Isle of Man",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -214,7 +206,7 @@ Out_vaccine = In_vaccine %>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("IM_All",Date),
+    Code = paste0("IM",Date),
     Country = "Isle of Man",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 
