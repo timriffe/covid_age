@@ -488,3 +488,11 @@ filter( Code == 'US_MA03.03.2021', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_TX10.09.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_TX11.09.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_TX13.09.2020', Sex == 'b', Measure == 'Cases' )
+
+# Age harmonization 
+ Sat Mar 06 02:36:25 2021 
+
+
+# Age harmonization 
+ Sat Mar 06 08:59:14 2021 
+
