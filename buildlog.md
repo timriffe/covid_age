@@ -1,68 +1,68 @@
 
 # New build log 
- Sat Mar 06 01:00:15 2021 
+ Sun Mar 07 01:00:09 2021 
 
 
 # begin resolution of multiple sources per population 
- Sat Mar 06 01:00:15 2021 
+ Sun Mar 07 01:00:09 2021 
 
 
 # Resolve USA CDC overlaps 
- Sat Mar 06 01:01:13 2021 
+ Sun Mar 07 01:00:58 2021 
 
 USA CDC resolved
  1185 rows removed
 
 # Resolve Brazil TRC overlaps 
- Sat Mar 06 01:01:22 2021 
+ Sun Mar 07 01:01:03 2021 
 
 Brazil TRC resolved
  2706 rows removed
 
 # Resolve ECDC overlaps 
- Sat Mar 06 01:01:29 2021 
+ Sun Mar 07 01:01:07 2021 
 
 ECDC resolved
  3330 rows removed
 
 # prep (resolve_UNKUNK) 
- Sat Mar 06 01:02:56 2021 
+ Sun Mar 07 01:02:22 2021 
 
 
 # A (convert_fractions_sexes) 
- Sat Mar 06 01:08:36 2021 
+ Sun Mar 07 01:07:13 2021 
 
 
 # B (redistribute_unknown_age) 
- Sat Mar 06 01:12:36 2021 
+ Sun Mar 07 01:10:28 2021 
 
 
 # C (rescale_to_total) 
- Sat Mar 06 01:31:30 2021 
+ Sun Mar 07 01:25:58 2021 
 
 
 # D (infer_cases_from_deaths_and_ascfr) 
- Sat Mar 06 01:51:30 2021 
+ Sun Mar 07 01:41:49 2021 
 
 
 # E (infer_deaths_from_cases_and_ascfr) 
- Sat Mar 06 01:56:41 2021 
+ Sun Mar 07 01:46:15 2021 
 
 
 # G (redistribute_unknown_sex) 
- Sat Mar 06 02:05:59 2021 
+ Sun Mar 07 01:50:39 2021 
 
 
 # H (rescale_sexes) 
- Sat Mar 06 02:14:20 2021 
+ Sun Mar 07 01:57:26 2021 
 
 
 # I (infer_both_sex) 
- Sat Mar 06 02:16:34 2021 
+ Sun Mar 07 01:59:12 2021 
 
 
 # J (maybe_lower_closeout) 
- Sat Mar 06 02:22:52 2021 
+ Sun Mar 07 02:04:11 2021 
 
 filter( Code == 'CA_TNT15.07.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'CA_TNT15.07.2020', Sex == 'm', Measure == 'Cases' )
@@ -466,6 +466,15 @@ filter( Code == 'GB_SCO_05.03.2021', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'GB_SCO_05.03.2021', Sex == 'f', Measure == 'Tests' )
 filter( Code == 'GB_SCO_05.03.2021', Sex == 'm', Measure == 'Tests' )
 filter( Code == 'GB_SCO_05.03.2021', Sex == 'b', Measure == 'Tests' )
+filter( Code == 'GB_SCO_06.03.2021', Sex == 'f', Measure == 'Cases' )
+filter( Code == 'GB_SCO_06.03.2021', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'GB_SCO_06.03.2021', Sex == 'b', Measure == 'Cases' )
+filter( Code == 'GB_SCO_06.03.2021', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'GB_SCO_06.03.2021', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'GB_SCO_06.03.2021', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'GB_SCO_06.03.2021', Sex == 'f', Measure == 'Tests' )
+filter( Code == 'GB_SCO_06.03.2021', Sex == 'm', Measure == 'Tests' )
+filter( Code == 'GB_SCO_06.03.2021', Sex == 'b', Measure == 'Tests' )
 filter( Code == 'US_MA02.11.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_MA04.11.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_MA11.11.2020', Sex == 'b', Measure == 'Cases' )
@@ -490,25 +499,5 @@ filter( Code == 'US_TX11.09.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_TX13.09.2020', Sex == 'b', Measure == 'Cases' )
 
 # Age harmonization 
- Sat Mar 06 02:36:25 2021 
-
-
-# Age harmonization 
- Sat Mar 06 08:59:14 2021 
-
-
-# Building dashboards 
- Sat Mar 06 19:18:11 2021 
-
-
-# remake coverage map 
- Sat Mar 06 19:29:15 2021 
-
-
-# push outputs to OSF 
- Sat Mar 06 19:33:53 2021 
-
-
-# Commit dashboards and buildlog 
- Sat Mar 06 19:36:49 2021 
+ Sun Mar 07 02:15:44 2021 
 
