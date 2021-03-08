@@ -17,6 +17,10 @@ dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 drive_auth(email = email)
 gs4_auth(email = email)
 
+
+
+cases_url <- "https://raw.githubusercontent.com/Institut-Zdravotnych-Analyz/covid19-data/main/PCR_Tests/OpenData_Slovakia_Covid_PositiveTests_AgeGroup_District.csv"
+
 deaths_url <- "https://raw.githubusercontent.com/Institut-Zdravotnych-Analyz/covid19-data/main/OpenData_Slovakia_Covid_Deaths_AgeGroup_District.csv"
 # Date;Gender;District;AgeGroup;Type
 DeathsIn <- read_delim(deaths_url, 

@@ -53,7 +53,6 @@ RegionCode = c("_07_","_12_","_19_","_21_","_18_","_04_","_06_","_02_",
 
 IN <- bind_rows(IN_json) 
 
-
 IN2 <-
   IN %>% 
   left_join(Regions, by = "Zupanija") %>% 

@@ -80,7 +80,7 @@ sched("Chile_vacc", "06:15",email = auto_update_email, wd = auto_update_wd)
 sched("Hungary", "06:10",email = auto_update_email, wd = auto_update_wd)
 sched("Vietnam", "06:05",email = auto_update_email, wd = auto_update_wd)
 sched("Italy", "06:00",email = auto_update_email, wd = auto_update_wd)
-sched("Croatia", "12:28",email = auto_update_email, wd = auto_update_wd)
+sched("Croatia", "12:32",email = auto_update_email, wd = auto_update_wd)
 
 # sched("GB_NIR", "19:02",email = auto_update_email, wd = auto_update_wd)
 # sched("Brazil", "12:29",email = auto_update_email, wd = auto_update_wd)
