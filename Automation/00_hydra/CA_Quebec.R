@@ -16,7 +16,7 @@ drive_auth(email = email)
 gs4_auth(email = email)
 
 source_dir <- "U:/nextcloud/Projects/COVID_19/COVerAGE-DB/CA_Quebec/"
-source_dir <- "C:/Users/kikep/nextcloud/Projects/COVID_19/COVerAGE-DB/CA_Quebec/"
+# source_dir <- "C:/Users/kikep/nextcloud/Projects/COVID_19/COVerAGE-DB/CA_Quebec/"
 
 db_qc_c <- read_csv(paste0(source_dir, "Graphique 1.7 - page age-sexe.csv"))
 db_qc_d <- read_csv(paste0(source_dir, "Graphique 2.7 - page age-sexe.csv"))
@@ -69,7 +69,7 @@ db_qc_d2 <- db_qc_d %>%
   select(-New) %>% 
   mutate(Measure = "Deaths")
 
-db_qc <- 
+out <- 
   bind_rows(db_qc_c2, db_qc_d2) %>% 
   mutate(Age = str_sub(Age, 1, 2),
          Age = ifelse(Age == "0-", "0", Age), 
