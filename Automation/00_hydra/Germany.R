@@ -15,8 +15,10 @@ drive_auth(email = email)
 gs4_auth(email = email)
 
 cases_url <- "https://opendata.arcgis.com/datasets/dd4580c810204019a7b8eb3e0b329dd6_0.csv"
+data_source <- paste0(dir_n, "Data_sources/", ctr, "/cases&deaths_",today(), ".csv")
+download.file(cases_url, destfile = data_source, mode = "wb")
 
-db <- read_csv(cases_url,
+db <- read_csv(data_source,
                locale = locale(encoding = "UTF-8"))
 
 unique(db$Geschlecht)
@@ -53,7 +55,7 @@ regions <- unique(db2$Region)
 date_range <- range(db2$date_f)
 
 # we can expand on days too
-dates   <- seq(date_range[1], date_range[2], by="days")
+dates   <- seq(date_range[1], date_range[2], by = "days")
 
 # TR: This replaces a big manual loop
 db_all <- db2 %>% 
@@ -179,10 +181,6 @@ log_update(pp = ctr, N = nrow(out))
 ############################################
 #### uploading metadata to Google Drive ####
 ############################################
-
-data_source <- paste0(dir_n, "Data_sources/", ctr, "/cases&deaths_",today(), ".csv")
-
-download.file(cases_url, destfile = data_source)
 
 zipname <- paste0(dir_n, 
                   "Data_sources/", 
