@@ -1,68 +1,68 @@
 
 # New build log 
- Tue Mar 09 01:00:08 2021 
+ Wed Mar 10 01:00:09 2021 
 
 
 # begin resolution of multiple sources per population 
- Tue Mar 09 01:00:08 2021 
+ Wed Mar 10 01:00:09 2021 
 
 
 # Resolve USA CDC overlaps 
- Tue Mar 09 01:00:53 2021 
+ Wed Mar 10 01:00:54 2021 
 
 USA CDC resolved
  1185 rows removed
 
 # Resolve Brazil TRC overlaps 
- Tue Mar 09 01:00:57 2021 
+ Wed Mar 10 01:00:59 2021 
 
 Brazil TRC resolved
  2706 rows removed
 
 # Resolve ECDC overlaps 
- Tue Mar 09 01:01:00 2021 
+ Wed Mar 10 01:01:03 2021 
 
 ECDC resolved
  3582 rows removed
 
 # prep (resolve_UNKUNK) 
- Tue Mar 09 01:02:04 2021 
+ Wed Mar 10 01:02:08 2021 
 
 
 # A (convert_fractions_sexes) 
- Tue Mar 09 01:06:46 2021 
+ Wed Mar 10 01:06:50 2021 
 
 
 # B (redistribute_unknown_age) 
- Tue Mar 09 01:10:07 2021 
+ Wed Mar 10 01:10:12 2021 
 
 
 # C (rescale_to_total) 
- Tue Mar 09 01:25:44 2021 
+ Wed Mar 10 01:25:42 2021 
 
 
 # D (infer_cases_from_deaths_and_ascfr) 
- Tue Mar 09 01:42:10 2021 
+ Wed Mar 10 01:42:05 2021 
 
 
 # E (infer_deaths_from_cases_and_ascfr) 
- Tue Mar 09 01:46:42 2021 
+ Wed Mar 10 01:46:35 2021 
 
 
 # G (redistribute_unknown_sex) 
- Tue Mar 09 01:51:10 2021 
+ Wed Mar 10 01:51:03 2021 
 
 
 # H (rescale_sexes) 
- Tue Mar 09 01:57:52 2021 
+ Wed Mar 10 01:57:46 2021 
 
 
 # I (infer_both_sex) 
- Tue Mar 09 01:59:34 2021 
+ Wed Mar 10 01:59:28 2021 
 
 
 # J (maybe_lower_closeout) 
- Tue Mar 09 02:04:39 2021 
+ Wed Mar 10 02:04:33 2021 
 
 filter( Code == 'CA_TNT15.07.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'CA_TNT15.07.2020', Sex == 'm', Measure == 'Cases' )
@@ -517,29 +517,25 @@ filter( Code == 'US_MA24.02.2021', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_MA03.03.2021', Sex == 'b', Measure == 'Cases' )
 
 # Age harmonization 
- Tue Mar 09 02:16:51 2021 
+ Wed Mar 10 02:16:53 2021 
 
 
 # Age harmonization 
- Tue Mar 09 07:30:35 2021 
-
-
-# Compile metadata 
- Tue Mar 09 09:11:35 2021 
+ Wed Mar 10 07:08:13 2021 
 
 
 # Building dashboards 
- Tue Mar 09 09:26:49 2021 
+ Wed Mar 10 08:48:58 2021 
 
 
 # remake coverage map 
- Tue Mar 09 09:39:45 2021 
+ Wed Mar 10 09:01:38 2021 
 
 
 # push outputs to OSF 
- Tue Mar 09 09:44:14 2021 
+ Wed Mar 10 09:06:08 2021 
 
 
 # Commit dashboards and buildlog 
- Tue Mar 09 09:46:59 2021 
+ Wed Mar 10 09:08:55 2021 
 
