@@ -539,3 +539,7 @@ filter( Code == 'US_MA03.03.2021', Sex == 'b', Measure == 'Cases' )
 # Commit dashboards and buildlog 
  Wed Mar 10 09:08:55 2021 
 
+
+# update build series log 
+ Wed Mar 10 09:09:04 2021 
+
