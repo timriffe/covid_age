@@ -16,7 +16,10 @@ idb <- readRDS(here("Data","inputDB.rds"))
 
 idb <- idb %>% 
   mutate(Date = dmy(Date),
-         Date = ddmmyyyy(Date))
+         Date = ddmmyyyy(Date)) %>% 
+  # TR: new, can't age harmonize until we understand lower bounds better.
+  # plus intervals tend to be super wide.
+  filter(!Measure %in% c("Vaccinations","Vaccination1","Vaccionation2"))
 
 # Trying with the inputDB in OSF
 # osf_retrieve_file("9dsfk") %>%

@@ -156,7 +156,7 @@ PrepIN <-
     all_days  <- seq(ymd(paste0(yr_pick,"-01-01")),
                      ymd(paste0(yr_pick,"-12-31")),
                      by = "days")
-    Sundays   <- all_days[weekdays(all_days) == "Sunday"]
+    Sundays   <- all_days[weekdays(all_days) %in% c("Sonntag","Sunday")]
     Date_i    <- Sundays[isoweek(Sundays) == as.integer(wk_pick)]
     
   
@@ -240,9 +240,10 @@ PrepIN <-
 ECDCout <-
   ECDCout %>% 
   sort_input_data() %>% 
-  filter(Country != "United Kingdom") %>% 
-  filter(Date != "17.01.2021") %>% 
-  filter(!(Country == "Germany" & Date == "31.01.2021"))
+  filter(! Country %in% c("Austria","Belgium","Croatia","Czechia","Denmark","France",
+                          "Germany","Italy","Netherlands","Norway","Portugal","Slovakia",
+                          "Slovenia","Sweden")) %>% 
+  filter(Date != "17.01.2021") 
 
 
 N <- nrow(ECDCout) - nrow(ECDCin)
