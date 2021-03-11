@@ -107,7 +107,6 @@ if (date_f > last_date_drive) {
 
   # This command append new rows at the end of the sheet
   
-  
   X <- try(sheet_append(out,
                    ss = ss_i,
                    sheet = "database"))
