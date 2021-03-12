@@ -1,68 +1,68 @@
 
 # New build log 
- Fri Mar 12 01:00:09 2021 
+ Fri Mar 12 10:20:43 2021 
 
 
 # begin resolution of multiple sources per population 
- Fri Mar 12 01:00:09 2021 
+ Fri Mar 12 10:20:43 2021 
 
 
 # Resolve USA CDC overlaps 
- Fri Mar 12 01:01:02 2021 
+ Fri Mar 12 10:21:36 2021 
 
 USA CDC resolved
  1185 rows removed
 
 # Resolve Brazil TRC overlaps 
- Fri Mar 12 01:01:08 2021 
+ Fri Mar 12 10:21:43 2021 
 
 Brazil TRC resolved
  2706 rows removed
 
 # Resolve ECDC overlaps 
- Fri Mar 12 01:01:13 2021 
+ Fri Mar 12 10:21:48 2021 
 
 ECDC resolved
  3474 rows removed
 
 # prep (resolve_UNKUNK) 
- Fri Mar 12 01:02:30 2021 
+ Fri Mar 12 10:23:09 2021 
 
 
 # A (convert_fractions_sexes) 
- Fri Mar 12 01:07:35 2021 
+ Fri Mar 12 10:28:28 2021 
 
 
 # B (redistribute_unknown_age) 
- Fri Mar 12 01:11:14 2021 
+ Fri Mar 12 10:32:22 2021 
 
 
 # C (rescale_to_total) 
- Fri Mar 12 01:28:03 2021 
+ Fri Mar 12 10:50:10 2021 
 
 
 # D (infer_cases_from_deaths_and_ascfr) 
- Fri Mar 12 01:45:34 2021 
+ Fri Mar 12 11:08:39 2021 
 
 
 # E (infer_deaths_from_cases_and_ascfr) 
- Fri Mar 12 01:50:26 2021 
+ Fri Mar 12 11:13:44 2021 
 
 
 # G (redistribute_unknown_sex) 
- Fri Mar 12 01:55:15 2021 
+ Fri Mar 12 11:18:53 2021 
 
 
 # H (rescale_sexes) 
- Fri Mar 12 02:02:34 2021 
+ Fri Mar 12 11:26:48 2021 
 
 
 # I (infer_both_sex) 
- Fri Mar 12 02:04:28 2021 
+ Fri Mar 12 11:28:49 2021 
 
 
 # J (maybe_lower_closeout) 
- Fri Mar 12 02:09:57 2021 
+ Fri Mar 12 11:34:36 2021 
 
 filter( Code == 'CA_TNT15.07.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'CA_TNT15.07.2020', Sex == 'm', Measure == 'Cases' )
@@ -539,5 +539,9 @@ filter( Code == 'NO09.03.2021', Sex == 'm', Measure == 'Deaths' )
 filter( Code == 'NO09.03.2021', Sex == 'b', Measure == 'Deaths' )
 
 # Age harmonization 
- Fri Mar 12 02:22:26 2021 
+ Fri Mar 12 11:47:44 2021 
+
+
+# Age harmonization 
+ Fri Mar 12 16:54:54 2021 
 
