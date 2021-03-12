@@ -8,6 +8,10 @@ log_section("Commit dashboards and buildlog", append = TRUE, logfile = logfile)
 library(usethis)
 library(git2r)
 
+creds <- structure(list(username = Sys.getenv("GITHUB_USER"), 
+                        password = Sys.getenv("GITHUB_PASS")), 
+                   class = "cred_user_pass")
+
 repo <- git2r::repository(here())
 #init()
 git2r::pull(repo,credentials = creds) # possibly creds not making it this far?

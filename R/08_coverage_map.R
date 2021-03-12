@@ -17,7 +17,7 @@ data(World)
 
 Sys.sleep(120)
 # DB objects
-gs4_auth(email = "tim.riffe@gmail.com")
+gs4_auth(email = Sys.getenv("email"))
 Sys.sleep(120)
 
 # several tries, just because.

@@ -8,12 +8,20 @@ change_here <- function(new_path){
   new_root$f <- function(...){file.path(new_path, ...)}
   
   assignInNamespace(".root_env", new_root, ns = "here")
+  source("~/.Rprofile")
 }
 
-change_here("C:/Users/riffe/Documents/covid_age")
+me.this.is.me <- Sys.getenv("USERNAME")
+change_here(paste0("C:/Users/",me.this.is.me,"/Documents/covid_age"))
+
 setwd(here())
 startup::startup()
 # always work with the most uptodate repository
+
+
+ creds <- structure(list(username = Sys.getenv("GITHUB_USER"), 
+                         password = Sys.getenv("GITHUB_PASS")), 
+                    class = "cred_user_pass")
 repo <- git2r::repository(here())
 #init()
 a <- git2r::pull(repo,credentials = creds)
@@ -44,8 +52,10 @@ log_section(paste(Sys.time(),"updates"),
             logfile = logfile)
 
 #source("R_checks/inputDB_check.R")
-gs4_auth(email = "tim.riffe@gmail.com")
-drive_auth(email = "tim.riffe@gmail.com")
+email <- Sys.getenv("email")
+gs4_auth(email = email)
+drive_auth(email = email)
+
 # these parameters to grab templates that were modified between 12 and 2 hours ago,
 # a 10-hour window. This will be run every 8 hours, so this implies overlap.
 hours_from <- 12
@@ -172,6 +182,21 @@ if (nrow(rubric) > 0){
     }
   }
   
+  # remove future dates
+  n <- dmy(inputDB$Date) > today()
+  if (sum(n) > 0){
+    rmcodes <- inputDB %>% filter(n) %>% dplyr::pull(Code) %>% unique()
+    inputDB <- inputDB %>% filter(!Code%in%rmcodes)
+    if (length(rmcodes)>0){
+      log_section("Future Dates detected. Following `Code`s removed:", 
+                  append = TRUE, 
+                  logfile = logfile)
+      cat(paste(rmcodes, collapse = "\n"), 
+          file = logfile, 
+          append = TRUE)
+    }
+  }
+  
   # -------------------------------------- #
   # now swap out data in inputDB files
   
@@ -215,7 +240,7 @@ if (nrow(rubric) > 0){
   
   repo <- git2r::repository(here())
   #init()
-  source("~/.Rprofile")
+
   # make a couple attempts
   a <- try(git2r::pull(repo,credentials = creds) )
   if (class(a)[1]=="try-error"){
@@ -232,10 +257,13 @@ if (nrow(rubric) > 0){
 }
 schedule_this <- FALSE
 if (schedule_this){
+  # TR: note, if you schedule this, you should make sure it's not already scheduled
+  # by someone else!
+  
   library(taskscheduleR)
   taskscheduler_delete("COVerAGE-DB-every-8-hour-inputDB-updates")
   taskscheduler_create(taskname = "COVerAGE-DB-every-8-hour-inputDB-updates", 
-                       rscript = "C:/Users/riffe/Documents/covid_age/R/01_update_inputDB.R", 
+                       rscript =  paste0("C:/Users/",me.this.is.me,"/Documents/covid_age/R/01_update_inputDB.R"), 
                        schedule = "HOURLY", 
                        modifier = 8,
                        starttime = "10:01",

@@ -150,7 +150,7 @@ SubPopsOffsetsIndicator <-
 # V Refreshing yes/no
 
 # metadata needs some cleaning before this can integrate
-
+#this may need an update?
 all_regions <- c("Mexico", "Peru", "Japan", "France", "Germany", "Colombia", "Brazil")
 
 rownames(Metadata)<- NULL
