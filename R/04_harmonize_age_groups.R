@@ -5,7 +5,9 @@ source(here::here("R","00_Functions.R"))
 logfile <- here("buildlog.md")
 # n.cores <- round(6 + (detectCores() - 8)/4)
 # n.cores  <- 3
-n.cores <- 20
+
+freesz  <- memuse::Sys.meminfo()$freeram@size
+n.cores <- min(round(freesz / 12),20)
 
 ### Load data #######################################################
 
