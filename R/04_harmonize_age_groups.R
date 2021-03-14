@@ -7,7 +7,7 @@ logfile <- here("buildlog.md")
 # n.cores  <- 3
 
 freesz  <- memuse::Sys.meminfo()$freeram@size
-n.cores <- min(round(freesz / 12),20)
+n.cores <- min(round(freesz / 16),20)
 
 ### Load data #######################################################
 
