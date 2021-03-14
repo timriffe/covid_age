@@ -1,19 +1,19 @@
 
 # 2021-03-14 inputDB updates 
- Sun Mar 14 02:01:09 2021 
+ Sun Mar 14 10:01:08 2021 
 
 
-# 2021-03-14 02:01:09 updates 
- Sun Mar 14 02:01:09 2021 
+# 2021-03-14 10:01:08 updates 
+ Sun Mar 14 10:01:08 2021 
 
 
 # Filter valid Measure entries: 
- Sun Mar 14 02:27:31 2021 
+ Sun Mar 14 10:13:56 2021 
 
 Valid Measures include: Cases,Deaths,Tests,ASCFR,Vaccinations,Vaccination1,Vaccination2
- 2503 rows removed
+ 2244 rows removed
 # Duplicates detected. Following `Code`s removed: 
- Sun Mar 14 02:28:05 2021 
+ Sun Mar 14 10:14:29 2021 
 
 CL15.02.2021
 CL16.02.2021
@@ -37,6 +37,7 @@ CL09.03.2021
 CL10.03.2021
 CL11.03.2021
 CL12.03.2021
+CL13.03.2021
 HR13.03.2020
 HR14.03.2020
 HR15.03.2020
@@ -930,15 +931,3 @@ IM_All18.02.2021
 IM_All19.02.2021
 IM_All20.02.2021
 IM_All21.02.2021
-PS12.10.2020
-US_FL02.12.2020
-US_KS25.11.2020
-US_KS27.11.2020
-US_KS04.12.2020
-US_KS07.12.2020
-US_KS09.12.2020
-US_KS12.12.2020
-US_KS14.12.2020
-US_KS16.12.2020
-US_KS18.12.2020
-US_KS21.12.2020
