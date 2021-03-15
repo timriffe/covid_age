@@ -1153,3 +1153,18 @@ filter( Code == 'NO09.03.2021', Sex == 'b', Measure == 'Deaths' )
 # update build series log 
  Sun Mar 14 12:07:26 2021 
 
+
+# Compile offsets from Drive 
+ Sun Mar 14 19:03:44 2021 
+
+
+# Harmonize offsets 
+ Sun Mar 14 19:53:31 2021 
+
+
+# Harmonize offsets 
+ Sun Mar 14 22:28:50 2021 
+
+filter( Country == 'UK', Region == 'All', Sex == 'b' )
+filter( Country == 'UK', Region == 'All', Sex == 'f' )
+filter( Country == 'UK', Region == 'All', Sex == 'm' )
