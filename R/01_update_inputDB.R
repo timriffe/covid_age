@@ -266,7 +266,7 @@ if (schedule_this){
                        rscript =  paste0("C:/Users/",me.this.is.me,"/Documents/covid_age/R/01_update_inputDB.R"), 
                        schedule = "HOURLY", 
                        modifier = 8,
-                       starttime = "10:01",
+                       starttime = "16:30",
                        startdate = format(Sys.Date(), "%d/%m/%Y"))
   # 
 }
