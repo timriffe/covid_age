@@ -259,7 +259,7 @@ schedule_this <- FALSE
 if (schedule_this){
   # TR: note, if you schedule this, you should make sure it's not already scheduled
   # by someone else!
-  
+  me.this.is.me <- Sys.getenv("USERNAME")
   library(taskscheduleR)
   taskscheduler_delete("COVerAGE-DB-every-8-hour-inputDB-updates")
   taskscheduler_create(taskname = "COVerAGE-DB-every-8-hour-inputDB-updates", 
