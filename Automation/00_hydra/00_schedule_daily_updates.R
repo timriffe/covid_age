@@ -46,9 +46,9 @@ sched("Netherlands", tm = "13:14",email = auto_update_email, wd = auto_update_wd
 sched("Estonia", tm = "13:18",email = auto_update_email, wd = auto_update_wd)
 sched("Czechia", tm = "13:22",email = auto_update_email, wd = auto_update_wd)
 sched("US_Michigan", tm = "13:26",email = auto_update_email, wd = auto_update_wd)
-sched("Venezuela", tm = "16:23",email = auto_update_email, wd = auto_update_wd)
+sched("Venezuela", tm = "06:55",email = auto_update_email, wd = auto_update_wd)
 sched("US_Texas", tm = "12:32",email = auto_update_email, wd = auto_update_wd)
-sched("USA_deaths_states", tm = "12:34",email = auto_update_email, wd = auto_update_wd)
+sched("USA_deaths_states", tm = "14:25",email = auto_update_email, wd = auto_update_wd)
 sched("Sweden", tm = "14:01",email = auto_update_email, wd = auto_update_wd)
 sched("Peru", tm = "12:40",email = auto_update_email, wd = auto_update_wd)
 sched("Germany", tm = "12:50",email = auto_update_email, wd = auto_update_wd)
@@ -66,7 +66,7 @@ sched("ECDC", tm = "16:45",email = auto_update_email, wd = auto_update_wd, sch =
 sched("Finland", tm = "16:50",email = auto_update_email, wd = auto_update_wd, sch = "WEEKLY")
 sched("US_Wisconsin", tm = "23:02",email = auto_update_email, wd = auto_update_wd)
 sched("Bulgaria", tm = "23:05",email = auto_update_email, wd = auto_update_wd)
-sched("Denmark", tm = "12:28",email = auto_update_email, wd = auto_update_wd)
+sched("Denmark", tm = "07:00",email = auto_update_email, wd = auto_update_wd)
 # sched("US_Iowa"•, tm = "09:40",email = auto_update_email, wd = auto_update_wd)
 sched("Belgium", tm = "23:20",email = auto_update_email, wd = auto_update_wd)
 sched("New_Zealand", "18:30",email = auto_update_email, wd = auto_update_wd)
@@ -124,7 +124,7 @@ sched("CA_Manitoba_Saskatchewan", "08:05",email = auto_update_email, wd = auto_u
 # delete_sched("ECDC")
 # delete_sched("Slovakia")
 delete_sched("ES_Basque_Country")
-delete_sched("GB_NIR")
+delete_sched("Denmark")
 
 
 
