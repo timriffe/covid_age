@@ -12,7 +12,7 @@ change_here <- function(new_path){
 }
 
 me.this.is.me <- Sys.getenv("USERNAME")
-change_here(paste0("C:/Users/",me.this.is.me,"/Documents/covid_age"))
+change_here(Sys.getenv("path_repo"))
 
 setwd(here())
 startup::startup()
