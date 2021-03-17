@@ -17,21 +17,30 @@ gs4_auth(email = email)
 
 # Loading data from the web
 ###########################
+
+# vaccines
+url_vcc <- "https://epistat.sciensano.be/Data/COVID19BE_VACC.csv"
+data_source_v <- paste0(dir_n, "Data_sources/", ctr, "/vaccines_",today(), ".csv")
+download.file(url_vcc, destfile = data_source_v, mode = "wb")
+
+db_v <- read_csv(data_source_v)
+
+# cases and deaths
 url <- "https://epistat.sciensano.be/Data/COVID19BE.xlsx"
-
-data_source <- paste0(dir_n, "Data_sources/", ctr, "/all_",today(), ".xlsx")
-
-download.file(url, destfile = data_source, mode = "wb")
+data_source_c <- paste0(dir_n, "Data_sources/", ctr, "/all_",today(), ".xlsx")
+download.file(url, destfile = data_source_c, mode = "wb")
 
 # cases and deaths database
-db_c <- read_xlsx(data_source,
+db_c <- read_xlsx(data_source_c,
                   sheet = "CASES_AGESEX")
 
-db_d <- read_xlsx(data_source,
+db_d <- read_xlsx(data_source_c,
                   sheet = "MORT")
 
-db_t <- read_xlsx(data_source,
+db_t <- read_xlsx(data_source_c,
                   sheet = "TESTS")
+
+datasource <- c(data_source_v, data_source_c)
 
 zipname <- paste0(dir_n, 
                   "Data_sources/", 
@@ -132,6 +141,35 @@ db_cd2 <- db_cd %>%
   filter(Age != "UNK" & Sex != "UNK") %>% 
   bind_rows(db_cd_sex, db_cd_age) 
 
+db_v2 <- db_v %>% 
+  select(Region = REGION,
+         Date = DATE,
+         Sex = SEX,
+         Age = AGEGROUP,
+         Measure = DOSE,
+         new = COUNT) %>% 
+  separate(Age, c("Age", "trash"), sep = "-") %>% 
+  mutate(Date = ymd(Date),
+         Measure = ifelse(Measure == "A", "Vaccination1", "Vaccination2"),
+         Age = case_when(Age == "85+" ~ "90",
+                         is.na(Age) ~ "UNK",
+                         TRUE ~ Age),
+         Sex = case_when(Sex == "M" ~ "m",
+                         Sex == "F" ~ "f",
+                         TRUE ~ "UNK"),
+         Region = ifelse(is.na(Region), "UNK", Region),
+         Region = ifelse(Region == "Ostbelgien", "Wallonia", Region)) %>% 
+  select(-trash) %>% 
+  group_by(Region, Date, Sex, Age, Measure) %>% 
+  summarise(new = sum(new)) %>% 
+  ungroup() %>% 
+  tidyr::complete(Date, Region, Measure, Sex, Age, fill = list(new = 0)) %>% 
+  arrange(Date) %>% 
+  group_by(Region, Sex, Age, Measure) %>% 
+  mutate(Value = cumsum(new)) %>% 
+  ungroup() %>% 
+  select(-new) 
+
 db_t2 <- db_t %>% 
   select(Region = REGION,
          Date = DATE,
@@ -150,19 +188,18 @@ db_t2 <- db_t %>%
          Age = "TOT") %>% 
   select(-new) 
 
-db_nal <- bind_rows(db_cd2, db_t2) %>% 
+db_nal <- bind_rows(db_cd2, db_t2, db_v2) %>% 
   group_by(Date, Measure, Sex, Age) %>% 
   summarise(Value = sum(Value)) %>% 
   mutate(Region = "All") %>% 
   ungroup()
 
-unique(db_c2$Age)
-unique(db_d2$Age)
-
 out <- bind_rows(db_nal,
                  db_cd2 %>% 
                    filter(Region != "UNK"),
                  db_t2 %>% 
+                   filter(Region != "UNK"),
+                 db_v2 %>% 
                    filter(Region != "UNK")) %>% 
   mutate(Country = "Belgium",
          AgeInt = case_when(Measure == "Cases" & Age != "90" ~ 10,
