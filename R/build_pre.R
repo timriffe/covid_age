@@ -8,24 +8,28 @@ change_here <- function(new_path){
   assignInNamespace(".root_env", new_root, ns = "here")
 }
 
-change_here("C:/Users/riffe/Documents/covid_age")
+me.this.is.me <- Sys.getenv("USERNAME")
+
+change_here(paste0("C:/Users/",me.this.is.me,"/Documents/covid_age"))
 startup::startup()
 setwd(here())
 
 Sys.setenv(RSTUDIO_PANDOC = "C:/Program Files/RStudio/bin/pandoc")
 repo <- git2r::repository(here())
+creds <- structure(list(username = Sys.getenv("GITHUB_USER"), 
+                        password = Sys.getenv("GITHUB_PASS")), 
+                   class = "cred_user_pass")
 #init()
 git2r::pull(repo,credentials = creds)
 
 source(here("R","build.R"))
-
 
 schedule_this <- FALSE
 if (schedule_this){
   taskscheduleR::taskscheduler_delete("COVerAGE-DB-automatic-daily-build")
   taskscheduleR::taskscheduler_create(
                        taskname = "COVerAGE-DB-automatic-daily-build", 
-                       rscript = "C:/Users/riffe/Documents/covid_age/R/build_pre.R", 
+                       rscript = paste0("C:/Users/",me.this.is.me,"/Documents/covid_age/R/build_pre.R"), 
                        schedule = "DAILY", 
                        starttime = "01:00",
                        startdate = format(Sys.Date()+1 , "%d/%m/%Y"))

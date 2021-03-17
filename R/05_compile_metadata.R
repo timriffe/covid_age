@@ -20,7 +20,7 @@ log_section("Compile metadata",
 
 # we get this to extract which Metrics are captured for each source.
 
-gs4_auth(email = "tim.riffe@gmail.com")
+gs4_auth(email = Sys.getenv("email"))
 
 
 rubric <- get_input_rubric()

@@ -1,20 +1,16 @@
 # Indiana 
 
 library(here)
-source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
+source('U:/GitHub/Covid/Automation/00_Functions_automation.R')
 
 library(lubridate)
 library(dplyr)
+library(tidyverse)
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
   email <- "jessica_d.1994@yahoo.de"
 }
  
-
-#open questions
-#How do I keep the manually entered vaccine data?
-#How to I set the connection with the automation sheet up? 
-
 
 # info country and N drive address
 
@@ -42,6 +38,14 @@ ss_db <- rubric %>%
 
 In_drive <- get_country_inputDB("US_IN")%>% 
   select(-Short)
+
+
+
+#Save vaccine data that was manually entered 
+
+vaccine= In_drive%>%
+  filter(Measure== "Vaccination1"| Measure== "Vaccination2"| Measure== "Vaccinations")
+
 
 #Read in files 
 
@@ -152,13 +156,14 @@ IN_death_out= IN_death%>%
          Age, AgeInt, Metric, Measure, Value)
 
 
-######combine both to one dataframe########## 
+######combine to one dataframe########## 
 
-In_out <- bind_rows(In_cases_out,
-                    In_death_out)
+In_out <- bind_rows(IN_cases_out,
+                    IN_death_out,
+                    vaccine)
 
 # In case we had earlier data, we keep it.
-#############################################################################Not sure why I lose the vaccine data here 
+
 
 In_out <- 
   In_drive %>% 
@@ -166,8 +171,6 @@ In_out <-
   bind_rows(In_out) %>% 
   sort_input_data()
 
-View(In_out)
-View(In_drive)
 
 # upload to Drive, overwrites
 
@@ -177,7 +180,7 @@ write_sheet(In_out,
             sheet = "database")
 
 
-##########################################################Is this for the automation sheet? How do I set this up in the sheet?
+
 
 #log_update("Bulgaria", N = nrow(BG_out))
 
