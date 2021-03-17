@@ -64,8 +64,7 @@ a2 <- httr::content(r2, "text", encoding = "ISO-8859-1")
 b2 <- fromJSON(a2)
 
 date_f <-
-  b2 %>%
-  dplyr::pull(Date) %>%
+  b2$Date %>%
   max()
 
 d <- paste(sprintf("%02d", day(date_f)), sprintf("%02d", month(date_f)), year(date_f), sep = ".")
