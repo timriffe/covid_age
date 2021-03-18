@@ -52,12 +52,14 @@ if (date_f > last_date_drive){
   ####################################
   # all cases from case-based database
   ####################################
+
   root <- "https://www.health.govt.nz"
+  
   html <- read_html(m_url)
-  url1 <- html_nodes(html, xpath = '//*[@id="node-10866"]/div[2]/div/div/p[13]/a') %>%
+  url1 <- html_nodes(html, xpath = '/html/body/div[2]/div/div[1]/section/div[2]/section/div/div/div[2]/div[2]/div/article/div[2]/div/div/p[12]/a') %>%
     html_attr("href")
   
-  db_c <- read_csv(paste0(root, url1)) %>% 
+    db_c <- read_csv(paste0(root, url1)) %>% 
     as_tibble()
   
   db_c2 <- 
@@ -73,7 +75,7 @@ if (date_f > last_date_drive){
     separate(age_gr, c("Age", "trash"), sep = " to ") %>% 
     mutate(Age = case_when(Age == "90+" ~ "90",
                            TRUE ~ Age))
-    unique(db_c3$Age)
+  unique(db_c3$Age)
   
   ages <-  suppressWarnings(as.integer(unique(db_c3$Age))) %>% sort() %>% as.character()
   dates <- unique(db_c3$date_f) %>% sort()

@@ -64,8 +64,7 @@ a2 <- httr::content(r2, "text", encoding = "ISO-8859-1")
 b2 <- fromJSON(a2)
 
 date_f <-
-  b2 %>%
-  dplyr::pull(Date) %>%
+  b2$Date %>%
   max()
 
 d <- paste(sprintf("%02d", day(date_f)), sprintf("%02d", month(date_f)), year(date_f), sep = ".")
@@ -106,7 +105,6 @@ if (date_f > last_date_drive) {
   ############################################
 
   # This command append new rows at the end of the sheet
-  
   
   X <- try(sheet_append(out,
                    ss = ss_i,

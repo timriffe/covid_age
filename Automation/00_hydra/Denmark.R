@@ -18,239 +18,184 @@ at_rubric <- get_input_rubric() %>% filter(Short == "DK")
 ss_i   <- at_rubric %>% dplyr::pull(Sheet)
 ss_db  <- at_rubric %>% dplyr::pull(Source)
 
-# reading data from Denmark in Drive
-db_drive <- get_country_inputDB("DK")
-db_drive2 <- db_drive %>% 
-  mutate(Date = dmy(Date)) %>% 
-  select(-Short)
 
-# reading cases data from the zip files
-cases_zip <- read_sheet(ss_i, 
-                  sheet = "database_cases", 
-                  na = "NA", 
-                  col_types= "cccccciccd") %>% 
+# reading data from Denmark stored in N drive
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+db_n <- read_rds(paste0(dir_n, ctr, ".rds")) %>% 
   mutate(Date = dmy(Date))
-  
-last_drive <- cases_zip %>% 
-  group_by() %>% 
-  summarise(last_date = max(Date)) %>% 
-  ungroup() %>% 
-  dplyr::pull()
 
-### reading data from the website 
+# identifying dates already captured in each measure
+dates_cases_n <- db_n %>% 
+  filter(Measure == "Cases") %>% 
+  dplyr::pull(Date) %>% 
+  unique() %>% 
+  sort()
+
+dates_deaths_n <- db_n %>% 
+  filter(Measure == "Deaths") %>% 
+  dplyr::pull(Date) %>% 
+  unique() %>% 
+  sort()
+
+dates_vacc_n <- db_n %>% 
+  filter(Measure %in% c("Vaccination", "Vaccination1", "Vaccination2")) %>% 
+  dplyr::pull(Date) %>% 
+  unique() %>% 
+  sort()
+
+# reading new deaths from Drive
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+db_drive <- get_country_inputDB("DK")
+
+db_drive_deaths <- db_drive %>% 
+  mutate(Date = dmy(Date)) %>% 
+  select(-Short) %>% 
+  filter(Measure == "Deaths")
+
+# filtering deaths not included yet
+db_deaths <- db_drive_deaths %>% 
+  filter(!Date %in% dates_deaths_n)
+  
+# reading new cases from the web
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # detecting the link to the xlsx file in the website
 # this is a more stable method than using the xpath
-m_url <- "https://covid19.ssi.dk/overvagningsdata/download-fil-med-overvaagningdata"
+m_url_c <- "https://covid19.ssi.dk/overvagningsdata/download-fil-med-overvaagningdata"
 
 # capture all links with excel files
-links <- scraplinks(m_url) %>% 
+links_c <- scraplinks(m_url_c) %>% 
   filter(str_detect(link, "zip")) %>% 
   separate(link, c("a", "b", "c", "d", "e", "Date", "g", "h")) %>% 
   mutate(Date = dmy(Date)) %>% 
-  select(Date, url)
+  select(Date, url) %>% 
+  drop_na()
 
-last_report <- links %>% 
-  group_by() %>% 
-  filter(Date == max(Date)) %>% 
-  ungroup() %>% 
-  dplyr::pull(Date)
+links_new_cases <- links_c %>% 
+  filter(!Date %in% dates_cases_n)
 
-if(last_report > last_drive){
-
-  last_url <- links %>% 
-    group_by() %>% 
-    filter(Date == max(Date)) %>% 
-    ungroup() %>% 
-    dplyr::pull(url)
-  
-  # capture link with cases data by age
-  data_source <- paste0(dir_n, 
-                        "Data_sources/", 
-                        ctr,
-                        "/", 
-                        ctr,
-                        "_data_",
-                        last_report, 
-                        ".zip")
-  
-  download.file(last_url, destfile = data_source, mode = "wb")
-  db_t <- read_csv2(unz(data_source, "Cases_by_age.csv"))
-  db_sex <- read_csv2(unz(data_source, "Cases_by_sex.csv"))
-  
-  db_t2 <- db_t %>% 
-    select(Age = Aldersgruppe, Value = Antal_testede) %>% 
-    mutate(Measure = "Tests",
-           Sex = "b")
+# downloading new cases data and loading it
+dim(links_new_cases)[1] > 0
+db_cases <- tibble()
+if(dim(links_new_cases)[1] > 0){
+  # i <- 1
+  for(i in 1:dim(links_new_cases)[1]){
     
-  db_sex2 <- 
-    db_sex %>% 
-    rename(Age = 1,
-           f = 2,
-           m = 3,
-           b = 4) %>% 
-    gather(-1, key = "Sex", value = "Values") %>% 
-    separate(Values, c("Value", "trash"), sep = " ") %>% 
-    mutate(Value = as.numeric(str_replace(Value, "\\.", "")),
-           Measure = "Cases") %>% 
-    select(-trash)
+    date_c <- links_new_cases[i, 1] %>% dplyr::pull()
+    data_source_c <- paste0(dir_n, "Data_sources/", 
+                            ctr, "/", ctr, "_data_", as.character(date_c), ".zip")
+    
+    
+    download.file(as.character(links_new_cases[i, 2]), destfile = data_source_c, mode = "wb")
+    db_t <- read_csv2(unz(data_source_c, "Cases_by_age.csv"))
+    db_sex <- read_csv2(unz(data_source_c, "Cases_by_sex.csv"))
+    
+    db_t2 <- db_t %>% 
+      select(Age = Aldersgruppe, Value = Antal_testede) %>% 
+      mutate(Measure = "Tests",
+             Sex = "b")
+    
+    db_sex2 <- 
+      db_sex %>% 
+      rename(Age = 1,
+             f = 2,
+             m = 3,
+             b = 4) %>% 
+      gather(-1, key = "Sex", value = "Values") %>% 
+      separate(Values, c("Value", "trash"), sep = " ") %>% 
+      mutate(Value = as.numeric(str_replace(Value, "\\.", "")),
+             Measure = "Cases") %>% 
+      select(-trash)
+    
+    db_c <- bind_rows(db_t2, db_sex2) %>% 
+      separate(Age, c("Age", "trash"), sep = "-") %>% 
+      mutate(Age = case_when(Age == "90+" ~ "90",
+                             Age == "I alt" ~ "TOT",
+                             TRUE ~ Age),
+             Date = date_c) %>% 
+      select(-trash)
+    
+      db_cases <- db_cases %>% 
+      bind_rows(db_c)
+    
+  }
+}
+
+# reading new vaccines from the web
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+m_url_v <- "https://covid19.ssi.dk/overvagningsdata/download-fil-med-vaccinationsdata"
+
+links_v <- scraplinks(m_url_v) %>% 
+  filter(str_detect(link, "zip")) %>% 
+  separate(link, c("a", "b", "c", "d", "e", "f", "g", "h")) %>% 
+  mutate(Date = make_date(y = h, m = g, d = f)) %>% 
+  select(Date, url) %>% 
+  drop_na() 
+
+links_new_vacc <- links_v %>% 
+  filter(!Date %in% dates_vacc_n)
+
+# downloading new vaccine data and loading it
+dim(links_new_vacc)[1] > 0
+db_vcc <- tibble()
+if(dim(links_new_vacc)[1] > 0){
+  for(i in 1:dim(links_new_vacc)[1]){
+    
+    date_v <- links_new_vacc[i, 1] %>% dplyr::pull()
+    data_source_v <- paste0(dir_n, "Data_sources/", 
+                            ctr, "/", ctr, "_vaccines_", as.character(date_v), ".zip")
+    download.file(as.character(links_new_vacc[i, 2]), destfile = data_source_v, mode = "wb")
+    
+    try(db_v <- read_csv(unz(data_source_v, "Vaccine_DB/Vaccinationer_region_aldgrp_koen.csv")))
+    try(db_v <- read_csv(unz(data_source_v, "ArcGIS_dashboards_data/Vaccine_DB/Vaccinationer_region_aldgrp_koen.csv")))
   
-  db2 <- bind_rows(db_t2, db_sex2) %>% 
-    separate(Age, c("Age", "trash"), sep = "-") %>% 
-    mutate(Age = case_when(Age == "90+" ~ "90",
-                           Age == "I alt" ~ "TOT",
-                           TRUE ~ Age))
-  
-  db_zip_new <- 
-    db2 %>% 
-    mutate(Date = paste(sprintf("%02d", day(last_report)),
-                        sprintf("%02d", month(last_report)),
-                        year(last_report), sep = "."),
+    db_v2 <- db_v %>% 
+      rename(Age = 2,
+             Sex = sex,
+             Vaccination1 = 4,
+             Vaccination2 = 5) %>% 
+      gather(Vaccination1, Vaccination2, key = Measure, value = Value) %>% 
+      group_by(Age, Sex, Measure) %>% 
+      summarise(Value = sum(Value)) %>% 
+      ungroup() %>%
+      mutate(Sex = recode(Sex,
+                          "K" = "f",
+                          "M" = "m"),
+             Age = str_sub(Age, 1, 2),
+             Age = case_when(Age == "0-" ~ "0",
+                             is.na(Age) ~ "UNK",
+                             TRUE ~ Age),
+             Date = date_v)
+    
+    db_vcc <- db_vcc %>% 
+      bind_rows(db_v2)
+    
+  }
+}
+
+db_cases_vcc <- tibble()
+
+if(dim(links_new_vacc)[1] > 0 | dim(links_new_cases)[1] > 0){
+  db_cases_vcc <- 
+    bind_rows(db_cases, db_vcc) %>% 
+    mutate(Date = ddmmyyyy(Date),
            Country = "Denmark",
            Code = paste0("DK", Date),
            Region = "All",
            AgeInt = case_when(Age == "90" ~ 15L, 
                               Age == "TOT" ~ NA_integer_,
+                              Age == "UNK" ~ NA_integer_,
                               TRUE ~ 10L),
-           Metric = "Count") %>% 
-    arrange(Region, Measure, Sex, suppressWarnings(as.integer(Age))) %>% 
-    select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
-  
-  sheet_append(db_zip_new,
-               ss = ss_i,
-               sheet = "database_cases")
-  
-  cases_zip2 <- cases_zip %>% 
-    bind_rows(db_zip_new %>% 
-                mutate(Date = dmy(Date))) %>% 
-    select(Date, Sex, Age, Measure, Value)
-
-} else {
-  cases_zip2 <- cases_zip %>% 
-    select(Date, Sex, Age, Measure, Value)
+           Metric = "Count") 
 }
 
-
-# replace in database in Drive the unknown values in age by total age values
-db_drive_tots <- db_drive2 %>% 
-  group_by(Date, Sex, Measure) %>% 
-  summarise(Value = sum(Value)) %>% 
-  ungroup() %>% 
-  mutate(Age = "TOT")
-
-db_drive_all <- db_drive2 %>% 
-  mutate(Age = as.character(Age)) %>% 
-  filter(Age != "UNK") %>% 
-  select(Date, Sex, Age, Measure, Value) %>% 
-  bind_rows(db_drive_tots) %>% 
-  arrange(Date, Measure, Sex, suppressWarnings(as.integer(Age)))
-
-# identify which rows in the Drive database are already collected from the zip files
-combs_zip <- cases_zip2 %>% 
-  select(Date, Sex, Age, Measure) %>% 
-  mutate(inzip = 1)
-
-db_no_zip <- db_drive_all %>% 
-  left_join(combs_zip) %>% 
-  replace_na(list(inzip = 0)) %>% 
-  filter(inzip != 1) %>% 
-  select(-inzip)
-
-out <- db_no_zip %>% 
-  bind_rows(cases_zip2) %>% 
-  mutate(date_f = Date,
-         Date = paste(sprintf("%02d", day(date_f)),
-                      sprintf("%02d", month(date_f)),
-                      year(date_f), sep = "."),
-         Country = "Denmark",
-         Code = paste0("DK", Date),
-         Region = "All",
-         AgeInt = case_when(Age == "90" ~ 15L, 
-                            Age == "TOT" ~ NA_integer_,
-                            TRUE ~ 10L),
-         Metric = "Count") %>% 
-  arrange(date_f, Region, Measure, Sex, suppressWarnings(as.integer(Age))) %>% 
-  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) 
+out <- 
+  bind_rows(db_n, db_deaths) %>% 
+  mutate(Date = ddmmyyyy(Date)) %>% 
+  bind_rows(db_cases_vcc) %>% 
+  sort_input_data() 
 
 ###########################
 #### Saving data in N: ####
 ###########################
 write_rds(out, paste0(dir_n, ctr, ".rds"))
 log_update(pp = ctr, N = nrow(out))
-
-
-# collectind data in zipped files from previous dates
-# done 23.12.2020
-#####################################################
-# 
-# dim(links)
-# 
-# db4 <- NULL
-# 
-# for(i in 1:dim(links)[1]){
-# # for(i in 1:4){
-#     # i <- 1
-#   url <- links[i, 2] %>% dplyr::pull()
-#   date_f <- links[i, 1] %>% dplyr::pull()
-# 
-# # capture link with cases data by age
-#   data_source <- paste0(dir_n,
-#                         "Data_sources/",
-#                         ctr,
-#                         "/",
-#                         ctr,
-#                         "_data_",
-#                         date_f,
-#                         ".zip")
-# 
-#   download.file(url, destfile = data_source, mode = "wb")
-#   db_t <- read_csv2(unz(data_source, "Cases_by_age.csv"))
-#   db_sex <- read_csv2(unz(data_source, "Cases_by_sex.csv"))
-# 
-#   db_t2 <- db_t %>%
-#     select(Age = Aldersgruppe, Value = Antal_testede) %>%
-#     mutate(Measure = "Tests",
-#            Sex = "b")
-# 
-#   db_sex2 <-
-#     db_sex %>%
-#     rename(Age = 1,
-#            f = 2,
-#            m = 3,
-#            b = 4) %>%
-#     gather(-1, key = "Sex", value = "Values") %>%
-#     separate(Values, c("Value", "trash"), sep = " ") %>%
-#     mutate(Value = as.numeric(str_replace(Value, "\\.", "")),
-#            Measure = "Cases") %>%
-#     select(-trash)
-# 
-#   db2 <- bind_rows(db_t2, db_sex2) %>%
-#     separate(Age, c("Age", "trash"), sep = "-") %>%
-#     mutate(Age = case_when(Age == "90+" ~ "90",
-#                            Age == "I alt" ~ "TOT",
-#                            TRUE ~ Age))
-# 
-#   db3 <-
-#     db2 %>%
-#     mutate(Date = paste(sprintf("%02d", day(date_f)),
-#                         sprintf("%02d", month(date_f)),
-#                         year(date_f), sep = "."),
-#            Country = "Denmark",
-#            Code = paste0("DK", Date),
-#            Region = "All",
-#            AgeInt = case_when(Age == "90" ~ 15L,
-#                               Age == "TOT" ~ NA_integer_,
-#                               TRUE ~ 10L),
-#            Metric = "Count")
-#     
-#   db4 <- db4 %>%
-#     bind_rows(db3)
-# }
-# 
-# db5 <- db4 %>%
-#   mutate(date_f = dmy(Date)) %>% 
-#   arrange(date_f, Region, Measure, Sex, suppressWarnings(as.integer(Age))) %>%
-#   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
-# 
-# write_sheet(db5,
-#             ss = ss_i,
-#             sheet = "database_cases")

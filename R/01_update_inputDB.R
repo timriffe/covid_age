@@ -12,7 +12,7 @@ change_here <- function(new_path){
 }
 
 me.this.is.me <- Sys.getenv("USERNAME")
-change_here(paste0("C:/Users/",me.this.is.me,"/Documents/covid_age"))
+change_here(Sys.getenv("path_repo"))
 
 setwd(here())
 startup::startup()
@@ -263,13 +263,12 @@ if (schedule_this){
   library(taskscheduleR)
   taskscheduler_delete("COVerAGE-DB-every-8-hour-inputDB-updates")
   taskscheduler_create(taskname = "COVerAGE-DB-every-8-hour-inputDB-updates", 
-                       rscript =  paste0("C:/Users/",me.this.is.me,"/Documents/covid_age/R/01_update_inputDB.R"), 
+                       rscript =  paste0(Sys.getenv("path_repo"), "/R/01_update_inputDB.R"), 
                        schedule = "HOURLY", 
                        modifier = 8,
-                       starttime = "16:30",
-                       startdate = format(Sys.Date(), "%d/%m/%Y"))
+                       starttime = "10:30",
+                       startdate = format(Sys.Date(), "%m/%d/%Y"))
   # 
 }
-
 
 

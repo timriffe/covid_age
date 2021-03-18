@@ -419,7 +419,8 @@ cz_spreadsheet_all <-
          Metric, 
          Measure, 
          Value) %>% 
-    arrange(dmy(Date), Sex, Measure, Age)
+  arrange(dmy(Date), Sex, Measure, Age) %>% 
+  mutate(Age = as.character(Age))
 
 out <- bind_rows(cz_spreadsheet_all, cz_spreadsheet_region)
 
