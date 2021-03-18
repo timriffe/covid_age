@@ -170,7 +170,7 @@ outputCounts_5_1e5_rounded <-
 # Save csv
 header_msg1 <- "Counts of Cases, Deaths, and Tests in harmonized 5-year age groups"
 header_msg2 <- paste("Built:",timestamp(prefix="",suffix=""))
-header_msg3 <- paste("Reproducible with: ",paste0("https://github.com/timriffe/covid_age/commit/",system("git rev-parse HEAD", intern=TRUE)))
+header_msg3 <- paste("Reproducible with: ",paste0("https://github.com/", Sys.getenv("git_handle"), "/covid_age/commit/",system("git rev-parse HEAD", intern=TRUE)))
 
 #write_lines(header_msg, path = here("Data","Output_5.csv"))
 #write_csv(outputCounts_5_1e5_rounded, path = here("Data","Output_5.csv"), append = TRUE, col_names = TRUE)
@@ -218,7 +218,7 @@ outputCounts_10_rounded <-
 # Save CSV
 header_msg1 <- "Counts of Cases, Deaths, and Tests in harmonized 10-year age groups"
 header_msg2 <- paste("Built:",timestamp(prefix="",suffix=""))
-header_msg3 <- paste("Reproducible with: ",paste0("https://github.com/timriffe/covid_age/commit/",system("git rev-parse HEAD", intern=TRUE)))
+header_msg3 <- paste("Reproducible with: ",paste0("https://github.com/", Sys.getenv("git_handle"), "/covid_age/commit/",system("git rev-parse HEAD", intern=TRUE)))
 
 
 #write_lines(header_msg, path = here("Data","Output_10.csv"))
