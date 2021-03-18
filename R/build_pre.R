@@ -10,6 +10,7 @@ change_here <- function(new_path){
 
 change_here(Sys.getenv("path_repo"))
 
+change_here(Sys.getenv("path_repo"))
 startup::startup()
 setwd(here())
 
