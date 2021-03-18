@@ -249,9 +249,13 @@ if (nrow(rubric) > 0){
   if (class(a)[1]=="try-error"){
     a <- try(git2r::pull(repo,credentials = creds) )
   }
-  commit(repo, 
-         message = "update inputDB logfile", 
-         all = TRUE)
+  
+  b <- git2r::status()
+  if (length(b$unstaged) > 0){
+    commit(repo, 
+           message = "update inputDB logfile", 
+           all = TRUE)
+  }
   
   git2r::push(repo,credentials = creds)
 }

@@ -16,10 +16,12 @@ repo <- git2r::repository(here())
 #init()
 git2r::pull(repo,credentials = cred_token()) # possibly creds not making it this far?
 
-commit(repo, 
-       message = "global commit", 
-       all = TRUE)
-
+a <- git2r::status()
+if (length(a$unstaged) > 0){
+  commit(repo, 
+         message = "global commit", 
+         all = TRUE)
+}
 git2r::push(repo,credentials = cred_token())
 
 
