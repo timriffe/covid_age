@@ -606,3 +606,15 @@ filter( Code == 'NO09.03.2021', Sex == 'b', Measure == 'Deaths' )
 # push outputs to OSF 
  Wed Mar 17 03:54:30 2021 
 
+
+# remake coverage map 
+ Wed Mar 17 09:09:03 2021 
+
+
+# push outputs to OSF 
+ Wed Mar 17 09:13:41 2021 
+
+
+# Commit dashboards and buildlog 
+ Wed Mar 17 09:15:44 2021 
+
