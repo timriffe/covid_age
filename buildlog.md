@@ -1,12 +1,12 @@
 
 # New build log 
-<<<<<<< HEAD
+
  Thu Mar 18 12:58:50 2021 
 
 
 # begin resolution of multiple sources per population 
  Thu Mar 18 12:58:50 2021 
-=======
+
  Wed Mar 17 12:41:08 2021 
 
 
@@ -626,5 +626,5 @@ filter( Code == 'NO09.03.2021', Sex == 'b', Measure == 'Deaths' )
 
 # update build series log 
  Wed Mar 17 09:15:50 2021 
->>>>>>> b9d299ea7c156e519d3e5d75792f2166836d097f
+
 
