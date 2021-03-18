@@ -16,10 +16,14 @@ git2r::pull(repo,credentials = cred_token()) # possibly creds not making it this
 # specify a custom remote using git2r::pull
 system("git pull kike master")
 
+a <- git2r::status()
+if (length(a$unstaged) > 0){
+  commit(repo, 
+         message = "auto sync with kike", 
+         all = TRUE)
+}
 
-commit(repo, 
-       message = "auto sync with kike", 
-       all = TRUE)
+
 
 git2r::push(repo,credentials = cred_token())
 
