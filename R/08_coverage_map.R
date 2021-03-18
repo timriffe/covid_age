@@ -159,6 +159,4 @@ map_out <-
 ggsave(here("assets","coveragemap.svg"), map_out, width = 30, height = 20, units = "cm")
 ggsave(here("assets","coveragemap.png"), map_out, width = 30, height = 20, units = "cm", dpi=300)
 
-
-
 rm(list=setdiff(ls(), c("logfile","creds")))
