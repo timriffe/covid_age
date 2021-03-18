@@ -8,9 +8,8 @@ change_here <- function(new_path){
   assignInNamespace(".root_env", new_root, ns = "here")
 }
 
-me.this.is.me <- Sys.getenv("USERNAME")
 
-change_here(paste0("C:/Users/",me.this.is.me,"/Documents/covid_age"))
+change_here(Sys.getenv("repo_path"))
 startup::startup()
 setwd(here())
 
