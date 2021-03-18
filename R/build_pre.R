@@ -10,7 +10,7 @@ change_here <- function(new_path){
 
 me.this.is.me <- Sys.getenv("USERNAME")
 
-change_here(paste0("C:/Users/",me.this.is.me,"/Documents/covid_age"))
+change_here(Sys.getenv("path_repo"))
 startup::startup()
 setwd(here())
 
@@ -29,7 +29,7 @@ if (schedule_this){
   taskscheduleR::taskscheduler_delete("COVerAGE-DB-automatic-daily-build")
   taskscheduleR::taskscheduler_create(
                        taskname = "COVerAGE-DB-automatic-daily-build", 
-                       rscript = paste0("C:/Users/",me.this.is.me,"/Documents/covid_age/R/build_pre.R"), 
+                       rscript =  paste0(Sys.getenv("path_repo"), "/R/build_pre.R"), 
                        schedule = "DAILY", 
                        starttime = "01:00",
                        startdate = format(Sys.Date()+1 , "%d/%m/%Y"))
@@ -40,10 +40,12 @@ test_schedule_build <- FALSE
 if (test_schedule_build){
   library(taskscheduleR)
   taskscheduler_create(taskname = "COVerAGE-DB-automatic-build-test", 
-                       rscript = "C:/Users/riffe/Documents/covid_age/R/build_pre.R", 
+                       rscript =  paste0(Sys.getenv("path_repo"), "/R/build_pre.R"), 
                        schedule = "ONCE", 
                        starttime = format(Sys.time() + 61, "%H:%M"))
 }
+
+
 
 #taskscheduleR::taskscheduler_delete("COVerAGE-DB-automatic-build-test")
 
