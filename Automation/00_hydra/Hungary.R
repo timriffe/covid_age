@@ -67,7 +67,6 @@ ages_all  <- 0:104
 # we expect this many rows:
 #length(dates_all) *length(ages_all) * 2 
 
-
 out <-
   res %>% 
   select(-Comorbidities) %>% 
@@ -77,9 +76,10 @@ out <-
   # But then we catch it on the next update.
   filter(!is.na(date)) %>% 
   arrange(date, Sex, Age) %>% 
-  mutate(Age = ifelse(Age > 104,104,Age)) %>% 
-  group_by(date,Sex, Age) %>% 
+  mutate(Age = ifelse(Age > 104, 104, Age)) %>% 
+  group_by(date, Sex, Age) %>% 
   summarize(Value = n(), .groups = "drop") %>% 
+  tidyr::complete(date = dates_all, Sex, Age = ages_all, fill = list(Value = 0)) %>% 
   arrange(Sex, Age, date) %>% 
   group_by(Sex, Age) %>% 
   mutate(Value = cumsum(Value)) %>% 
@@ -94,7 +94,6 @@ out <-
          AgeInt = 1L,
          Age = as.character(Age)) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
-
 
 #save output data
 
