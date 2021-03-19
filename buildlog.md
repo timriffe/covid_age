@@ -604,3 +604,11 @@ filter( Code == 'NO09.03.2021', Sex == 'b', Measure == 'Deaths' )
 # Compile metadata 
  Wed Mar 17 17:00:34 2021 
 
+
+# Building dashboards 
+ Thu Mar 18 14:17:13 2021 
+
+
+# update build series log 
+ Thu Mar 18 14:38:03 2021 
+

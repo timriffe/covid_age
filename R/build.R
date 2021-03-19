@@ -33,7 +33,7 @@ source(here("R","04_harmonize_age_groups.R"))
 # ---------------------- #
 
 # um, let's just do this Wed and Sun?
-source(here("R","05_compile_metadata.R"))
+# source(here("R","05_compile_metadata.R"))
 
 # ---------------------- #
 
