@@ -14,29 +14,24 @@ change_here <- function(new_path){
 me.this.is.me <- Sys.getenv("USERNAME")
 change_here(Sys.getenv("path_repo"))
 
-setwd(here())
+setwd(here::here())
 startup::startup()
 # always work with the most uptodate repository
 
-
- creds <- structure(list(username = Sys.getenv("GITHUB_USER"), 
-                         password = Sys.getenv("GITHUB_PASS")), 
-                    class = "cred_user_pass")
-repo <- git2r::repository(here())
+repo <- git2r::repository(here::here())
 #init()
-a <- git2r::pull(repo,credentials = creds)
+a <- git2r::pull(repo,credentials = cred_token())
 if (class(a)[1]=="try-error"){
-  a <- try(git2r::pull(repo,credentials = creds) )
+  a <- try(git2r::pull(repo,credentials = cred_token()) )
 }
 if (class(a)[1]=="try-error"){
-  a <- try(git2r::pull(repo,credentials = creds) )
+  a <- try(git2r::pull(repo,credentials = cred_token()) )
 }
-
 
 # Functions
-source(here("R","00_Functions.R"))
+source(here::here("R","00_Functions.R"))
 
-logfile <- here("inputDB_compile_log.md")
+logfile <- here::here("inputDB_compile_log.md")
 
 # read in the log file, do we start a new one?
 # if it's Sunday then yes.
@@ -74,13 +69,14 @@ rubric <- bind_rows(rubric, NAM)
 
 if (nrow(rubric) > 0){
   # read in modified data templates (this is the slowest part)
+  # rubric <- get_input_rubric()
   inputDB <- compile_inputDB(rubric, hours = Inf)
   # saveRDS(inputDB,here("Data","inputDBhold.rds"))
   # what data combinations have we read in?
   codesIN     <- with(inputDB, paste(Country, Region, Measure, Short)) %>% unique()
   
   # Read in previous unfiltered inputDB
-  inputDBhold <- readRDS(here("Data","inputDBhold.rds"))
+  inputDBhold <- readRDS(here::here("Data","inputDBhold.rds"))
   
   # remove any codes we just read in
   inputDBhold <- 
@@ -94,7 +90,7 @@ if (nrow(rubric) > 0){
     sort_input_data()
   
   # resave out to the full unfltered inputDB.
-  saveRDS(inputDBhold, here("Data","inputDBhold.rds"))
+  saveRDS(inputDBhold, here::here("Data","inputDBhold.rds"))
   
   # TR: this is temporary:
   inputDB$templateID <- NULL
@@ -202,7 +198,7 @@ if (nrow(rubric) > 0){
   
   ids_new       <- with(inputDB, paste(Country,Region,Measure,Short))
   
-  inputDB_prior <- readRDS(here("Data","inputDB.rds")) %>% 
+  inputDB_prior <- readRDS(here::here("Data","inputDB.rds")) %>% 
     mutate(Short = add_Short(Code,Date))
   
   inputDB_out <-
@@ -222,23 +218,23 @@ if (nrow(rubric) > 0){
            !is.na(Country),
            !is.na(dmy(Date))) 
   
-  saveRDS(inputDB_out, here("Data","inputDB.rds"))
+  saveRDS(inputDB_out, here::here("Data","inputDB.rds"))
 
   #saveRDS(inputDB, here("Data","inputDB_i.rds"))
   
   # public file, full precision.
   header_msg <- paste("COVerAGE-DB input database, filtered after some simple checks:",timestamp(prefix = "", suffix = ""))
   data.table::fwrite(as.list(header_msg), 
-                     file = here("Data","inputDB.csv"))
+                     file = here::here("Data","inputDB.csv"))
   data.table::fwrite(inputDB_out, 
-                     file = here("Data","inputDB.csv"), 
+                     file = here::here("Data","inputDB.csv"), 
                      append = TRUE, col.names = TRUE)
   
   # push logfile to github:
   library(usethis)
   library(git2r)
   
-  repo <- git2r::repository(here())
+  repo <- git2r::repository(here::here())
   #init()
 
   # make a couple attempts
