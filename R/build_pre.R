@@ -8,7 +8,7 @@ change_here <- function(new_path){
   assignInNamespace(".root_env", new_root, ns = "here")
 }
 
-me.this.is.me <- Sys.getenv("USERNAME")
+change_here(Sys.getenv("path_repo"))
 
 change_here(Sys.getenv("path_repo"))
 startup::startup()
@@ -16,11 +16,11 @@ setwd(here())
 
 Sys.setenv(RSTUDIO_PANDOC = "C:/Program Files/RStudio/bin/pandoc")
 repo <- git2r::repository(here())
-creds <- structure(list(username = Sys.getenv("GITHUB_USER"), 
-                        password = Sys.getenv("GITHUB_PASS")), 
-                   class = "cred_user_pass")
+# creds <- structure(list(username = Sys.getenv("GITHUB_USER"), 
+#                         password = Sys.getenv("GITHUB_PASS")), 
+#                    class = "cred_user_pass")
 #init()
-git2r::pull(repo,credentials = creds)
+git2r::pull(repo,credentials = cred_token())
 
 source(here("R","build.R"))
 

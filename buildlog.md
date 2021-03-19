@@ -1,5 +1,12 @@
 
 # New build log 
+
+ Thu Mar 18 12:58:50 2021 
+
+
+# begin resolution of multiple sources per population 
+ Thu Mar 18 12:58:50 2021 
+
  Wed Mar 17 12:41:08 2021 
 
 
@@ -603,4 +610,21 @@ filter( Code == 'NO09.03.2021', Sex == 'b', Measure == 'Deaths' )
 
 # Compile metadata 
  Wed Mar 17 17:00:34 2021 
+
+
+# remake coverage map 
+ Wed Mar 17 09:09:03 2021 
+
+
+# push outputs to OSF 
+ Wed Mar 17 09:13:41 2021 
+
+
+# Commit dashboards and buildlog 
+ Wed Mar 17 09:15:44 2021 
+
+
+# update build series log 
+ Wed Mar 17 09:15:50 2021 
+
 
