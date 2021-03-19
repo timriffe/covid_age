@@ -1511,7 +1511,7 @@ infer_both_sex <- function(chunk, verbose = FALSE){
 ### do_we_maybe_lower_closeout()
 # Check if close out age needs to be lowered 
 # @param chunk Data chunk
-# param OAnew_min numeric Minimum close out age
+# @param OAnew_min numeric Minimum close out age
 
 do_we_maybe_lower_closeout <- function(chunk, OAnew_min, Amax) {
   
