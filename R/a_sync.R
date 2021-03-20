@@ -1,5 +1,31 @@
 
-setwd(Sys.getenv("path_repo"))
+#setwd("C:/Users/riffe/Documents/covid_age")
+
+# initial.options <- commandArgs(trailingOnly = FALSE)
+# file.arg.name   <- "--file="
+# script.name     <- sub(file.arg.name,"",initial.options[grep(file.arg.name,initial.options)])
+# setwd(dirname(script.name))
+wd_sched_detect <- function(){
+  if (!interactive()){
+    initial.options <- commandArgs(trailingOnly = FALSE)
+    file.arg.name   <- "--file="
+    script.name     <- sub(file.arg.name,"",initial.options[grep(file.arg.name,initial.options)]) 
+    
+    wd <- script.name 
+  }else {
+    wd <- getwd()
+  }
+  for (i in 1:3){
+    bname <- basename(wd)
+    if (bname == "covid_age"){
+      break
+    }
+    wd <- dirname(wd)
+  }
+  wd
+}
+setwd(wd_sched_detect())
+
 
 source("~/.Rprofile")
 source(file.path("R","00_Functions.R"))
@@ -38,3 +64,14 @@ if (schedule_this){
     starttime = "06:00",
     startdate = format(Sys.Date() , "%d/%m/%Y"))
 }
+
+schedule_test <- FALSE
+if (schedule_test){
+  taskscheduleR::taskscheduler_delete("COVerAGE-DB-automatic-daily-sync-test")
+  taskscheduleR::taskscheduler_create(
+    taskname = "COVerAGE-DB-automatic-daily-sync-test", 
+    rscript = file.path(Sys.getenv("path_repo"),"R","a_sync.R"), 
+    schedule = "ONCE", 
+    starttime = "08:14")
+}
+

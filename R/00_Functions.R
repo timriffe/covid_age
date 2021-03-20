@@ -2275,3 +2275,23 @@ ddmmyyyy <- function(Date,sep = "."){
         sprintf("%02d",month(Date)),  
         year(Date),sep=sep)
 }
+
+wd_sched_detect <- function(){
+  if (!interactive()){
+    initial.options <- commandArgs(trailingOnly = FALSE)
+    file.arg.name   <- "--file="
+    script.name     <- sub(file.arg.name,"",initial.options[grep(file.arg.name,initial.options)]) 
+    
+    wd <- script.name 
+  }else {
+    wd <- getwd()
+  }
+  for (i in 1:3){
+    bname <- basename(wd)
+    if (bname == "covid_age"){
+      break
+    }
+    wd <- dirname(wd)
+  }
+  wd
+}

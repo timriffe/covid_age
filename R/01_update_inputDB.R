@@ -11,8 +11,8 @@ change_here <- function(new_path){
   source("~/.Rprofile")
 }
 
-me.this.is.me <- Sys.getenv("USERNAME")
-change_here(Sys.getenv("path_repo"))
+# me.this.is.me <- Sys.getenv("USERNAME")
+change_here(wd_sched_detect())
 
 setwd(here::here())
 startup::startup()
