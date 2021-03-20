@@ -8,7 +8,6 @@ change_here <- function(new_path){
   assignInNamespace(".root_env", new_root, ns = "here")
 }
 
-change_here(Sys.getenv("path_repo"))
 
 change_here(Sys.getenv("path_repo"))
 startup::startup()

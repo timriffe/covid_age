@@ -1,5 +1,5 @@
 
-setwd(Sys.getenv("path_repo"))
+setwd("C:/Users/riffe/Documents/covid_age")
 
 source("~/.Rprofile")
 source(file.path("R","00_Functions.R"))
@@ -46,6 +46,6 @@ if (schedule_test){
     taskname = "COVerAGE-DB-automatic-daily-sync-test", 
     rscript = file.path(Sys.getenv("path_repo"),"R","a_sync.R"), 
     schedule = "ONCE", 
-    starttime = "08:05")
+    starttime = "08:14")
 }
 
