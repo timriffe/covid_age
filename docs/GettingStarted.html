@@ -412,7 +412,7 @@ summary {
 
 <h1 class="title toc-ignore">Getting started with COVerAGE-DB datasets</h1>
 <h4 class="author">COVerAGE-DB</h4>
-<h4 class="date">18 March, 2021</h4>
+<h4 class="date">20 March, 2021</h4>
 
 </div>
 
@@ -526,12 +526,9 @@ Out &lt;-
   filter(Country == &quot;Spain&quot;, Region == &quot;All&quot;)
 
 # save it out
-write_csv(Out, path = &quot;Spain_Output_10.csv&quot;)</code></pre>
-<pre><code>## Warning: The `path` argument of `write_csv()` is deprecated as of readr 1.4.0.
-## Please use the `file` argument instead.
-## This warning is displayed once every 8 hours.
-## Call `lifecycle::last_warnings()` to see where this warning was generated.</code></pre>
-<pre class="r"><code># or for the inputDB
+write_csv(Out, path = &quot;Spain_Output_10.csv&quot;)
+
+# or for the inputDB
 In &lt;-
   inputDB %&gt;%
   filter(Country == &quot;Spain&quot;, Region == &quot;All&quot;)

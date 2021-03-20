@@ -227,14 +227,14 @@ if (nrow(rubric) > 0){
   
   repo <- git2r::repository(here::here())
   #init()
-
+  
   # make a couple attempts
-  a <- try(git2r::pull(repo,credentials = creds) )
+  a <- git2r::pull(repo,credentials = cred_token())
   if (class(a)[1]=="try-error"){
-    a <- try(git2r::pull(repo,credentials = creds) )
+    a <- try(git2r::pull(repo,credentials = cred_token()) )
   }
   if (class(a)[1]=="try-error"){
-    a <- try(git2r::pull(repo,credentials = creds) )
+    a <- try(git2r::pull(repo,credentials = cred_token()) )
   }
   
   b <- git2r::status()
@@ -244,7 +244,7 @@ if (nrow(rubric) > 0){
            all = TRUE)
   }
   
-  git2r::push(repo,credentials = creds)
+  git2r::push(repo,credentials = cred_token())
 }
 schedule_this <- FALSE
 if (schedule_this){
