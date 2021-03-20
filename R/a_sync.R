@@ -1,5 +1,12 @@
 
-setwd("C:/Users/riffe/Documents/covid_age")
+#setwd("C:/Users/riffe/Documents/covid_age")
+
+# initial.options <- commandArgs(trailingOnly = FALSE)
+# file.arg.name   <- "--file="
+# script.name     <- sub(file.arg.name,"",initial.options[grep(file.arg.name,initial.options)])
+# setwd(dirname(script.name))
+
+
 
 source("~/.Rprofile")
 source(file.path("R","00_Functions.R"))
