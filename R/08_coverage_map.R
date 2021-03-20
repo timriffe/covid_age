@@ -1,7 +1,7 @@
 # TODO: maybe switch to Natural Earth map source,
 # https://cran.r-project.org/web/packages/rnaturalearth/vignettes/what-is-a-country.html
-library(here)
-source(here("R","00_Functions.R"))
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
+
 logfile <- here("buildlog.md")
 
 log_section("remake coverage map", append = TRUE, logfile = logfile)

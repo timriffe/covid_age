@@ -1,17 +1,8 @@
 ### Functions & settings ############################################
 
 # prelims
-library(here)
-change_here <- function(new_path){
-  new_root <- here:::.root_env
-  
-  new_root$f <- function(...){file.path(new_path, ...)}
-  
-  assignInNamespace(".root_env", new_root, ns = "here")
-  source("~/.Rprofile")
-}
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
 
-# me.this.is.me <- Sys.getenv("USERNAME")
 change_here(wd_sched_detect())
 
 setwd(here::here())

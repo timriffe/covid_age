@@ -2,19 +2,21 @@
 # Ideally this would generate an email, but it looks tricky to configure. 
 # Can think about tweeting out daily stats when we get a twitter account.
 
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
+change_here(wd_sched_detect())
 
 library(lubridate)
 library(googlesheets4)
 library(tidyverse)
 library(here)
 
-logfile <- here("buildlog.md")
+logfile <- here::here("buildlog.md")
 log_section("update build series log", append = TRUE, logfile = logfile)
 
 
 Date <- lubridate::today()
-idb  <- readRDS(here("Data","inputDB.rds"))
-o5   <- readRDS(here("Data","Output_5.rds"))
+idb  <- readRDS(here::here("Data","inputDB.rds"))
+o5   <- readRDS(here::here("Data","Output_5.rds"))
 
 append_this <- tibble(Date = Date,
                       `Rows (inputDB)` = nrow(idb),

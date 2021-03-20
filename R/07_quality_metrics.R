@@ -1,4 +1,5 @@
-source(here("R","00_Functions.R"))
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
+
 # some functions internal to this script
 add_b_margin <- function(chunk){
   if (nrow(chunk) > 0){
@@ -17,10 +18,10 @@ add_b_margin <- function(chunk){
 
 # Script should calculate
 
-inputDB   <- readRDS(here("Data","inputDB.rds"))
-Output_10 <- readRDS(here("Data","Output_10.rds"))
-Offsets   <- readRDS(here("Data","Offsets.rds"))
-Metadata  <-readRDS(here("Data","metadata_important.rds"))
+inputDB   <- readRDS(here::here("Data","inputDB.rds"))
+Output_10 <- readRDS(here::here("Data","Output_10.rds"))
+Offsets   <- readRDS(here::here("Data","Offsets.rds"))
+Metadata  <- readRDS(here::here("Data","metadata_important.rds"))
 # I How aggressive is scaling? (also UNK rescaling) - time varying
 inputDB <- 
   inputDB %>% 
@@ -36,7 +37,7 @@ inputDB <-
 
 IDB_marginal_sums <- 
   inputDB %>% 
-  filter(! Age %in% c("TOT","UNK"),
+  dplyr::filter(! Age %in% c("TOT","UNK"),
          Metric == "Count") %>% 
   mutate(Date = dmy(Date)) %>% 
   group_by(Country, Region, Code, Date, Sex, Measure) %>% 
@@ -71,7 +72,7 @@ Marginal_sums_check <-
   mutate(cases_known_age = Cases / CasesFinal,
          deaths_known_age = Deaths / DeathsFinal,
          tests_known_age = Tests / TestsFinal) %>% 
-  select(Country,Region,Code,Date,Sex,cases_known_age,deaths_known_age,tests_known_age)
+  dplyr::select(Country,Region,Code,Date,Sex,cases_known_age,deaths_known_age,tests_known_age)
 
 # Marginal_sums_check %>% 
 #   filter(Country == "France",
@@ -92,7 +93,7 @@ Marginal_sums_check <-
 NAgeCategories <-
   inputDB %>% 
   mutate(Date = dmy(Date)) %>% 
-  filter(! Age %in% c("TOT","UNK")) %>% 
+  dplyr::filter(! Age %in% c("TOT","UNK")) %>% 
   group_by(Country,Region,Code,Date,Sex,Measure) %>% 
   summarize(N = n()) %>% 
   ungroup() %>% 
@@ -100,7 +101,7 @@ NAgeCategories <-
   rename(cases_N_ages = Cases,
          deaths_N_ages = Deaths,
          tests_N_ages = Tests) %>% 
-  select(-ASCFR)
+  dplyr::select(-ASCFR)
 # III Open age
 
 # 1) get inputDB:
@@ -110,7 +111,7 @@ NAgeCategories <-
 
 MaxAge <-
   inputDB %>% 
-  filter(! Age %in% c("TOT","UNK")) %>% 
+  dplyr::filter(! Age %in% c("TOT","UNK")) %>% 
   mutate(Age = as.integer(Age),
          Date = dmy(Date)) %>% 
   group_by(Country,Region,Code,Date,Sex,Measure) %>% 
@@ -120,7 +121,7 @@ MaxAge <-
   rename(cases_max_age = Cases,
          deaths_max_age = Deaths,
          tests_max_age = Tests) %>% 
-  select(-ASCFR)
+  dplyr::select(-ASCFR)
 
 # IV Offsets yes/no
 
@@ -132,14 +133,14 @@ n <- duplicated(Output_10[,c("Country","Region","Sex")])
 
 SubPops <-
   Output_10 %>% 
-  select(Country,Region,Sex) %>% 
-  filter(!n)
+  dplyr::select(Country,Region,Sex) %>% 
+  dplyr::filter(!n)
 
 n <- duplicated(Offsets[,c("Country","Region","Sex")])
 SubPopOffsets <-
   Offsets %>% 
-  select(Country,Region,Sex) %>% 
-  filter(!n) %>% 
+  dplyr::select(Country,Region,Sex) %>% 
+  dplyr::filter(!n) %>% 
   mutate(Offset = TRUE)
 
 SubPopsOffsetsIndicator <-
@@ -156,7 +157,7 @@ all_regions <- c("Mexico", "Peru", "Japan", "France", "Germany", "Colombia", "Br
 rownames(Metadata)<- NULL
 Corrections <-
 Metadata %>% 
-  select(Country, `Region(s)`,`Retrospective corrections`) %>% 
+  dplyr::select(Country, `Region(s)`,`Retrospective corrections`) %>% 
   rename("Region" = `Region(s)`, "Corrected" = `Retrospective corrections`)# %>% View() 
 
 # read metadata_basic.rds, this should be compiled daily with the build,
@@ -166,12 +167,12 @@ Metadata %>%
 # VI Positivity (OWD) *
 OWD <- read_csv("https://covid.ourworldindata.org/data/owid-covid-data.csv",
                 col_types= "cccDdddddddddddddddddddddddddddddcdddddddddddddddd") %>% 
-  filter(!is.na(iso_code)) %>% 
-  filter(! iso_code %in% c("OWID_KOS","OWID_WRL")) %>% 
+  dplyr::filter(!is.na(iso_code)) %>% 
+  dplyr::filter(! iso_code %in% c("OWID_KOS","OWID_WRL")) %>% 
   mutate(Short = countrycode(iso_code, 
                              origin = 'iso3c', 
                              destination = 'iso2c')) %>% 
-  select(Short, 
+  dplyr::select(Short, 
          Date = date, 
          total_cases, 
          total_tests, 
@@ -179,17 +180,17 @@ OWD <- read_csv("https://covid.ourworldindata.org/data/owid-covid-data.csv",
          new_tests_smoothed) %>% 
   mutate(positivity_cumulative = total_cases / total_tests,
          positivity_new = new_cases_smoothed / new_tests_smoothed) %>% 
-  select(-total_cases, - total_tests, -new_cases_smoothed, -new_tests_smoothed) %>% 
+  dplyr::select(-total_cases, - total_tests, -new_cases_smoothed, -new_tests_smoothed) %>% 
   mutate(Region = "All")
 
 cdbcountries <- inputDB %>% 
-  filter(Region == "All") %>% 
+  dplyr::filter(Region == "All") %>% 
   group_by(Country) %>% 
   slice(1) %>% 
-  select(Country, Short)
+  dplyr::select(Country, Short)
 
 OWD <- left_join(OWD, cdbcountries) %>% 
-  select(-Short)
+  dplyr::vselect(-Short)
 
 # 1) read in OWD data,
 # 1.1) do we capture any tests that they don't have? If so, send them an email.
@@ -218,7 +219,7 @@ OWD <- left_join(OWD, cdbcountries) %>%
 # SubPopsOffsetsIndicator
 Marginal_sums_check <-
   Marginal_sums_check %>% 
-  select(-Code)
+  dplyr::select(-Code)
 
 FullIndicators <- 
   Marginal_sums_check %>% 
@@ -235,9 +236,9 @@ FullIndicators <-
 # public file, full precision.
 header_msg <- paste("COVerAGE-DB selected data quality metrics:",timestamp(prefix = "", suffix = ""))
 data.table::fwrite(as.list(header_msg), 
-                   file = here("Data","qualityMetrics.csv"))
+                   file = here::here("Data","qualityMetrics.csv"))
 data.table::fwrite(FullIndicators, 
-                   file = here("Data","qualityMetrics.csv"), 
+                   file = here::here("Data","qualityMetrics.csv"), 
                    append = TRUE, 
                    col.names = TRUE)
 
