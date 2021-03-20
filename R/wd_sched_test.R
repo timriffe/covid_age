@@ -1,8 +1,21 @@
 wd_sched_detect <- function(){
+  if (!interactive()){
   initial.options <- commandArgs(trailingOnly = FALSE)
   file.arg.name   <- "--file="
   script.name     <- sub(file.arg.name,"",initial.options[grep(file.arg.name,initial.options)]) 
-  dirname(script.name)
+  
+  wd <- script.name 
+}else {
+  wd <- getwd()
+}
+  for (i in 1:3){
+    bname <- basename(wd)
+    if (bname == "covid_age"){
+      break
+    }
+    wd <- dirname(wd)
+  }
+ wd
 }
 
 cat(wd_sched_detect())
@@ -14,5 +27,5 @@ if (schedule_test){
     taskname = "wd_sched_test", 
     rscript = file.path(Sys.getenv("path_repo"),"R","wd_sched_test.R"), 
     schedule = "ONCE", 
-    starttime = "08:29")
+    starttime = "10:05")
 }
