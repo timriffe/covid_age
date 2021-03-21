@@ -1,34 +1,8 @@
 
-#setwd("C:/Users/riffe/Documents/covid_age")
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
 
-# initial.options <- commandArgs(trailingOnly = FALSE)
-# file.arg.name   <- "--file="
-# script.name     <- sub(file.arg.name,"",initial.options[grep(file.arg.name,initial.options)])
-# setwd(dirname(script.name))
-wd_sched_detect <- function(){
-  if (!interactive()){
-    initial.options <- commandArgs(trailingOnly = FALSE)
-    file.arg.name   <- "--file="
-    script.name     <- sub(file.arg.name,"",initial.options[grep(file.arg.name,initial.options)]) 
-    
-    wd <- script.name 
-  }else {
-    wd <- getwd()
-  }
-  for (i in 1:3){
-    bname <- basename(wd)
-    if (bname == "covid_age"){
-      break
-    }
-    wd <- dirname(wd)
-  }
-  wd
-}
 setwd(wd_sched_detect())
 
-
-source("~/.Rprofile")
-source(file.path("R","00_Functions.R"))
 
 library(usethis)
 library(git2r)
@@ -72,6 +46,6 @@ if (schedule_test){
     taskname = "COVerAGE-DB-automatic-daily-sync-test", 
     rscript = file.path(Sys.getenv("path_repo"),"R","a_sync.R"), 
     schedule = "ONCE", 
-    starttime = "08:14")
+    starttime = "23:00")
 }
 

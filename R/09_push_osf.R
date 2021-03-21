@@ -1,16 +1,15 @@
 
-#install.packages("osfr")
-library(here)
-source(here("R","00_Functions.R"))
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
+change_here(wd_sched_detect())
 
 # TR: let's start zipping, it's time. Can delete the .csv files after a while.
-logfile <- here("buildlog.md")
+logfile <- here::here("buildlog.md")
 
 log_section("push outputs to OSF", append = TRUE, logfile = logfile)
 
 files_data <- c("inputDB","Output_5","Output_10","qualityMetrics")
 for (fl in files_data){
-  zip::zip(here("Data",paste0(fl,".zip")), 
+  zip::zip(here::here("Data",paste0(fl,".zip")), 
          files = file.path("Data",paste0(fl,".csv")), 
          compression_level = 9)
  Sys.sleep(2)

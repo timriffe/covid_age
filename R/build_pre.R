@@ -1,31 +1,5 @@
 
-library(here)
-change_here <- function(new_path){
-  new_root <- here:::.root_env
-  
-  new_root$f <- function(...){file.path(new_path, ...)}
-  
-  assignInNamespace(".root_env", new_root, ns = "here")
-}
-wd_sched_detect <- function(){
-  if (!interactive()){
-    initial.options <- commandArgs(trailingOnly = FALSE)
-    file.arg.name   <- "--file="
-    script.name     <- sub(file.arg.name,"",initial.options[grep(file.arg.name,initial.options)]) 
-    
-    wd <- script.name 
-  }else {
-    wd <- getwd()
-  }
-  for (i in 1:3){
-    bname <- basename(wd)
-    if (bname == "covid_age"){
-      break
-    }
-    wd <- dirname(wd)
-  }
-  wd
-}
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
 
 change_here(wd_sched_detect())
 startup::startup()

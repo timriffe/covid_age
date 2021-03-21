@@ -3,7 +3,8 @@ logfile <- "buildlog.md"
 # Detect cores
 n.cores     <- 8
 
-source(here("R","00_Functions.R"))
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
+
 ### Compile offsets #################################################
 
 # Log

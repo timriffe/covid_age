@@ -1,8 +1,9 @@
 
 ### Clean up & functions ############################################
-source(here::here("R","00_Functions.R"))
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
 
-logfile <- here("buildlog.md")
+
+logfile <- here::here("buildlog.md")
 # n.cores <- round(6 + (detectCores() - 8)/4)
 # n.cores  <- 3
 
@@ -12,11 +13,11 @@ n.cores <- min(round(freesz / 16),20)
 ### Load data #######################################################
 
 # Count data
-inputCounts <- readRDS(here("Data","inputCounts.rds"))
+inputCounts <- readRDS(here::here("Data","inputCounts.rds"))
 inputCounts$Metric <- NULL
  
 # Offsets
-Offsets     <- readRDS(here("Data","Offsets.rds"))
+Offsets     <- readRDS(here::here("Data","Offsets.rds"))
 # print(object.size(Offsets),units = "Mb")
 # 2.1 Mb
 # Sort count data, add group ids.
@@ -79,12 +80,12 @@ log_section("Age harmonization",
 #           OAnew = 100)
 # stopCluster(cl)
 
-saveRDS(iLout1e5, file = here("Data","iLout1e5.rds"))
+saveRDS(iLout1e5, file = here::here("Data","iLout1e5.rds"))
  
 out5 <- 
   rbindlist(iLout1e5) 
   # Get into one data set
-saveRDS(out5, file = here("Data","Output_5_before_sex_scaling_etc.rds"))
+saveRDS(out5, file = here::here("Data","Output_5_before_sex_scaling_etc.rds"))
  rm(iL);rm(iLout1e5)
 
 ids_out  <- out5$id %>% unique() %>% sort()
@@ -94,7 +95,7 @@ HarmonizationFailures <-
   inputCounts %>% 
   filter(id %in% failures)
 
-saveRDS(HarmonizationFailures, file = here("Data","HarmonizationFailures.rds"))
+saveRDS(HarmonizationFailures, file = here::here("Data","HarmonizationFailures.rds"))
 
 # Edit results
 # outputCounts_5_1e5 <- out5 %>%  
@@ -121,7 +122,7 @@ outputCounts_5_1e5 <-
   .[, rescale_sexes_post(chunk = .SD), keyby = .(Country, Region, Code, Date, Measure, AgeInt)] %>% 
   as_tibble() %>% 
   pivot_wider(names_from = "Measure", values_from = "Value") %>% 
-  select(Country, Region, Code, Date, Sex, Age, AgeInt, Cases, Deaths, Tests) %>% 
+  dplyr::select(Country, Region, Code, Date, Sex, Age, AgeInt, Cases, Deaths, Tests) %>% 
   arrange(Country, Region, dmy(Date), Sex, Age) 
 # Save binary
 
@@ -154,7 +155,7 @@ outputCounts_5_1e5 <-
 #   outputCounts_5_1e5 <- outputCounts_5_1e5_out
 #   
 # } else {
-  saveRDS(outputCounts_5_1e5, here("Data","Output_5.rds"))
+  saveRDS(outputCounts_5_1e5, here::here("Data","Output_5.rds"))
 # }
 
 
@@ -175,15 +176,15 @@ header_msg3 <- paste("Reproducible with: ",paste0("https://github.com/", Sys.get
 #write_lines(header_msg, path = here("Data","Output_5.csv"))
 #write_csv(outputCounts_5_1e5_rounded, path = here("Data","Output_5.csv"), append = TRUE, col_names = TRUE)
 data.table::fwrite(as.list(header_msg1), 
-                   file = here("Data","Output_5.csv"))
+                   file = here::here("Data","Output_5.csv"))
 data.table::fwrite(as.list(header_msg2), 
-                   file = here("Data","Output_5.csv"),
+                   file = here::here("Data","Output_5.csv"),
                    append = TRUE)
 data.table::fwrite(as.list(header_msg3), 
-                   file = here("Data","Output_5.csv"),
+                   file = here::here("Data","Output_5.csv"),
                    append = TRUE)
 data.table::fwrite(outputCounts_5_1e5_rounded, 
-                   file = here("Data","Output_5.csv"), 
+                   file = here::here("Data","Output_5.csv"), 
                    append = TRUE, col.names = TRUE)
 
 
@@ -224,21 +225,21 @@ header_msg3 <- paste("Reproducible with: ",paste0("https://github.com/", Sys.get
 #write_lines(header_msg, path = here("Data","Output_10.csv"))
 #write_csv(outputCounts_10_rounded, path = here("Data","Output_10.csv"), append = TRUE, col_names = TRUE)
 data.table::fwrite(as.list(header_msg1), 
-                   file = here("Data","Output_10.csv"))
+                   file = here::here("Data","Output_10.csv"))
 data.table::fwrite(as.list(header_msg2), 
-                   file = here("Data","Output_10.csv"),
+                   file = here::here("Data","Output_10.csv"),
                    append = TRUE)
 data.table::fwrite(as.list(header_msg3), 
-                   file = here("Data","Output_10.csv"),
+                   file = here::here("Data","Output_10.csv"),
                    append = TRUE)
 
 data.table::fwrite(outputCounts_10_rounded, 
-                   file = here("Data","Output_10.csv"), 
+                   file = here::here("Data","Output_10.csv"), 
                    append = TRUE, col.names = TRUE)
 
 # Save binary
 
-saveRDS(outputCounts_10, here("Data","Output_10.rds"))
+saveRDS(outputCounts_10, here::here("Data","Output_10.rds"))
 
 
 
@@ -257,7 +258,7 @@ outputCounts_5_1e5 %>%
     ungroup() %>% 
     mutate(ASCFR = Deaths / Cases,
            ASCFR = na_if(ASCFR, Deaths == 0)) %>% 
-    filter(!is.na(ASCFR),
+    dplyr::filter(!is.na(ASCFR),
            Sex == "b",
            D >= 100) 
 
