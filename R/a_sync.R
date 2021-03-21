@@ -46,6 +46,6 @@ if (schedule_test){
     taskname = "COVerAGE-DB-automatic-daily-sync-test", 
     rscript = file.path(Sys.getenv("path_repo"),"R","a_sync.R"), 
     schedule = "ONCE", 
-    starttime = "23:00")
+    starttime = "10:13")
 }
 
