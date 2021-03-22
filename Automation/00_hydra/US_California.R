@@ -1,20 +1,21 @@
 
 
 
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
 source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
 library(lubridate)
 # assigning Drive credentials in the case the script is verified manually  
-if (!"email" %in% ls()){
-  email <- "tim.riffe@gmail.com"
-}
+change_here(wd_sched_detect())
+startup::startup()
+setwd(here())
 
 # info country and N drive address
 ctr          <- "US_California" # it's a placeholder
 dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 # Drive credentials
-drive_auth(email = email)
-gs4_auth(email = email)
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
 
 # Drive urls
 rubric <- get_input_rubric() %>% 
@@ -33,10 +34,14 @@ Tests <-
   select(-Short)
 
 # read in data by age
-url1 <- "https://data.ca.gov/dataset/590188d5-8545-4c93-a9a0-e230f0db7290/resource/339d1c4d-77ab-44a2-9b40-745e64e335f2/download/case_demographics_age.csv"
+#url1 <- "https://data.ca.gov/dataset/590188d5-8545-4c93-a9a0-e230f0db7290/resource/339d1c4d-77ab-44a2-9b40-745e64e335f2/download/case_demographics_age.csv"
+url1 <-"https://data.ca.gov/dataset/covid-19-time-series-metrics-by-county-and-state/resource/4d93df07-7c4d-4583-af53-03f950fe4365/download/6e8f6324-172d-4869-8e1f-662b998c576e#"
 CAage_in <- 
   read_csv(url1) 
 
+
+# TR: from here down needs a redux for the new data format.
+# (unless the )
 CAage <-
   CAage_in %>% 
   mutate(Date = as_date(date)) %>% 
