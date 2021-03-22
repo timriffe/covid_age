@@ -1,4 +1,5 @@
-source("Automation/00_Functions_automation.R")
+
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
 source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
 library(tidyverse)
 library(googlesheets4)
@@ -9,14 +10,15 @@ library(rvest)
 library(longurl)
 library(pdftools)
 
+change_here(wd_sched_detect())
 # info country and N drive address
 ctr    <- "Philippines"
 dir_n  <- "N:/COVerAGE-DB/Automation/Hydra/"
 PH_dir <- paste0(dir_n, "Data_sources/", ctr, "/")
 
 # Drive credentials
-drive_auth(email = email)
-gs4_auth(email = email)
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
 
 bit.ly_url <- "bit.ly/DataDropPH"
 
@@ -91,7 +93,10 @@ tests_url %>%
 # could download as such and read with read_csv(), or convert to sheets and do the same
 # as before. Here with the manual download:
 
-IN <- read_csv("Data/PH_Cases.csv")
+IN <- read_csv("Data/PH_Cases.csv",
+               col_types = "ccccDDDDDccccccccccDcc")
+
+
 
 # IN$DateRepConf %>% range()
 # IN$DateDied %>% range(na.rm=TRUE)
@@ -107,7 +112,8 @@ ages   <- 0:100
 maxA   <- max(ages)
 ages   <- c(as.character(ages),"UNK")
 
-Cases <- IN %>% 
+Cases <- 
+  IN %>% 
   mutate(DateRepConf = as_date(DateRepConf),
          DateResultRelease = as_date(DateResultRelease),
          DateSpecimen = as_date(DateSpecimen),
@@ -123,10 +129,9 @@ Cases <- IN %>%
                          Sex == "FEMALE" ~"f",
                          TRUE ~ Sex),
          Sex = ifelse(is.na(Sex), "UNK", Sex)) %>% 
-  select(Age, Sex, Date) %>%
+  dplyr::select(Age, Sex, Date) %>%
   group_by(Date, Age, Sex) %>% 
-  summarize(Value = n()) %>% 
-  ungroup() %>% 
+  summarize(Value = n(), .groups = "drop") %>% 
   tidyr::complete(Date = dates, Age = ages, Sex, fill = list(Value = 0)) %>% 
   arrange(Sex, Age, Date) %>% 
   group_by(Sex, Age) %>% 
@@ -135,9 +140,7 @@ Cases <- IN %>%
   arrange(Date,Sex,Age) %>% 
   mutate(Country = "Philippines",
          Region = "All",
-           Date = paste(sprintf("%02d",day(Date)),    
-                        sprintf("%02d",month(Date)),  
-                        year(Date),sep="."),
+           Date = ddmmyyyy(Date),
          Code = paste0("PH", Date),
          Metric = "Count",
          Measure = "Cases",
@@ -145,7 +148,7 @@ Cases <- IN %>%
          Age = ifelse(is.na(Age),"UNK",Age),
          AgeInt = ifelse(Age == "UNK",NA,AgeInt),
          AgeInt = suppressWarnings(as.integer(AgeInt))) %>% 
-  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
+  dplyr::select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
   sort_input_data()
 
 
@@ -157,19 +160,20 @@ dates  <- seq(fromto[1], fromto[2], by = "days")
 
 maxAi<- max(suppressWarnings(as.integer(ages)),na.rm=TRUE) 
 maxAc<- as.character(maxAi)
-Deaths <- IN %>% 
-  filter(!is.na(DateDied)) %>% 
+Deaths <-
+ IN %>% 
+  dplyr::filter(!is.na(DateDied)) %>% 
   mutate(Date = as_date(DateDied),
+         Age = as.character(Age),
          Age = ifelse(is.na(Age),"UNK",Age),
          Age = ifelse(Age %in% as.character(100:120),"100",Age),
          Sex = case_when(Sex == "MALE"~"m",
                          Sex == "FEMALE" ~"f",
                          TRUE ~ Sex),
          Sex = ifelse(is.na(Sex), "UNK", Sex)) %>% 
-  select(Age, Sex, Date) %>% 
+  dplyr::select(Age, Sex, Date) %>% 
   group_by(Date, Age, Sex) %>% 
-  summarize(Value = n()) %>% 
-  ungroup() %>% 
+  summarize(Value = n(), .groups = "drop") %>% 
   tidyr::complete(Date = dates, Age = ages, Sex, fill = list(Value = 0)) %>% 
   arrange(Sex, Age, Date) %>% 
   group_by(Sex, Age) %>% 
