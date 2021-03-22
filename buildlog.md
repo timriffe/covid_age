@@ -627,3 +627,11 @@ filter( Code == 'NO09.03.2021', Sex == 'b', Measure == 'Deaths' )
 # remake coverage map 
  Sat Mar 20 00:27:35 2021 
 
+
+# push outputs to OSF 
+ Mon Mar 22 16:18:05 2021 
+
+
+# Commit dashboards and buildlog 
+ Mon Mar 22 16:19:57 2021 
+
