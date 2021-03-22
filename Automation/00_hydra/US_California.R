@@ -39,6 +39,9 @@ url1 <-"https://data.ca.gov/dataset/covid-19-time-series-metrics-by-county-and-s
 CAage_in <- 
   read_csv(url1) 
 
+
+# TR: from here down needs a redux for the new data format.
+# (unless the )
 CAage <-
   CAage_in %>% 
   mutate(Date = as_date(date)) %>% 
