@@ -262,7 +262,7 @@ if (schedule_this){
   # 
 }
 
-# taskscheduler_ls() %>% view()
+taskscheduler_ls() %>% view()
 
 schedule_this <- FALSE
 if (schedule_this){
