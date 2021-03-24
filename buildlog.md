@@ -671,3 +671,15 @@ filter( Code == 'NO09.03.2021', Sex == 'b', Measure == 'Deaths' )
 # Building dashboards 
  Wed Mar 24 06:39:16 2021 
 
+
+# remake coverage map 
+ Wed Mar 24 13:51:32 2021 
+
+
+# push outputs to OSF 
+ Wed Mar 24 13:56:11 2021 
+
+
+# Commit dashboards and buildlog 
+ Wed Mar 24 13:59:50 2021 
+
