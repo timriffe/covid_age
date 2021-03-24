@@ -263,3 +263,18 @@ if (schedule_this){
 }
 
 taskscheduler_ls() %>% view()
+
+schedule_this <- FALSE
+if (schedule_this){
+  # TR: note, if you schedule this, you should make sure it's not already scheduled
+  # by someone else!
+  me.this.is.me <- Sys.getenv("USERNAME")
+  library(taskscheduleR)
+  taskscheduler_delete("COVerAGE-DB-every-8-hour-inputDB-updates-test")
+  taskscheduler_create(taskname = "COVerAGE-DB-every-8-hour-inputDB-updates-test", 
+                       rscript =  paste0(Sys.getenv("path_repo"), "/R/01_update_inputDB.R"), 
+                       schedule = "ONCE", 
+                       starttime = "17:25",
+                       startdate = format(Sys.Date(), "%m/%d/%Y"))
+  # 
+}

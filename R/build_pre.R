@@ -23,13 +23,14 @@ if (schedule_this){
                        rscript =  paste0(Sys.getenv("path_repo"), "/R/build_pre.R"), 
                        schedule = "DAILY", 
                        starttime = "01:00",
-                       startdate = format(Sys.Date()+1 , "%d/%m/%Y"))
+                       startdate = format(Sys.Date()+1 , "%m/%d/%Y"))
 }
 
 #
 test_schedule_build <- FALSE
 if (test_schedule_build){
   library(taskscheduleR)
+  taskscheduleR::taskscheduler_delete("COVerAGE-DB-automatic-build-test")
   taskscheduler_create(taskname = "COVerAGE-DB-automatic-build-test", 
                        rscript =  paste0(Sys.getenv("path_repo"), "/R/build_pre.R"), 
                        schedule = "ONCE", 
