@@ -32,21 +32,28 @@ source(here("R","04_harmonize_age_groups.R"))
 
 # ---------------------- #
 
-# um, let's just do this Wed and Sun?
-# source(here("R","05_compile_metadata.R"))
 
-# ---------------------- #
+if(wday(today()) == 1){
+  
+  # um, let's just do this Wed and Sun?
+  source(here("R","05_compile_metadata.R"))
+  
+  # ---------------------- #
+  
+  
+  # Build dashboards
+  # Temporarily disabled on hydra because default run
+  # doesn't have pandoc?
+  source(here("R","06_data_dashes.R"))
+  
+    
+  # ---------------------- #
+  
+  # Quality metrics
+  
+  source(here("R","07_quality_metrics.R"))
 
-# Build dashboards
-# Temporarily disabled on hydra because default run
-# doesn't have pandoc?
-source(here("R","06_data_dashes.R"))
-
-# ---------------------- #
-
-# Quality metrics
-
-source(here("R","07_quality_metrics.R"))
+}
 
 # ---------------------- #
 

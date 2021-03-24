@@ -152,7 +152,9 @@ SubPopsOffsetsIndicator <-
 
 # metadata needs some cleaning before this can integrate
 #this may need an update?
-all_regions <- c("Mexico", "Peru", "Japan", "France", "Germany", "Colombia", "Brazil")
+all_regions <- c("Mexico", "Peru", "Japan", "France", "Germany", "Colombia", 
+                 "Brazil", "Spain", "Czechia", "Belgium", "Netherlands", 
+                 "Paraguay")
 
 rownames(Metadata)<- NULL
 Corrections <-
