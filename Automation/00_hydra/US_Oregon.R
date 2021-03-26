@@ -27,15 +27,16 @@ ss_db <- rubric %>%
 inOR <- get_country_inputDB("US_OR") %>% 
   select(-Short)
 
-dates_in  <- inOR %>% 
+dates_in  <- 
+  inOR %>% 
+  filter(!Measure %in% c("Vaccinations", "Vaccination1", "Vaccination2")) %>% 
   dplyr::pull(Date) %>% 
   dmy() %>% 
   unique()
 
 dates_in_strings <-
-  inOR %>% 
-  dplyr::pull(Date) %>% 
-  gsub(pattern = "\\.", replacement = "") %>% 
+  dates_in %>% 
+  gsub(pattern = "\\-", replacement = "") %>% 
   unique()
 
 # what do we have so far?
@@ -48,7 +49,7 @@ files_have <- files_have[!grepl(files_have,
 
 files_new <- files_have[grepl(pattern = ".xlsx",files_have)] 
 
-if (length(read_or_data) > 0){
+if (length(files_new) > 0){
   read_or_data <- function(filexcel){
     date_f <- filexcel %>% 
       str_replace("Demographic Data - Death", "") %>% 
@@ -98,7 +99,7 @@ if (length(read_or_data) > 0){
   }
   
   out <- 
-    lapply(files_Deaths, read_or_data) %>% 
+    lapply(files_new, read_or_data) %>% 
     bind_rows() %>% 
     filter(!Date %in% dates_in) %>% 
     mutate(Country = "USA",
