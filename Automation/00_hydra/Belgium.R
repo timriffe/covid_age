@@ -40,7 +40,7 @@ db_d <- read_xlsx(data_source_c,
 db_t <- read_xlsx(data_source_c,
                   sheet = "TESTS")
 
-datasource <- c(data_source_v, data_source_c)
+data_source <- c(data_source_v, data_source_c)
 
 zipname <- paste0(dir_n, 
                   "Data_sources/", 

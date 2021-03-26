@@ -11,7 +11,7 @@ if (!"email" %in% ls()){
 # info country and N drive address
 ctr          <- "Bulgaria" # it's a placeholder
 dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
-dir_n_source <- "N:/COVerAGE-DB/Automation/Bulgaria"
+dir_n_source <- "N:/COVerAGE-DB/Automation/Bulgaria/"
 
 # Drive credentials
 drive_auth(email = email)
@@ -40,9 +40,8 @@ BGdrive <- get_country_inputDB("BG") %>%
 
 # age_name_csv           <- "Разпределение по дата и по възрастови групи.csv"
 # "BG_age_2020-12-15.csv"
-
 BG_files <- dir(dir_n_source) 
-BG_csvs <- 
+♠BG_csvs <- 
   BG_files[grepl(BG_files,pattern = ".csv")] %>% 
   str_split(pattern = "-") %>% 
   do.call("rbind",.)
@@ -54,7 +53,6 @@ date_i <- BG_csvs[,2] %>%
   max(na.rm=TRUE) %>% 
   as.character() %>% 
   gsub(pattern = "-", replacement = "")
-
 
 age_name_csv           <- paste0("BG_age-",date_i,".csv")
 
@@ -87,6 +85,7 @@ BG_TOT_in              <- read_csv(tmp2)
 unlink(tmp2)
 # list.files(dir_n_source, "*.csv")
 
+print(4)
 
 # ------------------------------------
 # Translations
