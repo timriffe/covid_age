@@ -697,3 +697,7 @@ filter( Code == 'NO09.03.2021', Sex == 'b', Measure == 'Deaths' )
 # Age harmonization 
  Sat Mar 27 02:37:06 2021 
 
+
+# Compile offsets from Drive 
+ Sat Mar 27 08:01:15 2021 
+
