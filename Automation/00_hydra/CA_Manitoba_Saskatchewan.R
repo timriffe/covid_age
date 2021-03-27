@@ -22,8 +22,6 @@ db_ma_2021 <- db_d2021 %>%
   filter(province == "Manitoba") %>% 
   select(province, age, sex, date_death_report)
 
-unique(db_ma$Age)
-
 db_ma <- bind_rows(db_ma_2020, db_ma_2021) %>% 
   rename(Region = province,
          Date = date_death_report,
@@ -68,8 +66,6 @@ db_sk_2020 <- db_d2020 %>%
 db_sk_2021 <- db_d2021 %>% 
   filter(province == "Saskatchewan") %>% 
   select(province, age, sex, date_death_report)
-
-unique(db_sk$Age)
 
 db_sk <- bind_rows(db_ma_2020, db_ma_2021) %>% 
   rename(Region = province,
