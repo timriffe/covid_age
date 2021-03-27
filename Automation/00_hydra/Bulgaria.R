@@ -41,7 +41,7 @@ BGdrive <- get_country_inputDB("BG") %>%
 # age_name_csv           <- "Разпределение по дата и по възрастови групи.csv"
 # "BG_age_2020-12-15.csv"
 BG_files <- dir(dir_n_source) 
-♠BG_csvs <- 
+BG_csvs <- 
   BG_files[grepl(BG_files,pattern = ".csv")] %>% 
   str_split(pattern = "-") %>% 
   do.call("rbind",.)
