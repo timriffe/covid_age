@@ -21,11 +21,28 @@ gs4_auth(email = email)
 
 
 ##################Read in new data#############
+url <- "https://www.covid19.admin.ch/en/epidemiologic/vacc-doses?detGeo=FL&vaccRel=abs&demoSum=total"
 
 
-url= "https://www.covid19.admin.ch/api/data/20210316-ggilst65/downloads/sources-csv.zip"
+links <- scraplinks(url) %>% 
+  filter(str_detect(url, ".zip")) %>% 
+  select(url) 
+
+
+links2= head(links, 1)
+
+url2 <- 
+  links2 %>% 
+  select(url) %>% 
+  dplyr::pull()
+
+
+url_download=paste0("https://www.covid19.admin.ch", url2) 
+
 data_source <- paste0(dir_n, "Data_sources/", ctr, "/Liechtenstein_data",today(), ".zip")
-download.file(url, data_source, mode = "wb")
+download.file(url_download, data_source, mode = "wb")
+
+
 
 
 In_cases= read.csv(unz(data_source, "data/COVID19Cases_geoRegion_AKL10_w.csv"))
