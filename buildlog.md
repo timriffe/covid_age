@@ -707,3 +707,11 @@ filter( Code == 'NO09.03.2021', Sex == 'b', Measure == 'Deaths' )
 # Age harmonization 
  Sun Mar 28 03:35:50 2021 
 
+
+# Compile metadata 
+ Sun Mar 28 07:32:56 2021 
+
+
+# Building dashboards 
+ Sun Mar 28 07:46:56 2021 
+
