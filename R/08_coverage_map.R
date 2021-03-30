@@ -1,7 +1,7 @@
 # TODO: maybe switch to Natural Earth map source,
 # https://cran.r-project.org/web/packages/rnaturalearth/vignettes/what-is-a-country.html
-library(here)
-source(here("R","00_Functions.R"))
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
+
 logfile <- here("buildlog.md")
 
 log_section("remake coverage map", append = TRUE, logfile = logfile)
@@ -17,7 +17,7 @@ data(World)
 
 Sys.sleep(120)
 # DB objects
-gs4_auth(email = "tim.riffe@gmail.com")
+gs4_auth(email = Sys.getenv("email"))
 Sys.sleep(120)
 
 # several tries, just because.
@@ -158,7 +158,5 @@ map_out <-
 # proposal
 ggsave(here("assets","coveragemap.svg"), map_out, width = 30, height = 20, units = "cm")
 ggsave(here("assets","coveragemap.png"), map_out, width = 30, height = 20, units = "cm", dpi=300)
-
-
 
 rm(list=setdiff(ls(), c("logfile","creds")))

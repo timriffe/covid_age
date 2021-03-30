@@ -28,11 +28,27 @@ cases_url <- html_nodes(html1, xpath = '//*[@id="data-and-resources"]/div/div/ul
 deaths_url <- html_nodes(html2, xpath = '//*[@id="data-and-resources"]/div/div/ul/li/div/span/a') %>%
   html_attr("href")
 
+vacc_url <- "https://cloud.minsa.gob.pe/s/ZgXoXqK2KLjRLxD/download"
+
+data_source_c <- paste0(dir_n, "Data_sources/", ctr, "/cases_",today(), ".csv")
+data_source_d <- paste0(dir_n, "Data_sources/", ctr, "/deaths_",today(), ".csv")
+data_source_v <- paste0(dir_n, "Data_sources/", ctr, "/vacc_",today(), ".csv")
+
+download.file(cases_url, destfile = data_source_c, mode = "wb")
+download.file(deaths_url, destfile = data_source_d, mode = "wb")
+download.file(vacc_url, destfile = data_source_v, mode = "wb")
+
+# cases
 db_c <- read_delim(cases_url, delim = ";") %>% 
   as_tibble()
 
+# deaths
 db_d <- read_delim(deaths_url, delim = ";") %>% 
   as_tibble()
+
+# Vaccines
+db_v <- read_csv(data_source_v)
+
 
 # deaths ----------------------------------------------
 
@@ -47,20 +63,20 @@ db_d2 <- db_d %>%
                          Sex == "FEMENINO" ~ "f",
                          TRUE ~ "UNK"),
          Age = ifelse(Age > 100, 100, Age),
-         Age = as.character(Age),
          Region = str_to_title(Region)) %>% 
   group_by(date_f, Sex, Age, Region) %>% 
   summarise(new = n()) %>% 
   ungroup()
 
 dates_f <- seq(min(db_d2$date_f),max(db_d2$date_f), by = '1 day')
-ages <- as.character(seq(0, 100, 1))
+ages <- 0:100
 
 db_d3 <- db_d2 %>% 
   tidyr::complete(Region, Sex, Age = ages, date_f = dates_f, fill = list(new = 0)) %>% 
   group_by(Region, Sex, Age) %>% 
   mutate(Value = cumsum(new),
          Measure = "Deaths") %>% 
+  ungroup() %>% 
   select(-new)
 
 # cases ----------------------------------------------
@@ -76,7 +92,6 @@ db_c2 <- db_c %>%
                          Sex == "FEMENINO" ~ "f",
                          TRUE ~ "UNK"),
          Age = ifelse(Age > 100, 100, Age),
-         Age = as.character(Age),
          Region = str_to_title(Region)) %>% 
   group_by(date_f, Sex, Age, Region) %>% 
   summarise(new = n()) %>% 
@@ -91,10 +106,41 @@ db_c3 <- db_c2 %>%
   group_by(Region, Sex, Age) %>% 
   mutate(Value = cumsum(new),
          Measure = "Cases") %>% 
+  ungroup() %>% 
   select(-new)
 
+# vaccines ---------------------------------------------------
+db_v2 <- db_v %>% 
+  select(Age = EDAD,
+         Sex = SEXO,
+         date_f = FECHA_VACUNACION,
+         Dosis = DOSIS,
+         Region = DEPARTAMENTO) %>% 
+  mutate(date_f = ymd(date_f),
+         Sex = case_when(Sex == "MASCULINO" ~ "m",
+                         Sex == "FEMENINO" ~ "f",
+                         TRUE ~ "UNK"),
+         Age = ifelse(Age > 100, 100, Age),
+         Region = str_to_title(Region),
+         Measure = case_when(Dosis == 1 ~ "Vaccination1", 
+                             Dosis == 2 ~ "Vaccination2", 
+                             TRUE ~ "UNK")) %>% 
+  group_by(date_f, Sex, Age, Region, Measure) %>% 
+  summarise(new = n()) %>% 
+  ungroup()
+
+dates_f <- seq(min(db_v2$date_f), max(db_v2$date_f), by = '1 day')
+ages <- 0:100
+
+db_v3 <- db_v2 %>% 
+  tidyr::complete(Measure, Region, Sex, Age = ages, date_f = dates_f, fill = list(new = 0)) %>% 
+  group_by(Region, Measure, Sex, Age) %>% 
+  mutate(Value = cumsum(new)) %>% 
+  ungroup() %>% 
+  select(-new)
+  
 # template for database ------------------------------------------------------------
-db_dc <- bind_rows(db_d3, db_c3)
+db_dc <- bind_rows(db_d3, db_c3, db_v3)
 
 db_pe <- db_dc %>% 
   group_by(date_f, Sex, Age, Measure) %>% 
@@ -105,15 +151,16 @@ db_pe <- db_dc %>%
 # 5-year age intervals for regional data -------------------------------
 
 db_dc2 <- db_dc %>% 
-  mutate(Age2 = ifelse(as.numeric(Age) <= 4, Age, as.character(floor(as.numeric(Age)/5) * 5))) %>% 
-  group_by(date_f, Region, Sex, Age2, Measure) %>% 
+  mutate(Age = ifelse(Age <= 4, Age, floor(Age/5) * 5)) %>% 
+  group_by(date_f, Region, Sex, Age, Measure) %>% 
   summarise(Value = sum(Value)) %>% 
-  arrange(date_f, Region, Measure, Sex, suppressWarnings(as.integer(Age2))) %>% 
   ungroup() %>% 
-  rename(Age = Age2)
+  arrange(date_f, Region, Measure, Sex, Age)
+
 # ----------------------------------------------------------------------
 
-db_pe_comp <- bind_rows(db_dc2, db_pe)
+db_pe_comp <- bind_rows(db_dc2, db_pe) %>% 
+  mutate(Age = as.character(Age))
 
 db_tot_age <- db_pe_comp %>% 
   group_by(Region, date_f, Sex, Measure) %>% 
@@ -155,10 +202,7 @@ out <- db_all2 %>%
                             Region != "All" & Age == "1" ~ 4,
                             Age == "100" ~ 5,
                             Age == "TOT" ~ NA_real_),
-         Date = paste(sprintf("%02d",day(date_f)),
-                      sprintf("%02d",month(date_f)),
-                      year(date_f),
-                      sep="."),
+         Date = ddmmyyyy(date_f),
          Code = case_when(
            Region == "All" ~ paste0("PE", Date),
            Region == "Amazonas" ~ paste0("PE_AMA", Date),
@@ -189,8 +233,7 @@ out <- db_all2 %>%
            TRUE ~ "Other"
          ),
          Metric = "Count") %>% 
-  arrange(Region, date_f, Measure, Sex, suppressWarnings(as.integer(Age))) %>% 
-  select(Country, Region, Code,  Date, Sex, Age, AgeInt, Metric, Measure, Value)
+  sort_input_data()
 
 # test <- db_final %>% 
 #   filter(Sex == "b",
@@ -209,13 +252,9 @@ log_update(pp = ctr, N = nrow(out))
 #########################
 
 # saving compressed data to N: drive
-data_source_c <- paste0(dir_n, "Data_sources/", ctr, "/cases_",today(), ".csv")
-data_source_d <- paste0(dir_n, "Data_sources/", ctr, "/deaths_",today(), ".csv")
 
-download.file(cases_url, destfile = data_source_c)
-download.file(deaths_url, destfile = data_source_d)
 
-data_source <- c(data_source_c, data_source_d)
+data_source <- c(data_source_c, data_source_d, data_source_v)
 
 zipname <- paste0(dir_n, 
                   "Data_sources/", 

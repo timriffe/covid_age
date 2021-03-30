@@ -11,19 +11,18 @@ dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 # open connexion for the link
 # https://www.mspbs.gov.py/reporte-covid19.html
-
 # microdata of cases
-cases_url <- "https://public.tableau.com/vizql/w/COVID19PY-Registros/v/Descargardatos/vudcsv/sessions/6B132EFAAA3A469CB3293FBA252A3B86-0:0/views/7713620505763405234_2641841674343653269?summary=true"
+cases_url <- "https://public.tableau.com/vizql/w/COVID19PY-Registros/v/Descargardatos/vudcsv/sessions/8FD41F0435C4449691EC5A661007FB97-0:0/views/7713620505763405234_2641841674343653269?summary=true"
 data_source_c <- paste0(dir_n, "Data_sources/", ctr, "/cases_",today(), ".csv")
 download.file(cases_url, destfile = data_source_c)
 
 # microdata of deaths
-deaths_url <- "https://public.tableau.com/vizql/w/COVID19PY-Registros/v/FALLECIDOS/vudcsv/sessions/4C85B7320611421197D3B27901128537-0:0/views/7713620505763405234_5043410824490810379?summary=true"
+deaths_url <- "https://public.tableau.com/vizql/w/COVID19PY-Registros/v/FALLECIDOS/vudcsv/sessions/D239EE68457442C9B3B08FECB8AF6AE0-0:0/views/7713620505763405234_5043410824490810379?summary=true"
 data_source_d <- paste0(dir_n, "Data_sources/", ctr, "/deaths_",today(), ".csv")
 download.file(deaths_url, destfile = data_source_d)
 
-db_c <- read_csv(data_source_c)
-db_d <- read_csv(data_source_d)
+db_c <- read_delim(data_source_c, delim = ",")
+db_d <- read_delim(data_source_d, delim = ",")
 
 # data from deaths and tests
 tests <- read_sheet(ss = "https://docs.google.com/spreadsheets/d/10XayKoMKOOOJrZBPcUbd_SIZgBIC5eNt9ei4oVVw-SY/edit#gid=0",
@@ -42,12 +41,15 @@ unique(db_c$'Distrito Residencia') %>% sort()
 unique(db_c2$Region) %>% sort()
 unique(db_c$Edad) %>% sort()
 
+
 db_c2 <- db_c %>% 
   rename(date_f = "Fecha Confirmacion",
          Sex = Sexo,
          Region = 'Departamento Residencia') %>% 
   select(Region, date_f, Sex, Edad) %>% 
   mutate(Region = str_to_title(Region),
+         date_f = as.character(date_f),
+         date_f = ifelse(str_length(date_f) == 7, paste0("0", date_f), date_f),
          date_f = mdy(date_f),
          Sex = case_when(Sex == "MASCULINO" ~ "m",
                          Sex == "FEMENINO" ~ "f",
@@ -66,8 +68,11 @@ db_d2 <- db_d %>%
          Edad = 'Sum of Edad',
          Region = 'Departamento Residencia') %>% 
   select(Region, date_f, Sex, Edad) %>% 
+  separate(date_f, c("f", "s", "t"), sep = "/") %>% 
   mutate(Region = str_to_title(Region),
-         date_f = mdy(date_f),
+         date_f = case_when(t == "2020" ~ make_date(year = t, month = f, day = s),
+                            t == "2021" & as.integer(f) <= 12 & as.integer(s) <= 12 ~ make_date(year = t, month = s, day = f),
+                            t == "2021" & (as.integer(f) >= 12 | as.integer(s) >= 12) ~ make_date(year = t, month = f, day = s)),
          Sex = case_when(Sex == "MASCULINO" ~ "m",
                          Sex == "FEMENINO" ~ "f",
                          TRUE ~ "UNK"),
@@ -129,13 +134,13 @@ db3 <- bind_rows(db_reg, db_nal) %>%
 unique(db_reg$Region)
 unique(db_nal$Region)
 unique(db_tot_sex$Region)
+unique(db_nal$date_f)
+
 
 unique(db3$Region)
 
 out <- db3 %>%
-  mutate(Date = paste(sprintf("%02d", day(date_f)),
-                      sprintf("%02d", month(date_f)),
-                      year(date_f), sep = "."),
+  mutate(Date = ddmmyyyy(date_f),
          Country = "Paraguay",
          short = case_when(Region == 'Asuncion' ~ 'ASU',
                            Region == 'Central' ~ '16',
@@ -156,7 +161,8 @@ out <- db3 %>%
                            Region == 'Alto Paraguay' ~ '15',
                            Region == 'Ñeembucu' ~ '2',
                            Region == 'All' ~ ''),
-         Code = paste0("PY_", short, "_", Date),
+         Code = case_when(Region == "All" ~ paste0("PY_", Date),
+                          TRUE ~ paste0("PY_", short, "_", Date)),
          AgeInt = case_when(Region == "All" & !(Age %in% c("TOT", "100")) ~ 1,
                             Region != "All" & !(Age %in% c("0", "1", "TOT")) ~ 5,
                             Region != "All" & Age == "0" ~ 1,
@@ -165,9 +171,8 @@ out <- db3 %>%
                             Age == "TOT" ~ NA_real_),
          Metric = "Count") %>% 
   # bind_rows(deaths2) %>% 
-  arrange(Region, date_f, Sex, Measure, suppressWarnings(as.integer(Age))) %>% 
-  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) 
-
+  sort_input_data()
+  
 unique(out$Region)
 
 # total cummulative values

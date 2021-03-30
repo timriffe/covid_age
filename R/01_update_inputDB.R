@@ -1,34 +1,28 @@
 ### Functions & settings ############################################
 
 # prelims
-library(here)
-change_here <- function(new_path){
-  new_root <- here:::.root_env
-  
-  new_root$f <- function(...){file.path(new_path, ...)}
-  
-  assignInNamespace(".root_env", new_root, ns = "here")
-}
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
 
-change_here("C:/Users/riffe/Documents/covid_age")
-setwd(here())
+change_here(wd_sched_detect())
+
+setwd(here::here())
 startup::startup()
 # always work with the most uptodate repository
-repo <- git2r::repository(here())
-#init()
-a <- git2r::pull(repo,credentials = creds)
-if (class(a)[1]=="try-error"){
-  a <- try(git2r::pull(repo,credentials = creds) )
-}
-if (class(a)[1]=="try-error"){
-  a <- try(git2r::pull(repo,credentials = creds) )
-}
 
+repo <- git2r::repository(here::here())
+#init()
+a <- git2r::pull(repo,credentials = cred_token())
+if (class(a)[1]=="try-error"){
+  a <- try(git2r::pull(repo,credentials = cred_token()) )
+}
+if (class(a)[1]=="try-error"){
+  a <- try(git2r::pull(repo,credentials = cred_token()) )
+}
 
 # Functions
-source(here("R","00_Functions.R"))
+source(here::here("R","00_Functions.R"))
 
-logfile <- here("inputDB_compile_log.md")
+logfile <- here::here("inputDB_compile_log.md")
 
 # read in the log file, do we start a new one?
 # if it's Sunday then yes.
@@ -44,8 +38,10 @@ log_section(paste(Sys.time(),"updates"),
             logfile = logfile)
 
 #source("R_checks/inputDB_check.R")
-gs4_auth(email = "tim.riffe@gmail.com")
-drive_auth(email = "tim.riffe@gmail.com")
+email <- Sys.getenv("email")
+gs4_auth(email = email)
+drive_auth(email = email)
+
 # these parameters to grab templates that were modified between 12 and 2 hours ago,
 # a 10-hour window. This will be run every 8 hours, so this implies overlap.
 hours_from <- 12
@@ -64,13 +60,14 @@ rubric <- bind_rows(rubric, NAM)
 
 if (nrow(rubric) > 0){
   # read in modified data templates (this is the slowest part)
+  # rubric <- get_input_rubric()
   inputDB <- compile_inputDB(rubric, hours = Inf)
   # saveRDS(inputDB,here("Data","inputDBhold.rds"))
   # what data combinations have we read in?
   codesIN     <- with(inputDB, paste(Country, Region, Measure, Short)) %>% unique()
   
   # Read in previous unfiltered inputDB
-  inputDBhold <- readRDS(here("Data","inputDBhold.rds"))
+  inputDBhold <- readRDS(here::here("Data","inputDBhold.rds"))
   
   # remove any codes we just read in
   inputDBhold <- 
@@ -84,14 +81,14 @@ if (nrow(rubric) > 0){
     sort_input_data()
   
   # resave out to the full unfltered inputDB.
-  saveRDS(inputDBhold, here("Data","inputDBhold.rds"))
+  saveRDS(inputDBhold, here::here("Data","inputDBhold.rds"))
   
   # TR: this is temporary:
   inputDB$templateID <- NULL
   
   
   # remove non-standard Measure:
-  Measures <- c("Cases","Deaths","Tests","ASCFR")
+  Measures <- c("Cases","Deaths","Tests","ASCFR","Vaccinations","Vaccination1","Vaccination2")
   n <- inputDB %>% dplyr::pull(Measure) %>% `%in%`(Measures)
   # sum(n)
   if (sum(!n) > 0){
@@ -172,12 +169,28 @@ if (nrow(rubric) > 0){
     }
   }
   
+  # remove future dates
+  n <- dmy(inputDB$Date) > today()
+  if (sum(n) > 0){
+    rmcodes <- inputDB %>% filter(n) %>% dplyr::pull(Code) %>% unique()
+    inputDB <- inputDB %>% filter(!Code%in%rmcodes)
+    if (length(rmcodes)>0){
+      log_section("Future Dates detected. Following `Code`s removed:", 
+                  append = TRUE, 
+                  logfile = logfile)
+      cat(paste(rmcodes, collapse = "\n"), 
+          file = logfile, 
+          append = TRUE)
+    }
+  }
+  
   # -------------------------------------- #
   # now swap out data in inputDB files
   
   ids_new       <- with(inputDB, paste(Country,Region,Measure,Short))
   
-  inputDB_prior <- readRDS(here("Data","inputDB.rds"))
+  inputDB_prior <- readRDS(here::here("Data","inputDB.rds")) %>% 
+    mutate(Short = add_Short(Code,Date))
   
   inputDB_out <-
     inputDB_prior %>% 
@@ -196,51 +209,72 @@ if (nrow(rubric) > 0){
            !is.na(Country),
            !is.na(dmy(Date))) 
   
-  saveRDS(inputDB_out, here("Data","inputDB.rds"))
+  saveRDS(inputDB_out, here::here("Data","inputDB.rds"))
 
   #saveRDS(inputDB, here("Data","inputDB_i.rds"))
   
   # public file, full precision.
   header_msg <- paste("COVerAGE-DB input database, filtered after some simple checks:",timestamp(prefix = "", suffix = ""))
   data.table::fwrite(as.list(header_msg), 
-                     file = here("Data","inputDB.csv"))
+                     file = here::here("Data","inputDB.csv"))
   data.table::fwrite(inputDB_out, 
-                     file = here("Data","inputDB.csv"), 
+                     file = here::here("Data","inputDB.csv"), 
                      append = TRUE, col.names = TRUE)
   
   # push logfile to github:
   library(usethis)
   library(git2r)
   
-  repo <- git2r::repository(here())
+  repo <- git2r::repository(here::here())
   #init()
-  source("~/.Rprofile")
-  # make a couple attempts
-  a <- try(git2r::pull(repo,credentials = creds) )
-  if (class(a)[1]=="try-error"){
-    a <- try(git2r::pull(repo,credentials = creds) )
-  }
-  if (class(a)[1]=="try-error"){
-    a <- try(git2r::pull(repo,credentials = creds) )
-  }
-  commit(repo, 
-         message = "update inputDB logfile", 
-         all = TRUE)
   
-  git2r::push(repo,credentials = creds)
+  # make a couple attempts
+  a <- git2r::pull(repo,credentials = cred_token())
+  if (class(a)[1]=="try-error"){
+    a <- try(git2r::pull(repo,credentials = cred_token()) )
+  }
+  if (class(a)[1]=="try-error"){
+    a <- try(git2r::pull(repo,credentials = cred_token()) )
+  }
+  
+  b <- git2r::status()
+  if (length(b$unstaged) > 0){
+    commit(repo, 
+           message = "update inputDB logfile", 
+           all = TRUE)
+  }
+  
+  git2r::push(repo,credentials = cred_token())
 }
 schedule_this <- FALSE
 if (schedule_this){
+  # TR: note, if you schedule this, you should make sure it's not already scheduled
+  # by someone else!
+  me.this.is.me <- Sys.getenv("USERNAME")
   library(taskscheduleR)
   taskscheduler_delete("COVerAGE-DB-every-8-hour-inputDB-updates")
   taskscheduler_create(taskname = "COVerAGE-DB-every-8-hour-inputDB-updates", 
-                       rscript = "C:/Users/riffe/Documents/covid_age/R/01_update_inputDB.R", 
+                       rscript =  paste0(Sys.getenv("path_repo"), "/R/01_update_inputDB.R"), 
                        schedule = "HOURLY", 
                        modifier = 8,
-                       starttime = "03:01",
-                       startdate = format(Sys.Date()+1, "%d/%m/%Y"))
+                       starttime = "19:00",
+                       startdate = format(Sys.Date(), "%m/%d/%Y"))
   # 
 }
 
+taskscheduler_ls() %>% view()
 
-
+schedule_this <- FALSE
+if (schedule_this){
+  # TR: note, if you schedule this, you should make sure it's not already scheduled
+  # by someone else!
+  me.this.is.me <- Sys.getenv("USERNAME")
+  library(taskscheduleR)
+  taskscheduler_delete("COVerAGE-DB-every-8-hour-inputDB-updates-test")
+  taskscheduler_create(taskname = "COVerAGE-DB-every-8-hour-inputDB-updates-test", 
+                       rscript =  paste0(Sys.getenv("path_repo"), "/R/01_update_inputDB.R"), 
+                       schedule = "ONCE", 
+                       starttime = "17:25",
+                       startdate = format(Sys.Date(), "%m/%d/%Y"))
+  # 
+}

@@ -2,16 +2,15 @@
 
 ### Functions & settings ############################################
 
-source(here("R","00_Functions.R"))
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
+
 logfile <- here("buildlog.md")
 
 ### Get data ########################################################
 
-if (hours < Inf){
-  inputDB <- readRDS(here("Data","inputDB_i.rds"))
-} else {
-  inputDB <- readRDS(here("Data","inputDB.rds"))
-}
+
+inputDB <- readRDS(here("Data","inputDBresolved.rds"))
+
 
 # this script transforms the inputDB as required, and produces standardized measures and metrics
 
@@ -39,9 +38,9 @@ log_section("prep (resolve_UNKUNK)", logfile = logfile)
 AA <- Z[ , try_step(
   process_function = resolve_UNKUNK,
   chunk = .SD,
-  byvars = c("Code","Measure"),
+  byvars = c("Country","Region","Date","Measure"),
   logfile = logfile),
-  by = list(Code, Measure),
+  by = list(Country, Region, Date, Measure),
   .SDcols = icols][,..icols]
 
 
@@ -55,7 +54,7 @@ A <- AA[ , try_step(process_function = convert_fractions_sexes,
                    chunk = .SD,
                    byvars = c("Code","Measure"),
                    logfile = logfile),
-        by = list(Code, Measure), 
+        by = list(Country, Region, Date, Measure), 
         .SDcols = icols][,..icols]
 
 # Convert fractions within sexes to counts
@@ -63,7 +62,7 @@ A <- A[ , try_step(process_function = convert_fractions_within_sex,
                    chunk = .SD,
                    byvars = c("Code","Sex","Measure"),
                    logfile = logfile),
-        by=list(Code, Sex, Measure), 
+        by=list(Country, Region, Date, Sex, Measure), 
         .SDcols = icols][,..icols]
 
 ### Distribute counts with unknown age ##############################
@@ -75,7 +74,7 @@ B <- A[ , try_step(process_function = redistribute_unknown_age,
                    chunk = .SD,
                    byvars = c("Code","Sex","Measure"),
                    logfile = logfile), 
-        by = list(Code, Sex, Measure), 
+        by = list(Country, Region, Date, Sex, Measure), 
         .SDcols = icols][,..icols]
 
 ### Scale to totals (within sex) ####################################
@@ -87,7 +86,7 @@ C <- B[ , try_step(process_function = rescale_to_total,
                    chunk = .SD,
                    byvars = c("Code","Sex","Measure"),
                    logfile = logfile), 
-        by = list(Code, Sex, Measure), 
+        by = list(Country, Region, Date, Sex, Measure), 
         .SDcols = icols][,..icols]
 
 ### Derive counts from deaths and CFRs ##############################
@@ -99,7 +98,7 @@ D <- C[ , try_step(process_function = infer_cases_from_deaths_and_ascfr,
                    chunk = .SD,
                    byvars = c("Code", "Sex"),
                    logfile = logfile), 
-        by = list(Code, Sex), 
+        by = list(Country, Region, Date, Sex), 
         .SDcols = icols][,..icols]
 
 # Infer deaths from cases and CFRs ##################################
@@ -111,7 +110,7 @@ E <- D[ , try_step(process_function = infer_deaths_from_cases_and_ascfr,
                    chunk = .SD,
                    byvars = c("Code", "Sex"),
                    logfile = logfile), 
-        by = list(Code, Sex), 
+        by = list(Country, Region, Date, Sex), 
         .SDcols = icols][,..icols]
 
 # Drop ratio (just to be sure, above call probably did that)
@@ -125,7 +124,7 @@ G <- E[ , try_step(process_function = redistribute_unknown_sex,
                    chunk = .SD,
                    byvars = c("Code", "Age", "Measure"),
                    logfile = logfile), 
-        by = list(Code, Age, Measure), 
+        by = list(Country, Region, Date, Age, Measure), 
         .SDcols = icols][,..icols]
 
 ### Scale sex-specific data to match combined sex data ##############
@@ -137,7 +136,7 @@ H <- G[ , try_step(process_function = rescale_sexes,
                    chunk = .SD,
                    byvars = c("Code", "Measure"),
                    logfile = logfile), 
-        by = list(Code, Measure), 
+        by = list(Country, Region, Date, Measure), 
         .SDcols = icols][,..icols]
 
 # Remove sex totals
@@ -152,7 +151,7 @@ I <- H[ , try_step(process_function = infer_both_sex,
                    chunk = .SD,
                    byvars = c("Code", "Measure"),
                    logfile = logfile), 
-        by = list(Code, Measure), 
+        by = list(Country, Region, Date, Measure), 
         .SDcols = icols][,..icols]
 
   
@@ -170,7 +169,7 @@ J <- J[ , try_step(process_function = maybe_lower_closeout,
                    OAnew_min = 85,
                    Amax = 104,
                    logfile = logfile), 
-        by = list(Code, Sex, Measure),
+        by = list(Country, Region, Date, Sex, Measure),
         .SDcols = icols][,..icols]
 
 
@@ -180,7 +179,7 @@ J <- J[ , try_step(process_function = maybe_lower_closeout,
 # Formatting 
 
 inputCounts <- J[ , AgeInt := add_AgeInt(Age, omega = 105),
-                  by = list(Code, Sex, Measure)][, ..icolsIN] %>% 
+                  by = list(Country, Region, Date, Sex, Measure)][, ..icolsIN] %>% 
   arrange(Country, Region, Sex, Measure, Age) %>% 
   as.data.frame()
 

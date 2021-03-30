@@ -70,4 +70,5 @@ Denmark_trigger.log
 Denmark_trigger.R
 US_Iowa_trigger.log
 US_Iowa_trigger.R
-usa_deaths_states_trigger.log
+USA_deaths_states_trigger.log
+*.[.log]

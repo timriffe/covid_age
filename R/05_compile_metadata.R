@@ -1,11 +1,11 @@
 
 # 1) which files have metadata tab.
-library(here)
-source(here("R","00_Functions.R"))
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
+
 library(googlesheets4)
 library(tidyverse)
 
-logfile <- here("buildlog.md")
+logfile <- here::here("buildlog.md")
 log_section("Compile metadata", 
             append = TRUE, 
             logfile = logfile)
@@ -20,7 +20,7 @@ log_section("Compile metadata",
 
 # we get this to extract which Metrics are captured for each source.
 
-gs4_auth(email = "tim.riffe@gmail.com")
+gs4_auth(email = Sys.getenv("email"))
 
 
 rubric <- get_input_rubric()
@@ -41,7 +41,7 @@ errors <- lapply(metadata_tabs, function(x){
 # rubric$Short[errors]
 metadata_tabs <- metadata_tabs[!errors]
 
-saveRDS(metadata_tabs,here("Data","metadata_tabs.rds"))
+saveRDS(metadata_tabs,here::here("Data","metadata_tabs.rds"))
 
 vars.dash <- c( "Country", 
                 "Region(s)",
@@ -83,7 +83,7 @@ metadata_important <-
   metadata_important %>% 
   filter(!drm)
 # save local copy for dash building
-saveRDS(metadata_important, file = here("Data","metadata_important.rds"))
+saveRDS(metadata_important, file = here::here("Data","metadata_important.rds"))
 
 
 # ----------------
@@ -151,11 +151,11 @@ tab3 <- metadata_table %>%
          `Date of events` = `DEATHS - Date of events`)
 
 
-saveRDS(metadata_tabs,file = here("Data","metadata_tabs.rds"))
-saveRDS(metadata_table,file = here("Data","metadata_table.rds"))
-saveRDS(tab1,file = here("Data","tab1.rds"))
-saveRDS(tab2,file = here("Data","tab2.rds"))
-saveRDS(tab3,file = here("Data","tab3.rds"))
+saveRDS(metadata_tabs,file = here::here("Data","metadata_tabs.rds"))
+saveRDS(metadata_table,file = here::here("Data","metadata_table.rds"))
+saveRDS(tab1,file = here::here("Data","tab1.rds"))
+saveRDS(tab2,file = here::here("Data","tab2.rds"))
+saveRDS(tab3,file = here::here("Data","tab3.rds"))
 
 
 }

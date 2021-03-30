@@ -1,16 +1,15 @@
 
-#install.packages("osfr")
-library(here)
-source(here("R","00_Functions.R"))
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
+change_here(wd_sched_detect())
 
 # TR: let's start zipping, it's time. Can delete the .csv files after a while.
-logfile <- here("buildlog.md")
+logfile <- here::here("buildlog.md")
 
 log_section("push outputs to OSF", append = TRUE, logfile = logfile)
 
 files_data <- c("inputDB","Output_5","Output_10","qualityMetrics")
 for (fl in files_data){
-  zip::zip(here("Data",paste0(fl,".zip")), 
+  zip::zip(here::here("Data",paste0(fl,".zip")), 
          files = file.path("Data",paste0(fl,".csv")), 
          compression_level = 9)
  Sys.sleep(2)
@@ -36,9 +35,17 @@ for (i in 1:length(files)){
   Sys.sleep(2)
 }
 
+################################################
+# also copy rds files to N://COVerAGE-DB/Data
+cdb_files <- c("inputDB.rds","inputDBhold.rds",
+                "inputCounts.rds","Output_5.rds",
+                "Output_10.rds","Offsets.rds","Output_5_before_sex_scaling_etc.rds",
+               "HarmonizationFailures.rds")
+files_from <- file.path("Data",cdb_files)
 
-#push_current(files_data_zipped)
-
+file.copy(from = files_from, 
+          to = "N://COVerAGE-DB/Data", 
+          overwrite = TRUE)
 
 
 # # On Friday's we archive the build.

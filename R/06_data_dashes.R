@@ -1,6 +1,6 @@
-library(here)
-source(here("R","00_Functions.R"))
-logfile <- here("buildlog.md")
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
+
+logfile <- here::here("buildlog.md")
 # availability dash
 log_section("Building dashboards", append = TRUE, logfile = logfile)
 

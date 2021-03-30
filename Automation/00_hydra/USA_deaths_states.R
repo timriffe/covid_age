@@ -26,29 +26,36 @@ db_drive <- get_country_inputDB("USA_CDC")
 
 # info by age for each state!!
 url <- "https://data.cdc.gov/api/views/9bhg-hcku/rows.csv?accessType=DOWNLOAD"
-db <- read_csv(url)
+data_source <- paste0(dir_n, "Data_sources/", ctr, "/deaths_",today(), ".csv")
+download.file(url, destfile = data_source)
+db <- read_csv(data_source)
 
-unique(db$`Age group`)
+unique(db$`Age Group`)
+unique(db$`Group`)
 
 ages_all <- c("All Ages", "Under 1 year", "0-17 years", "1-4 years", "5-14 years", "15-24 years", "18-29 years", "25-34 years", "30-49 years", "35-44 years", "45-54 years", "50-64 years", "55-64 years", "65-74 years", "75-84 years", "85 years and over")
 ages1 <- c("All Ages", "Under 1 year", "1-4 years", "5-14 years", "15-24 years", "25-34 years", "35-44 years", "45-54 years", "55-64 years", "65-74 years", "75-84 years", "85 years and over")
 ages2 <- c("All Ages", "0-17 years", "18-29 years", "30-49 years", "50-64 years", "65-74 years", "75-84 years", "85 years and over")
 
-date_report <- mdy(db$`Data as of`[1])
-date_f <- mdy(db$`End Week`[1])
+date_report <- mdy(db$`Data As Of`[1])
+date_f <- mdy(db$`End Date`[1])
 
 db2 <- db %>% 
-  select("State", "Age group", "Sex", "COVID-19 Deaths") %>% 
-  rename(Age = "Age group",
-         Value = "COVID-19 Deaths") %>% 
-  filter(Age %in% ages1)
-  
-db3 <- db %>% 
-  select("State", "Age group", "Sex", "COVID-19 Deaths") %>% 
-  rename(Age = "Age group",
+  select("State", "Age Group", "Sex", "COVID-19 Deaths", "Group") %>% 
+  rename(Age = "Age Group",
          Value = "COVID-19 Deaths") %>% 
   filter(Age %in% ages1,
-         Sex != "Unknown")
+         Group == "By Total") %>% 
+  select(-Group)
+  
+db3 <- db %>% 
+  select("State", "Age Group", "Sex", "COVID-19 Deaths", "Group") %>% 
+  rename(Age = "Age Group",
+         Value = "COVID-19 Deaths") %>% 
+  filter(Age %in% ages1,
+         Sex != "Unknown",
+         Group == "By Total") %>% 
+  select(-Group)
 
 no_nas <- db3 %>% 
   drop_na() %>% 
@@ -68,9 +75,7 @@ vs <- all %>%
   mutate(difs = all - no_na,
          prop = no_na / all)
 
-# Almost all states above 90% of ages identified when using wide age groups, 
-# excepting Alaska, Vermont, and 	Wyoming
-# When using narrow age groups, 8 states are below 90% of age identification
+# All states above 90% of ages identified when using wide age groups, 
 
 # Imputation of NAs can be done by attributing the same age structure of the country to ages where there is no information
 
@@ -102,13 +107,20 @@ totals <- db4 %>%
   rename(all = Value) %>% 
   select(-Age)
 
+totals2 <- totals %>% 
+  group_by(State) %>% 
+  summarise(all = sum(all)) %>% 
+  ungroup() %>% 
+  mutate(Sex = "b") %>% 
+  bind_rows(totals)
+
 sums <- db4 %>% 
   filter(Age != "TOT") %>% 
   drop_na() %>% 
   group_by(State, Sex) %>% 
   summarise(no_nas = sum(Value))
 
-diffs <- totals %>% 
+diffs <- totals2 %>% 
   left_join(sums) %>% 
   mutate(diff = all - no_nas)
 
@@ -139,7 +151,7 @@ excess_state <- ages_na2 %>%
          diff_imp = tot_imp - diff) %>% 
   summarise(diff_imp = mean(diff_imp))
 
-# 38 cases excess in total for the whole country with imputations
+# 51 cases excess in total for the whole country with imputations
 excess_state %>% 
   group_by() %>% 
   summarise(diff_imp = sum(diff_imp))
@@ -240,7 +252,11 @@ out <- db_drive %>%
   filter(Date != date_data) %>% 
   mutate(AgeInt = as.character(AgeInt)) %>% 
   select(-Short) %>% 
-  bind_rows(db5)
+  bind_rows(db5) %>% 
+  sort_input_data()
+
+unique(out$Region)
+unique(out$Date)
 
 ############################################
 #### uploading database to Google Drive ####
@@ -253,10 +269,6 @@ log_update(pp = ctr, N = nrow(out))
 ############################################
 #### uploading metadata to Google Drive ####
 ############################################
-
-data_source <- paste0(dir_n, "Data_sources/", ctr, "/deaths_",today(), ".csv")
-
-download.file(url, destfile = data_source)
 
 zipname <- paste0(dir_n, 
                   "Data_sources/", 

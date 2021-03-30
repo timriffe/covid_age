@@ -26,3 +26,6 @@ IA.csv
 debug.log
 Data/
 test.md
+Automation/test.R
+offsets.csv
+Data/offsets.csv

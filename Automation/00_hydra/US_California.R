@@ -1,20 +1,21 @@
 
 
 
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
 source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
 library(lubridate)
 # assigning Drive credentials in the case the script is verified manually  
-if (!"email" %in% ls()){
-  email <- "tim.riffe@gmail.com"
-}
+change_here(wd_sched_detect())
+startup::startup()
+setwd(here())
 
 # info country and N drive address
 ctr          <- "US_California" # it's a placeholder
 dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 # Drive credentials
-drive_auth(email = email)
-gs4_auth(email = email)
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
 
 # Drive urls
 rubric <- get_input_rubric() %>% 
@@ -32,18 +33,73 @@ Tests <-
   filter(Measure == "Tests") %>% 
   select(-Short)
 
+#vaccine data gets manually entered into drive sheet
+Vaccine <-
+  get_country_inputDB("US_CA") %>% 
+  filter(Measure== "Vaccination1"| Measure== "Vaccination2"| Measure== "Vaccinations") %>%
+  select(-Short)
+
+#saving data before source changed  
+Prior_data <-
+  get_country_inputDB("US_CA") %>% 
+  select(-Short)%>%
+  mutate(Date = dmy(Date))%>%
+  filter(Date <= "2021-01-24")%>% 
+  mutate(
+    Date = ymd(Date),
+    Date = paste(sprintf("%02d",day(Date)),    
+                 sprintf("%02d",month(Date)),  
+                 year(Date),sep="."))
+
+#########################data processing prior 23.03.2021###############################################################
 # read in data by age
-url1 <- "https://data.ca.gov/dataset/590188d5-8545-4c93-a9a0-e230f0db7290/resource/339d1c4d-77ab-44a2-9b40-745e64e335f2/download/case_demographics_age.csv"
+#url1 <- "https://data.ca.gov/dataset/590188d5-8545-4c93-a9a0-e230f0db7290/resource/339d1c4d-77ab-44a2-9b40-745e64e335f2/download/case_demographics_age.csv"
+
+#CAage <-
+  #CAage_in %>% 
+  #mutate(Date = as_date(date)) %>% 
+  #select(-date, -case_percent, -deaths_percent, -ca_percent, Cases = totalpositive, Deaths = deaths) %>% 
+  #pivot_longer(Cases:Deaths, names_to = "Measure", values_to = "Value") %>% 
+  #filter(!is.na(Value)) %>% 
+  #mutate(Age = recode(age_group,
+                      #"0-17" = "0",
+                      #"18-49" = "18",
+                     # "50-64" = "50",
+                     # "65 and Older" = "65",
+                     # "65+" = "65",
+                     # "Unknown" = "UNK",
+                     # "Missing" = "UNK"),
+        # Sex = "b",
+        # Country = "USA",
+        # Region = "California",
+         #Metric = "Count",
+         #Date = ddmmyyyy(Date),
+        # Code = paste0("US_CA_",Date),
+        # AgeInt = case_when(Age == "0" ~ 18L,
+                           # Age == "18" ~ 32L,
+                           # Age == "50" ~ 15L,
+                           # Age == "65" ~ 30L,
+                           # Age == "UNK" ~ NA_integer_)) %>% 
+  #select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
+##############################################################################################
+
+###updated data processing for new url
+
+url1 <-"https://data.ca.gov/dataset/covid-19-time-series-metrics-by-county-and-state/resource/4d93df07-7c4d-4583-af53-03f950fe4365/download/6e8f6324-172d-4869-8e1f-662b998c576e#"
 CAage_in <- 
   read_csv(url1) 
 
+
+# TR: from here down needs a redux for the new data format.
+# (unless the )
 CAage <-
   CAage_in %>% 
-  mutate(Date = as_date(date)) %>% 
-  select(-date, -case_percent, -deaths_percent, -ca_percent, Cases = totalpositive, Deaths = deaths) %>% 
+  mutate(Date = as_date(report_date)) %>%
+  filter(demographic_category== "Age Group")%>%
+  select(-report_date, -percent_cases, -percent_deaths, -percent_of_ca_population,-demographic_category, Cases = total_cases, Deaths = deaths, Age=demographic_value) %>% 
   pivot_longer(Cases:Deaths, names_to = "Measure", values_to = "Value") %>% 
   filter(!is.na(Value)) %>% 
-  mutate(Age = recode(age_group,
+  mutate(Age = recode(Age,
                       "0-17" = "0",
                       "18-49" = "18",
                       "50-64" = "50",
@@ -64,15 +120,47 @@ CAage <-
                             Age == "UNK" ~ NA_integer_)) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
 
+
 # By Sex
-url2 <- "https://data.ca.gov/dataset/590188d5-8545-4c93-a9a0-e230f0db7290/resource/ee01b266-0a04-4494-973e-93497452e85f/download/case_demographics_sex.csv"
+
+#########################data processing prior 23.03.2021##########################################################################
+#url2 <- "https://data.ca.gov/dataset/590188d5-8545-4c93-a9a0-e230f0db7290/resource/ee01b266-0a04-4494-973e-93497452e85f/download/case_demographics_sex.csv"
+#CAsex_in <-
+  #read_csv(url2)  
+
+#CAsex <-
+ # CAsex_in%>% 
+  #mutate(Date = as_date(date)) %>% 
+  #select(Sex = sex, Cases = totalpositive2, Deaths = deaths, Date) %>% 
+  #pivot_longer(Cases:Deaths, names_to = "Measure", values_to = "Value") %>% 
+  #filter(!is.na(Value)) %>% 
+  #group_by(Date) %>% 
+  #mutate(Value = ifelse(Sex == "Unknown", sum(Value),Value)) %>% 
+  #ungroup() %>% 
+  #mutate(Sex = case_when(Sex == "Unknown"~ "b",
+                         #Sex == "Female" ~ "f",
+                         #Sex == "Male" ~ "m"), 
+        # Country = "USA",
+        # Region = "California",
+        # Metric = "Count",
+         #Date = paste(sprintf("%02d",day(Date)),    
+                      #sprintf("%02d",month(Date)),  
+                     # year(Date),sep="."),
+        # Code = paste0("US_CA_",Date),
+        # Age = "TOT",
+         #AgeInt = NA_integer_)
+##########################################################################################################################################
+
+###updated data processing for new url
+
 CAsex_in <-
-  read_csv(url2)  
+read_csv(url1) 
 
 CAsex <-
   CAsex_in%>% 
-  mutate(Date = as_date(date)) %>% 
-  select(Sex = sex, Cases = totalpositive2, Deaths = deaths, Date) %>% 
+  mutate(Date = as_date(report_date)) %>%
+  filter(demographic_category== "Gender")%>%
+  select(-report_date, -percent_cases, -percent_deaths, -percent_of_ca_population,-demographic_category, Cases = total_cases, Deaths = deaths, Sex=demographic_value) %>%  
   pivot_longer(Cases:Deaths, names_to = "Measure", values_to = "Value") %>% 
   filter(!is.na(Value)) %>% 
   group_by(Date) %>% 
@@ -80,7 +168,8 @@ CAsex <-
   ungroup() %>% 
   mutate(Sex = case_when(Sex == "Unknown"~ "b",
                          Sex == "Female" ~ "f",
-                         Sex == "Male" ~ "m"), 
+                         Sex == "Male" ~ "m",
+                         Sex== "Total" ~ "TOT"), 
          Country = "USA",
          Region = "California",
          Metric = "Count",
@@ -89,10 +178,13 @@ CAsex <-
                       year(Date),sep="."),
          Code = paste0("US_CA_",Date),
          Age = "TOT",
-         AgeInt = NA_integer_)
+         AgeInt = NA_integer_)%>% 
+  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
 
-# bind together
-CAout <- bind_rows(CAage, CAsex, Tests) %>% 
+
+
+# bind together 
+CAout <- bind_rows(CAage, CAsex, Tests,Vaccine,Prior_data) %>% 
   sort_input_data()
 
 n <- duplicated(CAout[,c("Code","Sex","Age","Measure","Metric")]) 
@@ -122,13 +214,13 @@ log_update(pp = ctr, N = N)
 # write_csv(CAage_in, path = data_source_1)
 # write_csv(CAsex_in, path = data_source_2)
 
-data_source_1 <- paste0(dir_n, "Data_sources/", ctr, "/age_",today(), ".csv")
-data_source_2 <- paste0(dir_n, "Data_sources/", ctr, "/sex_",today(), ".csv")
+data_source <- paste0(dir_n, "Data_sources/", ctr, "/age_sex",today(), ".csv")
+#data_source_2 <- paste0(dir_n, "Data_sources/", ctr, "/sex_",today(), ".csv")
 
-download.file(url1, destfile = data_source_1)
-download.file(url2, destfile = data_source_2)
+download.file(url1, destfile = data_source)
+#download.file(url2, destfile = data_source_2)
 
-data_source <- c(data_source_1, data_source_2)
+#data_source <- c(data_source_1, data_source_2)
 
 zipname <- paste0(dir_n, 
                   "Data_sources/", 

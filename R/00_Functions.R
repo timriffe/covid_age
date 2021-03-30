@@ -14,7 +14,7 @@ packages_CRAN <- c("tidyverse","lubridate","gargle","ungroup","HMDHFDplus",
                    "tictoc","parallel","data.table","git2r","usethis",
                    "remotes","here","knitr","rmarkdown","googledrive","zip",
                    "cartography","rgdal","tmap","svglite",
-                   "countrycode","wpp2019")
+                   "countrycode","wpp2019","memuse")
 
 # Install required CRAN packages if not available yet
 if(!sum(!p_isinstalled(packages_CRAN))==0) {
@@ -25,14 +25,17 @@ if(!sum(!p_isinstalled(packages_CRAN))==0) {
 }
 
 # Reuired github packages
-packages_git <- c("googlesheets4","DemoTools","parallelsugar","osfr")
+packages_git <- c("googlesheets4","DemoTools","parallelsugar","osfr","covidAgeData")
 
 # install from github if necessary
 if (!p_isinstalled("googlesheets4")) {
   library(remotes)
   install_github("tidyverse/googlesheets4")
 }
-
+if (!p_isinstalled("covidAgeData")) {
+  library(remotes)
+  install_github("eshom/covid-age-data")
+}
 if (!p_isinstalled("DemoTools")) {
   library(remotes)
   install_github("timriffe/DemoTools")
@@ -154,6 +157,7 @@ try_step <- function(process_function,
                      chunk, 
                      byvars = c("Code","Sex"),
                      logfile = "buildlog.md", 
+                     write_log = TRUE,
                      ...) {
   
   # Try function on chunc
@@ -162,11 +166,12 @@ try_step <- function(process_function,
   # If error happens...
   if (class(out)[1] == "try-error"){
     
-    # ...write error to log
-    log_processing_error(chunk = chunk, 
-                         byvars = byvars,
-                         logfile = logfile)
-    
+    if (write_log){
+      # ...write error to log
+      log_processing_error(chunk = chunk, 
+                           byvars = byvars,
+                           logfile = logfile)
+    }
     # ... return empty chunk
     out <- chunk[0]
   }
@@ -1506,7 +1511,7 @@ infer_both_sex <- function(chunk, verbose = FALSE){
 ### do_we_maybe_lower_closeout()
 # Check if close out age needs to be lowered 
 # @param chunk Data chunk
-# param OAnew_min numeric Minimum close out age
+# @param OAnew_min numeric Minimum close out age
 
 do_we_maybe_lower_closeout <- function(chunk, OAnew_min, Amax) {
   
@@ -1865,7 +1870,8 @@ harmonize_age_p <- function(chunk, Offsets, N = 5,
   .Date    <- chunk %>% '$'(Date) %>% "[["(1)
   .Sex     <- chunk %>% '$'(Sex) %>% "[["(1)
   .Measure <- chunk %>% '$'(Measure) %>% "[["(1)
-  
+  .id.      <- chunk %>% '$'(id) %>% '[['(1)
+  # .id      <- chunk %>% '$'(id) %>% "[["(1)
   # Harmonize age
   out <- harmonize_age(chunk, Offsets = Offsets, N = N, 
                        OAnew = OAnew, lambda = lambda)
@@ -1876,57 +1882,142 @@ harmonize_age_p <- function(chunk, Offsets, N = 5,
                         Code = .Code,
                         Date = .Date,
                         Sex = .Sex,
-                        Measure = .Measure) %>% 
+                        Measure = .Measure,
+                        id = .id.) %>% 
         select(Country, Region, Code, Date, Sex, 
-               Measure, Age, AgeInt, Value)
+               Measure, Age, AgeInt, Value, id)
   
   # Output
   out
 }
+# @param chunk Data chunk
+# @param Offsets Tibble/data frame with offsets
+# @param N integer Age interval width
+# @param OAnew integer Open age interval
+# @param lambda Lambda value for PCLM
+harmonize_age_p_del <- function(chunk, 
+                                Offsets, 
+                                N = 5, 
+                                OAnew = 100, 
+                                lambda = 100){
+  out <- try(harmonize_age_p(chunk = chunk, 
+                             Offsets = Offsets, 
+                             N = N, 
+                             OAnew = OAnew, 
+                             lambda = lambda))
+  if (class(out)[1] == "try-error"){
+    out <- chunk[0,] %>% 
+      select(Country, Region, Code, Date, Sex, Measure, Age, AgeInt, Value, id)
+  }
+  out
+}
+
+# @param bigchunk Data with id variable indicating subsets, roughly 1/33 of the inputCounts
+# @param Offsets Tibble/data frame with offsets
+# @param N integer Age interval width
+# @param OAnew integer Open age interval
+# @param lambda Lambda value for PCLM 
+harmonize_age_p_bigchunks <- function(bigchunk,
+                                      Offsets, 
+                                      N = 5, 
+                                      OAnew = 100, 
+                                      lambda = 100){
+  bigchunk <- bigchunk %>% 
+    arrange(.data$id,.data$Age)
+    
+  innerL <- split(bigchunk, list(bigchunk$id)) 
+  harmonizedL <- lapply(innerL,
+                harmonize_age_p_del,
+                Offsets = Offsets,
+                OAnew = OAnew,
+                N = N,
+                lambda = lambda) 
+  out <- rbindlist(harmonizedL)
+  return(out)
+}
+
 
 
 ### rescale_sexes_post()
 # Rescales sex-specific counts to match combined-sex values
 # @param chunk Data chunk
-
-rescale_sexes_post <- function(chunk) {
-  
+rescale_sexes_post<- function(chunk) {
+  # TR 13.02.2021: new data.table (albeit a hacky one) redux
+  dat <- copy(chunk)
   # Get sexes in data
-  sexes  <- chunk %>% '$'(Sex) %>% unique()
+  sexes  <- dat %>% '$'(Sex) %>% unique()
   
   # Data includes b, m, f?
   maybe  <- setequal(sexes,c("b","f","m")) 
   
   # If so,
   if (maybe){
+    dat <-
+      dat %>% 
+      .[,Value := as.double(Value)] %>% 
+      dcast(Age~Sex,value.var = "Value") %>% 
+      .[,mf := m + f] %>% 
+      .[,adj := b / mf] %>% 
+      .[,adj := nafill(adj,nan = NA, fill = 1)] %>% 
+      .[,m := adj * m] %>% 
+      .[,f := adj * f] %>% 
+      .[,adj := NULL] %>% 
+      .[,mf := NULL] %>% 
+      melt(measure.vars = c("b","m","f"),
+           variable.name = "Sex",
+           value.name = "Value",
+           verbose = FALSE)
     
-    chunk <- chunk %>% 
-             # Sort by Sex and Age
-             arrange(Sex, Age) %>% 
-             # Reshape to wide
-             pivot_wider(names_from = Sex,
-                  values_from = Value) %>% 
-             # Calculate/apply adjustment
-             mutate(mf = m + f,
-              adj = b / mf,
-              adj = ifelse(mf == 0,1,adj),
-              m = adj * m,
-              f = adj * f) %>% 
-             # Drop intermediate steps
-             select(-c(mf,adj)) %>% 
-             # Reshape back to long
-             pivot_longer(cols = c("f","m","b") ,
-                   names_to = "Sex",
-                   values_to = "Value") %>% 
-             # Sort 
-             arrange(Sex,Age)
     
   } 
-  
+  icols <- c("Sex","Age","Value")
   # Output
-  return(chunk)
-  
+  dat[,..icols] %>% 
+    .[,.(Value = as.double(Value),
+         Sex = as.character(Sex),
+         Age = as.integer(Age))] %>% 
+    return()
 }
+
+# dplyr version replaced w above data.table
+# rescale_sexes_post <- function(chunk) {
+#   
+#   # Get sexes in data
+#   sexes  <- chunk %>% '$'(Sex) %>% unique()
+#   
+#   # Data includes b, m, f?
+#   maybe  <- setequal(sexes,c("b","f","m")) 
+#   
+#   # If so,
+#   if (maybe){
+#     
+#     chunk <- chunk %>% 
+#              # Sort by Sex and Age
+#              arrange(Sex, Age) %>% 
+#              # Reshape to wide
+#              pivot_wider(names_from = Sex,
+#                   values_from = Value) %>% 
+#              # Calculate/apply adjustment
+#              mutate(mf = m + f,
+#               adj = b / mf,
+#               adj = ifelse(mf == 0,1,adj),
+#               m = adj * m,
+#               f = adj * f) %>% 
+#              # Drop intermediate steps
+#              select(-c(mf,adj)) %>% 
+#              # Reshape back to long
+#              pivot_longer(cols = c("f","m","b") ,
+#                    names_to = "Sex",
+#                    values_to = "Value") %>% 
+#              # Sort 
+#              arrange(Sex,Age)
+#     
+#   } 
+#   
+#   # Output
+#   return(chunk)
+#   
+# }
 
 
 ### rescaleAgeGroups()
@@ -2183,4 +2274,32 @@ ddmmyyyy <- function(Date,sep = "."){
   paste(sprintf("%02d",day(Date)),
         sprintf("%02d",month(Date)),  
         year(Date),sep=sep)
+}
+
+change_here <- function(new_path){
+  new_root <- here:::.root_env
+  
+  new_root$f <- function(...){file.path(new_path, ...)}
+  
+  assignInNamespace(".root_env", new_root, ns = "here")
+  source("~/.Rprofile")
+}
+wd_sched_detect <- function(){
+  if (!interactive()){
+    initial.options <- commandArgs(trailingOnly = FALSE)
+    file.arg.name   <- "--file="
+    script.name     <- sub(file.arg.name,"",initial.options[grep(file.arg.name,initial.options)]) 
+    
+    wd <- script.name 
+  }else {
+    wd <- getwd()
+  }
+  for (i in 1:3){
+    bname <- basename(wd)
+    if (bname == "covid_age"){
+      break
+    }
+    wd <- dirname(wd)
+  }
+  wd
 }

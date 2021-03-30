@@ -19,16 +19,14 @@ url <- "https://data.cdc.gov/api/views/vsak-wrfu/rows.csv?accessType=DOWNLOAD"
 db <- read_csv(url)
 
 db2 <- db %>%
-  select("Age Group", "Sex", "End Week", "COVID-19 Deaths") %>%
-  rename(Age = "Age Group",
-         date_f = "End Week",
-         New = "COVID-19 Deaths") %>%
+  select(Age = `Age Group`, Sex, date_f = `End Week`, New = `COVID-19 Deaths`) %>%
   mutate(Age = str_sub(Age, 1, 2),
          Age = case_when(Age == "Un" ~ "0",
                          Age == "Al" ~ "TOT",
                          Age == "1-" ~ "1",
                          Age == "5-" ~ "5",
                          TRUE ~ as.character(Age)),
+
          Sex = case_when(Sex == "Female" ~ "f",
                          Sex == "Male" ~ "m",
                          Sex == "All Sex" ~ "b"),
@@ -38,24 +36,21 @@ db2 <- db %>%
                             Age == "5" ~ 10L,
                             Age == "85" ~ 20L,
                             TRUE ~ 10L),
-         date_f = make_date(d = str_sub(date_f, 4, 5), m = str_sub(date_f, 1, 2), y = 2020)) %>%
+         date_f = lubridate::mdy(date_f)) %>%
   select(date_f, Sex, Age, AgeInt, New) %>%
-  arrange(date_f, Sex, Age) %>%
-  drop_na()
+  arrange(date_f, Sex, Age) 
 
 db3 <- db2 %>%
   group_by(Sex, Age) %>%
   mutate(Value = cumsum(New))
 
 out <- db3 %>%
-  filter(date_f > "2020-02-29") %>%
+  filter(date_f > ymd("2020-02-29")) %>%
   mutate(Country = "USA",
          Region = "All",
          Metric = "Count",
          Measure = "Deaths",
-         Date = paste(sprintf("%02d", day(date_f)),
-                      sprintf("%02d", month(date_f)),
-                      year(date_f), sep = "."),
+         Date = ddmmyyyy(date_f),
          Code = paste0("US", Date)) %>%
   arrange(date_f, Sex, Measure, suppressWarnings(as.integer(Age))) %>%
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)

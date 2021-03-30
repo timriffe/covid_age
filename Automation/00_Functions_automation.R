@@ -17,7 +17,7 @@ packages_CRAN <- c("tidyverse","lubridate","gargle","rvest","httr","readxl",
                    "tictoc","parallel","data.table","git2r","usethis", "rio",
                    "remotes","here","googledrive","zip", "XML", "RCurl",
                    "taskscheduleR","countrycode", "xml2", "dplyr", "xml2",
-                   "reticulate")
+                   "reticulate", "rjson")
 
 # Install required CRAN packages if not available yet
 if(!sum(!p_isinstalled(packages_CRAN))==0) {
@@ -52,10 +52,31 @@ get_input_rubric <- function(tab = "input") {
   # Spreadsheet on Google Docs
   ss_rubric <- "https://docs.google.com/spreadsheets/d/15kat5Qddi11WhUPBW3Kj3faAmhuWkgtQzioaHvAGZI0/edit#gid=0"
   
-  # Read spreadsheet
-  input_rubric <- read_sheet(ss_rubric, sheet = tab) %>% 
-    # Drop if no source spreadsheet
-    filter(!is.na(Sheet))
+  input_rubric <- try(read_sheet(ss_rubric, sheet = tab) %>% 
+             # Drop if no source spreadsheet
+             filter(!is.na(Sheet)))
+  
+  # If error
+  if (class(input_rubric)[1] == "try-error") {
+    
+    Sys.sleep(120)
+    
+    # Try to load again
+    input_rubric <- try(read_sheet(ss_rubric, sheet = tab) %>% 
+                          # Drop if no source spreadsheet
+                          filter(!is.na(Sheet)))
+    
+    if (class(input_rubric)[1] == "try-error") {
+      
+      Sys.sleep(120)
+      
+      # Try to load again
+      input_rubric <- try(read_sheet(ss_rubric, sheet = tab) %>% 
+                            # Drop if no source spreadsheet
+                            filter(!is.na(Sheet)))
+      
+    }
+  }
   
   # Return tibble
   input_rubric
@@ -77,11 +98,40 @@ get_country_inputDB <- function(ShortCode) {
   ss_i   <- rubric %>% filter(Short == ShortCode) %>% '$'(Sheet)
   
   # Load spreadsheet
-  out <- read_sheet(ss_i, 
-                    sheet = "database", 
-                    na = "NA", 
-                    col_types= "cccccciccd")
+  # out <- read_sheet(ss_i, 
+  #                   sheet = "database", 
+  #                   na = "NA")
+  # 
   
+  out <- try(read_sheet(ss_i, 
+                        sheet = "database", 
+                        na = "NA", 
+                        col_types= "cccccciccd"))
+  
+  # If error
+  if (class(out)[1] == "try-error") {
+    
+    Sys.sleep(120)
+    
+    # Try to load again
+    out <- try(read_sheet(ss_i, 
+                          sheet = "database", 
+                          na = "NA", 
+                          col_types= "cccccciccd"))
+    
+    if (class(out)[1] == "try-error") {
+      
+      Sys.sleep(120)
+      
+      # Try to load again
+      out <- try(read_sheet(ss_i, 
+                            sheet = "database", 
+                            na = "NA", 
+                            col_types= "cccccciccd"))
+      
+    }
+  }
+
   # Assign short code
   out$Short <- add_Short(out$Code,out$Date)
   
@@ -177,15 +227,15 @@ sort_input_data <- function(X) {
     mutate(Date2 = dmy(Date)) %>% 
     # Sort data
     arrange(Country,
-            Region,
             Date2,
+            Region,
             Code,
             Sex, 
             Measure,
             Metric,
             suppressWarnings(as.integer(Age))) %>% 
     # Drop extra date variable
-    select(-Date2)
+    select(Country, Region, Code,  Date, Sex, Age, AgeInt, Metric, Measure, Value)
   
 }
 
