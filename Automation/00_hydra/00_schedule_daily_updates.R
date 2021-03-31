@@ -83,6 +83,8 @@ sched("Italy", "06:00",email = auto_update_email, wd = auto_update_wd)
 sched("Croatia", "12:32",email = auto_update_email, wd = auto_update_wd)
 sched("CA_Quebec", "08:00",email = auto_update_email, wd = auto_update_wd)
 sched("CA_Manitoba_Saskatchewan", "08:05",email = auto_update_email, wd = auto_update_wd)
+sched("CA_Ontario", "08:08",email = auto_update_email, wd = auto_update_wd)
+sched("CA_British_Columbia", "08:10",email = auto_update_email, wd = auto_update_wd)
 
 # sched("GB_NIR", "19:02",email = auto_update_email, wd = auto_update_wd)
 # sched("Brazil", "12:29",email = auto_update_email, wd = auto_update_wd)
