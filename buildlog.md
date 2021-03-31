@@ -741,3 +741,15 @@ e == 'NO09.03.2021', Sex == 'b', Measure == 'Deaths'
 # Age harmonization 
  Wed Mar 31 02:39:36 2021 
 
+
+# remake coverage map 
+ Wed Mar 31 05:50:51 2021 
+
+
+# push outputs to OSF 
+ Wed Mar 31 05:55:48 2021 
+
+
+# Commit dashboards and buildlog 
+ Wed Mar 31 06:01:00 2021 
+
