@@ -1440,3 +1440,7 @@ filter( Code == 'NO09.03.2021', Sex == 'b', Measure == 'Deaths' )
 # Commit dashboards and buildlog 
  Thu Apr 01 08:01:50 2021 
 
+
+# update build series log 
+ Thu Apr 01 08:02:21 2021 
+
