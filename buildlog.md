@@ -1441,3 +1441,7 @@ filter( Code == 'NO09.03.2021', Sex == 'b', Measure == 'Deaths' )
 # Age harmonization 
  Sun Apr 04 02:37:22 2021 
 
+
+# Compile metadata 
+ Sun Apr 04 06:36:07 2021 
+
