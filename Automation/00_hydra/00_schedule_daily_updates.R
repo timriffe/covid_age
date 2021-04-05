@@ -10,6 +10,7 @@ source(here("Automation/00_Functions_automation.R"))
 # then, each time for updates: 
 # git pull upstream master
 
+# taskscheduler_ls() %>% view()
 
 # TR: modifying this script to assume we're working inside the repository, and 
 # are relative to it. This first part detects who is scheduling (diego, 
