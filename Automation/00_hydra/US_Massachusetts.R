@@ -1,3 +1,11 @@
+# 20210329 Update by Diego:
+# Vaccination data was added recently; eg. 
+# https://www.mass.gov/doc/weekly-covid-19-municipality-vaccination-report-march-18-2021/download
+# And should be also collected. I followed the same worflow for adding vaccination
+# data that I used for the Swedish script when they too adeed vaccine data
+
+# 1. Preamble ---------------
+
 library(here)
 source(here("Automation/00_Functions_automation.R"))
 
@@ -15,7 +23,10 @@ dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 drive_auth(email = email)
 gs4_auth(email = email)
 
-# data from the input rubric
+print(paste0("Starting data retrieval for US-MA..."))
+
+# 2. Get data from the input rubric-----
+
 rubric_i <- get_input_rubric() %>% filter(Short == "US_MA")
 ss_i <- rubric_i %>% dplyr::pull(Sheet)
 
@@ -26,11 +37,14 @@ db_drive_combs <- db_drive %>%
   select(Date, Sex, Age, Measure) %>% 
   mutate(drive = 1)
 
+# 3. Download latest web data -----
 
+# 3.1. Cases and deaths =============
 
 m_url <- "https://www.mass.gov/info-details/archive-of-covid-19-cases-in-massachusetts"
 
-links <- scraplinks(m_url) %>% 
+links <- 
+  scraplinks(m_url) %>% 
   filter(str_detect(url, "raw-data")) %>% 
   select(url) %>% 
   mutate(p2 = str_locate(url, "/dow") - 1,
@@ -39,7 +53,6 @@ links <- scraplinks(m_url) %>%
          date_f = mdy(date))
 
 # to download all previous dates
-################################
 # for(i in 1:nrow(links)){
 #   date <- links[i, 5] %>% dplyr::pull()
 #   data_source <- paste0(dir_n, "Data_sources/", ctr, "/", ctr, "_data_", date, ".zip")
@@ -50,14 +63,15 @@ links <- scraplinks(m_url) %>%
 
 last_file <- 
   links %>% 
-  group_by() %>% 
-  filter(date_f == max(date_f)) %>% 
-  ungroup() 
+  arrange(desc(date_f)) %>% 
+  slice(1)
+  # group_by() %>% 
+  # filter(date_f == max(date_f)) %>% 
+  # ungroup() 
 
 date <- 
   last_file %>% 
-  select(date_f) %>% 
-  dplyr::pull()
+  dplyr::pull(date_f) 
 
 url <- 
   last_file %>% 
@@ -99,7 +113,8 @@ age <- read_xlsx(data_source, sheet = "CasesbyAge")
 cases_t <- read_xlsx(data_source, sheet = "Cases (Report Date)")
 deaths_t <- read_xlsx(data_source, sheet = "DateofDeath")
 
-age2 <- age %>% 
+age2 <- 
+  age %>% 
   select(1:9) %>% 
   gather(-1, key = "Age", value = "Value") %>% 
   separate(Age, c("Age", "trash")) %>% 
@@ -109,7 +124,8 @@ age2 <- age %>%
          Measure = "Cases") %>% 
   select(date_f, Sex, Age, Measure, Value) 
 
-c2 <- cases_t %>% 
+c2 <- 
+  cases_t %>% 
   rename(Value = "Positive Total") %>% 
   mutate(Sex = "b",
          Age = "TOT",
@@ -126,9 +142,8 @@ d2 <- deaths_t %>%
          Measure = "Deaths") %>% 
   select(date_f, Sex, Age, Measure, Value)
 
-db_all <- bind_rows(age2,
-                      c2,
-                      d2) %>% 
+db_all <- 
+  bind_rows(age2, c2, d2) %>% 
   mutate(Country = "USA",
          Region = "Massachusetts",
          Date = paste(sprintf("%02d", day(date_f)),
@@ -143,11 +158,142 @@ db_all <- bind_rows(age2,
   arrange(date_f, Sex, Measure, suppressWarnings(as.integer(Age))) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
 
-db_all_combs <- db_all %>% 
+db_all_combs <- 
+  db_all %>% 
   select(Date, Sex, Age, Measure) %>% 
   mutate(drive = 1)
 
-db_drive2 <- db_drive %>% 
+# 3.2. Vaccine data =========
+
+v_url <- "https://www.mass.gov/info-details/massachusetts-covid-19-vaccination-data-and-updates#weekly-covid-19-municipality-vaccination-data-"
+
+v_links <-
+  scraplinks(v_url) %>% 
+  filter(str_detect(url, "weekly-covid-19-municipality-vaccination-report")) %>% 
+  select(url) %>% 
+  mutate(p2 = str_locate(url, "/dow") - 1,
+         date = str_sub(url, 24, p2[,"start"]),
+         url2 = paste0("https://www.mass.gov", url),
+         date_f = mdy(date)) %>% 
+    data.frame()
+
+v_last_file <- 
+  v_links %>% 
+  arrange(desc(date_f)) %>% 
+  slice(1)
+
+v_date <- 
+  v_last_file %>% 
+  dplyr::pull(date_f) 
+
+v_url <- 
+  v_last_file %>% 
+  select(url2) %>% 
+  dplyr::pull()
+
+# Get data
+
+v_data_source <- 
+  paste0(dir_n, "Data_sources/", ctr, "/", ctr, "_vaccines_", v_date, ".xlsx")
+
+download.file(v_url, destfile = v_data_source, mode="wb")
+
+# Email conversation Diego-Jessica on 20210330
+# Diego:
+# There are several columns in the Massachussets data that could be interesting, 
+# but I am not sure I should include in the data collection. I think that the column 
+# “Individuals with at least one dose” would be equivalent to the code “Vaccination1” 
+# I used when including Swedish vaccination data to the Coverage database. 
+# The other candidate columns is “Fully vaccinated individuals” but this is not equivalent 
+# to the “Vaccinated2” code since the J&J vaccine only requires one shot. 
+# Should I only include the first column I mentioned?
+# Jessica:
+# at least one dose is Vaccination1. Fully vaccinated will be counted in Vaccination2, 
+# even if it is only one dose. We defined that as “fully vaccinated, second dose” at 
+# the beginning to include the one dose vaccines as well. 
+# So please include both column. 
+
+# Get by age but not sex
+v_age <- read_xlsx(v_data_source, sheet = "Age - municipality", skip = 1)
+v_age[v_age == "*"] <- NA
+
+v_age2 <-
+  v_age %>% 
+  select(
+    Age = `Age Group`
+    , Vaccination1 = `Individuals with at least one dose`
+    , Vaccination2 = `Fully vaccinated individuals`
+    ) %>% 
+  # The data is given at the town level, so aggregate to State
+  pivot_longer(-Age, names_to = "Measure", values_to = "Value") %>% 
+  filter(Age != "Total") %>% 
+  group_by(Age, Measure) %>% 
+  summarise(Value = sum(as.numeric(Value), na.rm = T)) %>% 
+  ungroup() %>% 
+  mutate(
+    Sex = "b"
+    , date_f = ymd(v_date)
+    , Age = gsub(" Years", "", Age)
+    , Age_low = as.numeric(gsub("-","",  str_extract(Age, "^[0-9]+\\-")))
+    , Age_high = as.numeric(str_extract(Age, "[0-9]{2}$"))
+    , Age = ifelse(grepl("\\+", Age), str_extract(Age, "^[0-9]{2}"), Age_low)
+    , AgeInt = ifelse(!is.na(Age_high), Age_high-Age_low+1, 105-as.numeric(Age))
+    ) %>% 
+  arrange(Measure, Age) %>% 
+  select(date_f, Sex, Age, AgeInt, Measure, Value) 
+
+# Get by sex but not age
+
+# Note that sex == other is coded as unknown, after checking with Jessica on 
+# 20210330
+
+v_sex <- read_xlsx(v_data_source, sheet = "Sex - municipality", skip = 1)
+v_sex[v_sex == "*"] <- NA
+
+v_sex2 <- 
+  v_sex %>% 
+  select(
+    Sex
+    , Vaccination1 = `Individuals with at least one dose`
+    , Vaccination2 = `Fully vaccinated individuals`
+  ) %>% 
+  # The data is given at the town level, so aggregate to State
+  pivot_longer(-Sex, names_to = "Measure", values_to = "Value") %>% 
+  filter(Sex != "Total") %>% 
+  group_by(Sex, Measure) %>% 
+  summarise(Value = sum(as.numeric(Value), na.rm = T)) %>% 
+  ungroup() %>% 
+  mutate(
+    Age = "TOT"
+    , date_f = ymd(v_date)
+    # , Sex = ifelse(Sex == "Other", "UNK", Sex)
+    , Sex = case_when(Sex == "Male" ~ "m",
+                    Sex == "Female" ~ "f",
+                    Sex == "Other" ~ "UNK")
+  ) %>% 
+  arrange(Measure, Age) %>% 
+  select(date_f, Sex, Age, Measure, Value) 
+ 
+# Format for export
+
+out_vac <-
+  bind_rows(v_sex2, v_age2) %>% 
+  mutate(
+    Country = "USA",
+    Region = "Massachusetts",
+    Date = paste(sprintf("%02d", day(date_f)),  sprintf("%02d", month(date_f)), year(date_f), sep = "."),
+    Code = paste0("US_MA", Date),
+    Metric = "Count",
+  ) %>% 
+  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
+  arrange(Measure)
+
+# 4. Combine to existing data --------------
+
+# Add cases
+
+db_drive2 <- 
+  db_drive %>% 
   left_join(db_all_combs) %>% 
   replace_na(list(drive = 2)) %>% 
   filter(drive == 2,
@@ -155,15 +301,30 @@ db_drive2 <- db_drive %>%
          Age != "UNK") %>% 
   select(-drive)
 
-out <- bind_rows(db_drive2, db_all) %>% 
+
+out <- 
+  bind_rows(db_drive2, db_all) %>% 
   mutate(date_f = dmy(Date)) %>% 
   arrange(date_f, Sex, Measure, suppressWarnings(as.integer(Age))) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
 
 
-############################################
-#### uploading database to Google Drive ####
-############################################
+# Add vaccines
+
+# Find which values do not exist yet in table
+
+new_vac <- with(out_vac, paste(Date, Sex, Age, Measure))
+old_vac <- with(out, paste(Date, Sex, Age, Measure))
+
+rows_to_add <- !new_vac %in% old_vac  
+  
+vac_data <- out_vac[rows_to_add, ]
+
+out <- bind_rows(out, vac_data)
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#### uploading database to Google Drive 
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # This command append new rows at the end of the sheet
 write_sheet(out,
@@ -172,13 +333,10 @@ write_sheet(out,
 
 log_update(pp = ctr, N = nrow(out))
 
-
-############################################
-#### uploading database to Google Drive ####
-############################################
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#### uploading database to Google Drive 
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 write_rds(db_all, "N:/COVerAGE-DB/Automation/Hydra/US_Massachusetts.rds")
 
 log_update(pp = "US_Massachusetts", N = nrow(db_all))
-
-

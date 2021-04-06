@@ -10,6 +10,7 @@ source(here("Automation/00_Functions_automation.R"))
 # then, each time for updates: 
 # git pull upstream master
 
+# taskscheduler_ls() %>% view()
 
 # TR: modifying this script to assume we're working inside the repository, and 
 # are relative to it. This first part detects who is scheduling (diego, 
@@ -83,6 +84,8 @@ sched("Italy", "06:00",email = auto_update_email, wd = auto_update_wd)
 sched("Croatia", "12:32",email = auto_update_email, wd = auto_update_wd)
 sched("CA_Quebec", "08:00",email = auto_update_email, wd = auto_update_wd)
 sched("CA_Manitoba_Saskatchewan", "08:05",email = auto_update_email, wd = auto_update_wd)
+sched("CA_Ontario", "08:08",email = auto_update_email, wd = auto_update_wd)
+sched("CA_British_Columbia", "08:10",email = auto_update_email, wd = auto_update_wd)
 
 # sched("GB_NIR", "19:02",email = auto_update_email, wd = auto_update_wd)
 # sched("Brazil", "12:29",email = auto_update_email, wd = auto_update_wd)
