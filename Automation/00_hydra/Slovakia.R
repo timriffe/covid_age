@@ -22,10 +22,11 @@ cases_url <- "https://raw.githubusercontent.com/Institut-Zdravotnych-Analyz/covi
 deaths_url <- "https://raw.githubusercontent.com/Institut-Zdravotnych-Analyz/covid19-data/main/Deaths/OpenData_Slovakia_Covid_Deaths_AgeGroup_District.csv"
 # Date;Gender;District;AgeGroup;Type
 DeathsIn <- read_delim(deaths_url, 
-                col_types = "ccccc",
-                delim=";",
-                locale = readr::locale(encoding = "windows-1250"))
+                       col_types = cols(.default = "c"),
+                       delim=";",
+                       locale = readr::locale(encoding = "windows-1250"))
 
+unique(DeathsIn$Region)
 
 # helper function due to inconsistent date codes
 c_as_date <- function(x){
@@ -136,9 +137,11 @@ Deaths <-
   group_by(Date, Sex, Region, Age) %>% 
   summarize(new = n(), .groups = "drop") %>% 
   tidyr::complete(Region, Age = all_ages, Sex, Date = all_dates, fill = list(new = 0)) %>% 
-  arrange(Region,Sex,Age,Date) %>% 
+  arrange(Region, Sex, Age, Date) %>% 
+  group_by(Sex, Region, Age) %>% 
   mutate(Value = cumsum(new)) %>% 
-  select(Region,Age,Sex,Date,Value)
+  select(Region,Age,Sex,Date,Value) %>% 
+  ungroup()
   
 # aggregate to totals
 DeathsAll <-
@@ -150,7 +153,8 @@ DeathsAll <-
 # Make the regional data weekly
 Deaths <-
   Deaths %>% 
-  filter(weekdays(Date) == "Monday") # ISOweek cut points
+  filter(weekdays(Date) == "Monday") %>%  # ISOweek cut points
+  drop_na()
 
 # bind together
 Deaths <-
@@ -167,46 +171,15 @@ Deaths_out <-
          AgeInt = ifelse(Age == "UNK",NA_integer_,5)) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
 
-############################################
-#### saving database in N Drive ####
-############################################
-write_rds(Deaths_out, paste0(dir_n, ctr, ".rds"))
-
-# updating hydra dashboard
-log_update(pp = ctr, N = nrow(Deaths_out))
-
-############################################
-# archive inputs:
-############################################
-data_source <- paste0(dir_n, "Data_sources/", ctr, "/deaths_",today(), ".csv")
-
-data.table::fwrite(DeathsIn, file = data_source)
-
-# Save out source data
-zipname <- paste0(dir_n, 
-                  "Data_sources/", 
-                  ctr,
-                  "/", 
-                  ctr,
-                  "_deaths_",
-                  today(), 
-                  ".zip")
-
-zipr(zipname, 
-     data_source, 
-     recurse = TRUE, 
-     compression_level = 9,
-     include_directories = TRUE)
-
-# clean up file chaff
-file.remove(data_source)
-
-#######################################
 
 
-# Cases to be worked on once we get a decent jump-off
-do.this <- FALSE
-if (do.this){
+# Cases
+#######
+
+  CasesIn <- read_delim(cases_url, 
+                         col_types = cols(.default = "c"),
+                         delim=";",
+                        locale = locale(encoding = "UTF-8"))
   
   # temp <- tempfile(fileext=".csv")
   # download.file("https://raw.githubusercontent.com/Institut-Zdravotnych-Analyz/covid19-data/main/OpenData_Slovakia_Covid_PositiveTests_AgeGroup_District.csv",
@@ -225,11 +198,14 @@ if (do.this){
   
 C <- 
   CasesIn %>% 
-  mutate(Date = ymd(Date)) %>% 
-  select(Date, Sex = Gender, District, Age = AgeGroup)
+  mutate(Date = ymd(Date),
+         Age = as.double(AgeGroup)) %>% 
+  select(Date, Sex = Gender, District, Age)
+
+unique(C$Age) %>% sort
 
 all_dates_cases <- seq(min(C$Date),max(C$Date),by="days")
-all_ages_cases   <- seq(0,120,by=5) %>% as.character()
+# all_ages_cases   <- seq(0, 100, by=5) %>% as.character()
 
 # Note-region recode should copy from the above one...
 Cases <-
@@ -309,15 +285,100 @@ Cases <-
                          "Zvolen" = "Banksa Bystrica",
                          "Žarnovica" = "Banksa Bystrica",
                          "Žiar nad Hronom" = "Banksa Bystrica",
-                         "Žilina" = "Zilina")) %>% 
+                         "Žilina" = "Zilina"),
+         Age = case_when(Age >= 100 & Age <= 120 ~ 100,
+                         Age == 995 ~ NA_real_,
+                         TRUE ~ Age)) %>% 
   group_by(Date, Sex, Region, Age) %>% 
   summarize(new = n(), .groups = "drop") %>% 
   tidyr::complete(Region, 
-                  Age = all_ages_cases, 
+                  Age, 
                   Sex, 
                   Date = all_dates_cases, 
                   fill = list(new = 0)) %>% 
   arrange(Region,Sex,Age,Date) %>% 
+  group_by(Sex, Region, Age) %>% 
   mutate(Value = cumsum(new)) %>% 
-  filter(weekdays(Date) == "Sunday") 
-}
+  ungroup() %>% 
+  mutate(Age = ifelse(is.na(Age), "UNK", as.character(Age)))
+
+# aggregate to totals
+CasesAll <-
+  Cases %>% 
+  group_by(Date,Sex,Age) %>% 
+  summarize(Value = sum(Value), .groups = "drop") %>% 
+  mutate(Region = "All")
+
+# Make the regional data weekly
+Cases <-
+  Cases %>% 
+  filter(weekdays(Date) == "Monday") %>%  # ISOweek cut points
+  drop_na()
+
+# bind together
+Cases <-
+  bind_rows(Cases, CasesAll)
+
+# add other columns needed
+Cases_out <-
+  Cases %>% 
+  mutate(Country = "Slovakia",
+         Date = ddmmyyyy(Date),
+         Code = paste0("SK",Date),
+         Measure = "Cases",
+         Metric = "Count",
+         AgeInt = ifelse(Age == "UNK",NA_integer_,5)) %>% 
+  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
+
+# Binding together cases and deaths
+out <- 
+  bind_rows(Deaths_out, Cases_out) %>% 
+  sort_input_data()
+
+############################################
+#### saving database in N Drive ####
+############################################
+write_rds(out, paste0(dir_n, ctr, ".rds"))
+
+# updating hydra dashboard
+log_update(pp = ctr, N = nrow(Deaths_out))
+
+############################################
+# archive inputs:
+############################################
+data_source_d <- paste0(dir_n, "Data_sources/", ctr, "/deaths_",today(), ".csv")
+data_source_c <- paste0(dir_n, "Data_sources/", ctr, "/cases_",today(), ".csv")
+
+data.table::fwrite(DeathsIn, file = data_source_d)
+data.table::fwrite(CasesIn, file = data_source_c)
+
+data_source <- c(data_source_d, data_source_c)
+
+# Save out source data
+zipname <- paste0(dir_n, 
+                  "Data_sources/", 
+                  ctr,
+                  "/", 
+                  ctr,
+                  "_deaths_",
+                  today(), 
+                  ".zip")
+
+zipr(zipname, 
+     data_source, 
+     recurse = TRUE, 
+     compression_level = 9,
+     include_directories = TRUE)
+
+# clean up file chaff
+file.remove(data_source)
+
+#######################################
+
+# out %>% 
+#   filter(Region == "All") %>% 
+#   mutate(Date = dmy(Date)) %>% 
+#   group_by(Measure) %>% 
+#   filter(Date == max(Date)) %>% 
+#   summarise(Value = sum(Value))
+
