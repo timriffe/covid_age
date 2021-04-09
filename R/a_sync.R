@@ -27,6 +27,17 @@ if (length(a$unstaged) > 0){
 
 git2r::push(repo,credentials = cred_token())
 
+# update files:
+
+N_path <- "N:/COVerAGE-DB/Data"
+path_local <- file.path(Sys.getenv("path_repo"),"Data")
+
+files_to_copy <- c("inputDB.rds","HarmonizationFailures.rds",
+                   "Output_5.rds","Output_10.rds","inputDBhold.rds",
+                   "inputCounts.rds","Offsets.rds")
+file.copy(from = file.path(N_path,files_to_copy),
+          to = file.path(path_local, files_to_copy),
+          overwrite = TRUE)
 
 schedule_this <- FALSE
 if (schedule_this){
@@ -35,7 +46,7 @@ if (schedule_this){
     taskname = "COVerAGE-DB-automatic-daily-sync", 
     rscript = file.path(Sys.getenv("path_repo"),"R","a_sync.R"), 
     schedule = "DAILY", 
-    starttime = "06:00",
+    starttime = "09:00",
     startdate = format(Sys.Date() , "%d/%m/%Y"))
 }
 
