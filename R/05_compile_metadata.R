@@ -37,7 +37,7 @@ for (i in 1:nrow(rubric)){
    metadata_tabs[[i]] <- X
    Sys.sleep(2)
 }
-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
+
 # some of these are simply empty metadata tabs by design 
 # (sources parsed over multiple sheets only need one)
 errors <- lapply(metadata_tabs, function(x){

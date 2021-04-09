@@ -1586,3 +1586,11 @@ filter( Code == 'NO09.03.2021', Sex == 'b', Measure == 'Deaths' )
 # update build series log 
  Fri Apr 09 07:09:26 2021 
 
+
+# Compile metadata 
+ Fri Apr 09 11:48:43 2021 
+
+
+# Compile metadata 
+ Fri Apr 09 11:50:09 2021 
+
