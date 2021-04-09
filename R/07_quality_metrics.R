@@ -41,7 +41,8 @@ IDB_marginal_sums <-
          Metric == "Count") %>% 
   mutate(Date = dmy(Date)) %>% 
   group_by(Country, Region, Code, Date, Sex, Measure) %>% 
-  summarize(Value = sum(Value)) %>% 
+  summarize(Value = sum(Value),
+            .groups = "drop") %>% 
   ungroup() %>% 
   group_by(Country, Region, Code, Date, Measure) %>% 
   do(add_b_margin(chunk = .data)) %>% 
@@ -59,8 +60,8 @@ Output_10_marginal_sums <-
   group_by(Country, Region, Code, Date, Sex) %>% 
   summarize(CasesFinal = sum(Cases),
             DeathsFinal = sum(Deaths),
-            TestsFinal = sum(Tests)) %>% 
-  ungroup() %>% 
+            TestsFinal = sum(Tests),
+            .groups = "drop") %>% 
   arrange(Country, Region, Sex, Date)
 
 # 3) merge Totals
