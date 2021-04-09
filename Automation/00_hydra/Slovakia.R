@@ -174,7 +174,9 @@ Deaths_out <-
          Measure = "Deaths",
          Metric = "Count",
          AgeInt = ifelse(Age == "UNK",NA_integer_,5)) %>% 
-  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
+  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
+  # provisional fix while special characters are solved more appropriately
+  filter(Region == "All")
 
 
 
