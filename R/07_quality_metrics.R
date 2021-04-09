@@ -35,20 +35,25 @@ inputDB <-
 # (we ignore metric conversions here, since Fractions are by definition rescaled
 # and ASCFR conversions are in practice also all rescaled)
 
-IDB_marginal_sums <- 
+IDB_age_known <- 
   inputDB %>% 
   dplyr::filter(! Age %in% c("TOT","UNK"),
-         Metric == "Count") %>% 
-  mutate(Date = dmy(Date)) %>% 
-  group_by(Country, Region, Code, Date, Sex, Measure) %>% 
-  summarize(Value = sum(Value),
-            .groups = "drop") %>% 
-  ungroup() %>% 
-  group_by(Country, Region, Code, Date, Measure) %>% 
-  do(add_b_margin(chunk = .data)) %>% 
-  ungroup() %>% 
-  pivot_wider(names_from = Measure, values_from=Value) %>% 
-  arrange(Country, Region, Sex, Date)
+         Metric == "Count",
+         Measure %in% c("Cases","Deaths","Tests")) %>% 
+  mutate(Date = dmy(Date))
+  
+IDB_marginal_sums <- 
+  IDB_age_known %>% 
+  as.data.table() %>% 
+  .[,.(Value=sum(Value)), by = .(Country, Region, Code, Date, Sex, Measure)] %>% 
+  dcast(Country + Region+Code+ Date+  Measure~Sex, value.var = "Value") %>% 
+  .[,b:=ifelse(is.na(b), f+m, b)] %>% 
+  melt(measure.vars = c("b","f","m"),
+       variable.name = "Sex",
+       value.name = "Value") %>% 
+  dcast(Country + Region+Code+ Date+  Sex~Measure, value.var = "Value") %>% 
+  .[order(Country, Region, Sex, Date)]
+
 
 # This lacks both-sex margins derived from sex-specific margins.
 
@@ -56,25 +61,35 @@ IDB_marginal_sums <-
 
 Output_10_marginal_sums <- 
   Output_10 %>% 
-  mutate(Date = dmy(Date)) %>% 
-  group_by(Country, Region, Code, Date, Sex) %>% 
-  summarize(CasesFinal = sum(Cases),
-            DeathsFinal = sum(Deaths),
-            TestsFinal = sum(Tests),
-            .groups = "drop") %>% 
-  arrange(Country, Region, Sex, Date)
+  as.data.table() %>% 
+  .[,Date := dmy(Date)] %>% 
+  .[,.(CasesFinal = sum(Cases),
+       DeathsFinal = sum(Deaths),
+       TestsFinal = sum(Tests)),
+    by = .(Country, Region, Code, Date, Sex)] %>% 
+  .[order(Country, Region, Sex, Date)]
+
 
 # 3) merge Totals
 # (2.1) has been rescaled, whereas (1.2) has not, so we can summarize as a fraction
 
-Marginal_sums_check <-
-  Output_10_marginal_sums %>% 
-  left_join(IDB_marginal_sums) %>% 
-  mutate(cases_known_age = Cases / CasesFinal,
-         deaths_known_age = Deaths / DeathsFinal,
-         tests_known_age = Tests / TestsFinal) %>% 
-  dplyr::select(Country,Region,Code,Date,Sex,cases_known_age,deaths_known_age,tests_known_age)
+Marginal_sums_check <- 
+  merge(Output_10_marginal_sums, IDB_marginal_sums) %>% 
+  as.data.table() %>% 
+  .[,.(cases_known_age = Cases / CasesFinal,
+       deaths_known_age = Deaths / DeathsFinal,
+       tests_known_age = Tests / TestsFinal), 
+    by = .(Country,Region,Code,Date,Sex)] %>% 
+  .[,cases_known_age := ifelse(is.infinite(cases_known_age),NA,cases_known_age)] %>% 
+  .[,deaths_known_age := ifelse(is.infinite(deaths_known_age),NA,deaths_known_age)] %>% 
+  .[,tests_known_age := ifelse(is.infinite(tests_known_age),NA,tests_known_age)] %>% 
+  filter(!(is.na(cases_known_age) & is.na(deaths_known_age) & is.na(tests_known_age)))
 
+  
+#%>% 
+ # .[!(is.na(cases_known_age) & is.na(deaths_known_age) & is.na(tests_known_age))]
+
+#Marginal_sums_check[deaths_known_age > 1.1] 
 # Marginal_sums_check %>% 
 #   filter(Country == "France",
 #          Region == "All",
