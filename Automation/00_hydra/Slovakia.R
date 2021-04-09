@@ -59,6 +59,7 @@ Deaths <-
                          "Bratislava" = "Bratislava",
                          "Brezno" = "Banksa Bystrica",
                          "Bytca" = "Zilina",
+                         "Byt?a" = "Zilina",
                          "Čadca" = "Zilina",
                          "?adca" = "Zilina",
                          "Detva" = "Banksa Bystrica",
@@ -68,6 +69,7 @@ Deaths <-
                          "Gelnica" = "Kosice",
                          "Hlohovec" = "Trnava",
                          "Humenne" = "Presov",
+                         "Humenné" = "Presov",
                          "Ilava" = "Trencin",
                          "Kežmarok" = "Presov",
                          "Komárno" = "Nitra",
@@ -117,6 +119,7 @@ Deaths <-
                          "Stropkov" = "Presov",
                          "Svidník" = "Presov",
                          "Šaľa" = "Nitra",
+                         "Ša?a" = "Nitra",
                          "Topolcany" = "Nitra",
                          "Topo??any" = "Nitra",
                          "Trebišov" = "Kosice",
@@ -143,6 +146,8 @@ Deaths <-
   select(Region,Age,Sex,Date,Value) %>% 
   ungroup()
   
+unique(Deaths$Region)
+
 # aggregate to totals
 DeathsAll <-
   Deaths %>% 
@@ -213,6 +218,7 @@ Cases <-
   mutate(Sex = case_when(Sex == "Muž" ~ "m",
                          Sex == "Žena" ~ "f",
                          TRUE ~ "UNK"),
+         dist2 = str_replace_all(District, "[^[A-Za-z,]]", " "),
          Region = recode(District,
                          "Banská Bystrica" = "Banksa Bystrica",
                          "Banská Štiavnica" = "Banksa Bystrica",
@@ -221,6 +227,8 @@ Cases <-
                          "Bratislava" = "Bratislava",
                          "Brezno" = "Banksa Bystrica",
                          "Bytca" = "Zilina",
+                         "Bytča" = "Zilina",
+                         "Čadca" = "Zilina",
                          "Čadca" = "Zilina",
                          "?adca" = "Zilina",
                          "Detva" = "Banksa Bystrica",
@@ -230,16 +238,20 @@ Cases <-
                          "Gelnica" = "Kosice",
                          "Hlohovec" = "Trnava",
                          "Humenne" = "Presov",
+                         "Humenné" = "Presov",
                          "Ilava" = "Trencin",
                          "Kežmarok" = "Presov",
                          "Komárno" = "Nitra",
                          "Košice" = "Kosice",
+                         "Košice - okolie" = "Kosice",
                          "Krupina" = "Banksa Bystrica",
                          "Kysucké Nové Mesto" = "Zilina",
                          "Levice" = "Nitra",
                          "Levoca" = "Presov",
+                         "Levoča" = "Presov",
                          "Liptovský Mikuláš" = "Zilina",
                          "Lucenec" = "Banksa Bystrica",
+                         "Lučenec" = "Banksa Bystrica",
                          "Malacky" = "Bratislava",
                          "Martin" = "Zilina",
                          "Medzilaborce" = "Presov",
@@ -252,6 +264,7 @@ Cases <-
                          "Partizánske" = "Trencin",
                          "Pezinok" = "Bratislava",
                          "Piešťany" = "Trnava",
+                         "Piešťany" = "Trnava",
                          "Poltár" = "Banksa Bystrica",
                          "Poprad" = "Presov",
                          "Považská Bystrica" = "Trencin",
@@ -260,6 +273,7 @@ Cases <-
                          "Púchov" = "Trencin",
                          "Revúca" = "Banksa Bystrica",
                          "Rimavská Sobota" = "Banksa Bystrica",
+                         "Rožňava" = "Kosice",
                          "Rožňava" = "Kosice",
                          "Ružomberok" = "Zilina",
                          "Sabinov" = "Presov",
@@ -277,10 +291,11 @@ Cases <-
                          "Trebišov" = "Kosice",
                          "Trenčín" = "Trencin",
                          "Trnava" = "Trnava",
-                         "Turcianske Teplice" = "Zilina",
+                         "Turčianske Teplice" = "Zilina",
                          "Tvrdošín" = "Zilina",
                          "Veľký Krtíš" = "Banksa Bystrica",
-                         "Vranov nad Toplou" = "Presov",
+                         "Veľký Krtíš" = "Banksa Bystrica",
+                         "Vranov nad Topľou" = "Presov",
                          "Zlaté Moravce" = "Nitra",
                          "Zvolen" = "Banksa Bystrica",
                          "Žarnovica" = "Banksa Bystrica",
@@ -301,6 +316,19 @@ Cases <-
   mutate(Value = cumsum(new)) %>% 
   ungroup() %>% 
   mutate(Age = ifelse(is.na(Age), "UNK", as.character(Age)))
+
+
+# unique(Cases$Region)
+
+# Cases <-
+#   C %>%
+#   mutate(Sex = case_when(Sex == "Muž" ~ "m",
+#                          Sex == "Žena" ~ "f",
+#                          TRUE ~ "UNK"),
+#          dist2 = str_replace_all(District, "[^[A-Za-z,]]", " "))
+# 
+# unique(Cases$dist2) %>% sort
+
 
 # aggregate to totals
 CasesAll <-
@@ -328,7 +356,9 @@ Cases_out <-
          Measure = "Cases",
          Metric = "Count",
          AgeInt = ifelse(Age == "UNK",NA_integer_,5)) %>% 
-  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
+  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
+  # provisional fix while special characters are solved more appropriately
+  filter(Region == "All")
 
 # Binding together cases and deaths
 out <- 
