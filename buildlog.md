@@ -1570,3 +1570,15 @@ filter( Code == 'NO09.03.2021', Sex == 'b', Measure == 'Deaths' )
 # Age harmonization 
  Fri Apr 09 03:20:29 2021 
 
+
+# remake coverage map 
+ Fri Apr 09 07:00:51 2021 
+
+
+# push outputs to OSF 
+ Fri Apr 09 07:05:28 2021 
+
+
+# Commit dashboards and buildlog 
+ Fri Apr 09 07:09:17 2021 
+
