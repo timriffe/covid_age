@@ -1,44 +1,44 @@
 
 # New build log 
- Wed Apr 14 01:00:21 2021 
+ Thu Apr 15 01:00:10 2021 
 
 
 # begin resolution of multiple sources per population 
- Wed Apr 14 01:00:21 2021 
+ Thu Apr 15 01:00:10 2021 
 
 
 # Resolve USA CDC overlaps 
- Wed Apr 14 01:03:17 2021 
+ Thu Apr 15 01:01:10 2021 
 
 USA CDC resolved
  1221 rows removed
 
 # Resolve Brazil TRC overlaps 
- Wed Apr 14 01:03:27 2021 
+ Thu Apr 15 01:01:15 2021 
 
 Brazil TRC resolved
  0 rows removed
 
 # Resolve ECDC overlaps 
- Wed Apr 14 01:03:34 2021 
+ Thu Apr 15 01:01:18 2021 
 
 ECDC resolved
  0 rows removed
 
 # prep (resolve_UNKUNK) 
- Wed Apr 14 01:07:45 2021 
+ Thu Apr 15 01:02:42 2021 
 
 
 # A (convert_fractions_sexes) 
- Wed Apr 14 01:20:55 2021 
+ Thu Apr 15 01:08:31 2021 
 
 
 # B (redistribute_unknown_age) 
- Wed Apr 14 01:31:31 2021 
+ Thu Apr 15 01:13:05 2021 
 
 
 # C (rescale_to_total) 
- Wed Apr 14 02:10:24 2021 
+ Thu Apr 15 01:30:38 2021 
 
 filter( Code == 'GQ010.03.2021', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'GQ010.03.2021', Sex == 'b', Measure == 'Deaths' )
@@ -109,27 +109,27 @@ filter( Code == 'ME010.04.2021', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'ME010.04.2021', Sex == 'b', Measure == 'Deaths' )
 
 # D (infer_cases_from_deaths_and_ascfr) 
- Wed Apr 14 02:52:06 2021 
+ Thu Apr 15 01:49:26 2021 
 
 
 # E (infer_deaths_from_cases_and_ascfr) 
- Wed Apr 14 03:07:50 2021 
+ Thu Apr 15 01:56:24 2021 
 
 
 # G (redistribute_unknown_sex) 
- Wed Apr 14 03:23:29 2021 
+ Thu Apr 15 02:03:22 2021 
 
 
 # H (rescale_sexes) 
- Wed Apr 14 03:41:53 2021 
+ Thu Apr 15 02:11:23 2021 
 
 
 # I (infer_both_sex) 
- Wed Apr 14 03:48:33 2021 
+ Thu Apr 15 02:14:19 2021 
 
 
 # J (maybe_lower_closeout) 
- Wed Apr 14 04:02:14 2021 
+ Thu Apr 15 02:20:31 2021 
 
 filter( Code == 'CA_TNT15.07.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'CA_TNT15.07.2020', Sex == 'm', Measure == 'Cases' )
@@ -1608,17 +1608,5 @@ filter( Code == 'US_TX11.09.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_TX13.09.2020', Sex == 'b', Measure == 'Cases' )
 
 # Age harmonization 
- Wed Apr 14 04:40:16 2021 
-
-
-# remake coverage map 
- Wed Apr 14 11:36:13 2021 
-
-
-# push outputs to OSF 
- Wed Apr 14 11:42:25 2021 
-
-
-# Commit dashboards and buildlog 
- Wed Apr 14 11:54:55 2021 
+ Thu Apr 15 02:36:36 2021 
 
