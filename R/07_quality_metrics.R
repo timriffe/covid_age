@@ -208,7 +208,7 @@ cdbcountries <- inputDB %>%
   dplyr::select(Country, Short)
 
 OWD <- left_join(OWD, cdbcountries) %>% 
-  dplyr::vselect(-Short)
+  dplyr::select(-Short)
 
 # 1) read in OWD data,
 # 1.1) do we capture any tests that they don't have? If so, send them an email.
