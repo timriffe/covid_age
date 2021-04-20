@@ -174,7 +174,7 @@ mutate(
 #Vaccination2
 
 colnames(In_vaccine2_age)[1] <- "Region" 
-unique(Out_vaccine2_age$Age)
+# unique(Out_vaccine2_age$Age)
 Out_vaccine2_age= In_vaccine2_age%>%
   select(Region, `80`= `Personas pauta completa ≥80 años` , `70`= `Personas pauta completa 70-79 años`, `60`= `Personas pauta completa 60-69 años`,
          `50`= `Personas pauta completa 50-59 años`, `25`= `Personas pauta completa 25-49 años`, `18`= `18-24 años`, `16`= `16-17 años`)%>%
@@ -240,9 +240,11 @@ mutate(Code = paste("ES",Short,Date,sep="_"))%>%
 
 write_rds(Out_final, paste0(dir_n, ctr, ".rds"))
 
-#zip input data
+# updating hydra dashboard
+log_update(pp = ctr, N = nrow(Out_final))
 
-zipname <- paste0(dir_n, 
+#zip input data
+zipname <- paste0(dir_n,
                   "Data_sources/", 
                   ctr,
                   "/", 

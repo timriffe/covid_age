@@ -68,7 +68,7 @@ sched("Finland", tm = "16:50",email = auto_update_email, wd = auto_update_wd, sc
 sched("US_Wisconsin", tm = "23:02",email = auto_update_email, wd = auto_update_wd)
 sched("Bulgaria", tm = "19:46",email = auto_update_email, wd = auto_update_wd)
 sched("Denmark", tm = "07:00",email = auto_update_email, wd = auto_update_wd)
-# sched("US_Iowa"тв, tm = "09:40",email = auto_update_email, wd = auto_update_wd)
+# sched("US_Iowa"??, tm = "09:40",email = auto_update_email, wd = auto_update_wd)
 sched("Belgium", tm = "23:20",email = auto_update_email, wd = auto_update_wd)
 sched("New_Zealand", "18:30",email = auto_update_email, wd = auto_update_wd)
 sched("Mexico", "19:40",email = auto_update_email, wd = auto_update_wd)
@@ -87,7 +87,7 @@ sched("CA_Manitoba_Saskatchewan", "08:05",email = auto_update_email, wd = auto_u
 sched("CA_Ontario", "08:08",email = auto_update_email, wd = auto_update_wd)
 sched("CA_British_Columbia", "08:10",email = auto_update_email, wd = auto_update_wd)
 sched("Ukraine", "13:40",email = auto_update_email, wd = auto_update_wd)
-sched("Spain_vaccine", "12:54",email = auto_update_email, wd = auto_update_wd)
+sched("Spain_vaccine", "14:35",email = auto_update_email, wd = auto_update_wd)
 
 # sched("GB_NIR", "19:02",email = auto_update_email, wd = auto_update_wd)
 # sched("Brazil", "12:29",email = auto_update_email, wd = auto_update_wd)
@@ -173,4 +173,4 @@ delete_sched("Spain_vaccine")
 # myscript <- "U:/Projects/COVerAge-BD/automate_codes/US_wisconsin.R"
 # taskscheduler_create(taskname = "wisconsin_daily", rscript = myscript,
 #                      schedule = "DAILY", starttime = "12:16", startdate = "30/06/2020")
-taskscheduler_ls()
+taskscheduler_ls() %>% view()
