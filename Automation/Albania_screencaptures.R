@@ -39,10 +39,21 @@ if (al_demo_pdf == paste0("Data/Albania_",today(),".pdf")){
 
 schedule.this <- FALSE
 if (schedule.this){
-  library(taskscheduleR)
-  taskscheduler_delete("COVerAGE-DB-Albania_screencaptures")
-  taskscheduler_create(taskname = "COVerAGE-DB-Albania_screencaptures", 
-                       rscript = "C:/Users/riffe/Documents/covid_age/Automation/Albania_screencaptures.R", 
-                       schedule = "DAILY", 
-                       starttime = format(Sys.time() + 61, "%H:%M"))
+  # library(taskscheduleR)
+  # taskscheduler_delete("COVerAGE-DB-Albania_screencaptures")
+  # taskscheduler_create(taskname = "COVerAGE-DB-Albania_screencaptures", 
+  #                      rscript = "C:/Users/riffe/Documents/covid_age/Automation/Albania_screencaptures.R", 
+  #                      schedule = "DAILY", 
+  #                      starttime = format(Sys.time() + 61, "%H:%M"))
+  
+  library(cronR)
+  cmd <- cron_rscript("Automation/Albania_screencaptures.R")
+  cron_add(cmd, 
+           frequency = 'daily', 
+           id = "COVerAGE-DB_Albania", 
+           at = "15:03")
+  cron_ls()
+  cron_clear(ask=FALSE)
+  
+  
 }
