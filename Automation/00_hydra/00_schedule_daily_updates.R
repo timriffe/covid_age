@@ -87,7 +87,7 @@ sched("CA_Manitoba_Saskatchewan", "08:05",email = auto_update_email, wd = auto_u
 sched("CA_Ontario", "08:08",email = auto_update_email, wd = auto_update_wd)
 sched("CA_British_Columbia", "08:10",email = auto_update_email, wd = auto_update_wd)
 sched("Ukraine", "11:40",email = auto_update_email, wd = auto_update_wd)
-sched("Spain_vaccine", "14:35",email = auto_update_email, wd = auto_update_wd)
+sched("Spain_vaccine", "12:01",email = auto_update_email, wd = auto_update_wd)
 
 # sched("GB_NIR", "19:02",email = auto_update_email, wd = auto_update_wd)
 # sched("Brazil", "12:29",email = auto_update_email, wd = auto_update_wd)
@@ -129,7 +129,7 @@ sched("Spain_vaccine", "14:35",email = auto_update_email, wd = auto_update_wd)
 delete_sched("ECDC")
 # delete_sched("Slovakia")
 delete_sched("ES_Basque_Country")
-# delete_sched("Spain_vaccine")
+delete_sched("Spain_vaccine")
 
 
 
