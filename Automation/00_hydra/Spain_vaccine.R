@@ -38,20 +38,21 @@ url_d = paste0("https://www.mscbs.gob.es/profesionales/saludPublica/ccayes/alert
 data_source <- paste0(dir_n, "Data_sources/", ctr, "/Spain_vaccine",today(), ".ods")
 
 download.file(url_d, data_source, mode = "wb")
+
 #############################################################################################
-
 #Local set up to read in manually saved data, can be deleted when scheduled 
-
-#In_vaccine_total <- read_xlsx("U:/COVerAgeDB/Datenquellen/Vaccination/Spain/ES_All_12.04.2021_Vaccine.xlsx", sheet = 1)
-#In_vaccine1_age <- read_xlsx("U:/COVerAgeDB/Datenquellen/Vaccination/Spain/ES_All_12.04.2021_Vaccine.xlsx", sheet = 4)
-#In_vaccine2_age <- read_xlsx("U:/COVerAgeDB/Datenquellen/Vaccination/Spain/ES_All_12.04.2021_Vaccine.xlsx", sheet = 5)
+#In_vaccine_total <- read_ods("U:/COVerAgeDB/Datenquellen/Vaccination/Spain/Spain_vaccine2021-04-29.ods", sheet = 1)
+#In_vaccine1_age <- read_ods("U:/COVerAgeDB/Datenquellen/Vaccination/Spain/Spain_vaccine2021-04-29.ods", sheet = 5)
+#In_vaccine2_age <- read_ods("U:/COVerAgeDB/Datenquellen/Vaccination/Spain/Spain_vaccine2021-04-29.ods", sheet = 6)
 #############################################################################################
 
 #Read in previous data 
 
-#DataArchive=readRDS("U:/COVerAgeDB/Spain/Spain_Vaccine.rsd")
+#DataArchive=readRDS("U:/COVerAgeDB/Datenquellen/Vaccination/Spain/Spain_Vaccine.rsd")
 
 DataArchive <- read_rds(paste0(dir_n, ctr, ".rds"))
+
+View(DataArchive)
 
 # fixing age intervals for 18
 # DataArchive <- 
@@ -62,22 +63,21 @@ DataArchive <- read_rds(paste0(dir_n, ctr, ".rds"))
 #Read in sheets 
 
 In_vaccine_total= read_ods(data_source, sheet = 1)
-In_vaccine1_age= read_ods(data_source, sheet = 4)
-In_vaccine2_age= read_ods(data_source, sheet = 5)
+In_vaccine1_age= read_ods(data_source, sheet = 5)
+In_vaccine2_age= read_ods(data_source, sheet = 6)
 ################################
 #Process 
 #Total 
 
 colnames(In_vaccine_total)[1] <- "Region" 
-# Renaming within select did not work, did not recognize names 
-colnames(In_vaccine_total)[8] <- "Vaccination1" 
-colnames(In_vaccine_total)[9] <- "Vaccination2" 
-
-
+ 
 total= In_vaccine_total%>%
-  select(Vaccinations= `Dosis administradas (2)`, Date= `Fecha de la última vacuna registrada (2)`, Region, Vaccination1, Vaccination2)%>%
+  select(Vaccinations= `Dosis administradas (2)`, Date= `Fecha de la última vacuna registrada (2)`, Region, Vaccination1= `Nº Personas con al menos 1 dosis`, Vaccination2= `Nº Personas vacunadas
+(pauta completada)`)%>%
   pivot_longer(!Date & !Region, names_to= "Measure", values_to= "Value") %>% 
   mutate(Date = dmy(Date))
+
+View(total)
 
 #some days last recent reporting date varies by region. Fill empty date value for total Spain with most recent date
 
@@ -119,8 +119,8 @@ total <- total %>%
          Code = paste("ES",Short,Date,sep="_"),
          Country = "Spain")
 
-
 #Vaccination1 
+
 
 colnames(In_vaccine1_age)[1] <- "Region" 
  
@@ -171,10 +171,11 @@ mutate(
   #change empty date cells to NA for fill to complete date column 
   mutate_if(is.character, list(~na_if(.,"")))
 
+
 #Vaccination2
 
 colnames(In_vaccine2_age)[1] <- "Region" 
-# unique(Out_vaccine2_age$Age)
+
 Out_vaccine2_age= In_vaccine2_age%>%
   select(Region, `80`= `Personas pauta completa ≥80 años` , `70`= `Personas pauta completa 70-79 años`, `60`= `Personas pauta completa 60-69 años`,
          `50`= `Personas pauta completa 50-59 años`, `25`= `Personas pauta completa 25-49 años`, `18`= `18-24 años`, `16`= `16-17 años`)%>%
@@ -222,9 +223,11 @@ mutate(AgeInt= as.character(AgeInt))%>%
   #change empty date cells to NA for fill to complete date colunm 
   mutate_if(is.character, list(~na_if(.,"")))
 
-#put together and include previous data 
 
-Out= bind_rows(DataArchive, total, Out_vaccine1_age, Out_vaccine2_age)
+#put together
+
+Out= bind_rows(total, Out_vaccine1_age, Out_vaccine2_age)
+
 
 #fill in empty dates for age data by region 
 
@@ -235,10 +238,18 @@ mutate(Code = paste("ES",Short,Date,sep="_"))%>%
          Age, AgeInt, Metric, Measure, Value) %>% 
   sort_input_data()
 
-#save output data 
-#write_rds(Out_final, paste0("U:/COVerAgeDB/Spain/Spain_Vaccine.rsd"))
+#include previous data, think issue with wrong codes was because 
+#previous data was appended and after that "Short" was used, 
+#which is not included anymore in the data archive
+Out_final1= bind_rows(DataArchive,Out_final)%>% 
+  distinct()#Regions dont update in same frequency, if one regions does not update, same data would be added with next file 
 
-write_rds(Out_final, paste0(dir_n, ctr, ".rds"))
+
+
+#save output data 
+#write_rds(Out_final1, paste0("U:/COVerAgeDB/Datenquellen/Vaccination/Spain/Spain_Vaccine.rsd"))
+
+write_rds(Out_final1, paste0(dir_n, ctr, ".rds"))
 
 # updating hydra dashboard
 log_update(pp = ctr, N = nrow(Out_final))
