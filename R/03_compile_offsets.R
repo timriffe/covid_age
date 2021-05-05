@@ -26,11 +26,6 @@ Offsets <-
   Offsets %>% 
   mutate(AgeInt = ifelse(AgeInt == 0, 1, AgeInt))
 
-Offsets <-
-  Offsets %>% 
-  pivot_longer(f:b,names_to = "Sex", values_to = "Population") %>% 
-  filter(!is.na(Population))
-
 # Sum to both-sex where necessary
 Offsets <- 
   Offsets %>% 
