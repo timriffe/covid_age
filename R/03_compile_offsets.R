@@ -26,10 +26,20 @@ Offsets <-
   Offsets %>% 
   mutate(AgeInt = ifelse(AgeInt == 0, 1, AgeInt))
 
-# Age has to be integer
+Offsets <-
+  Offsets %>% 
+  pivot_longer(f:b,names_to = "Sex", values_to = "Population") %>% 
+  filter(!is.na(Population))
+
+# Sum to both-sex where necessary
 Offsets <- 
   Offsets %>% 
-  mutate(Age = as.integer(Age))
+  mutate(Age = as.integer(Age)) %>% 
+  pivot_wider(names_from = Sex, values_from = Population) %>% 
+  mutate(b = case_when(is.na(b) ~ f + m,
+                       TRUE ~ b)) %>% 
+  pivot_longer(f:b,names_to = "Sex", values_to = "Population") %>% 
+  filter(Age < 105) # takes care of Argentina?
 
 # Split offsets by country/region/sex
 oL <-split(Offsets, 
