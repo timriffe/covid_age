@@ -1,40 +1,25 @@
 
 # 2021-05-06 inputDB updates 
- Thu May 06 11:00:10 2021 
+ Thu May 06 19:00:13 2021 
 
 
-# 2021-05-06 11:00:10 updates 
- Thu May 06 11:00:10 2021 
+# 2021-05-06 19:00:13 updates 
+ Thu May 06 19:00:13 2021 
 
 
 # Filter valid Measure entries: 
- Thu May 06 11:25:14 2021 
+ Thu May 06 19:29:36 2021 
 
 Valid Measures include: Cases,Deaths,Tests,ASCFR,Vaccinations,Vaccination1,Vaccination2
- 3453 rows removed
-# Filter valid Metric entries: 
- Thu May 06 11:25:16 2021 
-
-Valid Metrics include: Count,Fraction,Ratio
- 404 rows removed
+ 3479 rows removed
 # Filter valid Sex entries: 
- Thu May 06 11:25:17 2021 
+ Thu May 06 19:29:37 2021 
 
 Valid Sex values include: m,f,b,UNK
- 9070 rows removed
+ 8640 rows removed
 # Duplicates detected. Following `Code`s removed: 
- Thu May 06 11:25:54 2021 
+ Thu May 06 19:30:19 2021 
 
-AT_23.02.2021
-AT_1_23.02.2021
-AT_2_23.02.2021
-AT_3_23.02.2021
-AT_4_23.02.2021
-AT_5_23.02.2021
-AT_6_23.02.2021
-AT_7_23.02.2021
-AT_8_23.02.2021
-AT_9_23.02.2021
 HR13.03.2020
 HR14.03.2020
 HR15.03.2020
@@ -1643,12 +1628,28 @@ IM_All18.02.2021
 IM_All19.02.2021
 IM_All20.02.2021
 IM_All21.02.2021
+PS12.10.2020
+US_FL02.12.2020
+US_FL16.03.2021
+US_FL17.03.2021
 # Bad Dates detected. Following `Code`s removed: 
- Thu May 06 11:25:59 2021 
+ Thu May 06 19:30:25 2021 
 
 US_MANA.NA.NA
 US_OR_NA.NA.NA
 # Future Dates detected. Following `Code`s removed: 
- Thu May 06 11:26:00 2021 
+ Thu May 06 19:30:26 2021 
 
 NL09.05.2021
+PS26.04.2022
+PS26.04.2023
+PS26.04.2024
+PS26.04.2025
+PS26.04.2026
+PS26.04.2027
+PS26.04.2028
+PS26.04.2029
+PS26.04.2030
+PS26.04.2031
+PS26.04.2032
+PS26.04.2033
