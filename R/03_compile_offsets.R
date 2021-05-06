@@ -14,7 +14,9 @@ log_section("Compile offsets from Drive",logfile=logfile)
 # Compile
 Offsets <- compile_offsetsDB()
 
-
+# ss_offsets <- "https://docs.google.com/spreadsheets/d/1z9Dg7iQWPdIGRI3rvgd-Dx3rE5RPNd7B_paOP86FRzA/edit#gid=0"
+# offsets_rubric <- read_sheet(ss_offsets, sheet = 'checklist') %>% 
+#   filter(!is.na(Sheet))
 
 ### Harmonize offsets ###############################################
 
