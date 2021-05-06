@@ -14,8 +14,6 @@ log_section("Compile offsets from Drive",logfile=logfile)
 # Compile
 Offsets <- compile_offsetsDB()
 
-
-
 ### Harmonize offsets ###############################################
 
 # Log
@@ -39,7 +37,9 @@ Offsets <-
   mutate(b = case_when(is.na(b) ~ f + m,
                        TRUE ~ b)) %>% 
   pivot_longer(f:b,names_to = "Sex", values_to = "Population") %>% 
-  filter(Age < 105) # takes care of Argentina?
+  filter(Age < 105) %>% 
+  filter(!is.na(Population))
+# takes care of Argentina?
 
 # Split offsets by country/region/sex
 oL <-split(Offsets, 
