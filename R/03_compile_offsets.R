@@ -12,7 +12,8 @@ log_section("Compile offsets from Drive",logfile=logfile)
 
 
 # Compile
-Offsets <- compile_offsetsDB()
+
+OffsetsIn <- compile_offsetsDB()
 
 ### Harmonize offsets ###############################################
 
@@ -21,13 +22,8 @@ log_section("Harmonize offsets",logfile=logfile)
 
 # AgeInt has to be 1 or larger
 Offsets <-
-  Offsets %>% 
+  OffsetsIn %>% 
   mutate(AgeInt = ifelse(AgeInt == 0, 1, AgeInt))
-
-Offsets <-
-  Offsets %>% 
-  pivot_longer(f:b,names_to = "Sex", values_to = "Population") %>% 
-  filter(!is.na(Population))
 
 # Sum to both-sex where necessary
 Offsets <- 
@@ -39,7 +35,6 @@ Offsets <-
   pivot_longer(f:b,names_to = "Sex", values_to = "Population") %>% 
   filter(Age < 105) %>% 
   filter(!is.na(Population))
-# takes care of Argentina?
 
 # Split offsets by country/region/sex
 oL <-split(Offsets, 
