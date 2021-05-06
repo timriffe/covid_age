@@ -12,7 +12,7 @@ log_section("Compile offsets from Drive",logfile=logfile)
 
 
 # Compile
-Offsets <- compile_offsetsDB()
+OffsetsIn <- compile_offsetsDB()
 
 # ss_offsets <- "https://docs.google.com/spreadsheets/d/1z9Dg7iQWPdIGRI3rvgd-Dx3rE5RPNd7B_paOP86FRzA/edit#gid=0"
 # offsets_rubric <- read_sheet(ss_offsets, sheet = 'checklist') %>% 
@@ -25,7 +25,7 @@ log_section("Harmonize offsets",logfile=logfile)
 
 # AgeInt has to be 1 or larger
 Offsets <-
-  Offsets %>% 
+  OffsetsIn %>% 
   mutate(AgeInt = ifelse(AgeInt == 0, 1, AgeInt))
 
 # Sum to both-sex where necessary
