@@ -4,10 +4,6 @@
 library(here)
 source(here("Automation", "00_Functions_automation.R"))
 
-library(lubridate)
-library(dplyr)
-library(tidyverse)
-
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
   email <- "jessica_d.1994@yahoo.de"
@@ -29,13 +25,13 @@ gs4_auth(email = email)
 
 #Read data in 
 
-url= ("https://covid19.min-saude.pt/wp-content/uploads/2021/04/Dataset-Vacinac%CC%A7a%CC%83o-11.csv")
+url <- ("https://covid19.min-saude.pt/wp-content/uploads/2021/04/Dataset-Vacinac%CC%A7a%CC%83o-11.csv")
 
-In= read.csv(url, sep = ';')
+In <- read.csv(url, sep = ';')
 
 #Process 
 
-Out= In %>% 
+Out <- In %>% 
   subset(TYPE== "AGES" | TYPE== "GENERAL")%>% # there are totals by some regions, but not in iso format, they use some regional health administration  
   select(Date= DATE, Region= REGION, Age= AGEGROUP, Vaccination1= CUMUL_VAC_1, Vaccination2= CUMUL_VAC_2, Vaccinations= CUMUL)%>%
   pivot_longer(!Age & !Date & !Region, names_to= "Measure", values_to= "Value")%>%
@@ -73,15 +69,14 @@ Out= In %>%
          Age, AgeInt, Metric, Measure, Value)
 
   
-
-
 #save output data 
 write_rds(Out, paste0(dir_n, ctr, ".rds"))
 
+# This command append new rows at the end of the sheet
+log_update(pp = ctr, N = nrow(Out))
+
 # now archive
-
 data_source <- paste0(dir_n, "Data_sources/", ctr, "/vaccine_age_",today(), ".csv")
-
 
 write_csv(In, data_source)
 

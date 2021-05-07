@@ -12,9 +12,11 @@ log_section("Compile offsets from Drive",logfile=logfile)
 
 
 # Compile
-Offsets <- compile_offsetsDB()
+OffsetsIn <- compile_offsetsDB()
 
-
+# ss_offsets <- "https://docs.google.com/spreadsheets/d/1z9Dg7iQWPdIGRI3rvgd-Dx3rE5RPNd7B_paOP86FRzA/edit#gid=0"
+# offsets_rubric <- read_sheet(ss_offsets, sheet = 'checklist') %>% 
+#   filter(!is.na(Sheet))
 
 ### Harmonize offsets ###############################################
 
@@ -23,13 +25,18 @@ log_section("Harmonize offsets",logfile=logfile)
 
 # AgeInt has to be 1 or larger
 Offsets <-
-  Offsets %>% 
+  OffsetsIn %>% 
   mutate(AgeInt = ifelse(AgeInt == 0, 1, AgeInt))
 
-# Age has to be integer
+# Sum to both-sex where necessary
 Offsets <- 
   Offsets %>% 
-  mutate(Age = as.integer(Age))
+  mutate(Age = as.integer(Age)) %>% 
+  pivot_wider(names_from = Sex, values_from = Population) %>% 
+  mutate(b = case_when(is.na(b) ~ f + m,
+                       TRUE ~ b)) %>% 
+  pivot_longer(f:b,names_to = "Sex", values_to = "Population") %>% 
+  filter(Age < 105) # takes care of Argentina?
 
 # Split offsets by country/region/sex
 oL <-split(Offsets, 
