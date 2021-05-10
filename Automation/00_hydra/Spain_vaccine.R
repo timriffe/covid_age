@@ -41,9 +41,9 @@ download.file(url_d, data_source, mode = "wb")
 
 #############################################################################################
 #Local set up to read in manually saved data, can be deleted when scheduled 
-#In_vaccine_total <- read_ods("U:/COVerAgeDB/Datenquellen/Vaccination/Spain/Spain_vaccine2021-04-29.ods", sheet = 1)
-#In_vaccine1_age <- read_ods("U:/COVerAgeDB/Datenquellen/Vaccination/Spain/Spain_vaccine2021-04-29.ods", sheet = 5)
-#In_vaccine2_age <- read_ods("U:/COVerAgeDB/Datenquellen/Vaccination/Spain/Spain_vaccine2021-04-29.ods", sheet = 6)
+#In_vaccine_total <- read_ods("U:/COVerAgeDB/Datenquellen/Vaccination/Spain/Spain_vaccine2021-05-09.ods", sheet = 1)
+#In_vaccine1_age <- read_ods("U:/COVerAgeDB/Datenquellen/Vaccination/Spain/Spain_vaccine2021-05-09.ods", sheet = 4)
+#In_vaccine2_age <- read_ods("U:/COVerAgeDB/Datenquellen/Vaccination/Spain/Spain_vaccine2021-05-09.ods", sheet = 5)
 #############################################################################################
 
 #Read in previous data 
@@ -52,7 +52,6 @@ download.file(url_d, data_source, mode = "wb")
 
 DataArchive <- read_rds(paste0(dir_n, ctr, ".rds"))
 
-View(DataArchive)
 
 # fixing age intervals for 18
 # DataArchive <- 
@@ -63,8 +62,8 @@ View(DataArchive)
 #Read in sheets 
 
 In_vaccine_total= read_ods(data_source, sheet = 1)
-In_vaccine1_age= read_ods(data_source, sheet = 5)
-In_vaccine2_age= read_ods(data_source, sheet = 6)
+In_vaccine1_age= read_ods(data_source, sheet = 4)
+In_vaccine2_age= read_ods(data_source, sheet = 5)
 ################################
 #Process 
 #Total 
@@ -77,7 +76,7 @@ total= In_vaccine_total%>%
   pivot_longer(!Date & !Region, names_to= "Measure", values_to= "Value") %>% 
   mutate(Date = dmy(Date))
 
-View(total)
+
 
 #some days last recent reporting date varies by region. Fill empty date value for total Spain with most recent date
 
