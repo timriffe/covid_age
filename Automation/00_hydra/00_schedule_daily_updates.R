@@ -87,7 +87,7 @@ sched("CA_Manitoba_Saskatchewan", "08:05",email = auto_update_email, wd = auto_u
 sched("CA_Ontario", "08:08",email = auto_update_email, wd = auto_update_wd)
 sched("CA_British_Columbia", "08:10",email = auto_update_email, wd = auto_update_wd)
 sched("Ukraine", "08:40",email = auto_update_email, wd = auto_update_wd)
-sched("Spain_vaccine", "09:01",email = auto_update_email, wd = auto_update_wd)
+sched("Spain_vaccine", "12:20",email = auto_update_email, wd = auto_update_wd)
 sched("Chile", "17:08",email = auto_update_email, wd = auto_update_wd)
 sched("Portugal_Vaccine", "17:17",email = auto_update_email, wd = auto_update_wd)
 
