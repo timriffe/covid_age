@@ -12,7 +12,7 @@ if (!"email" %in% ls()){
 
 # info country and N drive address
 
-ctr          <- "Hong_Kong_Vaccines" # it's a placeholder
+ctr          <- "Hong_Kong_Vaccine" # it's a placeholder
 dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 
@@ -22,15 +22,12 @@ dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 DataArchive <- read_rds(paste0(dir_n, ctr, ".rds"))
 
 #total vaccines 
-
 total= read.csv("https://static.data.gov.hk/covid-vaccine/summary.csv")
 
 #vaccinations by age 
-
 age= read.csv("https://static.data.gov.hk/covid-vaccine/pie_age.csv")
 
 #vaccinations by sex 
-
 sex= read.csv("https://static.data.gov.hk/covid-vaccine/pie_gender.csv") 
 
 

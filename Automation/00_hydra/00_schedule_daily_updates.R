@@ -93,6 +93,7 @@ sched("Portugal_Vaccine", "17:17",email = auto_update_email, wd = auto_update_wd
 sched("CA_Alberta", "12:30",email = auto_update_email, wd = auto_update_wd)
 sched("Canada_vaccine", "13:00",email = auto_update_email, wd = auto_update_wd)
 sched("US_Texas_Vaccine", "13:10",email = auto_update_email, wd = auto_update_wd)
+sched("Hong_Kong_Vaccine", "05:00",email = auto_update_email, wd = auto_update_wd)
 
 
 
