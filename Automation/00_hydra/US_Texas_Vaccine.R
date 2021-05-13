@@ -3,8 +3,6 @@
 library(here)
 source(here("Automation", "00_Functions_automation.R"))
 
-library(lubridate)
-library(tidyverse)
 # install.packages("readODS")
 library(readODS)
 
@@ -17,8 +15,6 @@ if (!"email" %in% ls()){
 # info country and N drive address
 ctr          <- "US_Texas_Vaccine"
 dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
-
-
 
 # Drive credentials
 drive_auth(email = email)
@@ -50,8 +46,8 @@ download.file(url, data_source, mode = "wb")
 In_vaccine <- read_xlsx(data_source, sheet = 4)
 
 In_vaccine_age<- In_vaccine %>%
-select(Age = `Age Group`, Date_numeric=`Vaccination Date`, Doses= `Doses Administered`)%>%
-subset(Date_numeric!= "Total")
+  select(Age = `Age Group`, Date_numeric=`Vaccination Date`, Doses= `Doses Administered`)%>%
+  subset(Date_numeric!= "Total")
 
 
 #Date is transformed to time passed since 01.01.1900 when Excel file is read in
@@ -120,32 +116,31 @@ Out_Vaccine_dose <- In_vaccine_dose %>%
                     `65-79 years`="65",
                     `80+ years`="80",
                     `Unknown`="UNK",
-                    `Total`="TOT"))%>% 
-  mutate(AgeInt = case_when(
-    Age == "16" ~ 34L,
-    Age == "80" ~ 25L,
-    Age == "UNK" ~ NA_integer_,
-    Age == "TOT" ~ NA_integer_,
-    TRUE ~ 15L))%>%
-mutate(Sex = recode(Sex,
-                    `Male` = "m",
-                    `Female` = "f",
-                    `Unknown`= "UNK",
-                    `Grand Total` = "b")) %>%
-group_by(Sex, Age, Measure) %>% # Data given by race, sum those together 
+                    `Total`="TOT"), 
+          AgeInt = case_when(
+            Age == "16" ~ 34L,
+            Age == "80" ~ 25L,
+            Age == "UNK" ~ NA_integer_,
+            Age == "TOT" ~ NA_integer_,
+            TRUE ~ 15L), 
+          Sex = recode(Sex,
+                       `Male` = "m",
+                       `Female` = "f",
+                       `Unknown`= "UNK",
+                       `Grand Total` = "b")) %>%
+  group_by(Sex, Age, Measure) %>% # Data given by race, sum those together 
   mutate(Value = sum(Value)) %>% 
   ungroup()%>%
   subset(Race== "Asian" | Age == "TOT" )%>% # Remove duplicates by race
-mutate(Metric = "Count",
-       Date= datesmax$max)%>% 
-  mutate(
-    Date = ymd(Date),
-    Date = paste(sprintf("%02d",day(Date)),    
-                 sprintf("%02d",month(Date)),  
-                 year(Date),sep="."),
-    Code = paste0("US_TX",Date),
-    Country = "USA",
-    Region = "Texas",)%>% 
+  mutate(Metric = "Count",
+         Date= datesmax$max, 
+         Date = ymd(Date),
+         Date = paste(sprintf("%02d",day(Date)),    
+                      sprintf("%02d",month(Date)),  
+                      year(Date),sep="."),
+         Code = paste0("US_TX",Date),
+         Country = "USA",
+         Region = "Texas",)%>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)
 
@@ -157,16 +152,11 @@ out <- bind_rows(Out_Vaccine_Age,
                  Out_Vaccine_dose,
                  Append)
 
-
-
 #save output data 
-
 write_rds(out, paste0(dir_n, ctr, ".rds"))
-
+log_update(pp = ctr, N = nrow(out))
 
 #zip input data
-
-
 zipname <- paste0(dir_n, 
                   "Data_sources/", 
                   ctr,

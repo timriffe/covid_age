@@ -90,6 +90,9 @@ sched("Ukraine", "08:40",email = auto_update_email, wd = auto_update_wd)
 sched("Spain_vaccine", "12:20",email = auto_update_email, wd = auto_update_wd)
 sched("Chile", "17:08",email = auto_update_email, wd = auto_update_wd)
 sched("Portugal_Vaccine", "17:17",email = auto_update_email, wd = auto_update_wd)
+sched("CA_Alberta", "12:30",email = auto_update_email, wd = auto_update_wd)
+sched("Canada_vaccine", "13:00",email = auto_update_email, wd = auto_update_wd)
+sched("US_Texas_Vaccine", "13:10",email = auto_update_email, wd = auto_update_wd)
 
 
 
