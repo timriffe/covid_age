@@ -24,6 +24,36 @@ ss_db  <- at_rubric %>% dplyr::pull(Source)
 db_n <- read_rds(paste0(dir_n, ctr, ".rds")) %>% 
   mutate(Date = dmy(Date))
 
+unique(db_n$Measure)
+
+# # Fixing issue of vaccines: 
+# # ~~~~~~~~~~~~~~~~~~~~~~~~~
+# # excluding total age, 'Vaccines' measure, adding age 0 (12.04.2021)
+# temp_vacc <- db_n %>%
+#   filter(Measure %in% c("Vaccination1", "Vaccination2"),
+#          Age != "TOT",
+#          Sex != "b") %>%
+#   select(Date, Sex, Age, Measure, Value) %>% 
+#   tidyr::complete(Date, Sex, Age, Measure, fill = list(Value = 0)) %>% 
+#   arrange(Date, Measure, Sex, Age) %>% 
+#   mutate(Date = ddmmyyyy(Date),
+#          Country = "Denmark",
+#          Code = paste0("DK", Date),
+#          Region = "All",
+#          AgeInt = case_when(Age == "90" ~ 15L, 
+#                             Age == "TOT" ~ NA_integer_,
+#                             Age == "UNK" ~ NA_integer_,
+#                             TRUE ~ 10L),
+#          Metric = "Count") %>% 
+#   sort_input_data() %>% 
+#   mutate(Date = dmy(Date))
+#   
+# db_n <- 
+#   db_n %>% 
+#   filter(!Measure %in% c("Vaccination1", "Vaccination2", "Vaccinations")) %>% 
+#   bind_rows(temp_vacc) 
+  
+
 # identifying dates already captured in each measure
 dates_cases_n <- db_n %>% 
   filter(Measure == "Cases") %>% 
@@ -133,7 +163,7 @@ links_v <- scraplinks(m_url_v) %>%
 
 links_new_vacc <- links_v %>% 
   filter(!Date %in% dates_vacc_n)
-
+# links_new_vacc <- links_v[1,]
 # downloading new vaccine data and loading it
 dim(links_new_vacc)[1] > 0
 db_vcc <- tibble()

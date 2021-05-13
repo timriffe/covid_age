@@ -162,7 +162,9 @@ if (date_f > last_date_drive){
       select(
         Sex = starts_with("K")
         , Value = `Antal vaccinerade`
-        , Measure = Dosnummer
+        # Changed on 20210423 by Diego after codes changed
+        # , Measure = Dosnummer
+        , Measure = Vaccinationsstatus
       ) %>% 
       # filter(!grepl("^t", Sex, ignore.case = T)) %>% 
       mutate(
@@ -172,8 +174,11 @@ if (date_f > last_date_drive){
           # grepl("^t", Sex, ignore.case = T) ~ "UNK"
         ) 
         , Measure = case_when(
-          grepl("1", Measure, ignore.case = T) ~ "Vaccination1"
-          , grepl("2", Measure, ignore.case = T) ~ "Vaccination2"
+          # Changed on 20210423 by Diego after codes changed
+          grepl("inst 1 dos", Measure, ignore.case = T) ~ "Vaccination1"
+          , grepl("rdigvaccinerade", Measure, ignore.case = T) ~ "Vaccination2"
+          # grepl("1", Measure, ignore.case = T) ~ "Vaccination1"
+          # , grepl("2", Measure, ignore.case = T) ~ "Vaccination2"
         )
         , Age = "TOT"
         , AgeInt = ""
@@ -192,14 +197,17 @@ if (date_f > last_date_drive){
       filter(grepl("Sverige", Region)) %>% 
       select(
         Value = contains("antal")
-        , Measure = Dosnummer
+        # , Measure = Dosnummer
+        , Measure = Vaccinationsstatus
         , Age = ends_with("ldersgrupp")
       ) %>% 
       # filter(!grepl("^Total", Age)) %>% 
       mutate(
         Measure = case_when(
-          grepl("1", Measure, ignore.case = T) ~ "Vaccination1"
-          , grepl("2", Measure, ignore.case = T) ~ "Vaccination2"
+          # grepl("1", Measure, ignore.case = T) ~ "Vaccination1"
+          # , grepl("2", Measure, ignore.case = T) ~ "Vaccination2"
+          grepl("inst 1 dos", Measure, ignore.case = T) ~ "Vaccination1"
+          , grepl("rdigvaccinerade", Measure, ignore.case = T) ~ "Vaccination2"
         )
         , Age_low = as.numeric(str_extract(Age, "^[0-9]{2}"))
         , Age_high = as.numeric(str_extract(Age, "[0-9]{2}$"))

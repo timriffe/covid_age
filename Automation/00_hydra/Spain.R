@@ -157,7 +157,8 @@ nal <- in2 %>%
          Code = paste("ES", Date, sep="_")) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
 
-out <- bind_rows(nal, in2)
+out <- bind_rows(nal, in2) %>% 
+  sort_input_data()
 
 # saving data into N drive
 write_rds(out, paste0(dir_n, ctr, ".rds"))

@@ -440,7 +440,8 @@ compile_offsetsDB <- function() {
   offsetsDB <- 
     off_list %>% 
     bind_rows() %>% 
-    arrange(Country, Region, Sex)
+    arrange(Country, Region, Sex) %>% 
+    dplyr::select(Country, Region, Date, Sex, Age, AgeInt, Population)
   
   # Output
   offsetsDB
@@ -1678,7 +1679,7 @@ harmonize_offset_age <- function(chunk){
   # If already in shape, then skip it
   if(is_single(Age) & max(Age) == 104) {
     
-    return(chunk[,"Age","Population"])
+    return(dplyr::select(chunk,Age,Population))
     
   }
   
@@ -1692,6 +1693,9 @@ harmonize_offset_age <- function(chunk){
     
   }
   
+  if (max(Age) > 104){
+    Pop <- groupOAG(Pop,Age,OAnew = 104)
+  }
   # Width of current open interval
   nlast <- max(105 - max(Age), 5)
   
