@@ -137,10 +137,19 @@ if (date_f > last_date_drive){
   # ~~~~~~~~~~~~~
   # vaccines data
   # ~~~~~~~~~~~~~
+  #url_v <- "https://www.health.govt.nz/our-work/diseases-and-conditions/covid-19-novel-coronavirus/covid-19-data-and-statistics/covid-19-vaccine-data#age"
+  #html_v <- read_html(url_v)
+  #link_v <- html_nodes(html_v, xpath = '//*[@id="node-12052"]/div[2]/div/div/p[12]/a') %>%
+    #html_attr("href")
+  
+  #new xpath to source file 
+  
+  
   url_v <- "https://www.health.govt.nz/our-work/diseases-and-conditions/covid-19-novel-coronavirus/covid-19-data-and-statistics/covid-19-vaccine-data#age"
   html_v <- read_html(url_v)
-  link_v <- html_nodes(html_v, xpath = '//*[@id="node-12052"]/div[2]/div/div/p[12]/a') %>%
-    html_attr("href")
+  link_v <- html_nodes(html_v, xpath = '/html/body/div[2]/div/div[1]/section/div[2]/section/div/div/div[2]/div[2]/div/article/div[2]/div/div/p[20]/a') %>%
+    html_attr("href")  
+  
   
   loc_date_v <- str_locate(link_v, ".xlsx")[1]
   date_vacc <- str_sub(link_v, loc_date_v - 10, loc_date_v - 1) %>% dmy()
@@ -149,39 +158,35 @@ if (date_f > last_date_drive){
   
   download.file(paste0(root, link_v), data_source6, mode = "wb")
   
-  db_v_age <- 
+  
+
+db_v <- 
     read_xlsx(data_source6,
-              sheet = "Age") %>% 
-    rename(Age = 1,
-           Vaccination1 = 2,
-           Vaccination2 = 3) %>% 
-    mutate(Age = str_sub(Age, 1, 2)) %>% 
-    gather(-Age, key = Measure, value = Value) %>% 
-    tidyr::complete(Age = as.character(seq(0, 80, 10)), Measure, fill = list(Value = 0)) %>% 
-    mutate(Sex = "b")
-  
-  db_v_sex <- 
-    read_xlsx(data_source6,
-              sheet = "Sex") %>% 
-    rename(Vaccination1 = 2,
-           Vaccination2 = 3) %>% 
-    mutate(Sex = case_when(Sex == "Female" ~ "f",
-                           Sex == "Male" ~ "m",
-                           TRUE ~ "UNK")) %>% 
-    gather(-Sex, key = Measure, value = Value) %>% 
-    mutate(Age = "TOT")
-  
-  db_v <- 
-    bind_rows(db_v_age, db_v_sex) %>% 
-    mutate(AgeInt = case_when(Age == "80" ~ 25,
-                              Age == "TOT" ~ NA_real_,
-                              TRUE ~ 10),
-           Country = "New Zealand",
-           Region = "All",
-           Date = ddmmyyyy(date_vacc),
-           Code = paste0("NZ",Date),
-           Metric = "Count")
-  
+              sheet = "Ethnicity, Age, Gender by dose")%>%
+  select(Age= `Ten year age group`, Sex= Gender, Measure= `Dose number`, Value= `# doses administered`)%>%
+  #sum up numbers that were separated by race 
+  group_by(Age, Sex, Measure) %>% 
+  mutate(Value = sum(Value)) %>% 
+  ungroup() %>% 
+  distinct()%>%
+  mutate(Age = str_sub(Age, 1, 2)) %>% 
+  mutate(AgeInt = case_when(
+    Age == "90" ~ 15L,
+    TRUE ~ 10L))%>% 
+  mutate(Sex = case_when(
+    Sex == "Male" ~ "m",
+    Sex == "Female" ~ "f",
+    Sex== "Other / Unknown" ~ "UNK"),
+    Measure= case_when(
+      Measure== "1" ~ "Vaccination1",
+      Measure== "2" ~ "Vaccination2"),
+  Country = "New Zealand",
+  Region = "All",
+  Date = ddmmyyyy(date_vacc),
+  Code = paste0("NZ",Date),
+  Metric = "Count")
+
+
   ####################################
   # deaths by age from html table
   ####################################
@@ -406,6 +411,7 @@ if (date_f > last_date_drive){
   log_update(pp = ctr, N = nrow(out))
   
   
+  
   #### uploading metadata to N: Drive ####
   ########################################
 
@@ -453,6 +459,42 @@ if (date_f > last_date_drive){
   
   
   
+
+#######################################################
+
+#outdated processing vaccine data 
+
+
+#%>% 
+#rename(Age = 1,
+#Vaccination1 = 2,
+#Vaccination2 = 3) %>% 
+#mutate(Age = str_sub(Age, 1, 2)) %>% 
+#gather(-Age, key = Measure, value = Value) %>% 
+#tidyr::complete(Age = as.character(seq(0, 80, 10)), Measure, fill = list(Value = 0)) %>% 
+#mutate(Sex = "b")
+
+#db_v_sex <- 
+#read_xlsx(data_source6,
+# sheet = "Sex") %>% 
+#rename(Vaccination1 = 2,
+#Vaccination2 = 3) %>% 
+#mutate(Sex = case_when(Sex == "Female" ~ "f",
+#Sex == "Male" ~ "m",
+# TRUE ~ "UNK")) %>% 
+# gather(-Sex, key = Measure, value = Value) %>% 
+# mutate(Age = "TOT")
+
+#db_v <- 
+#bind_rows(db_v_age, db_v_sex) %>% 
+#mutate(AgeInt = case_when(Age == "80" ~ 25,
+# Age == "TOT" ~ NA_real_,
+# TRUE ~ 10),
+# Country = "New Zealand",
+# Region = "All",
+# Date = ddmmyyyy(date_vacc),
+# Code = paste0("NZ",Date),
+#Metric = "Count")
   
   
   
