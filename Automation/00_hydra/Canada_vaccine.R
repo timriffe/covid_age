@@ -14,15 +14,8 @@ if (!"email" %in% ls()){
 
 # info country and N drive address
 
-ctr          <- "Canada" # it's a placeholder
+ctr          <- "Canada_Vaccine" # it's a placeholder
 dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
-
-
-
-# Drive credentials
-drive_auth(email = email)
-gs4_auth(email = email)
-
 
 #Read in data 
 
@@ -31,10 +24,14 @@ IN<- read_csv(url)
 
 
 #Process data 
-
-
-Out<- IN %>%
-  select( Region = prename, Date = week_end, Sex= sex, Age= age, Vaccination1= numtotal_1dose, Vaccination2=numtotal_2doses, Vaccinations= numtotal_atleast1dose)%>%
+Out <- IN %>%
+  select(Region = prename, 
+         Date = week_end, 
+         Sex = sex, 
+         Age = age, 
+         Vaccination1 = numtotal_partially, 
+         Vaccination2 = numtotal_fully, 
+         Vaccinations = numtotal_atleast1dose) %>%
   pivot_longer(!Age & !Sex & !Date & !Region, names_to= "Measure", values_to= "Value")%>%
   mutate(Sex = recode(Sex,
                       `Unknown`= "UNK",
@@ -99,27 +96,29 @@ Out<- IN %>%
          Age, AgeInt, Metric, Measure, Value) 
   
 
-#Contains all values with >,remove > and 2 is added to Values 
+#Contains all values with >, remove > and impute 2
 
-Out1= Out %>% subset(substr(Value,1,1)== ">")%>%
-separate(Value, c("col", "Value"), ">", fill = "left")%>%
-  mutate(Value= as.numeric(Value))%>%
-  mutate(Value= Value+2)%>%
-  select(-col)%>%
-  mutate(Value= as.character(Value))
+Out1 <- 
+  Out %>% subset(substr(Value,1,1)== ">") %>%
+  separate(Value, c("col", "Value"), ">", fill = "left") %>%
+  mutate(Value = as.numeric(Value), 
+         Value = Value+2,
+         Value = as.character(Value)) %>%
+  select(-col) 
   
 # Contains all data without <> 
 
-Out2= Out %>% subset(substr(Value,1,1)!= ">")
+Out2 <- 
+  Out %>% 
+  subset(substr(Value,1,1)!= ">")
 
 #put both togehter again
 
 outfinal <- bind_rows(Out1, Out2)
 
-
-
 #save output data 
 write_rds(outfinal, paste0(dir_n, ctr, ".rds"))
+log_update(pp = ctr, N = nrow(outfinal))
 
 # now archive
 
