@@ -35,11 +35,13 @@ If you know of sources for other populations, please either email, Tweet, or lea
 
 ## Citation
 
-Please cite the medRxiv paper also listing the OSF repository, which has a doi. All collaborators are coauthors (see full list below), but this short form is preferred:
+Please cite the International Journal of Epidemiology paper also listing the OSF repository, which has a doi. 
 
-COVeAGE-DB: A database of age-structured COVID-19 cases and deaths.
-Tim Riffe, Enrique Acosta, The COVerAGE-DB team
-medRxiv 2020.09.18.20197228; doi: https://doi.org/10.1101/2020.09.18.20197228 Data downloaded from [DATE] (https://doi.org/10.17605/OSF.IO/MPWJQ)[https://doi.org/10.17605/OSF.IO/MPWJQ]
+Tim Riffe, Enrique Acosta, the COVerAGE-DB team (2021) Data Resource Profile: COVerAGE-DB: a global demographic database of COVID-19 cases and deaths. International Journal of Epidemiology, Volume 50, Issue 2, April 2021, Pages 390–390f, DOI: https://doi.org/10.1093/ije/dyab027 Data downloaded from [DATE] (https://doi.org/10.17605/OSF.IO/MPWJQ)[https://doi.org/10.17605/OSF.IO/MPWJQ]
+
+The long citation including all coauthors is:
+
+Tim Riffe, Enrique Acosta, José Manuel Aburto, Diego Alburez-Gutierrez, Anna Altová, Ainhoa Alustiza, Ugofilippo Basellini, Simona Bignami, Didier Breton, Eungang Choi, Jorge Cimentada, Gonzalo De Armas, Emanuele Del Fava, Alicia Delgado, Viorela Diaconu, Jessica Donzowa, Christian Dudel, Antonia Fröhlich, Alain Gagnon, Mariana Garcia-Crisóstomo, Victor M. Garcia-Guerrero, Armando González-Díaz, Irwin Hecker, Dagnon Eric Koba, Marina Kolobova, Mine Kühn, Mélanie Lépori, Chia Liu, Andrea Lozer, Mădălina Manea, Lilian Marey, Muntasir Masum, Ryohei Mogi, Céline Monicolle, Saskia Morwinsky, Ronald Musizvingoza, Mikko Myrskylä, Marília R. Nepomuceno, Michelle Nickel, Natalie Nitsche, Anna Oksuzyan, Samuel Oladele, Emmanuel Olamijuwon, Oluwafunke Omodara, Soumaila Ouedraogo, Mariana Paredes, Marius D. Pascariu, Manuel Piriz, Raquel Pollero, Larbi Qanni, Federico Rehermann, Filipe Ribeiro, Silvia Rizzi, Francisco Rowe, Adil R. Sarhan, Isaac Sasson, Erez Shomron, Jiaxin Shi, Rafael Silva-Ramirez, Cosmo Strozza, Catalina Torres, Sergi Trias-Llimos, Fumiya Uchikoshi, Alyson van Raalte, Paola Vazquez-Castillo, Estevão A. Vilela, Muhammad Ali Waqar, Iván Williams, Virginia Zarulli (2021) Data Resource Profile: COVerAGE-DB: a global demographic database of COVID-19 cases and deaths. International Journal of Epidemiology, Volume 50, Issue 2, April 2021, Pages 390–390f, DOI: https://doi.org/10.1093/ije/dyab027 Data downloaded from [DATE] (https://doi.org/10.17605/OSF.IO/MPWJQ)[https://doi.org/10.17605/OSF.IO/MPWJQ]
 
 
 ## The team (so far), alphabetical by last name
