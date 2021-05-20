@@ -1,15 +1,21 @@
 #Liechtenstein 
 
 library(here)
-source('U:/GitHub/Covid/Automation/00_Functions_automation.R')
-library(ISOweek)
+source(here("Automation", "00_Functions_automation.R"))
+
+#install.packages("zoo")
+library(zoo)
+library(openxlsx)
+
 
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
   email <- "jessica_d.1994@yahoo.de"
 }
 
-########################################################################################
+
+# info country and N drive address
+
 ctr          <- "Liechtenstein" # it's a placeholder
 dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
@@ -20,436 +26,581 @@ drive_auth(email = email)
 gs4_auth(email = email)
 
 
-##################Read in new data#############
-url <- "https://www.covid19.admin.ch/en/epidemiologic/vacc-doses?detGeo=FL&vaccRel=abs&demoSum=total"
+
+# Drive urls
+rubric <- get_input_rubric() %>% filter(Short == "LI")
+
+ss_i <- rubric %>% 
+  dplyr::pull(Sheet)
+
+ss_db <- rubric %>% 
+  dplyr::pull(Source)
 
 
-links <- scraplinks(url) %>% 
-  filter(str_detect(url, ".zip")) %>% 
-  select(url) 
+#data download 
 
 
-links2= head(links, 1)
+url <- "https://www.llv.li/files/as/grafik_covid19_alter_geschlecht_wohnort.xlsx"
 
-url2 <- 
-  links2 %>% 
-  select(url) %>% 
-  dplyr::pull()
+data_source <- paste0(dir_n, "Data_sources/", ctr, "/cases_age",today(), ".xlsx")
 
+download.file(url, data_source, mode = "wb")
 
-url_download=paste0("https://www.covid19.admin.ch", url2) 
+#Age
 
-data_source <- paste0(dir_n, "Data_sources/", ctr, "/Liechtenstein_data",today(), ".zip")
-download.file(url_download, data_source, mode = "wb")
+age2021= read_excel(data_source, sheet = 1, range = "A38:I48")
 
+age2020= read_excel(data_source, sheet = 4, range = "A35:J45")
 
+#Sex
 
+sex2021=read_excel(data_source, sheet = 2, range = "A35:J38")
 
-In_cases= read.csv(unz(data_source, "data/COVID19Cases_geoRegion_AKL10_w.csv"))
-In_death= read.csv(unz(data_source,"data/COVID19Death_geoRegion_AKL10_w.csv"))
-In_test= read.csv(unz(data_source,"data/COVID19Test_geoRegion_AKL10_w.csv"))
-In_dose= read.csv(unz(data_source,"data/COVID19VaccDosesAdministered_AKL10_w.csv"))
-In_vaccine= read.csv(unz(data_source,"data/COVID19FullyVaccPersons_AKL10_w.csv"))
-In_cases_sex= read.csv(unz(data_source,"data/COVID19Cases_geoRegion_sex_w.csv"))
-In_death_sex= read.csv(unz(data_source,"data/COVID19Death_geoRegion_sex_w.csv"))
-In_test_sex= read.csv(unz(data_source,"data/COVID19Test_geoRegion_sex_w.csv"))
-In_dose_sex= read.csv(unz(data_source,"data/COVID19VaccDosesAdministered_sex_w.csv"))
-In_vaccine_sex= read.csv(unz(data_source,"data/COVID19FullyVaccPersons_sex_w.csv"))
+sex2020= read_excel(data_source, sheet = 5, range = "A31:J34")
 
 
-#Process################################################################################## 
+#Process age
 
-Out_cases= In_cases %>%
-  select(Age = altersklasse_covid19, Date=datum, Value= sumTotal, Region= geoRegion) %>% 
-  mutate(Age=recode(Age, 
-                    `0 - 9`="0",
-                    `10 - 19`="10",
-                    `20 - 29`="20",
-                    `30 - 39`="30",
-                    `40 - 49`="40",
-                    `50 - 59`="50",
-                    `60 - 69`="60",
-                    `70 - 79`="70",
-                    `80+`="80",
-                    `Unbekannt`="UNK"))%>% 
-  mutate(AgeInt = case_when(
-    Age == "80" ~ 25L,
-    Age == "UNK" ~ NA_integer_,
-    TRUE ~ 10L))%>% 
-  mutate(
-    Measure = "Cases",
-    Metric = "Count",
-    Sex= "b",
-    Country= "Liechtenstein")%>%
-  separate(Date, c("D1", "D2", "D3","D4","D5", "D6", "D7"), "")%>%
-  mutate(Date = paste0(D2, D3, D4, D5,"-W", D6, D7, "-7"))%>%
-  mutate(Date=ISOweek::ISOweek2date(Date))%>%
-  mutate(
-    Date = ymd(Date),
-    Date = paste(sprintf("%02d",day(Date)),    
-                 sprintf("%02d",month(Date)),  
-                 year(Date),sep="."),
-    Code = paste0("LI_", Region, Date),)%>% 
-  select(Country, Region, Code, Date, Sex, 
-         Age, AgeInt, Metric, Measure, Value)%>%
-  mutate(AgeInt= as.character(AgeInt))%>%
-  mutate(Value= as.character(Value))
-
-  
-  
-
-#Deaths
-
-
-Out_death= In_death %>%
-  select(Age = altersklasse_covid19, Date=datum, Value= sumTotal, Region= geoRegion) %>% 
-  mutate(Age=recode(Age, 
-                    `0 - 9`="0",
-                    `10 - 19`="10",
-                    `20 - 29`="20",
-                    `30 - 39`="30",
-                    `40 - 49`="40",
-                    `50 - 59`="50",
-                    `60 - 69`="60",
-                    `70 - 79`="70",
-                    `80+`="80",
-                    `Unbekannt`="UNK"))%>% 
-  mutate(AgeInt = case_when(
-    Age == "80" ~ 25L,
-    Age == "UNK" ~ NA_integer_,
-    TRUE ~ 10L))%>% 
-  mutate(
-    Measure = "Deaths",
-    Metric = "Count",
-    Sex= "b",
-    Country= "Liechtenstein")%>%
-  separate(Date, c("D1", "D2", "D3","D4","D5", "D6", "D7"), "")%>%
-  mutate(Date = paste0(D2, D3, D4, D5,"-W", D6, D7, "-7"))%>%
-  mutate(Date=ISOweek::ISOweek2date(Date))%>%
-  mutate(
-    Date = ymd(Date),
-    Date = paste(sprintf("%02d",day(Date)),    
-                 sprintf("%02d",month(Date)),  
-                 year(Date),sep="."),
-    Code = paste0("LI_", Region, Date),)%>% 
-  select(Country, Region, Code, Date, Sex, 
-         Age, AgeInt, Metric, Measure, Value)%>%
-  mutate(AgeInt= as.character(AgeInt))%>%
-  mutate(Value= as.character(Value))
-
-
-
-
-
-#Test
-
-Out_test= In_test %>%
-  select(Age = altersklasse_covid19, Date=datum, Value= sumTotal, Region= geoRegion) %>% 
-  mutate(Age=recode(Age, 
-                    `0 - 9`="0",
-                    `10 - 19`="10",
-                    `20 - 29`="20",
-                    `30 - 39`="30",
-                    `40 - 49`="40",
-                    `50 - 59`="50",
-                    `60 - 69`="60",
-                    `70 - 79`="70",
-                    `80+`="80",
-                    `Unbekannt`="UNK"),
-         Value = case_when(
-           is.na(Value) ~ "UNK",
-           TRUE~ as.character(Value)))%>% 
-  mutate(AgeInt = case_when(
-    Age == "80" ~ 25L,
-    Age == "UNK" ~ NA_integer_,
-    TRUE ~ 10L))%>% 
-  mutate(
-    Measure = "Tests",
-    Metric = "Count",
-    Sex= "b",
-    Country= "Liechtenstein")%>%
-  separate(Date, c("D1", "D2", "D3","D4","D5", "D6", "D7"), "")%>%
-  mutate(Date = paste0(D2, D3, D4, D5,"-W", D6, D7, "-7"))%>%
-  mutate(Date=ISOweek::ISOweek2date(Date))%>%
-  mutate(
-    Date = ymd(Date),
-    Date = paste(sprintf("%02d",day(Date)),    
-                 sprintf("%02d",month(Date)),  
-                 year(Date),sep="."),
-    Code = paste0("LI_", Region, Date),)%>% 
-  select(Country, Region, Code, Date, Sex, 
-         Age, AgeInt, Metric, Measure, Value)%>%
-  mutate(AgeInt= as.character(AgeInt))%>%
-  mutate(Value= as.character(Value))
-
-
-#Vaccine 
-#Vaccination1
-
-Out_dose= In_dose %>%
-  select(Age = altersklasse_covid19, Date=date, Value= sumTotal, Region= geoRegion) %>% 
-  mutate(Age=recode(Age, 
-                    `0 - 9`="0",
-                    `10 - 19`="10",
-                    `20 - 29`="20",
-                    `30 - 39`="30",
-                    `40 - 49`="40",
-                    `50 - 59`="50",
-                    `60 - 69`="60",
-                    `70 - 79`="70",
-                    `80+`="80",
-                    `Unbekannt`="UNK"),
-         Value = case_when(
-           is.na(Value) ~ "UNK",
-           TRUE~ as.character(Value)))%>% 
-  mutate(AgeInt = case_when(
-    Age == "80" ~ 25L,
-    Age == "UNK" ~ NA_integer_,
-    TRUE ~ 10L))%>% 
-  mutate(
-    Measure = "Vaccination1",
-    Metric = "Count",
-    Sex= "b",
-    Country= "Liechtenstein")%>%
-  separate(Date, c("D1", "D2", "D3","D4","D5", "D6", "D7"), "")%>%
-  mutate(Date = paste0(D2, D3, D4, D5,"-W", D6, D7, "-7"))%>%
-  mutate(Date=ISOweek::ISOweek2date(Date))%>%
-  mutate(
-    Date = ymd(Date),
-    Date = paste(sprintf("%02d",day(Date)),    
-                 sprintf("%02d",month(Date)),  
-                 year(Date),sep="."),
-    Code = paste0("LI_", Region, Date),)%>% 
-  select(Country, Region, Code, Date, Sex, 
-         Age, AgeInt, Metric, Measure, Value)%>%
-  mutate(AgeInt= as.character(AgeInt))%>%
-  mutate(Value= as.character(Value))
-
-
-
-#Vaccination2 
-
-Out_vaccine= In_vaccine %>%
-  select(Age = altersklasse_covid19, Date=date, Value= sumTotal, Region= geoRegion) %>% 
-  mutate(Age=recode(Age, 
-                    `0 - 9`="0",
-                    `10 - 19`="10",
-                    `20 - 29`="20",
-                    `30 - 39`="30",
-                    `40 - 49`="40",
-                    `50 - 59`="50",
-                    `60 - 69`="60",
-                    `70 - 79`="70",
-                    `80+`="80",
-                    `Unbekannt`="UNK"),
-         Value = case_when(
-           is.na(Value) ~ "UNK",
-           TRUE~ as.character(Value)))%>% 
-  mutate(AgeInt = case_when(
-    Age == "80" ~ 25L,
-    Age == "UNK" ~ NA_integer_,
-    TRUE ~ 10L))%>% 
-  mutate(
-    Measure = "Vaccination2",
-    Metric = "Count",
-    Sex= "b",
-    Country= "Liechtenstein")%>%
-  separate(Date, c("D1", "D2", "D3","D4","D5", "D6", "D7"), "")%>%
-  mutate(Date = paste0(D2, D3, D4, D5,"-W", D6, D7, "-7"))%>%
-  mutate(Date=ISOweek::ISOweek2date(Date))%>%
-  mutate(
-    Date = ymd(Date),
-    Date = paste(sprintf("%02d",day(Date)),    
-                 sprintf("%02d",month(Date)),  
-                 year(Date),sep="."),
-    Code = paste0("LI_", Region, Date),)%>% 
-  select(Country, Region, Code, Date, Sex, 
-         Age, AgeInt, Metric, Measure, Value)%>%
-  mutate(AgeInt= as.character(AgeInt))%>%
-  mutate(Value= as.character(Value))
-
-
-
-#Totals by sex 
-
-#Cases
-
-Out_cases_sex= In_cases_sex %>%
-  select(Sex=sex, Date=datum, Value= sumTotal, Region= geoRegion) %>% 
-  mutate(Sex=recode(Sex, 
-                    `male`="m",
-                    `female`="f",
-                    `unknown`="UNK"))%>% 
-    mutate(
-    Measure = "Cases",
-    Metric = "Count",
-    Age= "TOT",
-    AgeInt= "",
-    Country= "Liechtenstein")%>%
-  separate(Date, c("D1", "D2", "D3","D4","D5", "D6", "D7"), "")%>%
-  mutate(Date = paste0(D2, D3, D4, D5,"-W", D6, D7, "-7"))%>%
-  mutate(Date=ISOweek::ISOweek2date(Date))%>%
-  mutate(
-    Date = ymd(Date),
-    Date = paste(sprintf("%02d",day(Date)),    
-                 sprintf("%02d",month(Date)),  
-                 year(Date),sep="."),
-    Code = paste0("LI_", Region, Date),)%>% 
-  select(Country, Region, Code, Date, Sex, 
-         Age, AgeInt, Metric, Measure, Value)%>%
-  mutate(AgeInt= as.character(AgeInt))%>%
-  mutate(Value= as.character(Value))
-
-
-#Deaths 
-
-
-
-Out_death_sex= In_death_sex %>%
-  select(Sex=sex, Date=datum, Value= sumTotal, Region= geoRegion) %>% 
-  mutate(Sex=recode(Sex, 
-                    `male`="m",
-                    `female`="f",
-                    `unknown`="UNK"))%>% 
-    mutate(
-    Measure = "Deaths",
-    Metric = "Count",
-    Age= "TOT",
-    AgeInt= "",
-    Country= "Liechtenstein")%>%
-  separate(Date, c("D1", "D2", "D3","D4","D5", "D6", "D7"), "")%>%
-  mutate(Date = paste0(D2, D3, D4, D5,"-W", D6, D7, "-7"))%>%
-  mutate(Date=ISOweek::ISOweek2date(Date))%>%
-  mutate(
-    Date = ymd(Date),
-    Date = paste(sprintf("%02d",day(Date)),    
-                 sprintf("%02d",month(Date)),  
-                 year(Date),sep="."),
-    Code = paste0("LI_", Region, Date),)%>% 
-  select(Country, Region, Code, Date, Sex, 
-         Age, AgeInt, Metric, Measure, Value)%>%
-  mutate(AgeInt= as.character(AgeInt))%>%
-  mutate(Value= as.character(Value))
-
+#2020
 
 #Tests
 
-Out_test_sex= In_test_sex %>%
-  select(Sex=sex, Date=datum, Value= sumTotal, Region= geoRegion) %>% 
-  mutate(Sex=recode(Sex, 
-                    `male`="m",
-                    `female`="f",
-                    `unknown`="UNK"),
-         Value = case_when(
-           is.na(Value) ~ "UNK",
-           TRUE~ as.character(Value)))%>% 
-    mutate(
+colnames(age2020)[1] <- "Age"
+colnames(age2020)[6] <- "Oktober"
+colnames(age2020)[8] <- "November"
+colnames(age2020)[10] <- "Dezember"
+
+out_age2020_tests= age2020 %>%
+  pivot_longer(!Age, names_to= "Date", values_to= "Value")%>%
+  subset(Age != "NA") %>% 
+  mutate(Value = as.numeric(Value))%>%
+  mutate(Age=recode(Age, 
+                    `0 bis 9 Jahre`="0",
+                    `10 bis 19 Jahre`="10",
+                    `20 bis 29 Jahre`="20",
+                    `30 bis 39 Jahre`="30",
+                    `40 bis 49 Jahre`="40",
+                    `50 bis 59 Jahre`="50",
+                    `60 bis 69 Jahre`="60",
+                    `70 bis 79 Jahre`="70",
+                    `80 Jahre und älter`="80"))%>%
+  mutate(AgeInt = case_when(
+    Age == "80" ~ 25L,
+    Age == "UNK" ~ NA_integer_,
+    TRUE ~ 10L))%>% 
+  group_by(Age, Date) %>% 
+  mutate(Value = sum(Value)) %>% 
+  ungroup()%>%
+  distinct()%>%# reshape month names to last day of month 
+  mutate(Date=recode(Date, 
+                    `Januar`="Jan",
+                    `Februar`="Feb",
+                    `März`="Mar",
+                    `April`="Apr",
+                    `Mai`="May",
+                    `Juni`="Jun",
+                    `Juli`="Jul",
+                    `August`="Aug",
+                    `September`="Sep",
+                    `Oktober`="Oct",
+                    `November`="Nov",
+                    `Dezember`="Dec"))%>%
+  mutate(Year= "2020")%>%
+  mutate(Date=paste(Date, Year, sep = "/"),
+         Date= as.yearmon(Date, format = "%b/%Y"),
+         Date=as.Date(Date, frac=1))%>%
+  arrange(Date)%>% 
+  mutate(
     Measure = "Tests",
     Metric = "Count",
-    Age= "TOT",
-    AgeInt= "",
-    Country= "Liechtenstein")%>%
-  separate(Date, c("D1", "D2", "D3","D4","D5", "D6", "D7"), "")%>%
-  mutate(Date = paste0(D2, D3, D4, D5,"-W", D6, D7, "-7"))%>%
-  mutate(Date=ISOweek::ISOweek2date(Date))%>%
+    Sex= "b") %>% 
   mutate(
     Date = ymd(Date),
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("LI_", Region, Date),)%>% 
+    Code = paste0("LI_All",Date),
+    Country = "Liechtenstein",
+    Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 
-         Age, AgeInt, Metric, Measure, Value)%>%
-  mutate(AgeInt= as.character(AgeInt))%>%
-  mutate(Value= as.character(Value))
+         Age, AgeInt, Metric, Measure, Value)
 
+#Cases 2020 
 
-
-#vaccination1 
-
-Out_dose_sex= In_dose_sex %>%
-  select(Sex=sex, Date=date, Value= sumTotal, Region= geoRegion) %>% 
-  mutate(Sex=recode(Sex, 
-                    `male`="m",
-                    `female`="f",
-                    `unknown`="UNK"),
-         Value = case_when(
-           is.na(Value) ~ "UNK",
-           TRUE~ as.character(Value)))%>% 
-    mutate(
-    Measure = "Vaccination1",
+out_age2020_cases= age2020 %>%
+select(1, 6,8,10) %>%
+  pivot_longer(!Age, names_to= "Date", values_to= "Value")%>%
+  subset(Age != "NA") %>% 
+  mutate(Value = as.numeric(Value))%>%
+  mutate(Age=recode(Age, 
+                    `0 bis 9 Jahre`="0",
+                    `10 bis 19 Jahre`="10",
+                    `20 bis 29 Jahre`="20",
+                    `30 bis 39 Jahre`="30",
+                    `40 bis 49 Jahre`="40",
+                    `50 bis 59 Jahre`="50",
+                    `60 bis 69 Jahre`="60",
+                    `70 bis 79 Jahre`="70",
+                    `80 Jahre und älter`="80"))%>%
+  mutate(AgeInt = case_when(
+    Age == "80" ~ 25L,
+    Age == "UNK" ~ NA_integer_,
+    TRUE ~ 10L))%>% 
+  group_by(Age, Date) %>% 
+  mutate(Value = sum(Value)) %>% 
+  ungroup()%>%
+  distinct()%>%# reshape month names to last day of month 
+  mutate(Date=recode(Date, 
+                     `Januar`="Jan",
+                     `Februar`="Feb",
+                     `März`="Mar",
+                     `April`="Apr",
+                     `Mai`="May",
+                     `Juni`="Jun",
+                     `Juli`="Jul",
+                     `August`="Aug",
+                     `September`="Sep",
+                     `Oktober`="Oct",
+                     `November`="Nov",
+                     `Dezember`="Dec"))%>%
+  mutate(Year= "2020")%>%
+  mutate(Date=paste(Date, Year, sep = "/"),
+         Date= as.yearmon(Date, format = "%b/%Y"),
+         Date=as.Date(Date, frac=1))%>%
+  arrange(Date)%>%
+  mutate(
+    Measure = "Cases",
     Metric = "Count",
-    Age= "TOT",
-    AgeInt= "",
-    Country= "Liechtenstein")%>%
-  separate(Date, c("D1", "D2", "D3","D4","D5", "D6", "D7"), "")%>%
-  mutate(Date = paste0(D2, D3, D4, D5,"-W", D6, D7, "-7"))%>%
-  mutate(Date=ISOweek::ISOweek2date(Date))%>%
+    Sex= "b") %>% 
   mutate(
     Date = ymd(Date),
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("LI_", Region, Date),)%>% 
+    Code = paste0("LI_All",Date),
+    Country = "Liechtenstein",
+    Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 
-         Age, AgeInt, Metric, Measure, Value)%>%
-  mutate(AgeInt= as.character(AgeInt))%>%
-  mutate(Value= as.character(Value))
+         Age, AgeInt, Metric, Measure, Value)
 
 
+#tests by sex 
 
 
-#vaccination2 
+colnames(sex2020)[1] <- "Sex"
+colnames(sex2020)[6] <- "Oktober"
+colnames(sex2020)[8] <- "November"
+colnames(sex2020)[10] <- "Dezember"
 
-Out_vaccine_sex= In_vaccine_sex %>%
-  select(Sex=sex, Date=date, Value= sumTotal, Region= geoRegion) %>% 
+out_sex_2020_tests= sex2020 %>% 
+  pivot_longer(!Sex, names_to= "Date", values_to= "Value")%>%
+  subset(Sex != "NA") %>% 
+  mutate(Value = as.numeric(Value))%>%
   mutate(Sex=recode(Sex, 
-                    `male`="m",
-                    `female`="f",
-                    `unknown`="UNK"),
-         Value = case_when(
-           is.na(Value) ~ "UNK",
-           TRUE~ as.character(Value)))%>% 
-    mutate(
-    Measure = "Vaccination2",
+                    `Männer`="m",
+                    `Frauen`="f")) %>%
+  group_by(Sex, Date) %>% 
+  mutate(Value = sum(Value)) %>% 
+  ungroup()%>%
+  distinct()%>%# reshape month names to last day of month 
+  mutate(Date=recode(Date, 
+                     `Januar`="Jan",
+                     `Februar`="Feb",
+                     `März`="Mar",
+                     `April`="Apr",
+                     `Mai`="May",
+                     `Juni`="Jun",
+                     `Juli`="Jul",
+                     `August`="Aug",
+                     `September`="Sep",
+                     `Oktober`="Oct",
+                     `November`="Nov",
+                     `Dezember`="Dec"))%>%
+  mutate(Year= "2020")%>%
+  mutate(Date=paste(Date, Year, sep = "/"),
+         Date= as.yearmon(Date, format = "%b/%Y"),
+         Date=as.Date(Date, frac=1))%>%
+  arrange(Date)%>%
+  mutate(
+    Measure = "Tests",
     Metric = "Count",
-    Age= "TOT",
     AgeInt= "",
-    Country= "Liechtenstein")%>%
-  separate(Date, c("D1", "D2", "D3","D4","D5", "D6", "D7"), "")%>%
-  mutate(Date = paste0(D2, D3, D4, D5,"-W", D6, D7, "-7"))%>%
-  mutate(Date=ISOweek::ISOweek2date(Date))%>%
+    Age= "TOT") %>% 
   mutate(
     Date = ymd(Date),
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("LI_", Region, Date),)%>% 
+    Code = paste0("LI_All",Date),
+    Country = "Liechtenstein",
+    Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 
-         Age, AgeInt, Metric, Measure, Value)%>%
-  mutate(AgeInt= as.character(AgeInt))%>%
-  mutate(Value= as.character(Value))
+         Age, AgeInt, Metric, Measure, Value)
 
 
-######combine to one dataframe########## 
+#cases 2020 by sex 
 
-Out <- bind_rows(Out_cases,
-                    Out_cases_sex,
-                    Out_death,
-                    Out_death_sex, 
-                    Out_dose,
-                    Out_dose_sex,
-                    Out_test,
-                    Out_test_sex,
-                    Out_vaccine,
-                    Out_vaccine_sex)
-                    
+out_sex2020_cases= sex2020 %>% 
+  select(1, 6,8,10) %>%
+  pivot_longer(!Sex, names_to= "Date", values_to= "Value")%>%
+  subset(Sex != "NA") %>% 
+  mutate(Value = as.numeric(Value))%>%
+  mutate(Sex=recode(Sex, 
+                    `Männer`="m",
+                    `Frauen`="f")) %>%
+  group_by(Sex, Date) %>% 
+  mutate(Value = sum(Value)) %>% 
+  ungroup()%>%
+  distinct()%>%# reshape month names to last day of month 
+  mutate(Date=recode(Date, 
+                     `Januar`="Jan",
+                     `Februar`="Feb",
+                     `März`="Mar",
+                     `April`="Apr",
+                     `Mai`="May",
+                     `Juni`="Jun",
+                     `Juli`="Jul",
+                     `August`="Aug",
+                     `September`="Sep",
+                     `Oktober`="Oct",
+                     `November`="Nov",
+                     `Dezember`="Dec"))%>%
+  mutate(Year= "2020")%>%
+  mutate(Date=paste(Date, Year, sep = "/"),
+         Date= as.yearmon(Date, format = "%b/%Y"),
+         Date=as.Date(Date, frac=1))%>%
+  arrange(Date)%>%
+  mutate(
+    Measure = "Cases",
+    Metric = "Count",
+    AgeInt= "",
+    Age= "TOT") %>% 
+  mutate(
+    Date = ymd(Date),
+    Date = paste(sprintf("%02d",day(Date)),    
+                 sprintf("%02d",month(Date)),  
+                 year(Date),sep="."),
+    Code = paste0("LI_All",Date),
+    Country = "Liechtenstein",
+    Region = "All",)%>% 
+  select(Country, Region, Code, Date, Sex, 
+         Age, AgeInt, Metric, Measure, Value)
 
-#save output data
 
-write_rds(Out, paste0(dir_n, ctr, ".rds"))
+#2021
 
-log_update(pp = ctr, N = nrow(out)) ###Is that for the automation sheet?TR: Yes
+#tests 2021
+
+colnames(age2021)[1] <- "Age"
+colnames(age2021)[3] <- "Januar"
+colnames(age2021)[6] <- "März"
+colnames(age2021)[8] <- "April"
 
 
-#####input data already archived at beginning 
+out_age2021_test= age2021%>%
+  pivot_longer(!Age, names_to= "Date", values_to= "Value")%>%
+  subset(Age != "NA") %>% 
+  mutate(Value = as.numeric(Value))%>%
+  mutate(Age=recode(Age, 
+                    `0 bis 9 Jahre`="0",
+                    `10 bis 19 Jahre`="10",
+                    `20 bis 29 Jahre`="20",
+                    `30 bis 39 Jahre`="30",
+                    `40 bis 49 Jahre`="40",
+                    `50 bis 59 Jahre`="50",
+                    `60 bis 69 Jahre`="60",
+                    `70 bis 79 Jahre`="70",
+                    `80 Jahre und älter`="80"))%>%
+  mutate(AgeInt = case_when(
+    Age == "80" ~ 25L,
+    Age == "UNK" ~ NA_integer_,
+    TRUE ~ 10L))%>% 
+  group_by(Age, Date) %>% 
+  mutate(Value = sum(Value)) %>% 
+  ungroup()%>%
+  distinct()%>%# reshape month names to last day of month 
+  mutate(Date=recode(Date, 
+                     `Januar`="Jan",
+                     `Februar`="Feb",
+                     `März`="Mar",
+                     `April`="Apr",
+                     `Mai`="May",
+                     `Juni`="Jun",
+                     `Juli`="Jul",
+                     `August`="Aug",
+                     `September`="Sep",
+                     `Oktober`="Oct",
+                     `November`="Nov",
+                     `Dezember`="Dec"))%>%
+  mutate(Year= "2021")%>%
+  mutate(Date=paste(Date, Year, sep = "/"),
+         Date= as.yearmon(Date, format = "%b/%Y"),
+         Date=as.Date(Date, frac=1))%>%
+  arrange(Date)%>% 
+  mutate(
+    Measure = "Tests",
+    Metric = "Count",
+    Sex= "b") %>% 
+  mutate(
+    Date = ymd(Date),
+    Date = paste(sprintf("%02d",day(Date)),    
+                 sprintf("%02d",month(Date)),  
+                 year(Date),sep="."),
+    Code = paste0("LI_All",Date),
+    Country = "Liechtenstein",
+    Region = "All",)%>% 
+  select(Country, Region, Code, Date, Sex, 
+         Age, AgeInt, Metric, Measure, Value)
+
+#cases 2021
+
+
+out_age2021_cases= age2021%>%
+  select(1, 3,6,8) %>%
+  pivot_longer(!Age, names_to= "Date", values_to= "Value")%>%
+  subset(Age != "NA") %>% 
+  mutate(Value = as.numeric(Value))%>%
+  mutate(Age=recode(Age, 
+                    `0 bis 9 Jahre`="0",
+                    `10 bis 19 Jahre`="10",
+                    `20 bis 29 Jahre`="20",
+                    `30 bis 39 Jahre`="30",
+                    `40 bis 49 Jahre`="40",
+                    `50 bis 59 Jahre`="50",
+                    `60 bis 69 Jahre`="60",
+                    `70 bis 79 Jahre`="70",
+                    `80 Jahre und älter`="80"))%>%
+  mutate(AgeInt = case_when(
+    Age == "80" ~ 25L,
+    Age == "UNK" ~ NA_integer_,
+    TRUE ~ 10L))%>% 
+  group_by(Age, Date) %>% 
+  mutate(Value = sum(Value)) %>% 
+  ungroup()%>%
+  distinct()%>%# reshape month names to last day of month 
+  mutate(Date=recode(Date, 
+                     `Januar`="Jan",
+                     `Februar`="Feb",
+                     `März`="Mar",
+                     `April`="Apr",
+                     `Mai`="May",
+                     `Juni`="Jun",
+                     `Juli`="Jul",
+                     `August`="Aug",
+                     `September`="Sep",
+                     `Oktober`="Oct",
+                     `November`="Nov",
+                     `Dezember`="Dec"))%>%
+  mutate(Year= "2021")%>%
+  mutate(Date=paste(Date, Year, sep = "/"),
+         Date= as.yearmon(Date, format = "%b/%Y"),
+         Date=as.Date(Date, frac=1))%>%
+  arrange(Date)%>%
+  mutate(
+    Measure = "Cases",
+    Metric = "Count",
+    Sex= "b") %>% 
+  mutate(
+    Date = ymd(Date),
+    Date = paste(sprintf("%02d",day(Date)),    
+                 sprintf("%02d",month(Date)),  
+                 year(Date),sep="."),
+    Code = paste0("LI_All",Date),
+    Country = "Liechtenstein",
+    Region = "All",)%>% 
+  select(Country, Region, Code, Date, Sex, 
+         Age, AgeInt, Metric, Measure, Value)
+
+
+#sex 2021 tests 
+
+colnames(sex2021)[1] <- "Sex"
+colnames(sex2021)[3] <- "Januar"
+colnames(sex2021)[5] <- "Februar"
+colnames(sex2021)[7] <- "März"
+colnames(sex2021)[9] <- "April"
+
+
+out_sex_2021_tests= sex2021 %>% 
+  pivot_longer(!Sex, names_to= "Date", values_to= "Value")%>%
+  subset(Sex != "NA") %>% 
+  mutate(Value = as.numeric(Value))%>%
+  mutate(Sex=recode(Sex, 
+                    `Männer`="m",
+                    `Frauen`="f")) %>%
+  group_by(Sex, Date) %>% 
+  mutate(Value = sum(Value)) %>% 
+  ungroup()%>%
+  distinct()%>%# reshape month names to last day of month 
+  mutate(Date=recode(Date, 
+                     `Januar`="Jan",
+                     `Februar`="Feb",
+                     `März`="Mar",
+                     `April`="Apr",
+                     `Mai`="May",
+                     `Juni`="Jun",
+                     `Juli`="Jul",
+                     `August`="Aug",
+                     `September`="Sep",
+                     `Oktober`="Oct",
+                     `November`="Nov",
+                     `Dezember`="Dec"))%>%
+  mutate(Year= "2021")%>%
+  mutate(Date=paste(Date, Year, sep = "/"),
+         Date= as.yearmon(Date, format = "%b/%Y"),
+         Date=as.Date(Date, frac=1))%>%
+  arrange(Date)%>%
+  mutate(
+    Measure = "Tests",
+    Metric = "Count",
+    AgeInt= "",
+    Age= "TOT") %>% 
+  mutate(
+    Date = ymd(Date),
+    Date = paste(sprintf("%02d",day(Date)),    
+                 sprintf("%02d",month(Date)),  
+                 year(Date),sep="."),
+    Code = paste0("LI_All",Date),
+    Country = "Liechtenstein",
+    Region = "All",)%>% 
+  select(Country, Region, Code, Date, Sex, 
+         Age, AgeInt, Metric, Measure, Value)
+
+#cases by sex 2021 
+
+
+out_sex2021_cases= sex2021%>%
+  select(1, 3,6,8) %>%
+  pivot_longer(!Sex, names_to= "Date", values_to= "Value")%>%
+  subset(Sex != "NA") %>% 
+  mutate(Value = as.numeric(Value))%>%
+  mutate(Sex=recode(Sex, 
+                    `Männer`="m",
+                    `Frauen`="f")) %>%
+  group_by(Sex, Date) %>% 
+  mutate(Value = sum(Value)) %>% 
+  ungroup()%>%
+  distinct()%>%# reshape month names to last day of month 
+  mutate(Date=recode(Date, 
+                     `Januar`="Jan",
+                     `Februar`="Feb",
+                     `März`="Mar",
+                     `April`="Apr",
+                     `Mai`="May",
+                     `Juni`="Jun",
+                     `Juli`="Jul",
+                     `August`="Aug",
+                     `September`="Sep",
+                     `Oktober`="Oct",
+                     `November`="Nov",
+                     `Dezember`="Dec"))%>%
+  mutate(Year= "2021")%>%
+  mutate(Date=paste(Date, Year, sep = "/"),
+         Date= as.yearmon(Date, format = "%b/%Y"),
+         Date=as.Date(Date, frac=1))%>%
+  arrange(Date)%>%
+  mutate(
+    Measure = "Cases",
+    Metric = "Count",
+    AgeInt= "",
+    Age= "TOT") %>% 
+  mutate(
+    Date = ymd(Date),
+    Date = paste(sprintf("%02d",day(Date)),    
+                 sprintf("%02d",month(Date)),  
+                 year(Date),sep="."),
+    Code = paste0("LI_All",Date),
+    Country = "Liechtenstein",
+    Region = "All",)%>% 
+  select(Country, Region, Code, Date, Sex, 
+         Age, AgeInt, Metric, Measure, Value)
+
+
+#sum together tests by age 2020 and 2021 
+#Tests
+
+Test_age= rbind(out_age2020_tests, out_age2021_test)
+
+Out_test_age= Test_age %>%
+  group_by (Age) %>% 
+  mutate(Value = cumsum(Value)) %>% 
+  ungroup()
+
+
+#Cases
+
+Case_age= rbind(out_age2020_cases,out_age2021_cases)
+
+Out_cases_age= Case_age%>%
+  group_by (Age) %>% 
+  mutate(Value = cumsum(Value)) %>% 
+  ungroup()
+
+
+#Tests by sex 
+
+Test_sex= rbind(out_sex_2020_tests,out_sex_2021_tests)
+
+
+Out_tests_sex= Test_sex%>%
+  group_by (Sex) %>% 
+  mutate(Value = cumsum(Value)) %>% 
+  ungroup()
+
+
+#cases by sex 
+
+cases_sex= rbind(out_sex2020_cases, out_sex2021_cases)
+
+out_cases_sex= cases_sex%>%
+  group_by (Sex) %>% 
+  mutate(Value = cumsum(Value)) %>% 
+  ungroup()
+
+#put everything together 
+
+out_final= rbind(out_cases_sex,Out_cases_age,Out_test_age, Out_tests_sex)
+
+
+# upload to Drive, overwrites
+
+
+write_sheet(out_final, 
+            ss = ss_i, 
+            sheet = "database")
+
+
+
+########archive##############
+
+
+zipname <- paste0(dir_n, 
+                  "Data_sources/", 
+                  ctr,
+                  "/", 
+                  ctr,
+                  "_data_",
+                  today(), 
+                  ".zip")
+
+zip::zipr(zipname, 
+          data_source, 
+          recurse = TRUE, 
+          compression_level = 9,
+          include_directories = TRUE)
+
+file.remove(data_source)
+
+
+
+
+
+
+
+
+
+
+
+
+
+

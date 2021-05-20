@@ -15,7 +15,7 @@ gs4_auth(email = email)
 
 # Loading data from nextcloud
 #############################
-source_dir <- "U:/nextcloud/Projects/COVID_19/COVerAGE-DB/Mexico"
+source_dir <- "U:/nextcloud/Projects/COVID_19/COVerAGE-DB/mexico"
 file_names <- list.files(source_dir, pattern = "\\.zip$")
 
 ctr_dir <- paste0(dir_n, "Data_sources/", ctr)
@@ -33,7 +33,7 @@ if (identical(new_data, character(0))){
   
 } else {
   # choosing the last date to update the database
-  all_dates <- ymd(str_sub(file_names, 13, 22))
+  all_dates <- ymd(str_sub(new_data, 13, 22))
   last_date <- max(all_dates) 
   data_source <- paste0(source_dir, "/mexico_data_", last_date, ".zip")
   

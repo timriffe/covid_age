@@ -28,8 +28,14 @@ rubric <- get_input_rubric()
 metadata_tabs <- list()
 for (i in 1:nrow(rubric)){
    ss <- rubric %>% dplyr::pull(Sheet) %>% '['(i)
-   metadata_tabs[[i]] <- try(read_sheet(ss, sheet = "metadata", col_types = "ccc"))
-   Sys.sleep(1)
+   X <- try(read_sheet(ss, sheet = "metadata", col_types = "ccc"))
+   
+   if(class(X)[1] == "try-error"){
+     Sys.sleep(120)
+     X <- try(read_sheet(ss, sheet = "metadata", col_types = "ccc"))
+   }
+   metadata_tabs[[i]] <- X
+   Sys.sleep(2)
 }
 
 # some of these are simply empty metadata tabs by design 
