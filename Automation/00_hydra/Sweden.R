@@ -139,7 +139,20 @@ if (date_f > last_date_drive){
   date_f_vac_temp <- excel_sheets(data_source_vac)
   date_f_vac_temp <- date_f_vac_temp[grepl("[0-9]{4}$", date_f_vac_temp)]
   date_f_vac_temp <- trimws(gsub("FOHM", "", date_f_vac_temp))
-  date_f_vac <- dmy(date_f_vac_temp)
+  
+  # Update 20210520
+  # They changed they way that dates are recorded, now the month is in Swedish
+  
+  date_f_vac_temp_split <- unlist(strsplit(tolower(date_f_vac_temp), " "))
+  
+  lookup_m <- 1:12
+  names(lookup_m) <- 
+    c("januari", "februari", "mars", "april", "maj", "juni", "juli", "augusti"
+      , "september", "oktober", "november", "december")
+    
+  date_f_vac_temp_split[2] <- lookup_m[date_f_vac_temp_split[2]]
+  date_f_vac_temp2 <- paste(date_f_vac_temp_split, collapse = "/")
+  date_f_vac <- dmy(date_f_vac_temp2)
   
   last_date_drive_vac <- db_drive %>% 
     filter(Measure %in% "Vaccination1") %>% 
