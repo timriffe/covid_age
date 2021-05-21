@@ -63,13 +63,14 @@ O10 <-
 dateMin <- min(O10$Date)
 dateMax <- today()
 
+ctries <- O10$Country %>% unique() %>% sort()
 #countries <- O10$Country %>% unique()
 
 # Define UI for application 
 ui <- fluidPage(
     
     # App title ----
-    titlePanel("Downloading Data"),
+    titlePanel("COVerAGE-DB Downloader App\nDownload smaller subsets of the data based on limited filters"),
     
     # Sidebar layout with input and output definitions ----
     sidebarLayout(
@@ -84,6 +85,10 @@ ui <- fluidPage(
                       startview = "year", min = dateMin, max = dateMax),
             dateInput("date_max", "Latest Date:",
                       startview = "year", min = dateMin, max = dateMax),
+            selectInput("country_list","Select Countries",
+                        ctries, 
+                        multiple = TRUE),
+            checkboxInput("national", label = "Only national-level data?", value = TRUE),
             # Button
             downloadButton("downloadData", "Download")
             
@@ -107,8 +112,10 @@ server <- function(input, output) {
         switch(input$dataset,
                "Output_5" = O5,
                "Output_10" = O10) %>% 
-            dplyr::filter(Date >= input$date_range[1],
-                          Date <= input$date_range[2])
+            dplyr::filter(Date >= input$date_min,
+                          Date <= input$date_max,
+                          Country %in% input$country_list,
+                          ifelse(input$national,Region == "All",TRUE)) 
     })
     # show head of data
     datasetInputHead <- reactive({
@@ -116,8 +123,10 @@ server <- function(input, output) {
              "Output_5" = O5,
              "Output_10" = O10) %>% 
         dplyr::filter(Date >= input$date_min,
-                      Date <= input$date_max) %>% 
-        head(10)
+                      Date <= input$date_max,
+                      Country %in% input$country_list,
+                      ifelse(input$national,Region == "All",TRUE))  %>% 
+        head(20)
     })
     # Table of selected dataset ----
      output$table <- renderTable({
