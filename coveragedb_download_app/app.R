@@ -80,9 +80,10 @@ ui <- fluidPage(
             # Input: Choose dataset ----
             selectInput("dataset", "Choose a dataset:",
                         choices = c("Output_5", "Output_10")),
-            sliderInput("date_range", "Date range",
-                         min = dateMin, max = dateMax,
-                         value = c(as_date("2020-12-01"), as_date("2020-12-31"))),
+            dateInput("date_min", "Earliest Date:",
+                      startview = "year", min = dateMin, max = dateMax),
+            dateInput("date_max", "Latest Date:",
+                      startview = "year", min = dateMin, max = dateMax),
             # Button
             downloadButton("downloadData", "Download")
             
@@ -109,11 +110,19 @@ server <- function(input, output) {
             dplyr::filter(Date >= input$date_range[1],
                           Date <= input$date_range[2])
     })
-    
+    # show head of data
+    datasetInputHead <- reactive({
+      switch(input$dataset,
+             "Output_5" = O5,
+             "Output_10" = O10) %>% 
+        dplyr::filter(Date >= input$date_min,
+                      Date <= input$date_max) %>% 
+        head(10)
+    })
     # Table of selected dataset ----
-    # output$table <- renderTable({
-    #     datasetInput()
-    # })
+     output$table <- renderTable({
+       datasetInputHead()
+     })
     
     # Downloadable csv of selected dataset ----
     output$downloadData <- downloadHandler(
