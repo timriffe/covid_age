@@ -7,6 +7,9 @@
 #    http://shiny.rstudio.com/
 #
 
+library(here)
+source(here("R","00_Functions.R"))
+
 library(shiny)
 library(tidyverse)
 library(lubridate)
@@ -50,7 +53,7 @@ if ((date_in < (today() - 1)) | is_this_a_first_run){
                     skip = 4,
                     col_names = cnames,
                     col_types = "ccccciiddd")
-    O10  <- read_csv("Data/Output_10.zip",
+    O10  <- readr::read_csv("Data/Output_10.zip",
                     skip = 4,
                     col_names = cnames,
                     col_types = "ccccciiddd")
