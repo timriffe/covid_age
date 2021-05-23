@@ -12,6 +12,11 @@ library(tidyverse)
 library(lubridate)
 library(readr)
 library(covidAgeData)
+
+if (!dir.exists("Data")){
+  dir.create("Data")
+}
+
 # if (interactive()){
 #     setwd("coveragedb_download_app")
 # }
