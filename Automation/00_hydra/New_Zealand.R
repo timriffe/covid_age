@@ -147,8 +147,10 @@ if (date_f > last_date_drive){
   
   url_v <- "https://www.health.govt.nz/our-work/diseases-and-conditions/covid-19-novel-coronavirus/covid-19-data-and-statistics/covid-19-vaccine-data#age"
   html_v <- read_html(url_v)
-  link_v <- html_nodes(html_v, xpath = '/html/body/div[2]/div/div[1]/section/div[2]/section/div/div/div[2]/div[2]/div/article/div[2]/div/div/p[20]/a') %>%
+  link_v <- html_nodes(html_v, xpath = '/html/body/div[2]/div/div[1]/section/div[2]/section/div/div/div[2]/div[2]/div/article/div[2]/div/div/p[22]/a') %>%
     html_attr("href")  
+  
+  
   
   
   loc_date_v <- str_locate(link_v, ".xlsx")[1]
