@@ -144,47 +144,48 @@ if (date_f > last_date_drive){
   
   #new xpath to source file 
   
+  #url_v <- "https://www.health.govt.nz/our-work/diseases-and-conditions/covid-19-novel-coronavirus/covid-19-data-and-statistics/covid-19-vaccine-data#age"
+  #html_v <- read_html(url_v)
+  #link_v <- html_nodes(html_v, xpath = '/html/body/div[2]/div/div[1]/section/div[2]/section/div/div/div[2]/div[2]/div/article/div[2]/div/div/p[22]/a') %>%
+    #html_attr("href")  
   
-  url_v <- "https://www.health.govt.nz/our-work/diseases-and-conditions/covid-19-novel-coronavirus/covid-19-data-and-statistics/covid-19-vaccine-data#age"
-  html_v <- read_html(url_v)
-  link_v <- html_nodes(html_v, xpath = '/html/body/div[2]/div/div[1]/section/div[2]/section/div/div/div[2]/div[2]/div/article/div[2]/div/div/p[20]/a') %>%
-    html_attr("href")  
+ 
   
   
-  loc_date_v <- str_locate(link_v, ".xlsx")[1]
-  date_vacc <- str_sub(link_v, loc_date_v - 10, loc_date_v - 1) %>% dmy()
+  #loc_date_v <- str_locate(link_v, ".xlsx")[1]
+  #date_vacc <- str_sub(link_v, loc_date_v - 10, loc_date_v - 1) %>% dmy()
   
-  data_source6 <- paste0(dir_n, "Data_sources/", ctr, "/vaccines", date_vacc, ".xlsx")
+  #data_source6 <- paste0(dir_n, "Data_sources/", ctr, "/vaccines", date_vacc, ".xlsx")
   
-  download.file(paste0(root, link_v), data_source6, mode = "wb")
+  #download.file(paste0(root, link_v), data_source6, mode = "wb")
   
   
 
-db_v <- 
-    read_xlsx(data_source6,
-              sheet = "Ethnicity, Age, Gender by dose")%>%
-  select(Age= `Ten year age group`, Sex= Gender, Measure= `Dose number`, Value= `# doses administered`)%>%
+#db_v <- 
+    #read_xlsx(data_source6,
+              #sheet = "Ethnicity, Age, Gender by dose")%>%
+  #select(Age= `Ten year age group`, Sex= Gender, Measure= `Dose number`, Value= `# doses administered`)%>%
   #sum up numbers that were separated by race 
-  group_by(Age, Sex, Measure) %>% 
-  mutate(Value = sum(Value)) %>% 
-  ungroup() %>% 
-  distinct()%>%
-  mutate(Age = str_sub(Age, 1, 2)) %>% 
-  mutate(AgeInt = case_when(
-    Age == "90" ~ 15L,
-    TRUE ~ 10L))%>% 
-  mutate(Sex = case_when(
-    Sex == "Male" ~ "m",
-    Sex == "Female" ~ "f",
-    Sex== "Other / Unknown" ~ "UNK"),
-    Measure= case_when(
-      Measure== "1" ~ "Vaccination1",
-      Measure== "2" ~ "Vaccination2"),
-  Country = "New Zealand",
-  Region = "All",
-  Date = ddmmyyyy(date_vacc),
-  Code = paste0("NZ",Date),
-  Metric = "Count")
+  #group_by(Age, Sex, Measure) %>% 
+  #mutate(Value = sum(Value)) %>% 
+  #ungroup() %>% 
+  #distinct()%>%
+  #mutate(Age = str_sub(Age, 1, 2)) %>% 
+  #mutate(AgeInt = case_when(
+    #Age == "90" ~ 15L,
+    #TRUE ~ 10L))%>% 
+  #mutate(Sex = case_when(
+   # Sex == "Male" ~ "m",
+   # Sex == "Female" ~ "f",
+   # Sex== "Other / Unknown" ~ "UNK"),
+   # Measure= case_when(
+     # Measure== "1" ~ "Vaccination1",
+     # Measure== "2" ~ "Vaccination2"),
+  #Country = "New Zealand",
+  #Region = "All",
+  #Date = ddmmyyyy(date_vacc),
+  #Code = paste0("NZ",Date),
+  #Metric = "Count")
 
 
   ####################################
@@ -285,8 +286,8 @@ db_v <-
                         year(date_f),
                         sep="."),
            Code = paste0("NZ",Date),
-           Metric = "Count") %>% 
-    bind_rows(db_v)
+           Metric = "Count") #%>% 
+    #bind_rows(db_v)
   
   # back up of deaths and tests out of csv
   ########################################
