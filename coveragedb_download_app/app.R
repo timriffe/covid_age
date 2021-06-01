@@ -77,8 +77,10 @@ ctries <- O10$Country %>% unique() %>% sort()
 # Define UI for application 
 ui <- fluidPage(
     
+    headerPanel("COVerAGE-DB Downloader App"),
+  
     # App title ----
-    titlePanel("COVerAGE-DB Downloader App\nDownload smaller subsets of the data based on limited filters"),
+    titlePanel("Download smaller subsets of the data based on limited filters"),
     
     # Sidebar layout with input and output definitions ----
     sidebarLayout(
@@ -104,7 +106,7 @@ ui <- fluidPage(
         
         # Main panel for displaying outputs ----
         mainPanel(
-            
+            titlePanel("Glimpse of first several rows of selected data"),
             tableOutput("table")
             
         )
