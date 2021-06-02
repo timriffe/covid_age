@@ -85,7 +85,9 @@ Prior_data <-
 
 ###updated data processing for new url
 
-url1 <-"https://data.ca.gov/dataset/covid-19-time-series-metrics-by-county-and-state/resource/4d93df07-7c4d-4583-af53-03f950fe4365/download/6e8f6324-172d-4869-8e1f-662b998c576e#"
+#url1 <-"https://data.ca.gov/dataset/covid-19-time-series-metrics-by-county-and-state/resource/4d93df07-7c4d-4583-af53-03f950fe4365/download/6e8f6324-172d-4869-8e1f-662b998c576e#"
+
+url1 <- "https://data.chhs.ca.gov/dataset/f333528b-4d38-4814-bebb-12db1f10f535/resource/e2c6a86b-d269-4ce1-b484-570353265183/download/covid19casesdemographics.csv"
 CAage_in <- 
   read_csv(url1) 
 
