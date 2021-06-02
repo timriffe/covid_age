@@ -66,12 +66,13 @@ Cases2 <-
   left_join(Dates_cases, by  = "ID_new") %>% 
   # This might throw away info, like if OWiD is behind a day.
   # But then we catch it on the next update.
-  filter(!is.na(date)) %>% 
-  mutate(
-    Age = as.integer(Age),
-    Age = ifelse(Age > 100,100,Age),
-    Age = DemoTools::calcAgeAbr(Age)) %>% 
-  group_by(date, Age) %>% 
+  dplyr::filter(!is.na(date)) %>% 
+  mutate(Age = as.integer(Age),
+         Age = ifelse(Age == 450, 45L, Age),
+         Age = ifelse(Age > 100,100L,Age), 
+         Age = DemoTools::calcAgeAbr(Age),
+         Age = as.integer(Age)) %>% 
+  group_by(`date`, `Age`) %>% 
   summarize(new = n(), .groups = "drop") 
 
 # Need to split the pipeline to get max date
@@ -106,12 +107,12 @@ Cases_out <-
 # Repeat essentially the same steps for Deaths
 Deaths <-
   Cases %>% 
-  filter(grepl(Status,pattern = "vong")) %>% 
+  dplyr::filter(grepl(Status,pattern = "vong")) %>% 
   mutate(ID_new = 1:n())
 
 OWD <- 
   OWD %>% 
-  filter(!is.na(new_deaths))
+  dplyr::filter(!is.na(new_deaths))
   # need to deal with one negative new_deaths
 ind_neg <- which(OWD$new_deaths < 0)
   # most recent prior day with >0 new_deaths
@@ -130,7 +131,7 @@ Deaths2 <-
   left_join(Dates_deaths, by  = "ID_new") %>% 
   # This might throw away info, like if OWiD is behind a day.
   # But then we catch it on the next update.
-  filter(!is.na(date)) %>% 
+  dplyr::filter(!is.na(date)) %>% 
   mutate(
     Age = as.integer(Age),
     Age = ifelse(Age > 100,100,Age),
