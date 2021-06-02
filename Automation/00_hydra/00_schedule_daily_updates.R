@@ -45,7 +45,7 @@ if (grepl("Git04", auto_update_wd)){
 # ~~~~~~~~~~~~~~~~~~~~~~~
 # time_base <- time("08:03") 
 
-
+"Slovenia", 
 
 # current scripts working on hydra by participant
 #################################################
@@ -143,7 +143,7 @@ sched("Hong_Kong_Vaccine", "05:00",email = auto_update_email, wd = auto_update_w
 # delete_sched("Philippines")
 # delete_sched("Scotland")
 # delete_sched("Norway")
-delete_sched("ECDC")
+delete_sched("CA_Alberta")
 # delete_sched("Slovakia")
 delete_sched("Chile_vacc")
 delete_sched("Slovenia")
