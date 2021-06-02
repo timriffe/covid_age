@@ -41,14 +41,62 @@ if (grepl("Git04", auto_update_wd)){
 # deletes tasks that were scheduled in the past with same name. 
 # See "Automation/00_Functions_automation.R" for more details
 
-# pending to assign time baseline to after schedule faster 
-# ~~~~~~~~~~~~~~~~~~~~~~~
-# time_base <- time("08:03") 
 
-"Slovenia", 
+# To see the scheduled tasks
+taskscheduler_ls() %>% view()
 
-# current scripts working on hydra by participant
-#################################################
+# list of scripts to schedule
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+scripts <- c('US_Virginia', 'USA_all_deaths', 'Netherlands', 'Estonia', 
+             'Czechia', 'US_Michigan', 'Venezuela', 'US_Texas', 
+             'USA_deaths_states', 'Sweden', 'Peru', 'Germany', 
+             'US_Massachusetts', 'Colombia', 'US_NYC', 'Austria', 'Philippines', 
+             'Scotland', 'Norway', 'US_California', 'Afghanistan', 'Finland', 
+             'US_Wisconsin', 'Bulgaria', 'Denmark', 'Belgium', 'New_Zealand', 
+             'Mexico', 'Thailand', 'Spain', 'US_Oregon', 'Slovakia', 'Cambodia', 
+             'Hungary', 'Vietnam', 'Italy', 'Croatia', 'CA_Quebec', 
+             'CA_Manitoba_Saskatchewan', 'CA_Ontario', 'CA_British_Columbia', 
+             'Ukraine', 'Spain_vaccine', 'Chile', 'Portugal_Vaccine', 
+             'CA_Alberta', 'Canada_vaccine', 'US_Texas_Vaccine', 
+             'Hong_Kong_Vaccine')
+
+scripts <- c("Slovenia", "US_Virginia")
+
+# starting time for first schedule in hour and minutes
+h_ini <- 6
+m_ini <- 30
+# delay between scripts in minutes
+delay_time <- 15
+
+i <- 0
+for(c in scripts){
+  # time schedule in decimal 
+  hrs_mns <- h_ini + (m_ini + i * delay_time) / 60
+  # extract hour
+  hrs <- floor(hrs_mns)
+  # extract minutes
+  mns <- round((hrs_mns - floor(hrs_mns)) * 60, 1)
+  # build time
+  time <- paste0(sprintf("%02d", hrs), ":", sprintf("%02d", mns))
+  # print country and time of scheduling
+  cat(c, " scheduling at ", time, "\n")
+  # schedule it
+  sched(c, tm = time, email = auto_update_email, wd = auto_update_wd)
+  # increase the counter in 1
+  i <- i + 1
+}
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# danger zone!!!! deleting all schedules
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+for(c in scripts){
+  delete_sched(c)
+}
+
+
+# for individual scheduling
+# ~~~~~~~~~~~~~~~~~~~~~~~~~
 sched("Slovenia", tm = "08:03", email = auto_update_email, wd = auto_update_wd)
 sched("US_Virginia", tm = "08:06",email = auto_update_email, wd = auto_update_wd)
 sched("USA_all_deaths", tm = "08:10",email = auto_update_email, wd = auto_update_wd)
@@ -117,8 +165,11 @@ sched("Hong_Kong_Vaccine", "05:00",email = auto_update_email, wd = auto_update_w
 # sched("CA_Montreal", tm = "16:44",email = auto_update_email, wd = auto_update_wd)
 # sched("Mexico", tm = "16:44",email = auto_update_email, wd = auto_update_wd)
 
+
 ### function to delete tasks
 ############################
+
+
 # delete_sched("Austria")
 # delete_sched("CA_Montreal")
 # delete_sched("Colombia_sch")
@@ -190,4 +241,4 @@ delete_sched("Slovenia")
 # myscript <- "U:/Projects/COVerAge-BD/automate_codes/US_wisconsin.R"
 # taskscheduler_create(taskname = "wisconsin_daily", rscript = myscript,
 #                      schedule = "DAILY", starttime = "12:16", startdate = "30/06/2020")
-taskscheduler_ls() %>% view()
+
