@@ -1,40 +1,25 @@
 
 # 2021-06-03 inputDB updates 
- Thu Jun 03 11:00:09 2021 
+ Thu Jun 03 19:00:13 2021 
 
 
-# 2021-06-03 11:00:09 updates 
- Thu Jun 03 11:00:09 2021 
+# 2021-06-03 19:00:13 updates 
+ Thu Jun 03 19:00:13 2021 
 
 
 # Filter valid Measure entries: 
- Thu Jun 03 11:26:21 2021 
+ Thu Jun 03 19:38:44 2021 
 
 Valid Measures include: Cases,Deaths,Tests,ASCFR,Vaccinations,Vaccination1,Vaccination2
- 4031 rows removed
-# Filter valid Metric entries: 
- Thu Jun 03 11:26:22 2021 
-
-Valid Metrics include: Count,Fraction,Ratio
- 14 rows removed
+ 3954 rows removed
 # Filter valid Sex entries: 
- Thu Jun 03 11:26:24 2021 
+ Thu Jun 03 19:38:47 2021 
 
 Valid Sex values include: m,f,b,UNK
- 9785 rows removed
+ 9353 rows removed
 # Duplicates detected. Following `Code`s removed: 
- Thu Jun 03 11:27:06 2021 
+ Thu Jun 03 19:40:01 2021 
 
-AT_23.02.2021
-AT_1_23.02.2021
-AT_2_23.02.2021
-AT_3_23.02.2021
-AT_4_23.02.2021
-AT_5_23.02.2021
-AT_6_23.02.2021
-AT_7_23.02.2021
-AT_8_23.02.2021
-AT_9_23.02.2021
 HR13.03.2020
 HR14.03.2020
 HR15.03.2020
@@ -2055,6 +2040,10 @@ IM_All18.02.2021
 IM_All19.02.2021
 IM_All20.02.2021
 IM_All21.02.2021
+PS12.10.2020
+US_FL02.12.2020
+US_FL16.03.2021
+US_FL17.03.2021
 US_MI11.05.2021
 US_MI12.05.2021
 US_MI13.05.2021
@@ -2073,11 +2062,24 @@ US_MI27.05.2021
 US_MI28.05.2021
 US_MI29.05.2021
 US_MI01.06.2021
+US_MI02.06.2021
 # Bad Dates detected. Following `Code`s removed: 
- Thu Jun 03 11:27:13 2021 
+ Thu Jun 03 19:40:14 2021 
 
 US_OR_NA.NA.NA
 # Future Dates detected. Following `Code`s removed: 
- Thu Jun 03 11:27:15 2021 
+ Thu Jun 03 19:40:21 2021 
 
 NL06.06.2021
+PS26.04.2022
+PS26.04.2023
+PS26.04.2024
+PS26.04.2025
+PS26.04.2026
+PS26.04.2027
+PS26.04.2028
+PS26.04.2029
+PS26.04.2030
+PS26.04.2031
+PS26.04.2032
+PS26.04.2033
