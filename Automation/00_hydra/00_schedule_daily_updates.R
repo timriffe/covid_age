@@ -42,9 +42,63 @@ if (grepl("Git04", auto_update_wd)){
 # deletes tasks that were scheduled in the past with same name. 
 # See "Automation/00_Functions_automation.R" for more details
 
-# current scripts working on hydra by participant
-#################################################
-sched("Slovenia", tm = "08:03",email = auto_update_email, wd = auto_update_wd)
+
+# To see the scheduled tasks
+taskscheduler_ls() %>% view()
+
+# list of scripts to schedule
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+scripts <- c('US_Virginia', 'USA_all_deaths', 'Netherlands', 'Estonia', 
+             'Czechia', 'US_Michigan', 'Venezuela', 'US_Texas', 
+             'USA_deaths_states', 'Sweden', 'Peru', 'Germany', 
+             'US_Massachusetts', 'Colombia', 'US_NYC', 'Austria', 'Philippines', 
+             'Scotland', 'Norway', 'US_California', 'Afghanistan', 'Finland', 
+             'US_Wisconsin', 'Bulgaria', 'Denmark', 'Belgium', 'New_Zealand', 
+             'Mexico', 'Thailand', 'Spain', 'US_Oregon', 'Slovakia', 'Cambodia', 
+             'Hungary', 'Vietnam', 'Italy', 'Croatia', 'CA_Quebec', 
+             'CA_Manitoba_Saskatchewan', 'CA_Ontario', 'CA_British_Columbia', 
+             'Ukraine', 'Spain_vaccine', 'Chile', 'Portugal_Vaccine', 
+             'CA_Alberta', 'Canada_vaccine', 'US_Texas_Vaccine', 
+             'Hong_Kong_Vaccine')
+
+scripts <- c("Slovenia", "US_Virginia")
+
+# starting time for first schedule in hour and minutes
+h_ini <- 6
+m_ini <- 30
+# delay between scripts in minutes
+delay_time <- 15
+
+i <- 0
+for(c in scripts){
+  # time schedule in decimal 
+  hrs_mns <- h_ini + (m_ini + i * delay_time) / 60
+  # extract hour
+  hrs <- floor(hrs_mns)
+  # extract minutes
+  mns <- round((hrs_mns - floor(hrs_mns)) * 60, 1)
+  # build time
+  time <- paste0(sprintf("%02d", hrs), ":", sprintf("%02d", mns))
+  # print country and time of scheduling
+  cat(c, " scheduling at ", time, "\n")
+  # schedule it
+  sched(c, tm = time, email = auto_update_email, wd = auto_update_wd)
+  # increase the counter in 1
+  i <- i + 1
+}
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# danger zone!!!! deleting all schedules
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+for(c in scripts){
+  delete_sched(c)
+}
+
+
+# for individual scheduling
+# ~~~~~~~~~~~~~~~~~~~~~~~~~
+sched("Slovenia", tm = "08:03", email = auto_update_email, wd = auto_update_wd)
 sched("US_Virginia", tm = "08:06",email = auto_update_email, wd = auto_update_wd)
 sched("USA_all_deaths", tm = "08:10",email = auto_update_email, wd = auto_update_wd)
 sched("Netherlands", tm = "08:10",email = auto_update_email, wd = auto_update_wd)
@@ -61,18 +115,15 @@ sched("US_Massachusetts", tm = "10:18",email = auto_update_email, wd = auto_upda
 sched("Colombia",  tm = "10:00",email = auto_update_email, wd = auto_update_wd)
 sched("US_NYC", tm = "08:24",email = auto_update_email, wd = auto_update_wd)
 sched("Austria", tm = "08:21",email = auto_update_email, wd = auto_update_wd)
-# sched("ES_Basque_Country", tm = "08:00",email = auto_update_email, wd = auto_update_wd, sch = "WEEKLY")
 sched("Philippines", tm = "09:10",email = auto_update_email, wd = auto_update_wd)
 sched("Scotland", tm = "09:25",email = auto_update_email, wd = auto_update_wd)
 sched("Norway", tm = "08:28",email = auto_update_email, wd = auto_update_wd)
 sched("US_California", tm = "08:35",email = auto_update_email, wd = auto_update_wd)
 sched("Afghanistan", tm = "09:40",email = auto_update_email, wd = auto_update_wd)
-# sched("ECDC", tm = "09:45",email = auto_update_email, wd = auto_update_wd, sch = "WEEKLY")
 sched("Finland", tm = "09:50",email = auto_update_email, wd = auto_update_wd, sch = "WEEKLY")
 sched("US_Wisconsin", tm = "10:02",email = auto_update_email, wd = auto_update_wd)
 sched("Bulgaria", tm = "10:46",email = auto_update_email, wd = auto_update_wd)
 sched("Denmark", tm = "07:00",email = auto_update_email, wd = auto_update_wd)
-# sched("US_Iowa"??, tm = "09:40",email = auto_update_email, wd = auto_update_wd)
 sched("Belgium", tm = "10:20",email = auto_update_email, wd = auto_update_wd)
 sched("New_Zealand", "09:30",email = auto_update_email, wd = auto_update_wd)
 sched("Mexico", "10:40",email = auto_update_email, wd = auto_update_wd)
@@ -81,7 +132,6 @@ sched("Spain", "09:01",email = auto_update_email, wd = auto_update_wd)
 sched("US_Oregon", "10:18",email = auto_update_email, wd = auto_update_wd)
 sched("Slovakia", "18:48",email = auto_update_email, wd = auto_update_wd)
 sched("Cambodia", "10:32",email = auto_update_email, wd = auto_update_wd)
-# sched("Chile_vacc", "06:11",email = auto_update_email, wd = auto_update_wd)
 sched("Hungary", "07:26",email = auto_update_email, wd = auto_update_wd)
 sched("Vietnam", "06:05",email = auto_update_email, wd = auto_update_wd)
 sched("Italy", "06:00",email = auto_update_email, wd = auto_update_wd)
@@ -98,6 +148,10 @@ sched("CA_Alberta", "12:18",email = auto_update_email, wd = auto_update_wd)
 sched("Canada_vaccine", "13:00",email = auto_update_email, wd = auto_update_wd)
 sched("US_Texas_Vaccine", "13:10",email = auto_update_email, wd = auto_update_wd)
 sched("Hong_Kong_Vaccine", "05:00",email = auto_update_email, wd = auto_update_wd)
+# sched("ES_Basque_Country", tm = "08:00",email = auto_update_email, wd = auto_update_wd, sch = "WEEKLY")
+# sched("ECDC", tm = "09:45",email = auto_update_email, wd = auto_update_wd, sch = "WEEKLY")
+# sched("Chile_vacc", "06:11",email = auto_update_email, wd = auto_update_wd)
+# sched("US_Iowa"??, tm = "09:40",email = auto_update_email, wd = auto_update_wd)
 
 
 
@@ -112,8 +166,11 @@ sched("Hong_Kong_Vaccine", "05:00",email = auto_update_email, wd = auto_update_w
 # sched("CA_Montreal", tm = "16:44",email = auto_update_email, wd = auto_update_wd)
 # sched("Mexico", tm = "16:44",email = auto_update_email, wd = auto_update_wd)
 
+
 ### function to delete tasks
 ############################
+
+
 # delete_sched("Austria")
 # delete_sched("CA_Montreal")
 # delete_sched("Colombia_sch")
@@ -138,10 +195,10 @@ sched("Hong_Kong_Vaccine", "05:00",email = auto_update_email, wd = auto_update_w
 # delete_sched("Philippines")
 # delete_sched("Scotland")
 # delete_sched("Norway")
-delete_sched("ECDC")
+delete_sched("CA_Alberta")
 # delete_sched("Slovakia")
 delete_sched("Chile_vacc")
-delete_sched("Spain_vaccine")
+delete_sched("Slovenia")
 
 
 
@@ -185,4 +242,4 @@ delete_sched("Spain_vaccine")
 # myscript <- "U:/Projects/COVerAge-BD/automate_codes/US_wisconsin.R"
 # taskscheduler_create(taskname = "wisconsin_daily", rscript = myscript,
 #                      schedule = "DAILY", starttime = "12:16", startdate = "30/06/2020")
-taskscheduler_ls() %>% view()
+

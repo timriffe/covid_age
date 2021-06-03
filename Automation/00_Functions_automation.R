@@ -153,6 +153,7 @@ log_update <- function(pp, N){
 # @param tm what time should it be run at?
 # @param email gmail account with permissions and local PAT set up
 # @param wd repo base path.
+
 sched <- function(
   pp = "Germany", 
   tm = "21:18", 
@@ -205,6 +206,7 @@ sched <- function(
                        starttime = tm, 
                        startdate = date.sched)
 }
+
 # remove a scheduled task
 # @param pp script base name
 delete_sched <- function(pp = "Germany"){
