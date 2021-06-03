@@ -42,11 +42,31 @@ if (grepl("Git04", auto_update_wd)){
 # See "Automation/00_Functions_automation.R" for more details
 
 
-# To see the scheduled tasks
+
+# Steps for new automated sources 
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 1) create folders in N: drive (there is a way to include it in the auto script, already done in Argentina's!)
+# 2) adjust input rubric to specify the source of the formatted data (N:  or Google Drive)
+# 3) add the country/script to the Hydra dashboard 
+# 4) schedule the country script on hydra (in this script)
+# 5) add the script name to the list of scripts below
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Jessica, once finished the scheduling of all countries on your side, 
+# let's try with the new script of Argentina!!
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+# To see the list of scheduled tasks
 taskscheduler_ls() %>% view()
 
-# list of scripts to schedule
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~
+# Scheduling tasks 
+# ~~~~~~~~~~~~~~~~
+
+# list of all available scripts to schedule
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 scripts <- c('US_Virginia', 'USA_all_deaths', 'Netherlands', 'Estonia', 
              'Czechia', 'US_Michigan', 'Venezuela', 'US_Texas', 
              'USA_deaths_states', 'Sweden', 'Peru', 'Germany', 
@@ -61,6 +81,10 @@ scripts <- c('US_Virginia', 'USA_all_deaths', 'Netherlands', 'Estonia',
              'Hong_Kong_Vaccine')
 
 scripts <- c("Slovenia", "US_Virginia")
+
+
+# Scheduling all scripts at once
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # starting time for first schedule in hour and minutes
 h_ini <- 6
@@ -87,6 +111,20 @@ for(c in scripts){
 }
 
 
+# for individual scheduling
+# ~~~~~~~~~~~~~~~~~~~~~~~~~
+sched("Slovenia", tm = "08:03", email = auto_update_email, wd = auto_update_wd)
+
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~
+# Deleting scheduled tasks
+# ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# for deleting single task schedule
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+delete_sched("CA_Alberta")
+
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # danger zone!!!! deleting all schedules
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -95,8 +133,10 @@ for(c in scripts){
 }
 
 
-# for individual scheduling
-# ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+# previous long non-smart version
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 sched("Slovenia", tm = "08:03", email = auto_update_email, wd = auto_update_wd)
 sched("US_Virginia", tm = "08:06",email = auto_update_email, wd = auto_update_wd)
 sched("USA_all_deaths", tm = "08:10",email = auto_update_email, wd = auto_update_wd)
@@ -147,98 +187,9 @@ sched("CA_Alberta", "12:30",email = auto_update_email, wd = auto_update_wd)
 sched("Canada_vaccine", "13:00",email = auto_update_email, wd = auto_update_wd)
 sched("US_Texas_Vaccine", "13:10",email = auto_update_email, wd = auto_update_wd)
 sched("Hong_Kong_Vaccine", "05:00",email = auto_update_email, wd = auto_update_wd)
-# sched("ES_Basque_Country", tm = "08:00",email = auto_update_email, wd = auto_update_wd, sch = "WEEKLY")
-# sched("ECDC", tm = "09:45",email = auto_update_email, wd = auto_update_wd, sch = "WEEKLY")
-# sched("Chile_vacc", "06:11",email = auto_update_email, wd = auto_update_wd)
-# sched("US_Iowa"??, tm = "09:40",email = auto_update_email, wd = auto_update_wd)
-
-
-
-# sched("GB_NIR", "19:02",email = auto_update_email, wd = auto_update_wd)
-# sched("Brazil", "12:29",email = auto_update_email, wd = auto_update_wd)
-## broken scripts:
-##################
-# sched("New_Zealand", tm = "02:10",email = auto_update_email, wd = auto_update_wd)
 
 ### scripts working outside hydra because of VPN:
 #################################################
 # sched("CA_Montreal", tm = "16:44",email = auto_update_email, wd = auto_update_wd)
 # sched("Mexico", tm = "16:44",email = auto_update_email, wd = auto_update_wd)
-
-
-### function to delete tasks
-############################
-
-
-# delete_sched("Austria")
-# delete_sched("CA_Montreal")
-# delete_sched("Colombia_sch")
-# delete_sched("Estonia")
-# delete_sched("German_sch")
-# delete_sched("Mexico")
-# delete_sched("Netherlands")
-# delete_sched("New_Zealand")
-# delete_sched("Peru")
-# delete_sched("Slovenia")
-# delete_sched("Sweden")
-# delete_sched("US_Massachusetts")
-# delete_sched("US_Michigan")
-# delete_sched("US_New_Jersey")
-# delete_sched("US_NYC")
-# delete_sched("US_Texas")
-# delete_sched("US_Virginia")
-# delete_sched("US_Wisconsin")
-# delete_sched("USA_all_deaths")
-# delete_sched("Venezuela")
-# delete_sched("USA_deaths_all_states")
-# delete_sched("Philippines")
-# delete_sched("Scotland")
-# delete_sched("Norway")
-delete_sched("CA_Alberta")
-# delete_sched("Slovakia")
-delete_sched("Chile_vacc")
-delete_sched("Slovenia")
-
-
-
-### to list current tasks
-#########################
-# taskscheduler_ls()
-# 
-# scripts <- c(
-#   "Colombia",
-#   "Germany",
-#   "US_Massachusetts",
-#   "Austria",
-#   "US_Virginia",
-#   "US_NYC",
-#   "USA_all_deaths",
-#   "CA_Montreal",
-#   "US_Texas", 
-#   "US_Wisconsin",
-#   "US_Michigan",
-#   "Sweden",
-#   "Netherlands",
-#   "Venezuela",
-#   "New_Zeland"
-# )
-# 
-### Delete all 
-# for (sc in scripts){
-#   print(sc)
-#   delete_sched(sc)
-# }
-# 
-# i <- 0
-# for (sc in scripts){
-#   print(sc)
-#   t <- paste0("15:2", as.character(i))
-#   sched(sc, t)
-#   i <- i + 5
-# }
-
-# taskscheduler_delete(taskname = "usa_daily")
-# myscript <- "U:/Projects/COVerAge-BD/automate_codes/US_wisconsin.R"
-# taskscheduler_create(taskname = "wisconsin_daily", rscript = myscript,
-#                      schedule = "DAILY", starttime = "12:16", startdate = "30/06/2020")
 
