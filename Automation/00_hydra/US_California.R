@@ -47,7 +47,6 @@ Prior_data <-
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."))
 
-
 ### data processing
 
 #url1 <-"https://data.ca.gov/dataset/covid-19-time-series-metrics-by-county-and-state/resource/4d93df07-7c4d-4583-af53-03f950fe4365/download/6e8f6324-172d-4869-8e1f-662b998c576e#"

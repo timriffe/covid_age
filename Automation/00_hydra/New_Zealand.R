@@ -522,7 +522,6 @@ db_v <-
 
 
 
-
 #loc_date_v <- str_locate(link_v, ".xlsx")[1]
 #date_vacc <- str_sub(link_v, loc_date_v - 10, loc_date_v - 1) %>% dmy()
 
