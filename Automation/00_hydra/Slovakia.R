@@ -41,10 +41,19 @@ B <-
   mutate(Date1 = suppressWarnings(dmy(Date)),
          Date = case_when(is.na(Date1) ~ c_as_date(Date),
          TRUE ~ Date1))  %>% 
-  select(Date, Sex = Gender, District, Age = AgeGroup)
+  select(Date, Sex = Gender, District, Age = AgeGroup)  
+  
 
 # daily series, for complete() expansion
-all_dates <- seq(min(B$Date),max(B$Date),by="days")
+all_dates <- seq(min(B$Date, na.rm = TRUE),max(B$Date,na.rm = TRUE),by="days")
+
+for (i in 1:5){
+ind <- is.na(B$Date) 
+if (any(ind)){
+  ind <- ind %>% which()
+B$Date[ind] <- B$Date[ind + 1]
+} else {break}
+}
 
 Deaths <-
   B %>% 

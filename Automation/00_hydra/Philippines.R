@@ -68,7 +68,7 @@ drive_contents <-
 # Drive info for Case file
 case_url <-
   drive_contents %>% 
-  filter(grepl(name, pattern="04 Case Information"))
+  filter(grepl(name, pattern="04 Case Information.csv"))
 
 # Drive info for Test file
 tests_url <-
