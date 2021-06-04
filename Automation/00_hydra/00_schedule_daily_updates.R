@@ -116,6 +116,7 @@ for(c in scripts){
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 sched("Argentina", tm = "14:57", email = auto_update_email, wd = auto_update_wd)
 sched("Finland", tm = "09:50",email = auto_update_email, wd = auto_update_wd, sch = "WEEKLY")
+sched("Colombia", tm = "15:18", email = auto_update_email, wd = auto_update_wd)
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 # Deleting scheduled tasks
