@@ -38,7 +38,8 @@ ss_db <- rubric %>%
 
 In_drive <- get_country_inputDB("LB")%>% 
   select(-Short)%>%
-  mutate(AgeInt= as.character(AgeInt))
+  mutate(AgeInt= as.character(AgeInt))%>%
+  subset(Measure!= "Vaccinations")
 
 
 #Read in manually downloaded data from drive until download can be automated 
@@ -79,7 +80,7 @@ all_lists <- mapply(c, all_content, all_filenames, SIMPLIFY = FALSE)
 
 Age_in <- rbindlist(all_lists, fill = T)
 
-
+View(Age_in)
 #Process age data 
 
 
@@ -108,7 +109,7 @@ Age_Out= Age_in %>%
          Age, AgeInt, Metric, Measure, Value)%>%
   mutate(Age= as.character(Age))
 
-
+View(Age_Out)
 
 #Read in sex data 
 all_paths <-
@@ -160,10 +161,12 @@ Sex_Out= Sex_in %>%
 
 
 
+
 #Put dataframes together
 Out<- bind_rows(In_drive,
                 Sex_Out,
                 Age_Out)
+
 
 # upload to Drive, overwrites
 

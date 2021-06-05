@@ -1,24 +1,24 @@
 
-# 2021-06-03 inputDB updates 
- Thu Jun 03 19:00:13 2021 
+# 2021-06-04 inputDB updates 
+ Fri Jun 04 19:00:28 2021 
 
 
-# 2021-06-03 19:00:13 updates 
- Thu Jun 03 19:00:13 2021 
+# 2021-06-04 19:00:28 updates 
+ Fri Jun 04 19:00:28 2021 
 
 
 # Filter valid Measure entries: 
- Thu Jun 03 19:38:44 2021 
+ Fri Jun 04 19:52:16 2021 
 
 Valid Measures include: Cases,Deaths,Tests,ASCFR,Vaccinations,Vaccination1,Vaccination2
- 3954 rows removed
+ 3290 rows removed
 # Filter valid Sex entries: 
- Thu Jun 03 19:38:47 2021 
+ Fri Jun 04 19:52:40 2021 
 
 Valid Sex values include: m,f,b,UNK
- 9353 rows removed
+ 8668 rows removed
 # Duplicates detected. Following `Code`s removed: 
- Thu Jun 03 19:40:01 2021 
+ Fri Jun 04 19:56:32 2021 
 
 HR13.03.2020
 HR14.03.2020
@@ -2041,6 +2041,7 @@ IM_All19.02.2021
 IM_All20.02.2021
 IM_All21.02.2021
 PS12.10.2020
+Other
 US_FL02.12.2020
 US_FL16.03.2021
 US_FL17.03.2021
@@ -2063,12 +2064,9 @@ US_MI28.05.2021
 US_MI29.05.2021
 US_MI01.06.2021
 US_MI02.06.2021
-# Bad Dates detected. Following `Code`s removed: 
- Thu Jun 03 19:40:14 2021 
-
-US_OR_NA.NA.NA
+US_MI03.06.2021
 # Future Dates detected. Following `Code`s removed: 
- Thu Jun 03 19:40:21 2021 
+ Fri Jun 04 19:57:30 2021 
 
 NL06.06.2021
 PS26.04.2022
@@ -2083,26 +2081,26 @@ PS26.04.2030
 PS26.04.2031
 PS26.04.2032
 PS26.04.2033
-# 2021-06-04 inputDB updates 
- Fri Jun 04 03:00:12 2021 
+# 2021-06-05 inputDB updates 
+ Sat Jun 05 03:00:11 2021 
 
 
-# 2021-06-04 03:00:12 updates 
- Fri Jun 04 03:00:12 2021 
+# 2021-06-05 03:00:11 updates 
+ Sat Jun 05 03:00:11 2021 
 
 
 # Filter valid Measure entries: 
- Fri Jun 04 03:33:03 2021 
+ Sat Jun 05 03:46:53 2021 
 
 Valid Measures include: Cases,Deaths,Tests,ASCFR,Vaccinations,Vaccination1,Vaccination2
- 6582 rows removed
+ 5712 rows removed
 # Filter valid Sex entries: 
- Fri Jun 04 03:33:11 2021 
+ Sat Jun 05 03:46:58 2021 
 
 Valid Sex values include: m,f,b,UNK
- 9327 rows removed
+ 9355 rows removed
 # Duplicates detected. Following `Code`s removed: 
- Fri Jun 04 03:34:44 2021 
+ Sat Jun 05 03:48:03 2021 
 
 HR13.03.2020
 HR14.03.2020
@@ -4089,7 +4087,6 @@ CZ_CZ072_31.05.2021
 CZ_CZ072_01.06.2021
 CZ_CZ072_02.06.2021
 DK21.03.2021
-SV24.09.2020
 IM_All04.01.2021
 IM_All05.01.2021
 IM_All06.01.2021
@@ -4125,10 +4122,62 @@ IM_All18.02.2021
 IM_All19.02.2021
 IM_All20.02.2021
 IM_All21.02.2021
-GB_NIR07.04.2021
-GB_NIR18.05.2021
+PS12.10.2020
+Other
+US_FL02.12.2020
+US_FL16.03.2021
+US_FL17.03.2021
 US_ID23.02.2021
+US_KS25.11.2020
+US_KS27.11.2020
+US_KS04.12.2020
+US_KS07.12.2020
+US_KS09.12.2020
+US_KS12.12.2020
+US_KS14.12.2020
+US_KS16.12.2020
+US_KS18.12.2020
+US_KS21.12.2020
+US_KS19.05.2021
+US_KS21.05.2021
+US_KS24.05.2021
+US_KS26.05.2021
+US_KS28.05.2021
+US_KS02.06.2021
+US_KS04.06.2021
+US_MI11.05.2021
+US_MI12.05.2021
+US_MI13.05.2021
+US_MI14.05.2021
+US_MI15.05.2021
+US_MI17.05.2021
+US_MI18.05.2021
+US_MI19.05.2021
+US_MI20.05.2021
+US_MI21.05.2021
+US_MI22.05.2021
+US_MI24.05.2021
+US_MI25.05.2021
+US_MI26.05.2021
+US_MI27.05.2021
+US_MI28.05.2021
+US_MI29.05.2021
+US_MI01.06.2021
+US_MI02.06.2021
+US_MI03.06.2021
 # Future Dates detected. Following `Code`s removed: 
- Fri Jun 04 03:35:04 2021 
+ Sat Jun 05 03:48:20 2021 
 
 NL06.06.2021
+PS26.04.2022
+PS26.04.2023
+PS26.04.2024
+PS26.04.2025
+PS26.04.2026
+PS26.04.2027
+PS26.04.2028
+PS26.04.2029
+PS26.04.2030
+PS26.04.2031
+PS26.04.2032
+PS26.04.2033

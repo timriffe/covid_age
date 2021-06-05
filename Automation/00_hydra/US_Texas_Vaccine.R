@@ -26,6 +26,7 @@ gs4_auth(email = email)
 
 DataArchive <- read_rds(paste0(dir_n, ctr, ".rds"))
 
+
 #save data by sex and totals  
 
 Append= DataArchive%>%
@@ -46,19 +47,18 @@ download.file(url, data_source, mode = "wb")
 In_vaccine <- read_xlsx(data_source, sheet = 4)
 
 In_vaccine_age<- In_vaccine %>%
-  select(Age = `Age Group`, Date_numeric=`Vaccination Date`, Doses= `Doses Administered`)%>%
-  subset(Date_numeric!= "Total")
-
+  select(Age = `Age Group`, Date=`Vaccination Date`, Doses= `Doses Administered`)%>%
+  filter(!is.na(Date))
 
 #Date is transformed to time passed since 01.01.1900 when Excel file is read in
 # Reshape to date format 
 
-date_vector <- In_vaccine_age$Date_numeric
-x <- factor(date_vector)
-y <- as.numeric(as.character(x))
-Date <- as.Date(y- 2, origin = "1900-01-01")
-Date<-data.frame(Date)
-In_vaccine_age$Date <- (Date$Date)
+#date_vector <- In_vaccine_age$Date_numeric
+#x <- factor(date_vector)
+#y <- as.numeric(as.character(x))
+#Date <- as.Date(y- 2, origin = "1900-01-01")
+#Date<-data.frame(Date)
+#In_vaccine_age$Date <- (Date$Date)
 
 
 # Process data for both sexes and doses, whole series refreshed every time  
@@ -70,12 +70,14 @@ Out_Vaccine_Age = In_vaccine_age %>%
   mutate(Value= cumsum(Doses)) %>% 
   ungroup() %>%
   mutate(Age=recode(Age, 
+                    `12-15 years`="12",
                     `16-49 years`="16",
                     `50-64 years`="50",
                     `65-79 years`="65",
                     `80+ years`="80",
                     `Unknown`="UNK"))%>% 
   mutate(AgeInt = case_when(
+    Age == "12" ~ 5L,
     Age == "16" ~ 34L,
     Age == "80" ~ 25L,
     Age == "UNK" ~ NA_integer_,
@@ -111,6 +113,7 @@ Out_Vaccine_dose <- In_vaccine_dose %>%
   select(Race = `Race/Ethnicity` , Sex = Gender, Age = `Age Group`,  Vaccinations= `Doses Administered`, Vaccination1= `People Vaccinated with at least One Dose` , Vaccination2= `People Fully Vaccinated`)%>%
   pivot_longer(!Age & !Sex & !Race, names_to= "Measure", values_to= "Value")%>%
    mutate(Age=recode(Age, 
+                    `12-15 years`="12",
                     `16-49 years`="16",
                     `50-64 years`="50",
                     `65-79 years`="65",
@@ -118,6 +121,7 @@ Out_Vaccine_dose <- In_vaccine_dose %>%
                     `Unknown`="UNK",
                     `Total`="TOT"), 
           AgeInt = case_when(
+            Age == "12" ~ 5L,
             Age == "16" ~ 34L,
             Age == "80" ~ 25L,
             Age == "UNK" ~ NA_integer_,
