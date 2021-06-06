@@ -1,24 +1,24 @@
 
-# 2021-06-05 inputDB updates 
- Sat Jun 05 19:00:12 2021 
+# 2021-06-06 inputDB updates 
+ Sun Jun 06 03:00:12 2021 
 
 
-# 2021-06-05 19:00:12 updates 
- Sat Jun 05 19:00:12 2021 
+# 2021-06-06 03:00:12 updates 
+ Sun Jun 06 03:00:12 2021 
 
 
 # Filter valid Measure entries: 
- Sat Jun 05 19:14:09 2021 
+ Sun Jun 06 03:23:47 2021 
 
 Valid Measures include: Cases,Deaths,Tests,ASCFR,Vaccinations,Vaccination1,Vaccination2
- 3160 rows removed
+ 4988 rows removed
 # Filter valid Sex entries: 
- Sat Jun 05 19:14:13 2021 
+ Sun Jun 06 03:23:51 2021 
 
 Valid Sex values include: m,f,b,UNK
  8640 rows removed
 # Duplicates detected. Following `Code`s removed: 
- Sat Jun 05 19:15:35 2021 
+ Sun Jun 06 03:25:15 2021 
 
 HR13.03.2020
 HR14.03.2020
@@ -2005,6 +2005,7 @@ CZ_CZ072_31.05.2021
 CZ_CZ072_01.06.2021
 CZ_CZ072_02.06.2021
 DK21.03.2021
+SV24.09.2020
 IM_All04.01.2021
 IM_All05.01.2021
 IM_All06.01.2021
@@ -2041,7 +2042,3 @@ IM_All19.02.2021
 IM_All20.02.2021
 IM_All21.02.2021
 Other
-# Future Dates detected. Following `Code`s removed: 
- Sat Jun 05 19:15:54 2021 
-
-NL06.06.2021
