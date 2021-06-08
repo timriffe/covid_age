@@ -1,6 +1,7 @@
 
-source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
-source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
+source(here("Automation", "00_Functions_automation.R"))
+source(here("R", "00_Functions.R"))
+#source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
 library(tidyverse)
 library(googlesheets4)
 library(googledrive)

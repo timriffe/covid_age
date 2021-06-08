@@ -1,6 +1,7 @@
+library(here)
+source(here("Automation", "00_Functions_automation.R"))
 
-
-source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
+#source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
 
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
