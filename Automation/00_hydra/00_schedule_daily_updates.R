@@ -90,8 +90,8 @@ scripts <- c('US_Virginia', 'USA_all_deaths', 'Netherlands', 'Estonia',
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # starting time for first schedule in hour and minutes
-h_ini <- 15
-m_ini <- 24
+h_ini <- 10
+m_ini <- 00
 # delay between scripts in minutes
 delay_time <- 15
 
@@ -120,6 +120,12 @@ for(c in scripts){
 sched("Argentina", tm = "14:57", email = auto_update_email, wd = auto_update_wd)
 sched("US_NYC", tm = "12:48",email = auto_update_email, wd = auto_update_wd)
 sched("Austria", tm = "13:09", email = auto_update_email, wd = auto_update_wd)
+sched("Hungary", tm = "09:42", email = auto_update_email, wd = auto_update_wd)
+
+sched("Vietnam", tm = "09:53", email = auto_update_email, wd = auto_update_wd)
+
+
+
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 # Deleting scheduled tasks
