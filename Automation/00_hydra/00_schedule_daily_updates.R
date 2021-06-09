@@ -122,7 +122,7 @@ sched("US_NYC", tm = "12:48",email = auto_update_email, wd = auto_update_wd)
 sched("Austria", tm = "13:09", email = auto_update_email, wd = auto_update_wd)
 sched("Hungary", tm = "09:42", email = auto_update_email, wd = auto_update_wd)
 
-sched("Vietnam", tm = "09:53", email = auto_update_email, wd = auto_update_wd)
+sched("Sweden", tm = "14:29", email = auto_update_email, wd = auto_update_wd)
 
 
 
