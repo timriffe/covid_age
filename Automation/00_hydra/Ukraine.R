@@ -13,7 +13,7 @@ dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 # Drive credentials
 drive_auth(email = email)
 gs4_auth(email = email)
-
+today()
 at_rubric <- get_input_rubric() %>% filter(Short == "UA")
 ss_i   <- at_rubric %>% dplyr::pull(Sheet)
 ss_db  <- at_rubric %>% dplyr::pull(Source)
@@ -26,6 +26,22 @@ html      <- read_html(m_url)
 link_ined <-
   html_nodes(html, xpath = '//*[@id="para_nb_1"]/div/div/div/h2[1]/a') %>%
   html_attr("href")
+
+data_source <- paste0(dir_n, 
+                      "Data_sources/", 
+                      ctr, "/", ctr, 
+                      "_ined_deaths_", 
+                      as.character(today()), 
+                      ".zip")
+
+download.file(link_ined, destfile = data_source, mode = "wb")
+
+zipdf <- utils::unzip(data_source, list = TRUE)
+
+
+db_age <- read_csv2(unz(data_source, "CovidFaelle_Altersgruppe.csv"))
+
+
 
 deaths_ined <- read_csv(link_ined) %>% 
   filter(country == "Ukraine") %>% 
@@ -82,11 +98,6 @@ log_update(pp = ctr, N = nrow(out))
 #### uploading metadata to N: Drive ####
 ########################################
 
-data_source <- paste0(dir_n, "Data_sources/", 
-                        ctr, "/", ctr, "_ined_deaths_", as.character(today()), ".csv")
-
-
-download.file(link_ined, destfile = data_source, mode = "wb")
 
 zipname <- paste0(dir_n, 
                   "Data_sources/", 
