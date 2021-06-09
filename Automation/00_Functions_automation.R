@@ -17,7 +17,7 @@ packages_CRAN <- c("tidyverse","lubridate","gargle","rvest","httr","readxl",
                    "tictoc","parallel","data.table","git2r","usethis", "rio",
                    "remotes","here","googledrive","zip", "XML", "RCurl",
                    "taskscheduleR","countrycode", "xml2", "dplyr", "xml2",
-                   "reticulate", "rjson")
+                   "reticulate", "rjson", "readODS")
 
 # Install required CRAN packages if not available yet
 if(!sum(!p_isinstalled(packages_CRAN))==0) {
@@ -153,6 +153,7 @@ log_update <- function(pp, N){
 # @param tm what time should it be run at?
 # @param email gmail account with permissions and local PAT set up
 # @param wd repo base path.
+
 sched <- function(
   pp = "Germany", 
   tm = "21:18", 
@@ -205,6 +206,7 @@ sched <- function(
                        starttime = tm, 
                        startdate = date.sched)
 }
+
 # remove a scheduled task
 # @param pp script base name
 delete_sched <- function(pp = "Germany"){

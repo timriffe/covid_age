@@ -37,16 +37,16 @@ dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 # Read in data 
 
 
-data1 <- read.csv(file= 'K:/CDC_Covid/covid_case_restricted_detailed-master_01_2021/data/COVID_Cases_Restricted_Detailed_01312021_Part_1.csv', 
+data1 <- read.csv(file= 'K:/CDC_Covid/covid_case_restricted_detailed-master_03_2021/data/COVID_Cases_Restricted_Detailed_03312021_Part_1.csv', 
                   fileEncoding="UTF-8-BOM", na.strings=c('NA','','Missing'))
 str(data1)
 
-data2 <- read.csv(file= 'K:/CDC_Covid/covid_case_restricted_detailed-master_01_2021/data/COVID_Cases_Restricted_Detailed_01312021_Part_2.csv',
+data2 <- read.csv(file= 'K:/CDC_Covid/covid_case_restricted_detailed-master_03_2021/data/COVID_Cases_Restricted_Detailed_03312021_Part_2.csv',
                   fileEncoding="UTF-8-BOM",  na.strings=c('NA','','Missing')) 
 
 str(data2)
 
-data3 <- read.csv(file= 'K:/CDC_Covid/covid_case_restricted_detailed-master_01_2021/data/COVID_Cases_Restricted_Detailed_01312021_Part_3.csv',
+data3 <- read.csv(file= 'K:/CDC_Covid/covid_case_restricted_detailed-master_03_2021/data/COVID_Cases_Restricted_Detailed_03312021_Part_3.csv',
                   fileEncoding="UTF-8-BOM",  na.strings=c('NA','','Missing')) 
 
 str(data3)
@@ -130,6 +130,7 @@ mutate(
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)
 
+View(Out)
 
 
 #save output data

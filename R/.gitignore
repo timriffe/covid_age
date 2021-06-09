@@ -82,3 +82,4 @@ Decomp4.R
 FR_reg_upload.R
 KoronavirusGovHuScraper.R
 a_sync.log
+excluding_ecdc.R

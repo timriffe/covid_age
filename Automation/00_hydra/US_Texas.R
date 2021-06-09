@@ -39,8 +39,7 @@ loc_date2 <- str_locate(date_text, '\\)')[1] - 1
 date_f  <- mdy(str_sub(date_text, loc_date1, loc_date2))
 
 if (date_f > last_date_drive){
-  
-  url <- "https://dshs.texas.gov/coronavirus/TexasCOVID19Demographics.xlsx.asp"
+  url <- "https://dshs.texas.gov/coronavirus/TexasCOVID19Demographics.xlsx"
   httr::GET(url, write_disk(tf <- tempfile(fileext = ".xlsx")))
 
   db_c_age <- read_xlsx(tf,
@@ -71,11 +70,11 @@ if (date_f > last_date_drive){
                            skip = 1) %>%
     as_tibble() %>%
     rename(Cases = 2,
-           Deaths = 3) %>%
+           Deaths = 4) %>%
     filter(County == "Total") %>%
     mutate(Sex = "b",
            Age = "TOT") %>%
-    select(-County) %>%
+    select(Sex, Age, Cases, Deaths) %>%
     gather(Cases, Deaths, key = "Measure", value = "Value")
 
   # TR: this is an aggregate of all reported testing types.

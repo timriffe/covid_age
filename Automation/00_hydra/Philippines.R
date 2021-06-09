@@ -68,7 +68,7 @@ drive_contents <-
 # Drive info for Case file
 case_url <-
   drive_contents %>% 
-  filter(grepl(name, pattern="04 Case Information"))
+  filter(grepl(name, pattern="04 Case Information.csv"))
 
 # Drive info for Test file
 tests_url <-
@@ -123,6 +123,8 @@ Cases <-
          Date = ifelse(DateSpecimen < Date & !is.na(DateSpecimen),DateSpecimen,Date),
          Date = ifelse(DateOnset < Date & !is.na(DateOnset),DateOnset,Date),
          Date = as_date(Date),
+         Age = as.integer(Age),
+         Age = as.character(Age),
          Age = ifelse(is.na(Age),"UNK",Age),
          Age = ifelse(Age %in% as.character(100:120),"100",Age),
          Sex = case_when(Sex == "MALE"~"m",
@@ -160,10 +162,14 @@ dates  <- seq(fromto[1], fromto[2], by = "days")
 
 maxAi<- max(suppressWarnings(as.integer(ages)),na.rm=TRUE) 
 maxAc<- as.character(maxAi)
+
+IN$DateDied %>% unique() %>% as_date() %>% sort()
+
 Deaths <-
  IN %>% 
   dplyr::filter(!is.na(DateDied)) %>% 
   mutate(Date = as_date(DateDied),
+         Age = as.integer(Age),
          Age = as.character(Age),
          Age = ifelse(is.na(Age),"UNK",Age),
          Age = ifelse(Age %in% as.character(100:120),"100",Age),
@@ -182,9 +188,7 @@ Deaths <-
   arrange(Date,Sex,Age) %>% 
   mutate(Country = "Philippines",
          Region = "All",
-         Date = paste(sprintf("%02d",day(Date)),    
-                      sprintf("%02d",month(Date)),  
-                      year(Date),sep="."),
+         Date = ddmmyyyy(Date),
          Code = paste0("PH", Date),
          Metric = "Count",
          Measure = "Deaths",
