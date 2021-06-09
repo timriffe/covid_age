@@ -33,7 +33,7 @@ print(paste0("Starting data retrieval for Sweden..."))
 data_source <- paste0(dir_n, "Data_sources/", ctr, "/cases&deaths_",today(), ".xlsx")
 
 url <- "https://www.arcgis.com/sharing/rest/content/items/b5e7488e117749c19881cce45db13f7e/data"
-httr::GET(url, write_disk(data_source))
+httr::GET(url, write_disk(data_source, overwrite = T))
 
 # date from the data directly, last reported date in the sheet 'Antal per dag region'
 
@@ -124,7 +124,7 @@ if (date_f > last_date_drive){
   data_source_vac <- paste0(dir_n, "Data_sources/", ctr, "/vaccination_",today(), ".xlsx")
   
   url_vac <- "https://fohm.maps.arcgis.com/sharing/rest/content/items/fc749115877443d29c2a49ea9eca77e9/data"
-  httr::GET(url_vac, write_disk(data_source_vac))
+  httr::GET(url_vac, write_disk(data_source_vac, overwrite = T))
   
   
   # date_f_vac <- read_xlsx(data_source_vac, sheet = 1) %>% 
@@ -140,17 +140,27 @@ if (date_f > last_date_drive){
   date_f_vac_temp <- date_f_vac_temp[grepl("[0-9]{4}$", date_f_vac_temp)]
   date_f_vac_temp <- trimws(gsub("FOHM", "", date_f_vac_temp))
   
+  date_f_vac_temp_split <- unlist(strsplit(tolower(date_f_vac_temp), " "))
+  
   # Update 20210520
   # They changed they way that dates are recorded, now the month is in Swedish
   
-  date_f_vac_temp_split <- unlist(strsplit(tolower(date_f_vac_temp), " "))
   
-  lookup_m <- 1:12
-  names(lookup_m) <- 
-    c("januari", "februari", "mars", "april", "maj", "juni", "juli", "augusti"
-      , "september", "oktober", "november", "december")
+  # lookup_swe <- 1:12
+  # names(lookup_swe) <- 
+  #   c("januari", "februari", "mars", "april", "maj", "juni", "juli", "augusti"
+  #     , "september", "oktober", "november", "december")
+  
+  # Update 20210609
+  # Apparently, the swedish month name is abbreviated to three-letters. 
+  # This is my guess of what the future months will be:
+  
+  lookup_swe <- 1:12
+  names(lookup_swe) <- 
+    c("jan", "feb", "mar", "apr", "maj", "jun", "jul", "aug"
+      , "sep", "okt", "nov", "dec")
     
-  date_f_vac_temp_split[2] <- lookup_m[date_f_vac_temp_split[2]]
+  date_f_vac_temp_split[2] <- lookup_swe[date_f_vac_temp_split[2]]
   date_f_vac_temp2 <- paste(date_f_vac_temp_split, collapse = "/")
   date_f_vac <- dmy(date_f_vac_temp2)
   

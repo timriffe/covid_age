@@ -143,9 +143,6 @@ for(c in scripts){
 }
 
 
-
-
-
 ### scripts working outside hydra because of VPN:
 #################################################
 # sched("CA_Montreal", tm = "16:44",email = auto_update_email, wd = auto_update_wd)
