@@ -1,13 +1,17 @@
-
-
-
 #source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
 source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
 library(lubridate)
-# assigning Drive credentials in the case the script is verified manually  
-change_here(wd_sched_detect())
-startup::startup()
-setwd(here())
+# assigning Drive credentials in the case the script is verified manually 
+
+#Im changing this to not use the change_here function, sourced from the functions script
+#which I cant run due to problems installing demotools-JD
+#change_here(wd_sched_detect())
+#startup::startup()
+#setwd(here())
+
+if (!"email" %in% ls()){
+  email <- "tim.riffe@gmail.com"
+}
 
 # info country and N drive address
 ctr          <- "US_California" # it's a placeholder
@@ -87,14 +91,12 @@ CAage <-
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
 
 
-
 # By Sex
 
 ###updated data processing for new url
 
 CAsex_in <-
 read_csv(url1) 
-
 
 CAsex <-
   CAsex_in%>% 
