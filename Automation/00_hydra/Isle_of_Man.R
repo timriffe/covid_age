@@ -171,10 +171,30 @@ test_total= In_total %>%
 
 
 #Vaccine 
+#https://covid19.gov.im/media/1560/covid19-vaccination-record-open-data-week-ending-300521.csv
 
-In_vaccine= read.csv("https://covid19.gov.im/media/1560/covid19-vaccination-record-open-data-week-ending-21-02-21.csv")
+url_vaccine <- "https://covid19.gov.im/media"
 
+links <- scraplinks(url_vaccine) %>% 
+  filter(str_detect(url, "vaccination")) %>% 
+  select(url) 
 
+url <- 
+  links %>% 
+  select(url) %>% 
+  dplyr::pull()
+
+url_d = paste0("https://covid19.gov.im",url)
+
+data_source3 <- paste0(dir_n, "Data_sources/", ctr, "/vaccine_age_",today(), ".csv")
+
+download.file(url_d, data_source3, mode = "wb")
+
+#Date vaccine 
+
+In_vaccine <- read_csv(data_source3)
+
+#process vaccine data 
 Out_vaccine = In_vaccine %>%
   filter(!str_detect(Date, 'Total'))%>%
   select(Date, Age= Age.Bands, Value= Vaccinated.sum, Measure= Dose.schedule) %>%
@@ -234,12 +254,11 @@ log_update(pp = ctr, N = nrow(out))
 
 data_source1 <- paste0(dir_n, "Data_sources/", ctr, "/cases_age_sex_",today(), ".csv")
 data_source2 <- paste0(dir_n, "Data_sources/", ctr, "/totals_",today(), ".csv")
-data_source3 <- paste0(dir_n, "Data_sources/", ctr, "/vaccine_age_",today(), ".csv")
+
 
 
 write_csv(In_cases, data_source1)
 write_csv(In_total, data_source2)
-write_csv(In_vaccine,data_source3)
 
 data_source <- c(data_source1, data_source2,data_source3)
 
