@@ -61,7 +61,14 @@ Out_vaccine1= In %>%
 
 #Dose2
 Out_vaccine2= In %>%
-  select(Sex=sex, Age= age_group, Date= vacc_date_2)%>%
+  select(Sex=sex, Age= age_group, Date= vacc_date_2)
+
+#remove everyone with a empty cell for data vaccine 2 (prob. have not received shot yet/single dose vaccine)
+
+Out_vaccine2[Out_vaccine2==""]<-NA
+  
+Out_vaccine2= Out_vaccine2 %>%
+  filter(!is.na(Date))%>%
   mutate(Sex= recode(Sex, 
                      `M`= "m",
                      `V`= "f"))%>%
@@ -86,11 +93,8 @@ Out_vaccine2= In %>%
     Code = paste0("LT_All",Date),
     Country = "Lithuania",
     Region = "All",)%>% 
-  filter(Date >= "01.01.2020")%>% #some dates stated 1.1.1970 Maybe have not received second dose yet? 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)
-
-
 
 
 #put them together 
