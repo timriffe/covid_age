@@ -4,7 +4,12 @@ source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/0
 library(rjson)
 library(tidyverse)
 
-
+calcAgeAbr <- function(Age){
+  stopifnot(is.integer(Age))
+  Abr <- Age - Age%%5
+  Abr[Age %in% 1:4] <- 1
+  Abr
+}
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
   email <- "tim.riffe@gmail.com"
@@ -81,7 +86,7 @@ out_all <-
          AgeInt = ifelse(Age == 100L, 5L, 1L))
 out_abr <-
   out1 %>% 
-  mutate(Age = DemoTools::calcAgeAbr(Age)) %>% 
+  mutate(Age = calcAgeAbr(Age)) %>% 
   group_by(Region, Date, Sex, Age) %>% 
   summarize(new = sum(new), .groups = "drop") %>% 
   mutate(AgeInt = case_when(Age == 0 ~ 1L,
