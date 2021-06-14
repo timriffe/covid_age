@@ -83,3 +83,7 @@ FR_reg_upload.R
 KoronavirusGovHuScraper.R
 a_sync.log
 excluding_ecdc.R
+junk.R
+Examples_for_Pietro.R
+coveragemap_deaths.R
+map_HMD.R
