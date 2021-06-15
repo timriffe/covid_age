@@ -19,7 +19,7 @@ conda_install(packages = "selenium")
 py_run_string("import selenium")
 
 
-py_file <- "C:/Users/riffe/Documents/covid_age/Automation/Moldova_screencaptures.py"
+py_file <- "G:/riffe/covid_age/Automation/Moldova_screencaptures.py"
 source_python(file=py_file)
 
 
@@ -44,7 +44,7 @@ if (schedule.this){
   library(taskscheduleR)
   taskscheduler_delete("COVerAGE-DB-Moldova_screencaptures")
   taskscheduler_create(taskname = "COVerAGE-DB-Moldova_screencaptures", 
-                       rscript = "C:/Users/riffe/Documents/covid_age/Automation/Moldova_screencaptures.R", 
+                       rscript = "G:/riffe/covid_age/Automation/Moldova_screencaptures.R", 
                        schedule = "DAILY", 
                        starttime = format(Sys.time() + 61, "%H:%M"))
 }
