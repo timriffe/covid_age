@@ -6,7 +6,7 @@ Created on Thu Dec 21
 """
 
 
-path = "N:\COVerAGE-DB\Automation\chromedriver.exe"
+path = r"N:\COVerAGE-DB\Automation\chromedriver\chromedriver.exe"
 from selenium.webdriver.common.keys import Keys
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
