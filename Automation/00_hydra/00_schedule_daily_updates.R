@@ -4,6 +4,8 @@ library("taskscheduleR")
 library(here)
 source(here("Automation/00_Functions_automation.R"))
 
+
+
 # commands in the git terminal to update each fork:
 # first coinfigure the upstream (only once):
 # git remote add upstream https://github.com/timriffe/covid_age.git
@@ -79,7 +81,8 @@ scripts <- c('US_Virginia', 'USA_all_deaths', 'Netherlands', 'Estonia',
              'CA_Manitoba_Saskatchewan', 'CA_Ontario', 'CA_British_Columbia', 
              'Ukraine', 'Spain_vaccine', 'Chile', 'Portugal_Vaccine', 
              'CA_Alberta', 'Canada_vaccine', 'US_Texas_Vaccine', 
-             'Hong_Kong_Vaccine','Argentina')
+             'Hong_Kong_Vaccine','Argentina','Slovenia', 'US_Maine','US_NYC_vaccine',
+             'US_Vermont_Vaccine', 'US_Indiana','Lithuania_vaccine','US_Michigan_vaccine')
 
 
 
@@ -88,8 +91,8 @@ scripts <- c('US_Virginia', 'USA_all_deaths', 'Netherlands', 'Estonia',
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # starting time for first schedule in hour and minutes
-h_ini <- 5
-m_ini <- 0
+h_ini <- 10
+m_ini <- 00
 # delay between scripts in minutes
 delay_time <- 15
 
@@ -98,6 +101,7 @@ for(c in scripts){
   # time schedule in decimal 
   hrs_mns <- h_ini + (m_ini + i * delay_time) / 60
   # extract hour
+  if(hrs_mns>= 24)hrs_mns= hrs_mns-24
   hrs <- floor(hrs_mns)
   # extract minutes
   mns <- round((hrs_mns - floor(hrs_mns)) * 60, 1)
@@ -115,8 +119,14 @@ for(c in scripts){
 # for individual scheduling
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 sched("Argentina", tm = "14:57", email = auto_update_email, wd = auto_update_wd)
-sched("Finland", tm = "09:50",email = auto_update_email, wd = auto_update_wd, sch = "WEEKLY")
-sched("Colombia", tm = "15:18", email = auto_update_email, wd = auto_update_wd)
+sched("US_NYC", tm = "12:48",email = auto_update_email, wd = auto_update_wd)
+sched("Austria", tm = "13:09", email = auto_update_email, wd = auto_update_wd)
+sched("Hungary", tm = "09:42", email = auto_update_email, wd = auto_update_wd)
+
+sched("US_Michigan_vaccine", tm = "14:57", email = auto_update_email, wd = auto_update_wd)
+
+
+
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 # Deleting scheduled tasks

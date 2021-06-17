@@ -97,7 +97,7 @@ mutate(Measure = recode(Measure,
 #save output 
 
 write_rds(Out, paste0(dir_n, ctr, ".rds"))
-#log_update(pp = ctr, N = nrow(out))
+log_update(pp = ctr, N = nrow(Out))
 
 #archive data 
 

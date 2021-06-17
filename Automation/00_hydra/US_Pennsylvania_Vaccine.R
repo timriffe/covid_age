@@ -1,6 +1,4 @@
 #Pennsylvenia Vaccine 
-
-
 library(here)
 source('U:/GitHub/Covid/Automation/00_Functions_automation.R')
 
