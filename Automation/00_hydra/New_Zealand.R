@@ -39,7 +39,7 @@ html      <- read_html(m_url)
 date_text <-
   html_nodes(html, xpath = '//*[@id="node-10866"]/div[2]/div/div/p[1]') %>%
   html_text()
-loc_date1 <- str_locate(date_text, "Last updated ")[2] + 4
+loc_date1 <- str_locate(date_text, "Last updated ")[2] + 9
 loc_date2 <- str_length(date_text[1])
 
 date_f  <- str_sub(date_text, loc_date1, loc_date2) %>% 
