@@ -1,25 +1,40 @@
 
 # 2021-06-18 inputDB updates 
- Fri Jun 18 11:00:10 2021 
+ Fri Jun 18 19:00:09 2021 
 
 
-# 2021-06-18 11:00:10 updates 
- Fri Jun 18 11:00:10 2021 
+# 2021-06-18 19:00:09 updates 
+ Fri Jun 18 19:00:09 2021 
 
 
 # Filter valid Measure entries: 
- Fri Jun 18 11:13:01 2021 
+ Fri Jun 18 19:37:08 2021 
 
 Valid Measures include: Cases,Deaths,Tests,ASCFR,Vaccinations,Vaccination1,Vaccination2
- 3460 rows removed
+ 4388 rows removed
+# Filter valid Metric entries: 
+ Fri Jun 18 19:37:09 2021 
+
+Valid Metrics include: Count,Fraction,Ratio
+ 404 rows removed
 # Filter valid Sex entries: 
- Fri Jun 18 11:13:02 2021 
+ Fri Jun 18 19:37:12 2021 
 
 Valid Sex values include: m,f,b,UNK
- 9580 rows removed
+ 16167 rows removed
 # Duplicates detected. Following `Code`s removed: 
- Fri Jun 18 11:13:55 2021 
+ Fri Jun 18 19:38:04 2021 
 
+AT_23.02.2021
+AT_1_23.02.2021
+AT_2_23.02.2021
+AT_3_23.02.2021
+AT_4_23.02.2021
+AT_5_23.02.2021
+AT_6_23.02.2021
+AT_7_23.02.2021
+AT_8_23.02.2021
+AT_9_23.02.2021
 HR13.03.2020
 HR14.03.2020
 HR15.03.2020
@@ -480,6 +495,8 @@ HR12.06.2021
 HR13.06.2021
 HR14.06.2021
 HR15.06.2021
+HR16.06.2021
+HR17.06.2021
 CZ_CZ020_02.02.2021
 CZ_CZ020_04.02.2021
 CZ_CZ020_05.02.2021
@@ -2270,8 +2287,47 @@ IM_All18.02.2021
 IM_All19.02.2021
 IM_All20.02.2021
 IM_All21.02.2021
+PS12.10.2020
 Other
+US_MI11.05.2021
+US_MI12.05.2021
+US_MI13.05.2021
+US_MI14.05.2021
+US_MI15.05.2021
+US_MI17.05.2021
+US_MI18.05.2021
+US_MI19.05.2021
+US_MI20.05.2021
+US_MI21.05.2021
+US_MI22.05.2021
+US_MI24.05.2021
+US_MI25.05.2021
+US_MI26.05.2021
+US_MI27.05.2021
+US_MI28.05.2021
+US_MI29.05.2021
+US_MI01.06.2021
+US_MI02.06.2021
+US_MI03.06.2021
+US_MN14.06.2021
+# Bad Dates detected. Following `Code`s removed: 
+ Fri Jun 18 19:38:12 2021 
+
+US_OR_NA.NA.NA
 # Future Dates detected. Following `Code`s removed: 
- Fri Jun 18 11:14:03 2021 
+ Fri Jun 18 19:38:14 2021 
 
 NL20.06.2021
+NO20.06.2021
+PS26.04.2022
+PS26.04.2023
+PS26.04.2024
+PS26.04.2025
+PS26.04.2026
+PS26.04.2027
+PS26.04.2028
+PS26.04.2029
+PS26.04.2030
+PS26.04.2031
+PS26.04.2032
+PS26.04.2033
