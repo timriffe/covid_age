@@ -124,7 +124,7 @@ sched("US_NYC", tm = "12:48",email = auto_update_email, wd = auto_update_wd)
 sched("Austria", tm = "13:09", email = auto_update_email, wd = auto_update_wd)
 sched("Hungary", tm = "09:42", email = auto_update_email, wd = auto_update_wd)
 
-sched("New_Zealand", tm = "16:05", email = auto_update_email, wd = auto_update_wd)
+sched("Slovenia_vaccine", tm = "14:05", email = auto_update_email, wd = auto_update_wd)
 
 
 
