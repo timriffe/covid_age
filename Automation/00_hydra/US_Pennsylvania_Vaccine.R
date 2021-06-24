@@ -1,7 +1,6 @@
 #Pennsylvenia Vaccine 
 library(here)
-source('U:/GitHub/Covid/Automation/00_Functions_automation.R')
-
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
 library(lubridate)
 library(dplyr)
 library(tidyverse)
@@ -25,23 +24,37 @@ drive_auth(email = email)
 gs4_auth(email = email)
 
 
-# Drive urls
-rubric <- get_input_rubric() %>% filter(Short == "US_PA")
+# reading in archive data  
 
-ss_i <- rubric %>% 
-  dplyr::pull(Sheet)
+DataArchive <- read_rds(paste0(dir_n, ctr, ".rds"))
 
-ss_db <- rubric %>% 
-  dplyr::pull(Source)
-
-# reading data from Drive and last date entered 
-
-In_drive <- get_country_inputDB("US_PA")%>% 
-  select(-Short)%>%
-  mutate(AgeInt= as.character(AgeInt))
+last_date_archive <- DataArchive %>% 
+  mutate(date_max = dmy(Date)) %>% 
+  dplyr::pull(date_max) %>% 
+  max()
 
 
+#read date from website 
 
+### source
+m_url <- "https://data.pa.gov/browse?q=covid%20vaccine&sortBy=relevance"
+
+# reading date of last update
+html      <- read_html(m_url)
+
+date_text <-
+  html_nodes(html, xpath = '/html/body/div[2]/div/div[6]/div/div[4]/div[2]/div[2]/div[3]/div/div[4]/div[1]/div[2]') %>%
+  html_text()
+
+date_f  <- str_sub(date_text) %>% 
+  str_trim() %>% 
+  str_replace("\\.", "") %>% 
+  mdy()
+
+
+if (date_f > last_date_archive){
+
+#read in data 
 #vaccine age 
 Vaccine_age= read.csv("https://data.pa.gov/api/views/xy2e-dqvt/rows.csv?accessType=DOWNLOAD")
 
@@ -49,9 +62,6 @@ Vaccine_age= read.csv("https://data.pa.gov/api/views/xy2e-dqvt/rows.csv?accessTy
 Vaccine_sex=read.csv("https://data.pa.gov/api/views/id8t-dnk6/rows.csv?accessType=DOWNLOAD") 
 
 #Process
-#using yesterday because of difference to US time zone 
-yesterday <- format(Sys.Date()-1,"%Y/%m/%d")
-
 #Age 
 
 Out_vaccine_age= Vaccine_age %>%
@@ -86,7 +96,7 @@ Out_vaccine_age= Vaccine_age %>%
   mutate(Metric = "Count",
          Sex="b") %>%
   mutate(
-    Date= yesterday,
+    Date= date_f,
     Date = ymd(Date),
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
@@ -116,7 +126,7 @@ Out_vaccine_sex = Vaccine_sex %>%
          Age="TOT",
          AgeInt="",) %>%
   mutate(
-    Date= yesterday,
+    Date= date_f,
     Date = ymd(Date),
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
@@ -130,26 +140,22 @@ Out_vaccine_sex = Vaccine_sex %>%
 
 #put together 
 
-Out <- bind_rows(In_drive,
+Out <- bind_rows(DataArchive,
                 Out_vaccine_age,
                 Out_vaccine_sex)
 
-#upload 
+#save output 
 
-write_sheet(Out, 
-            ss = ss_i, 
-            sheet = "database")
+write_rds(Out, paste0(dir_n, ctr, ".rds"))
 
-
-
-#log_update("US_Pennsylvania", N = nrow(Out))
+log_update("US_Pennsylvania_Vaccine", N = nrow(Out))
 
 
 # ------------------------------------------
 # now archive
 
-data_source_1 <- paste0(dir_n, "Data_sources/", ctr, "/vaccine_age_",yesterday, ".csv")
-data_source_2 <- paste0(dir_n, "Data_sources/", ctr, "/vaccine_sex_",yesterday, ".csv")
+data_source_1 <- paste0(dir_n, "Data_sources/", ctr, "/vaccine_age_",date_f, ".csv")
+data_source_2 <- paste0(dir_n, "Data_sources/", ctr, "/vaccine_sex_",date_f, ".csv")
 
 write_csv(Vaccine_age, data_source_1)
 write_csv(Vaccine_sex, data_source_2)
@@ -162,7 +168,7 @@ zipname <- paste0(dir_n,
                   "/", 
                   ctr,
                   "_data_",
-                  yesterday, 
+                  date_f, 
                   ".zip")
 
 zip::zipr(zipname, 
@@ -173,3 +179,6 @@ zip::zipr(zipname,
 
 file.remove(data_source)
 
+} else if (date_f == last_date_archive) {
+  log_update(pp = ctr, N = 0)
+}
