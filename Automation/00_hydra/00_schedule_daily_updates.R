@@ -83,7 +83,7 @@ scripts <- c('US_Virginia', 'USA_all_deaths', 'Netherlands', 'Estonia',
              'CA_Alberta', 'Canada_vaccine', 'US_Texas_Vaccine', 
              'Hong_Kong_Vaccine','Argentina','Slovenia', 'US_Maine','US_NYC_vaccine',
              'US_Vermont_Vaccine', 'US_Indiana','Lithuania_vaccine','US_Michigan_vaccine',
-             'US_Minnesota_vaccine', 'Slovenia_vaccine')
+             'US_Minnesota_vaccine', 'Slovenia_vaccine', 'US_Oregon_Vaccine')
 
 
 
@@ -124,7 +124,7 @@ sched("US_NYC", tm = "12:48",email = auto_update_email, wd = auto_update_wd)
 sched("Austria", tm = "13:09", email = auto_update_email, wd = auto_update_wd)
 sched("Hungary", tm = "09:42", email = auto_update_email, wd = auto_update_wd)
 
-sched("US_Pennsylvania_Vaccine", tm = "12:11", email = auto_update_email, wd = auto_update_wd)
+sched("US_Oregon_Vaccine", tm = "15:35", email = auto_update_email, wd = auto_update_wd)
 
 
 
