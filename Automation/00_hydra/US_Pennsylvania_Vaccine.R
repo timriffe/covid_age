@@ -1,6 +1,4 @@
 #Pennsylvenia Vaccine 
-
-
 library(here)
 source(here("Automation", "00_Functions_automation.R"))
 

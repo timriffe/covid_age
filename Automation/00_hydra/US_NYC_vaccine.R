@@ -17,7 +17,7 @@ if (!"email" %in% ls()){
 
 # info country and N drive address
 
-ctr          <- "US_NYC_Vaccine" # it's a placeholder
+ctr          <- "US_NYC_vaccine" # it's a placeholder
 dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 #read previous data 
@@ -102,7 +102,7 @@ out= rbind(DataArchive,out_vaccine_age, Sex_out_vaccine)
 #save output 
 
 write_rds(out, paste0(dir_n, ctr, ".rds"))
-#log_update(pp = ctr, N = nrow(out))
+log_update(pp = ctr, N = nrow(out))
 
 #archive data 
 

@@ -1,6 +1,7 @@
 
-source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
 source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
+#source(here("R", "00_Functions.R"))
+#source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
 library(tidyverse)
 library(googlesheets4)
 library(googledrive)
@@ -10,7 +11,18 @@ library(rvest)
 library(longurl)
 library(pdftools)
 
-change_here(wd_sched_detect())
+# assigning Drive credentials in the case the script is verified manually 
+
+#Im changing this to not use the change_here function, sourced from the functions script
+#which I cant run due to problems installing demotools-JD
+#change_here(wd_sched_detect())
+#startup::startup()
+#setwd(here())
+
+if (!"email" %in% ls()){
+  email <- "tim.riffe@gmail.com"
+}
+
 # info country and N drive address
 ctr    <- "Philippines"
 dir_n  <- "N:/COVerAGE-DB/Automation/Hydra/"
