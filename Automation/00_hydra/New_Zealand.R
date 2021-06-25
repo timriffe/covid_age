@@ -39,7 +39,7 @@ html      <- read_html(m_url)
 date_text <-
   html_nodes(html, xpath = '//*[@id="node-10866"]/div[2]/div/div/p[1]') %>%
   html_text()
-loc_date1 <- str_locate(date_text, "Last updated ")[2] + 9
+loc_date1 <- str_locate(date_text, "Last updated ")[2] + 4
 loc_date2 <- str_length(date_text[1])
 
 date_f  <- str_sub(date_text, loc_date1, loc_date2) %>% 
@@ -57,8 +57,12 @@ if (date_f > last_date_drive){
   root <- "https://www.health.govt.nz"
   
   # cases data
+  #html <- read_html(m_url)
+  #url1 <- html_nodes(html, xpath = '/html/body/div[2]/div/div[1]/section/div[2]/section/div/div/div[2]/div[2]/div/article/div[2]/div/div/p[12]/a') %>%
+    #html_attr("href")
+  
   html <- read_html(m_url)
-  url1 <- html_nodes(html, xpath = '/html/body/div[2]/div/div[1]/section/div[2]/section/div/div/div[2]/div[2]/div/article/div[2]/div/div/p[12]/a') %>%
+  url1 <- html_nodes(html, xpath = '/html/body/div[2]/div/div[1]/section/div[2]/section/div/div/div[2]/div[2]/div/article/div[2]/div/div/p[13]/a') %>%
     html_attr("href")
   
   db_c <- read_csv(paste0(root, url1)) %>% 

@@ -116,14 +116,12 @@ colnames(In_vaccine1_age)[1] <- "Region"
  
 Out_vaccine1_age= In_vaccine1_age%>%
   select(Region, `80`= `Personas con al menos 1 dosis ≥80 años` , `70`= `Personas con al menos 1 dosis 70-79 años`, `60`= `Personas con al menos 1 dosis 60-69 años`,
-         `50`= `Personas con al menos 1 dosis 50-59 años`, `40`= `Personas con al menos 1 dosis 40-49 años`, `25`=`Personas con al menos 1 dosis 25-39 años`,
-         `18`= `18-24 años`, `16`= `16-17 años`)%>%
+         `50`= `Personas con al menos 1 dosis 50-59 años`, `40`= `Personas con al menos 1 dosis 40-49 años`, `30`=`Personas con al menos 1 dosis 30-39 años`,`20`=`Personas con al menos 1 dosis 20-29 años`,
+         `12`=`Personas con al menos 1 dosis 12-19 años`)%>%
   pivot_longer(!Region, names_to= "Age", values_to= "Value")%>%
 mutate(AgeInt= case_when(
   Age == "80" ~ 25L,
-  Age== "25" ~ 15L,
-  Age== "16"~ 2L,
-  Age == "18" ~ 7L,
+  Age == "12" ~ 8L,
   TRUE~ 10L))%>%
   subset(Region!= "Fuerzas Armadas") %>%# delete armed forces from region 
   subset(Region!= "Sanidad Exterior") %>%
@@ -170,14 +168,13 @@ colnames(In_vaccine2_age)[1] <- "Region"
 
 Out_vaccine2_age= In_vaccine2_age%>%
   select(Region, `80`= `Personas pauta completa ≥80 años` , `70`= `Personas pauta completa 70-79 años`, `60`= `Personas pauta completa 60-69 años`,
-         `50`= `Personas pauta completa 50-59 años`, `25`= `Personas pauta completa 25-49 años`, `18`= `18-24 años`, `16`= `16-17 años`)%>%
+         `50`= `Personas pauta completa 50-59 años`, `40`= `Personas pauta completa 40-49 años`, `30`= `Personas pauta completa 30-39 años`,
+         `20`= `Personas pauta completa 20-29 años`,`12`= `Personas pauta completa 12-19 años`)%>%
   pivot_longer(!Region, names_to= "Age", values_to= "Value")%>%
   mutate(AgeInt= case_when(
     Age == "80" ~ 25L,
-    Age == "25" ~ 25L,
-    Age == "16" ~ 2L,
-    Age == "18" ~ 7L,
-    TRUE ~ 10L))%>%
+    Age == "12" ~ 8L,
+    TRUE~ 10L))%>%
   subset(Region!= "Fuerzas Armadas") %>%# delete armed forces from region 
   subset(Region!= "Sanidad Exterior") %>%
   mutate(Region= recode(Region,
