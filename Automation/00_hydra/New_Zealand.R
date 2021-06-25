@@ -39,7 +39,7 @@ html      <- read_html(m_url)
 date_text <-
   html_nodes(html, xpath = '//*[@id="node-10866"]/div[2]/div/div/p[1]') %>%
   html_text()
-loc_date1 <- str_locate(date_text, "Last updated ")[2] + 9
+loc_date1 <- str_locate(date_text, "Last updated ")[2] + 4
 loc_date2 <- str_length(date_text[1])
 
 date_f  <- str_sub(date_text, loc_date1, loc_date2) %>% 
@@ -57,8 +57,12 @@ if (date_f > last_date_drive){
   root <- "https://www.health.govt.nz"
   
   # cases data
+  #html <- read_html(m_url)
+  #url1 <- html_nodes(html, xpath = '/html/body/div[2]/div/div[1]/section/div[2]/section/div/div/div[2]/div[2]/div/article/div[2]/div/div/p[12]/a') %>%
+    #html_attr("href")
+  
   html <- read_html(m_url)
-  url1 <- html_nodes(html, xpath = '/html/body/div[2]/div/div[1]/section/div[2]/section/div/div/div[2]/div[2]/div/article/div[2]/div/div/p[12]/a') %>%
+  url1 <- html_nodes(html, xpath = '/html/body/div[2]/div/div[1]/section/div[2]/section/div/div/div[2]/div[2]/div/article/div[2]/div/div/p[13]/a') %>%
     html_attr("href")
   
   db_c <- read_csv(paste0(root, url1)) %>% 
@@ -138,9 +142,9 @@ if (date_f > last_date_drive){
   # vaccines data
   # ~~~~~~~~~~~~~
   
-  m_url <- "https://www.health.govt.nz/our-work/diseases-and-conditions/covid-19-novel-coronavirus/covid-19-data-and-statistics/covid-19-vaccine-data#age"
+  url_vaccine <- "https://www.health.govt.nz/our-work/diseases-and-conditions/covid-19-novel-coronavirus/covid-19-data-and-statistics/covid-19-vaccine-data#age"
   
-  links <- scraplinks(m_url) %>% 
+  links <- scraplinks(url_vaccine) %>% 
     filter(str_detect(url, "covid_vaccinations")) %>% 
     select(url) 
   
@@ -153,7 +157,7 @@ if (date_f > last_date_drive){
   
   data_source6 <- paste0(dir_n, "Data_sources/", ctr, "/vaccine_age_",today(), ".xlsx")
   
-  #data_source <- paste0("U:/COVerAgeDB/Datenquellen/New Zealand_vaccine",today(), ".xlsx")
+  #data_source6 <- paste0("U:/COVerAgeDB/Datenquellen/New Zealand_vaccine",today(), ".xlsx")
   
   download.file(url_d, data_source6, mode = "wb")
 
@@ -192,9 +196,11 @@ db_v <-
      Measure== "2" ~ "Vaccination2"),
   Country = "New Zealand",
   Region = "All",
-  Date = ddmmyyyy(date_vacc),
+  Date = ddmmyyyy(date),
   Code = paste0("NZ",Date),
-  Metric = "Count")
+  Metric = "Count")%>% 
+  select(Country, Region, Code, Date, Sex, 
+         Age, AgeInt, Metric, Measure, Value)
 
 
   ####################################
@@ -206,6 +212,7 @@ db_v <-
   tables <- readHTMLTable(m_url2) 
   db_a <- tables[[3]] 
   db_s <- tables[[4]]
+  
   
   db_a2 <- db_a %>% 
     as_tibble() %>% 
@@ -295,8 +302,8 @@ db_v <-
                         year(date_f),
                         sep="."),
            Code = paste0("NZ",Date),
-           Metric = "Count") #%>% 
-    #bind_rows(db_v)
+           Metric = "Count") %>% 
+    bind_rows(db_v)
   
   # back up of deaths and tests out of csv
   ########################################

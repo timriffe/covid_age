@@ -158,31 +158,21 @@ IN_death_out= IN_death%>%
 
 ######combine to one dataframe########## 
 
-In_out <- bind_rows(IN_cases_out,
+out <- bind_rows(IN_cases_out,
                     IN_death_out,
                     vaccine)
-
-# In case we had earlier data, we keep it.
-
-
-In_out <- 
-  In_drive %>% 
-  filter(dmy(Date) < min(dmy(In_out$Date))) %>% 
-  bind_rows(In_out) %>% 
-  sort_input_data()
 
 
 # upload to Drive, overwrites
 
 
-write_sheet(In_out, 
+write_sheet(out, 
             ss = ss_i, 
             sheet = "database")
 
 
 
-
-#log_update("Bulgaria", N = nrow(BG_out))
+log_update("US_Indiana", N = nrow(out))
 
 
 # ------------------------------------------
@@ -244,126 +234,6 @@ file.remove(data_source)
 
 
 
-
-
-
-#######################First draft####################################
-#Cases
-
-#sort by date
-
-#change to date class 
-#IN_cases$DATE <- as.Date(IN_cases$DATE,            
-#format = "%Y-%m-%d")
-#Date class is Date now 
-#In_sort= IN_cases[order(IN_cases$DATE),]
-#In_select= In_sort %>%
-#select(DATE, AGEGRP, GENDER, COVID_COUNT)
-#sum by day  
-#In_sum= aggregate(COVID_COUNT~DATE+AGEGRP+GENDER, data=In_select, FUN=sum) 
-#cumulative sum
-#In_csum= In_sum %>%
-# group_by(GENDER,AGEGRP) %>%
-#mutate(cum_sum = cumsum(COVID_COUNT))
-#Incsum_select= In_csum %>%
-#select(DATE, AGEGRP, GENDER, cum_sum)
-#reformate to database 
-
-#reformate gender colunm for database 
-
-
-
-#In_cases_out= In_cases_in %>% 
-  #rename(Age = AGEGRP)%>% 
-  #mutate(Age=recode(Age, 
-                    #`0-19`="0",
-                   # `20-29`="20",
-                   # `30-39`="30",
-                   # `40-49`="40",
-                   # `50-59`="50",
-                  #   `60-69`="60",
-                   # `70-79`="70",
-                   # `80+`="80",
-                   # `Unknown`="UNK"))%>% 
- # mutate(AgeInt = case_when(
-   # Age == "0" ~ 20L,
-   # Age == "80" ~ 25L,
-   # Age == "UNK" ~ NA_integer_,
-   # TRUE ~ 10L))%>% 
-  #rename(Value = cum_sum,
-         #Date=DATE) %>% 
-  #mutate(
-   # Measure = "Cases",
-   # Metric = "Count") %>% 
-  #mutate(
-   # Date = ymd(Date),
-   # Date = paste(sprintf("%02d",day(Date)),    
-                 #sprintf("%02d",month(Date)),  
-                # year(Date),sep="."),
-   # Code = paste0("US_IN",Date),
-    #Country = "USA",
-    #Region = "Indiana",)%>% 
- # select(Country, Region, Code, Date, Sex, 
-         #Age, AgeInt, Metric, Measure, Value)
-
-
-
-
-#Death
-
-#sort by date
-#change to date class 
-#IN_death$date <- as.Date(IN_death$date,             
-                         #format = "%Y-%m-%d")
-
-#Date class is Date now 
-#In_sortD= IN_death[order(IN_death$date),]
-#sum by day
-#In_sumD= aggregate(covid_deaths~date+agegrp, data=In_sortD, FUN=sum) 
-
-#cumulative sum
-#In_csumD= In_sumD %>%
-  #group_by(agegrp) %>%
-  #mutate(cum_sum = cumsum(covid_deaths))
-
-#Incsum_selectD= In_csumD %>%
-  #select(date, agegrp, cum_sum)
-#reformate to database 
-#change age groups 
-
-#In_death_out= Incsum_selectD %>% 
-  #rename(Age = agegrp)%>% 
- # mutate(Age=recode(Age, 
-                   # `0-19`="0",
-                   # `20-29`="20",
-                   # `30-39`="30",
-                   # `40-49`="40",
-                   # `50-59`="50",
-                   # `60-69`="60",
-                    #`70-79`="70",
-                   # `80+`="80",
-                    #`Unknown`="UNK"))%>% 
-  #mutate(AgeInt = case_when(
-   # Age == "0" ~ 20L,
-   # Age == "80" ~ 25L,
-   # Age == "UNK" ~ NA_integer_,
-    #TRUE ~ 10L))%>% 
-  #rename(Value = cum_sum,
-         #Date= date) %>% 
- # mutate(
-    #Measure = "Death",
-   # Metric = "Count",
-   # Sex= "b") %>% 
-  #mutate(
-   # Date = ymd(Date),
-   # Date = paste(sprintf("%02d",day(Date)),    
-                 #sprintf("%02d",month(Date)),  
-                # year(Date),sep="."),
-    #Code = paste0("US_IN",Date),
-    #Country = "USA",
-    #Region = "Indiana",)%>% 
-  #select(Country, Region, Code, Date, Sex, 
-        # Age, AgeInt, Metric, Measure, Value)
 
 
 

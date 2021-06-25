@@ -39,17 +39,7 @@ data_source <- paste0(dir_n, "Data_sources/", ctr, "/Spain_vaccine",today(), ".o
 
 download.file(url_d, data_source, mode = "wb")
 
-#############################################################################################
-#Local set up to read in manually saved data, can be deleted when scheduled 
-#In_vaccine_total <- read_ods("U:/COVerAgeDB/Datenquellen/Vaccination/Spain/Spain_vaccine2021-05-09.ods", sheet = 1)
-#In_vaccine1_age <- read_ods("U:/COVerAgeDB/Datenquellen/Vaccination/Spain/Spain_vaccine2021-05-09.ods", sheet = 4)
-#In_vaccine2_age <- read_ods("U:/COVerAgeDB/Datenquellen/Vaccination/Spain/Spain_vaccine2021-05-09.ods", sheet = 5)
-#############################################################################################
-
-#Read in previous data 
-
-#DataArchive=readRDS("U:/COVerAgeDB/Datenquellen/Vaccination/Spain/Spain_Vaccine.rsd")
-
+###########################################################################################
 DataArchive <- read_rds(paste0(dir_n, ctr, ".rds"))
 
 
@@ -62,8 +52,8 @@ DataArchive <- read_rds(paste0(dir_n, ctr, ".rds"))
 #Read in sheets 
 
 In_vaccine_total= read_ods(data_source, sheet = 1)
-In_vaccine1_age= read_ods(data_source, sheet = 4)
-In_vaccine2_age= read_ods(data_source, sheet = 5)
+In_vaccine1_age= read_ods(data_source, sheet = 3)
+In_vaccine2_age= read_ods(data_source, sheet = 4)
 ################################
 #Process 
 #Total 
@@ -87,6 +77,7 @@ total$Date[is.na(total$Date)] =  DateMax$`max(Date, na.rm = TRUE)`
 
 total <- total %>%
   subset(Region!= "Fuerzas Armadas" ) %>%# delete armed forces from region  
+  subset(Region!= "Sanidad Exterior" ) %>%
   mutate(Short = recode(Region,
                           "Andalucía" = "AN",
                          "Aragón" = "AR",
@@ -125,15 +116,15 @@ colnames(In_vaccine1_age)[1] <- "Region"
  
 Out_vaccine1_age= In_vaccine1_age%>%
   select(Region, `80`= `Personas con al menos 1 dosis ≥80 años` , `70`= `Personas con al menos 1 dosis 70-79 años`, `60`= `Personas con al menos 1 dosis 60-69 años`,
-         `50`= `Personas con al menos 1 dosis 50-59 años`, `25`= `Personas con al menos 1 dosis 25-49 años`, `18`= `18-24 años`, `16`= `16-17 años`)%>%
+         `50`= `Personas con al menos 1 dosis 50-59 años`, `40`= `Personas con al menos 1 dosis 40-49 años`, `30`=`Personas con al menos 1 dosis 30-39 años`,`20`=`Personas con al menos 1 dosis 20-29 años`,
+         `12`=`Personas con al menos 1 dosis 12-19 años`)%>%
   pivot_longer(!Region, names_to= "Age", values_to= "Value")%>%
 mutate(AgeInt= case_when(
   Age == "80" ~ 25L,
-  Age== "25" ~ 25L,
-  Age== "16"~ 2L,
-  Age == "18" ~ 7L,
+  Age == "12" ~ 8L,
   TRUE~ 10L))%>%
-  subset(Region!= "Fuerzas Armadas") %>% # delete armed forces from region 
+  subset(Region!= "Fuerzas Armadas") %>%# delete armed forces from region 
+  subset(Region!= "Sanidad Exterior") %>%
   mutate(Region= recode(Region,
                         "Total España"= "All",
                         "Castilla - La Mancha"= "Castilla La Mancha"))%>%
@@ -177,15 +168,15 @@ colnames(In_vaccine2_age)[1] <- "Region"
 
 Out_vaccine2_age= In_vaccine2_age%>%
   select(Region, `80`= `Personas pauta completa ≥80 años` , `70`= `Personas pauta completa 70-79 años`, `60`= `Personas pauta completa 60-69 años`,
-         `50`= `Personas pauta completa 50-59 años`, `25`= `Personas pauta completa 25-49 años`, `18`= `18-24 años`, `16`= `16-17 años`)%>%
+         `50`= `Personas pauta completa 50-59 años`, `40`= `Personas pauta completa 40-49 años`, `30`= `Personas pauta completa 30-39 años`,
+         `20`= `Personas pauta completa 20-29 años`,`12`= `Personas pauta completa 12-19 años`)%>%
   pivot_longer(!Region, names_to= "Age", values_to= "Value")%>%
   mutate(AgeInt= case_when(
     Age == "80" ~ 25L,
-    Age == "25" ~ 25L,
-    Age == "16" ~ 2L,
-    Age == "18" ~ 7L,
-    TRUE ~ 10L))%>%
-  subset(Region!= "Fuerzas Armadas") %>% # delete armed forces from region 
+    Age == "12" ~ 8L,
+    TRUE~ 10L))%>%
+  subset(Region!= "Fuerzas Armadas") %>%# delete armed forces from region 
+  subset(Region!= "Sanidad Exterior") %>%
   mutate(Region= recode(Region,
                         "Total España"= "All",
                         "Castilla - La Mancha"= "Castilla La Mancha"))%>%
@@ -243,7 +234,10 @@ mutate(Code = paste("ES",Short,Date,sep="_"))%>%
 Out_final1= bind_rows(DataArchive,Out_final)%>% 
   distinct()#Regions dont update in same frequency, if one regions does not update, same data would be added with next file 
 
-
+#Out_final2= Out_final1 %>%
+#subset(Code!= "ES_Datos del 13/05_NA")%>%# delete armed forces from region 
+#subset(Code!= "ES_Sanidad Exterior_NA")%>%
+#subset(Region!= "*Datos de Comunidad Valenciana pendientes de consolidar")
 
 #save output data 
 #write_rds(Out_final1, paste0("U:/COVerAgeDB/Datenquellen/Vaccination/Spain/Spain_Vaccine.rsd"))
@@ -270,6 +264,6 @@ zip::zipr(zipname,
           include_directories = TRUE)
 
 file.remove(data_source)
-
+####################################################
 
 

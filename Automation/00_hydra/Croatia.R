@@ -4,7 +4,12 @@ source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/0
 library(rjson)
 library(tidyverse)
 
-
+calcAgeAbr <- function(Age){
+  stopifnot(is.integer(Age))
+  Abr <- Age - Age%%5
+  Abr[Age %in% 1:4] <- 1
+  Abr
+}
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
   email <- "tim.riffe@gmail.com"
@@ -21,42 +26,44 @@ gs4_auth(email = email)
 
 
 #N:\COVerAGE-DB\Automation\Hydra\Data_sources\Croatia
-
-IN_json <- fromJSON(file="https://www.koronavirus.hr/json/?action=po_osobama")
-
-Regions <- tibble(Zupanija = c("Bjelovarsko-bilogorska", "Brodsko-posavska"      ,
-"Dubrovačko-neretvanska", "Grad Zagreb"           ,
-"Istarska"              , "Karlovačka"            ,
-"Koprivničko-križevačka", "Krapinsko-zagorska"    ,
-"Ličko-senjska"         , "Međimurska"            ,
- "Osječko-baranjska"    ,  "Požeško-slavonska"     ,
- "Primorsko-goranska"   ,  "Šibensko-kninska"      ,
- "Sisačko-moslavačka"   ,  "Splitsko-dalmatinska"  ,
- "Varaždinska"          ,  "Virovitičko-podravska" ,
- "Vukovarsko-srijemska" ,  "Zadarska"              ,
- "Zagrebačka " ), 
-Region = c("Bjelovarsko-bilogorska", 
-           "Brodsko-posavska" ,
-"Dubrovacko-neretvanska", "Grad Zagreb" ,
-"Istarska" , "Karlovacka" ,
-"Koprivnicko-krizevacka", "Krapinsko-zagorska" ,
-"Licko-senjska" , "Medimurska" ,
-"Osjecko-baranjska" , "Pozesko-slavonska" ,
-"Primorsko-goranska","Sibensko-kninska" ,
-"Sisacko-moslavacka","Splitsko-dalmatinska"  ,
-"Varazdinska", "Viroviticko-podravska" ,
-"Vukovarsko-srijemska" , "Zadarska" ,
-"Zagrebacka" ),
+jtext <- httr::content(GET("https://www.koronavirus.hr/json/?action=po_osobama"), 
+                       as = "text", encoding = "UTF-8")
+IN_json <- rjson::fromJSON(jtext)
+IN <- bind_rows(IN_json) %>% 
+  mutate(Zupanija = trimws(Zupanija, "r"),
+         Zupanija = iconv(Zupanija, from = "UTF-8", to = "ASCII//TRANSLIT"))
+Regions <- tibble(Zupanija = c("Bjelovarsko-bilogorska", "Brodsko-posavska", "Dubrovacko-neretvanska", 
+                               "Grad Zagreb", "Istarska", "Karlovacka", "Koprivnicko-krizevacka", 
+                               "Krapinsko-zagorska", "Licko-senjska", "Medimurska", "Osjecko-baranjska", 
+                               "Pozesko-slavonska", "Primorsko-goranska", "Sibensko-kninska", 
+                               "Sisacko-moslavacka", "Splitsko-dalmatinska", "Varazdinska", 
+                               "Viroviticko-podravska", "Vukovarsko-srijemska", "Zadarska", 
+                               "Zagrebacka"),
 RegionCode = c("_07_","_12_","_19_","_21_","_18_","_04_","_06_","_02_",
                "_09_","_20_","_14_","_11_","_08_","_15_","_03_","_17_",
                "_05_","_10_","_16_","_13_","_01_")) 
 
-IN <- bind_rows(IN_json) 
+
+IN %>% 
+  pull(Zupanija) %>% 
+  unique() %>% 
+  sort() %>% 
+  dput()
+IN %>% 
+  dplyr::pull(Zupanija) %>% 
+  unique() %>%
+  enc2utf8() %>% 
+  Encoding()
+IN %>% 
+  select(Zupanija) %>% 
+  distinct() %>% 
+  left_join(Regions)
+names(Zs) <- NULL
 
 IN2 <-
   IN %>% 
   left_join(Regions, by = "Zupanija") %>% 
-  select(Sex = spol, dob, Date = Datum, Region) %>%  # Regions = Counties
+  select(Sex = spol, dob, Date = Datum, Region = Zupanija) %>%  # Regions = Counties
   mutate( Date = lubridate::ymd(Date),
           Age = round(lubridate::decimal_date(Date) - (dob+.5)),
           Age = ifelse(Age > 100,100,Age),
@@ -64,6 +71,9 @@ IN2 <-
   group_by(Sex, dob, Date, Region, Age) %>% 
   summarize(new = n(),.groups = "drop") %>% 
   mutate(Sex = ifelse(Sex == "M", "m", "f"))
+
+
+
 date_range <- IN2$Date %>% range()
 dates_all  <- seq(date_range[1], date_range[2], by = "days")
 
@@ -81,13 +91,13 @@ out_all <-
          AgeInt = ifelse(Age == 100L, 5L, 1L))
 out_abr <-
   out1 %>% 
-  mutate(Age = DemoTools::calcAgeAbr(Age)) %>% 
+  mutate(Age = calcAgeAbr(Age)) %>% 
   group_by(Region, Date, Sex, Age) %>% 
   summarize(new = sum(new), .groups = "drop") %>% 
   mutate(AgeInt = case_when(Age == 0 ~ 1L,
                             Age == 1 ~ 4L,
                             TRUE ~ 5L))
-RegionCodes <- Regions %>% select(-Zupanija)
+RegionCodes <- Regions %>% select(Region = Zupanija, RegionCode)
 
 out <-
   bind_rows(out_all, out_abr) %>% 

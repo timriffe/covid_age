@@ -60,7 +60,8 @@ Out_age= In%>%
     Country = "USA",
     Region = "Vermont",)%>% 
   select(Country, Region, Code, Date, Sex, 
-         Age, AgeInt, Metric, Measure, Value)
+         Age, AgeInt, Metric, Measure, Value)%>% 
+  mutate(AgeInt = as.character(AgeInt))
 
 
 # Totals by sex 
@@ -95,7 +96,8 @@ Out_sex= In %>%
     Country = "USA",
     Region = "Vermont",)%>% 
   select(Country, Region, Code, Date, Sex, 
-         Age, AgeInt, Metric, Measure, Value)
+         Age, AgeInt, Metric, Measure, Value)%>% 
+  mutate(AgeInt = as.character(AgeInt))
 
 
 

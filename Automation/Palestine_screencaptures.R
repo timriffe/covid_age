@@ -42,7 +42,7 @@ if (schedule.this){
   library(taskscheduleR)
   taskscheduler_delete("COVerAGE-DB-Palestine_screencaptures")
   taskscheduler_create(taskname = "COVerAGE-DB-Palestine_screencaptures", 
-                       rscript = "C:/Users/riffe/Documents/covid_age/Automation/Palestine_screencaptures.R", 
+                       rscript = "G:/riffe/covid_age/Automation/Palestine_screencaptures.R", 
                        schedule = "DAILY", 
                        starttime = format(Sys.time() + 61, "%H:%M"))
 }
