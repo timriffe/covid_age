@@ -77,7 +77,7 @@ scripts <- c('US_Virginia', 'USA_all_deaths', 'Netherlands', 'Estonia',
              'Scotland', 'Norway', 'US_California', 'Afghanistan', 'Finland', 
              'US_Wisconsin', 'Bulgaria', 'Denmark', 'Belgium', 'New_Zealand', 
              'Mexico', 'Thailand', 'Spain', 'US_Oregon', 'Slovakia', 'Cambodia', 
-             'Hungary', 'Vietnam', 'Italy', 'Croatia', 'CA_Quebec', 
+             'Hungary', 'Vietnam', 'Italy', 'Croatia',  
              'CA_Manitoba_Saskatchewan', 'CA_Ontario', 'CA_British_Columbia', 
              'Ukraine', 'Spain_vaccine', 'Chile', 'Portugal_Vaccine', 
              'CA_Alberta', 'Canada_vaccine', 'US_Texas_Vaccine', 
@@ -124,7 +124,7 @@ sched("US_NYC", tm = "12:48",email = auto_update_email, wd = auto_update_wd)
 sched("Austria", tm = "13:09", email = auto_update_email, wd = auto_update_wd)
 sched("Hungary", tm = "09:42", email = auto_update_email, wd = auto_update_wd)
 
-sched("US_Oregon_Vaccine", tm = "15:35", email = auto_update_email, wd = auto_update_wd)
+sched("US_Pennsylvania_Vaccine", tm = "15:08", email = auto_update_email, wd = auto_update_wd)
 
 
 
@@ -135,7 +135,17 @@ sched("US_Oregon_Vaccine", tm = "15:35", email = auto_update_email, wd = auto_up
 
 # for deleting single task schedule
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-delete_sched("US_Pennsylvania_Vaccine")
+delete_sched("CA_Quebec")
+
+
+
+
+
+
+
+
+
+
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # danger zone!!!! deleting all schedules
