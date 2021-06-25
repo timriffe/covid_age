@@ -33,9 +33,15 @@ db <- read_csv(data_source)
 unique(db$`Age Group`)
 unique(db$`Group`)
 
-ages_all <- c("All Ages", "Under 1 year", "0-17 years", "1-4 years", "5-14 years", "15-24 years", "18-29 years", "25-34 years", "30-49 years", "35-44 years", "45-54 years", "50-64 years", "55-64 years", "65-74 years", "75-84 years", "85 years and over")
-ages1 <- c("All Ages", "Under 1 year", "1-4 years", "5-14 years", "15-24 years", "25-34 years", "35-44 years", "45-54 years", "55-64 years", "65-74 years", "75-84 years", "85 years and over")
-ages2 <- c("All Ages", "0-17 years", "18-29 years", "30-49 years", "50-64 years", "65-74 years", "75-84 years", "85 years and over")
+ages_all <- c("All Ages", "Under 1 year", "0-17 years", "1-4 years", 
+              "5-14 years", "15-24 years", "18-29 years", "25-34 years", 
+              "30-49 years", "35-44 years", "45-54 years", "50-64 years", 
+              "55-64 years", "65-74 years", "75-84 years", "85 years and over")
+ages1 <- c("All Ages", "Under 1 year", "1-4 years", "5-14 years", 
+           "15-24 years", "25-34 years", "35-44 years", "45-54 years", 
+           "55-64 years", "65-74 years", "75-84 years", "85 years and over")
+ages2 <- c("All Ages", "0-17 years", "18-29 years", "30-49 years", 
+           "50-64 years", "65-74 years", "75-84 years", "85 years and over")
 
 date_report <- mdy(db$`Data As Of`[1])
 date_f <- mdy(db$`End Date`[1])
@@ -91,7 +97,7 @@ db4 <- db3 %>%
                          Sex == "All Sexes" ~ "b")) 
 
 
-# Imputation of NAs using the same distribution that the national level
+# Imputation of NAs using the same distribution of the national level
 #######################################################################
 
 all_us <- db4 %>% 

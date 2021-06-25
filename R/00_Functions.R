@@ -40,7 +40,6 @@ if (!p_isinstalled("DemoTools")) {
   library(remotes)
   install_github("timriffe/DemoTools")
 }
-
 if (!p_isinstalled("parallelsugar")){
   library(remotes)
   install_github("nathanvan/parallelsugar")
@@ -52,6 +51,7 @@ if (!p_isinstalled("osfr")){
 # Load the required CRAN/github packages
 p_load(packages_CRAN, character.only = TRUE)
 p_load(packages_git, character.only = TRUE)
+
 
 
 
