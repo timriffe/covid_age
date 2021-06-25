@@ -2,12 +2,7 @@
 
 
 library(here)
-source('U:/GitHub/Covid/Automation/00_Functions_automation.R')
-
-library(lubridate)
-library(dplyr)
-library(tidyverse)
-
+source(here("Automation", "00_Functions_automation.R"))
 
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
@@ -109,26 +104,25 @@ Out_vaccine_sex = Vaccine_sex %>%
   pivot_longer(!Sex, names_to= "Measure", values_to= "Value")%>%
   mutate(Measure= recode(Measure, 
                          `Partially.Covered` = "Vaccination1",
-                         `Fully.Covered`= "Vaccination2"))%>%
-  mutate(Sex= recode(Sex, 
+                         `Fully.Covered`= "Vaccination2"),
+         Sex= recode(Sex, 
                      `female`= "f",
                      `male`= "m",
-                     `Unknown`= "UNK"))%>%
-  mutate(Metric = "Count",
+                     `Unknown`= "UNK"), 
+         Metric = "Count",
          Age="TOT",
-         AgeInt="",) %>%
-  mutate(
-    Date= yesterday,
-    Date = ymd(Date),
-    Date = paste(sprintf("%02d",day(Date)),    
-                 sprintf("%02d",month(Date)),  
-                 year(Date),sep="."),
-    Code = paste0("US_PA",Date),
-    Country = "USA",
-    Region = "Pennsylvania",)%>% 
+         AgeInt="",
+         Date= yesterday,
+         Date = ymd(Date),
+         Date = paste(sprintf("%02d",day(Date)),    
+                      sprintf("%02d",month(Date)),  
+                      year(Date),sep="."),
+         Code = paste0("US_PA",Date),
+         Country = "USA",
+         Region = "Pennsylvania",
+         AgeInt= as.character(AgeInt))%>% 
   select(Country, Region, Code, Date, Sex, 
-         Age, AgeInt, Metric, Measure, Value)%>%
-  mutate(AgeInt= as.character(AgeInt))
+         Age, AgeInt, Metric, Measure, Value)
 
 #put together 
 
