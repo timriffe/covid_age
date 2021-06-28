@@ -123,7 +123,7 @@ Out_vaccine_sex = Vaccine_sex %>%
          Metric = "Count",
          Age="TOT",
          AgeInt="",
-         Date= yesterday,
+         Date= date_f,
          Date = ymd(Date),
          Date = paste(sprintf("%02d",day(Date)),    
                       sprintf("%02d",month(Date)),  
