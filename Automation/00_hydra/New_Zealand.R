@@ -176,7 +176,7 @@ if (date_f > last_date_drive){
   
 db_v <- 
     read_xlsx(data_source6,
-    sheet = "Ethnicity Age Gender by dose")%>%
+    sheet = "Ethnicity, Age, Gender by dose")%>%
   select(Age= `Ten year age group`, Sex= Gender, Measure= `Dose number`, Value= `# doses administered`)%>%
   #sum up numbers that were separated by race 
   group_by(Age, Sex, Measure) %>% 
