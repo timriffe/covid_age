@@ -1,6 +1,5 @@
 # Latvia vaccine data 
 
-
 library(here)
 source('U:/GitHub/Covid/Automation/00_Functions_automation.R')
 
@@ -26,7 +25,7 @@ m_url <- "https://data.gov.lv/dati/eng/dataset/covid19-vakcinacijas/resource/517
 
 
 links <- scraplinks(m_url) %>% 
-  filter(str_detect(url, ".xlsx")) %>% 
+  filter(str_detect(url, "adp_covid19_vakc")) %>% 
   select(url) 
 
 links2= head(links, 1)
@@ -40,7 +39,6 @@ url <-
 data_source <- paste0(dir_n, "Data_sources/", ctr, "/Latvia_data",today(), ".xlsx")
 download.file(url, data_source, mode = "wb")
 
-
 In_vaccine= read_excel(data_source)
 
 #Process data
@@ -50,15 +48,18 @@ Out_vaccine= In_vaccine %>%
   mutate(Measure= recode(Measure, 
                        `1` = "Vaccination1",
                        `2`= "Vaccination2"))%>%
-  group_by(Sex, Age, Measure) %>% 
-  mutate(Value = cumsum(Value))%>%
   mutate(Sex = case_when(
   is.na(Sex)~ "UNK",
   Sex == "V" ~ "m",
   Sex == "S" ~ "f",
-  Sex== "NULL" ~ "UNK"))%>%
-  mutate(AgeInt = "1",
-  Metric = "Count") %>%
+  Sex== "NULL" ~ "UNK")) %>%
+  group_by(Date,Sex, Age, Measure)%>% 
+  arrange(Date,Sex, Age, Measure)%>% 
+  group_by(Sex, Age, Measure) %>%
+  mutate(Value = cumsum(Value)) %>% 
+  ungroup()%>%
+    mutate(AgeInt = "1",
+           Metric = "Count") %>%
   mutate(
     Date = ymd(Date),
     Date = paste(sprintf("%02d",day(Date)),    
@@ -71,12 +72,11 @@ Out_vaccine= In_vaccine %>%
          Age, AgeInt, Metric, Measure, Value)
 
 
-
 #save output data
 
 write_rds(Out_vaccine, paste0(dir_n, ctr, ".rds"))
 
-log_update(pp = ctr, N = nrow(out)) 
+log_update(pp = ctr, N = nrow(Out_vaccine)) 
 
 
 #zip input data file 
