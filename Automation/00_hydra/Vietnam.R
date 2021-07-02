@@ -120,6 +120,7 @@ Deaths <-
   dplyr::filter(grepl(Status,pattern = "vong")) %>% 
   mutate(ID_new = 1:n())
 
+
 OWD <- 
   OWD %>% 
   dplyr::filter(!is.na(new_deaths))
