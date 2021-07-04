@@ -2374,3 +2374,7 @@ filter( Code == 'US_TX13.09.2020', Sex == 'b', Measure == 'Cases' )
 # Commit dashboards and buildlog 
  Sun Jul 04 08:12:12 2021 
 
+
+# update build series log 
+ Sun Jul 04 08:12:30 2021 
+
