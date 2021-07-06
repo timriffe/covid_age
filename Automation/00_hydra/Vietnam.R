@@ -1,12 +1,21 @@
 library(here)
-source(here("Automation", "00_Functions_automation.R"))
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
 
 #source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
+
+calcAgeAbr <- function(Age){
+  stopifnot(is.integer(Age))
+  Abr <- Age - Age%%5
+  Abr[Age %in% 1:4] <- 1
+  Abr
+}
+
 
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
   email <- "tim.riffe@gmail.com"
 }
+
 
 # info country and N drive address
 ctr          <- "Vietnam" # it's a placeholder
@@ -71,7 +80,7 @@ Cases2 <-
   mutate(Age = as.integer(Age),
          Age = ifelse(Age == 450, 45L, Age),
          Age = ifelse(Age > 100,100L,Age), 
-         Age = DemoTools::calcAgeAbr(Age),
+         Age = calcAgeAbr(Age),
          Age = as.integer(Age)) %>% 
   group_by(`date`, `Age`) %>% 
   summarize(new = n(), .groups = "drop") 
@@ -111,6 +120,7 @@ Deaths <-
   dplyr::filter(grepl(Status,pattern = "vong")) %>% 
   mutate(ID_new = 1:n())
 
+
 OWD <- 
   OWD %>% 
   dplyr::filter(!is.na(new_deaths))
@@ -136,7 +146,7 @@ Deaths2 <-
   mutate(
     Age = as.integer(Age),
     Age = ifelse(Age > 100,100,Age),
-    Age = DemoTools::calcAgeAbr(Age)) %>% 
+    Age = calcAgeAbr(Age)) %>% 
   group_by(date, Age) %>% 
   summarize(new = n(), .groups = "drop") 
 

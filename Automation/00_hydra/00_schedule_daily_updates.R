@@ -77,12 +77,14 @@ scripts <- c('US_Virginia', 'USA_all_deaths', 'Netherlands', 'Estonia',
              'Scotland', 'Norway', 'US_California', 'Afghanistan', 'Finland', 
              'US_Wisconsin', 'Bulgaria', 'Denmark', 'Belgium', 'New_Zealand', 
              'Mexico', 'Thailand', 'Spain', 'US_Oregon', 'Slovakia', 'Cambodia', 
-             'Hungary', 'Vietnam', 'Italy', 'Croatia', 'CA_Quebec', 
+             'Hungary', 'Vietnam', 'Italy', 'Croatia',  
              'CA_Manitoba_Saskatchewan', 'CA_Ontario', 'CA_British_Columbia', 
              'Ukraine', 'Spain_vaccine', 'Chile', 'Portugal_Vaccine', 
              'CA_Alberta', 'Canada_vaccine', 'US_Texas_Vaccine', 
              'Hong_Kong_Vaccine','Argentina','Slovenia', 'US_Maine','US_NYC_vaccine',
-             'US_Vermont_Vaccine', 'US_Indiana','Lithuania_vaccine','US_Michigan_vaccine')
+             'US_Vermont_Vaccine', 'US_Indiana','Lithuania_vaccine','US_Michigan_vaccine',
+             'US_Minnesota_vaccine', 'Slovenia_vaccine', 'US_Oregon_Vaccine', 'Latvia_vaccine',
+             'Island_of_Jersey', 'Estonia_vaccine', 'Uruguay_vaccine')
 
 
 
@@ -123,7 +125,7 @@ sched("US_NYC", tm = "12:48",email = auto_update_email, wd = auto_update_wd)
 sched("Austria", tm = "13:09", email = auto_update_email, wd = auto_update_wd)
 sched("Hungary", tm = "09:42", email = auto_update_email, wd = auto_update_wd)
 
-sched("US_Michigan_vaccine", tm = "14:57", email = auto_update_email, wd = auto_update_wd)
+sched("Uruguay_vaccine", tm = "14:42", email = auto_update_email, wd = auto_update_wd)
 
 
 
@@ -134,7 +136,17 @@ sched("US_Michigan_vaccine", tm = "14:57", email = auto_update_email, wd = auto_
 
 # for deleting single task schedule
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-delete_sched("CA_Alberta")
+delete_sched("Island-of-Jersey")
+
+
+
+
+
+
+
+
+
+
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # danger zone!!!! deleting all schedules

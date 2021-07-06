@@ -40,6 +40,18 @@ bit.ly_url <- "bit.ly/DataDropPH"
 drive_readme_url <- longurl::expand_urls(bit.ly_url)
 
 # Download the README pdf that contains the link!
+#drive_id_shorter <- drive_readme_url$expanded_url %>% 
+  #gsub(pattern = "https://drive.google.com/drive/folders/",
+     #  replacement = "") %>% 
+  #gsub(pattern = "?usp=sharing",
+       #replacement = "") %>% 
+  #googledrive::as_id() %>% 
+ # drive_ls() %>% 
+ # filter(grepl(name,pattern = "READ ME FIRST")) %>% 
+ # drive_download(path = "Data/PH_README.pdf",
+                 #overwrite=TRUE)
+
+
 drive_id_shorter <- drive_readme_url$expanded_url %>% 
   gsub(pattern = "https://drive.google.com/drive/folders/",
        replacement = "") %>% 
@@ -47,9 +59,11 @@ drive_id_shorter <- drive_readme_url$expanded_url %>%
        replacement = "") %>% 
   googledrive::as_id() %>% 
   drive_ls() %>% 
-  filter(grepl(name,pattern = "READ ME FIRST")) %>% 
+  filter(grepl(name,pattern = "(06_29)")) %>% 
   drive_download(path = "Data/PH_README.pdf",
                  overwrite=TRUE)
+
+
 
 # read as text ()
 PDF_TEXT <- pdf_text("Data/PH_README.pdf")

@@ -37,24 +37,28 @@ dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 # Read in data 
 
 
-data1 <- read.csv(file= 'K:/CDC_Covid/covid_case_restricted_detailed-master_03_2021/data/COVID_Cases_Restricted_Detailed_03312021_Part_1.csv', 
+data1 <- read.csv(file= 'K:/CDC_Covid/covid_case_restricted_detailed-master_06_2021/data/2021-06-21/COVID_Cases_Restricted_Detailed_06212021_Part_1.csv', 
                   fileEncoding="UTF-8-BOM", na.strings=c('NA','','Missing'))
 str(data1)
 
-data2 <- read.csv(file= 'K:/CDC_Covid/covid_case_restricted_detailed-master_03_2021/data/COVID_Cases_Restricted_Detailed_03312021_Part_2.csv',
+data2 <- read.csv(file= 'K:/CDC_Covid/covid_case_restricted_detailed-master_06_2021/data/2021-06-21/COVID_Cases_Restricted_Detailed_06212021_Part_2.csv',
                   fileEncoding="UTF-8-BOM",  na.strings=c('NA','','Missing')) 
 
 str(data2)
 
-data3 <- read.csv(file= 'K:/CDC_Covid/covid_case_restricted_detailed-master_03_2021/data/COVID_Cases_Restricted_Detailed_03312021_Part_3.csv',
+data3 <- read.csv(file= 'K:/CDC_Covid/covid_case_restricted_detailed-master_06_2021/data/2021-06-21/COVID_Cases_Restricted_Detailed_06212021_Part_3.csv',
                   fileEncoding="UTF-8-BOM",  na.strings=c('NA','','Missing')) 
 
 str(data3)
 
-# Add datasets vertically
-IN <- rbind(data1, data2, data3)
+data4 <- read.csv(file= 'K:/CDC_Covid/covid_case_restricted_detailed-master_06_2021/data/2021-06-21/COVID_Cases_Restricted_Detailed_06212021_Part_4.csv',
+                  fileEncoding="UTF-8-BOM",  na.strings=c('NA','','Missing')) 
 
-rm(data1,data2,data3);gc()
+
+# Add datasets vertically
+IN <- rbind(data1, data2, data3, data4)
+
+rm(data1,data2,data3,data4);gc()
 glimpse(IN)
 states <- c("AZ","AR", "DE","GU","ID","KS","ME","MA","MN","MT","NV","NJ","NC","OK","OR","PA","SC","TN","VA")
 
@@ -137,7 +141,8 @@ View(Out)
 
 write_rds(Out, paste0(dir_n, ctr, ".rds"))
 
-log_update(pp = ctr, N = nrow(Out)) 
+#manual updates 
+#log_update(pp = ctr, N = nrow(Out)) 
 
 
 # input data is saved on K 

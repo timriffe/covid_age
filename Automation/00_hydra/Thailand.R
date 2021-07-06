@@ -18,7 +18,8 @@ ss_i   <- at_rubric %>% dplyr::pull(Sheet)
 ss_db  <- at_rubric %>% dplyr::pull(Source)
 
 
-cases_url <- "https://raw.githubusercontent.com/pluz85/Covid19TH-DailyData/master/dataset/csv/cases.csv"
+cases_url <- "https://data.go.th/dataset/8a956917-436d-4afd-a2d4-59e4dd8e906e/resource/be19a8ad-ab48-4081-b04a-8035b5b2b8d6/download/confirmed-cases.csv"
+
 
 TH <- read_csv(cases_url)
 
@@ -27,16 +28,16 @@ Ages <- as.character(0:100,"UNK")
 
 Cases <-
   TH %>% 
-  select(Date = ConfirmDate,
-         Age = Age,
-         Sex = GenderEn) %>% 
-  mutate(Date = as_date(Date),
+  select(Date = announce_date,
+         Age = age,
+         Sex = sex) %>% 
+  mutate(Date = dmy(Date),
          Age = ifelse(sign(Age) == -1, -Age,Age), # one case of -34 must mean 34, right?
          Age = ifelse(is.na(Age),"UNK",as.character(Age)),
+         Sex = ifelse(is.na(Sex),"UNK",as.character(Sex)),
          Sex = recode(Sex,
-                      "Unknown" = "UNK",
-                      "Male" = "m",
-                      "Female" = "f")) %>% 
+                      "ชาย" = "m",
+                      "หญิง" = "f"))%>% 
   group_by(Date, Sex, Age) %>% 
   summarize(Value = n(), .groups="drop") %>% 
   tidyr::complete(Date, Sex, Age = Ages, fill = list(Value = 0)) %>% 
@@ -46,7 +47,9 @@ Cases <-
   ungroup() %>%
   mutate(Country = "Thailand",
          Region = "All",
-         Date = ddmmyyyy(Date),
+         Date = paste(sprintf("%02d",day(Date)),    
+                      sprintf("%02d",month(Date)),  
+                      year(Date),sep="."),
          Metric = "Count",
          Measure = "Cases",
          AgeInt = case_when(Age == "UNK" ~ NA_integer_,

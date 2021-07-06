@@ -3,11 +3,11 @@ source(here("Automation/00_Functions_automation.R"))
 
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
-  email <- "cimentadaj@gmail.com"
+  email <- "kikepaila@gmail.com"
 }
 
 # info country and N drive address
-ctr <- "USA_CDC"
+ctr <- "USA_deaths_states"
 dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 # Drive credentials
@@ -21,7 +21,8 @@ ss_db    <- rubric_i %>% dplyr::pull(Source)
 
 
 # # reading data in Drive 
-db_drive <- get_country_inputDB("USA_CDC")
+# db_drive <- get_country_inputDB("USA_CDC")
+db_drive <- read_rds(paste0(dir_n, ctr, ".rds"))
 # -------------------------------------
 
 # info by age for each state!!
@@ -33,9 +34,15 @@ db <- read_csv(data_source)
 unique(db$`Age Group`)
 unique(db$`Group`)
 
-ages_all <- c("All Ages", "Under 1 year", "0-17 years", "1-4 years", "5-14 years", "15-24 years", "18-29 years", "25-34 years", "30-49 years", "35-44 years", "45-54 years", "50-64 years", "55-64 years", "65-74 years", "75-84 years", "85 years and over")
-ages1 <- c("All Ages", "Under 1 year", "1-4 years", "5-14 years", "15-24 years", "25-34 years", "35-44 years", "45-54 years", "55-64 years", "65-74 years", "75-84 years", "85 years and over")
-ages2 <- c("All Ages", "0-17 years", "18-29 years", "30-49 years", "50-64 years", "65-74 years", "75-84 years", "85 years and over")
+ages_all <- c("All Ages", "Under 1 year", "0-17 years", "1-4 years", 
+              "5-14 years", "15-24 years", "18-29 years", "25-34 years", 
+              "30-49 years", "35-44 years", "45-54 years", "50-64 years", 
+              "55-64 years", "65-74 years", "75-84 years", "85 years and over")
+ages1 <- c("All Ages", "Under 1 year", "1-4 years", "5-14 years", 
+           "15-24 years", "25-34 years", "35-44 years", "45-54 years", 
+           "55-64 years", "65-74 years", "75-84 years", "85 years and over")
+ages2 <- c("All Ages", "0-17 years", "18-29 years", "30-49 years", 
+           "50-64 years", "65-74 years", "75-84 years", "85 years and over")
 
 date_report <- mdy(db$`Data As Of`[1])
 date_f <- mdy(db$`End Date`[1])
@@ -91,7 +98,7 @@ db4 <- db3 %>%
                          Sex == "All Sexes" ~ "b")) 
 
 
-# Imputation of NAs using the same distribution that the national level
+# Imputation of NAs using the same distribution of the national level
 #######################################################################
 
 all_us <- db4 %>% 
@@ -165,10 +172,7 @@ ages_na3 <- ages_na2 %>%
 # binding data and imputations for NAs and adjusting to COVerAGE-DB format
 ###########################################################################
 
-date_data <- paste(sprintf("%02d",day(date_f)),
-                   sprintf("%02d",month(date_f)),
-                   year(date_f),
-                   sep=".")
+date_data <- ddmmyyyy(date_f)
 
 db5 <- db4 %>% 
   filter(!is.na(Value),
@@ -264,6 +268,8 @@ unique(out$Date)
 write_sheet(out,
              ss = ss_i,
              sheet = "database")
+
+write_rds(out, paste0(dir_n, ctr, ".rds"))
 log_update(pp = ctr, N = nrow(out))
 
 ############################################
