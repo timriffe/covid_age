@@ -2365,3 +2365,15 @@ e == 'US_TX13.09.2020', Sex == 'b', Measure == 'Cases'
 # Age harmonization 
  Tue Jul 06 02:56:09 2021 
 
+
+# remake coverage map 
+ Tue Jul 06 06:55:00 2021 
+
+
+# push outputs to OSF 
+ Tue Jul 06 06:59:51 2021 
+
+
+# Commit dashboards and buildlog 
+ Tue Jul 06 07:04:07 2021 
+
