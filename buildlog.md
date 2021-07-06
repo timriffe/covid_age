@@ -2377,3 +2377,7 @@ e == 'US_TX13.09.2020', Sex == 'b', Measure == 'Cases'
 # Commit dashboards and buildlog 
  Tue Jul 06 07:04:07 2021 
 
+
+# update build series log 
+ Tue Jul 06 07:04:20 2021 
+
