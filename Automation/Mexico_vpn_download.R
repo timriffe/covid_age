@@ -6,7 +6,7 @@ source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/0
 m_url <- "https://www.gob.mx/salud/documentos/datos-abiertos-152127"
 html <- read_html(m_url)
 # locating the links for the data
-url1 <- html_nodes(html, xpath = '/html/body/main/div/div[1]/div[4]/div/table[2]/tbody/tr[1]/td[2]/a') %>%
+url1 <- html_nodes(html, xpath = '/html/body/main/div/div[1]/div[4]/div[1]/table[2]/tbody/tr[1]/td[2]/a') %>%
   html_attr("href")
 
 
