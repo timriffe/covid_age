@@ -38,20 +38,44 @@ OWD <- read_csv("https://covid.ourworldindata.org/data/owid-covid-data.csv") %>%
   filter(location == "Vietnam") %>% 
   select(date, total_cases, new_cases, total_deaths, new_deaths) 
 
+#New data read in 
+#JD: Starting June 2021 uploaded data from the website changed from whole history to only data for that day
+# Adapted the code to read in last file with whole data (31.05.2021) and all the files after that to 
+# cumulate numbers 
+
 # what's the most recent Vietnam capture we have?
 VTcaptured <- list.files(capture_path) %>% grep(pattern = "Vietnam",value =TRUE)
 
 whichVT <- VTcaptured %>% 
   gsub(pattern = "Vietnam", replacement = "") %>% 
   gsub(pattern = ".xlsx", replacement = "") %>% 
-  lubridate::ymd() %>% 
-  which.max()
+  lubridate::ymd() 
 
-thisVT <- VTcaptured[whichVT]
+whichVT2= which(whichVT >= "2021-05-31")
+
+thisVT <- VTcaptured[whichVT2]
+
+file.list <- (file.path(capture_path, thisVT))
+df.list <- lapply(file.list, read_excel)
+
+IN <- bind_rows(df.list)
+
+
+###################################################################################
+# what's the most recent Vietnam capture we have?
+#VTcaptured <- list.files(capture_path) %>% grep(pattern = "Vietnam",value =TRUE)
+
+#whichVT <- VTcaptured %>% 
+  #gsub(pattern = "Vietnam", replacement = "") %>% 
+  #gsub(pattern = ".xlsx", replacement = "") %>% 
+  #lubridate::ymd() %>% 
+  #which.max()
+
+#thisVT <- VTcaptured[whichVT]
 
 # Read in the microdata
-IN <- readxl::read_xlsx(file.path(capture_path, thisVT))
-
+#IN <- readxl::read_xlsx(file.path(capture_path, thisVT))
+#################################################################################
 
 colnames(IN) <- c("x","CaseID","Age","Place","Status","Nationality")
 
