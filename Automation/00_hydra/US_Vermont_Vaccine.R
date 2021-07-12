@@ -33,11 +33,14 @@ Out_age= In%>%
   select(- Dose_1_Male, -Dose_1_Female, -Dose_1_Sex_Unknown, -Dose_2_Male, -Dose_2_Female, -Dose_2_Sex_Unknown, -FID, Date=Dates) %>% 
   pivot_longer(!Date & !County, names_to= "Age", values_to= "Value")%>%
   mutate(Date= lubridate::mdy(stringr::str_extract(Date,"(?=-).*?$")))%>%
+  #remove NA from Value
+  mutate(Value = case_when(is.na(Value)~ "UNK",
+                           TRUE~ as.character(Value)))%>%
+  mutate(Value = as.numeric(Value))%>%
+  subset(Value != "UNK")%>%
   # aggregate the county level data to state level 
   group_by(Date, Age) %>% 
   summarize(Value = sum(Value), .groups="drop")%>% 
-  mutate(Value = case_when(is.na(Value)~ "0",
-                           TRUE~ as.character(Value)))%>%
   separate(Age, c("Dose", "Measure", "Age"), "_")%>%
   mutate(Measure= recode(Measure, 
                          `1` = "Vaccination1",
@@ -47,7 +50,12 @@ Out_age= In%>%
     Age == "18" ~ 17L,
     Age == "50"~ 10L,
     Age == "75"~ 30L,
-    TRUE~ 15L))%>% 
+    TRUE~ 15L))%>%
+  #get cumulative numbers 
+arrange(Age, Date,Measure) %>% 
+  group_by(Age,Measure) %>% 
+  mutate(Value = cumsum(Value)) %>% 
+  ungroup()%>% 
   mutate(
     Sex = "b",
     Metric = "Count") %>% 
@@ -64,17 +72,21 @@ Out_age= In%>%
   mutate(AgeInt = as.character(AgeInt))
 
 
+
 # Totals by sex 
 
 Out_sex= In %>%
   select(Dose_1_Male,Dose_1_Female,Dose_1_Sex_Unknown, Dose_2_Male, Dose_2_Female, Dose_2_Sex_Unknown, County, Date=Dates) %>% 
   pivot_longer(!Date & !County, names_to= "Sex", values_to= "Value")%>%
   mutate(Date= lubridate::mdy(stringr::str_extract(Date,"(?=-).*?$")))%>%
+  #remove NA from Value
+  mutate(Value = case_when(is.na(Value)~ "UNK",
+                           TRUE~ as.character(Value)))%>%
+  mutate(Value = as.numeric(Value))%>%
+  subset(Value != "UNK")%>%
   # aggregate the county level data to state level 
   group_by(Date, Sex) %>% 
   summarize(Value = sum(Value), .groups="drop")%>% 
-  mutate(Value = case_when(is.na(Value)~ "0",
-                           TRUE~ as.character(Value)))%>%
   separate(Sex, c("Dose", "Measure", "Sex"), "_")%>%
   mutate(Measure= recode(Measure, 
                          `1` = "Vaccination1",
@@ -83,6 +95,10 @@ Out_sex= In %>%
                      `Male`= "m",
                      `Female`= "f",
                      `Sex`= "UNK"))%>%
+arrange(Sex, Date,Measure) %>% 
+  group_by(Sex,Measure) %>% 
+  mutate(Value = cumsum(Value)) %>% 
+  ungroup()%>% 
   mutate(
   Metric = "Count",
   Age= "TOT", 
