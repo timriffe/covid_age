@@ -39,30 +39,48 @@ bit.ly_url <- "bit.ly/DataDropPH"
 
 drive_readme_url <- longurl::expand_urls(bit.ly_url)
 
-# Download the README pdf that contains the link!
+#Download the README pdf that contains the link!
 #drive_id_shorter <- drive_readme_url$expanded_url %>% 
-  #gsub(pattern = "https://drive.google.com/drive/folders/",
-     #  replacement = "") %>% 
+ # gsub(pattern = "https://drive.google.com/drive/folders/",
+  #replacement = "") %>% 
   #gsub(pattern = "?usp=sharing",
-       #replacement = "") %>% 
-  #googledrive::as_id() %>% 
- # drive_ls() %>% 
- # filter(grepl(name,pattern = "READ ME FIRST")) %>% 
- # drive_download(path = "Data/PH_README.pdf",
-                 #overwrite=TRUE)
+  #replacement = "") %>% 
+ # googledrive::as_id() %>% 
+ #drive_ls() %>% 
+ #filter(grepl(name,pattern = "READ ME FIRST")) %>% 
+ #drive_download(path = "Data/PH_README.pdf",
+ # overwrite=TRUE)
 
 
-drive_id_shorter <- drive_readme_url$expanded_url %>% 
+#there is more than one file with this name in the folder,but
+#but the "read me first" seems to be the only stable part of the naming
+#I suggest to read all in and then selct on 
+
+#read in all files in folder 
+drive_id <- drive_readme_url$expanded_url %>% 
   gsub(pattern = "https://drive.google.com/drive/folders/",
        replacement = "") %>% 
   gsub(pattern = "?usp=sharing",
        replacement = "") %>% 
   googledrive::as_id() %>% 
   drive_ls() %>% 
-  filter(grepl(name,pattern = "(06_29)")) %>% 
+  filter(grepl(name,pattern = "READ ME FIRST")) 
+
+
+#select one with most recent date
+
+drive_id_unique= drive_id%>% 
+mutate(date=stringr::str_extract(string = name,
+                                 pattern = "(?<=\\().*(?=\\))"))%>%
+  mutate(Date= paste0(date,"_",year(today())))%>%
+  mutate(Date = mdy(Date))%>% 
+  filter(Date==max(Date))
+
+#read data 
+
+drive_id_shorter= drive_id_unique%>% 
   drive_download(path = "Data/PH_README.pdf",
                  overwrite=TRUE)
-
 
 
 # read as text ()
