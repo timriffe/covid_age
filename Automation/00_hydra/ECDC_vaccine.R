@@ -28,8 +28,7 @@ In= read.csv("https://opendata.ecdc.europa.eu/covid19/vaccine_tracker/csv/data.c
 Out= In %>%
   #select countries we need 
   subset(Region== "BG"| Region== "CY" | Region== "HR"| Region== "HU"|  Region== "IE"| 
-          Region== "LU" | Region== "MT" | Region== "RO"|
-           Region== "SK" | Region== "PL")%>%
+          Region== "LU" | Region== "MT" | Region== "RO"| Region== "PL")%>%
   select(YearWeekISO, Vaccinations= UnknownDose, Vaccination1= FirstDose, Vaccination2= SecondDose, Short=Region,TargetGroup)%>%
   #remove category medical personnel and long term care residents 
   subset(TargetGroup != "HCW") %>%
@@ -89,7 +88,6 @@ Out= In %>%
                      `LU`= "Luxembourg",
                      `MT`="Malta",
                      `PL`="Poland",
-                     `SK`="Slovakia",
                      `RO`="Romania"))%>% 
   mutate(
     Date = ymd(Date),

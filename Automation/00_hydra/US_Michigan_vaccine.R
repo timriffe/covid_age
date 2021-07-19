@@ -14,34 +14,67 @@ if (!"email" %in% ls()){
 ctr <- "US_Michigan_vaccine"
 dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 
+
+
+DataArchive <- read_rds(paste0(dir_n, ctr, ".rds"))
+
+
 library(readxl)
 
 #Read in data 
 
 m_url <- "https://www.michigan.gov/coronavirus/0,9753,7-406-98178_103214-547150--,00.html"
 
-links <- scraplinks(m_url) %>% 
-  filter(str_detect(url, "Covid_Vaccine_Doses_Administered")) %>% 
+
+#data until 29.05.2021
+
+links1 <- scraplinks(m_url) %>% 
+  filter(str_detect(url, "COVID_Vaccines_Administered-20210529")) %>% 
   select(url) 
 
-url <- 
-  links %>% 
+url1 <- 
+  links1 %>% 
   select(url) %>% 
   dplyr::pull()
 
-url_d = paste0("https://www.michigan.gov",url)
+url_d1 = paste0("https://www.michigan.gov",url1)
 
-data_source <- paste0(dir_n, "Data_sources/", ctr, "/vaccine_age_",today(), ".xlsx")
+data_source1 <- paste0(dir_n, "Data_sources/", ctr, "/vaccine_age_until_05_2021",today(), ".xlsx")
 
-#data_source <- paste0("U:/COVerAgeDB/Datenquellen/Vaccination/Michigan_vaccine",today(), ".xlsx")
+download.file(url_d1, data_source1, mode = "wb")
 
-download.file(url_d, data_source, mode = "wb")
+IN1= read_xlsx(data_source1, sheet = 3)
 
-IN= read_xlsx(data_source, sheet = 3)
+
+# data since 30.05.2021
+links2 <- scraplinks(m_url) %>% 
+  filter(str_detect(url, "COVID_Vaccines_Administered_20210530")) %>% 
+  select(url) 
+
+
+url2 <- 
+  links2 %>% 
+  select(url) %>% 
+  dplyr::pull()
+
+url_d2 = paste0("https://www.michigan.gov",url1)
+
+data_source2 <- paste0(dir_n, "Data_sources/", ctr, "/vaccine_age_since_06_2021",today(), ".xlsx")
+
+download.file(url_d2, data_source2, mode = "wb")
+
+IN2= read_xlsx(data_source2, sheet = 3)
+
+
+#put dataframes togehter 
+
+IN= rbind(IN1, IN2)
+
+
 
 #Process 
 
-unique(IN$`Age Group`)
+unique(IN$`Sex`)
 
 
 Out = IN %>%
@@ -93,7 +126,6 @@ mutate(Measure = recode(Measure,
          Age, AgeInt, Metric, Measure, Value)
 
 
-
 #save output 
 
 write_rds(Out, paste0(dir_n, ctr, ".rds"))
@@ -101,6 +133,8 @@ log_update(pp = ctr, N = nrow(Out))
 
 #archive data 
 
+
+data_source <- c(data_source1, data_source2)
 
 zipname <- paste0(dir_n, 
                   "Data_sources/", 
