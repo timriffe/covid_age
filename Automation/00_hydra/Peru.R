@@ -38,16 +38,20 @@ download.file(cases_url, destfile = data_source_c, mode = "wb")
 download.file(deaths_url, destfile = data_source_d, mode = "wb")
 download.file(vacc_url, destfile = data_source_v, mode = "wb")
 
+
+#JD: read in from Url was failing, I changed it to reading in the downloaded csv
 # cases
-db_c <- read_delim(cases_url, delim = ";") %>% 
-  as_tibble()
-
+#db_c <- read_delim(cases_url, delim = ";") %>% 
+ # as_tibble()
 # deaths
-db_d <- read_delim(deaths_url, delim = ";") %>% 
-  as_tibble()
-
+#db_d <- read_delim(deaths_url, delim = ";") %>% 
+  #as_tibble()
 # Vaccines
-db_v <- read_csv(data_source_v)
+#db_v <- read_csv(data_source_v)
+
+db_c= read.csv(data_source_c, sep = ";")
+db_d = read.csv(data_source_d, sep = ";")
+db_v= read.csv(data_source_v, sep = ",")
 
 
 # deaths ----------------------------------------------
