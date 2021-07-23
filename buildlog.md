@@ -1,32 +1,32 @@
 
 # New build log 
- Thu Jul 22 01:00:10 2021 
+ Fri Jul 23 01:00:11 2021 
 
 
 # begin resolution of multiple sources per population 
- Thu Jul 22 01:00:10 2021 
+ Fri Jul 23 01:00:11 2021 
 
 
 # Resolve USA CDC overlaps 
- Thu Jul 22 01:01:32 2021 
+ Fri Jul 23 01:01:36 2021 
 
 USA CDC resolved
- 48482 rows removed
+ 49711 rows removed
 
 # Resolve Brazil TRC overlaps 
- Thu Jul 22 01:01:39 2021 
+ Fri Jul 23 01:01:43 2021 
 
 Brazil TRC resolved
  0 rows removed
 
 # Resolve ECDC overlaps 
- Thu Jul 22 01:01:44 2021 
+ Fri Jul 23 01:01:49 2021 
 
 ECDC resolved
  0 rows removed
 
 # prep (resolve_UNKUNK) 
- Thu Jul 22 01:03:44 2021 
+ Fri Jul 23 01:03:51 2021 
 
 filter( Country == 'Vietnam', Region == 'All', Date == '14.03.2020', Measure == 'Deaths' )
 filter( Country == 'Vietnam', Region == 'All', Date == '15.03.2020', Measure == 'Deaths' )
@@ -43,15 +43,15 @@ filter( Country == 'Vietnam', Region == 'All', Date == '08.06.2021', Measure == 
 filter( Country == 'Vietnam', Region == 'All', Date == '09.06.2021', Measure == 'Cases' )
 
 # A (convert_fractions_sexes) 
- Thu Jul 22 01:10:47 2021 
+ Fri Jul 23 01:11:35 2021 
 
 
 # B (redistribute_unknown_age) 
- Thu Jul 22 01:16:28 2021 
+ Fri Jul 23 01:17:44 2021 
 
 
 # C (rescale_to_total) 
- Thu Jul 22 01:37:58 2021 
+ Fri Jul 23 01:41:18 2021 
 
 filter( Code == 'GQ010.03.2021', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'GQ010.03.2021', Sex == 'b', Measure == 'Deaths' )
@@ -122,27 +122,27 @@ filter( Code == 'ME010.04.2021', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'ME010.04.2021', Sex == 'b', Measure == 'Deaths' )
 
 # D (infer_cases_from_deaths_and_ascfr) 
- Thu Jul 22 02:04:39 2021 
+ Fri Jul 23 02:10:08 2021 
 
 
 # E (infer_deaths_from_cases_and_ascfr) 
- Thu Jul 22 02:13:39 2021 
+ Fri Jul 23 02:19:27 2021 
 
 
 # G (redistribute_unknown_sex) 
- Thu Jul 22 02:22:39 2021 
+ Fri Jul 23 02:28:49 2021 
 
 
 # H (rescale_sexes) 
- Thu Jul 22 02:29:36 2021 
+ Fri Jul 23 02:36:07 2021 
 
 
 # I (infer_both_sex) 
- Thu Jul 22 02:34:23 2021 
+ Fri Jul 23 02:41:17 2021 
 
 
 # J (maybe_lower_closeout) 
- Thu Jul 22 02:41:32 2021 
+ Fri Jul 23 02:48:39 2021 
 
 filter( Code == 'CA_TNT15.07.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'CA_TNT15.07.2020', Sex == 'm', Measure == 'Cases' )
@@ -2179,19 +2179,12 @@ filter( Code == 'US_CA_21.11.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_CA_22.11.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_CA_23.11.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_CA_24.11.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'US_CA_24.11.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'US_CA_25.11.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'US_CA_25.11.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'US_CA_26.11.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'US_CA_26.11.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'US_CA_27.11.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'US_CA_27.11.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'US_CA_28.11.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'US_CA_28.11.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'US_CA_29.11.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'US_CA_29.11.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'US_CA_30.11.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'US_CA_30.11.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'US_CA_01.12.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_CA_02.12.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_CA_03.12.2020', Sex == 'b', Measure == 'Cases' )
@@ -2562,21 +2555,5 @@ filter( Code == 'US_TX11.09.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_TX13.09.2020', Sex == 'b', Measure == 'Cases' )
 
 # Age harmonization 
- Thu Jul 22 03:01:45 2021 
-
-
-# remake coverage map 
- Thu Jul 22 08:08:53 2021 
-
-
-# push outputs to OSF 
- Thu Jul 22 08:13:48 2021 
-
-
-# Commit dashboards and buildlog 
- Thu Jul 22 08:18:11 2021 
-
-
-# update build series log 
- Thu Jul 22 08:18:26 2021 
+ Fri Jul 23 03:09:55 2021 
 
