@@ -75,7 +75,7 @@ if (nrow(rubric) > 0){
     mutate(checkid = paste(Country, Region, Measure, Short)) %>% 
     filter(!checkid %in% codesIN) %>% 
     select(-checkid)
-  
+
   # bind on the data we just read in
   inputDBhold <- bind_rows(inputDBhold, inputDB) %>% 
     sort_input_data()
