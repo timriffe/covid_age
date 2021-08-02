@@ -214,7 +214,7 @@ download.file(v_url, destfile = v_data_source, mode="wb")
 # So please include both column. 
 
 # Get by age but not sex
-v_age <- read_xlsx(v_data_source, sheet = "Age - municipality", skip = 1)
+v_age <- read_xlsx(v_data_source, sheet = "Age – municipality", skip = 1)
 v_age[v_age == "*"] <- NA
 
 v_age2 <-
@@ -247,7 +247,7 @@ v_age2 <-
 # Note that sex == other is coded as unknown, after checking with Jessica on 
 # 20210330
 
-v_sex <- read_xlsx(v_data_source, sheet = "Sex - municipality", skip = 1)
+v_sex <- read_xlsx(v_data_source, sheet = "Sex – municipality", skip = 1)
 v_sex[v_sex == "*"] <- NA
 
 v_sex2 <- 

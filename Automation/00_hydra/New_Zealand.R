@@ -176,7 +176,7 @@ if (date_f > last_date_drive){
   
 db_v <- 
     read_xlsx(data_source6,
-    sheet = "Ethnicity, Age, Gender by dose")%>%
+    sheet = "DHBofResidence by ethnicity")%>%
   select(Age= `Ten year age group`, Sex= Gender, Measure= `Dose number`, Value= `# doses administered`)%>%
   #sum up numbers that were separated by race 
   group_by(Age, Sex, Measure) %>% 
@@ -190,7 +190,7 @@ db_v <-
   mutate(Sex = case_when(
    Sex == "Male" ~ "m",
    Sex == "Female" ~ "f",
-   Sex== "Other / Unknown" ~ "UNK"),
+   Sex== "Unknown/Other" ~ "UNK"),
    Measure= case_when(
       Measure== "1" ~ "Vaccination1",
      Measure== "2" ~ "Vaccination2"),
