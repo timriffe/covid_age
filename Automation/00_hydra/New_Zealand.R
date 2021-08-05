@@ -145,7 +145,7 @@ if (date_f > last_date_drive){
   url_vaccine <- "https://www.health.govt.nz/our-work/diseases-and-conditions/covid-19-novel-coronavirus/covid-19-data-and-statistics/covid-19-vaccine-data#age"
   
   links <- scraplinks(url_vaccine) %>% 
-    filter(str_detect(url, "covid_vaccinations")) %>% 
+    filter(str_detect(url, "covid-vaccinations")) %>% 
     select(url) 
   
   url <- 
