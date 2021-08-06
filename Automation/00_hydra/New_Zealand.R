@@ -145,7 +145,7 @@ if (date_f > last_date_drive){
   url_vaccine <- "https://www.health.govt.nz/our-work/diseases-and-conditions/covid-19-novel-coronavirus/covid-19-data-and-statistics/covid-19-vaccine-data#age"
   
   links <- scraplinks(url_vaccine) %>% 
-    filter(str_detect(url, "covid_vaccinations")) %>% 
+    filter(str_detect(url, "covid-vaccinations")) %>% 
     select(url) 
   
   url <- 
@@ -176,7 +176,7 @@ if (date_f > last_date_drive){
   
 db_v <- 
     read_xlsx(data_source6,
-    sheet = "Ethnicity, Age, Gender by dose")%>%
+    sheet = "DHBofResidence by ethnicity")%>%
   select(Age= `Ten year age group`, Sex= Gender, Measure= `Dose number`, Value= `# doses administered`)%>%
   #sum up numbers that were separated by race 
   group_by(Age, Sex, Measure) %>% 
@@ -190,7 +190,7 @@ db_v <-
   mutate(Sex = case_when(
    Sex == "Male" ~ "m",
    Sex == "Female" ~ "f",
-   Sex== "Other / Unknown" ~ "UNK"),
+   Sex== "Unknown/Other" ~ "UNK"),
    Measure= case_when(
       Measure== "1" ~ "Vaccination1",
      Measure== "2" ~ "Vaccination2"),

@@ -121,10 +121,10 @@ date= substr(date_text, 13, 21)%>%
 
 Out_vaccine= In_vaccine %>%
   select(Region= ...2, Vaccinations_TOT= `Gesamtzahl bisher verabreichter Impfungen`, 
-         Vaccination1_TOT= `Gesamtzahl  mindestens einmal geimpft`, Vaccination2_TOT= `Gesamtzahl vollständig geimpft`,
+         Vaccination1_TOT= `Gesamtzahl  mindestens einmal geimpft*`, Vaccination2_TOT= `Gesamtzahl vollständig geimpft*`,
          Vaccination1_0_17= ...7, Vaccination1_18_59=...8, Vaccination1_60= ...9, Vaccination2_0_17= ...11, Vaccination2_18_59=...12, Vaccination2_60= ...13)%>%
   slice(3:20)%>%
-  subset(Region!= "Bundesressorts**")%>%
+  subset(Region!= "Bundesressorts****")%>%
   mutate(Vaccinations_TOT = as.character(Vaccinations_TOT))%>%
   mutate(Vaccination1_TOT = as.character(Vaccination1_TOT))%>%
   mutate(Vaccination2_TOT = as.character(Vaccination2_TOT))%>%
