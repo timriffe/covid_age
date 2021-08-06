@@ -3382,3 +3382,7 @@ filter( Code == 'US_VA04.08.2021', Sex == 'b', Measure == 'Cases' )
 # Commit dashboards and buildlog 
  Fri Aug 06 08:08:20 2021 
 
+
+# update build series log 
+ Fri Aug 06 08:08:34 2021 
+
