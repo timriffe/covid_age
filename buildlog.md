@@ -3381,3 +3381,7 @@ filter( Code == 'US_VA05.08.2021', Sex == 'b', Measure == 'Deaths' )
 # Commit dashboards and buildlog 
  Sat Aug 07 07:45:04 2021 
 
+
+# update build series log 
+ Sat Aug 07 07:45:18 2021 
+
