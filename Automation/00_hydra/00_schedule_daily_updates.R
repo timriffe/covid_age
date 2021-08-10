@@ -121,12 +121,7 @@ for(c in scripts){
 
 # for individual scheduling
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
-sched("Argentina", tm = "14:57", email = auto_update_email, wd = auto_update_wd)
-sched("US_NYC", tm = "12:48",email = auto_update_email, wd = auto_update_wd)
-sched("Austria", tm = "13:09", email = auto_update_email, wd = auto_update_wd)
-sched("Hungary", tm = "09:42", email = auto_update_email, wd = auto_update_wd)
-
-sched("Germany_vaccine", tm = "14:17", email = auto_update_email, wd = auto_update_wd)
+sched("Austria", tm = "13:20", email = auto_update_email, wd = auto_update_wd)
 
 
 

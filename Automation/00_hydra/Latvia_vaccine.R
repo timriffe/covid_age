@@ -52,9 +52,13 @@ Out_vaccine= In_vaccine %>%
   is.na(Sex)~ "UNK",
   Sex == "V" ~ "m",
   Sex == "S" ~ "f",
-  Sex== "NULL" ~ "UNK")) %>%
-  group_by(Date,Sex, Age, Measure)%>% 
-  arrange(Date,Sex, Age, Measure)%>% 
+  Sex== "N" ~ "UNK")) %>%
+  # aggregate to daily sum 
+  group_by(Date, Age, Measure, Sex) %>% 
+  summarize(Value = sum(Value), .groups="drop")%>%
+  tidyr::complete(Date, Sex, Age, Measure, fill = list(Value = 0))%>%
+  #group_by(Date,Sex,Age,Measure)%>% 
+  arrange(Date,Sex,Age, Measure)%>% 
   group_by(Sex, Age, Measure) %>%
   mutate(Value = cumsum(Value)) %>% 
   ungroup()%>%

@@ -38,23 +38,34 @@ Out <- IN %>%
                       `Not reported` = "UNK",
                       `Other` = "UNK"))%>%
   mutate(AgeInt = case_when(
+    Age == "0-11" ~ 12L,
     Age == "0-15" ~ 16L,
     Age == "0-17" ~ 18L,# The age groups vary by time and region, not sure if this is the best way to deal with that 
+    Age == "12-17" ~ 6L,
     Age == "16-69" ~ 54L,
+    Age == "18-29" ~ 11L,
     Age == "18-49" ~ 32L,
     Age == "18-69" ~ 52L,
+    Age == "30-39" ~ 10L,
+    Age == "40-49" ~ 10L,
     Age == "50-59" ~ 10L,
     Age == "60-69" ~ 10L,
     Age == "70-79" ~ 10L,
     Age == "80+" ~ 25L,
     Age == "UNK" ~ NA_integer_,
+    Age == "All ages" ~ NA_integer_,
     TRUE ~ 5L))%>%
   mutate(Age=recode(Age, 
                     `0-15`="0",
                     `0-17`="0",
+                    `0-11`="0",
+                    `12-17`="12",
                     `16-69`="16",
                     `18-69`="18",
+                    `18-29`="18",
                     `18-49`="18",
+                    `30-39`="30",
+                    `40-49`="40",
                     `50-59`="50",
                     `60-69`="60",
                     `70-74`="70",
@@ -62,7 +73,8 @@ Out <- IN %>%
                     `75-79`="75",
                     `80+`="80",
                     `Unknown`="UNK",
-                    `Not reported`="UNK"))%>%
+                    `Not reported`="UNK",
+                    `All ages`="TOT" ))%>%
   mutate(Value=recode(Value, 
                     `<5`="2"))%>%
   subset(Value != ("na"))%>% #Mostly in Quebec Vaccination2 had na. decided to remove them, because according to vaccine brands 
