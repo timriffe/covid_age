@@ -122,20 +122,7 @@ for(c in scripts){
 
 # for individual scheduling
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
-<<<<<<< HEAD
 sched("USA_vaccine", tm = "16:06", email = auto_update_email, wd = auto_update_wd)
-=======
-<<<<<<< HEAD
-# sched("Argentina", tm = "14:57", email = auto_update_email, wd = auto_update_wd)
-# sched("US_NYC", tm = "12:48",email = auto_update_email, wd = auto_update_wd)
-# sched("Austria", tm = "13:09", email = auto_update_email, wd = auto_update_wd)
-# sched("Hungary", tm = "09:42", email = auto_update_email, wd = auto_update_wd)
-# 
-# sched("Uruguay_vaccine", tm = "14:42", email = auto_update_email, wd = auto_update_wd)
-
->>>>>>> 141e75c6fc79e677245583126a06dbe64c86ca26
-
-
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -154,11 +141,9 @@ delete_sched("US_Indiana")
 
 
 
-
-
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# danger zone!!!! deleting all schedules
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# danger zone!!!! deleting all scheduled tasks
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 for(c in scripts){
   delete_sched(c)
 }
