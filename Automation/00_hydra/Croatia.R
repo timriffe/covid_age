@@ -44,24 +44,21 @@ RegionCode = c("_07_","_12_","_19_","_21_","_18_","_04_","_06_","_02_",
                "_05_","_10_","_16_","_13_","_01_")) 
 
 
-IN %>% 
-  pull(Zupanija) %>% 
-  unique() %>% 
-  sort() %>% 
-  dput()
-IN %>% 
-  dplyr::pull(Zupanija) %>% 
-  unique() %>%
-  enc2utf8() %>% 
-  Encoding()
-IN %>% 
-  select(Zupanija) %>% 
-  distinct() %>% 
-  left_join(Regions)
-names(Zs) <- NULL
+
+# IN %>% 
+#   dplyr::pull(Zupanija) %>% 
+#   unique() %>%
+#   enc2utf8() %>% 
+#   Encoding()
+# IN %>% 
+#   select(Zupanija) %>% 
+#   distinct() %>% 
+#   left_join(Regions)
+# names(Zs) <- NULL
 
 IN2 <-
   IN %>% 
+  dplyr::filter(Zupanija != "") %>% 
   left_join(Regions, by = "Zupanija") %>% 
   select(Sex = spol, dob, Date = Datum, Region = Zupanija) %>%  # Regions = Counties
   mutate( Date = lubridate::ymd(Date),

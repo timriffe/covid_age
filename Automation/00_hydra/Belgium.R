@@ -168,7 +168,8 @@ db_v2 <- db_v %>%
   group_by(Region, Sex, Age, Measure) %>% 
   mutate(Value = cumsum(new)) %>% 
   ungroup() %>% 
-  select(-new) 
+  select(-new)
+
 
 db_t2 <- db_t %>% 
   select(Region = REGION,
@@ -194,6 +195,10 @@ db_nal <- bind_rows(db_cd2, db_t2, db_v2) %>%
   mutate(Region = "All") %>% 
   ungroup()
 
+
+
+#JD: Changed the AgeInt here, it was missing for the vaccine data 
+
 out <- bind_rows(db_nal,
                  db_cd2 %>% 
                    filter(Region != "UNK"),
@@ -208,7 +213,16 @@ out <- bind_rows(db_nal,
                             Measure == "Deaths" & Age %in% c("25", "45") ~ 20,
                             Measure == "Deaths" & Age == "65" ~ 10,
                             Measure == "Deaths" & Age == "75" ~ 15,
-                            Measure == "Deaths" & Age == "90" ~ 15),
+                            Measure == "Deaths" & Age == "90" ~ 15,
+                            #JD: The AgeInt information for vaccines was missing
+                            Measure == "Vaccination1" & Age == "0" ~ 18,
+                            Measure == "Vaccination2" & Age == "0" ~ 18,
+                            Measure == "Vaccination1" & Age == "18" ~ 16,
+                            Measure == "Vaccination2" & Age == "18" ~ 16,
+                            Measure == "Vaccination1" & Age == "90" ~ 15,
+                            Measure == "Vaccination2" & Age == "90" ~ 15,
+                            Measure == "Vaccination1" & Age %in% c("35", "45", "55","65","75") ~ 10,
+                            Measure == "Vaccination2" & Age %in% c("35", "45", "55","65","75") ~ 10),
          date_f = Date,
          Date = paste(sprintf("%02d",day(date_f)),
                       sprintf("%02d",month(date_f)),
@@ -222,6 +236,36 @@ out <- bind_rows(db_nal,
          Metric = "Count") %>% 
   arrange(Region, date_f, Measure, Sex, suppressWarnings(as.integer(Age))) %>% 
   select(Country, Region, Code,  Date, Sex, Age, AgeInt, Metric, Measure, Value)
+
+#original final processing
+# out <- bind_rows(db_nal,
+#                  db_cd2 %>% 
+#                    filter(Region != "UNK"),
+#                  db_t2 %>% 
+#                    filter(Region != "UNK"),
+#                  db_v2 %>% 
+#                    filter(Region != "UNK")) %>% 
+#   mutate(Country = "Belgium",
+#          AgeInt = case_when(Measure == "Cases" & Age != "90" ~ 10,
+#                             Measure == "Cases" & Age == "90" ~ 15,
+#                             Measure == "Deaths" & Age == "0" ~ 25,
+#                             Measure == "Deaths" & Age %in% c("25", "45") ~ 20,
+#                             Measure == "Deaths" & Age == "65" ~ 10,
+#                             Measure == "Deaths" & Age == "75" ~ 15,
+#                             Measure == "Deaths" & Age == "90" ~ 15),
+#          date_f = Date,
+#          Date = paste(sprintf("%02d",day(date_f)),
+#                       sprintf("%02d",month(date_f)),
+#                       year(date_f),
+#                       sep="."),
+#          Code = case_when(
+#            Region == "All" ~ paste0("BE", Date),
+#            Region == "Flanders" ~ paste0("BE_VLG", Date),
+#            Region == "Wallonia" ~ paste0("BE_WAL", Date),
+#            Region == "Brussels" ~ paste0("BE_BRU", Date)),
+#          Metric = "Count") %>% 
+#   arrange(Region, date_f, Measure, Sex, suppressWarnings(as.integer(Age))) %>% 
+#   select(Country, Region, Code,  Date, Sex, Age, AgeInt, Metric, Measure, Value)
 
 unique(out$Region)
 unique(out$Age)

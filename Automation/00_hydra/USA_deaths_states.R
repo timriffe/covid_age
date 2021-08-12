@@ -255,7 +255,7 @@ db5 <- db4 %>%
 out <- db_drive %>% 
   filter(Date != date_data) %>% 
   mutate(AgeInt = as.character(AgeInt)) %>% 
-  select(-Short) %>% 
+  #select(-Short) %>% 
   bind_rows(db5) %>% 
   sort_input_data()
 

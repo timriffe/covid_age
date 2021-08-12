@@ -22,6 +22,7 @@ dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 drive_auth(email = email)
 gs4_auth(email = email)
 
+#https://covid19.gov.im/about-coronavirus/open-data-downloads/
 
 #Cases
 #load input data 
@@ -171,9 +172,8 @@ test_total= In_total %>%
 
 
 #Vaccine 
-#https://covid19.gov.im/media/1560/covid19-vaccination-record-open-data-week-ending-300521.csv
 
-url_vaccine <- "https://covid19.gov.im/media"
+url_vaccine <- "https://covid19.gov.im/about-coronavirus/open-data-downloads/"
 
 links <- scraplinks(url_vaccine) %>% 
   filter(str_detect(url, "vaccination")) %>% 
@@ -188,11 +188,17 @@ url_d = paste0("https://covid19.gov.im",url)
 
 data_source3 <- paste0(dir_n, "Data_sources/", ctr, "/vaccine_age_",today(), ".csv")
 
-download.file(url_d, data_source3, mode = "wb")
+#specify encoding
+download.file(url_d, data_source3)
 
 #Date vaccine 
+#specify encoding
+In_vaccine <- read_csv(data_source3, sep=",")
+                       
+#lapply(read.csv, fileEncoding="UCS-2LE", header = FALSE, sep = "\t")
 
-In_vaccine <- read_csv(data_source3)
+
+
 
 #process vaccine data 
 Out_vaccine = In_vaccine %>%
