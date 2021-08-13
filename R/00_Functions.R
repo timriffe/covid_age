@@ -332,25 +332,67 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
   }
   
   if (on_hydra){
+    
     hydra_path <- "N:/COVerAGE-DB/Automation/Hydra"
     
-    local_files <-
+    # EA: Only reading those files in N:/ that were modified during the last 12 hours, similar to those in Drive
+    # added on 13.08.2021
+    local_files <- 
       rubric_hydra %>% 
-      dplyr::pull(hydra_name) %>% 
-      paste0(".rds")
+      mutate(local_files = paste0(hydra_path, "/", hydra_name, ".rds"),
+             modif_time = file.info(local_files)$mtime,
+             hours_diff = difftime(Sys.time(), modif_time, units = "hours") %>% unclass()) %>% 
+      filter(hours_diff < 12) %>% 
+      dplyr::pull(local_files)
     
-    local_files <-  file.path(hydra_path,local_files)
-    hydra_data <-
-      lapply(local_files,
-             readRDS) %>% 
-      lapply(function(X){
-        X %>% 
+    # local_files <-
+    #   rubric_hydra %>%
+    #   dplyr::pull(hydra_name) %>%
+    #   paste0(".rds")
+    # 
+    # local_files <-  file.path(hydra_path,local_files)
+    
+    
+    
+    # Breaking down the loading of data from N:/, so the process does not break down
+    # each time it finds an issue
+    
+    hydra_data <- tibble()
+    
+    for(lf in local_files){
+      try(
+        temp <- 
+          read_rds(lf) %>% 
           ungroup() %>% 
           mutate(Age = as.character(Age),
                  AgeInt = as.integer(AgeInt))
-      }) %>% 
-      bind_rows() %>% 
+      )
+        
+      try(
+        hydra_data <- 
+          hydra_data %>% 
+          bind_rows(temp)
+      )
+      
+    }
+    
+    hydra_data <- 
+      hydra_data %>% 
       mutate(Short = add_Short(Code, Date))
+    
+    # hydra_data <-
+    #   lapply(local_files,
+    #          readRDS) %>% 
+    #   lapply(function(X){
+    #     X %>% 
+    #       ungroup() %>% 
+    #       mutate(Age = as.character(Age),
+    #              AgeInt = as.integer(AgeInt))
+    #   }) %>% 
+    #   bind_rows() %>% 
+    #   mutate(Short = add_Short(Code, Date))
+  
+    
   } else {
     hydra_data <- tibble()
   }
