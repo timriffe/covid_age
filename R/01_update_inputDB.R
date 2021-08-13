@@ -66,7 +66,11 @@ if (nrow(rubric) > 0){
   # EA: temporal fix while solving issue with additional columns in the InputDB.csv (12.08.2021)
   try(inputDB <- 
         inputDB %>% 
-        select(-y, -'2499'))
+        select(-y))
+  
+  try(inputDB <- 
+        inputDB %>% 
+        select(-'2499'))
   
   # saveRDS(inputDB,here("Data","inputDBhold.rds"))
   # what data combinations have we read in?
@@ -78,7 +82,11 @@ if (nrow(rubric) > 0){
   # EA: temporal fix while solving issue with additional columns in the InputDB.csv (12.08.2021)
   try(inputDBhold <- 
         inputDBhold %>% 
-        select(-y, -'2499'))
+        select(-y))
+  
+  try(inputDBhold <- 
+        inputDBhold %>% 
+        select(-'2499'))
   
   # remove any codes we just read in
   inputDBhold <- 
@@ -206,7 +214,11 @@ if (nrow(rubric) > 0){
   # EA: temporal fix while solving issue with additional columns in the InputDB.csv
   try(inputDB_prior <- 
         inputDB_prior %>% 
-        select(-y, -'2499'))
+        select(-'2499'))
+  
+  try(inputDB_prior <- 
+        inputDB_prior %>% 
+        select(-y))
   
   inputDB_out <-
     inputDB_prior %>% 
