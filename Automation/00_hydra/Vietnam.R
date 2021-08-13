@@ -1,12 +1,21 @@
 library(here)
-source(here("Automation", "00_Functions_automation.R"))
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
 
 #source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
+
+calcAgeAbr <- function(Age){
+  stopifnot(is.integer(Age))
+  Abr <- Age - Age%%5
+  Abr[Age %in% 1:4] <- 1
+  Abr
+}
+
 
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
   email <- "tim.riffe@gmail.com"
 }
+
 
 # info country and N drive address
 ctr          <- "Vietnam" # it's a placeholder
@@ -29,20 +38,44 @@ OWD <- read_csv("https://covid.ourworldindata.org/data/owid-covid-data.csv") %>%
   filter(location == "Vietnam") %>% 
   select(date, total_cases, new_cases, total_deaths, new_deaths) 
 
+#New data read in 
+#JD: Starting June 2021 uploaded data from the website changed from whole history to only data for that day
+# Adapted the code to read in last file with whole data (31.05.2021) and all the files after that to 
+# cumulate numbers 
+
 # what's the most recent Vietnam capture we have?
 VTcaptured <- list.files(capture_path) %>% grep(pattern = "Vietnam",value =TRUE)
 
 whichVT <- VTcaptured %>% 
   gsub(pattern = "Vietnam", replacement = "") %>% 
   gsub(pattern = ".xlsx", replacement = "") %>% 
-  lubridate::ymd() %>% 
-  which.max()
+  lubridate::ymd() 
 
-thisVT <- VTcaptured[whichVT]
+whichVT2= which(whichVT >= "2021-05-31")
+
+thisVT <- VTcaptured[whichVT2]
+
+file.list <- (file.path(capture_path, thisVT))
+df.list <- lapply(file.list, read_excel)
+
+IN <- bind_rows(df.list)
+
+
+###################################################################################
+# what's the most recent Vietnam capture we have?
+#VTcaptured <- list.files(capture_path) %>% grep(pattern = "Vietnam",value =TRUE)
+
+#whichVT <- VTcaptured %>% 
+  #gsub(pattern = "Vietnam", replacement = "") %>% 
+  #gsub(pattern = ".xlsx", replacement = "") %>% 
+  #lubridate::ymd() %>% 
+  #which.max()
+
+#thisVT <- VTcaptured[whichVT]
 
 # Read in the microdata
-IN <- readxl::read_xlsx(file.path(capture_path, thisVT))
-
+#IN <- readxl::read_xlsx(file.path(capture_path, thisVT))
+#################################################################################
 
 colnames(IN) <- c("x","CaseID","Age","Place","Status","Nationality")
 
@@ -71,7 +104,7 @@ Cases2 <-
   mutate(Age = as.integer(Age),
          Age = ifelse(Age == 450, 45L, Age),
          Age = ifelse(Age > 100,100L,Age), 
-         Age = DemoTools::calcAgeAbr(Age),
+         Age = calcAgeAbr(Age),
          Age = as.integer(Age)) %>% 
   group_by(`date`, `Age`) %>% 
   summarize(new = n(), .groups = "drop") 
@@ -111,6 +144,7 @@ Deaths <-
   dplyr::filter(grepl(Status,pattern = "vong")) %>% 
   mutate(ID_new = 1:n())
 
+
 OWD <- 
   OWD %>% 
   dplyr::filter(!is.na(new_deaths))
@@ -136,7 +170,7 @@ Deaths2 <-
   mutate(
     Age = as.integer(Age),
     Age = ifelse(Age > 100,100,Age),
-    Age = DemoTools::calcAgeAbr(Age)) %>% 
+    Age = calcAgeAbr(Age)) %>% 
   group_by(date, Age) %>% 
   summarize(new = n(), .groups = "drop") 
 

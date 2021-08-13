@@ -28,24 +28,55 @@ In= read.csv("https://opendata.arcgis.com/datasets/ffb0a5bfa58847f79bf2bc544980f
 
 #Process
 #Dose 1 
+# Out_vaccine1= In %>%
+#   select(Sex=sex, Age= age_group, Date= vacc_date_1)%>%
+#   separate(Date, c("Date", "Time"), " ")%>%
+#   mutate(Sex= recode(Sex, 
+#                      `M`= "m",
+#                      `V`= "f"))%>%
+#   group_by(Date, Sex, Age) %>% 
+#   summarize(Value = n(), .groups="drop")%>%
+#   arrange(Date,Sex, Age) %>% 
+#   group_by(Sex, Age) %>% 
+#   mutate(Value = cumsum(Value)) %>% 
+#   ungroup() %>%
+#   mutate(AgeInt= case_when(
+#     Age == "80" ~ 25L,
+#     TRUE~ 5L))%>%
+#   mutate(
+#     Measure = "Vaccination1",
+#     Metric = "Count")%>% 
+#   mutate(
+#     Date = ymd(Date),
+#     Date = paste(sprintf("%02d",day(Date)),    
+#                  sprintf("%02d",month(Date)),  
+#                  year(Date),sep="."),
+#     Code = paste0("LT_All",Date),
+#     Country = "Lithuania",
+#     Region = "All",)%>% 
+#   select(Country, Region, Code, Date, Sex, 
+#          Age, AgeInt, Metric, Measure, Value)
+
 Out_vaccine1= In %>%
-  select(Sex=sex, Age= age_group, Date= vacc_date_1)%>%
+  #remove missing age information 
+  filter(!is.na(birth_year_noisy))%>%
+  select(Sex=sex, birth= birth_year_noisy, Date= vacc_date_1)%>%
   separate(Date, c("Date", "Time"), " ")%>%
   mutate(Sex= recode(Sex, 
                      `M`= "m",
                      `V`= "f"))%>%
-  group_by(Date, Sex, Age) %>% 
+  group_by(Date, Sex, birth) %>% 
   summarize(Value = n(), .groups="drop")%>%
-  arrange(Date,Sex, Age) %>% 
-  group_by(Sex, Age) %>% 
+  arrange(Date,Sex, birth) %>% 
+  group_by(Sex, birth) %>% 
   mutate(Value = cumsum(Value)) %>% 
-  ungroup() %>%
-  mutate(AgeInt= case_when(
-    Age == "80" ~ 25L,
-    TRUE~ 5L))%>%
-  mutate(
+  ungroup()%>%
+#age lets assume we just take current year 
+  mutate(Age= 2021- birth)%>%
+   mutate(
     Measure = "Vaccination1",
-    Metric = "Count")%>% 
+    Metric = "Count", 
+    AgeInt= "1")%>% 
   mutate(
     Date = ymd(Date),
     Date = paste(sprintf("%02d",day(Date)),    
@@ -58,33 +89,72 @@ Out_vaccine1= In %>%
          Age, AgeInt, Metric, Measure, Value)
 
 
-
 #Dose2
+
+
+# Out_vaccine2= In %>%
+#   select(Sex=sex, Age= age_group, Date= vacc_date_2)
+# 
+# #remove everyone with a empty cell for data vaccine 2 (prob. have not received shot yet/single dose vaccine)
+# 
+# Out_vaccine2[Out_vaccine2==""]<-NA
+#   
+# Out_vaccine2= Out_vaccine2 %>%
+#   filter(!is.na(Date))%>%
+#   mutate(Sex= recode(Sex, 
+#                      `M`= "m",
+#                      `V`= "f"))%>%
+#   group_by(Date, Sex, Age) %>% 
+#   summarize(Value = n(), .groups="drop")%>%
+#   arrange(Sex, Age, Date) %>% 
+#   group_by(Sex, Age) %>% 
+#   mutate(Value = cumsum(Value)) %>% 
+#   ungroup() %>%
+#   separate(Date, c("Date", "Time"), " ")%>%
+#   mutate(AgeInt= case_when(
+#     Age == "80" ~ 25L,
+#     TRUE~ 5L))%>%
+#   mutate(
+#     Measure = "Vaccination2",
+#     Metric = "Count") %>% 
+#   mutate(
+#     Date = ymd(Date),
+#     Date = paste(sprintf("%02d",day(Date)),    
+#                  sprintf("%02d",month(Date)),  
+#                  year(Date),sep="."),
+#     Code = paste0("LT_All",Date),
+#     Country = "Lithuania",
+#     Region = "All",)%>% 
+#   select(Country, Region, Code, Date, Sex, 
+#          Age, AgeInt, Metric, Measure, Value)
+
+
 Out_vaccine2= In %>%
-  select(Sex=sex, Age= age_group, Date= vacc_date_2)
+  select(Sex=sex, birth= birth_year_noisy, Date= vacc_date_2)
 
 #remove everyone with a empty cell for data vaccine 2 (prob. have not received shot yet/single dose vaccine)
 
 Out_vaccine2[Out_vaccine2==""]<-NA
-  
+
 Out_vaccine2= Out_vaccine2 %>%
+  #remove missing age information 
+  filter(!is.na(birth))%>%
   filter(!is.na(Date))%>%
   mutate(Sex= recode(Sex, 
                      `M`= "m",
                      `V`= "f"))%>%
-  group_by(Date, Sex, Age) %>% 
+  group_by(Date, Sex, birth) %>% 
   summarize(Value = n(), .groups="drop")%>%
-  arrange(Sex, Age, Date) %>% 
-  group_by(Sex, Age) %>% 
+  arrange(Sex, birth, Date) %>% 
+  group_by(Sex, birth) %>% 
   mutate(Value = cumsum(Value)) %>% 
   ungroup() %>%
+  mutate(Age= 2021- birth)%>%
   separate(Date, c("Date", "Time"), " ")%>%
-  mutate(AgeInt= case_when(
-    Age == "80" ~ 25L,
-    TRUE~ 5L))%>%
   mutate(
     Measure = "Vaccination2",
-    Metric = "Count") %>% 
+    Metric = "Count", 
+    AgeInt= "1") %>% 
   mutate(
     Date = ymd(Date),
     Date = paste(sprintf("%02d",day(Date)),    
@@ -95,6 +165,7 @@ Out_vaccine2= Out_vaccine2 %>%
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)
+
 
 
 #put them together 

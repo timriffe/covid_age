@@ -27,7 +27,7 @@ links <- scraplinks(m_url) %>%
 # capture link with cases data by age
 cases_url <- paste0("https://www.nijz.si", 
                     links %>% 
-                      filter(str_detect(url, "dnevni_prikazi")) %>% 
+                      filter(str_detect(url, "/uploaded/dnevni_prikazi")) %>% 
                       dplyr::pull(url))
 
 # capture link with deaths data by age

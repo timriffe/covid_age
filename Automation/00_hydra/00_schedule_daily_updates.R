@@ -77,13 +77,16 @@ scripts <- c('US_Virginia', 'USA_all_deaths', 'Netherlands', 'Estonia',
              'Scotland', 'Norway', 'US_California', 'Afghanistan', 'Finland', 
              'US_Wisconsin', 'Bulgaria', 'Denmark', 'Belgium', 'New_Zealand', 
              'Mexico', 'Thailand', 'Spain', 'US_Oregon', 'Slovakia', 'Cambodia', 
-             'Hungary', 'Vietnam', 'Italy', 'Croatia', 'CA_Quebec', 
+             'Hungary', 'Vietnam', 'Italy', 'Croatia',  
              'CA_Manitoba_Saskatchewan', 'CA_Ontario', 'CA_British_Columbia', 
-             'Ukraine', 'Spain_vaccine', 'Chile', 'Portugal_Vaccine', 
+             'Ukraine', 'Spain_vaccine', 'Chile_vaccine', 'Portugal_Vaccine', 
              'CA_Alberta', 'Canada_vaccine', 'US_Texas_Vaccine', 
              'Hong_Kong_Vaccine','Argentina','Slovenia', 'US_Maine','US_NYC_vaccine',
              'US_Vermont_Vaccine', 'US_Indiana','Lithuania_vaccine','US_Michigan_vaccine',
-             'US_Minnesota_vaccine', 'Slovenia_vaccine', 'US_Oregon_Vaccine')
+             'US_Minnesota_vaccine', 'Slovenia_vaccine', 'US_Oregon_Vaccine', 'Latvia_vaccine',
+             'Island_of_Jersey', 'Estonia_vaccine', 'Uruguay_vaccine', 'Chile','Finland_vaccine',
+             'ECDC_vaccine', 'Slovakia_vaccine', 'Germany_vaccine', 'US_Pennsylvania_vaccine', 'USA_vaccine')
+
 
 
 # Scheduling all scripts at once
@@ -116,12 +119,16 @@ for(c in scripts){
 
 # for individual scheduling
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
+<<<<<<< HEAD
 sched("Argentina", tm = "14:57", email = auto_update_email, wd = auto_update_wd)
 sched("US_NYC", tm = "12:48",email = auto_update_email, wd = auto_update_wd)
 sched("Austria", tm = "13:09", email = auto_update_email, wd = auto_update_wd)
 sched("Hungary", tm = "09:42", email = auto_update_email, wd = auto_update_wd)
 
 sched("US_Oregon_Vaccine", tm = "15:35", email = auto_update_email, wd = auto_update_wd)
+=======
+sched("USA_vaccine", tm = "16:06", email = auto_update_email, wd = auto_update_wd)
+>>>>>>> 16126bb48d48ea658ee282d605d7528ac2a3fdad
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -130,12 +137,26 @@ sched("US_Oregon_Vaccine", tm = "15:35", email = auto_update_email, wd = auto_up
 
 # for deleting single task schedule
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-delete_sched("US_Pennsylvania_Vaccine")
+delete_sched("US_Indiana")
 
+
+
+
+
+
+
+
+
+<<<<<<< HEAD
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # danger zone!!!! deleting all schedules
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+=======
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# danger zone!!!! deleting all scheduled tasks
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>>>>>> 16126bb48d48ea658ee282d605d7528ac2a3fdad
 for(c in scripts){
   delete_sched(c)
 }

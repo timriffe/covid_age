@@ -60,6 +60,7 @@ Vaccine_sex=read.csv("https://data.pa.gov/api/views/id8t-dnk6/rows.csv?accessTyp
 #Process
 #Age 
 
+
 Out_vaccine_age= Vaccine_age %>%
   select(Age= Age.Group, Partially.Covered,Fully.Covered )%>%
   pivot_longer(!Age, names_to= "Measure", values_to= "Value")%>%
@@ -67,6 +68,7 @@ Out_vaccine_age= Vaccine_age %>%
                          `Partially.Covered` = "Vaccination1",
                          `Fully.Covered`= "Vaccination2"))%>%
   mutate(Age=recode(Age, 
+                    `10-14`="10",
                     `15-19`="15",
                     `20-24`="20",
                     `25-29`="25",
@@ -121,7 +123,7 @@ Out_vaccine_sex = Vaccine_sex %>%
          Metric = "Count",
          Age="TOT",
          AgeInt="",
-         Date= yesterday,
+         Date= date_f,
          Date = ymd(Date),
          Date = paste(sprintf("%02d",day(Date)),    
                       sprintf("%02d",month(Date)),  
