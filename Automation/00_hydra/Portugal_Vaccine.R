@@ -16,18 +16,32 @@ ctr          <- "Portugal_Vaccine" # it's a placeholder
 dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 
-
 # Drive credentials
 drive_auth(email = email)
 gs4_auth(email = email)
 
 
-
 #Read data in 
 
-url <- ("https://covid19.min-saude.pt/wp-content/uploads/2021/04/Dataset-Vacinac%CC%A7a%CC%83o-11.csv")
+m_url <- "https://covid19.min-saude.pt/relatorio-de-vacinacao/"
 
-In <- read.csv(url, sep = ';')
+
+links <- scraplinks(m_url) %>% 
+  filter(str_detect(url, ".csv")) %>% 
+  select(url) 
+
+url <- 
+  links %>% 
+  select(url) %>% 
+  dplyr::pull()
+
+
+data_source <- paste0(dir_n, "Data_sources/", ctr, "/age_vaccine",today(), ".csv")
+
+download.file(url, data_source, mode = "wb")
+
+In= read.csv(data_source, sep = ";")
+
 
 #Process 
 
@@ -76,9 +90,6 @@ write_rds(Out, paste0(dir_n, ctr, ".rds"))
 log_update(pp = ctr, N = nrow(Out))
 
 # now archive
-data_source <- paste0(dir_n, "Data_sources/", ctr, "/vaccine_age_",today(), ".csv")
-
-write_csv(In, data_source)
 
 zipname <- paste0(dir_n, 
                   "Data_sources/", 
