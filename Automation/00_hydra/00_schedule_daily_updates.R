@@ -119,16 +119,8 @@ for(c in scripts){
 
 # for individual scheduling
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
-<<<<<<< HEAD
-sched("Argentina", tm = "14:57", email = auto_update_email, wd = auto_update_wd)
-sched("US_NYC", tm = "12:48",email = auto_update_email, wd = auto_update_wd)
-sched("Austria", tm = "13:09", email = auto_update_email, wd = auto_update_wd)
-sched("Hungary", tm = "09:42", email = auto_update_email, wd = auto_update_wd)
 
-sched("US_Oregon_Vaccine", tm = "15:35", email = auto_update_email, wd = auto_update_wd)
-=======
 sched("USA_vaccine", tm = "16:06", email = auto_update_email, wd = auto_update_wd)
->>>>>>> 16126bb48d48ea658ee282d605d7528ac2a3fdad
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -141,22 +133,9 @@ delete_sched("US_Indiana")
 
 
 
-
-
-
-
-
-
-<<<<<<< HEAD
-
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# danger zone!!!! deleting all schedules
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-=======
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # danger zone!!!! deleting all scheduled tasks
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>>>>> 16126bb48d48ea658ee282d605d7528ac2a3fdad
 for(c in scripts){
   delete_sched(c)
 }
