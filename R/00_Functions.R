@@ -337,12 +337,14 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
     
     # EA: Only reading those files in N:/ that were modified during the last 12 hours, similar to those in Drive
     # added on 13.08.2021
+    max_t <- 12
+    
     local_files <- 
       rubric_hydra %>% 
       mutate(local_files = paste0(hydra_path, "/", hydra_name, ".rds"),
              modif_time = file.info(local_files)$mtime,
              hours_diff = difftime(Sys.time(), modif_time, units = "hours") %>% unclass()) %>% 
-      filter(hours_diff < 12) %>% 
+      filter(hours_diff < max_t) %>% 
       dplyr::pull(local_files)
     
     # local_files <-
