@@ -3489,3 +3489,7 @@ ter( Code == 'US_VA12.08.2021', Sex == 'b', Measure == 'Deaths'
 # Commit dashboards and buildlog 
  Sat Aug 14 07:33:55 2021 
 
+
+# update build series log 
+ Sat Aug 14 07:34:08 2021 
+
