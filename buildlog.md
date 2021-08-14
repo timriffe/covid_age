@@ -3477,3 +3477,15 @@ ter( Code == 'US_VA12.08.2021', Sex == 'b', Measure == 'Deaths'
 # Age harmonization 
  Sat Aug 14 03:01:03 2021 
 
+
+# remake coverage map 
+ Sat Aug 14 07:24:10 2021 
+
+
+# push outputs to OSF 
+ Sat Aug 14 07:29:05 2021 
+
+
+# Commit dashboards and buildlog 
+ Sat Aug 14 07:33:55 2021 
+
