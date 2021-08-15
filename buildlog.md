@@ -3505,3 +3505,11 @@ e == 'US_VA13.08.2021', Sex == 'b', Measure == 'Deaths'
 # Age harmonization 
  Sun Aug 15 03:09:25 2021 
 
+
+# Compile metadata 
+ Sun Aug 15 07:35:07 2021 
+
+
+# Building dashboards 
+ Sun Aug 15 08:54:32 2021 
+
