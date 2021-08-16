@@ -22,8 +22,7 @@ content <-
 
 # spreadsheets to exclude
 excl <- c("Brazil_all_states input template",
-          "Brazil_input_info",
-          "Brazil input template")
+          "Brazil_input_info")
 
 links_br <- 
   content %>% 
