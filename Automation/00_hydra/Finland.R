@@ -11,10 +11,11 @@ gs4_auth(email = email)
 drive_auth(email = email)
 
 ctr <- "Finland"
+sht <- "FI"
 dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 rubric <- get_input_rubric() %>% 
-     filter(Country == "Finland")
+     filter(Short == sht)
 
 ss_i  <- rubric$Sheet
 ss_db <- rubric$Source
@@ -125,7 +126,7 @@ write_sheet(FI_out,
             ss = ss_i,
             sheet = "database")
 
-log_update("Finland",N = nrow(Cases))
+log_update("Finland", N = nrow(Cases))
 
 ############################################
 #### uploading metadata to N Drive ####

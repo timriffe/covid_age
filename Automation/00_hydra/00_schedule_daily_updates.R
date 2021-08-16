@@ -90,7 +90,6 @@ scripts <- c('US_Virginia', 'USA_all_deaths', 'Netherlands', 'Estonia',
 
 
 
-
 # Scheduling all scripts at once
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -119,12 +118,15 @@ for(c in scripts){
   i <- i + 1
 }
 
-
 # for individual scheduling
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
+<<<<<<< HEAD
 sched("US_Massachusetts", tm = "12:12", email = auto_update_email, wd = auto_update_wd)
 
+=======
+>>>>>>> 8f215fa3037b3ef3d61c4347651b4060caf1e3f4
 
+sched("USA_vaccine", tm = "16:06", email = auto_update_email, wd = auto_update_wd)
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -137,17 +139,9 @@ delete_sched("US_Indiana")
 
 
 
-
-
-
-
-
-
-
-
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# danger zone!!!! deleting all schedules
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# danger zone!!!! deleting all scheduled tasks
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 for(c in scripts){
   delete_sched(c)
 }
