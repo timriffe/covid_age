@@ -74,7 +74,12 @@ if (nrow(rubric) > 0){
   
   # saveRDS(inputDB,here("Data","inputDBhold.rds"))
   # what data combinations have we read in?
-  codesIN     <- with(inputDB, paste(Country, Region, Measure, Short)) %>% unique()
+  
+  # EA: No need to paste "Country", "Region", as "Short" variable includes information of both.
+  # Better to only use "Short", as there could be wrong spelling of Country names or regions
+  # Added on 16.08.2021
+  
+  codesIN     <- with(inputDB, paste(Short, Measure)) %>% unique()
   
   # Read in previous unfiltered inputDB
   inputDBhold <- readRDS(here::here("Data","inputDBhold.rds"))
@@ -91,7 +96,7 @@ if (nrow(rubric) > 0){
   # remove any codes we just read in
   inputDBhold <- 
     inputDBhold %>% 
-    mutate(checkid = paste(Country, Region, Measure, Short)) %>% 
+    mutate(checkid = paste(Short, Measure)) %>% 
     filter(!checkid %in% codesIN) %>% 
     select(-checkid)
 
