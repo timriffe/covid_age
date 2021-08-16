@@ -3,7 +3,67 @@
 
 # step 1 download case individual file.
 
+
+In= read.csv("https://data.cdc.gov/api/views/n8mc-b4w4/rows.csv?accessType=DOWNLOAD")
+
+
 # step 2 aggregate by state, age, sex, date (or month as it were).
+#can decide if we want to filter by lab confirmed case and prob. case (current_status)
+Out <-
+  In %>%
+  slice(1:2640947)%>%
+  select(Date = case_month, 
+         Sex = sex, 
+         Age = age_group, 
+         State = res_state)%>%
+  mutate(Sex =  case_when(is.na(Sex) ~ "UNK",
+                          Sex== "Unknown" ~ "UNK",
+                          Sex== "Missing" ~ "UNK",
+                          Sex== "Other" ~ "UNK",
+                          Sex== "Male" ~ "m",
+                          Sex== "Female"~"f",
+                          TRUE ~ as.character(Sex)),
+         Age = case_when (is.na(Age) ~ "UNK",
+                          Age== "Unknown" ~" UNK",
+                          TRUE~ as.character(Age)))%>%
+  group_by(Date, Sex, Age, State) %>% 
+  summarize(Value = n(), .groups = "drop")%>%
+  tidyr::complete(Date, Sex, Age, State, fill = list(Value = 0)) %>% 
+  arrange(Sex, Age, State, Date) %>% 
+  group_by(Sex, Age, State) %>% 
+  mutate(Value = cumsum(Value)) %>% 
+  ungroup()
+
+#2.1. make some plots to see how the data looks 
+
+setwd("U:/COVerAgeDB/CDC_public")
+
+doPlot= function(svc_name){
+  temp_df = subset(Out, State == svc_name)
+  Plot= ggplot(temp_df, aes(x =Date, y = Value, color = Age)) +geom_line() +ggtitle(svc_name)+ xlab("Cases by State")
+  print(Plot)
+  ggsave(sprintf("%s.jpeg", svc_name))
+  
+}
+
+
+lapply(unique(Out$State), doPlot)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # step 3 accumulate from the very beginning up to the most recent. Expecting monthly resolution
 
