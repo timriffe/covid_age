@@ -3513,3 +3513,7 @@ de == 'US_VA13.08.2021', Sex == 'b', Measure == 'Deaths'
 # Commit dashboards and buildlog 
  Mon Aug 16 07:36:08 2021 
 
+
+# update build series log 
+ Mon Aug 16 07:36:22 2021 
+
