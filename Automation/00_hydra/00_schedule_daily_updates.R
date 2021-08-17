@@ -120,11 +120,6 @@ for(c in scripts){
 
 # for individual scheduling
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
-<<<<<<< HEAD
-sched("US_Massachusetts", tm = "12:12", email = auto_update_email, wd = auto_update_wd)
-
-=======
->>>>>>> 8f215fa3037b3ef3d61c4347651b4060caf1e3f4
 
 sched("USA_vaccine", tm = "16:06", email = auto_update_email, wd = auto_update_wd)
 
