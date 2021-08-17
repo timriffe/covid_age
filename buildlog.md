@@ -3449,3 +3449,15 @@ Code == 'US_VA13.08.2021', Sex == 'b', Measure == 'Deaths' )
 # Age harmonization 
  Tue Aug 17 03:01:19 2021 
 
+
+# remake coverage map 
+ Tue Aug 17 07:23:27 2021 
+
+
+# push outputs to OSF 
+ Tue Aug 17 07:28:22 2021 
+
+
+# Commit dashboards and buildlog 
+ Tue Aug 17 07:33:17 2021 
+
