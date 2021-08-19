@@ -3479,3 +3479,15 @@ er( Code == 'US_VA16.08.2021', Sex == 'b', Measure == 'Cases'filter( Code == 'US
 # Age harmonization 
  Thu Aug 19 03:00:40 2021 
 
+
+# remake coverage map 
+ Thu Aug 19 07:23:12 2021 
+
+
+# push outputs to OSF 
+ Thu Aug 19 07:28:06 2021 
+
+
+# Commit dashboards and buildlog 
+ Thu Aug 19 07:33:13 2021 
+
