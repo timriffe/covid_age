@@ -85,7 +85,7 @@ scripts <- c('US_Virginia', 'USA_all_deaths', 'Netherlands', 'Estonia',
              'US_Vermont_Vaccine', 'US_Indiana','Lithuania_vaccine','US_Michigan_vaccine',
              'US_Minnesota_vaccine', 'Slovenia_vaccine', 'US_Oregon_Vaccine', 'Latvia_vaccine',
              'Island_of_Jersey', 'Estonia_vaccine', 'Uruguay_vaccine', 'Chile','Finland_vaccine',
-             'ECDC_vaccine', 'Slovakia_vaccine')
+             'ECDC_vaccine', 'Slovakia_vaccine', 'US_Pennsylvania_vaccine', 'Germany_vaccine')
 
 
 
@@ -122,7 +122,6 @@ for(c in scripts){
 
 # for individual scheduling
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
-<<<<<<< HEAD
 # sched("Argentina", tm = "14:57", email = auto_update_email, wd = auto_update_wd)
 # sched("US_NYC", tm = "12:48",email = auto_update_email, wd = auto_update_wd)
 # sched("Austria", tm = "13:09", email = auto_update_email, wd = auto_update_wd)
@@ -140,7 +139,7 @@ for(c in scripts){
 
 # for deleting single task schedule
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-delete_sched("US_Indiana")
+# delete_sched("US_Indiana")
 
 
 
@@ -155,10 +154,12 @@ delete_sched("US_Indiana")
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # danger zone!!!! deleting all schedules
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-for(c in scripts){
-  delete_sched(c)
+do_this <- FALSE
+if (do_this){
+  for(c in scripts){
+    delete_sched(c)
+  }
 }
-
 
 ### scripts working outside hydra because of VPN:
 #################################################
