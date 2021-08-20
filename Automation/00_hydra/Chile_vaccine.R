@@ -48,13 +48,14 @@ out1 <- vacc1 %>%
   pivot_longer(!Age & !Date, names_to= "Measure", values_to= "Value")%>%
   #age goes up to 221, but after 104 values are almost 0, remove ages above 105 
   subset(Age < 106)%>%
+  subset(Value != "NA")%>%
   mutate(
     Metric = "Count", 
     Sex= "b",
     AgeInt= "1")  %>%
   arrange(Age, Date) %>%
   group_by(Age) %>% 
-  mutate(Value2 = cumsum(Value)) %>% 
+  mutate(Value = cumsum(Value)) %>% 
   ungroup()%>% 
     mutate(
     Date = ymd(Date),

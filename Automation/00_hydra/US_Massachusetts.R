@@ -113,16 +113,55 @@ age <- read_xlsx(data_source, sheet = "CasesbyAge")
 cases_t <- read_xlsx(data_source, sheet = "Cases (Report Date)")
 deaths_t <- read_xlsx(data_source, sheet = "DateofDeath")
 
+
+#JD: Made adjustment here: Prev. code was not selecting all columns with age groups
+#Source prob. added columns later on
+
+# age2 <- 
+#   age %>% 
+#   select(1:9) %>% 
+#   gather(-1, key = "Age", value = "Value") %>% 
+#   separate(Age, c("Age", "trash")) %>% 
+#   mutate(date_f = ymd(Date),
+#          Age = ifelse(Age == "Unknown", "UNK", Age),
+#          Sex = "b",
+#          Measure = "Cases") %>% 
+#   select(date_f, Sex, Age, Measure, Value) 
+
+
 age2 <- 
   age %>% 
-  select(1:9) %>% 
+  #select(1:9) %>% 
   gather(-1, key = "Age", value = "Value") %>% 
+  #remove Values from the columns we dont need 
+  subset(Age != "Start Date")%>%
+  subset(Age != "End Date")%>%
+  subset(Age != "Average daily incidence rate per 100,000 (last 14 days)")%>%
+  #add AgeInt before separating age groups because of distinction between 0-4 and 0-19 
+  mutate(AgeInt = case_when(
+    Age == "0-4 years" ~ 5L,
+    Age == "0-19 years" ~ 20L,
+    Age == "5-9 years" ~ 5L,
+    Age == "10-14 years" ~ 5L,
+    Age == "15-19 years" ~ 5L,
+    Age == "80+ years" ~ 25L,
+    Age == "UNK" ~ NA_integer_,
+    TRUE ~ 10L))%>%
   separate(Age, c("Age", "trash")) %>% 
   mutate(date_f = ymd(Date),
          Age = ifelse(Age == "Unknown", "UNK", Age),
          Sex = "b",
          Measure = "Cases") %>% 
-  select(date_f, Sex, Age, Measure, Value) 
+  select(date_f, Sex, Age, Measure, Value, AgeInt)
+
+# c2 <- 
+#   cases_t %>% 
+#   rename(Value = "Positive Total") %>% 
+#   mutate(Sex = "b",
+#          Age = "TOT",
+#          date_f = ymd(Date),
+#          Measure = "Cases") %>% 
+#   select(date_f, Sex, Age, Measure, Value)
 
 c2 <- 
   cases_t %>% 
@@ -130,17 +169,46 @@ c2 <-
   mutate(Sex = "b",
          Age = "TOT",
          date_f = ymd(Date),
-         Measure = "Cases") %>% 
-  select(date_f, Sex, Age, Measure, Value)
-  
+         Measure = "Cases",
+         AgeInt = case_when(Age == "TOT" | Age == "UNK" ~ NA_real_,
+                            TRUE ~ as.numeric(Age))) %>% 
+  select(date_f, Sex, Age, Measure, Value, AgeInt)
+
+# d2 <- deaths_t %>% 
+#   rename(Value = "Confirmed Total",
+#          Date = "Date of Death") %>% 
+#   mutate(Sex = "b",
+#          Age = "TOT",
+#          date_f = ymd(Date),
+#          Measure = "Deaths") %>% 
+#   select(date_f, Sex, Age, Measure, Value)
+
 d2 <- deaths_t %>% 
   rename(Value = "Confirmed Total",
          Date = "Date of Death") %>% 
   mutate(Sex = "b",
          Age = "TOT",
          date_f = ymd(Date),
-         Measure = "Deaths") %>% 
-  select(date_f, Sex, Age, Measure, Value)
+         Measure = "Deaths",
+         AgeInt = case_when(Age == "TOT" | Age == "UNK" ~ NA_real_,
+                            TRUE ~ as.numeric(Age))) %>% 
+  select(date_f, Sex, Age, Measure, Value, AgeInt)
+
+# db_all <- 
+#   bind_rows(age2, c2, d2) %>% 
+#   mutate(Country = "USA",
+#          Region = "Massachusetts",
+#          Date = paste(sprintf("%02d", day(date_f)),
+#                       sprintf("%02d", month(date_f)),
+#                       year(date_f), sep = "."),
+#          Code = paste0("US_MA", Date),
+#          Metric = "Count",
+#          AgeInt = case_when(Age == "0" ~ 20,
+#                             Age == "80" ~ 25,
+#                             Age == "TOT" | Age == "UNK" ~ NA_real_,
+#                             TRUE ~ 10)) %>% 
+#   arrange(date_f, Sex, Measure, suppressWarnings(as.integer(Age))) %>% 
+#   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
 
 db_all <- 
   bind_rows(age2, c2, d2) %>% 
@@ -150,11 +218,7 @@ db_all <-
                       sprintf("%02d", month(date_f)),
                       year(date_f), sep = "."),
          Code = paste0("US_MA", Date),
-         Metric = "Count",
-         AgeInt = case_when(Age == "0" ~ 20,
-                            Age == "80" ~ 25,
-                            Age == "TOT" | Age == "UNK" ~ NA_real_,
-                            TRUE ~ 10)) %>% 
+         Metric = "Count") %>% 
   arrange(date_f, Sex, Measure, suppressWarnings(as.integer(Age))) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
 
@@ -214,7 +278,7 @@ download.file(v_url, destfile = v_data_source, mode="wb")
 # So please include both column. 
 
 # Get by age but not sex
-v_age <- read_xlsx(v_data_source, sheet = "Age - municipality", skip = 1)
+v_age <- read_xlsx(v_data_source, sheet = "Age – municipality", skip = 1)
 v_age[v_age == "*"] <- NA
 
 v_age2 <-
@@ -247,7 +311,7 @@ v_age2 <-
 # Note that sex == other is coded as unknown, after checking with Jessica on 
 # 20210330
 
-v_sex <- read_xlsx(v_data_source, sheet = "Sex - municipality", skip = 1)
+v_sex <- read_xlsx(v_data_source, sheet = "Sex – municipality", skip = 1)
 v_sex[v_sex == "*"] <- NA
 
 v_sex2 <- 
