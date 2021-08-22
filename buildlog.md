@@ -3523,3 +3523,11 @@ filter( Code == 'US_VA20.08.2021', Sex == 'b', Measure == 'Deaths' )
 # Age harmonization 
  Sun Aug 22 03:14:38 2021 
 
+
+# Compile metadata 
+ Sun Aug 22 08:01:30 2021 
+
+
+# Building dashboards 
+ Sun Aug 22 09:25:48 2021 
+
