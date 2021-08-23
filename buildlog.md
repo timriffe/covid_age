@@ -1,32 +1,32 @@
 
 # New build log 
- Sun Aug 22 01:00:11 2021 
+ Mon Aug 23 01:00:11 2021 
 
 
 # begin resolution of multiple sources per population 
- Sun Aug 22 01:00:11 2021 
+ Mon Aug 23 01:00:11 2021 
 
 
 # Resolve USA CDC overlaps 
- Sun Aug 22 01:01:44 2021 
+ Mon Aug 23 01:01:45 2021 
 
 USA CDC resolved
- 52854 rows removed
+ 54074 rows removed
 
 # Resolve Brazil TRC overlaps 
- Sun Aug 22 01:01:51 2021 
+ Mon Aug 23 01:01:52 2021 
 
 Brazil TRC resolved
  0 rows removed
 
 # Resolve ECDC overlaps 
- Sun Aug 22 01:01:57 2021 
+ Mon Aug 23 01:01:58 2021 
 
 ECDC resolved
  0 rows removed
 
 # prep (resolve_UNKUNK) 
- Sun Aug 22 01:04:06 2021 
+ Mon Aug 23 01:04:09 2021 
 
 filter( Country == 'Vietnam', Region == 'All', Date == '14.03.2020', Measure == 'Deaths' )
 filter( Country == 'Vietnam', Region == 'All', Date == '15.03.2020', Measure == 'Deaths' )
@@ -44,15 +44,15 @@ filter( Country == 'Vietnam', Region == 'All', Date == '09.06.2021', Measure == 
 filter( Country == 'Vietnam', Region == 'All', Date == '10.06.2021', Measure == 'Cases' )
 
 # A (convert_fractions_sexes) 
- Sun Aug 22 01:14:28 2021 
+ Mon Aug 23 01:14:37 2021 
 
 
 # B (redistribute_unknown_age) 
- Sun Aug 22 01:20:13 2021 
+ Mon Aug 23 01:20:25 2021 
 
 
 # C (rescale_to_total) 
- Sun Aug 22 01:46:29 2021 
+ Mon Aug 23 01:46:46 2021 
 
 filter( Code == 'ME010.04.2021', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'ME010.04.2021', Sex == 'f', Measure == 'Cases' )
@@ -60,27 +60,27 @@ filter( Code == 'ME010.04.2021', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'ME010.04.2021', Sex == 'b', Measure == 'Deaths' )
 
 # D (infer_cases_from_deaths_and_ascfr) 
- Sun Aug 22 02:17:18 2021 
+ Mon Aug 23 02:17:43 2021 
 
 
 # E (infer_deaths_from_cases_and_ascfr) 
- Sun Aug 22 02:25:33 2021 
+ Mon Aug 23 02:26:02 2021 
 
 
 # G (redistribute_unknown_sex) 
- Sun Aug 22 02:33:47 2021 
+ Mon Aug 23 02:34:20 2021 
 
 
 # H (rescale_sexes) 
- Sun Aug 22 02:42:14 2021 
+ Mon Aug 23 02:42:55 2021 
 
 
 # I (infer_both_sex) 
- Sun Aug 22 02:46:32 2021 
+ Mon Aug 23 02:47:19 2021 
 
 
 # J (maybe_lower_closeout) 
- Sun Aug 22 02:54:29 2021 
+ Mon Aug 23 02:55:15 2021 
 
 filter( Code == 'CA_TNT15.07.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'CA_TNT15.07.2020', Sex == 'm', Measure == 'Cases' )
@@ -2021,6 +2021,15 @@ filter( Code == 'GB_SCO_20.08.2021', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'GB_SCO_20.08.2021', Sex == 'f', Measure == 'Tests' )
 filter( Code == 'GB_SCO_20.08.2021', Sex == 'm', Measure == 'Tests' )
 filter( Code == 'GB_SCO_20.08.2021', Sex == 'b', Measure == 'Tests' )
+filter( Code == 'GB_SCO_21.08.2021', Sex == 'f', Measure == 'Cases' )
+filter( Code == 'GB_SCO_21.08.2021', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'GB_SCO_21.08.2021', Sex == 'b', Measure == 'Cases' )
+filter( Code == 'GB_SCO_21.08.2021', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'GB_SCO_21.08.2021', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'GB_SCO_21.08.2021', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'GB_SCO_21.08.2021', Sex == 'f', Measure == 'Tests' )
+filter( Code == 'GB_SCO_21.08.2021', Sex == 'm', Measure == 'Tests' )
+filter( Code == 'GB_SCO_21.08.2021', Sex == 'b', Measure == 'Tests' )
 filter( Code == 'US_CA_22.04.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_CA_22.04.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'US_CA_23.04.2020', Sex == 'b', Measure == 'Cases' )
@@ -2391,19 +2400,12 @@ filter( Code == 'US_CA_21.11.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_CA_22.11.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_CA_23.11.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_CA_24.11.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'US_CA_24.11.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'US_CA_25.11.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'US_CA_25.11.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'US_CA_26.11.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'US_CA_26.11.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'US_CA_27.11.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'US_CA_27.11.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'US_CA_28.11.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'US_CA_28.11.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'US_CA_29.11.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'US_CA_29.11.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'US_CA_30.11.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'US_CA_30.11.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'US_CA_01.12.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_CA_02.12.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_CA_03.12.2020', Sex == 'b', Measure == 'Cases' )
@@ -2676,6 +2678,8 @@ filter( Code == 'US_CA_17.08.2021', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_CA_18.08.2021', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_CA_19.08.2021', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_CA_19.08.2021', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'US_CA_20.08.2021', Sex == 'b', Measure == 'Cases' )
+filter( Code == 'US_CA_20.08.2021', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'US_IN13.03.2021', Sex == 'b', Measure == 'Vaccination2' )
 filter( Code == 'US_IN14.03.2021', Sex == 'b', Measure == 'Vaccination2' )
 filter( Code == 'US_IN16.03.2021', Sex == 'b', Measure == 'Vaccination2' )
@@ -3221,19 +3225,12 @@ filter( Code == 'US_VA21.11.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_VA22.11.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_VA23.11.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_VA24.11.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'US_VA24.11.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'US_VA25.11.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'US_VA25.11.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'US_VA26.11.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'US_VA26.11.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'US_VA27.11.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'US_VA27.11.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'US_VA28.11.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'US_VA28.11.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'US_VA29.11.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'US_VA29.11.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'US_VA30.11.2020', Sex == 'b', Measure == 'Cases' )
-filter( Code == 'US_VA30.11.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'US_VA01.12.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_VA02.12.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_VA03.12.2020', Sex == 'b', Measure == 'Cases' )
@@ -3521,13 +3518,5 @@ filter( Code == 'US_VA20.08.2021', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_VA20.08.2021', Sex == 'b', Measure == 'Deaths' )
 
 # Age harmonization 
- Sun Aug 22 03:14:38 2021 
-
-
-# Compile metadata 
- Sun Aug 22 08:01:30 2021 
-
-
-# Building dashboards 
- Sun Aug 22 09:25:48 2021 
+ Mon Aug 23 03:15:47 2021 
 
