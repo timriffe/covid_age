@@ -125,7 +125,7 @@ sched("USA_vaccine", tm = "16:06", email = auto_update_email, wd = auto_update_w
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
-# Deleting scheduled tasks
+# Deleting scheduled tasks 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # for deleting single task schedule
