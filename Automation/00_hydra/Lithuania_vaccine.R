@@ -22,8 +22,8 @@ gs4_auth(email = email)
 
 
 #Read in data
-In= read.csv("https://opendata.arcgis.com/datasets/ffb0a5bfa58847f79bf2bc544980f4b6_0.csv")
 
+In= read.csv("https://ls-osp-sdg.maps.arcgis.com/sharing/rest/content/items/e714f97f593d49c6b751b4b094ac33d2/data", sep = ";")
 
 
 #Process
@@ -59,8 +59,8 @@ In= read.csv("https://opendata.arcgis.com/datasets/ffb0a5bfa58847f79bf2bc544980f
 
 Out_vaccine1= In %>%
   #remove missing age information 
-  filter(!is.na(birth_year_noisy))%>%
-  select(Sex=sex, birth= birth_year_noisy, Date= vacc_date_1)%>%
+  filter(!is.na(birth_year))%>%
+  select(Sex=sex, birth= birth_year, Date= vacc_date_)%>%
   separate(Date, c("Date", "Time"), " ")%>%
   mutate(Sex= recode(Sex, 
                      `M`= "m",
@@ -130,7 +130,7 @@ Out_vaccine1= In %>%
 
 
 Out_vaccine2= In %>%
-  select(Sex=sex, birth= birth_year_noisy, Date= vacc_date_2)
+  select(Sex=sex, birth= birth_year, Date= vacc_date1)
 
 #remove everyone with a empty cell for data vaccine 2 (prob. have not received shot yet/single dose vaccine)
 

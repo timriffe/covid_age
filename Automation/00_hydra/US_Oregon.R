@@ -7,7 +7,7 @@ if (!"email" %in% ls()){
 # info country and N drive address
 ctr          <- "US_Oregon" # it's a placeholder
 dir_n_source <- "N:/COVerAGE-DB/Automation/Oregon"
-dir_n        <- "N:/COVerAGE-DB/Automation/Hydra"
+dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 # Drive credentials
 drive_auth(email = email)

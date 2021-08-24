@@ -111,10 +111,10 @@ vacc <- read_csv("https://raw.githubusercontent.com/italia/covid19-opendata-vacc
 vacc2 <- vacc %>% 
   rename(Date = 1,
          Age = 4, 
-         Vaccines1 = prima_dose,
-         Vaccines2 = seconda_dose) %>% 
-  select(Date, Age, Vaccines1, Vaccines2) %>% 
-  gather(Vaccines1, Vaccines2, key = "Measure", value = new) %>% 
+         Vaccination1 = prima_dose,
+         Vaccination2 = seconda_dose) %>% 
+  select(Date, Age, Vaccination1, Vaccination2) %>% 
+  gather(Vaccination1, Vaccination2, key = "Measure", value = new) %>% 
   mutate(Age = as.integer(str_sub(Age, 1, 2))) %>% 
   group_by(Date, Measure, Age) %>% 
   summarise(new = sum(new)) %>% 

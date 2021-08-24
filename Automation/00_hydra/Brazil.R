@@ -45,6 +45,7 @@ for(ss_i in links_br){
 ####################################
 #### saving database in N Drive ####
 ####################################
+#Since output data = input data only the output data gets saved
 
 write_rds(out, paste0(dir_n, ctr, ".rds"))
 
