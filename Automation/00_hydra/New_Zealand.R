@@ -39,7 +39,7 @@ html      <- read_html(m_url)
 date_text <-
   html_nodes(html, xpath = '//*[@id="node-10866"]/div[2]/div/div/p[1]') %>%
   html_text()
-loc_date1 <- str_locate(date_text, "Last updated ")[2] + 4
+loc_date1 <- str_locate(date_text, "Last updated ")[2] + 5
 loc_date2 <- str_length(date_text[1])
 
 date_f  <- str_sub(date_text, loc_date1, loc_date2) %>% 
@@ -210,8 +210,10 @@ db_v <-
   # cases and deaths by age for the last update
   m_url2 <- getURL(m_url)
   tables <- readHTMLTable(m_url2) 
-  db_a <- tables[[3]] 
-  db_s <- tables[[4]]
+  #JD: Changed position of these tabs
+  #db_a <- tables[[3]]
+  db_a <- tables[[6]] 
+  db_s <- tables[[7]]
   
   
   db_a2 <- db_a %>% 

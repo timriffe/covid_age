@@ -121,8 +121,9 @@ for(c in scripts){
 # for individual scheduling
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sched("Brazil", tm = "15:08", email = auto_update_email, wd = auto_update_wd, sch = "WEEKLY")
+sched("New_Zealand", tm = "10:58", email = auto_update_email, wd = auto_update_wd)
 
+#sch = "WEEKLY"
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 # Deleting scheduled tasks 
