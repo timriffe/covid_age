@@ -86,7 +86,7 @@ scripts <- c('US_Virginia', 'USA_all_deaths', 'Netherlands', 'Estonia',
              'US_Minnesota_vaccine', 'Slovenia_vaccine', 'US_Oregon_Vaccine', 'Latvia_vaccine',
              'Island_of_Jersey', 'Estonia_vaccine', 'Uruguay_vaccine', 'Chile','Finland_vaccine',
              'ECDC_vaccine', 'Slovakia_vaccine', 'Germany_vaccine', 'US_Pennsylvania_vaccine', 'USA_vaccine',
-             'Australia_vaccine', 'US_Idaho', 'USA_all', 'Brazil')
+             'Australia_vaccine', 'US_Idaho', 'USA_all', 'Brazil', 'New_Zealand')
 
 
 
