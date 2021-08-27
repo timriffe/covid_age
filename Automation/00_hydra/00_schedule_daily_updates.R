@@ -5,7 +5,6 @@ library(here)
 source(here("Automation/00_Functions_automation.R"))
 
 
-
 # commands in the git terminal to update each fork:
 # first coinfigure the upstream (only once):
 # git remote add upstream https://github.com/timriffe/covid_age.git
@@ -43,7 +42,6 @@ if (grepl("Git04", auto_update_wd)){
 # When scheduling the trigger script on hydra, the sched() function also 
 # deletes tasks that were scheduled in the past with same name. 
 # See "Automation/00_Functions_automation.R" for more details
-
 
 
 # Steps for new automated sources 
@@ -121,7 +119,7 @@ for(c in scripts){
 # for individual scheduling
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sched("New_Zealand", tm = "10:58", email = auto_update_email, wd = auto_update_wd)
+sched("New_Zealand", tm = "12:58", email = auto_update_email, wd = auto_update_wd)
 
 #sch = "WEEKLY"
 
