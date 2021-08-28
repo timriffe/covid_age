@@ -61,7 +61,7 @@ if (grepl("Git04", auto_update_wd)){
 
 # To see the list of scheduled tasks
 taskscheduler_ls() %>% view()
-
+tasks <- taskscheduler_ls()
 # ~~~~~~~~~~~~~~~~
 # Scheduling tasks 
 # ~~~~~~~~~~~~~~~~
@@ -119,7 +119,7 @@ for(c in scripts){
 # for individual scheduling
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sched("New_Zealand", tm = "12:58", email = auto_update_email, wd = auto_update_wd)
+sched("US_Virginia", tm = "12:58", email = auto_update_email, wd = auto_update_wd)
 
 #sch = "WEEKLY"
 
@@ -129,9 +129,9 @@ sched("New_Zealand", tm = "12:58", email = auto_update_email, wd = auto_update_w
 
 # for deleting single task schedule
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-delete_sched("US_Indiana")
+delete_sched("US_Virginia")
 
-
+# taskscheduler_delete(taskname = "coverage_db_US_Virgini_daily")
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # danger zone!!!! deleting all scheduled tasks
