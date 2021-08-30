@@ -3617,3 +3617,15 @@ filter( Code == 'US_VA27.08.2021', Sex == 'b', Measure == 'Deaths' )
 # Age harmonization 
  Mon Aug 30 03:05:10 2021 
 
+
+# remake coverage map 
+ Mon Aug 30 17:23:03 2021 
+
+
+# push outputs to OSF 
+ Mon Aug 30 17:28:06 2021 
+
+
+# Commit dashboards and buildlog 
+ Mon Aug 30 17:34:29 2021 
+
