@@ -34,8 +34,8 @@ data_source_c <- paste0(dir_n, "Data_sources/", ctr, "/cases_",today(), ".csv")
 data_source_d <- paste0(dir_n, "Data_sources/", ctr, "/deaths_",today(), ".csv")
 data_source_v <- paste0(dir_n, "Data_sources/", ctr, "/vacc_",today(), ".csv")
 
-download.file(cases_url, destfile = data_source_c, mode = "wb")
-download.file(deaths_url, destfile = data_source_d, mode = "wb")
+download.file(cases_url[1], destfile = data_source_c, mode = "wb")
+download.file(deaths_url[1], destfile = data_source_d, mode = "wb")
 download.file(vacc_url, destfile = data_source_v, mode = "wb")
 
 
