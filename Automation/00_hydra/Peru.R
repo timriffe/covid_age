@@ -34,6 +34,9 @@ data_source_c <- paste0(dir_n, "Data_sources/", ctr, "/cases_",today(), ".csv")
 data_source_d <- paste0(dir_n, "Data_sources/", ctr, "/deaths_",today(), ".csv")
 data_source_v <- paste0(dir_n, "Data_sources/", ctr, "/vacc_",today(), ".csv")
 
+
+# EA: needed to add the index [1] because there is more than one link, while the first one is the 
+# full database that we need
 download.file(cases_url[1], destfile = data_source_c, mode = "wb")
 download.file(deaths_url[1], destfile = data_source_d, mode = "wb")
 download.file(vacc_url, destfile = data_source_v, mode = "wb")
@@ -49,9 +52,9 @@ download.file(vacc_url, destfile = data_source_v, mode = "wb")
 # Vaccines
 #db_v <- read_csv(data_source_v)
 
-db_c= read.csv(data_source_c, sep = ";")
-db_d = read.csv(data_source_d, sep = ";")
-db_v= read.csv(data_source_v, sep = ",")
+db_c <- read.csv(data_source_c, sep = ";")
+db_d <- read.csv(data_source_d, sep = ";")
+db_v <- read.csv(data_source_v, sep = ",")
 
 
 # deaths ----------------------------------------------
