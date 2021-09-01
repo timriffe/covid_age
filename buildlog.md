@@ -3664,3 +3664,15 @@ e == 'US_VA30.08.2021', Sex == 'b', Measure == 'Deaths'
 # Age harmonization 
  Wed Sep 01 03:06:44 2021 
 
+
+# remake coverage map 
+ Wed Sep 01 07:51:35 2021 
+
+
+# push outputs to OSF 
+ Wed Sep 01 07:56:31 2021 
+
+
+# Commit dashboards and buildlog 
+ Wed Sep 01 08:03:37 2021 
+
