@@ -3721,3 +3721,7 @@ e == 'US_VA02.09.2021', Sex == 'b', Measure == 'Cases' )
 # Commit dashboards and buildlog 
  Sat Sep 04 09:24:44 2021 
 
+
+# update build series log 
+ Sat Sep 04 09:24:56 2021 
+
