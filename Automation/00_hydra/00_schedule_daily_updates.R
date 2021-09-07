@@ -88,8 +88,6 @@ scripts <- c('US_Virginia', 'USA_all_deaths', 'Netherlands', 'Estonia',
              'ECDC_vaccine', 'Slovakia_vaccine', 'Germany_vaccine', 'US_Pennsylvania_vaccine', 'USA_vaccine',
              'Australia_vaccine', 'US_Idaho', 'USA_all', 'Brazil')
 
-
-
 # Scheduling all scripts at once
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -121,6 +119,7 @@ for(c in scripts){
 # for individual scheduling
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 
+
 sched("New_Zealand", tm = "10:58", email = auto_update_email, wd = auto_update_wd)
 
 #sch = "WEEKLY"
@@ -131,7 +130,8 @@ sched("New_Zealand", tm = "10:58", email = auto_update_email, wd = auto_update_w
 
 # for deleting single task schedule
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-delete_sched("US_Indiana")
+# delete_sched("US_Indiana")
+
 
 
 
