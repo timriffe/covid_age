@@ -5,7 +5,6 @@ library(here)
 source(here("Automation/00_Functions_automation.R"))
 
 
-
 # commands in the git terminal to update each fork:
 # first coinfigure the upstream (only once):
 # git remote add upstream https://github.com/timriffe/covid_age.git
@@ -45,7 +44,6 @@ if (grepl("Git04", auto_update_wd)){
 # See "Automation/00_Functions_automation.R" for more details
 
 
-
 # Steps for new automated sources 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # 1) create folders in N: drive (there is a way to include it in the auto script, already done in Argentina's!)
@@ -63,7 +61,7 @@ if (grepl("Git04", auto_update_wd)){
 
 # To see the list of scheduled tasks
 taskscheduler_ls() %>% view()
-
+tasks <- taskscheduler_ls()
 # ~~~~~~~~~~~~~~~~
 # Scheduling tasks 
 # ~~~~~~~~~~~~~~~~
@@ -86,7 +84,7 @@ scripts <- c('US_Virginia', 'USA_all_deaths', 'Netherlands', 'Estonia',
              'US_Minnesota_vaccine', 'Slovenia_vaccine', 'US_Oregon_Vaccine', 'Latvia_vaccine',
              'Island_of_Jersey', 'Estonia_vaccine', 'Uruguay_vaccine', 'Chile','Finland_vaccine',
              'ECDC_vaccine', 'Slovakia_vaccine', 'Germany_vaccine', 'US_Pennsylvania_vaccine', 'USA_vaccine',
-             'Australia_vaccine', 'US_Idaho', 'USA_all', 'Brazil')
+             'Australia_vaccine', 'US_Idaho', 'USA_all', 'Brazil', 'New_Zealand')
 
 
 
@@ -121,7 +119,7 @@ for(c in scripts){
 # for individual scheduling
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sched("New_Zealand", tm = "10:58", email = auto_update_email, wd = auto_update_wd)
+sched("US_Virginia", tm = "12:58", email = auto_update_email, wd = auto_update_wd)
 
 #sch = "WEEKLY"
 
@@ -131,9 +129,9 @@ sched("New_Zealand", tm = "10:58", email = auto_update_email, wd = auto_update_w
 
 # for deleting single task schedule
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-delete_sched("US_Indiana")
+delete_sched("US_Virginia")
 
-
+# taskscheduler_delete(taskname = "coverage_db_US_Virgini_daily")
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # danger zone!!!! deleting all scheduled tasks
