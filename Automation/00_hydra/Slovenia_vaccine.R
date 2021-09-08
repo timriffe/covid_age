@@ -22,22 +22,23 @@ dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 drive_auth(email = Sys.getenv("email"))
 gs4_auth(email = Sys.getenv("email"))
 
-# Drive urls
-rubric <- get_input_rubric() %>% 
-  filter(Short == "SI")
-
-ss_i <- rubric %>% 
-  dplyr::pull(Sheet)
-
-ss_db <- rubric %>% 
-  dplyr::pull(Source)
-
-# Get current data (to keep deaths and cases 2020)
-#only read in cases and deaths, vaccine get refreshed 
-In_drive <-
-  get_country_inputDB("SI") %>% 
-  filter(Measure == "Cases" | Measure == "Deaths") %>%
-  select(-Short)
+#move script to N
+# # Drive urls
+# rubric <- get_input_rubric() %>% 
+#   filter(Short == "SI")
+# 
+# ss_i <- rubric %>% 
+#   dplyr::pull(Sheet)
+# 
+# ss_db <- rubric %>% 
+#   dplyr::pull(Source)
+# 
+# # Get current data (to keep deaths and cases 2020)
+# #only read in cases and deaths, vaccine get refreshed 
+# In_drive <-
+#   get_country_inputDB("SI") %>% 
+#   filter(Measure == "Cases" | Measure == "Deaths") %>%
+#   select(-Short)
 
 
 #get vaccine data 
@@ -81,18 +82,20 @@ Out_vaccine= In_vaccine%>%
          Age, AgeInt, Metric, Measure, Value)
 
 
-#put together with data from drive 
-
-out= rbind(In_drive, Out_vaccine)
+# #put together with data from drive 
+# 
+# out= rbind(In_drive, Out_vaccine)
 
 
 #upload 
 
 # upload to Drive, overwrites
 
-write_sheet(out, 
-            ss = ss_i, 
-            sheet = "database")
+write_rds(out, paste0(dir_n, ctr, ".rds"))
+
+# write_sheet(out, 
+#             ss = ss_i, 
+#             sheet = "database")
 
 
 log_update("Slovenia_vaccine", N = nrow(out))

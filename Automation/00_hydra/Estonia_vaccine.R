@@ -24,24 +24,22 @@ drive_auth(email = email)
 gs4_auth(email = email)
 
 # Drive urls
-rubric <- get_input_rubric() %>% filter(Short == "EE")
-
-ss_i <- rubric %>% 
-  dplyr::pull(Sheet)
-
-ss_db <- rubric %>% 
-  dplyr::pull(Source)
-
-# reading data from Drive and last date entered 
-
-In_drive <- get_country_inputDB("EE")%>% 
-  select(-Short)
-
-
-#Save entered case and test data  
-
-drive_archive= In_drive%>%
-  filter(Measure== "Cases"| Measure== "Tests")
+# rubric <- get_input_rubric() %>% filter(Short == "EE")
+# 
+# ss_i <- rubric %>% 
+#   dplyr::pull(Sheet)
+# 
+# ss_db <- rubric %>% 
+#   dplyr::pull(Source)
+# 
+# # reading data from Drive and last date entered 
+# 
+# In_drive <- get_country_inputDB("EE")%>% 
+#   select(-Short)
+# #Save entered case and test data  
+# 
+# drive_archive= In_drive%>%
+#   filter(Measure== "Cases"| Measure== "Tests")
 
 
 #read in vaccine data 
@@ -100,11 +98,13 @@ Out_vaccine= In_vaccine%>%
     
 #put together with archived data 
 
-Out= rbind(drive_archive,Out_vaccine)
-    
-write_sheet(Out, 
-            ss = ss_i, 
-            sheet = "database")
+# Out= rbind(drive_archive,Out_vaccine)
+#     
+# write_sheet(Out, 
+#             ss = ss_i, 
+#             sheet = "database")
+
+write_rds(Out, paste0(dir_n, ctr, ".rds"))
 
 log_update(pp = ctr, N = nrow(Out))
 

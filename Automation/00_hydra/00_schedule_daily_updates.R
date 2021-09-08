@@ -90,8 +90,8 @@ scripts <- c('US_Virginia', 'USA_all_deaths', 'Netherlands', 'Estonia',
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # starting time for first schedule in hour and minutes
-h_ini <- 12
-m_ini <- 35
+h_ini <- 10
+m_ini <- 00
 # delay between scripts in minutes
 delay_time <- 15
 
@@ -117,12 +117,8 @@ for(c in scripts){
 # for individual scheduling
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-<<<<<<< HEAD
+sched("Denmark", tm = "12:55", email = auto_update_email, wd = auto_update_wd)
 
-sched("New_Zealand", tm = "10:58", email = auto_update_email, wd = auto_update_wd)
-=======
-sched("US_Virginia", tm = "12:58", email = auto_update_email, wd = auto_update_wd)
->>>>>>> c83047b60ac38c9fa11ecf8690fe66a28677d648
 
 #sch = "WEEKLY"
 
@@ -132,15 +128,12 @@ sched("US_Virginia", tm = "12:58", email = auto_update_email, wd = auto_update_w
 
 # for deleting single task schedule
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-<<<<<<< HEAD
+
 # delete_sched("US_Indiana")
 
 
-=======
-delete_sched("US_Virginia")
->>>>>>> c83047b60ac38c9fa11ecf8690fe66a28677d648
 
-# taskscheduler_delete(taskname = "coverage_db_US_Virgini_daily")
+
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # danger zone!!!! deleting all scheduled tasks
