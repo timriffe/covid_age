@@ -104,7 +104,7 @@ Out_vaccine= In_vaccine%>%
 #             ss = ss_i, 
 #             sheet = "database")
 
-write_rds(Out, paste0(dir_n, ctr, ".rds"))
+write_rds(Out_vaccine, paste0(dir_n, ctr, ".rds"))
 
 log_update(pp = ctr, N = nrow(Out))
 

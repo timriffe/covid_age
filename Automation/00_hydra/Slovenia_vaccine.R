@@ -91,7 +91,7 @@ Out_vaccine= In_vaccine%>%
 
 # upload to Drive, overwrites
 
-write_rds(out, paste0(dir_n, ctr, ".rds"))
+write_rds(Out_vaccine, paste0(dir_n, ctr, ".rds"))
 
 # write_sheet(out, 
 #             ss = ss_i, 
