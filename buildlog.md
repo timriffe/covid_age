@@ -3839,3 +3839,7 @@ filter( Code == 'US_VA10.09.2021', Sex == 'b', Measure == 'Deaths' )
 # Commit dashboards and buildlog 
  Tue Sep 14 07:52:52 2021 
 
+
+# update build series log 
+ Tue Sep 14 07:53:05 2021 
+
