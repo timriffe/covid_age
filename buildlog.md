@@ -1,32 +1,32 @@
 
 # New build log 
- Mon Sep 13 01:00:10 2021 
+ Tue Sep 14 01:00:10 2021 
 
 
 # begin resolution of multiple sources per population 
- Mon Sep 13 01:00:10 2021 
+ Tue Sep 14 01:00:10 2021 
 
 
 # Resolve USA CDC overlaps 
- Mon Sep 13 01:01:41 2021 
+ Tue Sep 14 01:01:40 2021 
 
 USA CDC resolved
  56961 rows removed
 
 # Resolve Brazil TRC overlaps 
- Mon Sep 13 01:01:48 2021 
+ Tue Sep 14 01:01:47 2021 
 
 Brazil TRC resolved
  0 rows removed
 
 # Resolve ECDC overlaps 
- Mon Sep 13 01:01:54 2021 
+ Tue Sep 14 01:01:53 2021 
 
 ECDC resolved
  0 rows removed
 
 # prep (resolve_UNKUNK) 
- Mon Sep 13 01:03:59 2021 
+ Tue Sep 14 01:03:58 2021 
 
 filter( Country == 'Vietnam', Region == 'All', Date == '14.03.2020', Measure == 'Deaths' )
 filter( Country == 'Vietnam', Region == 'All', Date == '15.03.2020', Measure == 'Deaths' )
@@ -44,15 +44,15 @@ filter( Country == 'Vietnam', Region == 'All', Date == '09.06.2021', Measure == 
 filter( Country == 'Vietnam', Region == 'All', Date == '10.06.2021', Measure == 'Cases' )
 
 # A (convert_fractions_sexes) 
- Mon Sep 13 01:14:06 2021 
+ Tue Sep 14 01:13:51 2021 
 
 
 # B (redistribute_unknown_age) 
- Mon Sep 13 01:19:37 2021 
+ Tue Sep 14 01:19:20 2021 
 
 
 # C (rescale_to_total) 
- Mon Sep 13 01:44:54 2021 
+ Tue Sep 14 01:44:17 2021 
 
 filter( Code == 'JO23.08.2021', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'JO23.08.2021', Sex == 'f', Measure == 'Cases' )
@@ -78,29 +78,30 @@ filter( Code == 'ME010.04.2021', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'ME010.04.2021', Sex == 'b', Measure == 'Deaths' )
 
 # D (infer_cases_from_deaths_and_ascfr) 
- Mon Sep 13 02:14:43 2021 
+ Tue Sep 14 02:13:42 2021 
 
 
 # E (infer_deaths_from_cases_and_ascfr) 
- Mon Sep 13 02:22:50 2021 
+ Tue Sep 14 02:21:44 2021 
 
 
 # G (redistribute_unknown_sex) 
- Mon Sep 13 02:30:54 2021 
+ Tue Sep 14 02:29:45 2021 
 
 
 # H (rescale_sexes) 
- Mon Sep 13 02:38:57 2021 
+ Tue Sep 14 02:37:43 2021 
 
 
 # I (infer_both_sex) 
- Mon Sep 13 02:43:08 2021 
+ Tue Sep 14 02:41:51 2021 
 
 
 # J (maybe_lower_closeout) 
- Mon Sep 13 02:50:46 2021 
+ Tue Sep 14 02:49:17 2021 
 
 filter( Code == 'AF08.09.2021', Sex == 'b', Measure == 'Cases' )
+filter( Code == 'AF12.09.2021', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'CA_TNT15.07.2020', Sex == 'f', Measure == 'Cases' )
 filter( Code == 'CA_TNT15.07.2020', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'CA_TNT15.07.2020', Sex == 'b', Measure == 'Cases' )
@@ -2265,6 +2266,24 @@ filter( Code == 'GB_SCO_10.09.2021', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'GB_SCO_10.09.2021', Sex == 'f', Measure == 'Tests' )
 filter( Code == 'GB_SCO_10.09.2021', Sex == 'm', Measure == 'Tests' )
 filter( Code == 'GB_SCO_10.09.2021', Sex == 'b', Measure == 'Tests' )
+filter( Code == 'GB_SCO_11.09.2021', Sex == 'f', Measure == 'Cases' )
+filter( Code == 'GB_SCO_11.09.2021', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'GB_SCO_11.09.2021', Sex == 'b', Measure == 'Cases' )
+filter( Code == 'GB_SCO_11.09.2021', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'GB_SCO_11.09.2021', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'GB_SCO_11.09.2021', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'GB_SCO_11.09.2021', Sex == 'f', Measure == 'Tests' )
+filter( Code == 'GB_SCO_11.09.2021', Sex == 'm', Measure == 'Tests' )
+filter( Code == 'GB_SCO_11.09.2021', Sex == 'b', Measure == 'Tests' )
+filter( Code == 'GB_SCO_12.09.2021', Sex == 'f', Measure == 'Cases' )
+filter( Code == 'GB_SCO_12.09.2021', Sex == 'm', Measure == 'Cases' )
+filter( Code == 'GB_SCO_12.09.2021', Sex == 'b', Measure == 'Cases' )
+filter( Code == 'GB_SCO_12.09.2021', Sex == 'f', Measure == 'Deaths' )
+filter( Code == 'GB_SCO_12.09.2021', Sex == 'm', Measure == 'Deaths' )
+filter( Code == 'GB_SCO_12.09.2021', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'GB_SCO_12.09.2021', Sex == 'f', Measure == 'Tests' )
+filter( Code == 'GB_SCO_12.09.2021', Sex == 'm', Measure == 'Tests' )
+filter( Code == 'GB_SCO_12.09.2021', Sex == 'b', Measure == 'Tests' )
 filter( Code == 'US_CA_22.04.2020', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_CA_22.04.2020', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'US_CA_23.04.2020', Sex == 'b', Measure == 'Cases' )
@@ -2934,6 +2953,10 @@ filter( Code == 'US_CA_07.09.2021', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_CA_08.09.2021', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_CA_09.09.2021', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_CA_09.09.2021', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'US_CA_10.09.2021', Sex == 'b', Measure == 'Cases' )
+filter( Code == 'US_CA_10.09.2021', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'US_CA_11.09.2021', Sex == 'b', Measure == 'Cases' )
+filter( Code == 'US_CA_11.09.2021', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'US_IN13.03.2021', Sex == 'b', Measure == 'Vaccination2' )
 filter( Code == 'US_IN14.03.2021', Sex == 'b', Measure == 'Vaccination2' )
 filter( Code == 'US_IN16.03.2021', Sex == 'b', Measure == 'Vaccination2' )
@@ -3802,21 +3825,5 @@ filter( Code == 'US_VA10.09.2021', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_VA10.09.2021', Sex == 'b', Measure == 'Deaths' )
 
 # Age harmonization 
- Mon Sep 13 03:10:14 2021 
-
-
-# remake coverage map 
- Mon Sep 13 07:51:16 2021 
-
-
-# push outputs to OSF 
- Mon Sep 13 07:56:14 2021 
-
-
-# Commit dashboards and buildlog 
- Mon Sep 13 08:01:37 2021 
-
-
-# update build series log 
- Mon Sep 13 08:01:50 2021 
+ Tue Sep 14 03:08:33 2021 
 
