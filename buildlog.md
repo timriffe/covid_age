@@ -1,32 +1,32 @@
 
 # New build log 
- Wed Sep 15 01:00:10 2021 
+ Thu Sep 16 01:00:14 2021 
 
 
 # begin resolution of multiple sources per population 
- Wed Sep 15 01:00:10 2021 
+ Thu Sep 16 01:00:14 2021 
 
 
 # Resolve USA CDC overlaps 
- Wed Sep 15 01:01:44 2021 
+ Thu Sep 16 01:02:27 2021 
 
 USA CDC resolved
  55742 rows removed
 
 # Resolve Brazil TRC overlaps 
- Wed Sep 15 01:01:52 2021 
+ Thu Sep 16 01:02:37 2021 
 
 Brazil TRC resolved
  0 rows removed
 
 # Resolve ECDC overlaps 
- Wed Sep 15 01:02:00 2021 
+ Thu Sep 16 01:02:45 2021 
 
 ECDC resolved
  0 rows removed
 
 # prep (resolve_UNKUNK) 
- Wed Sep 15 01:04:10 2021 
+ Thu Sep 16 01:06:10 2021 
 
 filter( Country == 'Vietnam', Region == 'All', Date == '14.03.2020', Measure == 'Deaths' )
 filter( Country == 'Vietnam', Region == 'All', Date == '15.03.2020', Measure == 'Deaths' )
@@ -44,15 +44,15 @@ filter( Country == 'Vietnam', Region == 'All', Date == '09.06.2021', Measure == 
 filter( Country == 'Vietnam', Region == 'All', Date == '10.06.2021', Measure == 'Cases' )
 
 # A (convert_fractions_sexes) 
- Wed Sep 15 01:14:23 2021 
+ Thu Sep 16 01:16:46 2021 
 
 
 # B (redistribute_unknown_age) 
- Wed Sep 15 01:20:06 2021 
+ Thu Sep 16 01:22:35 2021 
 
 
 # C (rescale_to_total) 
- Wed Sep 15 01:45:14 2021 
+ Thu Sep 16 01:48:06 2021 
 
 filter( Code == 'JO23.08.2021', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'JO23.08.2021', Sex == 'f', Measure == 'Cases' )
@@ -78,27 +78,27 @@ filter( Code == 'ME010.04.2021', Sex == 'm', Measure == 'Cases' )
 filter( Code == 'ME010.04.2021', Sex == 'b', Measure == 'Deaths' )
 
 # D (infer_cases_from_deaths_and_ascfr) 
- Wed Sep 15 02:14:42 2021 
+ Thu Sep 16 02:18:08 2021 
 
 
 # E (infer_deaths_from_cases_and_ascfr) 
- Wed Sep 15 02:22:50 2021 
+ Thu Sep 16 02:26:28 2021 
 
 
 # G (redistribute_unknown_sex) 
- Wed Sep 15 02:30:57 2021 
+ Thu Sep 16 02:34:49 2021 
 
 
 # H (rescale_sexes) 
- Wed Sep 15 02:39:08 2021 
+ Thu Sep 16 02:43:06 2021 
 
 
 # I (infer_both_sex) 
- Wed Sep 15 02:43:24 2021 
+ Thu Sep 16 02:47:34 2021 
 
 
 # J (maybe_lower_closeout) 
- Wed Sep 15 02:51:03 2021 
+ Thu Sep 16 02:55:21 2021 
 
 filter( Code == 'AF08.09.2021', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'AF12.09.2021', Sex == 'b', Measure == 'Cases' )
@@ -3856,23 +3856,9 @@ filter( Code == 'US_VA12.09.2021', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_VA12.09.2021', Sex == 'b', Measure == 'Deaths' )
 filter( Code == 'US_VA13.09.2021', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'US_VA13.09.2021', Sex == 'b', Measure == 'Deaths' )
+filter( Code == 'US_VA14.09.2021', Sex == 'b', Measure == 'Cases' )
+filter( Code == 'US_VA14.09.2021', Sex == 'b', Measure == 'Deaths' )
 
 # Age harmonization 
- Wed Sep 15 03:10:48 2021 
-
-
-# remake coverage map 
- Wed Sep 15 07:54:11 2021 
-
-
-# push outputs to OSF 
- Wed Sep 15 07:59:10 2021 
-
-
-# Commit dashboards and buildlog 
- Wed Sep 15 08:05:10 2021 
-
-
-# update build series log 
- Wed Sep 15 08:05:22 2021 
+ Thu Sep 16 03:21:42 2021 
 
