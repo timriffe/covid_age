@@ -17,18 +17,23 @@ dir_n_source <- "N:/COVerAGE-DB/Automation/Bulgaria/"
 drive_auth(email = email)
 gs4_auth(email = email)
 
-# Drive urls
-rubric <- get_input_rubric() %>% 
-  filter(Country == "Bulgaria")
 
-ss_i <- rubric %>% 
-  dplyr::pull(Sheet)
+#Read in data archive
 
-ss_db <- rubric %>% 
-  dplyr::pull(Source)
+BGArchive <- read_rds(paste0(dir_n, ctr, ".rds"))
 
-BGdrive <- get_country_inputDB("BG") %>% 
-  select(-Short)
+# # Drive urls
+# rubric <- get_input_rubric() %>% 
+#   filter(Country == "Bulgaria")
+# 
+# ss_i <- rubric %>% 
+#   dplyr::pull(Sheet)
+# 
+# ss_db <- rubric %>% 
+#   dplyr::pull(Source)
+# 
+# BGdrive <- get_country_inputDB("BG") %>% 
+#   select(-Short)
 
 # autodownloads happening in python from here:
 # https://data.egov.bg/data/resourceView/8f62cfcf-a979-46d4-8317-4e1ab9cbd6a8?fbclid=IwAR2mla-loksQXfbhIw1BAOzyXxyupB9aQPkxXQOqb7yhHbUVmldOlhyjnfY
@@ -164,16 +169,21 @@ BG_out <- bind_rows(BG_cases_out,
 
 # In case we had earlier data, we keep it.
 BG_out <- 
-  BGdrive %>% 
+  BGArchive %>% 
   filter(dmy(Date) < min(dmy(BG_out$Date))) %>% 
   bind_rows(BG_out) %>% 
   sort_input_data()
 
 # upload to Drive, overwrites
+# write_sheet(BG_out, 
+#             ss = ss_i, 
+#             sheet = "database")
 
-write_sheet(BG_out, 
-            ss = ss_i, 
-            sheet = "database")
+
+#moving data to N 
+
+write_rds(BG_out, paste0(dir_n, ctr, ".rds"))
+
 
 log_update("Bulgaria", N = nrow(BG_out))
 

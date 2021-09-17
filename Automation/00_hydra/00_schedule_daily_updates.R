@@ -86,16 +86,14 @@ scripts <- c('US_Virginia', 'USA_all_deaths', 'Netherlands', 'Estonia',
              'ECDC_vaccine', 'Slovakia_vaccine', 'Germany_vaccine', 'US_Pennsylvania_vaccine', 'USA_vaccine',
              'Australia_vaccine', 'US_Idaho', 'USA_all', 'Brazil', 'New_Zealand')
 
-
-
 # Scheduling all scripts at once
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # starting time for first schedule in hour and minutes
-h_ini <- 10
+h_ini <- 04
 m_ini <- 00
 # delay between scripts in minutes
-delay_time <- 15
+delay_time <- 5
 
 i <- 0
 for(c in scripts){
@@ -119,7 +117,8 @@ for(c in scripts){
 # for individual scheduling
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sched("US_Virginia", tm = "12:58", email = auto_update_email, wd = auto_update_wd)
+sched("New_Zealand", tm = "09:04", email = auto_update_email, wd = auto_update_wd)
+
 
 #sch = "WEEKLY"
 
@@ -129,9 +128,12 @@ sched("US_Virginia", tm = "12:58", email = auto_update_email, wd = auto_update_w
 
 # for deleting single task schedule
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-delete_sched("US_Virginia")
 
-# taskscheduler_delete(taskname = "coverage_db_US_Virgini_daily")
+# delete_sched("US_Indiana")
+
+
+
+
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # danger zone!!!! deleting all scheduled tasks
