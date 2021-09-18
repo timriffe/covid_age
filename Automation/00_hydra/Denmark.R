@@ -167,12 +167,22 @@ if(dim(links_new_cases)[1] > 0){
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 m_url_v <- "https://covid19.ssi.dk/overvagningsdata/download-fil-med-vaccinationsdata"
 
+# links_v <- scraplinks(m_url_v) %>% 
+#   filter(str_detect(link, "zip")) %>% 
+#   separate(link, c("a", "b", "c", "d", "e", "f", "g", "h")) %>% 
+#   mutate(Date = make_date(y = h, m = g, d = f)) %>% 
+#   select(Date, url) %>% 
+#   drop_na() 
+
+#JD: After 18.04. naming of the files changed, adapting the str_detect to the new format 
+#otherwise new files get filtered out 
+
 links_v <- scraplinks(m_url_v) %>% 
   filter(str_detect(link, "zip")) %>% 
-  separate(link, c("a", "b", "c", "d", "e", "f", "g", "h")) %>% 
-  mutate(Date = make_date(y = h, m = g, d = f)) %>% 
+  separate(link, c("a", "b", "c", "d", "e", "f", "g", "h"))%>%
+  mutate(Date= dmy(f)) %>% 
   select(Date, url) %>% 
-  drop_na() 
+  drop_na()
 
 links_new_vacc <- links_v %>% 
   filter(!Date %in% dates_vacc_n)
@@ -188,8 +198,8 @@ if(dim(links_new_vacc)[1] > 0){
                             ctr, "/", ctr, "_vaccines_", as.character(date_v), ".zip")
     download.file(as.character(links_new_vacc[i, 2]), destfile = data_source_v, mode = "wb")
     
-    try(db_v <- read_csv(unz(data_source_v, "Vaccine_DB/Vaccinationer_region_aldgrp_koen.csv")))
-    try(db_v <- read_csv(unz(data_source_v, "ArcGIS_dashboards_data/Vaccine_DB/Vaccinationer_region_aldgrp_koen.csv")))
+    try(db_v <- read_csv2(unz(data_source_v, "Vaccine_DB/Vaccinationer_region_aldgrp_koen.csv")))
+    #try(db_v <- read_csv(unz(data_source_v, "ArcGIS_dashboards_data/Vaccine_DB/Vaccinationer_region_aldgrp_koen.csv")))
   
     db_v2 <- db_v %>% 
       rename(Age = 2,
