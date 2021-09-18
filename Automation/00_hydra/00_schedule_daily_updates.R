@@ -129,8 +129,9 @@ sched("US_Virginia", tm = "12:58", email = auto_update_email, wd = auto_update_w
 
 # for deleting single task schedule
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-delete_sched("US_Virginia")
-
+delete_sched("COVerAGE-DB-automatic-build-test")
+taskscheduler_delete("COVerAGE-DB-automatic-daily-build")
+taskscheduler_delete("COVerAGE-DB-every-8-hour-inputDB-updates")
 # taskscheduler_delete(taskname = "coverage_db_US_Virgini_daily")
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
