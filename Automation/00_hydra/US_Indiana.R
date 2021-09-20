@@ -24,29 +24,10 @@ drive_auth(email = email)
 gs4_auth(email = email)
 
 
+#Save append vaccine data 
 
-# Drive urls
-rubric <- get_input_rubric() %>% filter(Short == "US_IN")
-
-ss_i <- rubric %>% 
-  dplyr::pull(Sheet)
-
-ss_db <- rubric %>% 
-  dplyr::pull(Source)
-
-# reading data from Drive and last date entered 
-
-In_drive <- get_country_inputDB("US_IN")%>% 
-  select(-Short)
-
-
-
-#Save vaccine data that was manually entered 
-
-vaccine_archive= In_drive%>%
-  filter(Measure== "Vaccination1"| Measure== "Vaccination2"| Measure== "Vaccinations")%>% 
-  mutate(AgeInt = as.character(AgeInt))
-
+vaccine_archive <- read_rds(paste0(dir_n, ctr, ".rds"))%>% 
+filter(Measure== "Vaccination1"| Measure== "Vaccination2"| Measure== "Vaccinations")
 
 #Read in files 
 
@@ -61,14 +42,11 @@ download.file(cases_url, data_source_1, mode = "wb")
 IN_cases<- read_excel(data_source_1)
 
 
-
 ##Death
 
 # Read it in 
 death_url <- "https://hub.mph.in.gov/datastore/dump/7661f008-81b5-4ff2-8e46-f59ad5aad456?bom=True"
 IN_death<- read_csv(death_url)
-
-
 
 ################cases###############
 
@@ -282,14 +260,8 @@ out <- bind_rows(Out_cases,
   distinct()
 
 
-# upload to Drive, overwrites
-
-
-write_sheet(out, 
-            ss = ss_i, 
-            sheet = "database")
-
-
+# save on N 
+write_rds(out, paste0(dir_n, ctr, ".rds"))
 
 log_update("US_Indiana", N = nrow(out))
 
@@ -323,7 +295,26 @@ file.remove(data_source)
 
 ##############################################################################
 
-
+#move script to N 
+# # # Drive urls
+# rubric <- get_input_rubric() %>% filter(Short == "US_IN")
+# 
+# ss_i <- rubric %>%
+#   dplyr::pull(Sheet)
+# 
+# ss_db <- rubric %>%
+#   dplyr::pull(Source)
+# 
+# # reading data from Drive and last date entered 
+# In_drive <- get_country_inputDB("US_IN")%>% 
+#   select(-Short)
+# 
+# 
+# # #Save vaccine data that was manually entered 
+# 
+# vaccine_archive= In_drive%>%
+#   filter(Measure== "Vaccination1"| Measure== "Vaccination2"| Measure== "Vaccinations")%>%
+#   mutate(AgeInt = as.character(AgeInt))
 
 
 
