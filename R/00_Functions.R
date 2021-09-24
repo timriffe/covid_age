@@ -36,10 +36,6 @@ if (!p_isinstalled("covidAgeData")) {
   library(remotes)
   install_github("eshom/covid-age-data")
 }
-if (!p_isinstalled("DemoTools")) {
-  library(remotes)
-  install_github("timriffe/DemoTools")
-}
 if (!p_isinstalled("parallelsugar")){
   library(remotes)
   install_github("nathanvan/parallelsugar")
@@ -48,10 +44,14 @@ if (!p_isinstalled("osfr")){
   library(remotes)
   install_github("ropensci/osfr", force = TRUE)
 }
+if (!p_isinstalled("DemoTools")) {
+  library(remotes)
+  install_github("timriffe/DemoTools")
+}
+
 # Load the required CRAN/github packages
 p_load(packages_CRAN, character.only = TRUE)
 p_load(packages_git, character.only = TRUE)
-
 
 
 
@@ -242,7 +242,7 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
       # cut down to just those modified in last hours
       rubric <- 
         rubric %>%  
-        mutate(sheetID = sapply(Sheet,cutID )) %>% 
+        mutate(sheetID = sapply(Sheet, cutID)) %>% 
         filter(sheetID %in% ids)
       
      }
@@ -284,7 +284,6 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
     
     # If again error
     if (class(X)[1] == "try-error") {
-      
       cat(id,"failure\n")
       failures[id] <- id
     } else {
@@ -367,7 +366,8 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
           read_rds(lf) %>% 
           ungroup() %>% 
           mutate(Age = as.character(Age),
-                 AgeInt = as.integer(AgeInt))
+                 AgeInt = as.integer(AgeInt), 
+                 Value = as.double(Value))
       )
         
       try(

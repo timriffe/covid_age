@@ -90,10 +90,10 @@ scripts <- c('US_Virginia', 'USA_all_deaths', 'Netherlands', 'Estonia',
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # starting time for first schedule in hour and minutes
-h_ini <- 04
-m_ini <- 00
+h_ini <- 09
+m_ini <- 30
 # delay between scripts in minutes
-delay_time <- 5
+delay_time <- 10
 
 i <- 0
 for(c in scripts){

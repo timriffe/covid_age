@@ -242,6 +242,10 @@ if (nrow(rubric) > 0){
            !is.na(Country),
            !is.na(dmy(Date))) 
   
+  # inputDB_out <- 
+  #   inputDB_out %>% 
+  #   filter(Country != "1")
+  
   saveRDS(inputDB_out, here::here("Data","inputDB.rds"))
 
   #saveRDS(inputDB, here("Data","inputDB_i.rds"))
@@ -290,7 +294,7 @@ if (schedule_this){
                        rscript =  paste0(Sys.getenv("path_repo"), "/R/01_update_inputDB.R"), 
                        schedule = "HOURLY", 
                        modifier = 8,
-                       starttime = "19:00",
+                       starttime = "10:00",
                        startdate = format(Sys.Date(), "%m/%d/%Y"))
   # 
 }
