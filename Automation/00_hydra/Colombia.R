@@ -14,18 +14,13 @@ dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 drive_auth(email = email)
 gs4_auth(email = email)
 
-# Loading data from the web
-###########################
+# Downloading data from the web
+###############################
 cases_url <- "https://www.datos.gov.co/api/views/gt2j-8ykr/rows.csv?accessType=DOWNLOAD"
 tests_url <- "https://www.datos.gov.co/api/views/8835-5baf/rows.csv?accessType=DOWNLOAD"
 
-# cases and deaths database
-db <- read_csv(cases_url,
-               locale = locale(encoding = "UTF-8"))
-
-# tests database
-db_m <- read_csv(tests_url,
-                        locale = locale(encoding = "UTF-8"))
+# EA: the files became too big and the direct reading from the links is vary unstable this way.
+# So better to download them first and read them directly from the local drive
 
 # saving compressed data to N: drive
 data_source_c <- paste0(dir_n, "Data_sources/", ctr, "/cases_",today(), ".csv")
@@ -34,6 +29,19 @@ data_source_t <- paste0(dir_n, "Data_sources/", ctr, "/tests_",today(), ".csv")
 download.file(cases_url, destfile = data_source_c)
 download.file(tests_url, destfile = data_source_t)
 
+
+# Loading data in the session
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# cases and deaths database
+db <- read_csv(data_source_c,
+               locale = locale(encoding = "UTF-8"))
+
+# tests database
+db_m <- read_csv(data_source_t,
+                 locale = locale(encoding = "UTF-8"))
+
+
+# compressing source files and cleanning stuff
 data_source <- c(data_source_c, data_source_t)
 
 zipname <- paste0(dir_n, 

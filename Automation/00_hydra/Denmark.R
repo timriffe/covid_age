@@ -85,6 +85,18 @@ db_drive_deaths <- db_drive %>%
 # filtering deaths not included yet
 db_deaths <- db_drive_deaths %>% 
   filter(!Date %in% dates_deaths_n)
+
+db_deaths2 <- 
+  db_deaths %>% 
+  bind_rows(
+    db_deaths %>% 
+      group_by(Country, Region, Code, Date, Sex, Metric, Measure) %>% 
+      summarise(Value = sum(Value)) %>% 
+      ungroup() %>% 
+      mutate(Age = "TOT",
+             AgeInt = NA)
+  ) %>% 
+  filter(Age != "UNK")
   
 # reading new cases from the web
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -103,6 +115,7 @@ links_c <- scraplinks(m_url_c) %>%
 links_new_cases <- links_c %>% 
   filter(!Date %in% dates_cases_n)
 
+links_new_cases <- links_c[1,]
 # downloading new cases data and loading it
 dim(links_new_cases)[1] > 0
 db_cases <- tibble()
@@ -154,12 +167,22 @@ if(dim(links_new_cases)[1] > 0){
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 m_url_v <- "https://covid19.ssi.dk/overvagningsdata/download-fil-med-vaccinationsdata"
 
+# links_v <- scraplinks(m_url_v) %>% 
+#   filter(str_detect(link, "zip")) %>% 
+#   separate(link, c("a", "b", "c", "d", "e", "f", "g", "h")) %>% 
+#   mutate(Date = make_date(y = h, m = g, d = f)) %>% 
+#   select(Date, url) %>% 
+#   drop_na() 
+
+#JD: After 18.04. naming of the files changed, adapting the str_detect to the new format 
+#otherwise new files get filtered out 
+
 links_v <- scraplinks(m_url_v) %>% 
   filter(str_detect(link, "zip")) %>% 
-  separate(link, c("a", "b", "c", "d", "e", "f", "g", "h")) %>% 
-  mutate(Date = make_date(y = h, m = g, d = f)) %>% 
+  separate(link, c("a", "b", "c", "d", "e", "f", "g", "h"))%>%
+  mutate(Date= dmy(f)) %>% 
   select(Date, url) %>% 
-  drop_na() 
+  drop_na()
 
 links_new_vacc <- links_v %>% 
   filter(!Date %in% dates_vacc_n)
@@ -175,8 +198,8 @@ if(dim(links_new_vacc)[1] > 0){
                             ctr, "/", ctr, "_vaccines_", as.character(date_v), ".zip")
     download.file(as.character(links_new_vacc[i, 2]), destfile = data_source_v, mode = "wb")
     
-    try(db_v <- read_csv(unz(data_source_v, "Vaccine_DB/Vaccinationer_region_aldgrp_koen.csv")))
-    try(db_v <- read_csv(unz(data_source_v, "ArcGIS_dashboards_data/Vaccine_DB/Vaccinationer_region_aldgrp_koen.csv")))
+    try(db_v <- read_csv2(unz(data_source_v, "Vaccine_DB/Vaccinationer_region_aldgrp_koen.csv")))
+    #try(db_v <- read_csv(unz(data_source_v, "ArcGIS_dashboards_data/Vaccine_DB/Vaccinationer_region_aldgrp_koen.csv")))
   
     db_v2 <- db_v %>% 
       rename(Age = 2,
@@ -196,8 +219,19 @@ if(dim(links_new_vacc)[1] > 0){
                              TRUE ~ Age),
              Date = date_v)
     
+    db_v3 <- 
+      db_v2 %>% 
+      bind_rows(
+        db_v2 %>% 
+          group_by(Sex, Measure, Date) %>% 
+          summarise(Value = sum(Value)) %>% 
+          ungroup() %>% 
+          mutate(Age = "TOT")
+      ) %>% 
+      filter(Age != "UNK")
+    
     db_vcc <- db_vcc %>% 
-      bind_rows(db_v2)
+      bind_rows(db_v3)
     
   }
 }
@@ -219,13 +253,15 @@ if(dim(links_new_vacc)[1] > 0 | dim(links_new_cases)[1] > 0){
 }
 
 out <- 
-  bind_rows(db_n, db_deaths) %>% 
+  bind_rows(db_n, db_deaths2) %>% 
   mutate(Date = ddmmyyyy(Date)) %>% 
   bind_rows(db_cases_vcc) %>% 
-  sort_input_data() 
+  sort_input_data() %>% 
+  unique
 
 ###########################
 #### Saving data in N: ####
 ###########################
 write_rds(out, paste0(dir_n, ctr, ".rds"))
 log_update(pp = ctr, N = nrow(out))
+

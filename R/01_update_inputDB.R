@@ -62,25 +62,49 @@ if (nrow(rubric) > 0){
   # read in modified data templates (this is the slowest part)
   # rubric <- get_input_rubric()
   inputDB <- compile_inputDB(rubric, hours = Inf)
+  
+  # EA: temporal fix while solving issue with additional columns in the InputDB.csv (12.08.2021)
+  try(inputDB <- 
+        inputDB %>% 
+        select(-y))
+  
+  try(inputDB <- 
+        inputDB %>% 
+        select(-'2499'))
+  
   # saveRDS(inputDB,here("Data","inputDBhold.rds"))
   # what data combinations have we read in?
-  codesIN     <- with(inputDB, paste(Country, Region, Measure, Short)) %>% unique()
+  
+  # EA: No need to paste "Country", "Region", as "Short" variable includes information of both.
+  # Better to only use "Short", as there could be wrong spelling of Country names or regions
+  # Added on 16.08.2021
+  
+  codesIN     <- with(inputDB, paste(Short, Measure)) %>% unique()
   
   # Read in previous unfiltered inputDB
   inputDBhold <- readRDS(here::here("Data","inputDBhold.rds"))
   
+  # EA: temporal fix while solving issue with additional columns in the InputDB.csv (12.08.2021)
+  try(inputDBhold <- 
+        inputDBhold %>% 
+        select(-y))
+  
+  try(inputDBhold <- 
+        inputDBhold %>% 
+        select(-'2499'))
+  
   # remove any codes we just read in
   inputDBhold <- 
     inputDBhold %>% 
-    mutate(checkid = paste(Country, Region, Measure, Short)) %>% 
+    mutate(checkid = paste(Short, Measure)) %>% 
     filter(!checkid %in% codesIN) %>% 
     select(-checkid)
-  
+
   # bind on the data we just read in
   inputDBhold <- bind_rows(inputDBhold, inputDB) %>% 
     sort_input_data()
   
-  # resave out to the full unfltered inputDB.
+  # resave out to the full unfiltered inputDB.
   saveRDS(inputDBhold, here::here("Data","inputDBhold.rds"))
   
   # TR: this is temporary:
@@ -192,6 +216,15 @@ if (nrow(rubric) > 0){
   inputDB_prior <- readRDS(here::here("Data","inputDB.rds")) %>% 
     mutate(Short = add_Short(Code,Date))
   
+  # EA: temporal fix while solving issue with additional columns in the InputDB.csv
+  try(inputDB_prior <- 
+        inputDB_prior %>% 
+        select(-'2499'))
+  
+  try(inputDB_prior <- 
+        inputDB_prior %>% 
+        select(-y))
+  
   inputDB_out <-
     inputDB_prior %>% 
     mutate(checkid = paste(Country,Region,Measure,Short)) %>% 
@@ -208,6 +241,10 @@ if (nrow(rubric) > 0){
            !is.na(Region),
            !is.na(Country),
            !is.na(dmy(Date))) 
+  
+  # inputDB_out <- 
+  #   inputDB_out %>% 
+  #   filter(Country != "1")
   
   saveRDS(inputDB_out, here::here("Data","inputDB.rds"))
 
@@ -257,7 +294,7 @@ if (schedule_this){
                        rscript =  paste0(Sys.getenv("path_repo"), "/R/01_update_inputDB.R"), 
                        schedule = "HOURLY", 
                        modifier = 8,
-                       starttime = "19:00",
+                       starttime = "10:00",
                        startdate = format(Sys.Date(), "%m/%d/%Y"))
   # 
 }

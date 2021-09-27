@@ -44,7 +44,7 @@ cdb_files <- c("inputDB.rds","inputDBhold.rds",
 files_from <- file.path("Data",cdb_files)
 
 file.copy(from = files_from, 
-          to = "N://COVerAGE-DB/Data", 
+          to = "N:/COVerAGE-DB/Data", 
           overwrite = TRUE)
 
 

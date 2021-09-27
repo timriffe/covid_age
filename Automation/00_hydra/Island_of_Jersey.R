@@ -163,11 +163,13 @@ Date)%>%
 
 Out= rbind(Deaths_out, Vaccine_out)
 
-# upload to Drive, overwrites
+# save on N 
 
-write_sheet(Out, 
-            ss = ss_i, 
-            sheet = "database") 
+write_rds(Out, paste0(dir_n, ctr, ".rds"))
+
+# write_sheet(Out, 
+#             ss = ss_i, 
+#             sheet = "database") 
                     
 log_update("Island of Jersey", N = nrow(Out))
 

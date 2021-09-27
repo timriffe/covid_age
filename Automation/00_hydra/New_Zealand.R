@@ -39,7 +39,7 @@ html      <- read_html(m_url)
 date_text <-
   html_nodes(html, xpath = '//*[@id="node-10866"]/div[2]/div/div/p[1]') %>%
   html_text()
-loc_date1 <- str_locate(date_text, "Last updated ")[2] + 4
+loc_date1 <- str_locate(date_text, "Last updated ")[2] + 5
 loc_date2 <- str_length(date_text[1])
 
 date_f  <- str_sub(date_text, loc_date1, loc_date2) %>% 
@@ -57,10 +57,6 @@ if (date_f > last_date_drive){
   root <- "https://www.health.govt.nz"
   
   # cases data
-  #html <- read_html(m_url)
-  #url1 <- html_nodes(html, xpath = '/html/body/div[2]/div/div[1]/section/div[2]/section/div/div/div[2]/div[2]/div/article/div[2]/div/div/p[12]/a') %>%
-    #html_attr("href")
-  
   html <- read_html(m_url)
   url1 <- html_nodes(html, xpath = '/html/body/div[2]/div/div[1]/section/div[2]/section/div/div/div[2]/div[2]/div/article/div[2]/div/div/p[13]/a') %>%
     html_attr("href")
@@ -145,7 +141,7 @@ if (date_f > last_date_drive){
   url_vaccine <- "https://www.health.govt.nz/our-work/diseases-and-conditions/covid-19-novel-coronavirus/covid-19-data-and-statistics/covid-19-vaccine-data#age"
   
   links <- scraplinks(url_vaccine) %>% 
-    filter(str_detect(url, "covid-vaccinations")) %>% 
+    filter(str_detect(url, "covid_vaccinations")) %>% 
     select(url) 
   
   url <- 
@@ -177,23 +173,26 @@ if (date_f > last_date_drive){
 db_v <- 
     read_xlsx(data_source6,
     sheet = "DHBofResidence by ethnicity")%>%
-  select(Age= `Ten year age group`, Sex= Gender, Measure= `Dose number`, Value= `# doses administered`)%>%
+  select(Age= `Age group`, Sex= Gender, Vaccination1= `First dose administered`, Vaccination2= `Second dose administered`)%>%
+  pivot_longer(!Age & !Sex, names_to= "Measure", values_to= "Value")%>%
   #sum up numbers that were separated by race 
   group_by(Age, Sex, Measure) %>% 
   mutate(Value = sum(Value)) %>% 
   ungroup() %>% 
   distinct()%>%
-  mutate(Age = str_sub(Age, 1, 2)) %>% 
+  separate(Age, c("Age", "trash"), "-")%>%
+  mutate(Age=recode(Age, 
+                    `90+`= "90"))%>%
+  filter(Age != "Various")%>% 
   mutate(AgeInt = case_when(
+    Age == "12" ~ 4L,
+    Age == "16" ~ 4L,
     Age == "90" ~ 15L,
-    TRUE ~ 10L))%>% 
+    TRUE ~ 5L))%>% 
   mutate(Sex = case_when(
    Sex == "Male" ~ "m",
    Sex == "Female" ~ "f",
    Sex== "Unknown/Other" ~ "UNK"),
-   Measure= case_when(
-      Measure== "1" ~ "Vaccination1",
-     Measure== "2" ~ "Vaccination2"),
   Country = "New Zealand",
   Region = "All",
   Date = ddmmyyyy(date),
@@ -210,8 +209,10 @@ db_v <-
   # cases and deaths by age for the last update
   m_url2 <- getURL(m_url)
   tables <- readHTMLTable(m_url2) 
-  db_a <- tables[[3]] 
-  db_s <- tables[[4]]
+  #JD: Changed position of these tabs
+  #db_a <- tables[[3]]
+  db_a <- tables[[6]] 
+  db_s <- tables[[7]]
   
   
   db_a2 <- db_a %>% 
@@ -225,6 +226,7 @@ db_v <-
     separate(Age, c("Age", "trash"), sep = " to ") %>% 
     mutate(Age = case_when(Age == "90+" ~ "90",
                            Age == "Total" ~ "TOT",
+                           Age == "Unknown" ~ "UNK",
                            TRUE ~ Age),
            Sex = "b") %>% 
     gather(Cases, Deaths, key = "Measure", value = "Value") %>% 
@@ -257,8 +259,8 @@ db_v <-
   test_url <- "https://www.health.govt.nz/our-work/diseases-and-conditions/covid-19-novel-coronavirus/covid-19-data-and-statistics/testing-covid-19"
   test_url2 <- getURL(test_url)
   tables_test <- readHTMLTable(test_url2) 
-  db_ta <- tables_test[[13]] 
-  db_ts <- tables_test[[14]] 
+  db_ta <- tables_test[[12]] 
+  db_ts <- tables_test[[13]] 
   
   
   db_ta2 <- db_ta %>% 
