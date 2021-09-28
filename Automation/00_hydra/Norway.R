@@ -229,9 +229,16 @@ out <-
 # Push to Drive ####
 ####################
 
-write_sheet(out,
-            ss_i,
-            sheet = "database")
+#write_sheet(out,
+#            ss_i,
+#            sheet = "database")
+
+############################################
+#### saving database in N Drive ####
+############################################
+write_rds(out, paste0(dir_n, ctr, ".rds"))
+
+
 
 N <- nrow(out) - nrow(db_drive)
 log_update(pp = "Norway", N = N)
