@@ -10,6 +10,9 @@ source(here::here("Automation/00_Functions_automation.R"))
 if (! "email" %in% ls()){
   email <- "tim.riffe@gmail.com"
 }
+ctr          <- "Scotland" # it's a placeholder
+dir_n_source <- "N:/COVerAGE-DB/Automation/CDC"
+dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 # handle authentications
 drive_auth(email = email)
@@ -59,32 +62,30 @@ sc <-
          Age = AgeGroup, 
          Cases = TotalPositive, 
          Deaths = TotalDeaths, 
-         Negative = TotalNegative) %>%
+         Negative = TotalNegative) %>% 
   filter(Age != 'Total')%>%
   mutate(
     Date = ymd(Date),
     Age = recode(Age,
-                 '0 to 4' = "0",
-                 '5 to 14' = "5",
+                 '0 to 14' = "0",
                  '15 to 19' = "15",
                  '20 to 24' = "20",
                  '25 to 44' = "25",
                  '45 to 64' = "45",
                  '65 to 74' = "65",
-                 '75 to 84' = "74",
+                 '75 to 84' = "75",
                  '85plus' = "85"),
     Sex = recode(Sex,'Female' = 'f',
                  'Male' = 'm'),
     Tests = Cases + Negative,
     AgeInt = case_when(
-      Age == "0" ~ 5,
-      Age == "5" ~ 10,
+      Age == "0" ~ 15,
       Age == "15" ~ 5,
       Age == "20" ~ 5,
       Age == "25" ~ 20,
       Age == "45" ~ 20,
       Age == "65" ~ 10,
-      Age == "74" ~ 10,
+      Age == "75" ~ 10,
       Age == "85" ~ 20)) %>% 
   select(-Negative) %>% 
   pivot_longer(Cases:Tests, 
@@ -211,9 +212,9 @@ Date_cases  <- sc %>% dplyr::pull(Date) %>% unique() %>% dmy()
 Date_trends <- sct %>% dplyr::pull(Date) %>% dmy() %>% max()
 
 # Current input database
+###########################################adapt here, how data gets read in############new from rds
 SCin       <- 
-  get_country_inputDB("GB_SCO") %>% 
-  select(-Short) %>% 
+  read_rds(paste0(dir_n, ctr, ".rds")) %>% 
   filter(Age != "TOT")
 
 
@@ -262,11 +263,16 @@ n <- duplicated(SCout[, c("Date", "Sex","Measure","Age")])
 SCout <- 
   SCout %>% 
   dplyr::filter(!n)
+###drop age groups
+SCout <- subset(SCout, Age != "60+")
+SCout <- subset(SCout, Age != "0 to 59")
 # -----------------------------
+##############################new rds file
 ## overwrite sheet 
-sheet_write(SCout,
-            ss = ss_i,
-            sheet = "database")
+#sheet_write(SCout,
+#            ss = ss_i,
+#            sheet = "database")
+write_rds(SCout, paste0(dir_n, ctr, ".rds"))
 
 N <- nrow(SCout)
 log_update(pp = "Scotland", N = N)
