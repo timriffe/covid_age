@@ -1,5 +1,8 @@
 library(here)
 source(here("Automation/00_Functions_automation.R"))
+install.packages("archive")
+library(archive)
+#install.packages("archive")
 
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
@@ -28,11 +31,16 @@ cases_url <- html_nodes(html1, xpath = '//*[@id="data-and-resources"]/div/div/ul
 deaths_url <- html_nodes(html2, xpath = '//*[@id="data-and-resources"]/div/div/ul/li/div/span/a') %>%
   html_attr("href")
 
-vacc_url <- "https://cloud.minsa.gob.pe/s/ZgXoXqK2KLjRLxD/download"
+#JD: updating the vaccine link
+
+#vacc_url <- "https://cloud.minsa.gob.pe/s/ZgXoXqK2KLjRLxD/download"
+vacc_url <- "https://www.datosabiertos.gob.pe/node/7564/download"
 
 data_source_c <- paste0(dir_n, "Data_sources/", ctr, "/cases_",today(), ".csv")
 data_source_d <- paste0(dir_n, "Data_sources/", ctr, "/deaths_",today(), ".csv")
-data_source_v <- paste0(dir_n, "Data_sources/", ctr, "/vacc_",today(), ".csv")
+#source changed to provide data in 7z file
+data_source_v <- paste0(dir_n, "Data_sources/", ctr, "/vacc_",today(), ".7z")
+#data_source_v <- paste0(dir_n, "Data_sources/", ctr, "/vacc_",today(), ".csv")
 
 
 # EA: needed to add the index [1] because there is more than one link, while the first one is the 
@@ -45,17 +53,17 @@ download.file(vacc_url, destfile = data_source_v, mode = "wb")
 #JD: read in from Url was failing, I changed it to reading in the downloaded csv
 # cases
 #db_c <- read_delim(cases_url, delim = ";") %>% 
- # as_tibble()
+# as_tibble()
 # deaths
 #db_d <- read_delim(deaths_url, delim = ";") %>% 
-  #as_tibble()
+#as_tibble()
 # Vaccines
 #db_v <- read_csv(data_source_v)
 
 db_c <- read.csv(data_source_c, sep = ";")
 db_d <- read.csv(data_source_d, sep = ";")
-db_v <- read.csv(data_source_v, sep = ",")
-
+#db_v <- read.csv(data_source_v, sep = ",")
+db_v=read_csv(archive_read(data_source_v), col_types = cols())
 
 # deaths ----------------------------------------------
 
@@ -145,7 +153,7 @@ db_v3 <- db_v2 %>%
   mutate(Value = cumsum(new)) %>% 
   ungroup() %>% 
   select(-new)
-  
+
 # template for database ------------------------------------------------------------
 db_dc <- bind_rows(db_d3, db_c3, db_v3)
 
@@ -280,4 +288,3 @@ zipr(zipname,
 
 # clean up file chaff
 file.remove(data_source)
-

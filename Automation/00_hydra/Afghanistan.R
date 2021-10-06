@@ -170,9 +170,9 @@ if (length(files_Deaths) > 0){
     bind_rows(Tests)
   # Append to Drive
   
-#  sheet_append(ss = ss_i, AutoCollected, sheet = "database")
+  sheet_append(ss = ss_i, AutoCollected, sheet = "database")
 #how to maybe change it
-  write_rds(AutoCollected, paste0(dir_n, ctr, ".rds"))
+ # write_rds(AutoCollected, paste0(dir_n, ctr, ".rds"))
   
   # update log
   N <- nrow(AutoCollected)

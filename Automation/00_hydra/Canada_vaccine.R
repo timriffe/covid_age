@@ -19,8 +19,8 @@ dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 #Read in data 
 
-url <- "https://health-infobase.canada.ca/src/data/covidLive/vaccination-coverage-byAgeAndSex.csv"
-IN<- read_csv(url)
+#url <- "https://health-infobase.canada.ca/src/data/covidLive/vaccination-coverage-byAgeAndSex.csv"
+IN<- read_csv("https://health-infobase.canada.ca/src/data/covidLive/vaccination-coverage-byAgeAndSex.csv")
 
 
 #Process data 
