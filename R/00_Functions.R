@@ -865,7 +865,7 @@ convert_fractions_within_sex <- function(chunk, verbose = FALSE) {
 # @param chunk Data chunk
 
 do_we_infer_deaths_from_cases_and_ascfr <- function(chunk) {
-  
+  chunk <- as.data.table(chunk)
   # Does data contain ratios and counts
   have_ratios_counts <- setequal(chunk[["Metric"]], 
                                  c("Ratio","Count") )
