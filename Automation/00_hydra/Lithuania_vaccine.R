@@ -20,11 +20,12 @@ dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 drive_auth(email = email)
 gs4_auth(email = email)
 
-
+######11.10.21 MK: code needs to be updated
+######new source
+######noise for age, 10% have added, removed one year
 #Read in data
 
-In= read.csv("https://ls-osp-sdg.maps.arcgis.com/sharing/rest/content/items/e714f97f593d49c6b751b4b094ac33d2/data", sep = ";")
-
+In= read.csv("https://opendata.arcgis.com/api/v3/datasets/ffb0a5bfa58847f79bf2bc544980f4b6_0/downloads/data?format=csv&spatialRefId=4326", sep = ",")
 
 #Process
 #Dose 1 
@@ -59,20 +60,25 @@ In= read.csv("https://ls-osp-sdg.maps.arcgis.com/sharing/rest/content/items/e714
 
 Out_vaccine1= In %>%
   #remove missing age information 
-  filter(!is.na(birth_year))%>%
-  select(Sex=sex, birth= birth_year, Date= vacc_date_)%>%
+  filter(!is.na(birth_year_noisy)) %>% 
+select(Sex=sex, birth= birth_year_noisy, Date= vaccination_date, ID = pseudo_id, Drug = drug_manufacturer)%>%
   separate(Date, c("Date", "Time"), " ")%>%
   mutate(Sex= recode(Sex, 
                      `M`= "m",
-                     `V`= "f"))%>%
-  group_by(Date, Sex, birth) %>% 
-  summarize(Value = n(), .groups="drop")%>%
-  arrange(Date,Sex, birth) %>% 
-  group_by(Sex, birth) %>% 
+                     `V`= "f")) %>% 
+  mutate(Age= 2021- birth)%>%    
+  filter(Drug != "Johnson & Johnson") %>% 
+  group_by(ID) %>% 
+  mutate(n = row_number()) %>% 
+  filter(n == 1) %>% 
+  group_by(Date, Sex, Age) %>%   
+  summarize(Value = n()) %>% 
+  ungroup() %>% 
+ tidyr::complete(Date, nesting(Sex, Age), fill=list(Value=0)) %>% 
+  arrange(Date,Sex, Age) %>% 
+  group_by(Sex, Age) %>% 
   mutate(Value = cumsum(Value)) %>% 
-  ungroup()%>%
-#age lets assume we just take current year 
-  mutate(Age= 2021- birth)%>%
+  ungroup() %>% 
    mutate(
     Measure = "Vaccination1",
     Metric = "Count", 
@@ -130,31 +136,30 @@ Out_vaccine1= In %>%
 
 
 Out_vaccine2= In %>%
-  select(Sex=sex, birth= birth_year, Date= vacc_date1)
-
-#remove everyone with a empty cell for data vaccine 2 (prob. have not received shot yet/single dose vaccine)
-
-Out_vaccine2[Out_vaccine2==""]<-NA
-
-Out_vaccine2= Out_vaccine2 %>%
   #remove missing age information 
-  filter(!is.na(birth))%>%
-  filter(!is.na(Date))%>%
+  filter(!is.na(birth_year_noisy)) %>% 
+  select(Sex=sex, birth= birth_year_noisy, Date= vaccination_date, ID = pseudo_id, Drug = drug_manufacturer)%>%
+  separate(Date, c("Date", "Time"), " ")%>%
   mutate(Sex= recode(Sex, 
                      `M`= "m",
-                     `V`= "f"))%>%
-  group_by(Date, Sex, birth) %>% 
-  summarize(Value = n(), .groups="drop")%>%
-  arrange(Sex, birth, Date) %>% 
-  group_by(Sex, birth) %>% 
-  mutate(Value = cumsum(Value)) %>% 
-  ungroup() %>%
+                     `V`= "f")) %>% 
   mutate(Age= 2021- birth)%>%
-  separate(Date, c("Date", "Time"), " ")%>%
+  group_by(ID) %>% 
+  mutate(n = row_number()) %>% 
+  filter(Drug == "Johnson & Johnson" | n == 2) %>% 
+  group_by(Date, Sex, Age) %>%   
+  summarize(Value = n())%>%
+  ungroup() %>% 
+  tidyr::complete(Date, nesting(Sex, Age), fill=list(Value=0)) %>% 
+  arrange(Date,Sex, Age) %>% 
+  group_by(Sex, Age) %>% 
+  mutate(Value = cumsum(Value)) %>% 
+  ungroup() %>% 
+  #age lets assume we just take current year 
   mutate(
     Measure = "Vaccination2",
     Metric = "Count", 
-    AgeInt= "1") %>% 
+    AgeInt= "1")%>% 
   mutate(
     Date = ymd(Date),
     Date = paste(sprintf("%02d",day(Date)),    
@@ -166,7 +171,10 @@ Out_vaccine2= Out_vaccine2 %>%
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)
 
-
+####just a test
+test <- Out_vaccine2 %>% 
+  group_by(Date) %>% 
+  summarise(Vac = sum(Value))
 
 #put them together 
 

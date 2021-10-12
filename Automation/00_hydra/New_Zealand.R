@@ -58,10 +58,12 @@ if (date_f > last_date_drive){
   
   # cases data
   html <- read_html(m_url)
-  url1 <- html_nodes(html, xpath = '/html/body/div[2]/div/div[1]/section/div[2]/section/div/div/div[2]/div[2]/div/article/div[2]/div/div/p[13]/a') %>%
-    html_attr("href")
-  
-  db_c <- read_csv(paste0(root, url1)) %>% 
+#  url1 <- html_nodes(html, xpath = '/html/body/div[2]/div/div[1]/section/div[2]/section/div/div/div[2]/div[2]/div/article/div[2]/div/div/p[13]/a') %>%
+#    html_attr("href")
+
+url1 <- paste0("https://www.health.govt.nz/system/files/documents/pages/covid_cases_",today(), ".csv")  
+    
+  db_c <- read_csv(paste0(url1)) %>% 
     as_tibble()
   
   db_c2 <- 
@@ -211,8 +213,8 @@ db_v <-
   tables <- readHTMLTable(m_url2) 
   #JD: Changed position of these tabs
   #db_a <- tables[[3]]
-  db_a <- tables[[6]] 
-  db_s <- tables[[7]]
+  db_a <- tables[[7]] 
+  db_s <- tables[[8]]
   
   
   db_a2 <- db_a %>% 
@@ -426,8 +428,8 @@ db_v <-
   #### saving database in N Drive ####
   ####################################
   
-  write_rds(out, paste0(dir_n, ctr, ".rds"))
-  log_update(pp = ctr, N = nrow(out))
+#  write_rds(out, paste0(dir_n, ctr, ".rds"))
+#  log_update(pp = ctr, N = nrow(out))
   
   
   

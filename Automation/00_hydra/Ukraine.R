@@ -39,11 +39,11 @@ download.file(link_ined, destfile = data_source, mode = "wb")
 zipdf <- utils::unzip(data_source, list = TRUE)
 
 
-db_age <- read_csv2(unz(data_source, "CovidFaelle_Altersgruppe.csv"))
+db_age <- read_csv(unz(data_source, "AgeSex/Cum_deaths_by_age_sex.csv"))
 
 
 
-deaths_ined <- read_csv(link_ined) %>% 
+deaths_ined <- db_age %>% 
   filter(country == "Ukraine") %>% 
   select(Age = age_group, 
          Date = death_reference_date, 
@@ -66,6 +66,30 @@ deaths_ined <- read_csv(link_ined) %>%
          Code = paste0('UA', Date)) %>%
   sort_input_data()
   
+
+#deaths_ined <- read_csv(link_ined) %>% 
+#  filter(country == "Ukraine") %>% 
+#  select(Age = age_group, 
+#         Date = death_reference_date, 
+#         m = cum_death_male, 
+#         f = cum_death_female, 
+#         b = cum_death_both) %>% 
+#  filter(!Age %in% c("Total known", "Total unknown")) %>% 
+#  mutate(Age = str_sub(Age, 1, 2),
+#         Age = recode(Age,
+#                      "0-" = "0",
+#                      "To" = "TOT")) %>% 
+#  gather(m, f, b, key = Sex, value = Value) %>% 
+#  mutate(Country = "Ukraine",
+#         Region = "All",
+#         Measure = "Deaths",
+#         Metric = "Count",
+#         AgeInt = case_when(Age == "90" ~ 15,
+#                            Age == "TOT" ~ NA_real_,
+#                            TRUE ~ 10),
+#         Code = paste0('UA', Date)) %>%
+#  sort_input_data()
+
 
 dates_ined <- deaths_ined$Date %>% unique()
   
