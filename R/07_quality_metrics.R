@@ -1,3 +1,6 @@
+setwd(wd_sched_detect())
+here::i_am("covid_age.Rproj")
+startup::startup()
 library(here)
 source(here::here("R","00_Functions.R"))
 
