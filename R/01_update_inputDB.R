@@ -162,6 +162,8 @@ if (nrow(rubric) > 0){
         append = TRUE)
   }
   
+  
+  
   # filters: remove any code that has a duplicate entry
   n <- duplicated(inputDB[,c("Code","Sex","Age","Measure","Metric")])
   # sum(n)
