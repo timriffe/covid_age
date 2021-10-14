@@ -29,25 +29,22 @@ packages_git <- c("googlesheets4","DemoTools","parallelsugar","osfr","covidAgeDa
 
 # install from github if necessary
 if (!p_isinstalled("googlesheets4")) {
-  library(remotes)
-  install_github("tidyverse/googlesheets4")
+  remotes::install_github("tidyverse/googlesheets4")
 }
 if (!p_isinstalled("covidAgeData")) {
-  library(remotes)
-  install_github("eshom/covid-age-data")
-}
-if (!p_isinstalled("parallelsugar")){
-  library(remotes)
-  install_github("nathanvan/parallelsugar")
-}
-if (!p_isinstalled("osfr")){
-  library(remotes)
-  install_github("ropensci/osfr", force = TRUE)
+  remotes::install_github("eshom/covid-age-data")
 }
 if (!p_isinstalled("DemoTools")) {
-  library(remotes)
-  install_github("timriffe/DemoTools")
+  install.packages("rstan", repos = "https://mc-stan.org/r-packages/", getOption("repos"))
+  remotes::install_github("timriffe/DemoTools", build = FALSE)
 }
+if (!p_isinstalled("parallelsugar")){
+  remotes::install_github("nathanvan/parallelsugar")
+}
+if (!p_isinstalled("osfr")){
+  remotes::install_github("ropensci/osfr", force = TRUE)
+}
+
 
 # Load the required CRAN/github packages
 p_load(packages_CRAN, character.only = TRUE)
@@ -913,7 +910,7 @@ convert_fractions_within_sex <- function(chunk, verbose = FALSE) {
 # @param chunk Data chunk
 
 do_we_infer_deaths_from_cases_and_ascfr <- function(chunk) {
-  
+  chunk <- as.data.table(chunk)
   # Does data contain ratios and counts
   have_ratios_counts <- setequal(chunk[["Metric"]], 
                                  c("Ratio","Count") )
