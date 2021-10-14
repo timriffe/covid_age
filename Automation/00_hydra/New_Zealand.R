@@ -428,8 +428,8 @@ db_v <-
   #### saving database in N Drive ####
   ####################################
   
-#  write_rds(out, paste0(dir_n, ctr, ".rds"))
-#  log_update(pp = ctr, N = nrow(out))
+  write_rds(out, paste0(dir_n, ctr, ".rds"))
+  log_update(pp = ctr, N = nrow(out))
   
   
   

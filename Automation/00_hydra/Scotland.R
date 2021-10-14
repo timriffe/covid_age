@@ -43,9 +43,9 @@ totals_url <- read_html('https://www.opendata.nhs.scot/dataset/b318bddf-a4dc-426
 #content > div.row.wrapper.no-nav > section > div > p > a
 
 # -----------------------
-## Extract daily cases, with 0 to 4 and 5 to 14 age groups ##
+## Extract daily cases, with 0 to 14 age groups ##
 sccases <- read_csv(cases_url)
-## Extract trend data, 0-14 missing ## 
+## Extract trend data, ## 
 sctrend <- read_csv(trend_url)
 # Extract totals, which we hope are retrospectively corrected,
 # or at least will be one day? In that case, adjustment will
@@ -87,6 +87,8 @@ sc <-
       Age == "65" ~ 10,
       Age == "75" ~ 10,
       Age == "85" ~ 20)) %>% 
+  filter(Age != "60+") %>% 
+  filter(Age != "0 to 59") %>% 
   select(-Negative) %>% 
   pivot_longer(Cases:Tests, 
                names_to = "Measure",
@@ -110,21 +112,21 @@ sc <-
 # -----------------------
 # define helper function that infers 0-14.
 # for unique combos of Date, Sex, Measure
-
-infer_zero <- function(chunk){
+# age groups are the same now, not needed anymore
+#infer_zero <- function(chunk){
   
-  chunk %>% 
-    mutate(TOT = Value[Age == "TOT"],
-           Marginal = sum(Value[Age!="TOT"]),
-           Value = ifelse(Age == "TOT", 
-                          TOT - Marginal,
-                          Value),
-           Age = ifelse(Age == "TOT", "0", Age),
-           AgeInt = ifelse(Age == "0", 15, AgeInt)) %>% 
-    select(-TOT, - Marginal) %>% 
-    arrange(Age)
+#  chunk %>% 
+#    mutate(TOT = Value[Age == "TOT"],
+#           Marginal = sum(Value[Age!="TOT"]),
+#           Value = ifelse(Age == "TOT", 
+#                          TOT - Marginal,
+#                          Value),
+#           Age = ifelse(Age == "TOT", "0", Age),
+#           AgeInt = ifelse(Age == "0", 15, AgeInt)) %>% 
+#    select(-TOT, - Marginal) %>% 
+#    arrange(Age)
   
-}
+#}
 
 # -----------------------
 
@@ -142,6 +144,7 @@ sct <-
     Date = ymd(Date),
     Age = recode(Age,
                  'Total' = "TOT",
+                 '0 to 14' = "0",
                  '15 to 19' = "15",
                  '20 to 24' = "20",
                  '25 to 44' = "25",
@@ -155,6 +158,7 @@ sct <-
     Tests = Cases + Negative,
     AgeInt = case_when(
       Age == "TOT" ~ NA_real_,
+      Age == "0" ~ 15,
       Age == "15" ~ 5,
       Age == "20" ~ 5,
       Age == "25" ~ 20,
@@ -162,14 +166,14 @@ sct <-
       Age == "65" ~ 10,
       Age == "75" ~ 10,
       Age == "85" ~ 20)) %>% 
+  filter(Age != "60+") %>% 
+  filter(Age != "0 to 59") %>% 
   select(-Negative) %>% 
   pivot_longer(Cases:Tests,
                names_to = "Measure",
                values_to = "Value") %>% 
   filter(Date >= ymd("2020-03-09")) %>% 
   arrange(Date, Sex, Measure, Age) %>% 
-  group_by(Date, Sex, Measure) %>% 
-  do(infer_zero(chunk = .data)) %>% 
   ungroup() %>%  
   mutate(Country = "Scotland",
          Region = "All",
@@ -206,7 +210,8 @@ TOT <-
   select(all_of(colnames(sc)))
 
 # --------------------------------
-
+####I think this is not needed anymore
+####data gets updates each day
 
 Date_cases  <- sc %>% dplyr::pull(Date) %>% unique() %>% dmy()
 Date_trends <- sct %>% dplyr::pull(Date) %>% dmy() %>% max()
@@ -263,9 +268,7 @@ n <- duplicated(SCout[, c("Date", "Sex","Measure","Age")])
 SCout <- 
   SCout %>% 
   dplyr::filter(!n)
-###drop age groups
-SCout <- subset(SCout, Age != "60+")
-SCout <- subset(SCout, Age != "0 to 59")
+
 # -----------------------------
 ##############################new rds file
 ## overwrite sheet 

@@ -59,13 +59,12 @@ url1 <- "https://data.chhs.ca.gov/dataset/f333528b-4d38-4814-bebb-12db1f10f535/r
 CAage_in <- 
   read_csv(url1) 
 
-
 # TR: from here down needs a redux for the new data format.
 # (unless the )
 CAage <-
   CAage_in %>% 
   mutate(Date = as_date(report_date)) %>%
-  filter(demographic_category== "Age Group")%>%
+  filter(demographic_category == "Age Group") %>%
   select(-report_date, -percent_cases, -percent_deaths, -percent_of_ca_population,-demographic_category, Cases = total_cases, Deaths = deaths, Age=demographic_value) %>% 
   pivot_longer(Cases:Deaths, names_to = "Measure", values_to = "Value") %>% 
   filter(!is.na(Value)) %>% 
@@ -76,7 +75,9 @@ CAage <-
                       "65 and Older" = "65",
                       "65+" = "65",
                       "Unknown" = "UNK",
-                      "Missing" = "UNK"),
+                      "Missing" = "UNK",
+                      "missing" = "UNK",
+                      "Total" = "TOT"),
          Sex = "b",
          Country = "USA",
          Region = "California",
@@ -87,16 +88,16 @@ CAage <-
                             Age == "18" ~ 32L,
                             Age == "50" ~ 15L,
                             Age == "65" ~ 30L,
-                            Age == "UNK" ~ NA_integer_)) %>% 
+                            Age == "UNK" ~ NA_integer_,
+                            Age == "TOT" ~ NA_integer_)) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
-
 
 # By Sex
 
 ###updated data processing for new url
 
 CAsex_in <-
-read_csv(url1) 
+  read_csv(url1) 
 
 CAsex <-
   CAsex_in%>% 
@@ -104,14 +105,11 @@ CAsex <-
   filter(demographic_category== "Gender")%>%
   select(-report_date, -percent_cases, -percent_deaths, -percent_of_ca_population,-demographic_category, Cases = total_cases, Deaths = deaths, Sex=demographic_value) %>%  
   pivot_longer(Cases:Deaths, names_to = "Measure", values_to = "Value") %>% 
-  filter(!is.na(Value)) %>% 
-  group_by(Date) %>% 
-  mutate(Value = ifelse(Sex == "Unknown", sum(Value),Value)) %>% 
-  ungroup() %>% 
-  mutate(Sex = case_when(Sex == "Unknown"~ "b",
-                         Sex == "Female" ~ "f",
+  filter(!is.na(Value),
+         Sex != "Unknown") %>% 
+  mutate(Sex = case_when(Sex == "Female" ~ "f",
                          Sex == "Male" ~ "m",
-                         Sex== "Total" ~ "TOT"), 
+                         Sex== "Total" ~ "b"), 
          Country = "USA",
          Region = "California",
          Metric = "Count",
@@ -154,7 +152,8 @@ vaccine=CAvaccine_in %>%
                             Age == "50" ~ 15L,
                             Age == "65" ~ 30L,
                             Age == "UNK" ~ NA_integer_)) %>% 
-  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
+  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
+  sort_input_data()
 
 
 # bind together 
