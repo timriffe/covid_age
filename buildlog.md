@@ -1801,3 +1801,7 @@ ter( Code == 'US_VA06.10.2021', Sex == 'b', Measure == 'Cases'
 # Age harmonization 
  Fri Oct 15 05:02:18 2021 
 
+
+# remake coverage map 
+ Fri Oct 15 12:16:05 2021 
+
