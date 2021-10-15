@@ -23,7 +23,8 @@ source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/0
 
 library(dplyr)
 library(lubridate)
-
+#install.packages("arrow")
+library(arrow)
 
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
@@ -37,28 +38,34 @@ dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 # Read in data 
 
 
-data1 <- read.csv(file= 'K:/CDC_Covid/covid_case_restricted_detailed-master_06_2021/data/2021-06-21/COVID_Cases_Restricted_Detailed_06212021_Part_1.csv', 
-                  fileEncoding="UTF-8-BOM", na.strings=c('NA','','Missing'))
-str(data1)
+# data1 <- read.csv(file= 'K:/CDC_Covid/covid_case_restricted_detailed-master_06_2021/data/2021-06-21/COVID_Cases_Restricted_Detailed_06212021_Part_1.csv', 
+#                   fileEncoding="UTF-8-BOM", na.strings=c('NA','','Missing'))
+# str(data1)
+# 
+# data2 <- read.csv(file= 'K:/CDC_Covid/covid_case_restricted_detailed-master_06_2021/data/2021-06-21/COVID_Cases_Restricted_Detailed_06212021_Part_2.csv',
+#                   fileEncoding="UTF-8-BOM",  na.strings=c('NA','','Missing')) 
+# 
+# str(data2)
+# 
+# data3 <- read.csv(file= 'K:/CDC_Covid/covid_case_restricted_detailed-master_06_2021/data/2021-06-21/COVID_Cases_Restricted_Detailed_06212021_Part_3.csv',
+#                   fileEncoding="UTF-8-BOM",  na.strings=c('NA','','Missing')) 
+# 
+# str(data3)
+# 
+# data4 <- read.csv(file= 'K:/CDC_Covid/covid_case_restricted_detailed-master_06_2021/data/2021-06-21/COVID_Cases_Restricted_Detailed_06212021_Part_4.csv',
+#                   fileEncoding="UTF-8-BOM",  na.strings=c('NA','','Missing')) 
 
-data2 <- read.csv(file= 'K:/CDC_Covid/covid_case_restricted_detailed-master_06_2021/data/2021-06-21/COVID_Cases_Restricted_Detailed_06212021_Part_2.csv',
-                  fileEncoding="UTF-8-BOM",  na.strings=c('NA','','Missing')) 
 
-str(data2)
+#read in data faster 
 
-data3 <- read.csv(file= 'K:/CDC_Covid/covid_case_restricted_detailed-master_06_2021/data/2021-06-21/COVID_Cases_Restricted_Detailed_06212021_Part_3.csv',
-                  fileEncoding="UTF-8-BOM",  na.strings=c('NA','','Missing')) 
-
-str(data3)
-
-data4 <- read.csv(file= 'K:/CDC_Covid/covid_case_restricted_detailed-master_06_2021/data/2021-06-21/COVID_Cases_Restricted_Detailed_06212021_Part_4.csv',
-                  fileEncoding="UTF-8-BOM",  na.strings=c('NA','','Missing')) 
+data1=read_parquet("N:/CDC_Covid/covid_case_restricted_detailed-master_08_2021/COVID_Cases_Restricted_Detailed_08172021_Part_1.parquet")
+data2=read_parquet("N:/CDC_Covid/covid_case_restricted_detailed-master_08_2021/COVID_Cases_Restricted_Detailed_08172021_Part_2.parquet")
 
 
 # Add datasets vertically
-IN <- rbind(data1, data2, data3, data4)
+IN <- rbind(data1, data2)
 
-rm(data1,data2,data3,data4);gc()
+rm(data1,data2);gc()
 glimpse(IN)
 states <- c("AZ","AR", "DE","GU","ID","KS","ME","MA","MN","MT","NV","NJ","NC","OK","OR","PA","SC","TN","VA")
 

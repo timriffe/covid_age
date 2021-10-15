@@ -29,29 +29,26 @@ packages_git <- c("googlesheets4","DemoTools","parallelsugar","osfr","covidAgeDa
 
 # install from github if necessary
 if (!p_isinstalled("googlesheets4")) {
-  library(remotes)
-  install_github("tidyverse/googlesheets4")
+  remotes::install_github("tidyverse/googlesheets4")
 }
 if (!p_isinstalled("covidAgeData")) {
-  library(remotes)
-  install_github("eshom/covid-age-data")
+  remotes::install_github("eshom/covid-age-data")
 }
 if (!p_isinstalled("DemoTools")) {
-  library(remotes)
-  install_github("timriffe/DemoTools")
+  install.packages("rstan", repos = "https://mc-stan.org/r-packages/", getOption("repos"))
+  remotes::install_github("timriffe/DemoTools", build = FALSE)
 }
 if (!p_isinstalled("parallelsugar")){
-  library(remotes)
-  install_github("nathanvan/parallelsugar")
+  remotes::install_github("nathanvan/parallelsugar")
 }
 if (!p_isinstalled("osfr")){
-  library(remotes)
-  install_github("ropensci/osfr", force = TRUE)
+  remotes::install_github("ropensci/osfr", force = TRUE)
 }
+
+
 # Load the required CRAN/github packages
 p_load(packages_CRAN, character.only = TRUE)
 p_load(packages_git, character.only = TRUE)
-
 
 
 
@@ -242,7 +239,7 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
       # cut down to just those modified in last hours
       rubric <- 
         rubric %>%  
-        mutate(sheetID = sapply(Sheet,cutID )) %>% 
+        mutate(sheetID = sapply(Sheet, cutID)) %>% 
         filter(sheetID %in% ids)
       
      }
@@ -284,7 +281,6 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
     
     # If again error
     if (class(X)[1] == "try-error") {
-      
       cat(id,"failure\n")
       failures[id] <- id
     } else {
@@ -332,25 +328,70 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
   }
   
   if (on_hydra){
+    
     hydra_path <- "N:/COVerAGE-DB/Automation/Hydra"
     
-    local_files <-
-      rubric_hydra %>% 
-      dplyr::pull(hydra_name) %>% 
-      paste0(".rds")
+    # EA: Only reading those files in N:/ that were modified during the last 12 hours, similar to those in Drive
+    # added on 13.08.2021
+    max_t <- 12
     
-    local_files <-  file.path(hydra_path,local_files)
-    hydra_data <-
-      lapply(local_files,
-             readRDS) %>% 
-      lapply(function(X){
-        X %>% 
+    local_files <- 
+      rubric_hydra %>% 
+      mutate(local_files = paste0(hydra_path, "/", hydra_name, ".rds"),
+             modif_time = file.info(local_files)$mtime,
+             hours_diff = difftime(Sys.time(), modif_time, units = "hours") %>% unclass()) %>% 
+      filter(hours_diff < max_t) %>% 
+      dplyr::pull(local_files)
+    
+    # local_files <-
+    #   rubric_hydra %>%
+    #   dplyr::pull(hydra_name) %>%
+    #   paste0(".rds")
+    # 
+    # local_files <-  file.path(hydra_path,local_files)
+    
+    
+    
+    # Breaking down the loading of data from N:/, so the process does not break down
+    # each time it finds an issue
+    
+    hydra_data <- tibble()
+    
+    for(lf in local_files){
+      try(
+        temp <- 
+          read_rds(lf) %>% 
           ungroup() %>% 
           mutate(Age = as.character(Age),
-                 AgeInt = as.integer(AgeInt))
-      }) %>% 
-      bind_rows() %>% 
+                 AgeInt = as.integer(AgeInt), 
+                 Value = as.double(Value))
+      )
+        
+      try(
+        hydra_data <- 
+          hydra_data %>% 
+          bind_rows(temp)
+      )
+      
+    }
+    
+    hydra_data <- 
+      hydra_data %>% 
       mutate(Short = add_Short(Code, Date))
+    
+    # hydra_data <-
+    #   lapply(local_files,
+    #          readRDS) %>% 
+    #   lapply(function(X){
+    #     X %>% 
+    #       ungroup() %>% 
+    #       mutate(Age = as.character(Age),
+    #              AgeInt = as.integer(AgeInt))
+    #   }) %>% 
+    #   bind_rows() %>% 
+    #   mutate(Short = add_Short(Code, Date))
+  
+    
   } else {
     hydra_data <- tibble()
   }
@@ -869,7 +910,7 @@ convert_fractions_within_sex <- function(chunk, verbose = FALSE) {
 # @param chunk Data chunk
 
 do_we_infer_deaths_from_cases_and_ascfr <- function(chunk) {
-  
+  chunk <- as.data.table(chunk)
   # Does data contain ratios and counts
   have_ratios_counts <- setequal(chunk[["Metric"]], 
                                  c("Ratio","Count") )

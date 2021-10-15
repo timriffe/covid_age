@@ -5,7 +5,6 @@ library(here)
 source(here("Automation/00_Functions_automation.R"))
 
 
-
 # commands in the git terminal to update each fork:
 # first coinfigure the upstream (only once):
 # git remote add upstream https://github.com/timriffe/covid_age.git
@@ -45,7 +44,6 @@ if (grepl("Git04", auto_update_wd)){
 # See "Automation/00_Functions_automation.R" for more details
 
 
-
 # Steps for new automated sources 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # 1) create folders in N: drive (there is a way to include it in the auto script, already done in Argentina's!)
@@ -63,7 +61,7 @@ if (grepl("Git04", auto_update_wd)){
 
 # To see the list of scheduled tasks
 taskscheduler_ls() %>% view()
-
+tasks <- taskscheduler_ls()
 # ~~~~~~~~~~~~~~~~
 # Scheduling tasks 
 # ~~~~~~~~~~~~~~~~
@@ -85,18 +83,17 @@ scripts <- c('US_Virginia', 'USA_all_deaths', 'Netherlands', 'Estonia',
              'US_Vermont_Vaccine', 'US_Indiana','Lithuania_vaccine','US_Michigan_vaccine',
              'US_Minnesota_vaccine', 'Slovenia_vaccine', 'US_Oregon_Vaccine', 'Latvia_vaccine',
              'Island_of_Jersey', 'Estonia_vaccine', 'Uruguay_vaccine', 'Chile','Finland_vaccine',
-             'ECDC_vaccine', 'Slovakia_vaccine', 'Germany_vaccine', 'US_Pennsylvania_vaccine')
-
-
+             'ECDC_vaccine', 'Slovakia_vaccine', 'Germany_vaccine', 'US_Pennsylvania_vaccine', 'USA_vaccine',
+             'Australia_vaccine', 'US_Idaho', 'USA_all', 'Brazil', 'New_Zealand')
 
 # Scheduling all scripts at once
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # starting time for first schedule in hour and minutes
-h_ini <- 10
-m_ini <- 00
+h_ini <- 09
+m_ini <- 30
 # delay between scripts in minutes
-delay_time <- 15
+delay_time <- 10
 
 i <- 0
 for(c in scripts){
@@ -117,47 +114,34 @@ for(c in scripts){
   i <- i + 1
 }
 
-
 # for individual scheduling
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
-# sched("Argentina", tm = "14:57", email = auto_update_email, wd = auto_update_wd)
-# sched("US_NYC", tm = "12:48",email = auto_update_email, wd = auto_update_wd)
-# sched("Austria", tm = "13:09", email = auto_update_email, wd = auto_update_wd)
-# sched("Hungary", tm = "09:42", email = auto_update_email, wd = auto_update_wd)
-# 
-# sched("Uruguay_vaccine", tm = "14:42", email = auto_update_email, wd = auto_update_wd)
+
+sched("New_Zealand", tm = "09:04", email = auto_update_email, wd = auto_update_wd)
 
 
-
-
+#sch = "WEEKLY"
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
-# Deleting scheduled tasks
+# Deleting scheduled tasks 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # for deleting single task schedule
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# delete_sched("US_Indiana")
+# taskscheduler_delete("COVerAGE-DB-automatic-daily-build")
+# taskscheduler_delete("COVerAGE-DB-every-8-hour-inputDB-updates")
+
+delete_sched("US_Indiana")
 
 
 
-
-
-
-
-
-
-
-
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# danger zone!!!! deleting all schedules
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-do_this <- FALSE
-if (do_this){
-  for(c in scripts){
-    delete_sched(c)
-  }
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# danger zone!!!! deleting all scheduled tasks
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+for(c in scripts){
+  delete_sched(c)
 }
+
 
 ### scripts working outside hydra because of VPN:
 #################################################

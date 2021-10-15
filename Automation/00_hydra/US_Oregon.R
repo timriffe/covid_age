@@ -7,7 +7,7 @@ if (!"email" %in% ls()){
 # info country and N drive address
 ctr          <- "US_Oregon" # it's a placeholder
 dir_n_source <- "N:/COVerAGE-DB/Automation/Oregon"
-dir_n        <- "N:/COVerAGE-DB/Automation/Hydra"
+dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 # Drive credentials
 drive_auth(email = email)
@@ -15,7 +15,7 @@ gs4_auth(email = email)
 
 # Drive urls
 rubric <- get_input_rubric() %>% 
-  filter(Region == "Oregon")
+  filter(Short == "US_OR")
 
 ss_i <- rubric %>% 
   dplyr::pull(Sheet)
@@ -59,11 +59,21 @@ if (length(files_new) > 0){
     table_full <- 
       read_xlsx(paste0(dir_n_source, "/", filexcel),
                 skip = 1) %>% 
-      rename(var1 = 2,
+      rename(Demographic= 1, 
+             var1 = 2,
              Deaths = 4,
              Cases = 5) %>% 
       group_by() %>% 
       fill(Demographic)
+    
+    #table_full <- 
+     #read_xlsx(paste0(dir_n_source, "/", filexcel),
+                #skip = 1) %>% 
+     # rename(var1 = 2,
+            # Deaths = 4,
+             #Cases = 5) %>% 
+     # group_by() %>% 
+      #fill(Demographic)
     
     db_sex <- table_full %>% 
       filter(Demographic == "Sex Group") %>% 
