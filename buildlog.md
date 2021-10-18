@@ -819,3 +819,7 @@ filter( Code == 'US_TX13.09.2020', Sex == 'b', Measure == 'Cases' )
 # Age harmonization 
  Mon Oct 18 05:05:52 2021 
 
+
+# remake coverage map 
+ Mon Oct 18 12:17:08 2021 
+
