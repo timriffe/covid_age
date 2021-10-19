@@ -296,7 +296,7 @@ if (schedule_this){
                        rscript =  paste0(Sys.getenv("path_repo"), "/R/01_update_inputDB.R"), 
                        schedule = "HOURLY", 
                        modifier = 8,
-                       starttime = "10:00",
+                       starttime = "08:21",
                        startdate = format(Sys.Date(), "%m/%d/%Y"))
   # 
 }
