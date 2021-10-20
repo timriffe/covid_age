@@ -2,8 +2,10 @@
 
 ### Functions & settings ############################################
 
-library(here)
-source(here::here("R","00_Functions.R"))
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
+setwd(wd_sched_detect())
+here::i_am("covid_age.Rproj")
+startup::startup()
 
 logfile <- here("buildlog.md")
 

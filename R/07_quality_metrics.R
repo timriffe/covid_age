@@ -1,8 +1,7 @@
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
 setwd(wd_sched_detect())
 here::i_am("covid_age.Rproj")
 startup::startup()
-library(here)
-source(here::here("R","00_Functions.R"))
 
 # some functions internal to this script
 add_b_margin <- function(chunk){
