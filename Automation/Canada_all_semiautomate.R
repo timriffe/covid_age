@@ -7,6 +7,8 @@ email <- "kikepaila@gmail.com"
 
 # end 
 
+# "https://www150.statcan.gc.ca/n1/en/pub/13-26-0003/2020001/COVID19-eng.zip?st=CbM6myWY"
+
 # TR New: you must be in the repo environment 
 source("R/00_Functions.R")
 
