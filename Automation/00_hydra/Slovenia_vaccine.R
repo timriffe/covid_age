@@ -98,7 +98,7 @@ write_rds(Out_vaccine, paste0(dir_n, ctr, ".rds"))
 #             sheet = "database")
 
 
-log_update("Slovenia_vaccine", N = nrow(out))
+log_update("Slovenia_vaccine", N = nrow(Out_vaccine))
 
 
 # ------------------------------------------

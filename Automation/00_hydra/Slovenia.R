@@ -1,5 +1,6 @@
-library(here)
-source(here("Automation/00_Functions_automation.R"))
+#library(here)
+#source(here("Automation/00_Functions_automation.R"))
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
 
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
@@ -30,6 +31,7 @@ cases_url <- paste0("https://www.nijz.si",
                       filter(str_detect(url, "/uploaded/dnevni_prikazi")) %>% 
                       dplyr::pull(url))
 
+cases_url <- cases_url[-2] #there are two files on the website but we only need the newer one
 # capture link with deaths data by age
 deaths_url <- paste0("https://www.nijz.si", 
                     links %>% 

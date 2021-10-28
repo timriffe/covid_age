@@ -1,4 +1,3 @@
-
 source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
 #source(here("R", "00_Functions.R"))
 #source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
@@ -41,15 +40,15 @@ drive_readme_url <- longurl::expand_urls(bit.ly_url)
 
 #Download the README pdf that contains the link!
 #drive_id_shorter <- drive_readme_url$expanded_url %>% 
- # gsub(pattern = "https://drive.google.com/drive/folders/",
-  #replacement = "") %>% 
-  #gsub(pattern = "?usp=sharing",
-  #replacement = "") %>% 
- # googledrive::as_id() %>% 
- #drive_ls() %>% 
- #filter(grepl(name,pattern = "READ ME FIRST")) %>% 
- #drive_download(path = "Data/PH_README.pdf",
- # overwrite=TRUE)
+# gsub(pattern = "https://drive.google.com/drive/folders/",
+#replacement = "") %>% 
+#gsub(pattern = "?usp=sharing",
+#replacement = "") %>% 
+# googledrive::as_id() %>% 
+#drive_ls() %>% 
+#filter(grepl(name,pattern = "READ ME FIRST")) %>% 
+#drive_download(path = "Data/PH_README.pdf",
+# overwrite=TRUE)
 
 
 #there is more than one file with this name in the folder,but
@@ -57,21 +56,25 @@ drive_readme_url <- longurl::expand_urls(bit.ly_url)
 #I suggest to read all in and then selct on 
 
 #read in all files in folder 
+#JD: 23.09.2021: ? in gsub needed extra expression to be replaced 
+
 drive_id <- drive_readme_url$expanded_url %>% 
   gsub(pattern = "https://drive.google.com/drive/folders/",
-       replacement = "") %>% 
+       replacement = "")%>% 
   gsub(pattern = "?usp=sharing",
-       replacement = "") %>% 
-  googledrive::as_id() %>% 
+       replacement = "")%>% 
+  gsub(pattern = "\\?",
+       replacement = "")%>%
+  googledrive::as_id()%>% 
   drive_ls() %>% 
-  filter(grepl(name,pattern = "READ ME FIRST")) 
+  filter(grepl(name,pattern = "READ ME FIRST"))
 
 
 #select one with most recent date
 
 drive_id_unique= drive_id%>% 
-mutate(date=stringr::str_extract(string = name,
-                                 pattern = "(?<=\\().*(?=\\))"))%>%
+  mutate(date=stringr::str_extract(string = name,
+                                   pattern = "(?<=\\().*(?=\\))"))%>%
   mutate(Date= paste0(date,"_",year(today())))%>%
   mutate(Date = mdy(Date))%>% 
   filter(Date==max(Date))
@@ -106,23 +109,57 @@ drive_contents <-
        replacement = "") %>% 
   gsub(pattern = "?usp=sharing",
        replacement = "") %>% 
+  gsub(pattern = "\\?",
+       replacement = "")%>%
   googledrive::as_id() %>% 
   drive_ls() 
 
-# Drive info for Case file
+# Drive info for Case file part 1
 case_url <-
   drive_contents %>% 
-  filter(grepl(name, pattern="04 Case Information.csv"))
+  filter(grepl(name, pattern="04 Case Information_batch_0.csv"))
+
+# Download Cases part 1
+case_url %>% 
+  drive_download(path = "Data/PH_Cases1.csv",
+                 overwrite = TRUE)
+
+IN1 <- read_csv("Data/PH_Cases1.csv",
+               col_types = "ccccDDDDDccccccccccDcc")
+
+# Drive info for Case file part 2
+case_url <-
+  drive_contents %>% 
+  filter(grepl(name, pattern="04 Case Information_batch_1.csv"))
+
+# Download Cases part 2
+case_url %>% 
+  drive_download(path = "Data/PH_Cases2.csv",
+                 overwrite = TRUE)
+
+IN2 <- read_csv("Data/PH_Cases2.csv",
+                col_types = "ccccDDDDDccccccccccDcc")
+# Drive info for Case file part 3
+case_url <-
+  drive_contents %>% 
+  filter(grepl(name, pattern="04 Case Information_batch_2.csv"))
+
+# Download Cases part 1
+case_url %>% 
+  drive_download(path = "Data/PH_Cases3.csv",
+                 overwrite = TRUE)
+
+IN3 <- read_csv("Data/PH_Cases3.csv",
+                col_types = "ccccDDDDDccccccccccDcc")
+
+
+IN <- rbind(IN1, IN2, IN3)
 
 # Drive info for Test file
 tests_url <-
   drive_contents %>% 
   filter(grepl(name, pattern="07 Testing"))
 
-# Download Cases
-case_url %>% 
-  drive_download(path = "Data/PH_Cases.csv",
-                 overwrite = TRUE)
 # Download Tests
 tests_url %>% 
   drive_download(path = "Data/PH_Tests.csv",
@@ -130,15 +167,15 @@ tests_url %>%
 
 
 # Check for updates: open xlsx in drive, convert to google docs, then copy url here
-      # https://ncovtracker.doh.gov.ph/
+# https://ncovtracker.doh.gov.ph/
 
 # 12.07.2020 New procedure:
 # instead of an excel with tabs, each tab is delivered as a csv in Drive.
 # could download as such and read with read_csv(), or convert to sheets and do the same
 # as before. Here with the manual download:
 
-IN <- read_csv("Data/PH_Cases.csv",
-               col_types = "ccccDDDDDccccccccccDcc")
+#IN <- read_csv("Data/PH_Cases.csv",
+#               col_types = "ccccDDDDDccccccccccDcc")
 
 
 
@@ -186,7 +223,7 @@ Cases <-
   arrange(Date,Sex,Age) %>% 
   mutate(Country = "Philippines",
          Region = "All",
-           Date = ddmmyyyy(Date),
+         Date = ddmmyyyy(Date),
          Code = paste0("PH", Date),
          Metric = "Count",
          Measure = "Cases",
@@ -210,7 +247,7 @@ maxAc<- as.character(maxAi)
 IN$DateDied %>% unique() %>% as_date() %>% sort()
 
 Deaths <-
- IN %>% 
+  IN %>% 
   dplyr::filter(!is.na(DateDied)) %>% 
   mutate(Date = as_date(DateDied),
          Age = as.integer(Age),
@@ -263,7 +300,7 @@ Tests <-
          Age = "TOT",
          Code = paste0("PH",Date)) %>% 
   dplyr::select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
-  
+
 out <-
   rbind(Deaths,Cases,Tests) %>% 
   sort_input_data()
@@ -297,10 +334,10 @@ zipname <- paste0(dir_n,
                   ".zip")
 
 zip::zipr(zipname,
-     files = files, 
-     recurse = TRUE, 
-     compression_level = 9,
-     include_directories = TRUE)
+          files = files, 
+          recurse = TRUE, 
+          compression_level = 9,
+          include_directories = TRUE)
 
 file.remove(files)
 
@@ -309,95 +346,95 @@ file.remove(files)
 # Make graphs
 do.this <- FALSE
 if (do.this){
- out %>% 
-   filter(Measure == "Cases") %>% 
-   mutate(Date = dmy(Date)) %>% 
-   group_by(Date) %>% 
-   summarize(N = sum(Value)) %>% 
-   ggplot(aes(x = Date,y = N)) + geom_line()
-
- out %>% 
-   filter(Measure == "Deaths") %>% 
-   mutate(Date = dmy(Date)) %>% 
-   group_by(Date) %>% 
-   summarize(N = sum(Value)) %>% 
-   ggplot(aes(x = Date,y = N)) + geom_line()
- 
- out %>% 
-   filter(Measure%in%c("Cases","Deaths")) %>% 
-   mutate(Date = dmy(Date),
-          Agei = as.integer(Age)) %>% 
-   filter(!is.na(Agei)) %>% 
-   mutate(Age20 = Agei - Agei %% 20) %>% 
-   group_by(Date, Age20, Measure) %>% 
-   summarize(N = sum(Value)) %>% 
-   pivot_wider(names_from=Measure, values_from=N) %>% 
-   filter(Deaths > 5) %>% 
-   ggplot(aes(x = Cases,y = Deaths,color=as.factor(Age20),group=Age20)) + 
-   geom_line()+
-   scale_x_log10()+
-   scale_y_log10()
- 
-
+  out %>% 
+    filter(Measure == "Cases") %>% 
+    mutate(Date = dmy(Date)) %>% 
+    group_by(Date) %>% 
+    summarize(N = sum(Value)) %>% 
+    ggplot(aes(x = Date,y = N)) + geom_line()
   
- library(colorspace)
- out %>% 
-   filter(Measure == "Cases",
-          Age != "TOT",
-          Age != "UNK") %>% 
-   mutate(Date = dmy(Date),
-          Agei = as.integer(Age),
-          Age20 = Agei - Agei %% 20) %>% 
-   group_by(Date, Age20) %>% 
-   summarize(Value = sum(Value)) %>% 
-   group_by(Date) %>% 
-   mutate(N = sum(Value),
-          Frac = Value / N) %>% 
-   ungroup() %>% 
-   ggplot(aes(x = Date,
-              y = Frac, 
-              fill = as.factor(Age20))) + 
-   geom_area() + 
-   scale_fill_discrete_sequential("Emrld")
- 
-# same for NEW cases
-   out %>% 
-     filter(Measure == "Cases",
-            Age != "TOT",
-            Age != "UNK") %>% 
-     mutate(Date = dmy(Date),
-            Agei = as.integer(Age),
-            Age20 = Agei - Agei %% 20) %>% 
-     group_by(Date, Age20) %>% 
-     summarize(Value = sum(Value)) %>% 
-     group_by(Age20) %>% 
-     arrange(Date) %>% 
-     mutate(New = Value - lead(Value)) %>% 
-     ungroup() %>% 
-     filter(Date >= dmy("15.04.2020")) %>% 
-     group_by(Date) %>% 
-     mutate(N = sum(New),
-            Frac = New / N) %>% 
-     ungroup() %>% 
-     ggplot(aes(x = Date,
-                y = Frac, 
-                fill = as.factor(Age20))) + 
-     geom_area() + 
-     scale_fill_discrete_sequential("Emrld")
-   
-   
-out %>% 
-  filter(Measure %in% c("Cases","Deaths")) %>% 
-  mutate(
-    Agei = as.integer(Age),
-    Age5 = Agei - Agei %% 5) %>% 
-  group_by(Date, Age5, Measure) %>% 
-  summarize(Value = sum(Value)) %>% 
-  ungroup() %>% 
-  pivot_wider(names_from=Measure, values_from=Value) %>% 
-  mutate(ASCFR = Deaths / Cases) %>% 
-  filter(dmy(Date) >= dmy("01.05.2020")) %>% 
-  ggplot(aes(x = Age5, y = ASCFR, color = dmy(Date), group = Date)) + 
-  geom_line()
-
+  out %>% 
+    filter(Measure == "Deaths") %>% 
+    mutate(Date = dmy(Date)) %>% 
+    group_by(Date) %>% 
+    summarize(N = sum(Value)) %>% 
+    ggplot(aes(x = Date,y = N)) + geom_line()
+  
+  out %>% 
+    filter(Measure%in%c("Cases","Deaths")) %>% 
+    mutate(Date = dmy(Date),
+           Agei = as.integer(Age)) %>% 
+    filter(!is.na(Agei)) %>% 
+    mutate(Age20 = Agei - Agei %% 20) %>% 
+    group_by(Date, Age20, Measure) %>% 
+    summarize(N = sum(Value)) %>% 
+    pivot_wider(names_from=Measure, values_from=N) %>% 
+    filter(Deaths > 5) %>% 
+    ggplot(aes(x = Cases,y = Deaths,color=as.factor(Age20),group=Age20)) + 
+    geom_line()+
+    scale_x_log10()+
+    scale_y_log10()
+  
+  
+  
+  library(colorspace)
+  out %>% 
+    filter(Measure == "Cases",
+           Age != "TOT",
+           Age != "UNK") %>% 
+    mutate(Date = dmy(Date),
+           Agei = as.integer(Age),
+           Age20 = Agei - Agei %% 20) %>% 
+    group_by(Date, Age20) %>% 
+    summarize(Value = sum(Value)) %>% 
+    group_by(Date) %>% 
+    mutate(N = sum(Value),
+           Frac = Value / N) %>% 
+    ungroup() %>% 
+    ggplot(aes(x = Date,
+               y = Frac, 
+               fill = as.factor(Age20))) + 
+    geom_area() + 
+    scale_fill_discrete_sequential("Emrld")
+  
+  # same for NEW cases
+  out %>% 
+    filter(Measure == "Cases",
+           Age != "TOT",
+           Age != "UNK") %>% 
+    mutate(Date = dmy(Date),
+           Agei = as.integer(Age),
+           Age20 = Agei - Agei %% 20) %>% 
+    group_by(Date, Age20) %>% 
+    summarize(Value = sum(Value)) %>% 
+    group_by(Age20) %>% 
+    arrange(Date) %>% 
+    mutate(New = Value - lead(Value)) %>% 
+    ungroup() %>% 
+    filter(Date >= dmy("15.04.2020")) %>% 
+    group_by(Date) %>% 
+    mutate(N = sum(New),
+           Frac = New / N) %>% 
+    ungroup() %>% 
+    ggplot(aes(x = Date,
+               y = Frac, 
+               fill = as.factor(Age20))) + 
+    geom_area() + 
+    scale_fill_discrete_sequential("Emrld")
+  
+  
+  out %>% 
+    filter(Measure %in% c("Cases","Deaths")) %>% 
+    mutate(
+      Agei = as.integer(Age),
+      Age5 = Agei - Agei %% 5) %>% 
+    group_by(Date, Age5, Measure) %>% 
+    summarize(Value = sum(Value)) %>% 
+    ungroup() %>% 
+    pivot_wider(names_from=Measure, values_from=Value) %>% 
+    mutate(ASCFR = Deaths / Cases) %>% 
+    filter(dmy(Date) >= dmy("01.05.2020")) %>% 
+    ggplot(aes(x = Age5, y = ASCFR, color = dmy(Date), group = Date)) + 
+    geom_line()
+  
 }

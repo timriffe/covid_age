@@ -121,10 +121,15 @@ FI_out <-
   bind_rows(Cases) %>% 
   sort_input_data()
 
+############################################
+#### saving database in N Drive ####
+############################################
+write_rds(FI_out, paste0(dir_n, ctr, ".rds"))
+
 # push to drive
-write_sheet(FI_out,
-            ss = ss_i,
-            sheet = "database")
+#write_sheet(FI_out,
+#            ss = ss_i,
+#            sheet = "database")
 
 log_update("Finland", N = nrow(Cases))
 

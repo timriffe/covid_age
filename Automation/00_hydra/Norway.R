@@ -93,7 +93,8 @@ db_c2 <-
       "60-69" = "60",
       "70-79" = "70",
       "80-89" = "80",
-      "90+" = "90"),
+      "90+" = "90",
+      ">=90" = "90"),
       Sex = case_when(sex == "male" ~ "m",
                       sex == "female" ~ "f",
                       sex == "total" ~ "b",
@@ -160,6 +161,7 @@ db_d2 <-
                       "70-79" = "70",
                       "80-89" = "80",
                       "90+" = "90",
+                      ">=90" = "90",
                       "total" = "TOT"),
          Sex = recode(sex,
                       "male" = "m",
@@ -229,9 +231,16 @@ out <-
 # Push to Drive ####
 ####################
 
-write_sheet(out,
-            ss_i,
-            sheet = "database")
+#write_sheet(out,
+#            ss_i,
+#            sheet = "database")
+
+############################################
+#### saving database in N Drive ####
+############################################
+write_rds(out, paste0(dir_n, ctr, ".rds"))
+
+
 
 N <- nrow(out) - nrow(db_drive)
 log_update(pp = "Norway", N = N)

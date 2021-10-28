@@ -58,8 +58,8 @@ dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 #read in data faster 
 
-data1=read_parquet("N:/CDC_Covid/covid_case_restricted_detailed-master_08_2021/COVID_Cases_Restricted_Detailed_08172021_Part_1.parquet")
-data2=read_parquet("N:/CDC_Covid/covid_case_restricted_detailed-master_08_2021/COVID_Cases_Restricted_Detailed_08172021_Part_2.parquet")
+data1=read_parquet("K:/CDC_Covid/covid_case_restricted_detailed-master_08_2021/COVID_Cases_Restricted_Detailed_08172021_Part_1.parquet")
+data2=read_parquet("K:/CDC_Covid/covid_case_restricted_detailed-master_08_2021/COVID_Cases_Restricted_Detailed_08172021_Part_2.parquet")
 
 
 # Add datasets vertically
@@ -71,7 +71,6 @@ states <- c("AZ","AR", "DE","GU","ID","KS","ME","MA","MN","MT","NV","NJ","NC","O
 
 Out <-
   IN %>%
-  filter(res_state %in% states) %>%
   select(Date = cdc_case_earliest_dt, 
          Sex = sex, 
          Age = age_group, 
@@ -138,11 +137,43 @@ mutate(
                    `TN`= "Tennessee",	
                    `VA`=  "Virginia"),
     Code= paste0 ("US_", State, Date)) %>% 
-  select(Country, Region, Code, Date, Sex, 
+  select(Country, Region, State, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)
 
 View(Out)
+dat2 <- 
+  Out %>% 
+  mutate(Date = dmy(Date)) %>% 
+  group_by(Region, Date) %>% 
+  summarise(Value = sum(Value)) %>% 
+  ungroup()%>%
+  drop_na(Value) 
 
+cts <- dat2 %>%
+  drop_na(Value) %>% 
+  select(Region) %>% 
+  unique() %>% 
+  mutate(id = 1:n(),
+         gr = floor(id/12) + 1)
+
+
+for(i in 1:max(cts$gr)){
+  cts_t <- 
+    cts %>% 
+    filter(gr == i) %>% 
+    dplyr::pull(Region)
+  
+  dat2 %>% 
+    filter(Region %in% cts_t) %>% 
+    ggplot()+
+    geom_point(aes(Date, Value), size = 0.3)+
+    facet_wrap(~Region, scales = "free")+
+    theme(
+      axis.text.x = element_text(size = 5)
+    )
+  
+  ggsave(paste0("R_checks/quality_checks/CDC_checks", i, ".png")) 
+}
 
 #save output data
 

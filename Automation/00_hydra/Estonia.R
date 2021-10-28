@@ -87,6 +87,12 @@ db_all <- bind_rows(db3, db5) %>%
          Metric = "Count") %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
   sort_input_data()
+db_all <- db_all %>% 
+  filter(Date != "10.09.2001") %>% 
+  filter(Date != "13.09.2012") %>% 
+  filter(Date != "14.09.2012") 
+  
+
 
 ###########################
 #### Saving data in N: ####
