@@ -847,3 +847,11 @@ filter( Code == 'US_TX13.09.2020', Sex == 'b', Measure == 'Cases' )
 # remake coverage map 
  Thu Oct 28 08:39:37 2021 
 
+
+# push outputs to OSF 
+ Thu Oct 28 08:44:39 2021 
+
+
+# Commit dashboards and buildlog 
+ Thu Oct 28 08:50:18 2021 
+
