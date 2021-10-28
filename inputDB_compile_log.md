@@ -1,19 +1,19 @@
 
-# 2021-10-27 inputDB updates 
- Wed Oct 27 08:21:10 2021 
+# 2021-10-28 inputDB updates 
+ Thu Oct 28 08:21:11 2021 
 
 
-# 2021-10-27 08:21:10 updates 
- Wed Oct 27 08:21:10 2021 
+# 2021-10-28 08:21:11 updates 
+ Thu Oct 28 08:21:11 2021 
 
 
 # Filter valid Measure entries: 
- Wed Oct 27 08:33:58 2021 
+ Thu Oct 28 08:30:49 2021 
 
 Valid Measures include: Cases,Deaths,Tests,ASCFR,Vaccinations,Vaccination1,Vaccination2
- 598648 rows removed
+ 15332 rows removed
 # Future Dates detected. Following `Code`s removed: 
- Wed Oct 27 08:34:21 2021 
+ Thu Oct 28 08:30:53 2021 
 
 SK_BC31.10.2021
 SK_BL31.10.2021
