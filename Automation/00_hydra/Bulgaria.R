@@ -1,6 +1,6 @@
 
 library(here)
-source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
+source(here("Automation/00_Functions_automation.R"))
 
 library(lubridate)
 # assigning Drive credentials in the case the script is verified manually  
@@ -109,13 +109,18 @@ print(4)
 # -------------------------------------
 
 # Now process the data
+BG_cases_out <- BG_age_in[-2]
+BG_cases_out <- BG_cases_out[-2]
+BG_cases_out <- BG_cases_out[-2]
+BG_cases_out <- BG_cases_out[-2]
+BG_cases_out <- BG_cases_out[-2]
+names(BG_cases_out)[1] <- "Date"
+BG_cases_out <- setDT(BG_cases_out)
+BG_cases_out <- melt(BG_cases_out, id.vars = "Date", measure.vars= c("0 - 19","20 - 29","30 - 39","40 - 49","50 - 59", "60 - 69", "70 - 79", "80 - 89", "90+"))
+names(BG_cases_out)[2] <- "Age"
+names(BG_cases_out)[3] <- "Value"
 
-BG_cases_out <-
-  BG_age_in %>% 
-  pivot_longer(-1,
-               names_to = "Age",
-               values_to = "Value") %>% 
-  rename('Date' = 1) %>% 
+BG_cases_out <- BG_cases_out %>% 
   mutate(Age = case_when(
     Age == "0 - 19" ~ "0",
     Age == "20 - 29" ~ "20",

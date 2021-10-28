@@ -1,5 +1,5 @@
-library(here)
-source(here("Automation/00_Functions_automation.R"))
+
+source(here::here("Automation/00_Functions_automation.R"))
 
 # assigning Drive user in case the script is verified manually  
 if (!"email" %in% ls()){
@@ -23,7 +23,7 @@ db_age <- read_csv(url_age)
 db_sex    <- read_csv(url_sex)
 db_tests  <- read_csv(url_tests)
 
-date_f <- mdy(max(db_age$`Report Date`))
+date_f <- max(mdy(db_age$`Report Date`))
 
 d <- paste(sprintf("%02d", day(date_f)),
            sprintf("%02d", month(date_f)),
@@ -31,7 +31,7 @@ d <- paste(sprintf("%02d", day(date_f)),
 
 date_f_tests <- db_tests %>% 
   rename(date_f = "Lab Report Date") %>% 
-  mutate(date_f = mdy(date_f)) %>%
+  mutate(date_f = ymd(date_f)) %>%
   drop_na(date_f) %>% 
   dplyr::pull(date_f) %>% 
   max()
@@ -39,25 +39,31 @@ date_f_tests <- db_tests %>%
 d_tests <- paste(sprintf("%02d", day(date_f_tests)),
            sprintf("%02d", month(date_f_tests)),
            year(date_f_tests), sep = ".")
-
-db_age2 <- db_age %>% 
+# db_age$`Age Group` %>% unique()
+db_age2 <- 
+  db_age %>% 
+  dplyr::filter(`Age Group Type` == "Case Age Group") %>% 
   rename(date = "Report Date",
          Cases = "Number of Cases",
          Deaths = "Number of Deaths") %>% 
-  separate("Age Group", c("Age", "trash"), sep = "-") %>% 
+  separate("Age Group", c("Age", NA), sep = "-", fill = "right") %>% 
   replace_na(list(Cases = 0, Deaths = 0)) %>% 
   mutate(date_f =  mdy(date),
+         Age = gsub(Age, pattern = " Years", replacement = ""),
          Age = case_when(Age == "80+" ~ "80",
                          Age == "Missing" ~ "UNK",
-                         TRUE ~ Age)) %>% 
-  select(date_f, Age, Cases, Deaths) %>% 
-  gather(Cases, Deaths, key = "Measure", value = "new") %>% 
-  group_by(date_f, Age, Measure) %>% 
-  summarise(Value = sum(new)) %>% 
-  ungroup() %>% 
+                         TRUE ~ Age),
+         AgeInt = case_when(Age == "UNK" ~ NA_integer_,
+                            Age == "80" ~ 25L,
+                            TRUE ~ 10L))  %>% 
+  dplyr::select(date_f, Age, AgeInt, Cases, Deaths) %>% 
+  pivot_longer(Cases:Deaths, names_to = "Measure", values_to = "new") %>% 
+  group_by(date_f, Age, AgeInt,Measure) %>% 
+  summarise(Value = sum(new), .groups = "drop") %>% 
   mutate(Sex = "b")
 
-db_sex2 <- db_sex %>% 
+ db_sex2 <- 
+  db_sex %>% 
   rename(date = "Report Date",
          Cases = "Number of Cases",
          Deaths = "Number of Deaths") %>% 
@@ -69,44 +75,34 @@ db_sex2 <- db_sex %>%
   select(date_f, Sex, Cases, Deaths) %>% 
   pivot_longer(Cases:Deaths, names_to = "Measure", values_to = "Value") %>% 
   group_by(date_f, Sex, Measure) %>% 
-  summarise(Value = sum(Value)) %>% 
-  ungroup() %>% 
+  summarise(Value = sum(Value), .groups = "drop") %>% 
   mutate(Age = "TOT")
 
 db_tests2 <- db_tests %>% 
   rename(tests = "Number of PCR Testing Encounters",
          date = "Lab Report Date") %>% 
-  mutate(date_f =  mdy(date)) %>% 
-  replace_na(list(tets = 0)) %>% 
+  mutate(date_f =  ymd(date)) %>% 
+  replace_na(list(tests = 0)) %>% 
   drop_na() %>% 
   group_by(date_f) %>% 
-  summarise(new = sum(tests)) %>%
-  ungroup() %>% 
-  group_by() %>% 
+  summarise(new = sum(tests), .groups = "drop") %>%
+  arrange(date_f) %>% 
   mutate(Value = cumsum(new),
          Sex = "b",
          Age = "TOT",
-         Measure = "Tests") %>% 
-  ungroup()
+         Measure = "Tests") 
 
 out <- bind_rows(db_age2, db_sex2, db_tests2) %>% 
   mutate(Country = "USA",
          Region = "Virginia",
-         Date = paste(sprintf("%02d",day(date_f)),
-                      sprintf("%02d",month(date_f)),
-                      year(date_f),
-                      sep="."),
+         Date = ddmmyyyy(date_f),
          Code = paste0("US_VA", Date),
-         AgeInt = case_when(Age == "TOT" ~ NA_integer_,
-                            Age == "UNK" ~ NA_integer_,
-                            Age == "80" ~ 25L,
-                            TRUE ~ 10L),
          Metric = "Count") %>% 
   arrange(Region, date_f, Measure, Sex, suppressWarnings(as.integer(Age))) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
 
 ############################################
-#### uploading database to Google Drive ####
+#### save local N                       ####
 ############################################
 write_rds(out, paste0(dir_n, ctr, ".rds"))
 

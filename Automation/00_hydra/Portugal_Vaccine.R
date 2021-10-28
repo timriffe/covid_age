@@ -72,10 +72,10 @@ Out <- In %>%
     Metric = "Count", 
     Sex= "b") %>% 
   mutate(
-    Date = dmy(Date),
-    Date = paste(sprintf("%02d",day(Date)),    
-                 sprintf("%02d",month(Date)),  
-                 year(Date),sep="."),
+    Date = ddmmyyyy(Date),
+  #  Date = paste(sprintf("%02d",day(Date)),    
+   #              sprintf("%02d",month(Date)),  
+    #             year(Date),sep="."),
     Code = paste0("PT_All",Date),
     Country = "Portugal",
     Region = "All",)%>% 

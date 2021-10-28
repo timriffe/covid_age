@@ -1,8 +1,7 @@
 #Romania cases 
 
 library(here)
-source('U:/GitHub/Covid/Automation/00_Functions_automation.R')
-
+source(here("Automation/00_Functions_automation.R"))
 library(lubridate)
 library(dplyr)
 library(tidyverse)
@@ -102,6 +101,7 @@ Age_Out= Age_in %>%
          Age, AgeInt, Metric, Measure, Value)%>% 
   mutate(Value = as.character(Value))
 
+###death data
 
 
 #put together
@@ -121,7 +121,7 @@ write_sheet(RO_out,
             sheet = "database")
 
 
-#log_update("Bulgaria", N = nrow(RO_out))
+log_update("Romania", N = nrow(RO_out))
 
 
 # ------------------------------------------

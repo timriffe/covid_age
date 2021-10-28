@@ -1,7 +1,7 @@
 #USA vaccine 
 
 library(here)
-source('U:/GitHub/Covid/Automation/00_Functions_automation.R')
+source(here("Automation/00_Functions_automation.R"))
 
 library(lubridate)
 library(dplyr)

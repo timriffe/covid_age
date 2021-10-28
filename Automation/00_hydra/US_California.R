@@ -97,7 +97,7 @@ CAage <-
 ###updated data processing for new url
 
 CAsex_in <-
-read_csv(url1) 
+  read_csv(url1) 
 
 CAsex <-
   CAsex_in%>% 
@@ -158,6 +158,7 @@ vaccine=CAvaccine_in %>%
 
 # bind together 
 CAout <- bind_rows(CAage, CAsex, Tests,vaccine,Prior_data) %>% 
+  filter(Age != "Total") %>% 
   sort_input_data()
 
 n <- duplicated(CAout[,c("Code","Sex","Age","Measure","Metric")]) 

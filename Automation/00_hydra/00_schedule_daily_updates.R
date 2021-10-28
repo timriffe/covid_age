@@ -32,7 +32,9 @@ if (grepl("gits", auto_update_wd)){
 if (grepl("Git04", auto_update_wd)){
   auto_update_email <- "jessica_d.1994@yahoo.de"
 }
-
+if (grepl("gits", auto_update_wd)){
+  auto_update_email <- "maxi.s.kniffka@gmail.com"
+}
 
 # sched() is a funtion that generates and schedules a trigger script 
 # for each collection script. The trigger script has two purposes. 
@@ -91,7 +93,7 @@ scripts <- c('US_Virginia', 'USA_all_deaths', 'Netherlands', 'Estonia',
 
 # starting time for first schedule in hour and minutes
 h_ini <- 09
-m_ini <- 30
+m_ini <- 25
 # delay between scripts in minutes
 delay_time <- 10
 
@@ -118,7 +120,7 @@ for(c in scripts){
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 sched("New_Zealand", tm = "09:04", email = auto_update_email, wd = auto_update_wd)
-
+sched("Philippines", tm= "12:15", email = auto_update_email, wd = auto_update_wd )
 
 #sch = "WEEKLY"
 

@@ -44,7 +44,7 @@ gs4_auth(email = email)
 
 #read in vaccine data 
 
-In_vaccine= read.csv("https://opendata.digilugu.ee/opendata_covid19_vaccination_county_agegroup_gender.csv")
+#In_vaccine= read.csv("https://opendata.digilugu.ee/covid19/vaccination/v3/opendata_covid19_vaccination_location_county_agegroup_gender.csv")
 
 
 #process 
@@ -53,11 +53,12 @@ In_vaccine[In_vaccine == ""] <- NA
 In_vaccine[In_vaccine == " "] <- NA
 
 Out_vaccine= In_vaccine%>%
-  select(Date= ï..StatisticsDate, Age=AgeGroup, Sex= Gender, Value=TotalCount,Measure= VaccinationStatus, Region= CountyEHAK)%>%
+  select(Date= ï..StatisticsDate, Age=AgeGroup, Sex= Gender, Value=TotalCount,Measure= MeasurementType, Region= LocationCounty) %>% 
+  filter(Measure != "DosesAdministered") %>% 
   mutate(Sex = case_when(
     is.na(Sex)~ "UNK",
-    Sex == "M" ~ "m",
-    Sex == "N" ~ "f"))%>%
+    Sex == "Male" ~ "m",
+    Sex == "Female" ~ "f"))%>%
   mutate(Age = case_when(
     is.na(Age) ~ "UNK",
     TRUE~ as.character(Age)))%>%
@@ -65,7 +66,9 @@ Out_vaccine= In_vaccine%>%
     is.na(Region) ~ "UNK",
     TRUE~ as.character(Region)))%>%
   mutate(Age=recode(Age, 
-                    `0-17`="0",
+                    `0-11`="0",
+                    `12-15`="12",
+                    `16-17`="16",
                     `18-29`="18",
                     `30-39`="30",
                     `40-49`="40",
@@ -75,10 +78,12 @@ Out_vaccine= In_vaccine%>%
                     `80+`="80",
                     `Unknown`="UNK"))%>% 
   mutate(Measure= recode(Measure,
-                         `InProgress`="Vaccination1",
-                         `Completed`="Vaccination2"))%>%
+                         `Vaccinated`="Vaccination1",
+                         `FullyVaccinated`="Vaccination2"))%>%
   mutate(AgeInt = case_when(
-    Age == "0" ~ 18L,
+    Age == "0" ~ 12L,
+    Age == "12" ~ 4L,
+    Age == "16" ~ 2L,
     Age == "18" ~ 12L,
     Age == "80" ~ 25L,
     Age == "UNK" ~ NA_integer_,
@@ -106,7 +111,7 @@ Out_vaccine= In_vaccine%>%
 
 write_rds(Out_vaccine, paste0(dir_n, ctr, ".rds"))
 
-log_update(pp = ctr, N = nrow(Out))
+log_update(pp = ctr, N = nrow(Out_vaccine))
 
 
 # ------------------------------------------
@@ -138,6 +143,7 @@ file.remove(data_source)
 
 
 
+esto <- read_rds(paste0(dir_n, ctr, ".rds"))
 
 
 

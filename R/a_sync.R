@@ -2,7 +2,8 @@
 source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
 
 setwd(wd_sched_detect())
-
+here::i_am("covid_age.Rproj")
+startup::startup()
 
 library(usethis)
 library(git2r)
@@ -44,7 +45,7 @@ if (schedule_this){
   taskscheduleR::taskscheduler_delete("COVerAGE-DB-automatic-daily-sync")
   taskscheduleR::taskscheduler_create(
     taskname = "COVerAGE-DB-automatic-daily-sync", 
-    rscript = file.path(Sys.getenv("path_repo"),"R","a_sync.R"), 
+    rscript = here::here("R","a_sync.R"), 
     schedule = "DAILY", 
     starttime = "09:00",
     startdate = format(Sys.Date() , "%d/%m/%Y"))
