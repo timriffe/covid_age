@@ -50,6 +50,7 @@ deaths_ined <- db_age %>%
          m = cum_death_male, 
          f = cum_death_female, 
          b = cum_death_both) %>% 
+  mutate(Date = ddmmyyyy(Date)) %>% 
   filter(!Age %in% c("Total known", "Total unknown")) %>% 
   mutate(Age = str_sub(Age, 1, 2),
          Age = recode(Age,

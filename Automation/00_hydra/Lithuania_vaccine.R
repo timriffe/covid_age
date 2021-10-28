@@ -67,7 +67,7 @@ select(Sex=sex, birth= birth_year_noisy, Date= vaccination_date, ID = pseudo_id,
                      `M`= "m",
                      `V`= "f")) %>% 
   mutate(Age= 2021- birth)%>%    
-  filter(Drug != "Johnson & Johnson") %>% 
+#  filter(Drug != "Johnson & Johnson") %>% 
   group_by(ID) %>% 
   mutate(n = row_number()) %>% 
   filter(n == 1) %>% 

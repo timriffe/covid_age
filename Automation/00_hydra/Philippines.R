@@ -114,20 +114,52 @@ drive_contents <-
   googledrive::as_id() %>% 
   drive_ls() 
 
-# Drive info for Case file
+# Drive info for Case file part 1
 case_url <-
   drive_contents %>% 
-  filter(grepl(name, pattern="04 Case Information.csv"))
+  filter(grepl(name, pattern="04 Case Information_batch_0.csv"))
+
+# Download Cases part 1
+case_url %>% 
+  drive_download(path = "Data/PH_Cases1.csv",
+                 overwrite = TRUE)
+
+IN1 <- read_csv("Data/PH_Cases1.csv",
+               col_types = "ccccDDDDDccccccccccDcc")
+
+# Drive info for Case file part 2
+case_url <-
+  drive_contents %>% 
+  filter(grepl(name, pattern="04 Case Information_batch_1.csv"))
+
+# Download Cases part 2
+case_url %>% 
+  drive_download(path = "Data/PH_Cases2.csv",
+                 overwrite = TRUE)
+
+IN2 <- read_csv("Data/PH_Cases2.csv",
+                col_types = "ccccDDDDDccccccccccDcc")
+# Drive info for Case file part 3
+case_url <-
+  drive_contents %>% 
+  filter(grepl(name, pattern="04 Case Information_batch_2.csv"))
+
+# Download Cases part 1
+case_url %>% 
+  drive_download(path = "Data/PH_Cases3.csv",
+                 overwrite = TRUE)
+
+IN3 <- read_csv("Data/PH_Cases3.csv",
+                col_types = "ccccDDDDDccccccccccDcc")
+
+
+IN <- rbind(IN1, IN2, IN3)
 
 # Drive info for Test file
 tests_url <-
   drive_contents %>% 
   filter(grepl(name, pattern="07 Testing"))
 
-# Download Cases
-case_url %>% 
-  drive_download(path = "Data/PH_Cases.csv",
-                 overwrite = TRUE)
 # Download Tests
 tests_url %>% 
   drive_download(path = "Data/PH_Tests.csv",
@@ -142,8 +174,8 @@ tests_url %>%
 # could download as such and read with read_csv(), or convert to sheets and do the same
 # as before. Here with the manual download:
 
-IN <- read_csv("Data/PH_Cases.csv",
-               col_types = "ccccDDDDDccccccccccDcc")
+#IN <- read_csv("Data/PH_Cases.csv",
+#               col_types = "ccccDDDDDccccccccccDcc")
 
 
 
