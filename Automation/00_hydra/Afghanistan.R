@@ -1,6 +1,6 @@
 #######Problem: no death since 8.9.2021
-library(here)
-source(here("Automation/00_Functions_automation.R"))
+
+source(here::here("Automation/00_Functions_automation.R"))
 library(lubridate)
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
@@ -209,7 +209,22 @@ if (length(files_Deaths) > 0){
   log_update("Afghanistan", N=0)
 }
 
-
+do_this <- FALSE
+if(do_this){
+  AFin <- get_country_inputDB("AF") %>% 
+    select(-Short)
+  
+  Sorted <-
+  AFin %>% 
+    sort_input_data() %>% 
+    distinct() %>% 
+    group_by(Date, Sex, Age, Measure) %>% 
+    mutate(n=n()) %>% 
+    filter(n == 1 | (n == 2 & Value == max(Value))) %>% 
+    ungroup() 
+    
+  write_sheet(Sorted, ss = ss_i)
+}
 
 
 
