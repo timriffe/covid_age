@@ -16,8 +16,8 @@ dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 drive_auth(email = email)
 gs4_auth(email = email)
 
-
-#url <- read_excel("https://excel.officeapps.live.com/x/_layouts/XlFileHandler.aspx?WacUserType=WOPI&usid=9eac966e-f795-4754-969c-d27f3147a17f&NoAuth=1&waccluster=PNL1")
+test <- read_excel("https://onedrive.live.com/view.aspx?cid=26d8c5e551e13bad&page=view&resid=26D8C5E551E13BAD!3356&parId=26D8C5E551E13BAD!3353&authkey=!AIYtrGG0YPKvF1o&app=Excel")
+url <- read_excel("https://excel.officeapps.live.com/x/_layouts/XlFileHandler.aspx?WacUserType=WOPI&usid=9eac966e-f795-4754-969c-d27f3147a17f&NoAuth=1&waccluster=PNL1")
 #download.file(url, destfile = data_source_c)
 # loading data
 #destfile <- "COVID-19 Vaccination Report.xlsx"
