@@ -3,13 +3,13 @@
 # prelims
 source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
 
-change_here(wd_sched_detect())
-
-setwd(here::here())
+setwd(wd_sched_detect())
+here::i_am("covid_age.Rproj")
 startup::startup()
-# always work with the most uptodate repository
 
+# always work with the most uptodate repository
 repo <- git2r::repository(here::here())
+
 #init()
 a <- git2r::pull(repo,credentials = cred_token())
 if (class(a)[1]=="try-error"){
@@ -162,6 +162,8 @@ if (nrow(rubric) > 0){
         append = TRUE)
   }
   
+  
+  
   # filters: remove any code that has a duplicate entry
   n <- duplicated(inputDB[,c("Code","Sex","Age","Measure","Metric")])
   # sum(n)
@@ -294,7 +296,7 @@ if (schedule_this){
                        rscript =  paste0(Sys.getenv("path_repo"), "/R/01_update_inputDB.R"), 
                        schedule = "HOURLY", 
                        modifier = 8,
-                       starttime = "10:00",
+                       starttime = "08:21",
                        startdate = format(Sys.Date(), "%m/%d/%Y"))
   # 
 }

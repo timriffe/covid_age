@@ -12,12 +12,12 @@ dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 # open connexion for the link
 # https://www.mspbs.gov.py/reporte-covid19.html
 # microdata of cases
-cases_url <- "https://public.tableau.com/vizql/w/COVID19PY-Registros/v/Descargardatos/vudcsv/sessions/8FD41F0435C4449691EC5A661007FB97-0:0/views/7713620505763405234_2641841674343653269?summary=true"
+cases_url <- "https://public.tableau.com/vizql/w/COVID19PY-Registros/v/Descargardatos/vudcsv/sessions/8A077F8BCE254FCC93B3EC7A1A05FBE1-0:0/views/7713620505763405234_2641841674343653269?summary=true"
 data_source_c <- paste0(dir_n, "Data_sources/", ctr, "/cases_",today(), ".csv")
 download.file(cases_url, destfile = data_source_c)
 
 # microdata of deaths
-deaths_url <- "https://public.tableau.com/vizql/w/COVID19PY-Registros/v/FALLECIDOS/vudcsv/sessions/D239EE68457442C9B3B08FECB8AF6AE0-0:0/views/7713620505763405234_5043410824490810379?summary=true"
+deaths_url <- "https://public.tableau.com/vizql/w/COVID19PY-Registros/v/FALLECIDOS/vudcsv/sessions/9182294521014BDEB4E0193625D3CB37-0:0/views/7713620505763405234_5043410824490810379?summary=true"
 data_source_d <- paste0(dir_n, "Data_sources/", ctr, "/deaths_",today(), ".csv")
 download.file(deaths_url, destfile = data_source_d)
 
@@ -92,14 +92,16 @@ ages <- unique(db$Age) %>% sort()
 
 unique(db$Region)
 
-db2 <- db %>% 
+db2 <- 
+  db %>% 
   tidyr::complete(date_f = dates_f, Region, Sex, Age = ages, Measure, fill = list(new = 0)) %>% 
   arrange(Region, suppressWarnings(as.integer(Age)), Sex, Measure, date_f) %>% 
   group_by(Region, Measure, Sex, Age) %>% 
   mutate(Value = cumsum(new)) %>% 
   ungroup()
 
-db_reg <- db2 %>% 
+db_reg <- 
+  db2 %>% 
   mutate(Age = case_when(Age >= 5 ~ floor(Age / 5) * 5,
                          Age < 1 ~ 0,
                          Age >= 1 & Age < 5 ~ 1)) %>% 
@@ -108,14 +110,16 @@ db_reg <- db2 %>%
   ungroup() %>% 
   drop_na(Region)
 
-db_nal <- db2 %>% 
+db_nal <- 
+  db2 %>% 
   group_by(date_f, Measure, Sex, Age) %>% 
   summarise(Value = sum(Value)) %>% 
   ungroup() %>% 
   mutate(Region = "All") %>% 
   filter(Age != "UNK")
 
-db_tot_sex <- bind_rows(db_reg, db_nal) %>% 
+db_tot_sex <- 
+  bind_rows(db_reg, db_nal) %>% 
   group_by(date_f, Region, Measure, Sex) %>% 
   summarise(Value = sum(Value)) %>% 
   ungroup() %>% 

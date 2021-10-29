@@ -1243,7 +1243,9 @@ rescale_to_total <- function(chunk, verbose = FALSE){
   chunk   <- as.data.table(chunk)
   # Check if rescaling is needed
   do_this <- do_we_rescale_to_total(chunk)
-  
+  if(length(do_this) > 1){
+    stop("this chunk has probably more than one TOT value")
+  }
   # If no rescaling is needed return unchanged chunk
   if(!do_this) {
     
