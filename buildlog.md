@@ -1786,3 +1786,15 @@ filter( Code == 'US_TX13.09.2020', Sex == 'b', Measure == 'Cases' )
 # Age harmonization 
  Tue Nov 02 03:46:46 2021 
 
+
+# remake coverage map 
+ Tue Nov 02 09:10:24 2021 
+
+
+# push outputs to OSF 
+ Tue Nov 02 09:15:29 2021 
+
+
+# Commit dashboards and buildlog 
+ Tue Nov 02 09:21:19 2021 
+
