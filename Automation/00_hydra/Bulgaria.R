@@ -3,6 +3,7 @@ library(here)
 source(here("Automation/00_Functions_automation.R"))
 
 library(lubridate)
+library(httr)
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
   email <- "tim.riffe@gmail.com"
@@ -42,26 +43,68 @@ BGArchive <- read_rds(paste0(dir_n, ctr, ".rds"))
 # Totals of various kinds:
 # This one is the time series of totals
 # https://data.egov.bg/data/resourceView/e59f95dd-afde-43af-83c8-ea2916badd19
-totals_url     <- "https://data.egov.bg/data/resourceView/e59f95dd-afde-43af-83c8-ea2916badd19/csv"
-deaths_age_url <- "https://data.egov.bg/resource/download/18851aca-4c9d-410d-8211-0b725a70bcfd/csv"
-cases_age_url  <- "https://data.egov.bg/resource/download/8f62cfcf-a979-46d4-8317-4e1ab9cbd6a8/csv"
+totals_url        <- "https://data.egov.bg/resource/download/e59f95dd-afde-43af-83c8-ea2916badd19/csv"
+deaths_age_url    <- "https://data.egov.bg/resource/download/18851aca-4c9d-410d-8211-0b725a70bcfd/csv"
+cases_age_url     <- "https://data.egov.bg/resource/download/8f62cfcf-a979-46d4-8317-4e1ab9cbd6a8/csv"
 
 
 date_i <- today() %>% as.character()
+
 cases_local_name  <- paste0("bulgaria_cases_age_", date_i, ".csv")
 deaths_local_name <- paste0("bulgaria_deaths_age_", date_i, ".csv")
 totals_local_name <- paste0("bulgaria_totals_age_", date_i, ".csv")
 
 # Let's start by downloading and archiving:
 
-cases_local_path <- paste0(dir_n, "Data_sources/", ctr, cases_local_name)
-deaths_local_path <- paste0(dir_n, "Data_sources/", ctr, deaths_local_name)
-totals_local_path <- paste0(dir_n, "Data_sources/", ctr, totals_local_name)
+cases_local_path  <- file.path(dir_n, "Data_sources", ctr, cases_local_name)
+deaths_local_path <- file.path(dir_n, "Data_sources", ctr, deaths_local_name)
+totals_local_path <- file.path(dir_n, "Data_sources", ctr, totals_local_name)
 
-# download csvs as-is:
-download.file(cases_age_url, destfile = cases_local_path)
-download.file(deaths_age_url, destfile = deaths_local_path)
-download.file(totals_url, destfile = totals_local_path)
+# download csvs as-is, try a lot of times at random intervals until it works :-/
+
+for (i in 1:100){
+    try_i <- GET(cases_age_url, 
+                 write_disk(cases_local_path,
+                            overwrite = TRUE), 
+                 verbose())
+    if (status_code(try_i)!= 200){
+    wait_i <- runif(1, min = 0, max = 500) %>% round()
+    Sys.sleep(wait_i)
+    next
+  } else {
+    break
+  }
+}
+
+for (i in 1:100){
+  try_i <- GET(deaths_age_url, 
+               write_disk(deaths_local_path,
+                          overwrite = TRUE), 
+               verbose())
+  if (status_code(try_i)!= 200){
+    wait_i <- runif(1, min = 0, max = 500) %>% round()
+    Sys.sleep(wait_i)
+    next
+  } else {
+    break
+  }
+}
+
+
+for (i in 1:100){
+  try_i <- GET(totals_url, 
+              write_disk(totals_local_path,
+                         overwrite = TRUE), 
+              verbose())
+  if (status_code(try_i)!= 200){
+    wait_i <- runif(1, min = 0, max = 500) %>% round()
+    Sys.sleep(wait_i)
+    next
+  } else {
+    break
+  }
+}
+
 
 # all source files
 data_source <- c(cases_local_path, deaths_local_path, totals_local_path)
@@ -82,53 +125,11 @@ zip::zipr(zipname,
           compression_level = 9,
           include_directories = TRUE)
 
-# age_name_csv           <- "Разпределение по дата и по възрастови групи.csv"
-# "BG_age_2020-12-15.csv"
-# BG_files <- dir(dir_n_source) 
-# BG_csvs <- 
-#   BG_files[grepl(BG_files,pattern = ".csv")] %>% 
-#   str_split(pattern = "-") %>% 
-#   do.call("rbind",.)
-# 
-# date_i <- BG_csvs[,2] %>% 
-#   gsub(pattern = ".csv",
-#        replacement = "") %>% 
-#   ymd() %>% 
-#   max(na.rm=TRUE) %>% 
-#   as.character() %>% 
-#   gsub(pattern = "-", replacement = "")
-# 
-# age_name_csv           <- paste0("BG_age-",date_i,".csv")
 
-# Encoding(age_name_csv) <-"UTF-8"
-age_file_path_csv      <- file.path(dir_n_source, age_name_csv)
-
-# This sucessfully reads the file in, but column headers will be distorted:
-tmp <- tempfile(fileext = ".csv", tmpdir = dir_n_source)
-file.link(age_file_path_csv, tmp)
-# BG_age_in              <- read_csv(tmp,
-#                                    locale = readr::locale(encoding = "UTF-8"))
-BG_age_in              <- read_csv(tmp)
-
-# BG_age_in              <- read_csv(age_file_path_csv,
-#                                    col_names = F) # Fails on Hydra
-# totals_name_csv        <-"Обща статистика за разпространението.csv"
-unlink(tmp)
-
-totals_name_csv         <- paste0("BG_total-",date_i,".csv")
-
-totals_file_path_csv   <- file.path(dir_n_source, totals_name_csv)
-# 
-# BG_TOT_in              <- read_csv(totals_file_path_csv)
-
-tmp2 <- tempfile(fileext = ".csv",tmpdir = dir_n_source)
-file.link(totals_file_path_csv, tmp2)
-# BG_TOT_in              <- read_csv(tmp,
-#                                    locale = readr::locale(encoding = "UTF-8"))
-BG_TOT_in              <- read_csv(tmp2)
-unlink(tmp2)
-# list.files(dir_n_source, "*.csv")
-
+# read in all three
+BG_cases_in               <- read_csv(cases_local_path)
+BG_deaths_in              <- read_csv(deaths_local_path)
+BG_totals_in              <- read_csv(totals_local_path)
 
 # ------------------------------------
 # Translations
@@ -146,10 +147,10 @@ unlink(tmp2)
 #"Починали за денонощие"    "New deaths"
 # -------------------------------------
 
-# Now process the data
-colnames(BG_age_in)[1] <- "Date"
+# process case age data
+colnames(BG_cases_in)[1] <- "Date"
 BG_cases_out <- 
-  BG_age_in %>% 
+  BG_cases_in %>% 
   select(Date,`0 - 19`:ncol(.)) %>% 
   pivot_longer(2:ncol(.),names_to = "Age", values_to = "Value") %>% 
   mutate(Age = case_when(
@@ -180,6 +181,54 @@ BG_cases_out <-
     Sex = "b") %>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)
+# process death age-sex data
+colnames(BG_deaths_in ) <- c("Date","Sex","Age","Value")
+
+all_ages <- c("0","12","15","17","20","30","40","50","60","70","80","90")
+BG_deaths_out <-
+  BG_deaths_in %>% 
+  mutate(Sex = case_when(Sex %in% c("<U+043C><U+044A><U+0436>","мъж") ~ "m",
+                         Sex %in% c("<U+0436><U+0435><U+043D><U+0430>","жена") ~ "f",
+                         Sex == "-" ~ "UNK"),
+         Age = case_when(Age == "-" ~ "UNK",
+                         Age == "0 - 12" ~ "0",
+                         Age == "12 - 14" ~ "12",
+                         Age == "15 - 16" ~ "15",
+                         Age == "17 - 19" ~ "17",
+                         Age == "20 - 29" ~ "20",
+                         Age == "30 - 39" ~ "30",
+                         Age == "40 - 49" ~ "40",
+                         Age == "50 - 59" ~ "50",
+                         Age == "60 - 69" ~ "60",
+                         Age == "70 - 79" ~ "70",
+                         Age == "80 - 89" ~ "80",
+                         Age == "90+" ~ "90"),
+        ) %>% 
+  tidyr::complete(Age = all_ages, Sex, Date, fill = list(Value=0)) %>% 
+  arrange(Sex, Age, Date) %>% 
+  group_by(Sex, Age) %>% 
+  mutate(Value = cumsum(Value)) %>% 
+  ungroup() %>% 
+  mutate(AgeInt = case_when(Age == "0" ~ 12L,
+                            Age == "12" ~ 3L,
+                            Age == "15" ~ 2L,
+                            Age == "17" ~ 3L,
+                            Age == "90+" ~ 15L,
+                            TRUE ~ 10L),
+          Measure = "Deaths",
+          Metric = "Count",
+          Date = ymd(Date),
+          Date = paste(sprintf("%02d",day(Date)),    
+                       sprintf("%02d",month(Date)),  
+                       year(Date),sep="."),
+          Code = paste0("BG",Date),
+          Country = "Bulgaria",
+          Region = "All")%>% 
+  select(Country, Region, Code, Date, Sex, 
+         Age, AgeInt, Metric, Measure, Value)
+  
+
+
   
 BG_TOT_out <-
   BG_TOT_in %>% 
@@ -201,7 +250,9 @@ BG_TOT_out <-
          )
 
 BG_out <- bind_rows(BG_cases_out,
-                    BG_TOT_out)
+                    BG_deaths_out,
+                    BG_TOT_out) %>% 
+  sort_input_data()
 
 # In case we had earlier data, we keep it.
 BG_out <- 
