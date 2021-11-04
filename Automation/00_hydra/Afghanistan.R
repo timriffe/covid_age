@@ -1,6 +1,6 @@
+#######Problem: no death since 8.9.2021
 
-library(here)
-source(here("Automation/00_Functions_automation.R"))
+source(here::here("Automation/00_Functions_automation.R"))
 library(lubridate)
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
@@ -10,7 +10,7 @@ if (!"email" %in% ls()){
 # info country and N drive address
 ctr          <- "Afghanistan" # it's a placeholder
 dir_n_source <- "N:/COVerAGE-DB/Automation/Afghanistan"
-dir_n        <- "N:/COVerAGE-DB/Automation/Hydra"
+dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 # Drive credentials
 drive_auth(email = email)
@@ -25,6 +25,11 @@ ss_i <- rubric %>%
 
 ss_db <- rubric %>% 
   dplyr::pull(Source)
+
+
+#example us
+# db_drive <- get_country_inputDB("USA_CDC")
+#new: db_drive <- read_rds(paste0(dir_n, ctr, ".rds"))
 
 # read in current state of the data
 AFin <- get_country_inputDB("AF") %>% 
@@ -47,12 +52,16 @@ files_have <- dir_n_source %>%
 
 files_have <- files_have[!grepl(files_have, 
                                 pattern = paste(dates_in_strings, 
-                                                collapse="|"))]
+                                                collapse="|"))] 
 
 
 files_Deaths <- files_have[grepl(pattern = "Death.txt",files_have)] 
 files_tests  <- files_have[grepl(pattern = "Sample-test.txt",files_have)] 
 
+#############dont filter with date, so dataset is complete##############
+#############i need the whole dataset to append the new data to
+#####age is not in the right format
+##############problems since 2021
 if (length(files_Deaths) > 0){
   read_AF_deaths <- function(path){
   
@@ -66,11 +75,15 @@ if (length(files_Deaths) > 0){
       dmy()
     
     incoming<-
-    suppressWarnings(readLines(path)) %>% 
+    suppressWarnings(readLines(file.path(dir_n_source,path))) %>% 
       gsub(pattern = ",years", replacement = "") %>% 
       str_split(pattern=",") %>% 
       unlist() %>% 
       '['(-1)
+    
+    if (incoming[10] == "10-19"){
+      incoming <- c(incoming[1:9],"0","0%",incoming[10:length(incoming)])
+    }
     
     incoming[!grepl(incoming,pattern="\\%")] %>% 
       matrix(ncol=4,byrow=TRUE,dimnames=list(NULL,c("Age","Cases","Hospitalizations","Deaths"))) %>% 
@@ -136,10 +149,9 @@ if (length(files_Deaths) > 0){
   }
   # Read in, filter down if necessary, finalize
   AutoCollected <-
-    lapply(file.path(dir_n_source,files_Deaths), 
-           read_AF_deaths) %>% 
+    lapply(files_Deaths,read_AF_deaths) %>% 
     bind_rows() %>% 
-    filter(!Date %in% dates_in) %>% 
+    # filter(!Date %in% dates_in) %>% 
     mutate(Country = "Afghanistan",
            Region = "All",
            Metric = "Count",
@@ -162,6 +174,8 @@ if (length(files_Deaths) > 0){
   # Append to Drive
   
   sheet_append(ss = ss_i, AutoCollected, sheet = "database")
+#how to maybe change it
+ # write_rds(AutoCollected, paste0(dir_n, ctr, ".rds"))
   
   # update log
   N <- nrow(AutoCollected)
@@ -195,7 +209,22 @@ if (length(files_Deaths) > 0){
   log_update("Afghanistan", N=0)
 }
 
-
+do_this <- FALSE
+if(do_this){
+  AFin <- get_country_inputDB("AF") %>% 
+    select(-Short)
+  
+  Sorted <-
+  AFin %>% 
+    sort_input_data() %>% 
+    distinct() %>% 
+    group_by(Date, Sex, Age, Measure) %>% 
+    mutate(n=n()) %>% 
+    filter(n == 1 | (n == 2 & Value == max(Value))) %>% 
+    ungroup() 
+    
+  write_sheet(Sorted, ss = ss_i)
+}
 
 
 

@@ -34,8 +34,8 @@ url <- "http://www.bccdc.ca/Health-Info-Site/Documents/BCCDC_COVID19_Dashboard_C
 
 download.file(url, destfile = data_source)
 # loading data
-df <- read_csv(data_source)
-
+#df <- read_csv(data_source)
+df <- fread(data_source)
 
 out <- 
   df %>% 

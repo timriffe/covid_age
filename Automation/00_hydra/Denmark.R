@@ -1,6 +1,6 @@
 library(here)
 source(here("Automation/00_Functions_automation.R"))
-
+library(readr)
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
   email <- "kikepaila@gmail.com"
@@ -52,7 +52,7 @@ unique(db_n$Measure)
 #   db_n %>% 
 #   filter(!Measure %in% c("Vaccination1", "Vaccination2", "Vaccinations")) %>% 
 #   bind_rows(temp_vacc) 
-  
+
 
 # identifying dates already captured in each measure
 dates_cases_n <- db_n %>% 
@@ -97,7 +97,7 @@ db_deaths2 <-
              AgeInt = NA)
   ) %>% 
   filter(Age != "UNK")
-  
+
 # reading new cases from the web
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # detecting the link to the xlsx file in the website
@@ -157,7 +157,7 @@ if(dim(links_new_cases)[1] > 0){
              Date = date_c) %>% 
       select(-trash)
     
-      db_cases <- db_cases %>% 
+    db_cases <- db_cases %>% 
       bind_rows(db_c)
     
   }
@@ -198,9 +198,9 @@ if(dim(links_new_vacc)[1] > 0){
                             ctr, "/", ctr, "_vaccines_", as.character(date_v), ".zip")
     download.file(as.character(links_new_vacc[i, 2]), destfile = data_source_v, mode = "wb")
     
-    try(db_v <- read_csv2(unz(data_source_v, "Vaccine_DB/Vaccinationer_region_aldgrp_koen.csv")))
+    try(db_v <- read_csv2(unz(data_source_v, "Vaccine_DB/Vaccinationer_region_aldgrp_koen.csv"), locale = locale(encoding = "ASCII")))
     #try(db_v <- read_csv(unz(data_source_v, "ArcGIS_dashboards_data/Vaccine_DB/Vaccinationer_region_aldgrp_koen.csv")))
-  
+    
     db_v2 <- db_v %>% 
       rename(Age = 2,
              Sex = sex,
@@ -264,4 +264,3 @@ out <-
 ###########################
 write_rds(out, paste0(dir_n, ctr, ".rds"))
 log_update(pp = ctr, N = nrow(out))
-

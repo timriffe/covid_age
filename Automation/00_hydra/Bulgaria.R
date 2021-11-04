@@ -1,6 +1,6 @@
 
 library(here)
-source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
+source(here("Automation/00_Functions_automation.R"))
 
 library(lubridate)
 # assigning Drive credentials in the case the script is verified manually  
@@ -90,7 +90,6 @@ BG_TOT_in              <- read_csv(tmp2)
 unlink(tmp2)
 # list.files(dir_n_source, "*.csv")
 
-print(4)
 
 # ------------------------------------
 # Translations
@@ -109,13 +108,11 @@ print(4)
 # -------------------------------------
 
 # Now process the data
-
-BG_cases_out <-
+colnames(BG_age_in)[1] <- "Date"
+BG_cases_out <- 
   BG_age_in %>% 
-  pivot_longer(-1,
-               names_to = "Age",
-               values_to = "Value") %>% 
-  rename('Date' = 1) %>% 
+  select(Date,`0 - 19`:ncol(.)) %>% 
+  pivot_longer(2:ncol(.),names_to = "Age", values_to = "Value") %>% 
   mutate(Age = case_when(
     Age == "0 - 19" ~ "0",
     Age == "20 - 29" ~ "20",
@@ -126,7 +123,7 @@ BG_cases_out <-
     Age == "70 - 79" ~ "70",
     Age == "80 - 89" ~ "80",
     Age == "90+" ~ "90",
-    TRUE ~ "TOT"),
+    TRUE ~ NA_character_),
     AgeInt = case_when(
       Age == "0" ~ 20L,
       Age == "90" ~ 15L,
@@ -150,7 +147,7 @@ BG_TOT_out <-
   select(Date = 1,
          Tests = 2,
          Cases = 4,
-         Deaths = 11) %>% 
+         Deaths = ncol(.)-1) %>% 
   pivot_longer(Tests:Deaths, names_to = "Measure", values_to = "Value") %>% 
   mutate(Sex = "b",
          Age = "TOT",

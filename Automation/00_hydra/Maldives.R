@@ -39,8 +39,8 @@ ss_db <- rubric %>%
 
 # reading data from Drive and last date entered 
 
-In_drive <- get_country_inputDB("MV")%>% 
-  select(-Short)
+#In_drive <- get_country_inputDB("MV")%>% 
+#  select(-Short)
 
 
 #Download from website with python 
@@ -76,7 +76,8 @@ MV_cases= Maldives%>%
     Age = case_when(
       is.na(Age) ~ "UNK",
       TRUE~ as.character(Age)),
-    Date = dmy(Date))
+    Date = dmy(Date)) %>% 
+  na.omit()
 
 
 # TR:
@@ -116,6 +117,9 @@ MV_cases_out= MV_cases %>%
 group_by(Date, Sex, Age) %>% 
   summarize(Value = n(), .groups="drop")%>%
   arrange(Sex, Age, Date) %>% 
+  ungroup() %>% 
+  tidyr::complete(Date, Sex, Age, fill = list(Value = 0))%>%
+  filter(Age != 2020) %>% 
   group_by(Sex, Age) %>% 
   mutate(Value = cumsum(Value)) %>% 
   ungroup() %>%
@@ -148,7 +152,8 @@ MV_death= Maldives%>%
     Age = case_when(
       is.na(Age) ~ "UNK",
       TRUE~ as.character(Age)),
-    Date = dmy(Date))
+    Date = dmy(Date)) %>% 
+  na.omit()
 
 #only take those that died 
 
@@ -164,6 +169,9 @@ MV_death_out= MV_death %>%
   group_by(Date, Sex, Age) %>% 
   summarize(Value = n(), .groups="drop")%>%
   arrange(Sex, Age, Date) %>% 
+  ungroup() %>% 
+  tidyr::complete(Date, Sex, Age, fill = list(Value = 0))%>%
+  filter(Age != 2020) %>% 
   group_by(Sex, Age) %>% 
   mutate(Value = cumsum(Value)) %>% 
   ungroup() %>%
@@ -185,7 +193,8 @@ MV_death_out= MV_death %>%
 
 ######combine both to one dataframe########## 
 MV_out <- bind_rows(MV_cases_out,
-                    MV_death_out)
+                    MV_death_out) %>% 
+  arrange(Date, Measure, Sex, Age)
 
 
 
@@ -199,12 +208,14 @@ MV_out <- bind_rows(MV_cases_out,
 
 # upload to Drive, overwrites
 
-write_sheet(MV_out, 
-            ss = ss_i, 
-            sheet = "database")
+#write_sheet(MV_out, 
+#            ss = ss_i, 
+#            sheet = "database")
+
+write_rds(MV_out, paste0(dir_n, ctr, ".rds"))
 
 ###########################################Still not sure how to set this up with the automation sheet 
-#log_update("Maldives", N = nrow(MV_out))
+log_update("Maldives", N = nrow(MV_out))
 
 
 #archive: input files already saved on N 

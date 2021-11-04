@@ -1,10 +1,8 @@
 #.rs.restartR()
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
+setwd(wd_sched_detect())
+here::i_am("covid_age.Rproj")
 
-
-library(here)
-source(here::here("R","00_Functions.R"))
-
-change_here(wd_sched_detect())
 logfile <- here::here("buildlog.md")
 log_section("Commit dashboards and buildlog", append = TRUE, logfile = logfile)
 library(usethis)

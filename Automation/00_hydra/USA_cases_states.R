@@ -5,7 +5,7 @@
 
 
 In= read.csv("https://data.cdc.gov/api/views/n8mc-b4w4/rows.csv?accessType=DOWNLOAD")
-
+##only 2 million cases
 
 # step 2 aggregate by state, age, sex, date (or month as it were).
 #can decide if we want to filter by lab confirmed case and prob. case (current_status)
