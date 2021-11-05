@@ -160,7 +160,8 @@ sched <- function(
   tm = "21:18", 
   email = "kikepaila@gmail.com",
   sch = "DAILY",
-  wd = here()){
+  wd = here(),
+  encoding = "utf-8"){
   
   # create a trigger script that will source the automate script
   # using encoding utf-8 
@@ -175,7 +176,7 @@ sched <- function(
   script <- paste0('email <- "', email, '"\n',
                   'setwd("', wd, '")\n',
                   'source("Automation/00_hydra/', pp, 
-                  '.R", encoding="utf-8")')
+                  '.R", encoding="',encoding,'"')
   
   # generate the trigger script
   writeLines(script, trigger_script)
