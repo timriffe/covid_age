@@ -1812,3 +1812,7 @@ filter( Code == 'US_TX03.11.2021', Sex == 'b', Measure == 'Vaccination2' )
 # Commit dashboards and buildlog 
  Sat Nov 06 09:38:09 2021 
 
+
+# update build series log 
+ Sat Nov 06 09:38:27 2021 
+
