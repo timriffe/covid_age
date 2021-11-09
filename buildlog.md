@@ -1821,3 +1821,15 @@ filter( Code == 'US_TX06.11.2021', Sex == 'b', Measure == 'Vaccination2' )
 # Age harmonization 
  Tue Nov 09 03:58:18 2021 
 
+
+# remake coverage map 
+ Tue Nov 09 09:52:11 2021 
+
+
+# push outputs to OSF 
+ Tue Nov 09 09:57:21 2021 
+
+
+# Commit dashboards and buildlog 
+ Tue Nov 09 10:04:00 2021 
+
