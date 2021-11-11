@@ -1,10 +1,11 @@
-
+# usethis::edit_r_environ()
+# usethis::edit_r_profile()
 source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
-
+library(here)
 setwd(wd_sched_detect())
 here::i_am("covid_age.Rproj")
 startup::startup()
-
+getwd()
 Sys.setenv(RSTUDIO_PANDOC = "C:/Program Files/RStudio/bin/pandoc")
 repo <- git2r::repository(here())
 # creds <- structure(list(username = Sys.getenv("GITHUB_USER"), 
@@ -22,7 +23,7 @@ if (schedule_this){
                        taskname = "COVerAGE-DB-automatic-daily-build", 
                        rscript =  paste0(Sys.getenv("path_repo"), "/R/build_pre.R"), 
                        schedule = "DAILY", 
-                       starttime = "01:00",
+                       starttime = "16:00",
                        startdate = format(Sys.Date()+1 , "%m/%d/%Y"))
 }
 
