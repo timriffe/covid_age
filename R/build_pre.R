@@ -1,11 +1,41 @@
-# usethis::edit_r_environ()
-# usethis::edit_r_profile()
-source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
+
+print("")
+print("")
+print("")
+print("--------------------------------------------------------------------------------")
+print("--------------------------------------------------------------------------------")
+print("--------------------------------------------------------------------------------")
+print(paste0(Sys.time(), ", Start of harmonization process"))
+
+wd_sched_detect <- function(){
+  if (!interactive()){
+    initial.options <- commandArgs(trailingOnly = FALSE)
+    file.arg.name   <- "--file="
+    script.name     <- sub(file.arg.name,"",initial.options[grep(file.arg.name,initial.options)]) 
+    
+    wd <- script.name 
+  }else {
+    wd <- getwd()
+  }
+  for (i in 1:3){
+    bname <- basename(wd)
+    if (bname == "covid_age"){
+      break
+    }
+    wd <- dirname(wd)
+  }
+  wd
+}
+
+# source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
 library(here)
 setwd(wd_sched_detect())
 here::i_am("covid_age.Rproj")
 startup::startup()
 getwd()
+
+source("R/00_Functions.R")
+
 Sys.setenv(RSTUDIO_PANDOC = "C:/Program Files/RStudio/bin/pandoc")
 repo <- git2r::repository(here())
 # creds <- structure(list(username = Sys.getenv("GITHUB_USER"), 
@@ -23,8 +53,8 @@ if (schedule_this){
                        taskname = "COVerAGE-DB-automatic-daily-build", 
                        rscript =  paste0(Sys.getenv("path_repo"), "/R/build_pre.R"), 
                        schedule = "DAILY", 
-                       starttime = "16:00",
-                       startdate = format(Sys.Date()+1 , "%m/%d/%Y"))
+                       starttime = "11:31",
+                       startdate = format(Sys.Date(), "%m/%d/%Y"))
 }
 
 #
