@@ -56,7 +56,7 @@ ages2 <- c("All Ages", "0-17 years", "18-29 years", "30-49 years", "50-64 years"
 db_month <- db %>% 
   select("State", "Age Group", "Sex", "COVID-19 Deaths", "Group", "End Date") %>% 
   rename(Age = "Age Group",
-         Value = "COVID-19 Deaths",
+         Val♣ue = "COVID-19 Deaths",
          Date = "End Date") %>% 
   filter(Age %in% ages1,
          Sex != "Unknown",
