@@ -1,11 +1,22 @@
-# usethis::edit_r_environ()
-# usethis::edit_r_profile()
-source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
+# print("\n")
+# print("")
+# print("")
+# print("--------------------------------------------------------------------------------")
+# print("--------------------------------------------------------------------------------")
+# print("--------------------------------------------------------------------------------")
+print(paste0("\n", "\n", "\n", "\n", "\n", Sys.time(), ", Fresh start of process"))
+# print("--------------------------------------------------------------------------------")
+# print("--------------------------------------------------------------------------------")
+# print("--------------------------------------------------------------------------------")
+
+# source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
+source("https://raw.githubusercontent.com/kikeacosta/covid_age/master/R/00_Functions.R")
 library(here)
 setwd(wd_sched_detect())
 here::i_am("covid_age.Rproj")
 startup::startup()
 getwd()
+
 Sys.setenv(RSTUDIO_PANDOC = "C:/Program Files/RStudio/bin/pandoc")
 repo <- git2r::repository(here())
 # creds <- structure(list(username = Sys.getenv("GITHUB_USER"), 
@@ -22,9 +33,9 @@ if (schedule_this){
   taskscheduleR::taskscheduler_create(
                        taskname = "COVerAGE-DB-automatic-daily-build", 
                        rscript =  paste0(Sys.getenv("path_repo"), "/R/build_pre.R"), 
-                       schedule = "DAILY", 
-                       starttime = "16:00",
-                       startdate = format(Sys.Date()+1 , "%m/%d/%Y"))
+                       schedule = "WEEKLY", 
+                       starttime = "08:32",
+                       startdate = format(Sys.Date(), "%m/%d/%Y"))
 }
 
 #
