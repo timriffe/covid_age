@@ -1,31 +1,13 @@
-
-print("")
-print("")
-print("")
-print("--------------------------------------------------------------------------------")
-print("--------------------------------------------------------------------------------")
-print("--------------------------------------------------------------------------------")
-print(paste0(Sys.time(), ", Start of harmonization process"))
-
-# wd_sched_detect <- function(){
-#   if (!interactive()){
-#     initial.options <- commandArgs(trailingOnly = FALSE)
-#     file.arg.name   <- "--file="
-#     script.name     <- sub(file.arg.name,"",initial.options[grep(file.arg.name,initial.options)])
-# 
-#     wd <- script.name
-#   }else {
-#     wd <- getwd()
-#   }
-#   for (i in 1:3){
-#     bname <- basename(wd)
-#     if (bname == "covid_age"){
-#       break
-#     }
-#     wd <- dirname(wd)
-#   }
-#   wd
-# }
+# print("\n")
+# print("")
+# print("")
+# print("--------------------------------------------------------------------------------")
+# print("--------------------------------------------------------------------------------")
+# print("--------------------------------------------------------------------------------")
+print(paste0("\n", "\n", "\n", "\n", "\n", Sys.time(), ", Fresh start of process"))
+# print("--------------------------------------------------------------------------------")
+# print("--------------------------------------------------------------------------------")
+# print("--------------------------------------------------------------------------------")
 
 # source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
 source("https://raw.githubusercontent.com/kikeacosta/covid_age/master/R/00_Functions.R")
@@ -51,8 +33,8 @@ if (schedule_this){
   taskscheduleR::taskscheduler_create(
                        taskname = "COVerAGE-DB-automatic-daily-build", 
                        rscript =  paste0(Sys.getenv("path_repo"), "/R/build_pre.R"), 
-                       schedule = "DAILY", 
-                       starttime = "17:57",
+                       schedule = "WEEKLY", 
+                       starttime = "08:32",
                        startdate = format(Sys.Date(), "%m/%d/%Y"))
 }
 
