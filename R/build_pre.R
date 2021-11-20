@@ -34,7 +34,7 @@ if (schedule_this){
                        taskname = "COVerAGE-DB-automatic-daily-build", 
                        rscript =  paste0(Sys.getenv("path_repo"), "/R/build_pre.R"), 
                        schedule = "WEEKLY", 
-                       starttime = "08:32",
+                       starttime = "09:32",
                        startdate = format(Sys.Date(), "%m/%d/%Y"))
 }
 
