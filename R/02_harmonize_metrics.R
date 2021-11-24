@@ -176,7 +176,6 @@ J <- J[ , try_step(process_function = maybe_lower_closeout,
         .SDcols = icols][,..icols]
 
 
-
 ### Saving ##########################################################
 
 # Formatting 

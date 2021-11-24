@@ -27,9 +27,10 @@ gs4_auth(email = email)
 
 log_update("Lebanon",N = "captured")
 
-drive_auth(email = email)
+drive_auth(email = email, scopes = "https://www.googleapis.com/auth/drive")
 ss_db <- get_input_rubric() %>% 
-  filter(Country == "Lebanon") %>% 
+  filter(Country == "Lebanon",
+         Loc == "d") %>% 
   dplyr::pull(Source)
 
 drive_put(media = cases_png,
