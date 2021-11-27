@@ -30,12 +30,20 @@ source(here("R","build.R"))
 schedule_this <- FALSE
 if (schedule_this){
   taskscheduleR::taskscheduler_delete("COVerAGE-DB-automatic-daily-build")
+  # taskscheduleR::taskscheduler_create(
+  #   taskname = "COVerAGE-DB-automatic-daily-build", 
+  #   rscript =  paste0(Sys.getenv("path_repo"), "/R/build_pre.R"), 
+  #   schedule = "WEEKLY",
+  #   days = "FRI",
+  #   starttime = "09:32",
+  #   startdate = format(Sys.Date(), "%m/%d/%Y"))
   taskscheduleR::taskscheduler_create(
-                       taskname = "COVerAGE-DB-automatic-daily-build", 
-                       rscript =  paste0(Sys.getenv("path_repo"), "/R/build_pre.R"), 
-                       schedule = "WEEKLY", 
-                       starttime = "09:32",
-                       startdate = format(Sys.Date(), "%m/%d/%Y"))
+    taskname = "COVerAGE-DB-automatic-daily-build", 
+    rscript =  paste0(Sys.getenv("path_repo"), "/R/build_pre.R"), 
+    schedule = "WEEKLY",
+    days = "FRI",
+    starttime = "16:20",
+    startdate = "11-26-2021")
 }
 
 #
