@@ -181,7 +181,9 @@ Deaths <-
                             Age == "1" ~ 4L,
                             Age == "UNK" ~ NA_integer_,
                             TRUE ~ 5L)) %>% 
-  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) 
+  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
+  filter(! (Sex == "UNK" & Value == 0),
+         ! (Age == "UNK" & Value == 0))
 
 
 out <- bind_rows(Cases, Deaths) %>% 
