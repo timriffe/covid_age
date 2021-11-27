@@ -198,14 +198,6 @@ log_update(pp = ctr, N = nrow(cd))
 
 #archive data 
 
-#write_csv(dd7, 
-#path = "/Volumes/GoogleDrive/.shortcut-targets-by-id/1yeNvTKti7N5vIF3-2XbsQuMeFvzCrmAs/COVID_DATA/02_documentation/metadata/Chile/CL_Deaths_deis_all_region_municipality.csv")
-
-#To save on COVerAGE-BD folder
-#write_csv(c, 
-#path = "/Volumes/GoogleDrive/.shortcut-targets-by-id/1yeNvTKti7N5vIF3-2XbsQuMeFvzCrmAs/COVID_DATA/02_documentation/metadata/Chile/CL_Cases.csv")
-
-
 
 data_source_1 <- paste0(dir_n, "Data_sources/", ctr, "/death_age_",today(), ".csv")
 data_source_2 <- paste0(dir_n, "Data_sources/", ctr, "/cases_age_",today(), ".csv")
