@@ -294,9 +294,9 @@ if (schedule_this){
   taskscheduler_delete("COVerAGE-DB-every-8-hour-inputDB-updates")
   taskscheduler_create(taskname = "COVerAGE-DB-every-8-hour-inputDB-updates", 
                        rscript =  paste0(Sys.getenv("path_repo"), "/R/01_update_inputDB.R"), 
-                       schedule = "HOURLY", 
-                       modifier = 8,
-                       starttime = "08:21",
+                       schedule = "WEEKLY",
+                       days = "SUN",
+                       starttime = "18:00",
                        startdate = format(Sys.Date(), "%m/%d/%Y"))
   # 
 }
