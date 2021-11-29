@@ -29,7 +29,7 @@ Out= In %>%
   #select countries we need 
   subset(Region== "BG"| Region== "CY" | Region== "HR"| Region== "HU"|  Region== "IE"| 
           Region== "LU" | Region== "MT" | Region== "RO"| Region== "PL")%>%
-  select(YearWeekISO, Vaccinations= UnknownDose, Vaccination1= FirstDose, Vaccination2= SecondDose, Short=Region,TargetGroup)%>%
+  select(YearWeekISO, Vaccination1= FirstDose, Vaccination2= SecondDose, Vaccination3= DoseAdditional1, Short=Region,TargetGroup)%>%
   #remove category medical personnel and long term care residents 
   subset(TargetGroup != "HCW") %>%
   subset(TargetGroup != "LTCF")%>%
@@ -74,6 +74,7 @@ Out= In %>%
     Age == "70" ~ 10L,
     Age == "80" ~ 25L,
     Age == "UNK" ~ NA_integer_,
+    Age == "TOT" ~ NA_integer_,
     TRUE ~ 5L))%>%
   mutate(
     Metric = "Count",

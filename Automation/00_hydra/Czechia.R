@@ -42,17 +42,19 @@ cases_url <- "https://onemocneni-aktualne.mzcr.cz/api/v2/covid-19/osoby.csv"
 
 cz_cases <- read.csv(cases_url, 
                    header = TRUE, 
-                   col.names = c("Date",
+                   col.names = c("ID",
+                     "Date",
                                  "Age", # exact age
                                  "Sex2", # M=male, Z=female
                                  "NUTS3", #region of hygiene station which provides data, according to NUTS 3
                                  "LAU1", # region on LAU1 structure
                                  "Abroad_inf", # 1=claimed to be infected abroad
-                                 "Country_inf" # claimed country of infection
+                                 "Country_inf", # claimed country of infection
+                     "trash"
                    )) %>% 
   mutate(Sex = ifelse(Sex2 == "M","m","f"), 
          Date = as.Date(Date, "%Y-%m-%d")) %>% 
-  select(-Sex2)
+  select(-c(Sex2, ID, trash))
 
 cz_cases %>%  dplyr::pull("Age") %>%  unique()
 
@@ -124,7 +126,8 @@ deaths_url <- "https://onemocneni-aktualne.mzcr.cz/api/v2/covid-19/umrti.csv"
 
 cz_deaths<-read.csv(deaths_url, 
                     header = TRUE, 
-                    col.names = c("Date", 
+                    col.names = c("ID",
+                      "Date", 
                                   "Age", 
                                   "Sex2", 
                                   "NUTS3", # "kraj" - NUTS 3 administrative unit
@@ -132,7 +135,7 @@ cz_deaths<-read.csv(deaths_url,
 ) %>% 
   mutate(Sex = ifelse(Sex2 == "M","m","f"),  # no unknown Sex?
          Date = as.Date(Date, "%Y-%m-%d")) %>% 
-  select(-Sex2)
+  select(-c(Sex2, ID))
 
 cz_deaths %>%  dplyr::pull("Age") %>%  unique()
 
@@ -199,7 +202,8 @@ vaccine_url <- "https://onemocneni-aktualne.mzcr.cz/api/v2/covid-19/ockovani.csv
 vaccines <- read.csv(vaccine_url, 
                      header = T, 
                      encoding = "UTF-8",
-                     col.names = c("Date", 
+                     col.names = c("ID",
+                       "Date", 
                                    "vaccine", # Comirnaty, Moderna, AstraZeneca
                                    "NUTS3", 
                                    "Region", # names of the regions
@@ -207,7 +211,8 @@ vaccines <- read.csv(vaccine_url,
                                    "first_dose", 
                                    "second_dose", 
                                    "n_dose")) %>% 
-  mutate(Date = as.Date(Date, "%Y-%m-%d"))
+  mutate(Date = as.Date(Date, "%Y-%m-%d")) %>% 
+  select(-ID)
 
 
 # unfortunatelly only age 80+ is registered, although the 80+ group 

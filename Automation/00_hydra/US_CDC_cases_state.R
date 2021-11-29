@@ -28,7 +28,7 @@ library(arrow)
 
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
-  email <- "jessica_d.1994@yahoo.de"
+  email <- "maxi.s.kniffka@gmail.com"
 }
 gs4_auth(email = email)
 
@@ -58,19 +58,20 @@ dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 #read in data faster 
 
-data1=read_parquet("K:/CDC_Covid/covid_case_restricted_detailed-master_08_2021/COVID_Cases_Restricted_Detailed_08172021_Part_1.parquet")
-data2=read_parquet("K:/CDC_Covid/covid_case_restricted_detailed-master_08_2021/COVID_Cases_Restricted_Detailed_08172021_Part_2.parquet")
+data1=read_parquet("K:/CDC_Covid/covid_case_restricted_detailed-master_25_10_2021/COVID_Cases_Restricted_Detailed_10252021_Part_1.parquet")
+data2=read_parquet("K:/CDC_Covid/covid_case_restricted_detailed-master_25_10_2021/COVID_Cases_Restricted_Detailed_10252021_Part_2.parquet")
 
 
 # Add datasets vertically
 IN <- rbind(data1, data2)
 
-rm(data1,data2);gc()
-glimpse(IN)
-states <- c("AZ","AR", "DE","GU","ID","KS","ME","MA","MN","MT","NV","NJ","NC","OK","OR","PA","SC","TN","VA")
+#rm(data1,data2);gc()
+#glimpse(IN)
+states <- c("GA","IA","MI","IL","OH","WA","NY","AZ","AR", "DE","GU","ID","KS","ME","MA","MN","MT","NV","NJ","NC","OK","OR","PA","SC","TN","VA")
 
 Out <-
   IN %>%
+  filter(res_state %in% states) %>%
   select(Date = cdc_case_earliest_dt, 
          Sex = sex, 
          Age = age_group, 
@@ -79,11 +80,14 @@ Out <-
                         Sex== "Unknown" ~ "UNK",
                         Sex== "Missing" ~ "UNK",
                         Sex== "Other" ~ "UNK",
+                        Sex== "NA" ~ "UNK",
                         Sex== "Male" ~ "m",
                         Sex== "Female"~"f",
                         TRUE ~ as.character(Sex)),
          Age = case_when (is.na(Age) ~ "UNK",
-                         Age== "Unknown" ~" UNK",
+                         Age== "Unknown" ~"UNK",
+                         Age== "Missing" ~ "UNK",
+                         Age== "NA" ~ "UNK",
                          TRUE~ as.character(Age)))%>%
   group_by(Date, Sex, Age, State) %>% 
   summarize(Value = n(), .groups = "drop")%>%
@@ -135,7 +139,14 @@ mutate(
                    `PA`=  "Pennsylvania",	
                    `SC`= "South Carolina",	
                    `TN`= "Tennessee",	
-                   `VA`=  "Virginia"),
+                   `VA`=  "Virginia",
+                   `NY`= "New York",
+                   `WA`= "Washington",
+                   `OH`= "Ohio",
+                   `IL`= "Illinois",
+                   `MI`= "Missouri",
+                   `IA`= "Iowa",
+                   `GA`= "Georgia"),
     Code= paste0 ("US_", State, Date)) %>% 
   select(Country, Region, State, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)

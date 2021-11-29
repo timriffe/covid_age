@@ -183,7 +183,8 @@ db_d2 <-
                             Age == "90" ~15L,
                             Age == "TOT" ~ NA_integer_,
                             TRUE ~ 10L)) %>% 
-  filter(Age != "TOT")
+  filter(Age != "TOT") %>% 
+  filter(Age != "Ukjent")
 
 # Merge files, create more columns ####
 #######################################

@@ -150,7 +150,11 @@ db_v2 <- db_v %>%
          new = COUNT) %>% 
   separate(Age, c("Age", "trash"), sep = "-") %>% 
   mutate(Date = ymd(Date),
-         Measure = ifelse(Measure == "A", "Vaccination1", "Vaccination2"),
+         Measure = case_when(Measure == "A" ~ "Vaccination1", 
+                             Measure == "B" ~ "Vaccination2",
+                             Measure == "C" ~ "Vaccination2",
+                             Measure == "E" ~ "Vaccination3"
+                             ),
          Age = case_when(Age == "85+" ~ "90",
                          is.na(Age) ~ "UNK",
                          TRUE ~ Age),
@@ -217,11 +221,18 @@ out <- bind_rows(db_nal,
                             #JD: The AgeInt information for vaccines was missing
                             Measure == "Vaccination1" & Age == "0" ~ 18,
                             Measure == "Vaccination2" & Age == "0" ~ 18,
+                            Measure == "Vaccination3" & Age == "0" ~ 18,
+                            
                             Measure == "Vaccination1" & Age == "18" ~ 16,
                             Measure == "Vaccination2" & Age == "18" ~ 16,
+                            Measure == "Vaccination3" & Age == "18" ~ 16,
+                            
                             Measure == "Vaccination1" & Age == "90" ~ 15,
                             Measure == "Vaccination2" & Age == "90" ~ 15,
+                            Measure == "Vaccination3" & Age == "90" ~ 15,
+                            
                             Measure == "Vaccination1" & Age %in% c("35", "45", "55","65","75") ~ 10,
+                            Measure == "Vaccination3" & Age %in% c("35", "45", "55","65","75") ~ 10,
                             Measure == "Vaccination2" & Age %in% c("35", "45", "55","65","75") ~ 10),
          date_f = Date,
          Date = paste(sprintf("%02d",day(date_f)),
