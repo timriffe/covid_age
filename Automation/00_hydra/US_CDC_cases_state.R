@@ -67,11 +67,10 @@ IN <- rbind(data1, data2)
 
 #rm(data1,data2);gc()
 #glimpse(IN)
-states <- c("GA","IA","MI","IL","OH","WA","NY","AZ","AR", "DE","GU","ID","KS","ME","MA","MN","MT","NV","NJ","NC","OK","OR","PA","SC","TN","VA")
+#states <- c("AZ","AR", "DE","GU","ID","KS","ME","MA","MN","MT","NV","NJ","NC","OK","OR","PA","SC","TN","VA")
 
 Out <-
   IN %>%
-  filter(res_state %in% states) %>%
   select(Date = cdc_case_earliest_dt, 
          Sex = sex, 
          Age = age_group, 
@@ -80,14 +79,11 @@ Out <-
                         Sex== "Unknown" ~ "UNK",
                         Sex== "Missing" ~ "UNK",
                         Sex== "Other" ~ "UNK",
-                        Sex== "NA" ~ "UNK",
                         Sex== "Male" ~ "m",
                         Sex== "Female"~"f",
                         TRUE ~ as.character(Sex)),
          Age = case_when (is.na(Age) ~ "UNK",
-                         Age== "Unknown" ~"UNK",
-                         Age== "Missing" ~ "UNK",
-                         Age== "NA" ~ "UNK",
+                         Age== "Unknown" ~" UNK",
                          TRUE~ as.character(Age)))%>%
   group_by(Date, Sex, Age, State) %>% 
   summarize(Value = n(), .groups = "drop")%>%
@@ -139,14 +135,7 @@ mutate(
                    `PA`=  "Pennsylvania",	
                    `SC`= "South Carolina",	
                    `TN`= "Tennessee",	
-                   `VA`=  "Virginia",
-                   `NY`= "New York",
-                   `WA`= "Washington",
-                   `OH`= "Ohio",
-                   `IL`= "Illinois",
-                   `MI`= "Missouri",
-                   `IA`= "Iowa",
-                   `GA`= "Georgia"),
+                   `VA`=  "Virginia"),
     Code= paste0 ("US_", State, Date)) %>% 
   select(Country, Region, State, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)
