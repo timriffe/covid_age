@@ -32,7 +32,7 @@ c_input$`Sexo` %>% unique()
 
 #To create data
 Cases <- 
-  c_input %>% 
+c_input %>% 
   mutate(Date = ddmmyyyy(Fecha),
          Age = substr(`Grupo de edad`,1,2) %>% as.integer() %>% as.character(),
          Sex = tolower(Sexo),
@@ -163,6 +163,7 @@ all_sexes <- c("m","f","UNK")
 Deaths <-
   dd1 %>% 
   tidyr::complete(Date = all_dates,
+
            Age = all_ages,
            Sex = all_sexes,
            fill = list(n = 0)) %>% 
@@ -194,7 +195,9 @@ dim(out)
 #save output on N 
 
 write_rds(out, paste0(dir_n, ctr, ".rds"))
+
 log_update(pp = ctr, N = nrow(out))
+
 
 #archive data 
 

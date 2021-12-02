@@ -189,20 +189,21 @@ db_tot <- db_co_comp %>%
 
 db_inc <- db_tot %>% 
   filter(Measure == "Deaths",
-         Value >= 50) %>% 
+         Value >= 10) %>% 
   group_by(Region) %>% 
   summarise(date_start = ymd(min(date_f))) %>% 
   ungroup()
 
 # appending all data in one database ----------------------------------------------
-db_all <- bind_rows(db_co_comp, db_tot_age, db_tot)
+db_all <- bind_rows(db_co_comp, db_tot_age)
 
 # filtering dates for each region (>50 deaths) -----------------------------------
 db_all2 <- db_all %>% 
   left_join(db_inc) %>% 
   drop_na() %>% 
   filter((Region == "All" & date_f >= "2020-03-20") | date_f >= date_start) %>% 
-  select(-date_start)
+  select(-date_start) %>% 
+  bind_rows(db_tot)
 
 
 
