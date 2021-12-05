@@ -2166,3 +2166,7 @@ e == 'US_TX22.11.2021', Sex == 'b', Measure == 'Vaccination2'
 # Commit dashboards and buildlog 
  Sat Dec 04 13:03:48 2021 
 
+
+# update build series log 
+ Sat Dec 04 13:04:14 2021 
+
