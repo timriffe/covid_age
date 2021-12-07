@@ -98,7 +98,7 @@ db_c2 <-
       Sex = case_when(sex == "male" ~ "m",
                       sex == "female" ~ "f",
                       sex == "total" ~ "b",
-                      TRUE ~ "o")) %>% 
+                      TRUE ~ "UNK")) %>% 
   arrange(Sex, Age, date) %>% 
   group_by(Sex, Age) %>% 
   mutate(Value = cumsum(n)) %>% 
@@ -117,7 +117,7 @@ db_c2 <-
 db_t2 <-
   db_t %>% 
   mutate(Age = "TOT",
-         Sex = "TOT",
+         Sex = "b",
          n = n_pos + n_neg) %>% 
   arrange(date) %>% 
   mutate(Value = cumsum(n)) %>% 
