@@ -39,12 +39,12 @@ log_section(paste(Sys.time(),"updates"),
 
 #source("R_checks/inputDB_check.R")
 email <- Sys.getenv("email")
-gs4_auth(email = email, use_oob = FALSE, 
+gs4_auth(email = email, 
          scopes = c("https://www.googleapis.com/auth/spreadsheets",
                     "https://www.googleapis.com/auth/drive"))
 drive_auth(email = email,
            scopes = c("https://www.googleapis.com/auth/spreadsheets",
-                                    "https://www.googleapis.com/auth/drive"))
+                      "https://www.googleapis.com/auth/drive"))
 
 # these parameters to grab templates that were modified between 12 and 2 hours ago,
 # a 10-hour window. This will be run every 8 hours, so this implies overlap.
@@ -72,9 +72,9 @@ if (nrow(rubric) > 0){
         inputDB %>% 
         select(-y))
   
-  try(inputDB <- 
-        inputDB %>% 
-        select(-'2499'))
+  # try(inputDB <- 
+  #       inputDB %>% 
+  #       select(-'2499'))
   
   # saveRDS(inputDB,here("Data","inputDBhold.rds"))
   # what data combinations have we read in?
@@ -89,13 +89,13 @@ if (nrow(rubric) > 0){
   inputDBhold <- readRDS(here::here("Data","inputDBhold.rds"))
   
   # EA: temporal fix while solving issue with additional columns in the InputDB.csv (12.08.2021)
-  try(inputDBhold <- 
-        inputDBhold %>% 
-        select(-y))
-  
-  try(inputDBhold <- 
-        inputDBhold %>% 
-        select(-'2499'))
+  # try(inputDBhold <- 
+  #       inputDBhold %>% 
+  #       select(-y))
+  # 
+  # try(inputDBhold <- 
+  #       inputDBhold %>% 
+  #       select(-'2499'))
   
   # remove any codes we just read in
   inputDBhold <- 
@@ -296,11 +296,10 @@ if (schedule_this){
   library(taskscheduleR)
   taskscheduler_delete("COVerAGE-DB-every-8-hour-inputDB-updates")
   taskscheduler_create(taskname = "COVerAGE-DB-every-8-hour-inputDB-updates", 
-                       rscript =  paste0(Sys.getenv("path_repo"), "/R/01_update_inputDB.R"), 
+                       rscript =  here("R","01_update_inputDB.R"), 
                        schedule = "WEEKLY",
                        days = "SUN",
-                       starttime = "7:00",
-                       startdate = format(Sys.Date(), "%m/%d/%Y"))
+                       starttime = "07:00")
   # 
 }
 
