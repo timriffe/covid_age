@@ -81,7 +81,7 @@ if (length(files_new) > 0){
       mutate(Sex = case_when(Sex == "Total" ~ "b",
                              Sex == "Female" ~ "f",
                              Sex == "Male" ~ "m",
-                             TRUE ~ "o")) %>% 
+                             TRUE ~ "UNK")) %>% 
       filter(Sex %in% c("b", "m", "f")) %>% 
       select(Sex, Cases, Deaths) %>% 
       mutate(Age = "TOT",
