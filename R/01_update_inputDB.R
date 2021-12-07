@@ -116,7 +116,7 @@ if (nrow(rubric) > 0){
   
   
   # remove non-standard Measure:
-  Measures <- c("Cases","Deaths","Tests","ASCFR","Vaccinations","Vaccination1","Vaccination2")
+  Measures <- c("Cases","Deaths","Tests","ASCFR","Vaccinations","Vaccination1","Vaccination2", "Vaccination3", "VaccinationBooster")
   n <- inputDB %>% dplyr::pull(Measure) %>% `%in%`(Measures)
   # sum(n)
   if (sum(!n) > 0){

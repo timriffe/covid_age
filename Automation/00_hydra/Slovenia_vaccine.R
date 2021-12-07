@@ -50,12 +50,13 @@ In_vaccine=read.csv("https://raw.githubusercontent.com/sledilnik/data/master/csv
 
 Out_vaccine= In_vaccine%>%
   select(-vaccination.administered, -vaccination.administered.todate, -vaccination.administered2nd, -vaccination.administered2nd.todate,
+         -vaccination.administered3rd, -vaccination.administered3rd.todate,
          -vaccination.used.todate, -vaccination.pfizer.used.todate, -vaccination.moderna.used.todate, -vaccination.az.used.todate,
          -vaccination.janssen.used.todate, -vaccination.delivered.todate, -vaccination.pfizer.delivered, -vaccination.pfizer.delivered.todate,
          -vaccination.moderna.delivered, -vaccination.moderna.delivered.todate, -vaccination.az.delivered, -vaccination.az.delivered.todate,
          -vaccination.janssen.delivered, -vaccination.janssen.delivered.todate)%>%
   pivot_longer(!date, names_to = "x", values_to = "Value")%>%
-  separate(x, c("1", "2", "3", "4", "5", "6"), "\\.")%>%
+  separate(x, c("1", "2", "3", "4", "5", "6"), "\\.") %>% 
   select(Date= date, Age=`3`, `4`, Measure= `5`, Value)%>%
   mutate(AgeInt = case_when(
     Age == "0" ~ 18L,
@@ -65,7 +66,8 @@ Out_vaccine= In_vaccine%>%
     TRUE ~ 5L))%>% 
   mutate(Measure=recode(Measure, 
                     `1st`="Vaccination1",
-                    `2nd`="Vaccination2"))%>%
+                    `2nd`="Vaccination2",
+                    `3rd`="Vaccination3"))%>%
   mutate(
     Metric = "Count",
     Sex="b") %>% 

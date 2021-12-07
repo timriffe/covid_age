@@ -28,7 +28,7 @@ library(arrow)
 
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
-  email <- "jessica_d.1994@yahoo.de"
+  email <- "maxi.s.kniffka@gmail.com"
 }
 gs4_auth(email = email)
 
@@ -58,16 +58,16 @@ dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 #read in data faster 
 
-data1=read_parquet("K:/CDC_Covid/covid_case_restricted_detailed-master_08_2021/COVID_Cases_Restricted_Detailed_08172021_Part_1.parquet")
-data2=read_parquet("K:/CDC_Covid/covid_case_restricted_detailed-master_08_2021/COVID_Cases_Restricted_Detailed_08172021_Part_2.parquet")
+data1=read_parquet("K:/CDC_Covid/covid_case_restricted_detailed-master_25_10_2021/COVID_Cases_Restricted_Detailed_10252021_Part_1.parquet")
+data2=read_parquet("K:/CDC_Covid/covid_case_restricted_detailed-master_25_10_2021/COVID_Cases_Restricted_Detailed_10252021_Part_2.parquet")
 
 
 # Add datasets vertically
 IN <- rbind(data1, data2)
 
-rm(data1,data2);gc()
-glimpse(IN)
-states <- c("AZ","AR", "DE","GU","ID","KS","ME","MA","MN","MT","NV","NJ","NC","OK","OR","PA","SC","TN","VA")
+#rm(data1,data2);gc()
+#glimpse(IN)
+#states <- c("AZ","AR", "DE","GU","ID","KS","ME","MA","MN","MT","NV","NJ","NC","OK","OR","PA","SC","TN","VA")
 
 Out <-
   IN %>%

@@ -22,7 +22,11 @@ ss_db  <- at_rubric %>% dplyr::pull(Source)
 # reading data from Denmark stored in N drive
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 db_n <- read_rds(paste0(dir_n, ctr, ".rds")) %>% 
-  mutate(Date = dmy(Date))
+  mutate(Date = dmy(Date))   
+  # mutate(Value = as.character(Value)) %>%
+  # mutate(Value = case_when((Code == "DK03.06.2021" & Age == "TOT" & Measure == "Deaths") ~ "2517",
+  #                           TRUE ~ Value)) %>% 
+  # mutate(Value = as.numeric(Value))
 
 unique(db_n$Measure)
 

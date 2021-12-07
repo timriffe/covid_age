@@ -44,7 +44,7 @@ gs4_auth(email = email)
 
 #read in vaccine data 
 
-#In_vaccine= read.csv("https://opendata.digilugu.ee/covid19/vaccination/v3/opendata_covid19_vaccination_location_county_agegroup_gender.csv")
+In_vaccine= read.csv("https://opendata.digilugu.ee/covid19/vaccination/v2/opendata_covid19_vaccination_location_county_agegroup_gender.csv")
 
 
 #process 
@@ -143,7 +143,7 @@ file.remove(data_source)
 
 
 
-esto <- read_rds(paste0(dir_n, ctr, ".rds"))
+#esto <- read_rds(paste0(dir_n, ctr, ".rds"))
 
 
 

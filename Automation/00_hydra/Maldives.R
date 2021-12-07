@@ -10,7 +10,7 @@ library(tidyverse)
 
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
-  email <- "jessica_d.1994@yahoo.de"
+  email <- "maxi.s.kniffka@gmail.com"
 }
 
 # info country and N drive address
@@ -194,7 +194,7 @@ MV_death_out= MV_death %>%
 ######combine both to one dataframe########## 
 MV_out <- bind_rows(MV_cases_out,
                     MV_death_out) %>% 
-  arrange(Date, Measure, Sex, Age)
+  sort_input_data()
 
 
 
