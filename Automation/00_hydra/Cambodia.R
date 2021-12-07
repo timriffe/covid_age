@@ -21,10 +21,9 @@ db_c <- db %>%
          Date = ymd(str_sub(created_at, 1, 10)),
          Sex = case_when(gender_en == "Male" ~ "m",
                          gender_en == "Female" ~ "f",
-                         TRUE ~ "o")) %>% 
+                         TRUE ~ "UNK")) %>% 
   group_by(Sex, Age, Date) %>% 
-  summarise(new = n()) %>% 
-  ungroup() %>% 
+  summarise(new = n(), .groups = "drop") %>% 
   arrange(Date, Age)
 
 # all dates
@@ -33,8 +32,7 @@ dates <- seq(min(db_c$Date), max(db_c$Date), by = "1 day")
 # cases for all ages
 db_c_all_ages <- db_c %>% 
   group_by(Sex, Date) %>% 
-  summarise(new = sum(new)) %>% 
-  ungroup() %>% 
+  summarise(new = sum(new), .groups = "drop") %>% 
   tidyr::complete(Sex, Date = dates, fill = list(new = 0)) %>% 
   arrange(Date) %>% 
   group_by(Sex) %>% 
@@ -89,7 +87,7 @@ if(deaths > 0){
            Date = ymd(str_sub(created_at, 1, 10)),
            Sex = case_when(gender_en == "Male" ~ "m",
                            gender_en == "Female" ~ "f",
-                           TRUE ~ "o")) %>% 
+                           TRUE ~ "UNK")) %>% 
     group_by(Sex, Age, Date) %>% 
     summarise(new = n()) %>% 
     ungroup() %>% 
