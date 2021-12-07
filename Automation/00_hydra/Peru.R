@@ -34,7 +34,7 @@ deaths_url <- html_nodes(html2, xpath = '//*[@id="data-and-resources"]/div/div/u
 #JD: updating the vaccine link
 
 #vacc_url <- "https://cloud.minsa.gob.pe/s/ZgXoXqK2KLjRLxD/download"
-vacc_url <- "https://www.datosabiertos.gob.pe/node/7564/download"
+vacc_url <- "https://cloud.minsa.gob.pe/s/To2QtqoNjKqobfw/download"
 
 data_source_c <- paste0(dir_n, "Data_sources/", ctr, "/cases_",today(), ".csv")
 data_source_d <- paste0(dir_n, "Data_sources/", ctr, "/deaths_",today(), ".csv")

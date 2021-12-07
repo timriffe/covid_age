@@ -90,7 +90,9 @@ db_all <- bind_rows(db3, db5) %>%
 db_all <- db_all %>% 
   filter(Date != "10.09.2001") %>% 
   filter(Date != "13.09.2012") %>% 
-  filter(Date != "14.09.2012") 
+  filter(Date != "14.09.2012") %>% 
+  filter(Date != "16.01.1900") %>% 
+  filter(Date != "18.10.2010")
   
 
 

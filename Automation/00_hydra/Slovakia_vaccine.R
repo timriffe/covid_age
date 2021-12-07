@@ -46,7 +46,8 @@ Out= In %>%
                      "80+"="80"),
          Measure= recode(dose,
                        "1"= "Vaccination1",
-                       "2"= "Vaccination2"))%>%
+                       "2"= "Vaccination2",
+                       "3"= "Vaccination3"))%>%
   group_by(Date, Age, Sex, Region,Measure) %>% 
   summarize(Value = sum(doses_administered), .groups="drop")%>% 
   arrange(Sex, Date,Measure, Age, Region) %>% 
@@ -112,5 +113,11 @@ zip::zipr(zipname,
 
 file.remove(data_source)
 
-
+#sk <- read_rds(paste0(dir_n, ctr, ".rds"))
+##test
+#test <- Out %>% 
+#  group_by(Date, Measure) %>% 
+#  summarise(Value = sum(Value)) %>% 
+#  mutate(Date = dmy(Date)) %>% 
+#  arrange(Date)
  

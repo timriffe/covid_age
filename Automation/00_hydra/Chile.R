@@ -43,7 +43,7 @@ c_input %>%
          Code = paste0("CL",Date),
          AgeInt = ifelse(Age == "80", 25L,5L)) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value = `Casos confirmados`) 
-  
+
 # Deaths #####
 
 #read in deaths in a way that is not affected by changes in the date in link
@@ -100,8 +100,8 @@ download.file(url_deaths, destfile = data_source_zip,  method = "curl")
 # file.remove("Diccionario de Datos BBDD-COVID19 liberada.xlsx")
 # metadata
 dd= read_delim(unz(data_source_zip, name_death_file), ";", escape_double = FALSE, col_names = FALSE, 
-locale = locale(encoding = "latin1"), 
-trim_ws = TRUE)
+               locale = locale(encoding = "latin1"), 
+               trim_ws = TRUE)
 
 colnames(dd) <- c("ANO_DEF"
                   ,"FECHA_DEF"
@@ -162,7 +162,8 @@ all_sexes <- c("m","f","UNK")
 
 Deaths <-
   dd1 %>% 
-  complete(Date = all_dates,
+  tidyr::complete(Date = all_dates,
+
            Age = all_ages,
            Sex = all_sexes,
            fill = list(n = 0)) %>% 
@@ -194,7 +195,9 @@ dim(out)
 #save output on N 
 
 write_rds(out, paste0(dir_n, ctr, ".rds"))
-log_update(pp = ctr, N = nrow(cd))
+
+log_update(pp = ctr, N = nrow(out))
+
 
 #archive data 
 
@@ -227,6 +230,3 @@ zip::zipr(zipname,
           include_directories = TRUE)
 
 file.remove(data_source)
-
-
-

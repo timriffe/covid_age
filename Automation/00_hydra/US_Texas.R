@@ -1,3 +1,5 @@
+###data is currently not making it into the database since the fraction of age specific data is to low. Data is saved on N but is not getting picked up. 
+
 library(here)
 source(here("Automation/00_Functions_automation.R"))
 
@@ -20,12 +22,15 @@ ss_i     <- rubric_i %>% dplyr::pull(Sheet)
 ss_db    <- rubric_i %>% dplyr::pull(Source)
 
 # reading data from Drive and last date entered
-db_drive <- get_country_inputDB("US_TX")
+#db_drive <- get_country_inputDB("US_TX")
+
+db_drive <- read_rds(paste0(dir_n, ctr, ".rds"))
 
 last_date_drive <- db_drive %>%
   mutate(date_f = dmy(Date)) %>%
   dplyr::pull(date_f) %>%
   max()
+
 
 # reading "Last updated" date from the website
 m_url     <- "https://dshs.texas.gov/coronavirus/additionaldata/"
@@ -203,16 +208,23 @@ if (date_f > last_date_drive){
                               Age == "UNK" ~ "",
                               TRUE ~ "5"),
            Metric = "Count") %>%
-    select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
-
+    select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) 
+  
+  
+ # db_drive <- db_drive[-11]
+out <- rbind(db_drive, out) %>% 
+  filter( Age != "Pending DOB")
   ############################################
   #### uploading database to Google Drive ####
   ############################################
-  # This command append new rows at the end of the sheet
-  sheet_append(out,
-               ss = ss_i,
-               sheet = "database")
-  log_update(pp = ctr, N = nrow(out))
+  # This command saves o dataset with cases included that is not picked up
+write_rds(out, paste0(dir_n, ctr, "copy.rds"))
+
+out2 <- out %>% 
+  filter(Measure != "Cases")
+write_rds(out2, paste0(dir_n, ctr, ".rds"))
+
+  log_update(pp = ctr, N = nrow(out2))
   ############################################
   #### uploading metadata to Google Drive ####
   ############################################
