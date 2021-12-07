@@ -40,16 +40,14 @@ NUTS3 <- tibble(
 # Getting the data from the Health Ministery website
 cases_url <- "https://onemocneni-aktualne.mzcr.cz/api/v2/covid-19/osoby.csv" 
 
-cz_cases <- read.csv(cases_url, 
-                   header = TRUE, 
-                   col.names = c("Date",
-                                 "Age", # exact age
-                                 "Sex2", # M=male, Z=female
-                                 "NUTS3", #region of hygiene station which provides data, according to NUTS 3
-                                 "LAU1", # region on LAU1 structure
-                                 "Abroad_inf", # 1=claimed to be infected abroad
-                                 "Country_inf" # claimed country of infection
-                   )) %>% 
+# TR: 7 dec 2021
+cz_cases <- read_csv(cases_url) # note id col is now in front, and other
+# column order should be checked. read_csv() gives us these names:
+ # "id","datum","vek","pohlavi","kraj_nuts_kod",
+ # "okres_lau_kod","nakaza_v_zahranici" , "nakaza_zeme_csu_kod", "reportovano_khs"
+cz_cases <-
+  cz_cases %>% 
+  select(Date = datum, Age = vek, Sex2 = pohlavi, NUTS3 = kraj_nuts_kod, LAU1 = okres_lau_kod) %>% 
   mutate(Sex = ifelse(Sex2 == "M","m","f"), 
          Date = as.Date(Date, "%Y-%m-%d")) %>% 
   select(-Sex2)
@@ -64,6 +62,7 @@ Dates_All <- seq(DateRange[1],DateRange[2],by="days")
 cz_cases2 <- cz_cases %>% 
   mutate(NUTS3 = ifelse(NUTS3 == "", str_sub(LAU1, 1, 5), NUTS3))
 
+# TR:7 Dec 2021: the results here contain duplicates of (Sex, Age, Date, Measure, Metric), needs checking
 ### DATA ON NUTS3 level
 cz_cases_region_ss <- 
   cz_cases2 %>% 
@@ -78,8 +77,7 @@ cz_cases_region_ss <-
   ### select
   select(Region, Date, Sex, Age, -Age5) %>% 
   group_by(Region, Date, Age, Sex) %>% 
-  summarise(Value = n()) %>% 
-  ungroup() %>% 
+  summarise(Value = n(), .groups = "drop") %>% 
   ### complete = Turns implicit missing values into explicit missing values => chci 
   ### vektor ttech vek skupin explicitne
   tidyr::complete(Region, 
@@ -113,7 +111,7 @@ cz_cases_region_ss <-
          Measure, 
          Value)%>%
   mutate(Age= as.character(Age))
- 
+
 
 ###########################################
 ################ DEATHS ###################
@@ -121,6 +119,9 @@ cz_cases_region_ss <-
 
 # Getting the data from the Health Ministery website
 deaths_url <- "https://onemocneni-aktualne.mzcr.cz/api/v2/covid-19/umrti.csv"
+
+# TR: 7 Dec, 2021: this should be read in using read_csv() and colnames matched using select(),
+# as in the above for cases.
 
 cz_deaths<-read.csv(deaths_url, 
                     header = TRUE, 
