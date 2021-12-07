@@ -39,12 +39,16 @@ log_section(paste(Sys.time(),"updates"),
 
 #source("R_checks/inputDB_check.R")
 email <- Sys.getenv("email")
-gs4_auth(email = email)
-drive_auth(email = email)
+gs4_auth(email = email, use_oob = FALSE, 
+         scopes = c("https://www.googleapis.com/auth/spreadsheets",
+                    "https://www.googleapis.com/auth/drive"))
+drive_auth(email = email,
+           scopes = c("https://www.googleapis.com/auth/spreadsheets",
+                                    "https://www.googleapis.com/auth/drive"))
 
 # these parameters to grab templates that were modified between 12 and 2 hours ago,
 # a 10-hour window. This will be run every 8 hours, so this implies overlap.
-hours_from <- 12
+hours_from <- 175
 hours_to   <- 2
 
 
@@ -289,14 +293,13 @@ schedule_this <- FALSE
 if (schedule_this){
   # TR: note, if you schedule this, you should make sure it's not already scheduled
   # by someone else!
-  me.this.is.me <- Sys.getenv("USERNAME")
   library(taskscheduleR)
   taskscheduler_delete("COVerAGE-DB-every-8-hour-inputDB-updates")
   taskscheduler_create(taskname = "COVerAGE-DB-every-8-hour-inputDB-updates", 
                        rscript =  paste0(Sys.getenv("path_repo"), "/R/01_update_inputDB.R"), 
                        schedule = "WEEKLY",
                        days = "SUN",
-                       starttime = "18:00",
+                       starttime = "7:00",
                        startdate = format(Sys.Date(), "%m/%d/%Y"))
   # 
 }
@@ -308,13 +311,13 @@ schedule_this <- FALSE
 if (schedule_this){
   # TR: note, if you schedule this, you should make sure it's not already scheduled
   # by someone else!
-  me.this.is.me <- Sys.getenv("USERNAME")
-  library(taskscheduleR)
+
+  library(taskscheduleR);library(here)
   taskscheduler_delete("COVerAGE-DB-every-8-hour-inputDB-updates-test")
   taskscheduler_create(taskname = "COVerAGE-DB-every-8-hour-inputDB-updates-test", 
-                       rscript =  paste0(Sys.getenv("path_repo"), "/R/01_update_inputDB.R"), 
+                       rscript =  here("R/01_update_inputDB.R"), 
                        schedule = "ONCE", 
-                       starttime = "17:25",
+                       starttime = "18:03",
                        startdate = format(Sys.Date(), "%m/%d/%Y"))
   # 
 }
