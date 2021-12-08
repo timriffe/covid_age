@@ -6,7 +6,7 @@ if (! "email" %in% ls()){
 }
 
 # info country and N drive address
-ctr    <- "Norway"
+ctr    <- "Norway_Vaccine"
 dir_n  <- "N:/COVerAGE-DB/Automation/Hydra/"
 dir_n_source <- "N:/COVerAGE-DB/Automation/Norway"
 

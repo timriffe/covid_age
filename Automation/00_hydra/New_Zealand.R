@@ -174,7 +174,7 @@ if (date_f > last_date_drive){
 db_v <- 
     read_xlsx(data_source6,
     sheet = "DHBofResidence by ethnicity")%>%
-  select(Age= `Age group`, Sex= Gender, Vaccination1= `First dose administered`, Vaccination2= `Second dose administered`)%>%
+  select(Age= `Age group`, Sex= Gender, Vaccination1= `At least partially vaccinated`, Vaccination2= `Fully vaccinated`)%>%
   pivot_longer(!Age & !Sex, names_to= "Measure", values_to= "Value")%>%
   #sum up numbers that were separated by race 
   group_by(Age, Sex, Measure) %>% 
