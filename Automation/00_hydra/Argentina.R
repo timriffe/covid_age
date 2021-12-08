@@ -36,11 +36,11 @@ download.file(data_url, destfile = data_source, mode = "wb")
 db <- read_csv(unz(data_source, paste0(ayer,"-argentina.csv")), 
                skip = 1,
                col_names = c("Country","Region","Code","Date","Sex","Age","AgeInt","Metric","Measure","Value")) %>% 
-  filter(Sex !="x") # TR: temp fix, removes 800k rows...
+  mutate(Sex = ifelse(Sex == "x","UNK",Sex)) %>% 
+  filter(!(Sex == "UNK" & Value == 0)) 
 
 
-unique(db$Age) %>% sort()
-unique(db$Sex)
+
 
 db_total_by_sex <- 
   db %>% 
