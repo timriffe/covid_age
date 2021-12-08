@@ -40,8 +40,7 @@ db <- read_csv(unz(data_source, paste0(ayer,"-argentina.csv")),
   filter(!(Sex == "UNK" & Value == 0)) 
 
 
-unique(db$Age) %>% sort()
-unique(db$Sex)
+
 
 db_total_by_sex <- 
   db %>% 

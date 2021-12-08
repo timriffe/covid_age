@@ -188,21 +188,27 @@ cz_deaths_region_ss <-
 
 vaccine_url <- "https://onemocneni-aktualne.mzcr.cz/api/v2/covid-19/ockovani.csv"
 
-vacc_in <- read_csv(vaccine_url)
+vacc_in    <- read_csv(vaccine_url)
 
 DateRangeV <- range(vacc_in$datum)
 Dates_AllV <- seq(DateRangeV[1],DateRangeV[2],by="days")
 all_ages_V <- vacc_in$vekova_skupina %>% unique()
 
+
+# vacc_in cont
 cz_vaccines <- 
   vacc_in %>% 
   select(Date = datum,
          Age = vekova_skupina,
-         vaccine = vakcina,
          NUTS3 = kraj_nuts_kod,
          first_dose = prvnich_davek,
          second_dose = druhych_davek,
          n_dose = celkem_davek ) %>% 
+  group_by(Date, Age, NUTS3) %>% 
+  summarize(first_dose = sum(first_dose),
+            second_dose = sum(second_dose),
+            n_dose = sum(n_dose),
+            .groups = "drop") %>% 
   tidyr::complete(NUTS3 = CZNUTS3$code, 
                   Date = Dates_AllV, 
                   Age = all_ages_V, 
@@ -247,7 +253,6 @@ cz_vaccines <-
     Metric= "Count") %>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)
-
 
 
 #Anna Altova:
@@ -373,7 +378,11 @@ cz_spreadsheet_all <-
 
 out <- bind_rows(cz_spreadsheet_all, cz_spreadsheet_region)
 
-
+# out %>% 
+#   group_by(Region, Sex, Date, Age, Measure, Metric) %>% 
+#   mutate(i = 1:n()) %>% 
+#   ungroup() %>% 
+#   dplyr::filter(i > 1)
 ###########################
 #### Saving data in N: ####
 ###########################
