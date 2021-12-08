@@ -33,18 +33,17 @@ ss_db <- rubric %>%
 
 # read in current state of the data
 AFin <- get_country_inputDB("AF") %>% 
-  select(-Short) %>% 
-  group_by(Sex,Age,Date,Measure,Metric) %>% 
-  filter(first())
-# AFrm_duplicates <-
-# AFin %>% 
-#   group_by(Sex,Age,Date,Measure,Metric) %>% 
-#   mutate(i = 1:n()) %>% 
-#   ungroup() %>% 
-#   filter(i == 1) %>% 
-#   select(-i) %>% 
-#   sort_input_data()
-# 
+  select(-Short) 
+
+#  AFrm_duplicates <-
+#  AFin %>% 
+#    group_by(Sex,Age,Date,Measure,Metric) %>% 
+#    mutate(i = 1:n()) %>% 
+#    ungroup() %>% 
+#    filter(i == 1) %>% 
+#    select(-i) %>% 
+#    sort_input_data()
+#  
 # sheet_write(AFrm_duplicates, ss = ss_i, sheet = "database")
 
 # AFin %>% 
