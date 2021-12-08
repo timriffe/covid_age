@@ -30,7 +30,10 @@ DataArchive <- read_rds(paste0(dir_n, ctr, ".rds"))
 #save data by sex and totals  
 
 Append= DataArchive%>%
-  filter(Sex== "f"| Sex== "m"| Sex== "UNK"| Age == "TOT")
+  filter(Sex== "f"| Sex== "m"| Sex== "UNK"| Age == "TOT") %>% 
+  mutate(Sex = case_when(
+    Sex == "Texas" ~ "b",
+    TRUE ~ Sex))
 
 
 #Download data 
@@ -131,7 +134,8 @@ Out_Vaccine_dose <- In_vaccine_dose %>%
                        `Male` = "m",
                        `Female` = "f",
                        `Unknown`= "UNK",
-                       `Grand Total` = "b")) %>%
+                       `Grand Total` = "b",
+                       `Texas` = "UNK")) %>%
   group_by(Sex, Age, Measure) %>% # Data given by race, sum those together 
   mutate(Value = sum(Value)) %>% 
   ungroup()%>%

@@ -24,6 +24,13 @@ ss_db    <- rubric_i %>% dplyr::pull(Source)
 
 # reading data from Montreal and last date entered 
 db_drive <- get_country_inputDB("NZ")
+db_drive <- db_drive %>% 
+  mutate(Sex = case_when(
+         Sex == "b" ~ "b",
+         Sex == "f" ~ "f",
+         Sex == "m" ~ "m",
+         Sex == "UNK" ~ "UNK",
+         TRUE ~ "b"))
 
 last_date_drive <- db_drive %>% 
   mutate(date_f = dmy(Date)) %>% 

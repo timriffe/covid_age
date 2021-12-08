@@ -72,15 +72,14 @@ db_drive8 <- get_country_inputDB("JP_8")
 db_drive <- rbind(db_drive1, db_drive2, db_drive3, db_drive4, db_drive5, db_drive6, db_drive7, db_drive8)
 #new death 
 
-death <- read_csv("https://covid19.mhlw.go.jp/public/opendata/deaths_detail_cumulative_weekly.csv")
+death <- read_csv("https://covid19.mhlw.go.jp/public/opendata/deaths_detail_cumulative_weekly.csv", skip = 1)
 death2 <- death %>% 
-  mutate(Date = sub("...........", "", Week),
-  Date = ddmmyyyy(Date),
-  Region = Prefecture)
+  mutate(Week = sub("...........", "", Week))
+  #Date = ymd(Date))
 death2 <- death2[-1]
-death2 <- death2[-1]
+#death2 <- death2[-1]
 death2 <- setDT(death2)
-death3 <- melt(death2, id = c("Region", "Date"))
+death3 <- melt(death2, id = c("Date"))
 death4 <- death3 %>% 
   separate(variable, c("Sex","Age"), sep = (" ")) %>% 
   mutate(Age = case_when(Age == "Under" ~ 0,
