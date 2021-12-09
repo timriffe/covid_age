@@ -284,6 +284,7 @@ out <- db_all2 %>%
            Region == "Tolima" ~ paste0("CO_TOL", Date),
            Region == "Valle" ~ paste0("CO_VAC", Date),
            Region == "Vaupes" ~ paste0("CO_VAU", Date),
+           Region == "Vichada" ~ paste0("CO_VID",Date),
            TRUE ~ paste0("CO_Other", Date)
          ),
          Metric = "Count") %>% 
@@ -300,4 +301,5 @@ write_rds(out, paste0(dir_n, ctr, ".rds"))
 
 # updating hydra dashboard
 log_update(pp = ctr, N = nrow(out))
-
+out %>% 
+  pull(Region) %>% unique()
