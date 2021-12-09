@@ -184,7 +184,6 @@ if (nrow(rubric) > 0){
     }
   }
   
-  
   n <- is.na(dmy(inputDB$Date))
   # sum(n)
   if (sum(n) > 0){
