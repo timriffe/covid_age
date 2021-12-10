@@ -538,7 +538,7 @@ get_country_inputDB <- function(ShortCode, rubric) {
                     range = "database!A:J")
   }
   if (rubric_i$Loc == "n"){
-    hydra_name <- psate0(rubric_i$hydra_name,".rds")
+    hydra_name <- paste0(rubric_i$hydra_name,".rds")
     hydra_path <- file.path("N:/COVerAGE-DB/Automation/Hydra",hydra_name)
     if (file.exists(hydra_path)) {
       out_ <- readRDS(hydra_path)
