@@ -548,7 +548,7 @@ get_country_inputDB <- function(ShortCode, rubric) {
     }
   }
   
-  if (!exists(out_)){
+  if (!exists("out_")){
     cat()
   }
   
