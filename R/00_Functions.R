@@ -2258,7 +2258,8 @@ process_counts <- function(inputDB, Offsets = NULL, N = 10){
 # function that filters rubric down to just those templates that have been updated
 # in a given time reference window (t-hours_from, t-hours_to)
 get_rubric_update_window <- function(hours_from = 12, hours_to = 2){
-  rubric <- get_input_rubric(tab = "input")
+  rubric <- get_input_rubric(tab = "input") %>% 
+    dplyr::filter(Loc == "d")
   
   cutofftime <- format(Sys.time()-hours_from*60*60, "%Y-%m-%dT%H:%M:00")
   query <- paste0("modifiedTime > '",
