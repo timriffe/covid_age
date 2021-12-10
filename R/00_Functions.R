@@ -505,7 +505,7 @@ get_input_rubric <- function(tab = "input") {
   # Read spreadsheet
   input_rubric <- read_sheet(ss_rubric, sheet = tab) %>% 
     # Drop if no source spreadsheet
-    filter(!is.na(Sheet))
+    filter(!is.na(Loc))
   
   # Return tibble
   input_rubric
@@ -517,26 +517,48 @@ get_input_rubric <- function(tab = "input") {
 # Load just a single country
 # @param ShortCode character specifying country to load
 
-get_country_inputDB <- function(ShortCode) {
+get_country_inputDB <- function(ShortCode, rubric) {
   
   # Get spreadsheet
-  rubric <- get_input_rubric(tab = "input")
-  
+  if (missing(rubric)){
+    rubric <- get_input_rubric(tab = "input")
+  }
+ 
   # Find spreadsheet for country
-  ss_i   <- rubric %>% filter(Short == ShortCode) %>% '$'(Sheet)
+  rubric_i   <- rubric %>% 
+    filter(Short == ShortCode)
   
+  if (rubric_i$Loc == "d"){
+    ss_i <-  rubric_i$Sheet
   # Load spreadsheet
-  out <- read_sheet(ss_i, 
+  out_ <- read_sheet(ss_i, 
                     sheet = "database", 
                     na = "NA", 
                     col_types= "cccccciccd",
                     range = "database!A:J")
+  }
+  if (rubric_i$Loc == "n"){
+    hydra_name <- psate0(rubric_i$hydra_name,".rds")
+    hydra_path <- file.path("N:/COVerAGE-DB/Automation/Hydra",hydra_name)
+    if (file.exists(hydra_path)) {
+      out_ <- readRDS(hydra_path)
+    } else {
+      cat("N drive file",hydra_path,"not found\nIs the name right in the input rubric?\nOr maybe you're not on an MPIDR machine?\n")
+      out <- NULL
+    }
+  }
+  
+  if (!exists(out_)){
+    cat()
+  }
   
   # Assign short code
-  out$Short <- add_Short(out$Code,out$Date)
-  
+  if (!is.null(out_)){
+    out_$Short <- add_Short(out_$Code,out_$Date)
+  }
+
   # Output
-  out
+  out_
   
 }
 
@@ -546,10 +568,15 @@ get_country_inputDB <- function(ShortCode) {
 # @param inputDB tibble Input data with data to be replaced
 # @param ShortCode character Code of country 
 
-swap_country_inputDB <- function(inputDB, ShortCode) {
+swap_country_inputDB <- function(inputDB, ShortCode, rubric) {
   
+  # Get spreadsheet
+  if (missing(rubric)){
+    rubric <- get_input_rubric(tab = "input")
+  }
   # Get data for country
-  X <- get_country_inputDB(ShortCode)
+  X <- get_country_inputDB(ShortCode = ShortCode, 
+                           rubric = rubric)
   
   # Filter old data out
   inputDB <-
