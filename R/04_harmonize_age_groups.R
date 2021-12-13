@@ -204,8 +204,8 @@ outputCounts_10 <-
   group_by(Country, Region, Code, Date, Sex, Age) %>% 
   summarize(Cases = sum(Cases),
             Deaths = sum(Deaths),
-            Tests = sum(Tests)) %>% 
-  ungroup() %>% 
+            Tests = sum(Tests),
+            .groups= "drop") %>% 
   # Replace age interval values
   mutate(AgeInt = ifelse(Age == 100, 5, 10))
 
