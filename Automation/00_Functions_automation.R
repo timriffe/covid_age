@@ -176,6 +176,7 @@ sched <- function(
                   'setwd("', wd, '")\n',
                   'source("Automation/00_hydra/', pp, 
                   '.R", encoding="utf-8")')
+                  #'.R", encoding="',encoding,'"')
   
   # generate the trigger script
   writeLines(script, trigger_script)

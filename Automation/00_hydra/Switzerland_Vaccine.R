@@ -21,7 +21,7 @@ ctr          <- "Switzerland_Vaccine" # it's a placeholder
 dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 #####vaccination by age
-vacc <- read.csv("https://www.covid19.admin.ch/api/data/20211129-dbpw8sex/sources/COVID19VaccPersons_AKL10_w_v2.csv")
+vacc <- read.csv("https://www.covid19.admin.ch/api/data/20211210-1g5ejled/sources/COVID19VaccPersons_AKL10_w_v2.csv")
 vacc2 <- vacc %>% 
   filter(type != "COVID19PartiallyVaccPersons") %>% 
   filter(age_group_type == "age_group_AKL10") %>% 
@@ -84,7 +84,7 @@ mutate(Sex = "b",
 
 
 ###vaccinations by sex
-vaccsex <- read.csv("https://www.covid19.admin.ch/api/data/20211129-dbpw8sex/sources/COVID19VaccPersons_sex_w_v2.csv")
+vaccsex <- read.csv("https://www.covid19.admin.ch/api/data/20211210-1g5ejled/sources/COVID19VaccPersons_sex_w_v2.csv")
 vaccsex2 <- vaccsex %>% 
   filter(type != "COVID19PartiallyVaccPersons") %>% 
   select(YearWeekISO = date, Region = geoRegion, Sex = sex, Measure = type, Value = sumTotal)
@@ -282,10 +282,9 @@ write_rds(out, paste0(dir_n, ctr, ".rds"))
 log_update(pp = ctr, N = nrow(out))
 
 #zip input data
-
-cases_url1 <- "https://www.covid19.admin.ch/api/data/20211129-dbpw8sex/sources/COVID19VaccPersons_AKL10_w_v2.csv"
+cases_url1 <- "https://www.covid19.admin.ch/api/data/20211210-1g5ejled/sources/COVID19VaccPersons_AKL10_w_v2.csv"
 data_source1 <- paste0(dir_n, "Data_sources/", ctr, "/vaccination_age",today(), ".csv")
-cases_url2 <- "https://www.covid19.admin.ch/api/data/20211129-dbpw8sex/sources/COVID19VaccPersons_sex_w_v2.csv"
+cases_url2 <- "https://www.covid19.admin.ch/api/data/20211210-1g5ejled/sources/COVID19VaccPersons_sex_w_v2.csv"
 data_source2 <- paste0(dir_n, "Data_sources/", ctr, "/vaccination_sex",today(), ".csv")
 download.file(cases_url1, destfile = data_source1, mode = "wb")
 download.file(cases_url2, destfile = data_source2, mode = "wb")

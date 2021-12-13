@@ -87,14 +87,41 @@ scripts <- c('US_Virginia', 'USA_all_deaths', 'Netherlands', 'Estonia',
              'Island_of_Jersey', 'Estonia_vaccine', 'Uruguay_vaccine', 'Chile','Finland_vaccine',
              'ECDC_vaccine', 'Slovakia_vaccine', 'Germany_vaccine', 'US_Pennsylvania_vaccine', 'USA_vaccine',
              'Australia_vaccine', 'US_Idaho', 'USA_all', 'Brazil', 'New_Zealand', 'Maldives', 'Japan', 
-             'Romania', 'Puerto_Rico', 'Scotland_Vaccine', 'Switzerland_Vaccine', 'Norway_Vaccine', 'England_Vaccine')
+             'Romania', 'Puerto_Rico', 'Scotland_Vaccine', 'Switzerland_Vaccine', 'Norway_Vaccine', 'France_Vaccine',
+             'England_Vaccine')
 
 # Scheduling all scripts at once
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # starting time for first schedule in hour and minutes
+h_ini <- 08
+m_ini <- 20
+# delay between scripts in minutes
+delay_time <- 10
+
+i <- 0
+for(c in scripts){
+  # time schedule in decimal 
+  hrs_mns <- h_ini + (m_ini + i * delay_time) / 60
+  # extract hour
+  if(hrs_mns>= 24)hrs_mns= hrs_mns-24
+  hrs <- floor(hrs_mns)
+  # extract minutes
+  mns <- round((hrs_mns - floor(hrs_mns)) * 60, 1)
+  # build time
+  time <- paste0(sprintf("%02d", hrs), ":", sprintf("%02d", mns))
+  # print country and time of scheduling
+  cat(c, " scheduling at ", time, "\n")
+  # schedule it
+  sched(c, tm = time, email = auto_update_email, wd = auto_update_wd)
+  # increase the counter in 1
+  i <- i + 1
+}
+
+
+# starting time for first schedule in hour and minutes
 h_ini <- 09
-m_ini <- 25
+m_ini <- 20
 # delay between scripts in minutes
 delay_time <- 10
 
@@ -120,7 +147,7 @@ for(c in scripts){
 # for individual scheduling
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sched("England_Vaccine", tm = "09:29", email = auto_update_email, wd = auto_update_wd)
+sched("Japan", tm = "10:54", email = auto_update_email, wd = auto_update_wd)
 
 #sch = "WEEKLY"
 
