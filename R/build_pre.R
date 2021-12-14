@@ -52,7 +52,7 @@ if (test_schedule_build){
   library(taskscheduleR)
   taskscheduleR::taskscheduler_delete("COVerAGE-DB-automatic-build-test")
   taskscheduler_create(taskname = "COVerAGE-DB-automatic-build-test", 
-                       rscript =  paste0(Sys.getenv("path_repo"), "/R/build_pre.R"), 
+                       rscript =  here::here("R/build_pre.R"), 
                        schedule = "ONCE", 
                        starttime = format(Sys.time() + 61, "%H:%M"))
 }

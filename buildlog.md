@@ -1,32 +1,32 @@
 
 # New build log 
- Fri Dec 10 16:20:10 2021 
+ Mon Dec 13 13:39:10 2021 
 
 
 # begin resolution of multiple sources per population 
- Fri Dec 10 16:20:10 2021 
+ Mon Dec 13 13:39:10 2021 
 
 
 # Resolve USA CDC overlaps 
- Fri Dec 10 16:22:03 2021 
+ Mon Dec 13 13:40:59 2021 
 
 USA CDC resolved
  64014 rows removed
 
 # Resolve Brazil TRC overlaps 
- Fri Dec 10 16:22:15 2021 
+ Mon Dec 13 13:41:08 2021 
 
 Brazil TRC resolved
  0 rows removed
 
 # Resolve ECDC overlaps 
- Fri Dec 10 16:22:25 2021 
+ Mon Dec 13 13:41:16 2021 
 
 ECDC resolved
  0 rows removed
 
 # prep (resolve_UNKUNK) 
- Fri Dec 10 16:25:02 2021 
+ Mon Dec 13 13:43:48 2021 
 
 filter( Country == 'Slovakia', Region == 'Kosice', Date == '14.11.2021', Measure == 'Vaccination2' )
 filter( Country == 'Slovakia', Region == 'Nitra', Date == '19.09.2021', Measure == 'Vaccination2' )
@@ -69,15 +69,15 @@ filter( Country == 'Vietnam', Region == 'All', Date == '09.06.2021', Measure == 
 filter( Country == 'Vietnam', Region == 'All', Date == '10.06.2021', Measure == 'Cases' )
 
 # A (convert_fractions_sexes) 
- Fri Dec 10 16:37:22 2021 
+ Mon Dec 13 13:56:01 2021 
 
 
 # B (redistribute_unknown_age) 
- Fri Dec 10 16:44:26 2021 
+ Mon Dec 13 14:02:48 2021 
 
 
 # C (rescale_to_total) 
- Fri Dec 10 17:17:56 2021 
+ Mon Dec 13 14:35:11 2021 
 
 filter( Code == 'GQ016.08.2021', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'GQ016.08.2021', Sex == 'b', Measure == 'Deaths' )
@@ -1566,27 +1566,27 @@ filter( Code == 'PY__06.03.2021', Sex == 'f', Measure == 'Deaths' )
 filter( Code == 'PY__06.03.2021', Sex == 'm', Measure == 'Deaths' )
 
 # D (infer_cases_from_deaths_and_ascfr) 
- Fri Dec 10 17:54:17 2021 
+ Mon Dec 13 15:10:26 2021 
 
 
 # E (infer_deaths_from_cases_and_ascfr) 
- Fri Dec 10 18:04:01 2021 
+ Mon Dec 13 15:19:59 2021 
 
 
 # G (redistribute_unknown_sex) 
- Fri Dec 10 18:43:11 2021 
+ Mon Dec 13 15:57:57 2021 
 
 
 # H (rescale_sexes) 
- Fri Dec 10 18:53:23 2021 
+ Mon Dec 13 16:07:53 2021 
 
 
 # I (infer_both_sex) 
- Fri Dec 10 18:58:22 2021 
+ Mon Dec 13 16:12:45 2021 
 
 
 # J (maybe_lower_closeout) 
- Fri Dec 10 19:07:42 2021 
+ Mon Dec 13 16:21:49 2021 
 
 filter( Code == 'AF28.10.2021', Sex == 'b', Measure == 'Cases' )
 filter( Code == 'CA_TNT15.07.2020', Sex == 'f', Measure == 'Cases' )
@@ -2152,13 +2152,13 @@ filter( Code == 'US_TX22.11.2021', Sex == 'm', Measure == 'Vaccination2' )
 filter( Code == 'US_TX22.11.2021', Sex == 'b', Measure == 'Vaccination2' )
 
 # Age harmonization 
- Fri Dec 10 19:31:38 2021 
+ Mon Dec 13 16:44:59 2021 
 
 
 # remake coverage map 
- Sat Dec 11 02:43:02 2021 
+ Mon Dec 13 23:34:15 2021 
 
 
 # push outputs to OSF 
- Sat Dec 11 02:48:13 2021 
+ Mon Dec 13 23:39:26 2021 
 
