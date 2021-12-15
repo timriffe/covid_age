@@ -20,25 +20,36 @@ log_section("Compile metadata",
 # This reads it in
 #inputDB <-  readRDS(here("Data","inputDB.rds"))
 
-
-# we get this to extract which Metrics are captured for each source.
-
 gs4_auth(email = Sys.getenv("email"))
 
 
 rubric <- get_input_rubric()
 
+rubric <- rubric %>% 
+  dplyr::filter(!is.na(Sheet))
+
 metadata_tabs <- list()
 for (i in 1:nrow(rubric)){
    ss <- rubric %>% dplyr::pull(Sheet) %>% '['(i)
-   X <- try(read_sheet(ss, sheet = "metadata", col_types = "ccc"))
    
-   if(class(X)[1] == "try-error"){
-     Sys.sleep(120)
-     X <- try(read_sheet(ss, sheet = "metadata", col_types = "ccc"))
+   # has metadata?
+   tabs_i <- try(as_sheets_id(ss) %>% sheet_properties())
+   if (class(tabs_i)[1] == "try-error"){
+     cat(rubric$Country[i],"has problem\n")
+     next
    }
-   metadata_tabs[[i]] <- X
-   Sys.sleep(2)
+   if ("metadata" %in% tabs_i$name){
+     X <- try(read_sheet(ss, sheet = "metadata", col_types = "ccc"))
+     
+     if(class(X)[1] == "try-error"){
+       Sys.sleep(120)
+       X <- try(read_sheet(ss, sheet = "metadata", col_types = "ccc"))
+     }
+     metadata_tabs[[i]] <- X
+     Sys.sleep(2)
+   } else {
+     metadata_tabs[[i]] <- NULL
+   }
 }
 
 # some of these are simply empty metadata tabs by design 
@@ -50,6 +61,8 @@ errors <- lapply(metadata_tabs, function(x){
 # rubric$Short[errors]
 metadata_tabs <- metadata_tabs[!errors]
 
+nulls <- lapply(metadata_tabs, is.null) %>% unlist()
+metadata_tabs <- metadata_tabs[!nulls]
 saveRDS(metadata_tabs,here::here("Data","metadata_tabs.rds"))
 
 vars.dash <- c( "Country", 
@@ -72,7 +85,7 @@ metadata_important <-
   lapply(function(X,vars.dash){
     #cnames <- c("Country","Region(s)","Author","Main website")
     X <- X %>% 
-      filter(Field %in%vars.dash) 
+      dplyr::filter(Field %in%vars.dash) 
     out <- data.frame(t(X[, 2]),stringsAsFactors = FALSE)
     colnames(out) <- vars.dash
     out
