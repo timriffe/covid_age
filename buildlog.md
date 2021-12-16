@@ -3717,3 +3717,23 @@ filter( Code == 'US_TX22.11.2021', Sex == 'b', Measure == 'Vaccination2' )
 # update build series log 
  Thu Dec 16 03:08:34 2021 
 
+
+# Age harmonization 
+ Thu Dec 16 09:21:10 2021 
+
+
+# Age harmonization 
+ Thu Dec 16 09:47:50 2021 
+
+
+# remake coverage map 
+ Thu Dec 16 14:10:09 2021 
+
+
+# push outputs to OSF 
+ Thu Dec 16 14:15:25 2021 
+
+
+# Commit dashboards and buildlog 
+ Thu Dec 16 14:20:49 2021 
+

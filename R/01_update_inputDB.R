@@ -76,18 +76,18 @@ if (nrow(rubric) > 0){
   #       inputDB %>% 
   #       select(-'2499'))
   
-  # saveRDS(inputDB,here("Data","inputDBhold.rds"))
+  saveRDS(inputDB, here::here("Data","inputDBhold.rds"))
   # what data combinations have we read in?
   
   # EA: No need to paste "Country", "Region", as "Short" variable includes information of both.
   # Better to only use "Short", as there could be wrong spelling of Country names or regions
   # Added on 16.08.2021
   
-  codesIN     <- with(inputDB, paste(Short, Measure)) %>% unique()
-  
+  # codesIN     <- with(inputDB, paste(Short, Measure)) %>% unique()
+  # 
   # Read in previous unfiltered inputDB
-  inputDBhold <- readRDS(here::here("Data","inputDBhold.rds"))
-  
+  # inputDBhold <- readRDS(here::here("Data","inputDBhold.rds"))
+  # 
   # EA: temporal fix while solving issue with additional columns in the InputDB.csv (12.08.2021)
   # try(inputDBhold <- 
   #       inputDBhold %>% 
@@ -97,19 +97,19 @@ if (nrow(rubric) > 0){
   #       inputDBhold %>% 
   #       select(-'2499'))
   
-  # remove any codes we just read in
-  inputDBhold <- 
-    inputDBhold %>% 
-    mutate(checkid = paste(Short, Measure)) %>% 
-    filter(!checkid %in% codesIN) %>% 
-    select(-checkid)
-
-  # bind on the data we just read in
-  inputDBhold <- bind_rows(inputDBhold, inputDB) %>% 
-    sort_input_data()
-  
-  # resave out to the full unfiltered inputDB.
-  saveRDS(inputDBhold, here::here("Data","inputDBhold.rds"))
+  # # remove any codes we just read in
+  # inputDBhold <- 
+  #   inputDBhold %>% 
+  #   mutate(checkid = paste(Short, Measure)) %>% 
+  #   filter(!checkid %in% codesIN) %>% 
+  #   select(-checkid)
+  # 
+  # # bind on the data we just read in
+  # inputDBhold <- bind_rows(inputDBhold, inputDB) %>% 
+  #   sort_input_data()
+  # 
+  # # resave out to the full unfiltered inputDB.
+  # saveRDS(inputDBhold, here::here("Data","inputDBhold.rds"))
   
   # TR: this is temporary:
   inputDB$templateID <- NULL
