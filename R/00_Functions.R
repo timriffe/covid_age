@@ -331,24 +331,26 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
     
     hydra_path <- "N:/COVerAGE-DB/Automation/Hydra"
     
+    # TR: 16.12.2021: if we exclude some Hydra files then are literally omitted from the build AFAIK.
+    
     # EA: Only reading those files in N:/ that were modified during the last 12 hours, similar to those in Drive
     # added on 13.08.2021
-    max_t <- 12
-    
-    local_files <- 
-      rubric_hydra %>% 
-      mutate(local_files = paste0(hydra_path, "/", hydra_name, ".rds"),
-             modif_time = file.info(local_files)$mtime,
-             hours_diff = difftime(Sys.time(), modif_time, units = "hours") %>% unclass()) %>% 
-      filter(hours_diff < max_t) %>% 
-      dplyr::pull(local_files)
-    
-    # local_files <-
-    #   rubric_hydra %>%
-    #   dplyr::pull(hydra_name) %>%
-    #   paste0(".rds")
+    # max_t <- 12
     # 
-    # local_files <-  file.path(hydra_path,local_files)
+    # local_files <- 
+    #   rubric_hydra %>% 
+    #   mutate(local_files = paste0(hydra_path, "/", hydra_name, ".rds"),
+    #          modif_time = file.info(local_files)$mtime,
+    #          hours_diff = difftime(Sys.time(), modif_time, units = "hours") %>% unclass()) %>% 
+    #   filter(hours_diff < max_t) %>% 
+    #   dplyr::pull(local_files)
+    
+     local_files <-
+       rubric_hydra %>%
+       dplyr::pull(hydra_name) %>%
+       paste0(".rds")
+     
+     local_files <-  file.path(hydra_path,local_files)
     
     
     
