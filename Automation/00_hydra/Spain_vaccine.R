@@ -40,7 +40,8 @@ data_source <- paste0(dir_n, "Data_sources/", ctr, "/Spain_vaccine",today(), ".o
 download.file(url_d, data_source, mode = "wb")
 
 ###########################################################################################
-DataArchive <- read_rds(paste0(dir_n, ctr, ".rds"))
+DataArchive <- read_rds(paste0(dir_n, ctr, ".rds")) %>% 
+  mutate(AgeInt = as.integer(AgeInt))
 
 
 # fixing age intervals for 18
@@ -60,24 +61,20 @@ In_vaccine2_age= read_ods(data_source, sheet = 4)
 
 colnames(In_vaccine_total)[1] <- "Region" 
  
-total= In_vaccine_total%>%
-  select(Vaccinations= `Dosis administradas (2)`, Date= `Fecha de la última vacuna registrada (2)`, Region, Vaccination1= `Nº Personas con al menos 1 dosis`, Vaccination2= `Nº Personas vacunadas
-(pauta completada)`)%>%
-  pivot_longer(!Date & !Region, names_to= "Measure", values_to= "Value") %>% 
-  mutate(Date = dmy(Date))
-
-
-
-#some days last recent reporting date varies by region. Fill empty date value for total Spain with most recent date
-
-DateMax= total%>%
-  summarise(max(Date, na.rm = TRUE))
-
-total$Date[is.na(total$Date)] =  DateMax$`max(Date, na.rm = TRUE)`
-
-total <- total %>%
-  subset(Region!= "Fuerzas Armadas" ) %>%# delete armed forces from region  
-  subset(Region!= "Sanidad Exterior" ) %>%
+total <-
+  In_vaccine_total %>%
+  select(Vaccinations= `Dosis administradas (2)`, 
+         Date= `Fecha de la última vacuna registrada (2)`, 
+         Region, 
+         Vaccination1 = `Nº Personas con al menos 1 dosis`, 
+         Vaccination2 = `Nº Personas vacunadas
+(pauta completada)`) %>%
+  pivot_longer(c(Vaccinations,Vaccination1:Vaccination2), names_to= "Measure", values_to= "Value") %>% 
+  mutate(Date = suppressWarnings(dmy(Date)),
+         MD = max(Date, na.rm = TRUE),
+         Date = coalesce(Date, MD)) %>% 
+  select(-MD) %>%
+  dplyr::filter(!Region %in% c("Fuerzas Armadas","Sanidad Exterior" )) %>%# delete armed forces from region  
   mutate(Short = recode(Region,
                           "Andalucía" = "AN",
                          "Aragón" = "AR",
@@ -99,21 +96,19 @@ total <- total %>%
                          "Ceuta"= "CE",
                           "Melilla" ="ML",
                           "Totales"= "All"), 
-         Region = recode(Region, 
-                         `Totales`="All"), 
          Metric= "Count",
          Sex = "b",
          Age = "TOT", 
-         AgeInt = "", 
+         AgeInt = NA_integer_, 
          Date = ddmmyyyy(Date),
-         Code = paste("ES",Short,Date,sep="_"),
          Country = "Spain")
 
 #Vaccination1 
-
+MD <- total$Date %>% dmy() %>% max() %>% ddmmyyyy()
 
 colnames(In_vaccine1_age)[1] <- "Region" 
  
+<<<<<<< HEAD
 Out_vaccine1_age= In_vaccine1_age%>%
   select(Region, `80`= `Personas con al menos 1 dosis ≥80 años` , `70`= `Personas con al menos 1 dosis 70-79 años`, `60`= `Personas con al menos 1 dosis 60-69 años`,
          `50`= `Personas con al menos 1 dosis 50-59 años`, `40`= `Personas con al menos 1 dosis 40-49 años`, `30`=`Personas con al menos 1 dosis 30-39 años`,`20`=`Personas con al menos 1 dosis 20-29 años`,
@@ -127,9 +122,28 @@ mutate(AgeInt= case_when(
   subset(Region!= "Fuerzas Armadas") %>%# delete armed forces from region 
   subset(Region!= "Sanidad Exterior") %>%
   mutate(Region= recode(Region,
+=======
+Out_vaccine1_age = In_vaccine1_age%>%
+  select(Region, 
+         `80`= `Personas con al menos 1 dosis ≥80 años` ,
+         `70`= `Personas con al menos 1 dosis 70-79 años`, 
+         `60`= `Personas con al menos 1 dosis 60-69 años`,
+         `50`= `Personas con al menos 1 dosis 50-59 años`, 
+         `40`= `Personas con al menos 1 dosis 40-49 años`, 
+         `30`=`Personas con al menos 1 dosis 30-39 años`,
+         `20`=`Personas con al menos 1 dosis 20-29 años`,
+         `12`=`Personas con al menos 1 dosis 12-19 años`) %>%
+  pivot_longer(!Region, names_to= "Age", values_to= "Value") %>%
+  mutate(AgeInt= case_when(
+         Age == "80" ~ 25L,
+         Age == "12" ~ 8L,
+         TRUE ~ 10L)) %>%
+  dplyr::filter(!Region %in% c("Fuerzas Armadas","Sanidad Exterior" )) %>%# delete armed forces from region  
+  mutate(Region = recode(Region,
+>>>>>>> 46c7a3a860c807c025ef94b80b17791e9de24fd0
                         "Total España"= "All",
-                        "Castilla - La Mancha"= "Castilla La Mancha"))%>%
-  mutate(Short = recode(Region,
+                        "Castilla - La Mancha"= "Castilla La Mancha"),
+         Short = recode(Region,
                         "Andalucía" = "AN",
                         "Aragón" = "AR",
                         "Asturias"= "AS", 
@@ -149,40 +163,44 @@ mutate(AgeInt= case_when(
                         "País Vasco" ="PV",
                         "Ceuta"= "CE",
                         "Melilla" ="ML",
-                        "All"= "All"))%>%
-mutate(
+                        "All"= "All"),
     Measure = "Vaccination1",
     Metric = "Count",
-    Sex="b",
-    Date="")%>%
-  mutate(
-    Code = paste("ES",Short,Date,sep="_"),
-    Country = "Spain") %>% 
-  mutate(AgeInt= as.character(AgeInt))%>%
-  #change empty date cells to NA for fill to complete date column 
-  mutate_if(is.character, list(~na_if(.,"")))
+    Sex = "b",
+    Date = MD,
+    Country = "Spain") 
+
 
 
 #Vaccination2
 
 colnames(In_vaccine2_age)[1] <- "Region" 
 
-Out_vaccine2_age= In_vaccine2_age%>%
-  select(Region, `80`= `Personas pauta completa ≥80 años` , `70`= `Personas pauta completa 70-79 años`, `60`= `Personas pauta completa 60-69 años`,
-         `50`= `Personas pauta completa 50-59 años`, `40`= `Personas pauta completa 40-49 años`, `30`= `Personas pauta completa 30-39 años`,
-         `20`= `Personas pauta completa 20-29 años`,`12`= `Personas pauta completa 12-19 años`)%>%
-  pivot_longer(!Region, names_to= "Age", values_to= "Value")%>%
+Out_vaccine2_age= In_vaccine2_age %>%
+  select(Region, `80`= `Personas pauta completa ≥80 años` , 
+         `70`= `Personas pauta completa 70-79 años`, 
+         `60`= `Personas pauta completa 60-69 años`,
+         `50`= `Personas pauta completa 50-59 años`, 
+         `40`= `Personas pauta completa 40-49 años`, 
+         `30`= `Personas pauta completa 30-39 años`,
+         `20`= `Personas pauta completa 20-29 años`,
+         `12`= `Personas pauta completa 12-19 años`)%>%
+  pivot_longer(!Region, names_to= "Age", values_to= "Value") %>%
   mutate(AgeInt= case_when(
     Age == "80" ~ 25L,
     Age == "12" ~ 8L,
     TRUE~ 10L))%>%
+<<<<<<< HEAD
   mutate(AgeInt = as.numeric(AgeInt)) %>% 
   subset(Region!= "Fuerzas Armadas") %>%# delete armed forces from region 
   subset(Region!= "Sanidad Exterior") %>%
+=======
+  dplyr::filter(!Region %in% c("Fuerzas Armadas","Sanidad Exterior" )) %>%# delete armed forces from region  
+>>>>>>> 46c7a3a860c807c025ef94b80b17791e9de24fd0
   mutate(Region= recode(Region,
                         "Total España"= "All",
-                        "Castilla - La Mancha"= "Castilla La Mancha"))%>%
-  mutate(Short = recode(Region,
+                        "Castilla - La Mancha"= "Castilla La Mancha"),
+         Short = recode(Region,
                         "Andalucía" = "AN",
                         "Aragón" = "AR",
                         "Asturias"= "AS", 
@@ -202,30 +220,21 @@ Out_vaccine2_age= In_vaccine2_age%>%
                         "País Vasco" ="PV",
                         "Ceuta"= "CE",
                         "Melilla" ="ML",
-                        "All"= "All"))%>%
-  mutate(
+                        "All"= "All"),
     Measure = "Vaccination2",
     Metric = "Count",
-    Sex="b",
-    Date="")%>%
-  mutate(
-    Code = paste("ES",Short,Date,sep="_"),
-    Country = "Spain") %>% 
-mutate(AgeInt= as.character(AgeInt))%>%
-  #change empty date cells to NA for fill to complete date colunm 
-  mutate_if(is.character, list(~na_if(.,"")))
+    Sex = "b",
+    Date = MD,
+    Country = "Spain")
 
 
 #put together
 
-Out= bind_rows(total, Out_vaccine1_age, Out_vaccine2_age)
-
-
-#fill in empty dates for age data by region 
-
-Out_final= Out%>% group_by(Short)%>% fill(Date) %>%
-ungroup() %>%
-mutate(Code = paste("ES",Short,Date,sep="_"))%>% 
+Out <-
+  bind_rows(total, 
+            Out_vaccine1_age, 
+            Out_vaccine2_age) %>%
+  mutate(Code = paste("ES",Short,Date,sep="_")) %>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value) %>% 
   mutate(AgeInt = as.numeric(AgeInt)) %>% 
@@ -234,9 +243,12 @@ mutate(Code = paste("ES",Short,Date,sep="_"))%>%
 #include previous data, think issue with wrong codes was because 
 #previous data was appended and after that "Short" was used, 
 #which is not included anymore in the data archive
-Out_final1= bind_rows(DataArchive,Out_final)%>% 
-  distinct()#Regions dont update in same frequency, if one regions does not update, same data would be added with next file 
-
+Out_final1 = bind_rows(DataArchive,Out)%>% 
+  group_by(Region, Sex, Date, Measure, Metric, Age) %>% 
+  mutate(keep = Value == max(Value)) %>% 
+  ungroup() %>% 
+  dplyr::filter(keep) %>% 
+  select(-keep)
 #Out_final2= Out_final1 %>%
 #subset(Code!= "ES_Datos del 13/05_NA")%>%# delete armed forces from region 
 #subset(Code!= "ES_Sanidad Exterior_NA")%>%

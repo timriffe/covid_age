@@ -157,7 +157,7 @@ I <- H[ , try_step(process_function = infer_both_sex,
         by = list(Country, Region, Date, Measure), 
         .SDcols = icols][,..icols]
 
-  
+# saveRDS(I, file = "Data/step_I_testing_maybe_lower_closeout.rds")  
 ### Adjust closeout age #############################################
 
 # Log
@@ -189,18 +189,17 @@ inputCounts <- J[ , AgeInt := add_AgeInt(Age, omega = 105),
 saveRDS(inputCounts, file = here("Data","inputCounts.rds"))
 
 # List of everything
-# COMPONENTS <- list(inputDB = inputDB, 
-#                    A = A, 
-#                    B = B, 
-#                    C = C, 
-#                    D = D, 
-#                    E = E, 
-#                    G = G, 
-#                    H = H, 
-#                    I = I, 
-#                    J = J)
-# 
-# # Save list
-# save(COMPONENTS, file = here("Data","ProcessingSteps.Rdata"))
+COMPONENTS <- list(inputDB = inputDB, 
+                   A = A, 
+                   B = B, 
+                   C = C, 
+                   D = D, 
+                   E = E, 
+                   G = G, 
+                   H = H, 
+                   I = I, 
+                   J = J)
 
+# Save list
+save(COMPONENTS, file = here::here("Data","ProcessingSteps.Rdata"))
 

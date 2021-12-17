@@ -42,10 +42,10 @@ zipr(zipname,
 file.remove(data_source)
 
 
-dim(IN)
-glimpse(IN)
-IN$grupo_edad %>% unique()
-unique(IN$sexo) 
+# dim(IN)
+# glimpse(IN)
+# IN$grupo_edad %>% unique()
+# unique(IN$sexo) 
 in2 <-
   IN %>% 
   select(Short = provincia_iso, 
@@ -124,7 +124,7 @@ in2 <-
                       "H" = "m",
                       "M" = "f",
                       "NC" = "UNK"),
-         Date = ddmmyyyy(Date),
+         #Date = ddmmyyyy(Date),
          Country = "Spain",
          Code = paste("ES",Short,Date,sep="_"),
          Metric = "Count",
@@ -136,29 +136,31 @@ in2 <-
   pivot_longer(Cases:Deaths, 
                names_to = "Measure", 
                values_to = "Value") %>% 
-  mutate(date = dmy(Date)) %>% 
-  arrange(Region, Sex, Measure, Age, date) %>% 
+  #mutate(date = dmy(Date)) %>% 
+  arrange(Region, Sex, Measure, Age, Date) %>% 
   group_by(Region, Sex, Measure, Age) %>% 
-  mutate(Value = cumsum(Value)) %>% 
+  mutate(Value = cumsum(Value)) %>%
+  ungroup() %>% 
   # remove region-days with zero cumulative cases.
   group_by(Region, Date) %>% 
   mutate(N = sum(Value)) %>% 
   ungroup() %>% 
   filter(N > 20) %>%
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
+  mutate(Date = ddmmyyyy(Date)) %>% 
   sort_input_data() 
 
+
 nal <- in2 %>% 
-  mutate(Date = dmy(Date)) %>% 
   group_by(Country, Date, Sex, Age, AgeInt, Metric, Measure) %>% 
-  summarise(Value = sum(Value)) %>% 
+  summarise(Value = sum(Value), .groups = "drop") %>% 
   mutate(Region = "All",
-         Date = ddmmyyyy(Date),
          Code = paste("ES", Date, sep="_")) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
 
 out <- bind_rows(nal, in2) %>% 
   sort_input_data()
+
 
 # saving data into N drive
 write_rds(out, paste0(dir_n, ctr, ".rds"))
@@ -166,12 +168,12 @@ write_rds(out, paste0(dir_n, ctr, ".rds"))
 # updating hydra dashboard
 log_update(pp = ctr, N = nrow(out))
 
-out %>% 
-  filter(Region == "Madrid", 
-         Measure == "Deaths") %>% 
-  group_by(Date) %>% 
-  summarize(Value = sum(Value)) %>% 
-  ggplot(aes(x=dmy(Date),y=Value)) + geom_line()
-  
+# out %>% 
+#   filter(Region == "Madrid", 
+#          Measure == "Deaths") %>% 
+#   group_by(Date) %>% 
+#   summarize(Value = sum(Value)) %>% 
+#   ggplot(aes(x=dmy(Date),y=Value)) + geom_line()
+#   
   
 

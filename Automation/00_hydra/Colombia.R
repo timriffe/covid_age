@@ -41,7 +41,7 @@ db_m <- read_csv(data_source_t,
                  locale = locale(encoding = "UTF-8"))
 
 
-# compressing source files and cleanning stuff
+# compressing source files and cleaning stuff
 data_source <- c(data_source_c, data_source_t)
 
 zipname <- paste0(dir_n, 
@@ -125,13 +125,13 @@ db4 <- bind_rows(db_cases, db_deaths) %>%
                          Sex == 'f' ~ 'f',
                          Sex == 'M' ~ 'm',
                          Sex == 'm' ~ 'm',
-                         TRUE ~ 'o'),
+                         TRUE ~ 'UNK'),
          Age = as.character(Age)) %>% 
   group_by(Region, date_f, Measure, Sex, Age) %>% 
   summarise(new = n()) %>% 
   ungroup()
 
-# expanding the database to all posible combinations and cumulating values -------------
+# expanding the database to all possible combinations and cumulating values -------------
 ages <- as.character(seq(0, 100, 1))
 all_dates <- db4 %>% 
   filter(!is.na(date_f)) %>% 
@@ -140,13 +140,11 @@ dates_f <- seq(min(all_dates), max(all_dates), by = '1 day')
 
 db5 <- db4 %>% 
   tidyr::complete(Region, Measure, Sex, Age = ages, date_f = dates_f, fill = list(new = 0)) %>% 
-  arrange(date_f, Region, Measure, Sex, suppressWarnings(as.integer(Age))) %>% 
+  arrange(Region, Measure, Sex, suppressWarnings(as.integer(Age)),date_f) %>% 
   group_by(Region, Measure, Sex, Age) %>% 
   mutate(Value = cumsum(new)) %>% 
   select(-new) %>% 
   ungroup()
-
-unique(db_deaths$Sex)
 
 #######################
 # template for database ------------------------------------------------------
@@ -155,20 +153,19 @@ unique(db_deaths$Sex)
 # National data --------------------------------------------------------------
 db_co <- db5 %>% 
   group_by(date_f, Sex, Age, Measure) %>% 
-  summarise(Value = sum(Value)) %>% 
-  ungroup() %>% 
+  summarise(Value = sum(Value), .groups= "drop") %>% 
   mutate(Region = "All")
 
 # 5-year age intervals for regional data -------------------------------------
 db_regions <- db5 %>% 
-  mutate(Age2 = as.character(floor(as.numeric(Age)/5) * 5)) %>% 
-  group_by(date_f, Region, Sex, Age2, Measure) %>% 
-  summarise(Value = sum(Value)) %>% 
-  arrange(date_f, Region, Measure, Sex, suppressWarnings(as.integer(Age2))) %>% 
-  ungroup() %>% 
-  rename(Age = Age2)
+  mutate(Age = as.integer(Age),
+         Age = Age - Age %% 5,
+         Age = as.character(Age)) %>% 
+  group_by(date_f, Region, Sex, Age, Measure) %>% 
+  summarise(Value = sum(Value), .groups = "drop") %>% 
+  arrange(date_f, Region, Measure, Sex, suppressWarnings(as.integer(Age))) 
 
-unique(db_regions$Region)
+# unique(db_regions$Region)
 
 # merging national and regional data -----------------------------------
 db_co_comp <- bind_rows(db_regions, db_co)
@@ -176,14 +173,14 @@ db_co_comp <- bind_rows(db_regions, db_co)
 # summarising totals by age and sex in each date -----------------------------------
 db_tot_age <- db_co_comp %>% 
   group_by(Region, date_f, Sex, Measure) %>% 
-  summarise(Value = sum(Value)) %>% 
-  ungroup() %>% 
+  summarise(Value = sum(Value), 
+            .groups = "drop") %>% 
   mutate(Age = "TOT")
 
 db_tot <- db_co_comp %>% 
   group_by(Region, date_f, Measure) %>% 
-  summarise(Value = sum(Value)) %>% 
-  ungroup() %>% 
+  summarise(Value = sum(Value), 
+            .groups = "drop") %>% 
   mutate(Sex = "b",
          Age = "TOT")
 
@@ -191,15 +188,15 @@ db_inc <- db_tot %>%
   filter(Measure == "Deaths",
          Value >= 10) %>% 
   group_by(Region) %>% 
-  summarise(date_start = ymd(min(date_f))) %>% 
-  ungroup()
+  summarise(date_start = ymd(min(date_f)), 
+            .groups = "drop") 
 
 # appending all data in one database ----------------------------------------------
 db_all <- bind_rows(db_co_comp, db_tot_age)
 
 # filtering dates for each region (>50 deaths) -----------------------------------
 db_all2 <- db_all %>% 
-  left_join(db_inc) %>% 
+  left_join(db_inc, by = "Region") %>% 
   drop_na() %>% 
   filter((Region == "All" & date_f >= "2020-03-20") | date_f >= date_start) %>% 
   select(-date_start) %>% 
@@ -247,10 +244,7 @@ out <- db_all2 %>%
                             Region != "All" & Age == "1" ~ 4,
                             Age == "100" ~ 5,
                             Age == "TOT" ~ NA_real_),
-         Date = paste(sprintf("%02d",day(date_f)),
-                      sprintf("%02d",month(date_f)),
-                      year(date_f),
-                      sep="."),
+         Date = ddmmyyyy(date_f),
          Code = case_when(
            Region == "All" ~ paste0("CO", Date),
            Region == "Bogota" ~ paste0("CO_DC", Date),
@@ -290,6 +284,7 @@ out <- db_all2 %>%
            Region == "Tolima" ~ paste0("CO_TOL", Date),
            Region == "Valle" ~ paste0("CO_VAC", Date),
            Region == "Vaupes" ~ paste0("CO_VAU", Date),
+           Region == "Vichada" ~ paste0("CO_VID",Date),
            TRUE ~ paste0("CO_Other", Date)
          ),
          Metric = "Count") %>% 
@@ -306,4 +301,5 @@ write_rds(out, paste0(dir_n, ctr, ".rds"))
 
 # updating hydra dashboard
 log_update(pp = ctr, N = nrow(out))
-
+out %>% 
+  pull(Region) %>% unique()

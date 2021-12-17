@@ -20,8 +20,8 @@ rubric <- get_input_rubric() %>%
 ss_i  <- rubric$Sheet
 ss_db <- rubric$Source
 
-rubric <- get_input_rubric() %>% 
-  filter(Country == "Finland")
+# rubric <- get_input_rubric() %>% 
+#  filter(Country == "Finland")
 
 #fi_deaths_png  <- paste0(dir_n,"Data_sources/",ctr,"/Finland_deaths_",today(),".png")
 
@@ -117,9 +117,17 @@ FI_in <- get_country_inputDB("FI") %>%
 # filter and merge
 FI_out <-
   FI_in %>% 
-  filter(Measure != "Cases") %>% 
+  dplyr::filter(Measure != "Cases") %>% 
   bind_rows(Cases) %>% 
-  sort_input_data()
+  # remove duplicates, select larger value
+  group_by(Region, Measure, Metric, Sex, Age, Date) %>% 
+  mutate(isMax = Value == max(Value)) %>% 
+  ungroup() %>% 
+  dplyr::filter(isMax) %>% 
+  sort_input_data() 
+
+
+
 
 ############################################
 #### saving database in N Drive ####
