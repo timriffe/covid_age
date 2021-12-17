@@ -39,13 +39,17 @@ log_section(paste(Sys.time(),"updates"),
 
 #source("R_checks/inputDB_check.R")
 email <- Sys.getenv("email")
-gs4_auth(email = email)
-drive_auth(email = email)
+gs4_auth(email = email, 
+         scopes = c("https://www.googleapis.com/auth/spreadsheets",
+                    "https://www.googleapis.com/auth/drive"))
+drive_auth(email = email,
+           scopes = c("https://www.googleapis.com/auth/spreadsheets",
+                      "https://www.googleapis.com/auth/drive"))
 
 # these parameters to grab templates that were modified between 12 and 2 hours ago,
 # a 10-hour window. This will be run every 8 hours, so this implies overlap.
-hours_from <- 12
-hours_to   <- 2
+# hours_from <- 175
+# hours_to   <- 2
 
 
 # which templates were updated within last hours_from hours?
@@ -54,60 +58,25 @@ hours_to   <- 2
 # changed Short code to _NA but still. Check again in a few days.
 # Until then always load Namibia.
 rubric <- get_input_rubric()
-NAM    <- rubric %>% filter(Country == "Namibia")
-rubric <- get_rubric_update_window(hours_from, hours_to)
-rubric <- bind_rows(rubric, NAM)
+# NAM    <- rubric %>% filter(Country == "Namibia")
+# rubric <- get_rubric_update_window(hours_from, hours_to)
+# rubric <- bind_rows(rubric, NAM)
 
 if (nrow(rubric) > 0){
   # read in modified data templates (this is the slowest part)
   # rubric <- get_input_rubric()
   inputDB <- compile_inputDB(rubric, hours = Inf)
   
-  # EA: temporal fix while solving issue with additional columns in the InputDB.csv (12.08.2021)
+  # EA: temporary fix while solving issue with additional columns in the InputDB.csv (12.08.2021)
   try(inputDB <- 
         inputDB %>% 
         select(-y))
   
-  try(inputDB <- 
-        inputDB %>% 
-        select(-'2499'))
   
-  # saveRDS(inputDB,here("Data","inputDBhold.rds"))
+  saveRDS(inputDB, here::here("Data","inputDBhold.rds"))
   # what data combinations have we read in?
   
-  # EA: No need to paste "Country", "Region", as "Short" variable includes information of both.
-  # Better to only use "Short", as there could be wrong spelling of Country names or regions
-  # Added on 16.08.2021
-  
-  codesIN     <- with(inputDB, paste(Short, Measure)) %>% unique()
-  
-  # Read in previous unfiltered inputDB
-  inputDBhold <- readRDS(here::here("Data","inputDBhold.rds"))
-  
-  # EA: temporal fix while solving issue with additional columns in the InputDB.csv (12.08.2021)
-  try(inputDBhold <- 
-        inputDBhold %>% 
-        select(-y))
-  
-  try(inputDBhold <- 
-        inputDBhold %>% 
-        select(-'2499'))
-  
-  # remove any codes we just read in
-  inputDBhold <- 
-    inputDBhold %>% 
-    mutate(checkid = paste(Short, Measure)) %>% 
-    filter(!checkid %in% codesIN) %>% 
-    select(-checkid)
-
-  # bind on the data we just read in
-  inputDBhold <- bind_rows(inputDBhold, inputDB) %>% 
-    sort_input_data()
-  
-  # resave out to the full unfiltered inputDB.
-  saveRDS(inputDBhold, here::here("Data","inputDBhold.rds"))
-  
-  # TR: this is temporary:
+  # TR: templateID is temporary:
   inputDB$templateID <- NULL
   
   
@@ -180,6 +149,7 @@ if (nrow(rubric) > 0){
     }
   }
   
+  
   n <- is.na(dmy(inputDB$Date))
   # sum(n)
   if (sum(n) > 0){
@@ -249,7 +219,7 @@ if (nrow(rubric) > 0){
   #   filter(Country != "1")
   
   saveRDS(inputDB_out, here::here("Data","inputDB.rds"))
-
+  
   #saveRDS(inputDB, here("Data","inputDB_i.rds"))
   
   # public file, full precision.
@@ -289,15 +259,13 @@ schedule_this <- FALSE
 if (schedule_this){
   # TR: note, if you schedule this, you should make sure it's not already scheduled
   # by someone else!
-  me.this.is.me <- Sys.getenv("USERNAME")
   library(taskscheduleR)
-  taskscheduler_delete("COVerAGE-DB-every-8-hour-inputDB-updates")
-  taskscheduler_create(taskname = "COVerAGE-DB-every-8-hour-inputDB-updates", 
-                       rscript =  paste0(Sys.getenv("path_repo"), "/R/01_update_inputDB.R"), 
-                       schedule = "HOURLY", 
-                       modifier = 8,
-                       starttime = "08:21",
-                       startdate = format(Sys.Date(), "%m/%d/%Y"))
+  taskscheduler_delete("COVerAGE-DB-weekly-inputDB-updates")
+  taskscheduler_create(taskname = "COVerAGE-DB-weekly-inputDB-updates", 
+                       rscript =  here("R","01_update_inputDB.R"), 
+                       schedule = "WEEKLY",
+                       days = "SUN",
+                       starttime = "07:00")
   # 
 }
 
@@ -308,13 +276,13 @@ schedule_this <- FALSE
 if (schedule_this){
   # TR: note, if you schedule this, you should make sure it's not already scheduled
   # by someone else!
-  me.this.is.me <- Sys.getenv("USERNAME")
+  
   library(taskscheduleR)
   taskscheduler_delete("COVerAGE-DB-every-8-hour-inputDB-updates-test")
   taskscheduler_create(taskname = "COVerAGE-DB-every-8-hour-inputDB-updates-test", 
-                       rscript =  paste0(Sys.getenv("path_repo"), "/R/01_update_inputDB.R"), 
+                       rscript =  here::here("R/01_update_inputDB.R"), 
                        schedule = "ONCE", 
-                       starttime = "17:25",
+                       starttime = "09:39",
                        startdate = format(Sys.Date(), "%m/%d/%Y"))
   # 
 }
