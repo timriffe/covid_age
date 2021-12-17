@@ -39905,4 +39905,8 @@ filter( Code == 'US_TX11.12.2021', Sex == 'm', Measure == 'Vaccination2' )
 filter( Code == 'US_TX11.12.2021', Sex == 'b', Measure == 'Vaccination2' )
 filter( Code == 'US_TX12.12.2021', Sex == 'f', Measure == 'Vaccination2' )
 filter( Code == 'US_TX12.12.2021', Sex == 'm', Measure == 'Vaccination2' )
+<<<<<<< HEAD
 filter( Code == 'US_TX12.12.2021', Sex == 'b', Measure == 'Vaccination2' )
+=======
+filter( Code == 'US_TX12.12.2021', Sex == 'b', Measure == 'Vaccination2' )
+>>>>>>> 46c7a3a860c807c025ef94b80b17791e9de24fd0
