@@ -95,9 +95,9 @@ scripts <- c('US_Virginia', 'USA_all_deaths', 'Netherlands', 'Estonia',
 
 # starting time for first schedule in hour and minutes
 h_ini <- 08
-m_ini <- 20
+m_ini <- 40
 # delay between scripts in minutes
-delay_time <- 10
+delay_time <- 8
 
 i <- 0
 for(c in scripts){
@@ -119,37 +119,13 @@ for(c in scripts){
 }
 
 
-# starting time for first schedule in hour and minutes
-h_ini <- 09
-m_ini <- 20
-# delay between scripts in minutes
-delay_time <- 10
-
-i <- 0
-for(c in scripts){
-  # time schedule in decimal 
-  hrs_mns <- h_ini + (m_ini + i * delay_time) / 60
-  # extract hour
-  if(hrs_mns>= 24)hrs_mns= hrs_mns-24
-  hrs <- floor(hrs_mns)
-  # extract minutes
-  mns <- round((hrs_mns - floor(hrs_mns)) * 60, 1)
-  # build time
-  time <- paste0(sprintf("%02d", hrs), ":", sprintf("%02d", mns))
-  # print country and time of scheduling
-  cat(c, " scheduling at ", time, "\n")
-  # schedule it
-  sched(c, tm = time, email = auto_update_email, wd = auto_update_wd)
-  # increase the counter in 1
-  i <- i + 1
-}
 
 # for individual scheduling
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sched("Japan", tm = "10:54", email = auto_update_email, wd = auto_update_wd)
+sched("Portugal_Vaccine", tm = "08:34", email = auto_update_email, wd = auto_update_wd)
 
-#sch = "WEEKLY"
+I#sch = "WEEKLY"
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 # Deleting scheduled tasks 

@@ -49,10 +49,12 @@ out1 <- vacc1 %>%
   #age goes up to 221, but after 104 values are almost 0, remove ages above 105 
   subset(Age < 106)%>%
   subset(Value != "NA")%>%
+  tidyr::complete(Date, Age, fill = list(Value = 0)) %>% 
   mutate(
     Metric = "Count", 
     Sex= "b",
-    AgeInt= "1")  %>%
+    AgeInt= "1",
+    Measure = "Vaccination1") %>% 
   arrange(Age, Date) %>%
   group_by(Age) %>% 
   mutate(Value = cumsum(Value)) %>% 
@@ -80,10 +82,12 @@ out2 <- vacc2 %>%
   #especially during first 6 weeks when people where not to able to get second vaccine yet
   #age goes up to 221, but after 104 values are 0, remove ages above 105 
   subset(Age < 106)%>%
+  tidyr::complete(Date, Age, fill = list(Value = 0)) %>% 
   mutate(
     Metric = "Count", 
     Sex= "b",
-    AgeInt= "1")  %>%
+    AgeInt= "1",
+    Measure = "Vaccination2")  %>%
   arrange(Age, Date) %>%
   group_by(Age) %>% 
   mutate(Value = cumsum(Value)) %>% 
@@ -111,10 +115,12 @@ outtot <- vacctot %>%
   #especially during first 6 weeks when people where not to able to get second vaccine yet
   #age goes up to 221, but after 104 values are 0, remove ages above 105 
   subset(Age < 106)%>%
+  tidyr::complete(Date, Age, fill = list(Value = 0)) %>% 
   mutate(
     Metric = "Count", 
-    Sex = "b",
-    AgeInt = "1")  %>%
+    Sex= "b",
+    AgeInt= "1",
+    Measure = "Vaccinations")  %>%
   arrange(Age, Date) %>%
   group_by(Age) %>% 
   mutate(Value = cumsum(Value)) %>% 

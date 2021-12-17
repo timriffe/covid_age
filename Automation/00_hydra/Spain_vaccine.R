@@ -123,6 +123,7 @@ mutate(AgeInt= case_when(
   Age == "80" ~ 25L,
   Age == "12" ~ 8L,
   TRUE~ 10L))%>%
+  mutate(AgeInt = as.numeric(AgeInt)) %>% 
   subset(Region!= "Fuerzas Armadas") %>%# delete armed forces from region 
   subset(Region!= "Sanidad Exterior") %>%
   mutate(Region= recode(Region,
@@ -175,6 +176,7 @@ Out_vaccine2_age= In_vaccine2_age%>%
     Age == "80" ~ 25L,
     Age == "12" ~ 8L,
     TRUE~ 10L))%>%
+  mutate(AgeInt = as.numeric(AgeInt)) %>% 
   subset(Region!= "Fuerzas Armadas") %>%# delete armed forces from region 
   subset(Region!= "Sanidad Exterior") %>%
   mutate(Region= recode(Region,
@@ -226,6 +228,7 @@ ungroup() %>%
 mutate(Code = paste("ES",Short,Date,sep="_"))%>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value) %>% 
+  mutate(AgeInt = as.numeric(AgeInt)) %>% 
   sort_input_data()
 
 #include previous data, think issue with wrong codes was because 
