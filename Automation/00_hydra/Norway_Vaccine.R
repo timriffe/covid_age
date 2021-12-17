@@ -6,7 +6,7 @@ if (! "email" %in% ls()){
 }
 
 # info country and N drive address
-ctr    <- "Norway"
+ctr    <- "Norway_Vaccine"
 dir_n  <- "N:/COVerAGE-DB/Automation/Hydra/"
 dir_n_source <- "N:/COVerAGE-DB/Automation/Norway"
 
@@ -54,7 +54,7 @@ vacc_out <- vacc_in %>%
     Age == "55-64 Ã¥r" ~ 10L,
     Age == "65-74 Ã¥r" ~ 10L,
     Age == "75-84 Ã¥r" ~ 10L,
-    Age == "85 og over" ~ 25L)) %>% 
+    Age == "85 og over" ~ 20L)) %>% 
   mutate(Age=recode(Age, 
                     `0-15 Ã¥r`="0",
                     `12-15 Ã¥r`="12",
@@ -82,6 +82,7 @@ vacc_out <- vacc_in %>%
       variable == "Dose2 male" ~ "m",
       variable == "Dose2 female" ~ "f"   
     )) %>% 
+  filter(Date != "2021-12-07") %>% 
   mutate(
     Date = ymd(Date),
     Date = paste(sprintf("%02d",day(Date)),    

@@ -9,6 +9,9 @@ library(lubridate)
 #startup::startup()
 #setwd(here())
 
+#nz <- read_rds(paste0(dir_n, ctr, ".rds"))
+
+
 if (!"email" %in% ls()){
   email <- "tim.riffe@gmail.com"
 }
@@ -22,27 +25,22 @@ drive_auth(email = Sys.getenv("email"))
 gs4_auth(email = Sys.getenv("email"))
 
 # Drive urls
-rubric <- get_input_rubric() %>% 
-  filter(Region == "California")
-
-ss_i <- rubric %>% 
-  dplyr::pull(Sheet)
-
-ss_db <- rubric %>% 
-  dplyr::pull(Source)
+# rubric <- get_input_rubric() %>% 
+#   filter(Region == "California")
+# 
+# ss_i <- rubric %>% 
+#   dplyr::pull(Sheet)
+# 
+# ss_db <- rubric %>% 
+#   dplyr::pull(Source)
 
 # Get current data (to keep the tests)
-Tests <-
-  get_country_inputDB("US_CA") %>% 
-  filter(Measure == "Tests") %>% 
-  select(-Short)
-
+Tests <- read_rds(paste0(dir_n, ctr, ".rds")) %>% 
+  filter(Measure == "Tests")
 
 
 #saving data before source changed  
-Prior_data <-
-  get_country_inputDB("US_CA") %>% 
-  select(-Short)%>%
+Prior_data <- read_rds(paste0(dir_n, ctr, ".rds")) %>% 
   mutate(Date = dmy(Date))%>%
   filter(Date <= "2021-01-24")%>% 
   mutate(
@@ -136,22 +134,24 @@ vaccine=CAvaccine_in %>%
   pivot_longer(!Date &!Age, names_to = "Measure", values_to = "Value") %>% 
   filter(!is.na(Value)) %>% 
   mutate(Age = recode(Age,
+                      "5-11" = "5",
                       "12-17" = "12",
                       "18-49" = "18",
                       "50-64" = "50",
                       "65+" = "65",
                       "Unknown Agegroup" = "UNK"),
+         AgeInt = case_when(Age == "5" ~ 7L,
+                            Age == "12" ~ 6L,
+                            Age == "18" ~ 32L,
+                            Age == "50" ~ 15L,
+                            Age == "UNK" ~ NA_integer_,
+                            Age == "65+" ~ 30L),
          Sex = "b",
          Country = "USA",
          Region = "California",
          Metric = "Count",
          Date = ddmmyyyy(Date),
-         Code = paste0("US_CA_",Date),
-         AgeInt = case_when(Age == "12" ~ 6L,
-                            Age == "18" ~ 32L,
-                            Age == "50" ~ 15L,
-                            Age == "65" ~ 30L,
-                            Age == "UNK" ~ NA_integer_)) %>% 
+         Code = paste0("US_CA_",Date)) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
   sort_input_data()
 
@@ -168,9 +168,10 @@ CAout <-
 
 # push to drive
 
-write_sheet(ss = ss_i,
-            CAout,
-            sheet = "database")
+# write_sheet(ss = ss_i,
+#             CAout,
+#             sheet = "database")
+write_rds(CAout, paste0(dir_n, ctr, ".rds"))
 
 N <- nrow(CAage) + nrow(CAsex)
 log_update(pp = ctr, N = N)

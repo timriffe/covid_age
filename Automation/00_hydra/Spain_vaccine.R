@@ -60,7 +60,7 @@ In_vaccine2_age= read_ods(data_source, sheet = 4)
 #Total 
 
 colnames(In_vaccine_total)[1] <- "Region" 
- 
+
 total <-
   In_vaccine_total %>%
   select(Vaccinations= `Dosis administradas (2)`, 
@@ -68,7 +68,7 @@ total <-
          Region, 
          Vaccination1 = `Nº Personas con al menos 1 dosis`, 
          Vaccination2 = `Nº Personas vacunadas
-(pauta completada)`) %>%
+         (pauta completada)`) %>%
   pivot_longer(c(Vaccinations,Vaccination1:Vaccination2), names_to= "Measure", values_to= "Value") %>% 
   mutate(Date = suppressWarnings(dmy(Date)),
          MD = max(Date, na.rm = TRUE),
@@ -76,26 +76,26 @@ total <-
   select(-MD) %>%
   dplyr::filter(!Region %in% c("Fuerzas Armadas","Sanidad Exterior" )) %>%# delete armed forces from region  
   mutate(Short = recode(Region,
-                          "Andalucía" = "AN",
-                         "Aragón" = "AR",
-                         "Asturias"= "AS", 
-                         "Baleares" ="IB",
-                         "Canarias" ="CN",
-                         "Cantabria"= "CB",
-                         "Castilla y Leon"= "CL",
-                         "Castilla La Mancha"= "CM",
-                         "Cataluña" ="CT",
-                         "C. Valenciana" ="VC",
-                         "Extremadura"= "EX",
-                         "Galicia"= "GA",
-                         "La Rioja" ="RI",
-                         "Madrid"= "MD",
-                         "Murcia"= "MU",
-                         "Navarra"= "NA",
-                         "País Vasco" ="PV",
-                         "Ceuta"= "CE",
-                          "Melilla" ="ML",
-                          "Totales"= "All"), 
+                        "Andalucía" = "AN",
+                        "Aragón" = "AR",
+                        "Asturias"= "AS", 
+                        "Baleares" ="IB",
+                        "Canarias" ="CN",
+                        "Cantabria"= "CB",
+                        "Castilla y Leon"= "CL",
+                        "Castilla La Mancha"= "CM",
+                        "Cataluña" ="CT",
+                        "C. Valenciana" ="VC",
+                        "Extremadura"= "EX",
+                        "Galicia"= "GA",
+                        "La Rioja" ="RI",
+                        "Madrid"= "MD",
+                        "Murcia"= "MU",
+                        "Navarra"= "NA",
+                        "País Vasco" ="PV",
+                        "Ceuta"= "CE",
+                        "Melilla" ="ML",
+                        "Totales"= "All"), 
          Metric= "Count",
          Sex = "b",
          Age = "TOT", 
@@ -107,7 +107,7 @@ total <-
 MD <- total$Date %>% dmy() %>% max() %>% ddmmyyyy()
 
 colnames(In_vaccine1_age)[1] <- "Region" 
- 
+
 Out_vaccine1_age = In_vaccine1_age%>%
   select(Region, 
          `80`= `Personas con al menos 1 dosis ≥80 años` ,
@@ -120,13 +120,13 @@ Out_vaccine1_age = In_vaccine1_age%>%
          `12`=`Personas con al menos 1 dosis 12-19 años`) %>%
   pivot_longer(!Region, names_to= "Age", values_to= "Value") %>%
   mutate(AgeInt= case_when(
-         Age == "80" ~ 25L,
-         Age == "12" ~ 8L,
-         TRUE ~ 10L)) %>%
+    Age == "80" ~ 25L,
+    Age == "12" ~ 8L,
+    TRUE ~ 10L)) %>%
   dplyr::filter(!Region %in% c("Fuerzas Armadas","Sanidad Exterior" )) %>%# delete armed forces from region  
   mutate(Region = recode(Region,
-                        "Total España"= "All",
-                        "Castilla - La Mancha"= "Castilla La Mancha"),
+                         "Total España"= "All",
+                         "Castilla - La Mancha"= "Castilla La Mancha"),
          Short = recode(Region,
                         "Andalucía" = "AN",
                         "Aragón" = "AR",
@@ -148,11 +148,11 @@ Out_vaccine1_age = In_vaccine1_age%>%
                         "Ceuta"= "CE",
                         "Melilla" ="ML",
                         "All"= "All"),
-    Measure = "Vaccination1",
-    Metric = "Count",
-    Sex = "b",
-    Date = MD,
-    Country = "Spain") 
+         Measure = "Vaccination1",
+         Metric = "Count",
+         Sex = "b",
+         Date = MD,
+         Country = "Spain") 
 
 
 
@@ -199,11 +199,11 @@ Out_vaccine2_age= In_vaccine2_age %>%
                         "Ceuta"= "CE",
                         "Melilla" ="ML",
                         "All"= "All"),
-    Measure = "Vaccination2",
-    Metric = "Count",
-    Sex = "b",
-    Date = MD,
-    Country = "Spain")
+         Measure = "Vaccination2",
+         Metric = "Count",
+         Sex = "b",
+         Date = MD,
+         Country = "Spain")
 
 
 #put together
@@ -257,5 +257,3 @@ zip::zipr(zipname,
 
 file.remove(data_source)
 ####################################################
-
-

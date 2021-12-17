@@ -98,6 +98,7 @@ db_c2 <-
       Sex = case_when(sex == "male" ~ "m",
                       sex == "female" ~ "f",
                       sex == "total" ~ "b",
+                      sex == "TOT" ~ "b",
                       TRUE ~ "UNK")) %>% 
   arrange(Sex, Age, date) %>% 
   group_by(Sex, Age) %>% 
@@ -166,7 +167,8 @@ db_d2 <-
          Sex = recode(sex,
                       "male" = "m",
                       "female" = "f",
-                      "total" = "b")) %>% 
+                      "total" = "b",
+                      "TOT" = "b")) %>% 
   group_by(Sex, Date) %>% 
   do(get_zero(chunk = .data)) %>% 
   ungroup() %>% 
@@ -218,7 +220,11 @@ db_drive2 <- db_drive %>%
   filter(!(Date %in% dates_db_d2 & Measure == "Deaths"),
          !(Date %in% dates_db_c2 & Measure == "Cases"),
          !(Date %in% dates_db_t2 & Measure == "Tests")) %>% 
-  mutate(Value = as.double(Value)) 
+  mutate(Value = as.double(Value)) %>% 
+  mutate(Sex = case_when(
+    Sex == "TOT" ~ "b",
+    TRUE ~ Sex
+  ))
 
 out <- 
   bind_rows(db_drive2, db_d2, db_c2, db_t2) %>% 

@@ -15,7 +15,11 @@ gs4_auth(email = Sys.getenv("email"))
 
 #read in archived  data 
 
-DataArchive <- read_rds(paste0(dir_n, ctr, ".rds"))
+DataArchive <- read_rds(paste0(dir_n, ctr, ".rds")) %>% 
+  mutate(Measure = case_when(
+    Measure == "Third dose" ~ "Vaccination3",
+    TRUE ~ Measure
+  ))
 
 last_date_archive <- DataArchive %>% 
   mutate(date_max = dmy(Date)) %>% 
@@ -71,7 +75,8 @@ Out_vaccine= In_vaccine%>%
                       `80+`="80"),
          Measure=recode(Measure,
                         `First dose`="Vaccination1",
-                        `Second dose`="Vaccination2"),
+                        `Second dose`="Vaccination2",
+                        `Third dose`="Vaccination3"),
          Metric = "Count",
          Sex= "b")%>%
   mutate(AgeInt = case_when(

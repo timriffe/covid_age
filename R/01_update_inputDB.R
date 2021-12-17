@@ -72,7 +72,7 @@ if (nrow(rubric) > 0){
         inputDB %>% 
         select(-y))
   
-
+  
   saveRDS(inputDB, here::here("Data","inputDBhold.rds"))
   # what data combinations have we read in?
   
@@ -219,7 +219,7 @@ if (nrow(rubric) > 0){
   #   filter(Country != "1")
   
   saveRDS(inputDB_out, here::here("Data","inputDB.rds"))
-
+  
   #saveRDS(inputDB, here("Data","inputDB_i.rds"))
   
   # public file, full precision.
@@ -276,7 +276,7 @@ schedule_this <- FALSE
 if (schedule_this){
   # TR: note, if you schedule this, you should make sure it's not already scheduled
   # by someone else!
-
+  
   library(taskscheduleR)
   taskscheduler_delete("COVerAGE-DB-every-8-hour-inputDB-updates-test")
   taskscheduler_create(taskname = "COVerAGE-DB-every-8-hour-inputDB-updates-test", 

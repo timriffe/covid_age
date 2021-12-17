@@ -19,71 +19,43 @@ dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 drive_auth(email = email)
 gs4_auth(email = email)
 
-# data from drive1 
-rubric_i <- get_input_rubric() %>% filter(Short == "JP_1")
-ss_i     <- rubric_i %>% dplyr::pull(Sheet)
-ss_db    <- rubric_i %>% dplyr::pull(Source)
 
-db_drive1 <- get_country_inputDB("JP_1")
+##previous data
+db_drive <- read_rds(paste0(dir_n, ctr, ".rds")) %>% 
+  mutate(Date = dmy(Date))%>%
+  filter(Date <="2020-08-18") %>% 
+mutate(
+  Date = ymd(Date),
+  Date = paste(sprintf("%02d",day(Date)),    
+               sprintf("%02d",month(Date)),  
+               year(Date),sep="."))
 
-# data from drive2 
-rubric_i <- get_input_rubric() %>% filter(Short == "JP_2")
-ss_i     <- rubric_i %>% dplyr::pull(Sheet)
-ss_db    <- rubric_i %>% dplyr::pull(Source)
 
-db_drive2 <- get_country_inputDB("JP_2")
-# data from drive3 
-rubric_i <- get_input_rubric() %>% filter(Short == "JP_3")
-ss_i     <- rubric_i %>% dplyr::pull(Sheet)
-ss_db    <- rubric_i %>% dplyr::pull(Source)
-
-db_drive3 <- get_country_inputDB("JP_3")
-# data from drive4 
-rubric_i <- get_input_rubric() %>% filter(Short == "JP_4")
-ss_i     <- rubric_i %>% dplyr::pull(Sheet)
-ss_db    <- rubric_i %>% dplyr::pull(Source)
-
-db_drive4 <- get_country_inputDB("JP_4")
-# data from drive5 
-rubric_i <- get_input_rubric() %>% filter(Short == "JP_5")
-ss_i     <- rubric_i %>% dplyr::pull(Sheet)
-ss_db    <- rubric_i %>% dplyr::pull(Source)
-
-db_drive5 <- get_country_inputDB("JP_5")
-# data from drive6 
-rubric_i <- get_input_rubric() %>% filter(Short == "JP_6")
-ss_i     <- rubric_i %>% dplyr::pull(Sheet)
-ss_db    <- rubric_i %>% dplyr::pull(Source)
-
-db_drive6 <- get_country_inputDB("JP_6")
-# data from drive7 
-rubric_i <- get_input_rubric() %>% filter(Short == "JP_7")
-ss_i     <- rubric_i %>% dplyr::pull(Sheet)
-ss_db    <- rubric_i %>% dplyr::pull(Source)
-
-db_drive7 <- get_country_inputDB("JP_7")
-# data from drive8
-rubric_i <- get_input_rubric() %>% filter(Short == "JP_8")
-ss_i     <- rubric_i %>% dplyr::pull(Sheet)
-ss_db    <- rubric_i %>% dplyr::pull(Source)
-
-db_drive8 <- get_country_inputDB("JP_8")
-
-db_drive <- rbind(db_drive1, db_drive2, db_drive3, db_drive4, db_drive5, db_drive6, db_drive7, db_drive8)
 #new death 
 
-death <- read_csv("https://covid19.mhlw.go.jp/public/opendata/deaths_detail_cumulative_weekly.csv")
-death2 <- death %>% 
-  mutate(Date = sub("...........", "", Week),
-  Date = ddmmyyyy(Date),
-  Region = Prefecture)
-death2 <- death2[-1]
-death2 <- death2[-1]
-death2 <- setDT(death2)
-death3 <- melt(death2, id = c("Region", "Date"))
+death <- read_csv("https://covid19.mhlw.go.jp/public/opendata/deaths_detail_cumulative_weekly.csv", skip = 1)
+# death2 <- death %>% 
+#   mutate(Week = sub("...........", "", Week))
+#   #Date = ymd(Date))
+# death2 <- death2[-1]
+#death2 <- death2[-1]
+death2 <- setDT(death)
+death2 <- melt(death2, id = c("Week"))
+
+headers <- read.csv("https://covid19.mhlw.go.jp/public/opendata/deaths_detail_cumulative_weekly.csv", header = FALSE)
+headers <- headers[1,]
+headers <- reshape2::melt(headers, id = c("V1"))
+headers <- headers %>% 
+  filter(value != "")
+headers2 <- headers[rep(seq_len(nrow(headers)), each = (length(death2$Week)/48)), ]  # Base R
+names(headers2)[3] <- "Region"
+headers2 <- headers2[-c(1,2)]
+death3 <- bind_cols(death2, headers2)
+
 death4 <- death3 %>% 
-  separate(variable, c("Sex","Age"), sep = (" ")) %>% 
-  mutate(Age = case_when(Age == "Under" ~ 0,
+  separate(variable, c("Sex","Age"), sep = (" ")) %>%  
+  mutate(Age = substr(Age, 1, 3)) %>% 
+  mutate(Age = case_when(Age == "Und" ~ 0,
                          Age == "10s" ~ 10,
                          Age == "20s" ~ 20,
                          Age == "30s" ~ 30,
@@ -92,7 +64,7 @@ death4 <- death3 %>%
                          Age == "60s" ~ 60,
                          Age == "70s" ~ 70,
                          Age == "80s" ~ 80,
-                         Age == "Over" ~ 90),
+                         Age == "Ove" ~ 90),
          Sex = case_when(Sex == "Female" ~ "f",
                                 Sex == "Male" ~ "m"),
          AgeInt = case_when(
@@ -100,11 +72,17 @@ death4 <- death3 %>%
            TRUE ~ 10L),
          Country = "Japan",
          Measure = "Death",
-         Metric = "Count")
+         Metric = "Count") %>% 
+  separate(Week, c("trash","Date"), sep = ("~")) %>% 
+  mutate(Date = ymd(Date),
+         Date = paste(sprintf("%02d",day(Date)),    
+                      sprintf("%02d",month(Date)),  
+                      year(Date),sep="."))
   
 
-death4$value <- as.numeric(death4$value)
+death4$Value <- as.numeric(death4$value)
 death4[is.na(death4)] <- 0
+death4 <- death4[,-c(1,5)]
 
 #coding for regions need to be done
 death5 <- death4 %>% 
@@ -159,23 +137,20 @@ Region=="Kagoshima" ~ "JP_46_",
 Region=="Aomori" ~ "JP_02_"),
 Code = paste0(Code, Date),
 Short = substr(Code, 1, nchar(Code)-11))
-names(death5)[5] <- "Value"
+death5 <- death5[,-11]
 
 
 #new cases
 
-cases <- read_csv("https://covid19.mhlw.go.jp/public/opendata/confirmed_cases_detail_cumulative_weekly.csv")
-cases2 <- cases %>% 
-  mutate(Date = sub("...........", "", Week),
-         Date = ddmmyyyy(Date),
-         Region = Prefecture)
-cases2 <- cases2[-1]
-cases2 <- cases2[-1]
-cases2 <- setDT(cases2)
-cases3 <- melt(cases2, id = c("Region", "Date"))
+cases <- read_csv("https://covid19.mhlw.go.jp/public/opendata/confirmed_cases_detail_cumulative_weekly.csv", skip = 1)
+cases2 <- setDT(cases)
+cases2 <- melt(cases2, id = c("Week"))
+cases3 <- bind_cols(cases2, headers2)
+
 cases4 <- cases3 %>% 
-  separate(variable, c("Sex","Age"), sep = (" ")) %>% 
-  mutate(Age = case_when(Age == "Under" ~ 0,
+  separate(variable, c("Sex","Age"), sep = (" ")) %>%  
+  mutate(Age = substr(Age, 1, 3)) %>% 
+  mutate(Age = case_when(Age == "Und" ~ 0,
                          Age == "10s" ~ 10,
                          Age == "20s" ~ 20,
                          Age == "30s" ~ 30,
@@ -184,7 +159,7 @@ cases4 <- cases3 %>%
                          Age == "60s" ~ 60,
                          Age == "70s" ~ 70,
                          Age == "80s" ~ 80,
-                         Age == "Over" ~ 90),
+                         Age == "Ove" ~ 90),
          Sex = case_when(Sex == "Female" ~ "f",
                          Sex == "Male" ~ "m"),
          AgeInt = case_when(
@@ -192,11 +167,20 @@ cases4 <- cases3 %>%
            TRUE ~ 10L),
          Country = "Japan",
          Measure = "Cases",
-         Metric = "Count")
+         Metric = "Count") %>% 
+  separate(Week, c("trash","Date"), sep = ("~")) %>% 
+  mutate(Date = ymd(Date),
+         Date = paste(sprintf("%02d",day(Date)),    
+                      sprintf("%02d",month(Date)),  
+                      year(Date),sep="."))
 
 
-cases4$value <- as.numeric(cases4$value)
+cases4$Value <- as.numeric(cases4$value)
 cases4[is.na(cases4)] <- 0
+cases4 <- cases4[,-c(1,5)]
+
+
+
 
 #coding for regions need to be done
 cases5 <- cases4 %>% 
@@ -251,13 +235,15 @@ cases5 <- cases4 %>%
     Region=="Aomori" ~ "JP_02_"),
     Code = paste0(Code, Date),
     Short = substr(Code, 1, nchar(Code)-11))
-names(cases5)[5] <- "Value"
+cases5 <- cases5[,-11]
+
 
 ##total cases
 tot_cases <- read.csv("https://covid19.mhlw.go.jp/public/opendata/confirmed_cases_cumulative_daily.csv")
-totcases2 <- tot_cases %>% 
+tot_cases2 <- melt(tot_cases, id = "ï..Date") 
+totcases2 <- tot_cases2 %>% 
   mutate(Date = ddmmyyyy(ï..Date),
-         Region = Prefecture)
+         Region = variable)
 totcases2 <- totcases2[-1]
 totcases2 <- totcases2[-1]
 totcases4 <- totcases2 %>% 
@@ -323,6 +309,7 @@ totcases5 <- totcases4 %>%
     Code = paste0(Code, Date),
     Short = substr(Code, 1, nchar(Code)-11))
 names(totcases5)[1] <- "Value"
+totcases5 <- totcases5[,-11]
 
 
 
@@ -330,9 +317,10 @@ names(totcases5)[1] <- "Value"
 ##total death
 
 tot_death <- read.csv("https://covid19.mhlw.go.jp/public/opendata/deaths_cumulative_daily.csv")
-totdeath2 <- tot_death %>% 
+tot_death2 <- melt(tot_death, id = "ï..Date")
+totdeath2 <- tot_death2 %>% 
   mutate(Date = ddmmyyyy(ï..Date),
-         Region = Prefecture)
+         Region = variable)
 totdeath2 <- totdeath2[-1]
 totdeath2 <- totdeath2[-1]
 totdeath4 <- totdeath2 %>% 
@@ -399,6 +387,7 @@ totdeath5 <- totdeath4 %>%
     Short = substr(Code, 1, nchar(Code)-11)
     )
 names(totdeath5)[1] <- "Value"
+totdeath5 <- totdeath5[,-11]
 
 out <- rbind(db_drive, totdeath5, totcases5, death5, cases5)
 
@@ -413,15 +402,39 @@ write_rds(out, paste0(dir_n, ctr, ".rds"))
 
 log_update(pp = "Japan", N = nrow(out))
 
-data_source <- paste0(dir_n, 
+
+###backup
+data_source1 <- paste0(dir_n, "Data_sources/", ctr, "/cases_age_",today(), ".csv")
+data_source2 <- paste0(dir_n, "Data_sources/", ctr, "/death_age",today(), ".csv")
+data_source3 <- paste0(dir_n, "Data_sources/", ctr, "/cases_all",today(), ".csv")
+data_source4 <- paste0(dir_n, "Data_sources/", ctr, "/death_all",today(), ".csv")
+
+data_source <- c(data_source1,
+                 data_source2,
+                 data_source3,
+                 data_source4)
+
+write_csv(cases, data_source1)
+write_csv(death, data_source2)
+write_csv(tot_cases, data_source3)
+write_csv(tot_death, data_source4)
+
+zipname <- paste0(dir_n, 
                   "Data_sources/", 
                   ctr,
                   "/", 
                   ctr,
                   "_data_",
                   today(), 
-                  ".csv")
+                  ".zip")
 
-write_csv(out, data_source)
+zipr(zipname, 
+     data_source, 
+     recurse = TRUE, 
+     compression_level = 9,
+     include_directories = TRUE)
+
+# clean up file chaff
+file.remove(data_source)
 
 

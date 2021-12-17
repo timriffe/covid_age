@@ -176,8 +176,9 @@ sched <- function(
   script <- paste0('email <- "', email, '"\n',
                   'setwd("', wd, '")\n',
                   'source("Automation/00_hydra/', pp, 
-                  '.R", encoding="',encoding,'"')
-  
+                  #'.R", encoding="utf-8")')
+                  #'.R", encoding="',encoding,'"')
+                  '.R", encoding="',encoding,'")\n')
   # generate the trigger script
   writeLines(script, trigger_script)
   

@@ -139,10 +139,12 @@ db_v2 <- db_v %>%
          Region = str_to_title(Region),
          Measure = case_when(Dosis == 1 ~ "Vaccination1", 
                              Dosis == 2 ~ "Vaccination2", 
+                             Dosis == 3 ~ "Vaccination3",
                              TRUE ~ "UNK")) %>% 
   group_by(date_f, Sex, Age, Region, Measure) %>% 
   summarise(new = n()) %>% 
-  ungroup()
+  ungroup() %>% 
+  filter(Measure != "UNK")
 
 dates_f <- seq(min(db_v2$date_f), max(db_v2$date_f), by = '1 day')
 ages <- 0:100
