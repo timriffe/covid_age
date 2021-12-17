@@ -125,7 +125,7 @@ for(c in scripts){
 
 sched("Portugal_Vaccine", tm = "08:34", email = auto_update_email, wd = auto_update_wd)
 
-I#sch = "WEEKLY"
+#sch = "WEEKLY"
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 # Deleting scheduled tasks 
