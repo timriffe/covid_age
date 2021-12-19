@@ -24,6 +24,13 @@ ss_db    <- rubric_i %>% dplyr::pull(Source)
 
 # reading data from Montreal and last date entered 
 db_drive <- get_country_inputDB("NZ")
+db_drive <- db_drive %>% 
+  mutate(Sex = case_when(
+         Sex == "b" ~ "b",
+         Sex == "f" ~ "f",
+         Sex == "m" ~ "m",
+         Sex == "UNK" ~ "UNK",
+         TRUE ~ "b"))
 
 last_date_drive <- db_drive %>% 
   mutate(date_f = dmy(Date)) %>% 
@@ -174,7 +181,7 @@ if (date_f > last_date_drive){
 db_v <- 
     read_xlsx(data_source6,
     sheet = "DHBofResidence by ethnicity")%>%
-  select(Age= `Age group`, Sex= Gender, Vaccination1= `First dose administered`, Vaccination2= `Second dose administered`)%>%
+  select(Age= `Age group`, Sex= Gender, Vaccination1= `At least partially vaccinated`, Vaccination2= `Fully vaccinated`)%>%
   pivot_longer(!Age & !Sex, names_to= "Measure", values_to= "Value")%>%
   #sum up numbers that were separated by race 
   group_by(Age, Sex, Measure) %>% 

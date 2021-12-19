@@ -86,16 +86,18 @@ scripts <- c('US_Virginia', 'USA_all_deaths', 'Netherlands', 'Estonia',
              'US_Minnesota_vaccine', 'Slovenia_vaccine', 'US_Oregon_Vaccine', 'Latvia_vaccine',
              'Island_of_Jersey', 'Estonia_vaccine', 'Uruguay_vaccine', 'Chile','Finland_vaccine',
              'ECDC_vaccine', 'Slovakia_vaccine', 'Germany_vaccine', 'US_Pennsylvania_vaccine', 'USA_vaccine',
-             'Australia_vaccine', 'US_Idaho', 'USA_all', 'Brazil', 'New_Zealand')
+             'Australia_vaccine', 'US_Idaho', 'USA_all', 'Brazil', 'New_Zealand', 'Maldives', 'Japan', 
+             'Romania', 'Puerto_Rico', 'Scotland_Vaccine', 'Switzerland_Vaccine', 'Norway_Vaccine', 'France_Vaccine',
+             'England_Vaccine')
 
 # Scheduling all scripts at once
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # starting time for first schedule in hour and minutes
-h_ini <- 09
-m_ini <- 25
+h_ini <- 08
+m_ini <- 40
 # delay between scripts in minutes
-delay_time <- 10
+delay_time <- 8
 
 i <- 0
 for(c in scripts){
@@ -116,11 +118,12 @@ for(c in scripts){
   i <- i + 1
 }
 
+
+
 # for individual scheduling
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sched("New_Zealand", tm = "09:04", email = auto_update_email, wd = auto_update_wd)
-sched("Philippines", tm= "12:15", email = auto_update_email, wd = auto_update_wd )
+sched("Portugal_Vaccine", tm = "08:34", email = auto_update_email, wd = auto_update_wd)
 
 #sch = "WEEKLY"
 

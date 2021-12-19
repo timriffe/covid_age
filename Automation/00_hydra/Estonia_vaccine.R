@@ -99,7 +99,12 @@ Out_vaccine= In_vaccine%>%
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)
 
-    
+##totals
+Out_vaccineALL <- Out_vaccine %>% 
+  group_by(Country, Date, Sex, Age, AgeInt, Metric, Measure) %>% 
+  summarise(Value = sum(Value)) %>% 
+  mutate(Region = "All",
+         Code = paste0("EE_",Date))
     
 #put together with archived data 
 
@@ -108,7 +113,9 @@ Out_vaccine= In_vaccine%>%
 # write_sheet(Out, 
 #             ss = ss_i, 
 #             sheet = "database")
-
+Out_vaccine <- bind_rows(Out_vaccine, Out_vaccineALL)
+Out_vaccine <- Out_vaccine %>% 
+  sort_input_data()
 write_rds(Out_vaccine, paste0(dir_n, ctr, ".rds"))
 
 log_update(pp = ctr, N = nrow(Out_vaccine))
