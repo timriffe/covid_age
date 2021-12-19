@@ -15,8 +15,10 @@ n.cores <- min(round(freesz / 16),20)
 ### Load data #######################################################
 
 # Count data
-inputCounts <- readRDS(here::here("Data","inputCounts.rds"))
-inputCounts$Metric <- NULL
+inputCounts <- readRDS(here::here("Data","inputCounts.rds")) %>% 
+  dplyr::filter(Measure %in% c("Cases","Deaths","Tests")) %>% 
+  select(-Metric)
+
  
 # Offsets
 Offsets     <- readRDS(here::here("Data","Offsets.rds"))
