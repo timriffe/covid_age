@@ -278,11 +278,11 @@ if (schedule_this){
   # by someone else!
   
   library(taskscheduleR)
-  taskscheduler_delete("COVerAGE-DB-every-8-hour-inputDB-updates-test")
-  taskscheduler_create(taskname = "COVerAGE-DB-every-8-hour-inputDB-updates-test", 
+  taskscheduler_delete("COVerAGE-DB-inputDB-updates-test")
+  taskscheduler_create(taskname = "COVerAGE-DB-inputDB-updates-test", 
                        rscript =  here::here("R/01_update_inputDB.R"), 
                        schedule = "ONCE", 
-                       starttime = "09:39",
+                       starttime = "10:37",
                        startdate = format(Sys.Date(), "%m/%d/%Y"))
   # 
 }
