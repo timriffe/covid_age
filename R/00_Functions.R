@@ -366,7 +366,8 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
           ungroup() %>% 
           mutate(Age = as.character(Age),
                  AgeInt = as.integer(AgeInt), 
-                 Value = as.double(Value))
+                 Value = as.double(Value)) %>% 
+          select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
       )
         
       try(
