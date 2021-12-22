@@ -263,6 +263,7 @@ if (schedule_this){
   taskscheduler_delete("COVerAGE-DB-thrice-weekly-inputDB-updates")
   taskscheduler_create(taskname = "COVerAGE-DB-thrice-weekly-inputDB-updates", 
                        rscript =  here("R","01_update_inputDB.R"), 
+                       schedule = "WEEKLY",
                        days = c("SAT","TUE","THU"),
                        starttime = "23:07")
   # 
