@@ -49,7 +49,8 @@ for (i in 1:length(files)){
 cdb_files <- c("inputDB.rds","inputDBhold.rds",
                 "inputCounts.rds","Output_5.rds",
                 "Output_10.rds","Offsets.rds",
-               "HarmonizationFailures.rds")
+               "HarmonizationFailures.rds",
+               "qualityMetrics.rds")
 files_from <- file.path("Data",cdb_files)
 
 file.copy(from = files_from, 

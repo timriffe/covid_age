@@ -260,12 +260,11 @@ if (schedule_this){
   # TR: note, if you schedule this, you should make sure it's not already scheduled
   # by someone else!
   library(taskscheduleR)
-  taskscheduler_delete("COVerAGE-DB-weekly-inputDB-updates")
-  taskscheduler_create(taskname = "COVerAGE-DB-weekly-inputDB-updates", 
+  taskscheduler_delete("COVerAGE-DB-thrice-weekly-inputDB-updates")
+  taskscheduler_create(taskname = "COVerAGE-DB-thrice-weekly-inputDB-updates", 
                        rscript =  here("R","01_update_inputDB.R"), 
-                       schedule = "WEEKLY",
-                       days = "SUN",
-                       starttime = "07:00")
+                       days = c("SAT","TUE","THU"),
+                       starttime = "23:07")
   # 
 }
 
