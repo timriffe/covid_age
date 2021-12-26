@@ -8,8 +8,12 @@ library(reticulate)
 if (!"email" %in% ls()){
   email <- "tim.riffe@gmail.com"
 }
-gs4_auth(email = email)
-drive_auth(email = email)
+gs4_auth(email = email,
+         scopes = c("https://www.googleapis.com/auth/spreadsheets",
+                    "https://www.googleapis.com/auth/drive"))
+drive_auth(email = email,
+           scopes = c("https://www.googleapis.com/auth/spreadsheets",
+                      "https://www.googleapis.com/auth/drive"))
 ss_db <- get_input_rubric() %>% 
   filter(Country == "Jamaica") %>% 
   dplyr::pull(Source)
@@ -22,7 +26,7 @@ conda_install(packages = "selenium")
 py_run_string("import selenium")
 
 
-py_file <- "C:/Users/riffe/Documents/covid_age/Automation/Jamaica_screencaptures.py"
+py_file <- "G:/riffe/covid_age/Automation/Jamaica_screencaptures.py"
 # py_file <- "Automation/Jamaica_screencaptures.py"
 source_python(file=py_file)
 #py_run_file("C:/Users/riffe/Documents/covid_age/Automation/US_AZ_screencaptures.py")

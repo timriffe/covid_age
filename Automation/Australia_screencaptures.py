@@ -1,11 +1,11 @@
 
 """
-Created on Thu Dec 21
-
+Created on Thu Dec 21, 2020
+Edited 26 Dec 2021
 @author: TR
 """
 
-paths = r"N:\COVerAGE-DB\Automation\chromedriver\chromedriver.exe"
+path = r"N:\COVerAGE-DB\Automation\chromedriver\version96\chromedriver.exe"
 #path = r"N:\COVerAGE-DB\Automation\chromedriver\chromedriver.exe"
 from selenium.webdriver.common.keys import Keys
 from selenium import webdriver
@@ -15,7 +15,7 @@ from time import sleep
 options=Options()
 #options.add_argument("--enable-javascript")
 options.add_argument("--headless")
-driver = webdriver.Chrome(options=options,executable_path = paths) #Path of Chrome Driver
+driver = webdriver.Chrome(options=options,executable_path = path) #Path of Chrome Driver
 #driver = webdriver.Chrome("/usr/bin/chromedriver",chrome_options=options) #Path of Chrome Driver
 
 #aus_url = 'https://www.health.gov.au/news/health-alerts/novel-coronavirus-2019-ncov-health-alert/coronavirus-covid-19-current-situation-and-case-numbers#COVID-19-summary-statistics'
