@@ -82,7 +82,15 @@ Out <- In %>%
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)
 
+###adding rows for age zero to eleven for the age harmonization
+smal_ages <- Out %>% 
+  filter(Age == 12) %>% 
+  mutate(Age = 0,
+         AgeInt = 12L,
+         Value = 0)
   
+Out <- rbind(Out, smal_ages) %>% 
+  sort_input_data()
 #save output data 
 write_rds(Out, paste0(dir_n, ctr, ".rds"))
 
