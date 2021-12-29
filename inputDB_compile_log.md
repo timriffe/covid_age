@@ -1,29 +1,29 @@
 
-# 2021-12-25 inputDB updates 
- Sat Dec 25 23:07:11 2021 
+# 2021-12-28 inputDB updates 
+ Tue Dec 28 23:07:12 2021 
 
 
-# 2021-12-25 23:07:11 updates 
- Sat Dec 25 23:07:11 2021 
+# 2021-12-28 23:07:12 updates 
+ Tue Dec 28 23:07:12 2021 
 
 
 # Filter valid Measure entries: 
- Sun Dec 26 02:20:06 2021 
+ Wed Dec 29 02:26:25 2021 
 
 Valid Measures include: Cases,Deaths,Tests,ASCFR,Vaccinations,Vaccination1,Vaccination2,Vaccination3,VaccinationBooster
- 310262 rows removed
+ 325559 rows removed
 # Filter valid Metric entries: 
- Sun Dec 26 02:20:16 2021 
+ Wed Dec 29 02:26:35 2021 
 
 Valid Metrics include: Count,Fraction,Ratio
  14 rows removed
 # Filter valid Sex entries: 
- Sun Dec 26 02:20:19 2021 
+ Wed Dec 29 02:26:38 2021 
 
 Valid Sex values include: m,f,b,UNK
- 13014 rows removed
+ 13062 rows removed
 # Duplicates detected. Following `Code`s removed: 
- Sun Dec 26 02:22:36 2021 
+ Wed Dec 29 02:29:09 2021 
 
 BM15.03.2021
 CM05.08.2020
@@ -6966,6 +6966,10 @@ US_20.12.2021
 US_21.12.2021
 US_22.12.2021
 US_23.12.2021
+US_24.12.2021
+US_25.12.2021
+US_26.12.2021
+US_27.12.2021
 US_CDC_AZ28.11.2020
 US_CDC_AR28.11.2020
 US_CDC_CA28.11.2020
@@ -7684,6 +7688,7 @@ US_NY31.10.2021
 US_NY23.11.2021
 US_NY16.12.2021
 US_NY22.12.2021
+US_NY26.12.2021
 US_CDC_NYC28.11.2020
 US_CDC_NC28.11.2020
 US_CDC_ND28.11.2020
@@ -8153,12 +8158,15 @@ US_CDC_WV28.11.2020
 US_CDC_WI28.11.2020
 US_CDC_WY28.11.2020
 # Bad Dates detected. Following `Code`s removed: 
- Sun Dec 26 02:22:56 2021 
+ Wed Dec 29 02:29:35 2021 
 
 US_IANA.NA.NA
 # Future Dates detected. Following `Code`s removed: 
- Sun Dec 26 02:23:05 2021 
+ Wed Dec 29 02:29:44 2021 
 
+JO26.12.2022
+NL02.01.2022
+NO02.01.2022
 PS26.04.2022
 PS26.04.2023
 PS26.04.2024
@@ -8171,3 +8179,11 @@ PS26.04.2030
 PS26.04.2031
 PS26.04.2032
 PS26.04.2033
+SK_BC02.01.2022
+SK_BL02.01.2022
+SK_KI02.01.2022
+SK_NI02.01.2022
+SK_PV02.01.2022
+SK_TC02.01.2022
+SK_TA02.01.2022
+SK_ZI02.01.2022
