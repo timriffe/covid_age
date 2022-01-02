@@ -1,29 +1,29 @@
 
-# 2021-12-30 inputDB updates 
- Thu Dec 30 23:07:12 2021 
+# 2022-01-01 inputDB updates 
+ Sat Jan 01 23:07:12 2022 
 
 
-# 2021-12-30 23:07:12 updates 
- Thu Dec 30 23:07:12 2021 
+# 2022-01-01 23:07:12 updates 
+ Sat Jan 01 23:07:12 2022 
 
 
 # Filter valid Measure entries: 
- Fri Dec 31 02:23:40 2021 
+ Sun Jan 02 02:33:54 2022 
 
 Valid Measures include: Cases,Deaths,Tests,ASCFR,Vaccinations,Vaccination1,Vaccination2,Vaccination3,VaccinationBooster
- 330762 rows removed
+ 330999 rows removed
 # Filter valid Metric entries: 
- Fri Dec 31 02:23:54 2021 
+ Sun Jan 02 02:33:57 2022 
 
 Valid Metrics include: Count,Fraction,Ratio
  14 rows removed
 # Filter valid Sex entries: 
- Fri Dec 31 02:23:57 2021 
+ Sun Jan 02 02:34:01 2022 
 
 Valid Sex values include: m,f,b,UNK
- 21412 rows removed
+ 21515 rows removed
 # Duplicates detected. Following `Code`s removed: 
- Fri Dec 31 02:26:26 2021 
+ Sun Jan 02 02:36:38 2022 
 
 BM15.03.2021
 CM05.08.2020
@@ -7232,6 +7232,7 @@ US_26.12.2021
 US_27.12.2021
 US_28.12.2021
 US_29.12.2021
+US_30.12.2021
 US_CDC_AZ28.11.2020
 US_CDC_AR28.11.2020
 US_CDC_CA28.11.2020
@@ -7953,6 +7954,7 @@ US_NY16.12.2021
 US_NY22.12.2021
 US_NY26.12.2021
 US_NY28.12.2021
+US_NY29.12.2021
 US_CDC_NYC28.11.2020
 US_CDC_NC28.11.2020
 US_CDC_ND28.11.2020
@@ -8414,6 +8416,7 @@ US_TX23.09.2021
 US_TX23.11.2021
 US_TX13.12.2021
 US_TX22.12.2021
+US_TX29.12.2021
 US_CDC_UT28.11.2020
 US_CDC_VT28.11.2020
 US_CDC_VA28.11.2020
@@ -8422,15 +8425,13 @@ US_CDC_WV28.11.2020
 US_CDC_WI28.11.2020
 US_CDC_WY28.11.2020
 # Bad Dates detected. Following `Code`s removed: 
- Fri Dec 31 02:26:50 2021 
+ Sun Jan 02 02:37:05 2022 
 
 US_IANA.NA.NA
 # Future Dates detected. Following `Code`s removed: 
- Fri Dec 31 02:27:07 2021 
+ Sun Jan 02 02:37:17 2022 
 
 JO26.12.2022
-NL02.01.2022
-NO02.01.2022
 PS26.04.2022
 PS26.04.2023
 PS26.04.2024
@@ -8443,14 +8444,6 @@ PS26.04.2030
 PS26.04.2031
 PS26.04.2032
 PS26.04.2033
-SK_BC02.01.2022
-SK_BL02.01.2022
-SK_KI02.01.2022
-SK_NI02.01.2022
-SK_PV02.01.2022
-SK_TC02.01.2022
-SK_TA02.01.2022
-SK_ZI02.01.2022
 UA20.01.22
 UA20.02.22
 UA20.03.22
