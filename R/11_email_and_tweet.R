@@ -38,3 +38,24 @@ write_sheet(OUT, ss = ss, sheet = "build log")
 # we can then set up this sheet to send notification when updated.
 rm(list=ls())
 gc()
+
+do.this <- FALSE
+if (do.this){
+  oc <-
+  o10 %>% 
+    select(Country, Region) %>% 
+    distinct()
+  
+  ic <-
+    inputDB %>% 
+    select(Country, Region) %>% 
+    distinct()
+  
+  anti_join(oc,ic)
+  inputDB$Country %>% unique(
+    
+  )
+  inputDB %>% dplyr::filter(Country == "1")
+  inputDB %>% dplyr::filter(!is.na(`.`))
+}
+
