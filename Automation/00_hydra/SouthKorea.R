@@ -160,4 +160,26 @@ write_rds(db_out,  paste0(dir_n, ctr, ".rds"))
 
 log_update("SouthKorea", N = nrow(new_data))
 
-#  sched("SouthKorea", tm = "14:15", email = "tim.riffe@gmail.com", wd = here())
+#archive input data 
+
+data_source <- paste0(dir_n, "Data_sources/", ctr,today(), ".csv")
+
+write_csv(new_data, data_source)
+
+
+zipname <- paste0(dir_n, 
+                  "Data_sources/", 
+                  ctr,
+                  "/", 
+                  ctr,
+                  "_data_",
+                  today(), 
+                  ".zip")
+
+zip::zipr(zipname, 
+          data_source, 
+          recurse = TRUE, 
+          compression_level = 9,
+          include_directories = TRUE)
+
+file.remove(data_source)
