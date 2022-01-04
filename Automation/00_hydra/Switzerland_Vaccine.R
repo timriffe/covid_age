@@ -73,7 +73,8 @@ vacc3 <- vacc2 %>%
   )) %>% 
   mutate(Measure = case_when(
     Measure == "COVID19AtLeastOneDosePersons" ~ "Vaccination1",
-    Measure == "COVID19FullyVaccPersons" ~ "Vaccination2"
+    Measure == "COVID19FullyVaccPersons" ~ "Vaccination2",
+    Measure == "COVID19FirstBoosterPersons" ~ "Vaccination3"
   )) %>% 
 mutate(Sex = "b",
   Metric = "Count")
@@ -127,7 +128,8 @@ vaccsex3 <- vaccsex2 %>%
   )) %>% 
   mutate(Measure = case_when(
     Measure == "COVID19AtLeastOneDosePersons" ~ "Vaccination1",
-    Measure == "COVID19FullyVaccPersons" ~ "Vaccination2"
+    Measure == "COVID19FullyVaccPersons" ~ "Vaccination2",
+    Measure == "COVID19FirstBoosterPersons" ~ "Vaccination3"
   )) %>% 
   mutate(Metric = "Count",
          Age = "TOT")
@@ -275,8 +277,8 @@ vaccsex3 <- vaccsex2 %>%
 
 
 
-out <- rbind(vacc3, vaccsex3) %>% 
-  sort_input_data()
+out <- rbind(vacc3, vaccsex3) %>%   
+ sort_input_data()
 write_rds(out, paste0(dir_n, ctr, ".rds"))
 
 # updating hydra dashboard
