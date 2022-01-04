@@ -145,6 +145,15 @@ death5 <- death5[,-11]
 cases <- read_csv("https://covid19.mhlw.go.jp/public/opendata/confirmed_cases_detail_cumulative_weekly.csv", skip = 1)
 cases2 <- setDT(cases)
 cases2 <- melt(cases2, id = c("Week"))
+headers <- read.csv("https://covid19.mhlw.go.jp/public/opendata/confirmed_cases_detail_cumulative_weekly.csv", header = FALSE)
+headers <- headers[1,]
+headers <- reshape2::melt(headers, id = c("V1"))
+headers <- headers %>% 
+  filter(value != "")
+headers2 <- headers[rep(seq_len(nrow(headers)), each = (length(cases2$Week)/48)), ]  # Base R
+names(headers2)[3] <- "Region"
+headers2 <- headers2[-c(1,2)]
+
 cases3 <- bind_cols(cases2, headers2)
 
 cases4 <- cases3 %>% 

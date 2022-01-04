@@ -8,7 +8,7 @@ library(tidyverse)
 
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
-  email <- "jessica_d.1994@yahoo.de"
+  email <- "maxi.s.kniffka@gmail.com"
 }
 
 
@@ -66,7 +66,8 @@ Out_vaccine= In_vaccine%>%
     is.na(Region) ~ "UNK",
     TRUE~ as.character(Region)))%>%
   mutate(Age=recode(Age, 
-                    `0-11`="0",
+                    `0-4`="0",
+                    `5-11`="5",
                     `12-15`="12",
                     `16-17`="16",
                     `18-29`="18",
@@ -81,7 +82,8 @@ Out_vaccine= In_vaccine%>%
                          `Vaccinated`="Vaccination1",
                          `FullyVaccinated`="Vaccination2"))%>%
   mutate(AgeInt = case_when(
-    Age == "0" ~ 12L,
+    Age == "0" ~ 5L,
+    Age == "5" ~ 7L,
     Age == "12" ~ 4L,
     Age == "16" ~ 2L,
     Age == "18" ~ 12L,
