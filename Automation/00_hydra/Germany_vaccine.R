@@ -105,11 +105,13 @@ Vaccine_out_reg= Vaccine_in%>%
                          "2"="Vaccination2",
                          "3"="Vaccination3"),
          Age=recode(Age, 
+                    "05-11"="5",
                     "12-17"="12",
                     "18-59"="18",
                     "60+"="60",
                     "u"="UNK"),
          AgeInt = case_when(
+           Age == "5" ~ 7L,
            Age == "12" ~ 6L,
            Age == "18" ~ 42L,
            Age == "60" ~ 45L),
@@ -145,11 +147,13 @@ Vaccine_out_all= Vaccine_in%>%
                          "2"="Vaccination2",
                          "3"="Vaccination3"),
          Age=recode(Age, 
+                    "05-11"="5",
                     "12-17"="12",
                     "18-59"="18",
                     "60+"="60",
                     "u"="UNK"),
          AgeInt = case_when(
+           Age == "5" ~ 7L,
            Age == "12" ~ 6L,
            Age == "18" ~ 42L,
            Age == "60" ~ 45L),
@@ -169,6 +173,21 @@ Vaccine_out_all= Vaccine_in%>%
 
 #final output dataset
 Vaccine_out=rbind(Vaccine_out_all,Vaccine_out_reg)
+
+
+
+##adding age group 0 to 4
+small_ages <- Vaccine_out %>% 
+  filter(Age == "5") %>% 
+  mutate(Age = "0",
+         AgeInt = 5L,
+         Value = 0)
+Vaccine_out <- rbind(Vaccine_out, small_ages) %>% 
+  sort_input_data()
+# Vaccine_out2 <- Vaccine_out %>% 
+#   tidyr::complete(Date, Age, Country, Region, Code, AgeInt, Sex, Metric, Measure, fill = list(Value = 0))
+
+
 write_rds(Vaccine_out, paste0(dir_n, ctr, ".rds"))
 
 # updating hydra dashboard
