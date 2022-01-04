@@ -275,7 +275,8 @@ vaccsex3 <- vaccsex2 %>%
 
 
 
-out <- rbind(vacc3, vaccsex3)
+out <- rbind(vacc3, vaccsex3) %>% 
+  sort_input_data()
 write_rds(out, paste0(dir_n, ctr, ".rds"))
 
 # updating hydra dashboard

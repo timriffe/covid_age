@@ -66,7 +66,8 @@ vacc2 <- vacc %>%
   mutate(Country = "Scotland",
          Region = "All",
          Metric = "Count",
-         Code = paste0("GB_SCO_",Date))
+         Code = paste0("GB_SCO_",Date)) %>% 
+  sort_input_data()
 
 #save output data
 
