@@ -102,7 +102,8 @@ cases <- cases %>%
   mutate(Sex = case_when(
     Gender == "Female" ~ "f",
     Gender == "Male" ~ "m",
-    Gender == "Unknown" ~ "UNK"))
+    Gender == "Unknown" ~ "UNK",
+    is.na(Gender) ~ "UNK"))
 
 
 cases <- cases[-1]
@@ -162,7 +163,8 @@ death <- death %>%
   mutate(Sex = case_when(
     Gender == "Female" ~ "f",
     Gender == "Male" ~ "m",
-    Gender == "Unknown" ~ "UNK"))
+    Gender == "Unknown" ~ "UNK",
+    is.na(Gender) ~ "UNK"))
 
 death <- death[-1]
 
