@@ -64,23 +64,7 @@ Out= In %>%
                      `Age70_79`="70",
                      `Age80+`="80",
                      `AgeUNK`="UNK"))%>% 
-  mutate(AgeInt = case_when(
-    Age == "15" ~ 3L,
-    Age == "18" ~ 7L,
-    Age == "25" ~ 25L,
-    Age == "15" ~ 3L,
-    Age == "50" ~ 10L,
-    Age == "60" ~ 10L,
-    Age == "70" ~ 10L,
-    Age == "80" ~ 25L,
-    Age == "UNK" ~ NA_integer_,
-    Age == "TOT" ~ NA_integer_,
-    TRUE ~ 5L))%>%
-  mutate(
-    Metric = "Count",
-    Sex= "b",
-    Region="All")%>%
-  mutate(Country= recode(Short, 
+    mutate(Country= recode(Short, 
                      `BG`= "Bulgaria",
                      `CY`= "Cyprus",
                      `HR`= "Croatia",
@@ -89,7 +73,25 @@ Out= In %>%
                      `LU`= "Luxembourg",
                      `MT`="Malta",
                      `PL`="Poland",
-                     `RO`="Romania"))%>% 
+                     `RO`="Romania")) %>% 
+  tidyr::complete(Age, nesting(Date, Measure, Country), fill=list(Value=0)) %>%  
+    mutate(AgeInt = case_when(
+      Age == "15" ~ 3L,
+      Age == "18" ~ 7L,
+      Age == "25" ~ 25L,
+      Age == "15" ~ 3L,
+      Age == "50" ~ 10L,
+      Age == "60" ~ 10L,
+      Age == "70" ~ 10L,
+      Age == "80" ~ 25L,
+      Age == "UNK" ~ NA_integer_,
+      Age == "TOT" ~ NA_integer_,
+      TRUE ~ 5L))%>%
+  mutate(
+    Metric = "Count",
+    Sex= "b",
+    Region="All")%>%
+  
   mutate(
     Date = ymd(Date),
     Date = paste(sprintf("%02d",day(Date)),    
@@ -97,7 +99,8 @@ Out= In %>%
                  year(Date),sep="."),
     Code = paste0(Short,Date))%>% 
   select(Country, Region, Code, Date, Sex, 
-         Age, AgeInt, Metric, Measure, Value)
+         Age, AgeInt, Metric, Measure, Value) %>% 
+  sort_input_data()
 
 
 
