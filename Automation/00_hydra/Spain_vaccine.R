@@ -294,7 +294,7 @@ Out_final1 = bind_rows(DataArchive,Out)%>%
 write_rds(Out_final1, paste0(dir_n, ctr, ".rds"))
 
 # updating hydra dashboard
-log_update(pp = ctr, N = nrow(Out_final))
+log_update(pp = ctr, N = nrow(Out_final1))
 
 #zip input data
 zipname <- paste0(dir_n,
