@@ -141,6 +141,15 @@ Out <- bind_rows(DataArchive,
                 Out_vaccine_age,
                 Out_vaccine_sex)
 
+##adding age group 0 to 9
+small_ages <- Out %>% 
+  filter(Age == "10") %>% 
+  mutate(Age = "0",
+         AgeInt = 10L,
+         Value = "0")
+
+Out <- rbind(Out, small_ages) %>% 
+  sort_input_data()
 #save output 
 
 write_rds(Out, paste0(dir_n, ctr, ".rds"))
