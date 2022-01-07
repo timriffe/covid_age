@@ -109,8 +109,9 @@ Vaccine_out_reg= Vaccine_in%>%
                     "12-17"="12",
                     "18-59"="18",
                     "60+"="60",
-                    "u"="UNK"),
-         AgeInt = case_when(
+                    "u"="UNK")) %>% 
+  tidyr::complete(Age, nesting(Date, Measure, Region), fill=list(Value=0)) %>% 
+        mutate(AgeInt = case_when(
            Age == "5" ~ 7L,
            Age == "12" ~ 6L,
            Age == "18" ~ 42L,
@@ -151,8 +152,9 @@ Vaccine_out_all= Vaccine_in%>%
                     "12-17"="12",
                     "18-59"="18",
                     "60+"="60",
-                    "u"="UNK"),
-         AgeInt = case_when(
+                    "u"="UNK")) %>% 
+  tidyr::complete(Age, nesting(Date, Measure), fill=list(Value=0)) %>%   
+  mutate(AgeInt = case_when(
            Age == "5" ~ 7L,
            Age == "12" ~ 6L,
            Age == "18" ~ 42L,

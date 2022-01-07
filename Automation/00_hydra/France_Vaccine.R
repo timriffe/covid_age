@@ -43,7 +43,7 @@ vacc_tot_out <- vacc_tot_out %>%
   mutate(AgeInt = case_when(
     Age == "0" ~ NA_integer_,
     Age == "4" ~ 5L,
-    Age == "9" ~ 4L,
+    Age == "9" ~ 5L,
     Age == "11" ~ 2L,
     Age == "17" ~ 6L,
     Age == "24" ~ 7L,
