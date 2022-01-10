@@ -218,11 +218,11 @@ out <- rbind(db_drive, out) %>%
   #### uploading database to Google Drive ####
   ############################################
   # This command saves o dataset with cases included that is not picked up
-write_rds(out, paste0(dir_n, ctr, "copy.rds"))
+write_rds(out, paste0(dir_n, "deprecated/", ctr,  "copy.rds"))
 
 out2 <- out %>% 
   filter(Measure != "Cases")
-write_rds(out2, paste0(dir_n, ctr, ".rds"))
+write_rds(out2, paste0(dir_n,"deprecated/", ctr, ".rds"))
 
   log_update(pp = ctr, N = nrow(out2))
   ############################################
