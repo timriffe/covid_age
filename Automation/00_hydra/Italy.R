@@ -164,7 +164,7 @@ totals$Date = substr(totals$Date,1,nchar(totals$Date)-9)
 totals <- totals %>% 
   mutate(Sex = "b",
          Country = "Italy",
-         Region = "Alll",
+         Region = "All",
          Age = "TOT",
          AgeInt = NA,
          Metric = "Count",
