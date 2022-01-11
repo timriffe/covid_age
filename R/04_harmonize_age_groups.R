@@ -219,5 +219,5 @@ data.table::fwrite(outputCounts_10_rounded,
 # Save binary
 
 # saveRDS(outputCounts_10, here::here("Data","Output_10.rds"))
-data.table::fwrite(outputCounts_10, file = here::here("Data","outputCounts_10_internal.csv"))
+data.table::fwrite(outputCounts_10, file = here::here("Data","output_10_internal.csv"))
 
