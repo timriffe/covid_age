@@ -56,7 +56,8 @@ Vaccine_out_reg= Vaccine_in%>%
                         "14"="Sachsen",
                         "15"="Sachsen-Anhalt",
                         "16"="Thüringen"))%>%
-  filter(Region!= "17")%>%
+  filter(Region!= "17",
+         Region != "u")%>%
   select(Date=Impfdatum, Age= Altersgruppe, Measure= Impfschutz, Value=Anzahl, Region)%>%
   #sum subregional level to regional level
   group_by(Date, Age, Region, Measure)%>%
@@ -83,23 +84,6 @@ Vaccine_out_reg= Vaccine_in%>%
                            Region == 'Sachsen-Anhalt' ~ 'DE_ST_',
                            Region == 'Schleswig-Holstein' ~ 'DE_SH_',
                            Region == 'Thüringen' ~ 'DE_TH_'),
-         Region= recode(Region, 
-                        "Baden-Württemberg" = "BW",
-                        "Bayern" = "BY",
-                        "Berlin" ="BE",
-                        "Brandenburg" = "BB",
-                        "Bremen" = "HB",
-                        "Hamburg" = "HH",
-                        "Hessen" = "HE",
-                        "Mecklenburg-Vorpommern" = "MV",
-                        "Niedersachsen" = "NI",
-                        "Nordrhein-Westfalen" = "NW",
-                        "Rheinland-Pfalz" = "RP",
-                        "Saarland" = "SL",
-                        "Sachsen" = "SN",
-                        "Sachsen-Anhalt" = "ST",
-                        "Schleswig-Holstein" = "SH",
-                        "Thüringen" = "TH"),
          Measure= recode(Measure,
                          "1"= "Vaccination1",
                          "2"="Vaccination2",
