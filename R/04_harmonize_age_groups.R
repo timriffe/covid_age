@@ -15,7 +15,7 @@ n.cores <- min(round(freesz / 16),20)
 ### Load data #######################################################
 
 # Count data
-inputCounts <- readRDS(here::here("Data","inputCounts.rds")) %>% 
+inputCounts <- data.table::fread(here::here("Data","inputCounts.csv")) %>% 
   dplyr::filter(Measure %in% c("Cases","Deaths","Tests")) %>% 
   select(-Metric)
 
@@ -90,12 +90,12 @@ log_section("Age harmonization",
 #           OAnew = 100)
 # stopCluster(cl)
 
-saveRDS(iLout1e5, file = here::here("Data","iLout1e5.rds"))
+# saveRDS(iLout1e5, file = here::here("Data","iLout1e5.rds"))
  
 out5 <- 
   rbindlist(iLout1e5) 
   # Get into one data set
-saveRDS(out5, file = here::here("Data","Output_5_before_sex_scaling_etc.rds"))
+data.table::fwrite(out5, file = here::here("Data","Output_5_before_sex_scaling_etc.csv"))
  rm(iL);rm(iLout1e5)
 
 ids_out  <- out5$id %>% unique() %>% sort()
@@ -105,7 +105,8 @@ HarmonizationFailures <-
   inputCounts %>% 
   filter(id %in% failures)
 
-saveRDS(HarmonizationFailures, file = here::here("Data","HarmonizationFailures.rds"))
+data.table::fwrite(HarmonizationFailures, file = here::here("Data","HarmonizationFailures.csv"))
+# saveRDS(HarmonizationFailures, file = here::here("Data","HarmonizationFailures.rds"))
 
 # Edit results
 # outputCounts_5_1e5 <- out5 %>%  
@@ -136,7 +137,8 @@ outputCounts_5_1e5 <-
   arrange(Country, Region, dmy(Date), Sex, Age) 
 
 # Save binary
-saveRDS(outputCounts_5_1e5, here::here("Data","Output_5.rds"))
+# saveRDS(outputCounts_5_1e5, here::here("Data","Output_5.rds"))
+data.table::fwrite(outputCounts_5_1e5, file = here::here("Data","Output_5_internal.csv"))
 
 # Round to full integers
 outputCounts_5_1e5_rounded <- 
@@ -216,42 +218,6 @@ data.table::fwrite(outputCounts_10_rounded,
 
 # Save binary
 
-saveRDS(outputCounts_10, here::here("Data","Output_10.rds"))
+# saveRDS(outputCounts_10, here::here("Data","Output_10.rds"))
+data.table::fwrite(outputCounts_10, file = here::here("Data","outputCounts_10_internal.csv"))
 
-
-
-### Checks ##########################################################
-
-# Check?
-spot_checks <- FALSE
-
-if (spot_checks){
-  
-# Once-off diagnostic plot: Data preparation
-ASCFR5 <- 
-outputCounts_5_1e5 %>% 
-    group_by(Country, Region, Code, Sex) %>% 
-    mutate(D = sum(Deaths)) %>% 
-    ungroup() %>% 
-    mutate(ASCFR = Deaths / Cases,
-           ASCFR = na_if(ASCFR, Deaths == 0)) %>% 
-    dplyr::filter(!is.na(ASCFR),
-           Sex == "b",
-           D >= 100) 
-
-# Once-off diagnostic plot: Plot
-ASCFR5 %>% 
-  ggplot(aes(x=Age, y = ASCFR, group = interaction(Country, Region, Code))) + 
-  geom_line(alpha=.05) + 
-  scale_y_log10() + 
-  xlim(20,100) + 
-  geom_quantile(ASCFR5,
-                mapping=aes(x=Age, y = ASCFR), 
-                method = "rqss",
-                quantiles=c(.025,.25,.5,.75,.975), 
-                lambda = 2,
-                inherit.aes = FALSE,
-                color = "tomato",
-                size = 1)
-
-}

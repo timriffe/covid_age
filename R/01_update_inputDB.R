@@ -72,8 +72,8 @@ if (nrow(rubric) > 0){
         inputDB %>% 
         select(-y))
   
-  
-  saveRDS(inputDB, here::here("Data","inputDBhold.rds"))
+  data.table::fwrite(inputDB, file = here::here("Data","inputDBhold.csv"))
+  # saveRDS(inputDB, here::here("Data","inputDBhold.rds"))
   # what data combinations have we read in?
   
   # TR: templateID is temporary:
@@ -184,9 +184,11 @@ if (nrow(rubric) > 0){
   # now swap out data in inputDB files
   
   ids_new       <- with(inputDB, paste(Country,Region,Measure,Short))
-  
-  inputDB_prior <- readRDS(here::here("Data","inputDB.rds")) %>% 
+  inputDB_prior <-
+  data.table::fread(file = here::here("Data","inputDB.csv")) %>% 
     mutate(Short = add_Short(Code,Date))
+  # inputDB_prior <- readRDS(here::here("Data","inputDB.rds")) %>% 
+  #   mutate(Short = add_Short(Code,Date))
   
   # EA: temporal fix while solving issue with additional columns in the InputDB.csv
   try(inputDB_prior <- 
@@ -218,8 +220,8 @@ if (nrow(rubric) > 0){
   #   inputDB_out %>% 
   #   filter(Country != "1")
   
-  saveRDS(inputDB_out, here::here("Data","inputDB.rds"))
-  
+  # saveRDS(inputDB_out, here::here("Data","inputDB.rds"))
+  data.table::fwrite(inputDB_out, file = here::here("Data","inputDB_internal.csv"))
   #saveRDS(inputDB, here("Data","inputDB_i.rds"))
   
   # public file, full precision.

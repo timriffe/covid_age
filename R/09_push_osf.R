@@ -46,11 +46,11 @@ for (i in 1:length(files)){
 # }
 ################################################
 # also copy rds files to N://COVerAGE-DB/Data
-cdb_files <- c("inputDB.rds","inputDBhold.rds",
-                "inputCounts.rds","Output_5.rds",
-                "Output_10.rds","Offsets.rds",
-               "HarmonizationFailures.rds",
-               "qualityMetrics.rds")
+cdb_files <- c("inputDB.csv","inputDB_internal","inputDBhold.csv",
+                "inputCounts.csv","Output_5.csv","Output_5_internal.csv",
+                "Output_10.csv","Output_10_internal.csv","Offsets.csv",
+               "HarmonizationFailures.csv",
+               "qualityMetrics.csv")
 files_from <- file.path("Data",cdb_files)
 
 file.copy(from = files_from, 
