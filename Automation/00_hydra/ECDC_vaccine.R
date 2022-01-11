@@ -74,35 +74,41 @@ Out= In %>%
                      `MT`="Malta",
                      `PL`="Poland",
                      `RO`="Romania")) %>% 
-  tidyr::complete(Age, nesting(Date, Measure, Country), fill=list(Value=0)) %>%  
-    mutate(AgeInt = case_when(
-      Age == "15" ~ 3L,
-      Age == "18" ~ 7L,
-      Age == "25" ~ 25L,
-      Age == "15" ~ 3L,
-      Age == "50" ~ 10L,
-      Age == "60" ~ 10L,
-      Age == "70" ~ 10L,
-      Age == "80" ~ 25L,
-      Age == "UNK" ~ NA_integer_,
-      Age == "TOT" ~ NA_integer_,
-      TRUE ~ 5L))%>%
   mutate(
     Metric = "Count",
     Sex= "b",
     Region="All")%>%
-  
+  tidyr::complete(Age, nesting(Date, Measure, Country, Metric, Sex, Region), fill=list(Value=0)) %>%  
   mutate(
     Date = ymd(Date),
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0(Short,Date))%>% 
+    Code = case_when( 
+      Country == "Bulgaria" ~  paste0("BG_",Date),
+      Country == "Croatia" ~  paste0("CY_",Date),
+      Country == "Cyprus" ~  paste0("HR_",Date),
+      Country == "Hungary" ~  paste0("HU_",Date),
+      Country == "Ireland" ~  paste0("IE_",Date),
+      Country == "Luxembourg" ~  paste0("LU_",Date),
+      Country == "Malta" ~  paste0("MT_",Date),
+      Country == "Poland" ~  paste0("PL_",Date),
+      Country == "Romania" ~  paste0("RO_",Date)))%>% 
+  mutate(AgeInt = case_when(
+    Age == "15" ~ 3L,
+    Age == "18" ~ 7L,
+    Age == "25" ~ 25L,
+    Age == "15" ~ 3L,
+    Age == "50" ~ 10L,
+    Age == "60" ~ 10L,
+    Age == "70" ~ 10L,
+    Age == "80" ~ 25L,
+    Age == "UNK" ~ NA_integer_,
+    Age == "TOT" ~ NA_integer_,
+    TRUE ~ 5L))%>%
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value) %>% 
   sort_input_data()
-
-
 
 #save output data 
 write_rds(Out, paste0(dir_n, ctr, ".rds"))

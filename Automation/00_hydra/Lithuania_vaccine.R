@@ -217,6 +217,17 @@ out <- bind_rows(Out_vaccine1,
                  Out_vaccine2,
                  Out_vaccine3)
 
+##calculating both sexes
+sexes <- out %>% 
+  filter(Sex != "b") %>% 
+  group_by(Country, Region, Code, Date, Age, AgeInt, Metric, Measure) %>% 
+  summarise(Value = sum(Value)) %>% 
+  mutate(Sex = "b")
+
+out <- rbind(out, sexes) %>% 
+  sort_input_data() %>% 
+  filter(Age != "-1")
+
 
 #save output data
 
