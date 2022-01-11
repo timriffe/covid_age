@@ -96,6 +96,17 @@ small_ages <- Out %>%
 Out <- rbind(Out, small_ages) %>% 
   sort_input_data()
 
+##adding total countrie data
+all <- Out %>% 
+  mutate(Value = as.numeric(Value)) %>% 
+group_by(Date, Country, Age, Measure, AgeInt, Metric, Sex) %>% 
+  summarise(Value = sum(Value)) %>% 
+  mutate(Region = "All",
+         Code = paste0("SK_", Date))
+
+Out <- rbind(Out, all) %>% 
+  sort_input_data()
+
 #save output 
 
 write_rds(Out, paste0(dir_n, ctr, ".rds"))
