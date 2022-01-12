@@ -185,15 +185,14 @@ if (nrow(rubric) > 0){
   
   ids_new       <- with(inputDB, paste(Country,Region,Measure,Short))
   inputDB_prior <-
-  data.table::fread(file = here::here("Data","inputDB.csv")) %>% 
+  data.table::fread(file = here::here("Data","inputDB.csv"),
+                    encoding = "UTF-8") %>% 
     mutate(Short = add_Short(Code,Date))
   # inputDB_prior <- readRDS(here::here("Data","inputDB.rds")) %>% 
   #   mutate(Short = add_Short(Code,Date))
   
   # EA: temporal fix while solving issue with additional columns in the InputDB.csv
-  try(inputDB_prior <- 
-        inputDB_prior %>% 
-        select(-'2499'))
+
   
   try(inputDB_prior <- 
         inputDB_prior %>% 
@@ -285,7 +284,7 @@ if (schedule_this){
   taskscheduler_create(taskname = "COVerAGE-DB-inputDB-updates-test", 
                        rscript =  here::here("R/01_update_inputDB.R"), 
                        schedule = "ONCE", 
-                       starttime = "18:45",
+                       starttime = "10:54",
                        startdate = format(Sys.Date(), "%m/%d/%Y"))
   # 
 }

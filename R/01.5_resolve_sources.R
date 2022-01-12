@@ -12,7 +12,7 @@ check_mf <- function(Sex, isECDC){
   rep(TRUE, length(Sex))
 }
 
-idb <- data.table::fread(here("Data","inputDB_internal.csv"))
+idb <- data.table::fread(here("Data","inputDB_internal.csv"),encoding = "UTF-8")
 
 idb <- idb %>% 
   mutate(Date = dmy(Date),

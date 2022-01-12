@@ -15,7 +15,8 @@ n.cores <- min(round(freesz / 16),20)
 ### Load data #######################################################
 
 # Count data
-inputCounts <- data.table::fread(here::here("Data","inputCounts.csv")) %>% 
+inputCounts <- data.table::fread(here::here("Data","inputCounts.csv"),
+                                 encoding = "UTF-8") %>% 
   dplyr::filter(Measure %in% c("Cases","Deaths","Tests")) %>% 
   select(-Metric)
 

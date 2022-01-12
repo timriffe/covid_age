@@ -12,7 +12,8 @@ logfile <- here("buildlog.md")
 ### Get data ########################################################
 
 
-inputDB <- data.table::fread(here("Data","inputDBresolved.csv"))
+inputDB <- data.table::fread(here("Data","inputDBresolved.csv"),
+                             encoding = "UTF-8")
 
 
 # this script transforms the inputDB as required, and produces standardized measures and metrics
