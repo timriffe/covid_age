@@ -42,8 +42,9 @@ Out= In %>%
                           "X"="UNK",
                           "U"="UNK")) %>%
   separate(AgeGroup, c("Age", "Age2"), "-")%>%
-  mutate(Age= recode(Age, 
-                     "80+"="80"),
+  mutate(Age= case_when(Age =="80+" ~ "80",
+                     is.na(Age) ~ "UNK",
+                     TRUE ~ Age),
          Measure= case_when(
            dose=="1"~ "Vaccination1",
            dose=="2"~ "Vaccination2",
