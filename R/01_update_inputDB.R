@@ -267,7 +267,8 @@ if (schedule_this){
                        rscript =  here("R","01_update_inputDB.R"), 
                        schedule = "WEEKLY",
                        days = c("SAT","TUE","THU"),
-                       starttime = "23:07")
+                       starttime = "23:07",
+                       startdate = format(Sys.Date(), "%m/%d/%Y"))
   # 
 }
 
