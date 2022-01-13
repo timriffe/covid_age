@@ -64,7 +64,7 @@ A <- AA[ , try_step(process_function = convert_fractions_sexes,
 # Convert fractions within sexes to counts
 A <- A[ , try_step(process_function = convert_fractions_within_sex,
                    chunk = .SD,
-                   byvars = c("Code","Sex","Measure"),
+                   byvars = c("Code", "Sex", "Measure"),
                    logfile = logfile),
         by=list(Country, Region, Date, Sex, Measure), 
         .SDcols = icols][,..icols]
