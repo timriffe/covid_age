@@ -86,8 +86,8 @@ Out= In %>%
                  year(Date),sep="."),
     Code = case_when( 
       Country == "Bulgaria" ~  paste0("BG_",Date),
-      Country == "Croatia" ~  paste0("CY_",Date),
-      Country == "Cyprus" ~  paste0("HR_",Date),
+      Country == "Croatia" ~  paste0("HR_",Date),
+      Country == "Cyprus" ~  paste0("CY_",Date),
       Country == "Hungary" ~  paste0("HU_",Date),
       Country == "Ireland" ~  paste0("IE_",Date),
       Country == "Luxembourg" ~  paste0("LU_",Date),

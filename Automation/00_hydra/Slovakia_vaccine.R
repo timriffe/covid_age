@@ -48,10 +48,11 @@ Out= In %>%
          Measure= case_when(
            dose=="1"~ "Vaccination1",
            dose=="2"~ "Vaccination2",
+           dose=="fully" ~ "Vaccination2",
            dose=="3"~ "Vaccination3")) %>% 
-        mutate( Measure = case_when(
-           (vaccine == "JANSSEN" & dose == "fully") ~ "Vaccination2",
-           TRUE ~ Measure)) %>%  
+        # mutate( Measure = case_when(
+        #    (vaccine == "JANSSEN" & dose == "fully") ~ "Vaccination2",
+        #    TRUE ~ Measure)) 
   group_by(Date, Age, Sex, Region,Measure) %>% 
   summarize(Value = sum(doses_administered), .groups="drop")%>% 
   arrange(Sex, Date,Measure, Age, Region) %>%
@@ -93,11 +94,19 @@ small_ages <- Out %>%
   mutate(Age = "0",
          AgeInt = 5L,
          Value = "0")
+##adding total country
+totals <- Out %>% 
+  mutate(Value = as.numeric(Value)) %>% 
+  group_by(Country, Date, Sex, Age, AgeInt, Metric, Measure) %>% 
+  summarise(Value = sum(Value)) %>% 
+  mutate(Code = paste0("SK_", Date),
+         Region = "All")
 
-Out <- rbind(Out, small_ages) %>% 
+Out <- rbind(Out, small_ages, totals) %>% 
   sort_input_data()
 
-##adding total countrie data
+
+##adding total country data
 all <- Out %>% 
   mutate(Value = as.numeric(Value)) %>% 
 group_by(Date, Country, Age, Measure, AgeInt, Metric, Sex) %>% 
