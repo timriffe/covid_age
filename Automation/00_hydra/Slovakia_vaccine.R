@@ -94,6 +94,9 @@ small_ages <- Out %>%
   mutate(Age = "0",
          AgeInt = 5L,
          Value = "0")
+Out <- rbind(Out, small_ages) %>% 
+  sort_input_data()
+
 ##adding total country
 totals <- Out %>% 
   mutate(Value = as.numeric(Value)) %>% 
@@ -102,7 +105,7 @@ totals <- Out %>%
   mutate(Code = paste0("SK_", Date),
          Region = "All")
 
-Out <- rbind(Out, small_ages, totals) %>% 
+Out <- rbind(Out, totals) %>% 
   sort_input_data()
 
 
