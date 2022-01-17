@@ -197,6 +197,9 @@ if (nrow(rubric) > 0){
   try(inputDB_prior <- 
         inputDB_prior %>% 
         select(-y))
+  try(inputDB_prior <- 
+        inputDB_prior %>% 
+        select(-`.`))
   
   inputDB_out <-
     inputDB_prior %>% 
@@ -283,7 +286,6 @@ if (schedule_this){
   taskscheduler_create(taskname = "COVerAGE-DB-inputDB-updates-test", 
                        rscript =  here::here("R/01_update_inputDB.R"), 
                        schedule = "ONCE", 
-                       starttime = "10:54",
-                       startdate = format(Sys.Date(), "%m/%d/%Y"))
+                       starttime = "17:11")
   # 
 }
