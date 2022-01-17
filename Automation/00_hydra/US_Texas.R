@@ -24,7 +24,7 @@ ss_db    <- rubric_i %>% dplyr::pull(Source)
 # reading data from Drive and last date entered
 #db_drive <- get_country_inputDB("US_TX")
 
-db_drive <- read_rds(paste0(dir_n, ctr, ".rds"))
+db_drive <- read_rds(paste0(dir_n,"deprecated/", ctr, ".rds"))
 
 last_date_drive <- db_drive %>%
   mutate(date_f = dmy(Date)) %>%
