@@ -274,6 +274,18 @@ Out <-
          Age, AgeInt, Metric, Measure, Value) %>% 
   sort_input_data()
 
+#fix for smaller age groups
+small_ages <- Out %>% 
+  filter(Age == "12") %>% 
+  mutate(AgeInt = case_when(
+    Age == "12" ~ 12L
+  ),
+  Age = "0",
+  Value = 0)
+
+Out <- rbind(Out, small_ages) %>% 
+  sort_input_data()
+
 #include previous data, think issue with wrong codes was because 
 #previous data was appended and after that "Short" was used, 
 #which is not included anymore in the data archive
@@ -283,6 +295,9 @@ Out_final1 = bind_rows(DataArchive,Out)%>%
   ungroup() %>% 
   dplyr::filter(keep) %>% 
   select(-keep)
+
+
+
 #Out_final2= Out_final1 %>%
 #subset(Code!= "ES_Datos del 13/05_NA")%>%# delete armed forces from region 
 #subset(Code!= "ES_Sanidad Exterior_NA")%>%
