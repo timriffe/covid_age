@@ -225,11 +225,12 @@ if (nrow(rubric) > 0){
   # saveRDS(inputDB_out, here::here("Data","inputDB.rds"))
   data.table::fwrite(inputDB_out, file = here::here("Data","inputDB_internal.csv"))
   #saveRDS(inputDB, here("Data","inputDB_i.rds"))
-  
+  Sys.sleep(1)
   # public file, full precision.
   header_msg <- paste("COVerAGE-DB input database, filtered after some simple checks:",timestamp(prefix = "", suffix = ""))
   data.table::fwrite(as.list(header_msg), 
                      file = here::here("Data","inputDB.csv"))
+  Sys.sleep(1)
   data.table::fwrite(inputDB_out, 
                      file = here::here("Data","inputDB.csv"), 
                      append = TRUE, col.names = TRUE)
