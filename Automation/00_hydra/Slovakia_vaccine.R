@@ -42,12 +42,12 @@ Out= In %>%
                           "X"="UNK",
                           "U"="UNK")) %>%
   separate(AgeGroup, c("Age", "Age2"), "-")%>%
+  filter(dose != "2") %>% 
   mutate(Age= case_when(Age =="80+" ~ "80",
                      is.na(Age) ~ "UNK",
                      TRUE ~ Age),
          Measure= case_when(
            dose=="1"~ "Vaccination1",
-           dose=="2"~ "Vaccination2",
            dose=="fully" ~ "Vaccination2",
            dose=="3"~ "Vaccination3")) %>% 
         # mutate( Measure = case_when(
@@ -103,22 +103,23 @@ totals <- Out %>%
   group_by(Country, Date, Sex, Age, AgeInt, Metric, Measure) %>% 
   summarise(Value = sum(Value)) %>% 
   mutate(Code = paste0("SK_", Date),
-         Region = "All")
+         Region = "All") %>% 
+  sort_input_data()
 
 Out <- rbind(Out, totals) %>% 
   sort_input_data()
 
 
 ##adding total country data
-all <- Out %>% 
-  mutate(Value = as.numeric(Value)) %>% 
-group_by(Date, Country, Age, Measure, AgeInt, Metric, Sex) %>% 
-  summarise(Value = sum(Value)) %>% 
-  mutate(Region = "All",
-         Code = paste0("SK_", Date))
-
-Out <- rbind(Out, all) %>% 
-  sort_input_data()
+# all <- Out %>% 
+#   mutate(Value = as.numeric(Value)) %>% 
+# group_by(Date, Country, Age, Measure, AgeInt, Metric, Sex) %>% 
+#   summarise(Value = sum(Value)) %>% 
+#   mutate(Region = "All",
+#          Code = paste0("SK_", Date))
+# 
+# Out <- rbind(Out, all) %>% 
+#   sort_input_data()
 
 #save output 
 
