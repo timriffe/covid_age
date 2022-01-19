@@ -69,6 +69,14 @@ vacc2 <- vacc %>%
          Code = paste0("GB_SCO_",Date)) %>% 
   sort_input_data()
 
+small_ages <- vacc2 %>% 
+  filter(Age == "12") %>% 
+  mutate(Age = 0,
+         AgeInt = 12L,
+         Value = 0)
+
+vacc2 <- rbind(vacc2, small_ages) %>% 
+  sort_input_data()
 #save output data
 
 write_rds(vacc2, paste0(dir_n, ctr, ".rds"))

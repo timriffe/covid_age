@@ -20,8 +20,29 @@ gs4_auth(email = email)
 ctr          <- "Switzerland_Vaccine" # it's a placeholder
 dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
+
+m_url <- "https://opendata.swiss/en/dataset/covid-19-schweiz"
+links_age <- scraplinks(m_url) %>% 
+  filter(str_detect(url, "COVID19VaccPersons_AKL10_w_v2.csv")) %>% 
+  select(url) 
+
+url_age <- 
+  links_age %>% 
+  select(url) %>% 
+  dplyr::pull()
+
+
+links_sex <- scraplinks(m_url) %>% 
+  filter(str_detect(url, "COVID19VaccPersons_sex_w_v2.csv")) %>% 
+  select(url) 
+
+url_sex <- 
+  links_sex %>% 
+  select(url) %>% 
+  dplyr::pull()
+
 #####vaccination by age
-vacc <- read.csv("https://www.covid19.admin.ch/api/data/20211210-1g5ejled/sources/COVID19VaccPersons_AKL10_w_v2.csv")
+vacc <- read.csv(url_age)
 vacc2 <- vacc %>% 
   filter(type != "COVID19PartiallyVaccPersons") %>% 
   filter(age_group_type == "age_group_AKL10") %>% 
@@ -85,7 +106,7 @@ mutate(Sex = "b",
 
 
 ###vaccinations by sex
-vaccsex <- read.csv("https://www.covid19.admin.ch/api/data/20211210-1g5ejled/sources/COVID19VaccPersons_sex_w_v2.csv")
+vaccsex <- read.csv(url_sex)
 vaccsex2 <- vaccsex %>% 
   filter(type != "COVID19PartiallyVaccPersons") %>% 
   select(YearWeekISO = date, Region = geoRegion, Sex = sex, Measure = type, Value = sumTotal)
@@ -285,9 +306,9 @@ write_rds(out, paste0(dir_n, ctr, ".rds"))
 log_update(pp = ctr, N = nrow(out))
 
 #zip input data
-cases_url1 <- "https://www.covid19.admin.ch/api/data/20211210-1g5ejled/sources/COVID19VaccPersons_AKL10_w_v2.csv"
+cases_url1 <- url_age
 data_source1 <- paste0(dir_n, "Data_sources/", ctr, "/vaccination_age",today(), ".csv")
-cases_url2 <- "https://www.covid19.admin.ch/api/data/20211210-1g5ejled/sources/COVID19VaccPersons_sex_w_v2.csv"
+cases_url2 <- url_sex
 data_source2 <- paste0(dir_n, "Data_sources/", ctr, "/vaccination_sex",today(), ".csv")
 download.file(cases_url1, destfile = data_source1, mode = "wb")
 download.file(cases_url2, destfile = data_source2, mode = "wb")
