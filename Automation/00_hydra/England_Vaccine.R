@@ -61,7 +61,14 @@ vacc_out <- vacc_out %>%
     Code = paste0("GB_EN_",Date)) %>% 
   sort_input_data()
 
+small_ages <- vacc_out %>% 
+  filter(Age == "12") %>% 
+  mutate(Age = "0",
+         AgeInt = 12L,
+         Value = "0")
 
+vacc_out <- rbind(vacc_out, small_ages) %>% 
+  sort_input_data()
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # uploading database to Google Drive and N
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

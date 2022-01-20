@@ -15,6 +15,12 @@ library(rvest)
 library(lubridate)
 library(googlesheets4)
 
+# info country and N drive address
+ctr    <- "SouthKorea"
+dir_n  <- "N:/COVerAGE-DB/Automation/Hydra/"
+dir_n_source <- "N:/COVerAGE-DB/Automation/SouthKorea"
+
+
 # Data preparation --------------------------------------------------------
 sk_url <-"http://ncov.mohw.go.kr/en/bdBoardList.do?brdId=16&brdGubun=161&dataGubun=&ncvContSeq=&contSeq=&board_id="
 
@@ -124,7 +130,7 @@ new_combos <- new_data %>%
   distinct()
 
 # this now pulls from N, rubric redirected
-current_db <- get_country_inputDB("KR")
+current_db <- read_rds(paste0(dir_n, ctr, ".rds"))
 
 current_combos <- current_db %>% 
   select(Date, Sex, Age, Measure) %>% 
@@ -141,16 +147,39 @@ db_out <- bind_rows(current_db, new_data) %>%
   sort_input_data()
 
 # Data push ---------------------------------------------------------------
-ss_kr <- get_input_rubric() %>% 
-  dplyr::filter(Short == "KR") %>% 
-  dplyr::pull(Sheet)
+# ss_kr <- get_input_rubric() %>% 
+#   dplyr::filter(Short == "KR") %>% 
+#   dplyr::pull(Sheet)
 
 
 # sheet_write(db_out, 
 #             ss = ss_kr, 
 #             sheet = "database")
 
-write_rds(db_out, file = "N:/COVerAGE-DB/Automation/Hydra/SouthKorea.rds")
-log_update(pp = "SouthKorea", N = nrow(new_data))
+write_rds(db_out,  paste0(dir_n, ctr, ".rds"))
 
-#  sched("SouthKorea", tm = "14:15", email = "tim.riffe@gmail.com", wd = here())
+log_update("SouthKorea", N = nrow(new_data))
+
+#archive input data 
+
+data_source <- paste0(dir_n, "Data_sources/", ctr,today(), ".csv")
+
+write_csv(new_data, data_source)
+
+
+zipname <- paste0(dir_n, 
+                  "Data_sources/", 
+                  ctr,
+                  "/", 
+                  ctr,
+                  "_data_",
+                  today(), 
+                  ".zip")
+
+zip::zipr(zipname, 
+          data_source, 
+          recurse = TRUE, 
+          compression_level = 9,
+          include_directories = TRUE)
+
+file.remove(data_source)

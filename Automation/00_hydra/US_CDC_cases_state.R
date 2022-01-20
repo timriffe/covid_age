@@ -58,19 +58,21 @@ dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 #read in data faster 
 
-data1=read_parquet("K:/CDC_Covid/covid_case_restricted_detailed-master_25_10_2021/COVID_Cases_Restricted_Detailed_10252021_Part_1.parquet")
-data2=read_parquet("K:/CDC_Covid/covid_case_restricted_detailed-master_25_10_2021/COVID_Cases_Restricted_Detailed_10252021_Part_2.parquet")
+data1=read_parquet("K:/CDC_Covid/covid_case_restricted_detailed-master_03_01_2022/COVID_Cases_Restricted_Detailed_01032022_Part_1.parquet")
+data2=read_parquet("K:/CDC_Covid/covid_case_restricted_detailed-master_03_01_2022/COVID_Cases_Restricted_Detailed_01032022_Part_2.parquet")
+data3=read_parquet("K:/CDC_Covid/covid_case_restricted_detailed-master_03_01_2022/COVID_Cases_Restricted_Detailed_01032022_Part_3.parquet")
 
 
 # Add datasets vertically
-IN <- rbind(data1, data2)
+IN <- rbind(data1, data2, data3)
 
-#rm(data1,data2);gc()
-#glimpse(IN)
-#states <- c("AZ","AR", "DE","GU","ID","KS","ME","MA","MN","MT","NV","NJ","NC","OK","OR","PA","SC","TN","VA")
+rm(data1,data2);gc()
+glimpse(IN)
+states <- c("AZ","AR", "DE","GU","ID","KS","ME","MA","MN","MT","NV","NJ","NC","OK","OR","PA","SC","TN","VA")
 
 Out <-
   IN %>%
+  filter(res_state %in% states) %>%
   select(Date = cdc_case_earliest_dt, 
          Sex = sex, 
          Age = age_group, 
@@ -137,7 +139,7 @@ mutate(
                    `TN`= "Tennessee",	
                    `VA`=  "Virginia"),
     Code= paste0 ("US_", State, Date)) %>% 
-  select(Country, Region, State, Code, Date, Sex, 
+  select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)
 
 View(Out)

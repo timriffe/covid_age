@@ -143,6 +143,15 @@ outtot <- vacctot %>%
 
 out <- rbind(out1, out2, outtot)
 
+##adding ages 0 to 9
+small_ages<- out %>% 
+  filter(Age == "10") %>% 
+  mutate(Age = "0",
+         AgeInt = 2L,
+         Value = "0")
+out <- rbind(out, small_ages) %>% 
+  sort_input_data()
+
 #converting to character, because combining did not work otherwise 
 #db_drive <- db_drive %>% 
  # mutate(AgeInt = as.character(AgeInt))

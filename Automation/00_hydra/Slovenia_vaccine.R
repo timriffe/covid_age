@@ -57,9 +57,10 @@ Out_vaccine= In_vaccine%>%
          -vaccination.janssen.delivered, -vaccination.janssen.delivered.todate)%>%
   pivot_longer(!date, names_to = "x", values_to = "Value")%>%
   separate(x, c("1", "2", "3", "4", "5", "6"), "\\.") %>% 
-  select(Date= date, Age=`3`, `4`, Measure= `5`, Value)%>%
+  select(Date= date, Age=`3`, `4`, Measure= `5`, Value) %>% 
   mutate(AgeInt = case_when(
-    Age == "0" ~ 18L,
+    Age == "0" ~ 12L,
+    Age == "12" ~ 7L,
     Age == "18" ~ 7L,
     Age == "90" ~ 15L,
     Age == "UNK" ~ NA_integer_,
@@ -78,8 +79,12 @@ Out_vaccine= In_vaccine%>%
                  year(Date),sep="."),
     Code = paste0("SI",Date),
     Country = "Slovenia",
-    Region = "All",)%>% 
-  filter(!is.na(Value))%>%#remove some empty cells for beginning of vaccine process
+    Region = "All") %>% 
+  mutate(Value = as.numeric(Value)) %>% 
+mutate(Value = case_when(
+  is.na(Value) ~ 0,
+  TRUE ~ Value
+)) %>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)
 

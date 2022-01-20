@@ -46,10 +46,14 @@ headers <- read.csv("https://covid19.mhlw.go.jp/public/opendata/deaths_detail_cu
 headers <- headers[1,]
 headers <- reshape2::melt(headers, id = c("V1"))
 headers <- headers %>% 
-  filter(value != "")
+  filter(value != "") 
 headers2 <- headers[rep(seq_len(nrow(headers)), each = (length(death2$Week)/48)), ]  # Base R
 names(headers2)[3] <- "Region"
-headers2 <- headers2[-c(1,2)]
+headers2 <- headers2[-c(1,2)]%>% 
+  mutate(Region = case_when(
+    Region == "ALL" ~ "All",
+    TRUE ~ Region
+  ))
 death3 <- bind_cols(death2, headers2)
 
 death4 <- death3 %>% 
@@ -88,7 +92,7 @@ death4 <- death4[,-c(1,5)]
 death5 <- death4 %>% 
   mutate(Code = case_when(
 Region=="Akita" ~ "JP_05_",       
-Region=="ALL" ~ "JP_",   
+Region=="All" ~ "JP_",   
 Region=="Fukuoka" ~ "JP_40_",   
 Region=="Fukushima" ~ "JP_07_",       
 Region=="Gifu" ~ "JP_21_",        
@@ -145,6 +149,19 @@ death5 <- death5[,-11]
 cases <- read_csv("https://covid19.mhlw.go.jp/public/opendata/confirmed_cases_detail_cumulative_weekly.csv", skip = 1)
 cases2 <- setDT(cases)
 cases2 <- melt(cases2, id = c("Week"))
+headers <- read.csv("https://covid19.mhlw.go.jp/public/opendata/confirmed_cases_detail_cumulative_weekly.csv", header = FALSE)
+headers <- headers[1,]
+headers <- reshape2::melt(headers, id = c("V1"))
+headers <- headers %>% 
+  filter(value != "")
+headers2 <- headers[rep(seq_len(nrow(headers)), each = (length(cases2$Week)/48)), ]  # Base R
+names(headers2)[3] <- "Region"
+headers2 <- headers2[-c(1,2)]%>% 
+  mutate(Region = case_when(
+    Region == "ALL" ~ "All",
+    TRUE ~ Region
+  ))
+
 cases3 <- bind_cols(cases2, headers2)
 
 cases4 <- cases3 %>% 
@@ -186,7 +203,7 @@ cases4 <- cases4[,-c(1,5)]
 cases5 <- cases4 %>% 
   mutate(Code = case_when(
     Region=="Akita" ~ "JP_05_",       
-    Region=="ALL" ~ "JP_",   
+    Region=="All" ~ "JP_",   
     Region=="Fukuoka" ~ "JP_40_",   
     Region=="Fukushima" ~ "JP_07_",       
     Region=="Gifu" ~ "JP_21_",        
@@ -252,14 +269,15 @@ totcases4 <- totcases2 %>%
          AgeInt = NA,
          Country = "Japan",
          Measure = "Cases",
-         Metric = "Count")
+         Metric = "Count")%>% 
+  mutate(Region = recode(Region, "ALL" = "All"))
 
 
 #coding for regions need to be done
 totcases5 <- totcases4 %>% 
   mutate(Code = case_when(
     Region=="Akita" ~ "JP_05_",       
-    Region=="ALL" ~ "JP_",   
+    Region=="All" ~ "JP_",   
     Region=="Fukuoka" ~ "JP_40_",   
     Region=="Fukushima" ~ "JP_07_",       
     Region=="Gifu" ~ "JP_21_",        
@@ -329,14 +347,15 @@ totdeath4 <- totdeath2 %>%
          AgeInt = NA,
          Country = "Japan",
          Measure = "Death",
-         Metric = "Count")
+         Metric = "Count")%>% 
+  mutate(Region = recode(Region, "ALL" = "All"))
 
 
 #coding for regions need to be done
 totdeath5 <- totdeath4 %>% 
   mutate(Code = case_when(
     Region=="Akita" ~ "JP_05_",       
-    Region=="ALL" ~ "JP_",   
+    Region=="All" ~ "JP_",   
     Region=="Fukuoka" ~ "JP_40_",   
     Region=="Fukushima" ~ "JP_07_",       
     Region=="Gifu" ~ "JP_21_",        
