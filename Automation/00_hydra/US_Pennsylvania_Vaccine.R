@@ -22,7 +22,8 @@ gs4_auth(email = email)
 
 # reading in archive data  
 
-DataArchive <- read_rds(paste0(dir_n, ctr, ".rds"))
+DataArchive <- read_rds(paste0(dir_n, ctr, ".rds")) %>% 
+  mutate(Value = as.numeric(Value))
 
 last_date_archive <- DataArchive %>% 
   mutate(date_max = dmy(Date)) %>% 
@@ -141,6 +142,15 @@ Out <- bind_rows(DataArchive,
                 Out_vaccine_age,
                 Out_vaccine_sex)
 
+##adding age group 0 to 9
+small_ages <- Out %>% 
+  filter(Age == "10") %>% 
+  mutate(Age = "0",
+         AgeInt = 10L,
+         Value = 0)
+
+Out <- rbind(Out, small_ages) %>% 
+  sort_input_data()
 #save output 
 
 write_rds(Out, paste0(dir_n, ctr, ".rds"))

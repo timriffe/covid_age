@@ -80,8 +80,8 @@ Out_vaccine= In_vaccine%>%
          Metric = "Count",
          Sex= "b")%>%
   mutate(AgeInt = case_when(
-    Age == "0" ~ 12L,
-    Age == "12" ~ 8L,
+    Age == "12" ~ 4L,
+    Age == "18" ~ 4L,
     Age == "80" ~ 25L,
     Age == "UNK" ~ NA_integer_,
     TRUE ~ 5L))%>% 
@@ -97,12 +97,21 @@ Out_vaccine= In_vaccine%>%
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)
 
+small_ages <- Out_vaccine %>% 
+  filter(Age == "12") %>% 
+  mutate(Age = 0,
+         AgeInt = 12L,
+         Value = 0)
 
+Out_vaccine <- rbind(Out_vaccine, small_ages) %>% 
+  sort_input_data()
 
 #put together
 
 
 Out= rbind(DataArchive,Out_vaccine)
+
+
 
 #save output 
 
@@ -133,13 +142,6 @@ file.remove(data_source)
 } else if (date == last_date_archive) {
   log_update(pp = ctr, N = 0)
 }
-
-
-
-
-
-
-
 
 
 

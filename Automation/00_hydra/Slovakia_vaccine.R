@@ -42,15 +42,22 @@ Out= In %>%
                           "X"="UNK",
                           "U"="UNK")) %>%
   separate(AgeGroup, c("Age", "Age2"), "-")%>%
-  mutate(Age= recode(Age, 
-                     "80+"="80"),
-         Measure= recode(dose,
-                       "1"= "Vaccination1",
-                       "2"= "Vaccination2",
-                       "3"= "Vaccination3"))%>%
+  filter(dose != "2") %>% 
+  mutate(Age= case_when(Age =="80+" ~ "80",
+                     is.na(Age) ~ "UNK",
+                     TRUE ~ Age),
+         Measure= case_when(
+           dose=="1"~ "Vaccination1",
+           dose=="fully" ~ "Vaccination2",
+           dose=="3"~ "Vaccination3")) %>% 
+        # mutate( Measure = case_when(
+        #    (vaccine == "JANSSEN" & dose == "fully") ~ "Vaccination2",
+        #    TRUE ~ Measure)) 
   group_by(Date, Age, Sex, Region,Measure) %>% 
   summarize(Value = sum(doses_administered), .groups="drop")%>% 
-  arrange(Sex, Date,Measure, Age, Region) %>% 
+  arrange(Sex, Date,Measure, Age, Region) %>%
+  ungroup() %>% 
+  tidyr::complete(Age, nesting(Sex, Date, Measure, Region), fill=list(Value=0)) %>%  
   group_by(Sex,Measure, Age, Region) %>% 
   mutate(Value = cumsum(Value)) %>% 
   ungroup()%>%
@@ -78,9 +85,41 @@ Out= In %>%
     Code = paste0("SK_",Short,Date),
     Country = "Slovakia")%>% 
   select(Country, Region, Code, Date, Sex, 
-         Age, AgeInt, Metric, Measure, Value)
+         Age, AgeInt, Metric, Measure, Value) %>% 
+  sort_input_data()
+
+##adding ages o to 9
+small_ages <- Out %>% 
+  filter(Age == "5") %>% 
+  mutate(Age = "0",
+         AgeInt = 5L,
+         Value = "0")
+Out <- rbind(Out, small_ages) %>% 
+  sort_input_data()
+
+##adding total country
+totals <- Out %>% 
+  mutate(Value = as.numeric(Value)) %>% 
+  group_by(Country, Date, Sex, Age, AgeInt, Metric, Measure) %>% 
+  summarise(Value = sum(Value)) %>% 
+  mutate(Code = paste0("SK_", Date),
+         Region = "All") %>% 
+  sort_input_data()
+
+Out <- rbind(Out, totals) %>% 
+  sort_input_data()
 
 
+##adding total country data
+# all <- Out %>% 
+#   mutate(Value = as.numeric(Value)) %>% 
+# group_by(Date, Country, Age, Measure, AgeInt, Metric, Sex) %>% 
+#   summarise(Value = sum(Value)) %>% 
+#   mutate(Region = "All",
+#          Code = paste0("SK_", Date))
+# 
+# Out <- rbind(Out, all) %>% 
+#   sort_input_data()
 
 #save output 
 

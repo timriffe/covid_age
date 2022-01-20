@@ -57,15 +57,17 @@ vacc_out <- vacc %>%
   filter(Demographic_category != "Race_eth_unknown") %>% 
   filter(Demographic_category != "Sex_known") %>% 
   filter(Demographic_category != "US") %>% 
-  mutate(Age = case_when(
+  filter(Demographic_category != "Ages_<12yrs") %>% 
+  filter(Demographic_category != "Ages_12-17_yrs") %>% 
+    mutate(Age = case_when(
     Demographic_category == "Age_unknown" ~ "UNK",
+    Demographic_category == "Ages_<5yrs" ~ "0",
+    Demographic_category == "Ages_5-11_yrs" ~ "5",
     Demographic_category == "Ages_12-15_yrs" ~ "12",
-    Demographic_category == "Ages_12-17_yrs" ~ "12",
     Demographic_category == "Ages_16-17_yrs" ~ "16",
     Demographic_category == "Ages_18-24_yrs" ~ "18",
     Demographic_category == "Ages_25-39_yrs" ~ "25",
     Demographic_category == "Ages_40-49_yrs" ~ "40",
-    Demographic_category == "Ages_5-11_yrs" ~ "5",
     Demographic_category == "Ages_50-64_yrs" ~ "50",
     Demographic_category == "Ages_65-74_yrs" ~ "65",
     Demographic_category == "Ages_75+_yrs" ~ "75",
@@ -74,6 +76,7 @@ vacc_out <- vacc %>%
     Demographic_category == "Sex_unknown" ~ "TOT"),
     Sex = case_when(
       Demographic_category == "Age_unknown" ~ "b",
+      Demographic_category == "Ages_<5yrs" ~ "b",
       Demographic_category == "Ages_12-15_yrs" ~ "b",
       Demographic_category == "Ages_12-17_yrs" ~ "b",
       Demographic_category == "Ages_16-17_yrs" ~ "b",
@@ -88,8 +91,8 @@ vacc_out <- vacc %>%
       Demographic_category == "Sex_Male" ~ "m",
       Demographic_category == "Sex_unknown" ~ "UNK"),
     AgeInt = case_when(
+      Demographic_category == "Ages_<5yrs" ~ 5L,
       Demographic_category == "Ages_12-15_yrs" ~ 4L,
-      Demographic_category == "Ages_12-17_yrs" ~ 6L,
       Demographic_category == "Ages_16-17_yrs" ~ 2L,
       Demographic_category == "Ages_18-24_yrs" ~ 7L,
       Demographic_category == "Ages_25-39_yrs" ~ 15L,
@@ -406,7 +409,7 @@ log_update(pp = ctr, N = nrow(vacc_out2))
 
 # now archive new data 
 
-data_source <- paste0(dir_n, "Data_sources/", ctr, "/vaccine_age_",date_f, ".csv")
+data_source <- paste0(dir_n, "Data_sources/", ctr, "/vaccine_age_",today(), ".csv")
 
 write_csv(vacc_out2, data_source)
 
@@ -418,7 +421,7 @@ zipname <- paste0(dir_n,
                   "/", 
                   ctr,
                   "vaccine_data_",
-                  date_f, 
+                  today(), 
                   ".zip")
 
 zip::zipr(zipname, 

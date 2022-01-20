@@ -56,7 +56,8 @@ Vaccine_out_reg= Vaccine_in%>%
                         "14"="Sachsen",
                         "15"="Sachsen-Anhalt",
                         "16"="Thüringen"))%>%
-  filter(Region!= "17")%>%
+  filter(Region!= "17",
+         Region != "u")%>%
   select(Date=Impfdatum, Age= Altersgruppe, Measure= Impfschutz, Value=Anzahl, Region)%>%
   #sum subregional level to regional level
   group_by(Date, Age, Region, Measure)%>%
@@ -83,33 +84,19 @@ Vaccine_out_reg= Vaccine_in%>%
                            Region == 'Sachsen-Anhalt' ~ 'DE_ST_',
                            Region == 'Schleswig-Holstein' ~ 'DE_SH_',
                            Region == 'Thüringen' ~ 'DE_TH_'),
-         Region= recode(Region, 
-                        "Baden-Württemberg" = "BW",
-                        "Bayern" = "BY",
-                        "Berlin" ="BE",
-                        "Brandenburg" = "BB",
-                        "Bremen" = "HB",
-                        "Hamburg" = "HH",
-                        "Hessen" = "HE",
-                        "Mecklenburg-Vorpommern" = "MV",
-                        "Niedersachsen" = "NI",
-                        "Nordrhein-Westfalen" = "NW",
-                        "Rheinland-Pfalz" = "RP",
-                        "Saarland" = "SL",
-                        "Sachsen" = "SN",
-                        "Sachsen-Anhalt" = "ST",
-                        "Schleswig-Holstein" = "SH",
-                        "Thüringen" = "TH"),
          Measure= recode(Measure,
                          "1"= "Vaccination1",
                          "2"="Vaccination2",
                          "3"="Vaccination3"),
          Age=recode(Age, 
+                    "05-11"="5",
                     "12-17"="12",
                     "18-59"="18",
                     "60+"="60",
-                    "u"="UNK"),
-         AgeInt = case_when(
+                    "u"="UNK")) %>% 
+  tidyr::complete(Age, nesting(Date, Measure, Region), fill=list(Value=0)) %>% 
+        mutate(AgeInt = case_when(
+           Age == "5" ~ 7L,
            Age == "12" ~ 6L,
            Age == "18" ~ 42L,
            Age == "60" ~ 45L),
@@ -145,11 +132,14 @@ Vaccine_out_all= Vaccine_in%>%
                          "2"="Vaccination2",
                          "3"="Vaccination3"),
          Age=recode(Age, 
+                    "05-11"="5",
                     "12-17"="12",
                     "18-59"="18",
                     "60+"="60",
-                    "u"="UNK"),
-         AgeInt = case_when(
+                    "u"="UNK")) %>% 
+  tidyr::complete(Age, nesting(Date, Measure), fill=list(Value=0)) %>%   
+  mutate(AgeInt = case_when(
+           Age == "5" ~ 7L,
            Age == "12" ~ 6L,
            Age == "18" ~ 42L,
            Age == "60" ~ 45L),
@@ -169,6 +159,21 @@ Vaccine_out_all= Vaccine_in%>%
 
 #final output dataset
 Vaccine_out=rbind(Vaccine_out_all,Vaccine_out_reg)
+
+
+
+##adding age group 0 to 4
+small_ages <- Vaccine_out %>% 
+  filter(Age == "5") %>% 
+  mutate(Age = "0",
+         AgeInt = 5L,
+         Value = 0)
+Vaccine_out <- rbind(Vaccine_out, small_ages) %>% 
+  sort_input_data()
+# Vaccine_out2 <- Vaccine_out %>% 
+#   tidyr::complete(Date, Age, Country, Region, Code, AgeInt, Sex, Metric, Measure, fill = list(Value = 0))
+
+
 write_rds(Vaccine_out, paste0(dir_n, ctr, ".rds"))
 
 # updating hydra dashboard

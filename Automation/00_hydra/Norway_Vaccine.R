@@ -41,6 +41,12 @@ vacc_in <- vacc_in %>%
 separate(ï..Kilde..Nasjonalt.vaksinasjonsregister.SYSVAK..FHI, c("Age","Dose1 male", "Dose1 female","Dose2 male","Dose2 female"), sep = (";"))
 vacc_in <- melt(vacc_in, id= c("Age", "Date"))
 names(vacc_in)[4] <- "Value"
+
+
+  
+
+
+
 vacc_out <- vacc_in %>% 
   mutate(AgeInt=case_when(
     Age == "0-15 Ã¥r" ~ 16L,
@@ -82,18 +88,30 @@ vacc_out <- vacc_in %>%
       variable == "Dose2 male" ~ "m",
       variable == "Dose2 female" ~ "f"   
     )) %>% 
-  filter(Date != "2021-12-07") %>% 
+  filter(Date != "2021-12-07") 
+
+
+##adding 0 to 11 from 27.09.2021
+vacc_zero <- vacc_out %>% 
+  filter(Date >= "2021-09-28",
+         Age == 12) %>% 
+  mutate(Age = 0,
+         AgeInt = 12L,
+         Value = 0)
+
+vacc_out <- rbind(vacc_out, vacc_zero) %>% 
   mutate(
-    Date = ymd(Date),
-    Date = paste(sprintf("%02d",day(Date)),    
-                 sprintf("%02d",month(Date)),  
-                 year(Date),sep="."),
+     Date = ymd(Date),
+     Date = paste(sprintf("%02d",day(Date)),    
+                  sprintf("%02d",month(Date)),  
+                  year(Date),sep="."),
     Code = paste0("NO",Date),
-    Country = "Norway",
+     Country = "Norway",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)%>% 
-  mutate(Value = as.character(Value))
+  mutate(Value = as.character(Value)) %>% 
+  sort_input_data()
 
 #upload 
 
