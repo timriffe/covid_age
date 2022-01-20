@@ -183,36 +183,27 @@ if (nrow(rubric) > 0){
   # -------------------------------------- #
   # now swap out data in inputDB files
   
-  ids_new       <- with(inputDB, paste(Country,Region,Measure,Short))
-  inputDB_prior <-
-  data.table::fread(file = here::here("Data","inputDB.csv"),
-                    encoding = "UTF-8") %>% 
-    mutate(Short = add_Short(Code,Date))
+  # ids_new       <- with(inputDB, paste(Country,Region,Measure,Short))
+  # inputDB_prior <-
+  # data.table::fread(file = here::here("Data","inputDB.csv"),
+  #                   encoding = "UTF-8") %>% 
+  #   mutate(Short = add_Short(Code,Date))
   # inputDB_prior <- readRDS(here::here("Data","inputDB.rds")) %>% 
   #   mutate(Short = add_Short(Code,Date))
   
   # EA: temporal fix while solving issue with additional columns in the InputDB.csv
 
   
-  try(inputDB_prior <- 
-        inputDB_prior %>% 
-        select(-y))
-  try(inputDB_prior <- 
-        inputDB_prior %>% 
-        select(-`.`))
+  # try(inputDB_prior <- 
+  #       inputDB_prior %>% 
+  #       select(-y))
+  # try(inputDB_prior <- 
+  #       inputDB_prior %>% 
+  #       select(-`.`))
   
   inputDB_out <-
-    inputDB_prior %>% 
-    mutate(checkid = paste(Country,Region,Measure,Short)) %>% 
-    filter(!checkid %in% ids_new) %>% 
-    select(-checkid) %>% 
-    bind_rows(inputDB) %>% 
-    sort_input_data()
-  
-  # TR: added 09.11.2020 because some people seem to reserve blocks in the database with NAs. hmm.
-  inputDB_out <- 
-    # inputDB %>% 
-    inputDB_out %>% 
+    inputDB %>% 
+    sort_input_data() %>% 
     filter(!is.na(Value),
            !is.na(Region),
            !is.na(Country),
