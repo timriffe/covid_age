@@ -118,7 +118,7 @@ if (length(files_new) > 0){
            Date = paste(sprintf("%02d",day(Date)),    
                         sprintf("%02d",month(Date)),  
                         year(Date),sep="."),
-           Code = paste0("US_OR_",Date)) %>% 
+           Code = paste0("US-OR")) %>% 
     select(all_of(colnames(inOR))) %>% 
     sort_input_data()
 

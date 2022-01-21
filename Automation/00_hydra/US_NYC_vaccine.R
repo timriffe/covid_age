@@ -59,9 +59,9 @@ out_vaccine_age= In%>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("US_NY",Date),
+    Code = paste0("US-NYC+"),
     Country = "USA",
-    Region = "New York",)%>% 
+    Region = "New York City",)%>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)
 
@@ -86,9 +86,9 @@ Sex_out_vaccine= In %>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("US_NY",Date),
+    Code = paste0("US-NYC+"),
     Country = "USA",
-    Region = "New York",)%>% 
+    Region = "New York City",)%>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)
 

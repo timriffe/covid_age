@@ -127,7 +127,7 @@ in2 <-
                       "NC" = "UNK"),
          #Date = ddmmyyyy(Date),
          Country = "Spain",
-         Code = paste("ES",Short,Date,sep="_"),
+         Code = paste("ES",Short,sep="-"),
          Metric = "Count",
          AgeInt = case_when(
            Age == "80" ~ 25L,
@@ -156,7 +156,7 @@ nal <- in2 %>%
   group_by(Country, Date, Sex, Age, AgeInt, Metric, Measure) %>% 
   summarise(Value = sum(Value), .groups = "drop") %>% 
   mutate(Region = "All",
-         Code = paste("ES", Date, sep="_")) %>% 
+         Code = paste("ES")) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
 
 out <- bind_rows(nal, in2) %>% 

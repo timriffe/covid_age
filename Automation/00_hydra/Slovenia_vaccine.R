@@ -77,7 +77,7 @@ Out_vaccine= In_vaccine%>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("SI",Date),
+    Code = paste0("SI"),
     Country = "Slovenia",
     Region = "All") %>% 
   mutate(Value = as.numeric(Value)) %>% 

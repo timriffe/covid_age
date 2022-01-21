@@ -71,7 +71,7 @@ data_age <-
   mutate(Country = "South Korea",
          Region = "All",
          Date = ddmmyyyy(today()),
-         Code = paste("KR", Date, sep = ""),
+         Code = paste("KR"),
          Sex = "b",
          AgeInt = case_when(Age %in% c("0", "10", "20", "30", "40", "50", "60", "70") ~ 10L,
                                       Age == "80" ~ 25L),
@@ -102,7 +102,7 @@ all_the_tables[gender_table_i][[1]] %>%
         Date = ddmmyyyy(today()),
         Country = "South Korea",
         Region = "All",
-        Code = paste("KR", Date, sep = ""))
+        Code = paste("KR"))
   
 cases_total <-
 all_the_tables[total_cases_i][[1]] %>% 
@@ -114,7 +114,7 @@ all_the_tables[total_cases_i][[1]] %>%
          Region = "All",
          Measure = "Cases",
          Metric = "Count",
-         Code = paste0("KR",Date),
+         Code = paste0("KR"),
          AgeInt = NA_integer_,
          Value = as.numeric(Value))
 

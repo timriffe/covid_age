@@ -76,9 +76,9 @@ vacc3 <- vacc2 %>%
                       sprintf("%02d",month(Date)),  
                       year(Date),sep=".")) %>% 
   mutate(Code = case_when(
-    Region == "CH" ~ paste0("CH_",Date),
-    Region == "FL" ~ paste0("FL_",Date),
-  TRUE ~ paste0("CH_",Region,"_",Date)
+    Region == "CH" ~ paste0("CH"),
+    Region == "FL" ~ paste0("FL"),
+  TRUE ~ paste0("CH-",Region)
     )) %>% 
   filter(Region != "CHFL") %>% 
   filter(Region != "all") %>% 
@@ -131,9 +131,9 @@ vaccsex3 <- vaccsex2 %>%
                       sprintf("%02d",month(Date)),  
                       year(Date),sep=".")) %>% 
   mutate(Code = case_when(
-    Region == "CH" ~ paste0("CH_",Date),
-    Region == "FL" ~ paste0("FL_",Date),
-    TRUE ~ paste0("CH_",Region,"_",Date)
+    Region == "CH" ~ paste0("CH"),
+    Region == "FL" ~ paste0("FL"),
+    TRUE ~ paste0("CH-",Region)
   )) %>% 
   filter(Region != "CHFL") %>% 
   filter(Region != "all") %>% 

@@ -224,7 +224,7 @@ Cases <-
   mutate(Country = "Philippines",
          Region = "All",
          Date = ddmmyyyy(Date),
-         Code = paste0("PH", Date),
+         Code = paste0("PH"),
          Metric = "Count",
          Measure = "Cases",
          AgeInt = ifelse(Age == as.character(maxA), as.character(105 - maxA), 1),
@@ -270,7 +270,7 @@ Deaths <-
   mutate(Country = "Philippines",
          Region = "All",
          Date = ddmmyyyy(Date),
-         Code = paste0("PH", Date),
+         Code = paste0("PH"),
          Metric = "Count",
          Measure = "Deaths",
          AgeInt = ifelse(Age == maxAc, 
@@ -298,7 +298,7 @@ Tests <-
          AgeInt = NA,
          Sex = "b",
          Age = "TOT",
-         Code = paste0("PH",Date)) %>% 
+         Code = paste0("PH")) %>% 
   dplyr::select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
 
 out <-

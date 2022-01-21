@@ -103,7 +103,7 @@ Out_cases= IN_cases%>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("US_IN",Date),
+    Code = paste0("US-IN"),
     Country = "USA",
     Region = "Indiana",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -148,7 +148,7 @@ Out_death= IN_death%>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("US_IN",Date),
+    Code = paste0("US-IN"),
     Country = "USA",
     Region = "Indiana",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -201,7 +201,7 @@ Out_vaccine_age = IN_vaccine_age%>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("US_IN",Date),
+    Code = paste0("US-IN"),
     Country = "USA",
     Region = "Indiana",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -241,7 +241,7 @@ select(Sex= gender, fully_vaccinated, first_dose_administered, Date= current_as_
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("US_IN",Date),
+    Code = paste0("US-IN"),
     Country = "USA",
     Region = "Indiana",)%>% 
   select(Country, Region, Code, Date, Sex, 

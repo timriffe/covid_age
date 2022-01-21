@@ -179,7 +179,7 @@ Deaths_out <-
   Deaths %>% 
   mutate(Country = "Slovakia",
          Date = ddmmyyyy(Date),
-         Code = paste0("SK",Date),
+         Code = paste0("SK"),
          Measure = "Deaths",
          Metric = "Count",
          AgeInt = ifelse(Age == "UNK",NA_integer_,5)) %>% 
@@ -363,7 +363,7 @@ Cases_out <-
   Cases %>% 
   mutate(Country = "Slovakia",
          Date = ddmmyyyy(Date),
-         Code = paste0("SK",Date),
+         Code = paste0("SK"),
          Measure = "Cases",
          Metric = "Count",
          AgeInt = ifelse(Age == "UNK",NA_integer_,5)) %>% 

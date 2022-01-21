@@ -119,7 +119,7 @@ vacc_out2 <- vacc_out %>%
          Date = paste(sprintf("%02d",day(Date)),    
                       sprintf("%02d",month(Date)),  
                       year(Date),sep="."),
-         Code = paste0("US_",Date))%>% 
+         Code = paste0("US"))%>% 
   sort_input_data()
 #read in age data fully vaccinated 
 

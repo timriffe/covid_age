@@ -66,7 +66,7 @@ vacc2 <- vacc %>%
   mutate(Country = "Scotland",
          Region = "All",
          Metric = "Count",
-         Code = paste0("GB_SCO_",Date)) %>% 
+         Code = paste0("GB-SCT")) %>% 
   sort_input_data()
 
 small_ages <- vacc2 %>% 

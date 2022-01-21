@@ -69,7 +69,7 @@ Out= IN_vaccine%>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("US_MN",Date),
+    Code = paste0("US-MN"),
     Country = "USA",
     Region = "Minnesota",)%>% 
   select(Country, Region, Code, Date, Sex, 

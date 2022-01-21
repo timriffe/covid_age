@@ -194,7 +194,7 @@ if (date_f > last_date_drive){
   out <- bind_rows(db_cases, db_deaths, db_totals) %>%
     mutate(Country = "USA",
            Region = "Texas",
-           Code = paste0("US_TX", date),
+           Code = paste0("US-TX"),
            Date = date,
            AgeInt = case_when(Age == "0" ~ "1",
                               Age == "1" ~ "9",

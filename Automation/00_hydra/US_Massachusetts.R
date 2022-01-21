@@ -217,7 +217,7 @@ db_all <-
          Date = paste(sprintf("%02d", day(date_f)),
                       sprintf("%02d", month(date_f)),
                       year(date_f), sep = "."),
-         Code = paste0("US_MA", Date),
+         Code = paste0("US-MA"),
          Metric = "Count") %>% 
   arrange(date_f, Sex, Measure, suppressWarnings(as.integer(Age))) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
@@ -346,7 +346,7 @@ out_vac <-
     Country = "USA",
     Region = "Massachusetts",
     Date = paste(sprintf("%02d", day(date_f)),  sprintf("%02d", month(date_f)), year(date_f), sep = "."),
-    Code = paste0("US_MA", Date),
+    Code = paste0("US-MA"),
     Metric = "Count",
   ) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 

@@ -105,7 +105,7 @@ if (date_f > last_date_drive){
     gather(Cases, Deaths, key = Measure, value = Value) %>% 
     mutate(Country = "Sweden",
            Region = "All",
-           Code = paste0("SE", date),
+           Code = paste0("SE"),
            Date = date,
            AgeInt = case_when(
              Age == "TOT" | Age == "UNK" ~ ""
@@ -292,7 +292,7 @@ if (date_f > last_date_drive){
       bind_rows(vac_s2, vac_a2, vac_a3) %>% 
       mutate(Country = "Sweden",
              Region = "All",
-             Code = paste0("SE", date),
+             Code = paste0("SE"),
              Date = date,
              Metric = "Count"
       ) %>% 

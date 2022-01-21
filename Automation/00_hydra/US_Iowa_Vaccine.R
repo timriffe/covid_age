@@ -93,7 +93,7 @@ Out_vaccine <- Out_vaccine %>%
   mutate(Date= ddmmyyyy(Date)) %>% 
   mutate(Country = "USA",
            Region = "Iowa",
-           Code = paste0("US_IA",Date),
+           Code = paste0("US-IA"),
            Metric = "Count") %>% 
   sort_input_data()
 write_rds(Out_vaccine, paste0(dir_n, ctr, ".rds"))

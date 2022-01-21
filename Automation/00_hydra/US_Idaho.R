@@ -94,7 +94,7 @@ death_out= death_in %>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("US_ID",Date),
+    Code = paste0("US-ID"),
     Country = "USA",
     Region = "Idaho",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -147,7 +147,7 @@ death_tot_out= death_in_tot%>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("US_ID",Date),
+    Code = paste0("US-ID"),
     Country = "USA",
     Region = "Idaho",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -199,7 +199,7 @@ death_out_sex= death_in_sex%>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("US_ID",Date),
+    Code = paste0("US-ID"),
     Country = "USA",
     Region = "Idaho",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -254,7 +254,7 @@ cases_age_out=cases_in %>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("US_ID",Date),
+    Code = paste0("US-ID"),
     Country = "USA",
     Region = "Idaho",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -360,7 +360,7 @@ Date = ymd(Date),
 Date = paste(sprintf("%02d",day(Date)),    
                     sprintf("%02d",month(Date)),  
                    year(Date),sep="."),
-       Code = paste0("US_ID",Date),
+       Code = paste0("US-ID"),
        Country = "USA",
        Region = "Idaho",)%>% 
      select(Country, Region, Code, Date, Sex, 
@@ -410,7 +410,7 @@ vaccine1_tot_out= tot_vaccine1_in%>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("US_ID",Date),
+    Code = paste0("US-ID"),
     Country = "USA",
     Region = "Idaho",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -456,7 +456,7 @@ vaccine2_tot_out= tot_vaccine2_in%>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("US_ID",Date),
+    Code = paste0("US-ID"),
     Country = "USA",
     Region = "Idaho",)%>% 
   select(Country, Region, Code, Date, Sex, 

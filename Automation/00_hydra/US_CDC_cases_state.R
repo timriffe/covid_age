@@ -138,7 +138,7 @@ mutate(
                    `SC`= "South Carolina",	
                    `TN`= "Tennessee",	
                    `VA`=  "Virginia"),
-    Code= paste0 ("US_", State, Date)) %>% 
+    Code= paste0 ("US-", State)) %>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)
 

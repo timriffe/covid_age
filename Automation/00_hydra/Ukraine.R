@@ -64,7 +64,7 @@ deaths_ined <- db_age %>%
          AgeInt = case_when(Age == "90" ~ 15,
                             Age == "TOT" ~ NA_real_,
                             TRUE ~ 10),
-         Code = paste0('UA', Date)) %>%
+         Code = paste0('UA')) %>%
   sort_input_data()
   
 

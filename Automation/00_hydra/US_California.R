@@ -81,7 +81,7 @@ CAage <-
          Region = "California",
          Metric = "Count",
          Date = ddmmyyyy(Date),
-         Code = paste0("US_CA_",Date),
+         Code = paste0("US-CA"),
          AgeInt = case_when(Age == "0" ~ 18L,
                             Age == "18" ~ 32L,
                             Age == "50" ~ 15L,
@@ -114,7 +114,7 @@ CAsex <-
          Date = paste(sprintf("%02d",day(Date)),    
                       sprintf("%02d",month(Date)),  
                       year(Date),sep="."),
-         Code = paste0("US_CA_",Date),
+         Code = paste0("US-CA"),
          Age = "TOT",
          AgeInt = NA_integer_)%>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
@@ -151,7 +151,7 @@ vaccine=CAvaccine_in %>%
          Region = "California",
          Metric = "Count",
          Date = ddmmyyyy(Date),
-         Code = paste0("US_CA_",Date)) %>% 
+         Code = paste0("US-CA")) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
   sort_input_data()
 

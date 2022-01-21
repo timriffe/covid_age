@@ -44,7 +44,7 @@ death3 <- death2 %>%
     Metric = "Count") %>% 
 arrange(Date, Sex, Age) %>% 
   mutate(Date= ddmmyyyy(Date),
-         Code = paste0("PR",Date),
+         Code = paste0("PR"),
          Age = case_when(Age == "0 a 9" ~ "0",
                          Age == "10 a 19" ~ "10",
                          Age == "20 a 29" ~ "20",
@@ -83,7 +83,7 @@ cases3 <- cases2 %>%
          Metric = "Count") %>% 
   arrange(Date, Sex, Age) %>% 
   mutate(Date= ddmmyyyy(Date),
-         Code = paste0("PR",Date),
+         Code = paste0("PR"),
          Age = as.character(Age),
          Age = case_when(is.na(Age) ~ "UNK",
            TRUE ~ Age),
@@ -118,7 +118,7 @@ tests3 <- tests2 %>%
          Metric = "Count") %>% 
   arrange(Date, Sex, Age) %>%  
   mutate(Date= ddmmyyyy(Date),
-         Code = paste0("PR",Date),
+         Code = paste0("PR"),
          Age = case_when(Age == "0 a 9" ~ "0",
                          Age == "10 a 19" ~ "10",
                          Age == "20 a 29" ~ "20",
@@ -161,7 +161,7 @@ vaccine3 <- vaccine2 %>%
          Metric = "Count") %>% 
   arrange(Date, Sex, Age) %>%  
   mutate(Date= ddmmyyyy(Date),
-         Code = paste0("PR",Date),
+         Code = paste0("PR"),
          Age = case_when(Age == "12 a 15" ~ "12",
                          Age == "16 a 19" ~ "16",
                          Age == "20 a 29" ~ "20",
@@ -203,7 +203,7 @@ vaccine5 <- vaccine4 %>%
          Metric = "Count") %>% 
   arrange(Date, Sex, Age) %>%  
   mutate(Date= ddmmyyyy(Date),
-         Code = paste0("PR",Date),
+         Code = paste0("PR"),
          Age = case_when(Age == "12 a 15" ~ "12",
                          Age == "16 a 19" ~ "16",
                          Age == "20 a 29" ~ "20",
