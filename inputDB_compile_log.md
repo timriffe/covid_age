@@ -1,31 +1,32 @@
 
-# 2022-01-22 inputDB updates 
- Sat Jan 22 23:07:10 2022 
+# 2022-01-25 inputDB updates 
+ Tue Jan 25 23:07:11 2022 
 
 
-# 2022-01-22 23:07:10 updates 
- Sat Jan 22 23:07:10 2022 
+# 2022-01-25 23:07:11 updates 
+ Tue Jan 25 23:07:11 2022 
 
 
 # Filter valid Measure entries: 
- Sun Jan 23 02:26:45 2022 
+ Wed Jan 26 02:33:25 2022 
 
 Valid Measures include: Cases,Deaths,Tests,ASCFR,Vaccinations,Vaccination1,Vaccination2,Vaccination3,VaccinationBooster
- 416679 rows removed
+ 415080 rows removed
 # Filter valid Metric entries: 
- Sun Jan 23 02:26:47 2022 
+ Wed Jan 26 02:33:36 2022 
 
 Valid Metrics include: Count,Fraction,Ratio
  14 rows removed
 # Filter valid Sex entries: 
- Sun Jan 23 02:26:51 2022 
+ Wed Jan 26 02:33:38 2022 
 
 Valid Sex values include: m,f,b,UNK
- 160301 rows removed
+ 160349 rows removed
 # Duplicates detected. Following `Code`s removed: 
- Sun Jan 23 02:29:10 2022 
+ Wed Jan 26 02:36:07 2022 
 
 AL10.01.2022
+AL23.01.2022
 BM15.03.2021
 CM05.08.2020
 CM12.08.2020
@@ -2091,6 +2092,16 @@ FR_MAR11.12.2021
 FR_MAR12.12.2021
 FR_MAR13.12.2021
 FR_MAR14.12.2021
+FR_MAR15.12.2021
+FR_MAR16.12.2021
+FR_MAR17.12.2021
+FR_MAR18.12.2021
+FR_MAR19.12.2021
+FR_MAR20.12.2021
+FR_MAR21.12.2021
+FR_MAR22.12.2021
+FR_MAR23.12.2021
+FR_MAR24.12.2021
 NA27.12.2020
 NA28.12.2020
 NA29.12.2020
@@ -2449,7 +2460,6 @@ NA02.01.2022
 NA11.01.2022
 NA16.01.2022
 NA17.01.2022
-NA21.01.2022
 NA10.08.2021
 NA14.08.2021
 NA18.08.2021
@@ -2470,6 +2480,8 @@ NA07.01.2022
 NA09.01.2022
 NA14.01.2022
 NA20.01.2022
+NA23.01.2022
+NA24.01.2022
 NA15.12.2021
 NA17.12.2021
 NA23.12.2021
@@ -2481,6 +2493,8 @@ NA12.01.2022
 NA13.01.2022
 NA18.01.2022
 NA19.01.2022
+NA21.01.2022
+NA22.01.2022
 NA15.01.2022
 GT04.07.2020
 HN30.01.2021
@@ -7753,6 +7767,7 @@ PS18.01.2021
 PS19.01.2021
 PS20.01.2021
 PS21.01.2021
+PS24.01.2021
 PE
 PE-AMA
 PE-ANC
@@ -7779,6 +7794,7 @@ PE-SAM
 PE-TAC
 PE-TUM
 PE-UCA
+PH
 PR
 RO
 RW14.02.2021
@@ -8040,6 +8056,7 @@ US_IDNA.NA.NA
 US_ID10.01.2022
 US_ID14.01.2022
 US_CDC_IL28.11.2020
+US-IN
 US_CDC_IN28.11.2020
 US_IN13.08.2021
 US_CDC_IA28.11.2020
@@ -8466,11 +8483,11 @@ US-WI
 US_CDC_WI28.11.2020
 US_CDC_WY28.11.2020
 # Bad Dates detected. Following `Code`s removed: 
- Sun Jan 23 02:29:19 2022 
+ Wed Jan 26 02:36:16 2022 
 
 US_IANA.NA.NA
 # Future Dates detected. Following `Code`s removed: 
- Sun Jan 23 02:29:26 2022 
+ Wed Jan 26 02:36:32 2022 
 
 JO26.12.2022
 PS26.04.2022
