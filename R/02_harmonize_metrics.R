@@ -12,7 +12,8 @@ logfile <- here("buildlog.md")
 ### Get data ########################################################
 
 
-inputDB <- readRDS(here("Data","inputDBresolved.rds"))
+inputDB <- data.table::fread(here("Data","inputDBresolved.csv"),
+                             encoding = "UTF-8")
 
 
 # this script transforms the inputDB as required, and produces standardized measures and metrics
@@ -63,7 +64,7 @@ A <- AA[ , try_step(process_function = convert_fractions_sexes,
 # Convert fractions within sexes to counts
 A <- A[ , try_step(process_function = convert_fractions_within_sex,
                    chunk = .SD,
-                   byvars = c("Code","Sex","Measure"),
+                   byvars = c("Code", "Sex", "Measure"),
                    logfile = logfile),
         by=list(Country, Region, Date, Sex, Measure), 
         .SDcols = icols][,..icols]
@@ -186,8 +187,8 @@ inputCounts <- J[ , AgeInt := add_AgeInt(Age, omega = 105),
   as.data.frame()
 
 # Save
-saveRDS(inputCounts, file = here("Data","inputCounts.rds"))
-
+# saveRDS(inputCounts, file = here("Data","inputCounts.rds"))
+data.table::fwrite(inputCounts, file = here::here("Data","inputCounts.csv"))
 # List of everything
 COMPONENTS <- list(inputDB = inputDB, 
                    A = A, 
@@ -202,4 +203,4 @@ COMPONENTS <- list(inputDB = inputDB,
 
 # Save list
 save(COMPONENTS, file = here::here("Data","ProcessingSteps.Rdata"))
-
+rm(A,B,C,D,E,G,H,I,J,COMPONENTS);gc()

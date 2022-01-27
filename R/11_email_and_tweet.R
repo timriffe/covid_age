@@ -16,8 +16,8 @@ log_section("update build series log", append = TRUE, logfile = logfile)
 
 
 Date <- lubridate::today()
-idb  <- readRDS(here::here("Data","inputDB.rds"))
-o5   <- readRDS(here::here("Data","Output_5.rds"))
+idb  <- data.table::fread(here::here("Data","inputDB_internal.csv"),encoding = "UTF-8")
+o5   <- data.table::fread(here::here("Data","Output_5_internal.csv"),encoding = "UTF-8")
 
 append_this <- tibble(Date = Date,
                       `Rows (inputDB)` = nrow(idb),

@@ -12,7 +12,7 @@ check_mf <- function(Sex, isECDC){
   rep(TRUE, length(Sex))
 }
 
-idb <- readRDS(here("Data","inputDB.rds"))
+idb <- data.table::fread(here("Data","inputDB_internal.csv"),encoding = "UTF-8")
 
 idb <- idb %>% 
   mutate(Date = dmy(Date),
@@ -289,7 +289,7 @@ cat("ECDC resolved\n",n1-n2,"rows removed\n", file = logfile, append = TRUE)
 # here, Code column should no longer identify source. #
 # --------------------------------------------------- #
 
-saveRDS(idb,file= "Data/inputDBresolved.rds")
+data.table::fwrite(idb,file= "Data/inputDBresolved.csv")
 
 # idb <-
 #   idb %>% 

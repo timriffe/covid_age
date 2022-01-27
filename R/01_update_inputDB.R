@@ -72,8 +72,8 @@ if (nrow(rubric) > 0){
         inputDB %>% 
         select(-y))
   
-  
-  saveRDS(inputDB, here::here("Data","inputDBhold.rds"))
+  data.table::fwrite(inputDB, file = here::here("Data","inputDBhold.csv"))
+  # saveRDS(inputDB, here::here("Data","inputDBhold.rds"))
   # what data combinations have we read in?
   
   # TR: templateID is temporary:
@@ -183,32 +183,27 @@ if (nrow(rubric) > 0){
   # -------------------------------------- #
   # now swap out data in inputDB files
   
-  ids_new       <- with(inputDB, paste(Country,Region,Measure,Short))
-  
-  inputDB_prior <- readRDS(here::here("Data","inputDB.rds")) %>% 
-    mutate(Short = add_Short(Code,Date))
+  # ids_new       <- with(inputDB, paste(Country,Region,Measure,Short))
+  # inputDB_prior <-
+  # data.table::fread(file = here::here("Data","inputDB.csv"),
+  #                   encoding = "UTF-8") %>% 
+  #   mutate(Short = add_Short(Code,Date))
+  # inputDB_prior <- readRDS(here::here("Data","inputDB.rds")) %>% 
+  #   mutate(Short = add_Short(Code,Date))
   
   # EA: temporal fix while solving issue with additional columns in the InputDB.csv
-  try(inputDB_prior <- 
-        inputDB_prior %>% 
-        select(-'2499'))
+
   
-  try(inputDB_prior <- 
-        inputDB_prior %>% 
-        select(-y))
+  # try(inputDB_prior <- 
+  #       inputDB_prior %>% 
+  #       select(-y))
+  # try(inputDB_prior <- 
+  #       inputDB_prior %>% 
+  #       select(-`.`))
   
   inputDB_out <-
-    inputDB_prior %>% 
-    mutate(checkid = paste(Country,Region,Measure,Short)) %>% 
-    filter(!checkid %in% ids_new) %>% 
-    select(-checkid) %>% 
-    bind_rows(inputDB) %>% 
-    sort_input_data()
-  
-  # TR: added 09.11.2020 because some people seem to reserve blocks in the database with NAs. hmm.
-  inputDB_out <- 
-    # inputDB %>% 
-    inputDB_out %>% 
+    inputDB %>% 
+    sort_input_data() %>% 
     filter(!is.na(Value),
            !is.na(Region),
            !is.na(Country),
@@ -218,14 +213,15 @@ if (nrow(rubric) > 0){
   #   inputDB_out %>% 
   #   filter(Country != "1")
   
-  saveRDS(inputDB_out, here::here("Data","inputDB.rds"))
-  
+  # saveRDS(inputDB_out, here::here("Data","inputDB.rds"))
+  data.table::fwrite(inputDB_out, file = here::here("Data","inputDB_internal.csv"))
   #saveRDS(inputDB, here("Data","inputDB_i.rds"))
-  
+  Sys.sleep(1)
   # public file, full precision.
   header_msg <- paste("COVerAGE-DB input database, filtered after some simple checks:",timestamp(prefix = "", suffix = ""))
   data.table::fwrite(as.list(header_msg), 
                      file = here::here("Data","inputDB.csv"))
+  Sys.sleep(1)
   data.table::fwrite(inputDB_out, 
                      file = here::here("Data","inputDB.csv"), 
                      append = TRUE, col.names = TRUE)
@@ -262,7 +258,7 @@ if (schedule_this){
   library(taskscheduleR)
   taskscheduler_delete("COVerAGE-DB-thrice-weekly-inputDB-updates")
   taskscheduler_create(taskname = "COVerAGE-DB-thrice-weekly-inputDB-updates", 
-                       rscript =  here("R","01_update_inputDB.R"), 
+                       rscript =  here::here("R","01_update_inputDB.R"), 
                        schedule = "WEEKLY",
                        days = c("SAT","TUE","THU"),
                        starttime = "23:07")
@@ -282,7 +278,6 @@ if (schedule_this){
   taskscheduler_create(taskname = "COVerAGE-DB-inputDB-updates-test", 
                        rscript =  here::here("R/01_update_inputDB.R"), 
                        schedule = "ONCE", 
-                       starttime = "08:44",
-                       startdate = format(Sys.Date(), "%m/%d/%Y"))
+                       starttime = "17:11")
   # 
 }

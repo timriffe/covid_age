@@ -31,7 +31,7 @@ library(here)
 
 # the most inclusive dataset:
 captured <- 
-  readRDS(here::here("Data/inputDBhold.rds")) %>% 
+  data.table::fread(here::here("Data/inputDBhold.csv")) %>% 
   filter(Age != "TOT",
          Age != "UNK") %>% 
   mutate(date = dmy(Date),
@@ -49,7 +49,7 @@ captured <-
 # what has made it through to the end:
 
 processed <- 
-  readRDS(here::here("Data/Output_10.rds")) %>% 
+  data.table::fread(here::here("Data/Output_10_internal.csv")) %>% 
   mutate(date = dmy(Date),
          date = as.character(date),
          Region = case_when(grepl("ITinfo", Code) ~ "All (infogr.)",

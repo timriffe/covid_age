@@ -56,7 +56,8 @@ guess_chile_url <- function(days = 20){
   yr    <- year(dates)
   mth   <- sprintf("%02d",month(dates))
   dy    <- sprintf("%02d",day(dates))
-  maybe_urls <- paste0("https://repositoriodeis.minsal.cl/DatosAbiertos/VITALES/DEFUNCIONES_FUENTE_DEIS_2016_",yr,"_",dy,mth,yr,".zip")
+                       # "https://repositoriodeis.minsal.cl/DatosAbiertos/VITALES/DEFUNCIONES_FUENTE_DEIS_2016_2021_20012022.zip"
+  maybe_urls <- paste0("https://repositoriodeis.minsal.cl/DatosAbiertos/VITALES/DEFUNCIONES_FUENTE_DEIS_2016_","2021","_",dy,mth,yr,".zip")
   
   TF <- sapply(maybe_urls, RCurl::url.exists)
   
@@ -72,7 +73,7 @@ guess_chile_url <- function(days = 20){
   correct_url
 }
 "https://repositoriodeis.minsal.cl/DatosAbiertos/VITALES/DEFUNCIONES_FUENTE_DEIS_2016_2021_18112021.zip"
-"https://repositoriodeis.minsal.cl/DatosAbiertos/2021/11/DEFUNCIONES_FUENTE_DEIS_2016_2021_18112021.zip"
+
 url_deaths= guess_chile_url()
 name_deaths = str_split(url_deaths, pattern = "/") %>% unlist() %>% rev() %>% '['(1)
 name_death_file= gsub(name_deaths,pattern="zip",replacement = "csv")
@@ -91,7 +92,9 @@ name_death_file= gsub(name_deaths,pattern="zip",replacement = "csv")
 data_source_zip <- paste0(dir_n, "Data_sources/", ctr, "/death_",today(), ".zip")
 #download zip file 
 options(timeout = 120)
-download.file(url_deaths, destfile = data_source_zip,  method = "curl")
+download.file(url_deaths, destfile = "test.zip",  method = "curl")
+
+
 
 #read file from zipfile 
 #dd_download= read.csv(unz(data_source_zip, name_death_file), sep = ";", header = FALSE)

@@ -39,11 +39,10 @@ if (schedule_this){
   #   startdate = format(Sys.Date(), "%m/%d/%Y"))
   taskscheduleR::taskscheduler_create(
     taskname = "COVerAGE-DB-automatic-weekly-build", 
-    rscript = here("R","build_pre.R"), 
+    rscript = here::here("R","build_pre.R"), 
     schedule = "WEEKLY",
     days = "FRI",
-    starttime = "16:20",
-    startdate = "12-07-2021")
+    starttime = "16:20")
 }
 
 #

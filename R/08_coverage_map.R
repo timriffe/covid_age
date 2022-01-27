@@ -41,7 +41,7 @@ if (class(db_pops)[1] == "try-error"){
 
 
 
-db_input <- readRDS(here("Data","inputDB.rds"))
+db_input <- data.table::fread(here("Data","inputDB_internal.csv"),encoding = "UTF-8")
 db_input <- db_input %>% 
   mutate(Country = ifelse(Country == "US","USA",Country))
 
