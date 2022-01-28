@@ -33,7 +33,7 @@ url_age <-
 
 
 links_sex <- scraplinks(m_url) %>% 
-  filter(str_detect(url, "COVID19VaccPersons_sex_w_v2.csv")) %>% 
+  dplyr::filter(str_detect(url, "COVID19VaccPersons_sex_w_v2.csv")) %>% 
   select(url) 
 
 url_sex <- 
@@ -44,8 +44,8 @@ url_sex <-
 #####vaccination by age
 vacc <- read.csv(url_age)
 vacc2 <- vacc %>% 
-  filter(type != "COVID19PartiallyVaccPersons") %>% 
-  filter(age_group_type == "age_group_AKL10") %>% 
+  dplyr::filter(type != "COVID19PartiallyVaccPersons") %>% 
+  dplyr::filter(age_group_type == "age_group_AKL10") %>% 
   select(YearWeekISO = date, Region = geoRegion, Age = altersklasse_covid19, Measure = type, Value = sumTotal)
 vacc2$YearWeekISO <- gsub("^(.{4})(.*)$",         # Apply gsub
                   "\\1-W\\2",
@@ -279,21 +279,6 @@ vaccsex3 <- vaccsex2 %>%
 # 
 # 
 # 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
