@@ -5,25 +5,38 @@ rubric <- get_input_rubric() %>%
 
 Lookup <- read_sheet(ss = "https://docs.google.com/spreadsheets/d/1gbP_TTqc96PxeZCpwKuZJB1sxxlfbBjlQj-oxXD2zAs/edit#gid=0")
 
-ii <- 14
-# Singapore not collected (5)
+ii <- 125
 (loc <- rubric$Short[ii])
 
-
+# get url
+ss <- rubric %>% dplyr::filter(Short == loc) %>% dplyr::pull(Sheet)
+# open in browser
+browseURL(ss)
 # for (loc in rubric$Short){
+# X <- read_sheet(ss, 
+#                    sheet = "database", 
+#                    na = "NA", 
+#                    col_types= "cccccciccc",
+#                    range = "database!A:J") %>% 
+#   mutate(Value = parse_number(Value)) %>% 
+#   left_join(Lookup, by = c("Country","Region")) %>% 
+#   dplyr::select(-Code) %>% 
+#   rename(Code = `ISO 3166-2`) %>% 
+#   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
+
 
 # get and fix database tab
 X <- get_country_inputDB(loc) %>% 
   left_join(Lookup, by = c("Country","Region")) %>% 
   dplyr::select(-Code) %>% 
   rename(Code = `ISO 3166-2`) %>% 
+  mutate(Code = ifelse(is.na(Code),`Internal Code`,Code )) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
 X
-# get url
-ss <- rubric %>% dplyr::filter(Short == loc) %>% dplyr::pull(Sheet)
+any(is.na(X$Region))
 
-# open in browser
-browseURL(ss)
+
+
 
 # post new data
 write_sheet(X, ss = ss, sheet = "database")
