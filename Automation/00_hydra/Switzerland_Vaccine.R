@@ -78,6 +78,7 @@ vacc3 <- vacc2 %>%
   mutate(Code = case_when(
     Region == "CH" ~ paste0("CH"),
     Region == "FL" ~ paste0("FL"),
+    Region == "unknown" ~ "CH-UNK+",
   TRUE ~ paste0("CH-",Region)
     )) %>% 
   filter(Region != "CHFL") %>% 
@@ -98,7 +99,8 @@ vacc3 <- vacc2 %>%
     Measure == "COVID19FirstBoosterPersons" ~ "Vaccination3"
   )) %>% 
 mutate(Sex = "b",
-  Metric = "Count")
+  Metric = "Count") %>% 
+  filter(Region != "neighboring_chfl")
 
 
 
@@ -133,6 +135,7 @@ vaccsex3 <- vaccsex2 %>%
   mutate(Code = case_when(
     Region == "CH" ~ paste0("CH"),
     Region == "FL" ~ paste0("FL"),
+    Region == "unknown" ~ "CH-UNK+",
     TRUE ~ paste0("CH-",Region)
   )) %>% 
   filter(Region != "CHFL") %>% 
@@ -153,7 +156,8 @@ vaccsex3 <- vaccsex2 %>%
     Measure == "COVID19FirstBoosterPersons" ~ "Vaccination3"
   )) %>% 
   mutate(Metric = "Count",
-         Age = "TOT")
+         Age = "TOT")%>% 
+  filter(Region != "neighboring_chfl")
 
 
 # ##death by sex

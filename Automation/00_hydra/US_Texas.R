@@ -17,10 +17,10 @@ drive_auth(email = email)
 gs4_auth(email = email)
 
 # TR: pull urls from rubric instead
-rubric_i <- get_input_rubric() %>% filter(Short == "US_TX")
-ss_i     <- rubric_i %>% dplyr::pull(Sheet)
-ss_db    <- rubric_i %>% dplyr::pull(Source)
-
+# rubric_i <- get_input_rubric() %>% filter(Short == "US_TX")
+# ss_i     <- rubric_i %>% dplyr::pull(Sheet)
+# ss_db    <- rubric_i %>% dplyr::pull(Source)
+# 
 # reading data from Drive and last date entered
 #db_drive <- get_country_inputDB("US_TX")
 
@@ -33,17 +33,17 @@ last_date_drive <- db_drive %>%
 
 
 # reading "Last updated" date from the website
-m_url     <- "https://dshs.texas.gov/coronavirus/additionaldata/"
-html      <- read_html(m_url)
-# xpath extracted when inspecting the date element
-date_text <-
-  html_nodes(html, xpath = '//*[@id="ctl00_ContentPlaceHolder1_uxContent"]/h6[1]/b') %>%
-  html_text()
-loc_date1 <- str_locate(date_text, "Last updated: ")[2] + 1
-loc_date2 <- str_locate(date_text, '\\)')[1] - 1
-date_f  <- mdy(str_sub(date_text, loc_date1, loc_date2))
-
-if (date_f > last_date_drive){
+# m_url     <- "https://dshs.texas.gov/coronavirus/additionaldata/"
+# html      <- read_html(m_url)
+# # xpath extracted when inspecting the date element
+# date_text <-
+#   html_nodes(html, xpath = '//*[@id="ctl00_ContentPlaceHolder1_uxContent"]/h6[1]/b') %>%
+#   html_text()
+# loc_date1 <- str_locate(date_text, "Last updated: ")[2] + 1
+# loc_date2 <- str_locate(date_text, '\\)')[1] - 1
+# date_f  <- mdy(str_sub(date_text, loc_date1, loc_date2))
+# 
+# if (date_f > last_date_drive){
   url <- "https://dshs.texas.gov/coronavirus/TexasCOVID19Demographics.xlsx"
   httr::GET(url, write_disk(tf <- tempfile(fileext = ".xlsx")))
 
@@ -257,10 +257,10 @@ write_rds(out2, paste0(dir_n,"deprecated/", ctr, ".rds"))
   file.remove(data_source)
   
 
-} else if (date_f == last_date_drive) {
-  cat(paste0("no new updates so far, last date: ", date_f))
-  log_update(pp = "US_Texas", N = 0)
-}
+# } else if (date_f == last_date_drive) {
+#   cat(paste0("no new updates so far, last date: ", date_f))
+#   log_update(pp = "US_Texas", N = 0)
+# }
 
 # TR : now, no matter what, whenever we rerun this script, we can still swap out totals,
 # and also do a re-sort. i.e. age stuff is always an append operation, but both-sex totals

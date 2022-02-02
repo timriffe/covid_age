@@ -78,6 +78,7 @@ Out <-
          Age = age_group, 
          State = res_state)%>%
   mutate(Sex =  case_when(is.na(Sex) ~ "UNK",
+                          Sex == "NA" ~ "UNK",
                         Sex== "Unknown" ~ "UNK",
                         Sex== "Missing" ~ "UNK",
                         Sex== "Other" ~ "UNK",

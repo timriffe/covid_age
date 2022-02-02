@@ -294,7 +294,8 @@ Out_final1 = bind_rows(DataArchive,Out)%>%
   mutate(keep = Value == max(Value)) %>% 
   ungroup() %>% 
   dplyr::filter(keep) %>% 
-  select(-keep)
+  select(-keep) %>% 
+  unique()
 
 
 

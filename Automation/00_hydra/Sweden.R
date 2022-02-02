@@ -43,7 +43,8 @@ date_f <- read_xlsx(data_source, sheet = 1) %>%
   ymd()
 
 # reading data from Drive and last date entered 
-db_drive <-  read_rds(paste0(dir_n, ctr, ".rds"))
+db_drive <-  read_rds(paste0(dir_n, ctr, ".rds")) %>% 
+  mutate(Code = "SE")
 
 last_date_drive <- db_drive %>% 
   filter(Measure %in% c("Cases","Deaths")) %>% 
@@ -175,9 +176,9 @@ if (date_f > last_date_drive){
   if (update_vaccines){
   print("New vaccination data available - updating..")  
     
-    vac_sex <- read_xlsx(data_source_vac, sheet = 5)
-    vac_age <- read_xlsx(data_source_vac, sheet = 3)
-    vacc3_age <- read_xlsx(data_source_vac, sheet = 4)
+    vac_sex <- read_xlsx(data_source_vac, sheet = 6)
+    vac_age <- read_xlsx(data_source_vac, sheet = 4)
+    vacc3_age <- read_xlsx(data_source_vac, sheet = 5)
     
     # Get data by sex
     

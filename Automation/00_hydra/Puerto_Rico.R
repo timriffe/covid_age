@@ -40,7 +40,7 @@ death3 <- death2 %>%
   group_by(Sex, Age) %>% 
   mutate(Value = cumsum(Value)) %>% 
   ungroup() %>% 
-  mutate(Measure = "Death",
+  mutate(Measure = "Deaths",
     Metric = "Count") %>% 
 arrange(Date, Sex, Age) %>% 
   mutate(Date= ddmmyyyy(Date),
@@ -157,7 +157,7 @@ vaccine3 <- vaccine2 %>%
   group_by(Sex, Age) %>% 
   mutate(Value = cumsum(Value)) %>% 
   ungroup() %>% 
-  mutate(Measure = "Vaccination 1",
+  mutate(Measure = "Vaccination1",
          Metric = "Count") %>% 
   arrange(Date, Sex, Age) %>%  
   mutate(Date= ddmmyyyy(Date),
@@ -199,7 +199,7 @@ vaccine5 <- vaccine4 %>%
   group_by(Sex, Age) %>% 
   mutate(Value = cumsum(Value)) %>% 
   ungroup() %>% 
-  mutate(Measure = "Vaccination 2",
+  mutate(Measure = "Vaccination2",
          Metric = "Count") %>% 
   arrange(Date, Sex, Age) %>%  
   mutate(Date= ddmmyyyy(Date),

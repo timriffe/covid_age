@@ -132,7 +132,7 @@ if (date_f > last_date_drive){
                         sprintf("%02d",month(date_f)),
                         year(date_f),
                         sep="."),
-           Code = paste0("NZ",Date),
+           Code = paste0("NZ"),
            Metric = "Count",
            Measure = "Cases",
            AgeInt = case_when(Age == "90" ~ 15,
@@ -204,7 +204,7 @@ db_v <-
   Country = "New Zealand",
   Region = "All",
   Date = ddmmyyyy(date),
-  Code = paste0("NZ",Date),
+  Code = paste0("NZ"),
   Metric = "Count")%>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)
@@ -311,7 +311,7 @@ db_v <-
                         sprintf("%02d",month(date_f)),
                         year(date_f),
                         sep="."),
-           Code = paste0("NZ",Date),
+           Code = paste0("NZ"),
            Metric = "Count") %>% 
     bind_rows(db_v)
   
