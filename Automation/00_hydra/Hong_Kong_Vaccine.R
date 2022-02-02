@@ -49,7 +49,7 @@ out_total= total %>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("CN_HK",Date),
+    Code = paste0("CN-HK"),
     Country = "China",
     Region = "Hong Kong",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -80,7 +80,7 @@ out_age= age %>%
          Date = paste(sprintf("%02d",day(Date)),    
                       sprintf("%02d",month(Date)),  
                       year(Date),sep="."),
-         Code = paste0("CN_HK",Date),
+         Code = paste0("CN-HK"),
          Country = "China",
          Region = "Hong Kong",)%>%
   select(Country, Region, Code, Date, Sex, 
@@ -102,7 +102,7 @@ out_sex= sex %>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("CN_HK",Date),
+    Code = paste0("CN-HK"),
     Country = "China",
     Region = "Hong Kong",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -115,6 +115,7 @@ out_sex= sex %>%
 out= rbind(DataArchive,out_total, out_age, out_sex)
 
 #save output 
+
 
 write_rds(out, paste0(dir_n, ctr, ".rds"))
 log_update(pp = ctr, N = nrow(out))

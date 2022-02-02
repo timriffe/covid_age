@@ -80,7 +80,7 @@ db_all <- bind_rows(db3, db5) %>%
                       sprintf("%02d", month(date_f)),
                       year(date_f), sep = "."),
          Country = "Estonia",
-         Code = paste0("EE_", Date),
+         Code = paste0("EE"),
          AgeInt = case_when(Age == "TOT" | Age == "UNK" ~ NA_real_, 
                             Age == "85" ~ 20,
                             TRUE ~ 5),

@@ -62,7 +62,7 @@ Deaths_out= Deaths_out%>%
                     `X_60to69`="60",
                     `X_70to79`="70",
                     `X_80to89`="80",
-                    `X_90andover`="80"))%>%
+                    `X_90andover`="90"))%>%
   mutate(AgeInt = case_when(
     Age == "90" ~ 15L,
     TRUE ~ 10L))%>% 
@@ -75,7 +75,7 @@ Deaths_out= Deaths_out%>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("JE",Date),
+    Code = paste0("JE"),
     Country = "Island of Jersey",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -150,7 +150,7 @@ Date)%>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("JE",Date),
+    Code = paste0("JE"),
     Country = "Island of Jersey",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 

@@ -89,7 +89,7 @@ Deaths <-
   mutate(Country = "Northern Ireland",
          Region = "All",
          Date = ddmmyyyy(Date),
-         Code = paste0("GB_NIR_",Date),
+         Code = paste0("GB-NIR"),
          Metric = "Count",
          Measure = "Deaths",
          AgeInt = case_when(

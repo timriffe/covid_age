@@ -68,22 +68,22 @@ Vaccine_out_reg= Vaccine_in%>%
   group_by(Age,Region,Measure) %>% 
   mutate(Value = cumsum(Value)) %>% 
   ungroup()%>%
-  mutate(Code1 = case_when(Region == 'Baden-Württemberg' ~ 'DE_BW_',
-                           Region == 'Bayern' ~ 'DE_BY_',
-                           Region == 'Berlin' ~ 'DE_BE_',
-                           Region == 'Brandenburg' ~ 'DE_BB_',
-                           Region == 'Bremen' ~ 'DE_HB_',
-                           Region == 'Hamburg' ~ 'DE_HH_',
-                           Region == 'Hessen' ~ 'DE_HE_',
-                           Region == 'Mecklenburg-Vorpommern' ~ 'DE_MV_',
-                           Region == 'Niedersachsen' ~ 'DE_NI_',
-                           Region == 'Nordrhein-Westfalen' ~ 'DE_NW_',
-                           Region == 'Rheinland-Pfalz' ~ 'DE_RP_',
-                           Region == 'Saarland' ~ 'DE_SL_',
-                           Region == 'Sachsen' ~ 'DE_SN_',
-                           Region == 'Sachsen-Anhalt' ~ 'DE_ST_',
-                           Region == 'Schleswig-Holstein' ~ 'DE_SH_',
-                           Region == 'Thüringen' ~ 'DE_TH_'),
+  mutate(Code1 = case_when(Region == 'Baden-Württemberg' ~ 'DE-BW',
+                           Region == 'Bayern' ~ 'DE-BY',
+                           Region == 'Berlin' ~ 'DE-BE',
+                           Region == 'Brandenburg' ~ 'DE-BB',
+                           Region == 'Bremen' ~ 'DE-HB',
+                           Region == 'Hamburg' ~ 'DE-HH',
+                           Region == 'Hessen' ~ 'DE-HE',
+                           Region == 'Mecklenburg-Vorpommern' ~ 'DE-MV',
+                           Region == 'Niedersachsen' ~ 'DE-NI',
+                           Region == 'Nordrhein-Westfalen' ~ 'DE-NW',
+                           Region == 'Rheinland-Pfalz' ~ 'DE-RP',
+                           Region == 'Saarland' ~ 'DE-SL',
+                           Region == 'Sachsen' ~ 'DE-SN',
+                           Region == 'Sachsen-Anhalt' ~ 'DE-ST',
+                           Region == 'Schleswig-Holstein' ~ 'DE-SH',
+                           Region == 'Thüringen' ~ 'DE-TH'),
          Measure= recode(Measure,
                          "1"= "Vaccination1",
                          "2"="Vaccination2",
@@ -94,7 +94,7 @@ Vaccine_out_reg= Vaccine_in%>%
                     "18-59"="18",
                     "60+"="60",
                     "u"="UNK")) %>% 
-  tidyr::complete(Age, nesting(Date, Measure, Region), fill=list(Value=0)) %>% 
+  tidyr::complete(Age, nesting(Date, Measure, Region, Code1), fill=list(Value=0)) %>% 
         mutate(AgeInt = case_when(
            Age == "5" ~ 7L,
            Age == "12" ~ 6L,
@@ -108,7 +108,7 @@ Vaccine_out_reg= Vaccine_in%>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0(Code1,Date))%>% 
+    Code = paste0(Code1))%>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)
 
@@ -152,7 +152,7 @@ Vaccine_out_all= Vaccine_in%>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("DE_All_",Date))%>% 
+    Code = paste0("DE"))%>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)
 

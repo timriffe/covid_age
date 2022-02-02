@@ -64,7 +64,7 @@ out1 <- vacc1 %>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("CL_All",Date),
+    Code = paste0("CL"),
     Country = "Chile",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -97,7 +97,7 @@ out2 <- vacc2 %>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("CL_All",Date),
+    Code = paste0("CL"),
     Country = "Chile",
     Region = "All",)%>% 
 select(Country, Region, Code, Date, Sex, 
@@ -130,7 +130,7 @@ outtot <- vacctot %>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("CL_All",Date),
+    Code = paste0("CL"),
     Country = "Chile",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 

@@ -247,7 +247,7 @@ if(dim(links_new_vacc)[1] > 0 | dim(links_new_cases)[1] > 0){
     bind_rows(db_cases, db_vcc) %>% 
     mutate(Date = ddmmyyyy(Date),
            Country = "Denmark",
-           Code = paste0("DK", Date),
+           Code = paste0("DK"),
            Region = "All",
            AgeInt = case_when(Age == "90" ~ 15L, 
                               Age == "TOT" ~ NA_integer_,

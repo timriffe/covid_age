@@ -102,7 +102,7 @@ Cases <-
     Country = "Finland",
     Region = "All",
     Date = ddmmyyyy(Date),
-    Code = paste0("FI",Date),
+    Code = paste0("FI"),
     Measure = "Cases",
     Metric = "Count") %>% 
   select(Country, Region, Code, Date, Sex, Age, 

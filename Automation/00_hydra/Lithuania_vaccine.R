@@ -89,7 +89,7 @@ select(Sex=sex, birth= birth_year_noisy, Date= vaccination_date, ID = pseudo_id,
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("LT_All",Date),
+    Code = paste0("LT"),
     Country = "Lithuania",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -167,7 +167,7 @@ Out_vaccine2= In %>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("LT_All",Date),
+    Code = paste0("LT"),
     Country = "Lithuania",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -205,7 +205,7 @@ Out_vaccine3= In %>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("LT_All",Date),
+    Code = paste0("LT"),
     Country = "Lithuania",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 

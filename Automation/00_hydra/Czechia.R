@@ -92,7 +92,7 @@ cz_cases_region_ss <-
          Metric = "Count", 
          Measure = "Cases",
          Date = ddmmyyyy(Date),
-         Code = paste("CZ", Region, Date, sep = "_")) %>% 
+         Code = paste("CZ", Region, sep = "-")) %>% 
   select(Country, 
          Region, 
          Code, 
@@ -168,7 +168,7 @@ cz_deaths_region_ss <-
          Metric = "Count", 
          Measure = "Deaths",
          Date = ddmmyyyy(Date),
-         Code = paste("CZ", Region, Date, sep = "_"),
+         Code = paste("CZ", Region, sep = "-"),
          Country = "Czechia") %>% 
   select(Country, 
          Region, 
@@ -249,7 +249,7 @@ cz_vaccines <-
     Country = "Czechia",
     Sex= "b",
     Date = ddmmyyyy(Date),
-    Code = paste("CZ", Region, Date, sep = "_"),
+    Code = paste("CZ", Region, sep = "-"),
     Metric= "Count") %>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)
@@ -310,7 +310,7 @@ cz_cases_all_ss <-
          Metric = "Count", 
          Measure = "Cases",
          Date = ddmmyyyy(Date),
-         Code = paste("CZ", Date, sep = "_")) %>% 
+         Code = paste("CZ")) %>% 
   select(Country, 
          Region, 
          Code, 
@@ -345,7 +345,7 @@ cz_deaths_all_ss <-
          Metric = "Count", 
          Measure = "Deaths",
          Date = ddmmyyyy(Date),
-         Code = paste("CZ", Date, sep = "_"),
+         Code = paste("CZ"),
          Country = "Czechia",
          Region = "All") %>% 
   select(Country, 

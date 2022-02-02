@@ -85,15 +85,15 @@ Out= In %>%
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
     Code = case_when( 
-      Country == "Bulgaria" ~  paste0("BG_",Date),
-      Country == "Croatia" ~  paste0("HR_",Date),
-      Country == "Cyprus" ~  paste0("CY_",Date),
-      Country == "Hungary" ~  paste0("HU_",Date),
-      Country == "Ireland" ~  paste0("IE_",Date),
-      Country == "Luxembourg" ~  paste0("LU_",Date),
-      Country == "Malta" ~  paste0("MT_",Date),
-      Country == "Poland" ~  paste0("PL_",Date),
-      Country == "Romania" ~  paste0("RO_",Date)))%>% 
+      Country == "Bulgaria" ~  paste0("BG"),
+      Country == "Croatia" ~  paste0("HR"),
+      Country == "Cyprus" ~  paste0("CY"),
+      Country == "Hungary" ~  paste0("HU"),
+      Country == "Ireland" ~  paste0("IE"),
+      Country == "Luxembourg" ~  paste0("LU"),
+      Country == "Malta" ~  paste0("MT"),
+      Country == "Poland" ~  paste0("PL"),
+      Country == "Romania" ~  paste0("RO")))%>% 
   mutate(AgeInt = case_when(
     Age == "15" ~ 3L,
     Age == "18" ~ 7L,

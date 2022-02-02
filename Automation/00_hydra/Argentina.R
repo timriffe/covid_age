@@ -79,7 +79,7 @@ out <-
             db_total_by_age,
             db_totals) %>% 
   sort_input_data()
-
+out$Code = substr(out$Code,1,nchar(out$Code)-10)
 
 ############################################
 #### saving database in N Drive ####

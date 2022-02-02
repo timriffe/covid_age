@@ -96,8 +96,24 @@ Out_vaccine= In_vaccine%>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("EE_",Region,Date),
     Country = "Estonia")%>% 
+  mutate(Code = case_when(
+    Region == "Harju maakond" ~ "EE-37",
+    Region == "Hiiu maakond" ~ "EE-39",
+    Region == "Ida-Viru maakond " ~ "EE-45",
+    Region == "JÃ¤rva maakond" ~ "EE-52",
+    Region == "JÃµgeva maakond" ~ "EE-50",
+    Region == "LÃ¤Ã¤ne-Viru maakond" ~ "EE-60",
+    Region == "LÃ¤Ã¤ne maakond" ~ "EE-56",
+    Region == "PÃ¤rnu maakond" ~ "EE-68",
+    Region == "PÃµlva maakond" ~ "EE-64",
+    Region == "Rapla maakond" ~ "EE-71",
+    Region == "Saare maakond" ~ "EE-74",
+    Region == "Tartu maakond" ~ "EE-79",
+    Region == "VÃµru maakond" ~ "EE-87",
+    Region == "Valga maakond" ~ "EE-81",
+    Region == "Viljandi maakond" ~ "EE-84"
+  )) %>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)
 
@@ -106,7 +122,7 @@ Out_vaccineALL <- Out_vaccine %>%
   group_by(Country, Date, Sex, Age, AgeInt, Metric, Measure) %>% 
   summarise(Value = sum(Value)) %>% 
   mutate(Region = "All",
-         Code = paste0("EE_",Date))
+         Code = paste0("EE"))
     
 #put together with archived data 
 

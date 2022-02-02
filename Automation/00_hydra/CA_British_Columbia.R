@@ -65,7 +65,7 @@ out <-
                             Age == "UNK" ~ NA_real_,
                             TRUE ~ 10),
          Date = ddmmyyyy(Date),
-         Code = paste0("CA_BC", Date),
+         Code = paste0("CA-BC"),
          Metric = "Count") %>% 
   bind_rows(db_d) %>% 
   sort_input_data()

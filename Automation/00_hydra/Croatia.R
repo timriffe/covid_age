@@ -39,9 +39,9 @@ Regions <- tibble(Zupanija = c("Bjelovarsko-bilogorska", "Brodsko-posavska", "Du
                                "Sisacko-moslavacka", "Splitsko-dalmatinska", "Varazdinska", 
                                "Viroviticko-podravska", "Vukovarsko-srijemska", "Zadarska", 
                                "Zagrebacka"),
-RegionCode = c("_07_","_12_","_19_","_21_","_18_","_04_","_06_","_02_",
-               "_09_","_20_","_14_","_11_","_08_","_15_","_03_","_17_",
-               "_05_","_10_","_16_","_13_","_01_")) 
+RegionCode = c("-07","-12","-19","-21","-18","-04","-06","-02",
+               "-09","-20","-14","-11","-08","-15","-03","-17",
+               "-05","-10","-16","-13","-01")) 
 
 
 
@@ -108,7 +108,7 @@ out <-
          Date = ddmmyyyy(Date)) %>% 
   left_join(RegionCodes, by = "Region") %>% 
   mutate(RegionCode = ifelse(is.na(RegionCode), "", RegionCode),
-         Code = paste0("HR", RegionCode, Date)) %>% 
+         Code = paste0("HR", RegionCode)) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
   group_by(Region, Sex, Age, Date) %>% 
   mutate(n = sum(Value)) %>% 

@@ -80,7 +80,7 @@ pivot_longer(!DATE_AS_AT, names_to= "Age", values_to= "Value")%>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("AU_All",Date),
+    Code = paste0("AU"),
     Country = "Australia",
     Region = "All")%>% 
   select(Country, Region, Code, Date, Sex, 

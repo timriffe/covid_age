@@ -83,7 +83,7 @@ vacc_tot_out <- vacc_tot_out %>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("FR",Date)) %>% 
+    Code = paste0("FR")) %>% 
   sort_input_data()
 
 

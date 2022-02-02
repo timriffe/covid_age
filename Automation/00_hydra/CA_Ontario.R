@@ -165,7 +165,7 @@ df6$Reported_Date <- df6$Reported_Date %>% format.Date("%d.%m.%Y")
 Cases_Deaths_df <- df6 %>%
   mutate(Country="Canada", Region="Ontario", Metric="Count") %>%
   rename(Date=Reported_Date) %>%
-  mutate(Code=paste("CA_ON",Date,sep="")) %>%
+  mutate(Code=paste("CA-ON")) %>%
   select(Country,Region,Code,Date,Sex,Age,AgeInt,Metric,Measure,Value)  
 
 # write.csv(Cases_Deaths_df,paste("C:\\covid_ON\\output_data\\CA_ON",date,"_case_death_output.csv",sep=""),row.names=F)
@@ -193,7 +193,7 @@ cumtests$Date <- parse_date_time(cumtests$Date,"ymd") %>% format.Date("%d.%m.%Y"
 Date <- cumtests$Date[dim(cumtests)[1]]
 
 Tests_df <- cumtests %>%
-  mutate(Code=paste("CA_ON",Date,sep="")) %>%
+  mutate(Code=paste("CA-ON")) %>%
   select(Country,Region,Code,Date,Sex,Age,AgeInt,Metric,Measure,Value)    
 
 # write.csv(Tests_df,paste("C:\\covid_ON\\output_data\\CA_ON",date,"_tests_output.csv",sep="."),row.names=F)

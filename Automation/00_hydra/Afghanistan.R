@@ -160,7 +160,7 @@ if (length(files_Deaths) > 0){
     
     tibble(Country = "Afghanistan",
            Region = "All",
-           Code = paste0("AF",Datec),
+           Code = paste0("AF"),
            Date = Datec, 
            Sex = "b", 
            Age = "TOT", 
@@ -180,7 +180,7 @@ if (length(files_Deaths) > 0){
            Date = paste(sprintf("%02d",day(Date)),    
                         sprintf("%02d",month(Date)),  
                         year(Date),sep="."),
-           Code = paste0("AF",Date)) %>% 
+           Code = paste0("AF")) %>% 
     select(all_of(colnames(AFin))) %>% 
     sort_input_data()
   
