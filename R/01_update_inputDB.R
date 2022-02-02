@@ -168,6 +168,21 @@ if (nrow(rubric) > 0){
     select(-keep)
   # -------------------------------------- #
 
+  # Filter down to valid geo codes
+  geo_ss <- "https://docs.google.com/spreadsheets/d/1gbP_TTqc96PxeZCpwKuZJB1sxxlfbBjlQj-oxXD2zAs/edit#gid=0"
+  geo_lookup <- read_sheet(ss = geo_ss) %>% 
+    mutate(Code = coalesce(`ISO 3166-2`, `Internal Code`)) %>% 
+    dplyr::filter(!is.na(Code))
+
+  bad_Codes <- inputDB %>% 
+    filter(!Code %in% geo_lookup$Code ) %>% 
+    mutate(reason = "bad Code")
+  
+  inputDB <- inputDB %>% 
+    dplyr::filter(Code %in% geo_lookup$Code)
+  
+  # -------------------------------------- #
+  
   inputDB_out <-
     inputDB %>% 
     sort_input_data() %>% 
@@ -184,7 +199,8 @@ if (nrow(rubric) > 0){
     NAdates,
     badDates,
     futureDates,
-    dups
+    dups,
+    bad_Codes
   )
   
   
@@ -226,6 +242,18 @@ if (nrow(rubric) > 0){
   
   git2r::push(repo,credentials = cred_token())
 }
+
+
+
+# also copy rds files to N://COVerAGE-DB/Data
+cdb_files  <- c("inputDB_internal.csv","inputDBhold.csv","inputDB_failures.csv")
+files_from <- file.path("Data",cdb_files)
+file.copy(from = files_from, 
+          to = "N:/COVerAGE-DB/Data", 
+          overwrite = TRUE)
+
+
+
 schedule_this <- FALSE
 if (schedule_this){
   # TR: note, if you schedule this, you should make sure it's not already scheduled
@@ -253,6 +281,6 @@ if (schedule_this){
   taskscheduler_create(taskname = "COVerAGE-DB-inputDB-updates-test", 
                        rscript =  here::here("R/01_update_inputDB.R"), 
                        schedule = "ONCE", 
-                       starttime = "17:42")
+                       starttime = "18:05")
   # 
 }
