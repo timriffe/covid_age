@@ -20,7 +20,7 @@ if (class(a)[1]=="try-error"){
 }
 
 # Functions
-source(here::here("R","00_Functions.R"))
+# source(here::here("R","00_Functions.R"))
 
 
 # read in the log file, do we start a new one?
@@ -205,6 +205,8 @@ if (nrow(rubric) > 0){
   
   
   data.table::fwrite(inputDB_out, file = here::here("Data","inputDB_internal.csv"))
+  
+  # unlink( here::here("Data","inputDB_failures.csv"))
   data.table::fwrite(inputDB_failures, file = here::here("Data","inputDB_failures.csv"))
   
   Sys.sleep(1)
@@ -281,6 +283,6 @@ if (schedule_this){
   taskscheduler_create(taskname = "COVerAGE-DB-inputDB-updates-test", 
                        rscript =  here::here("R/01_update_inputDB.R"), 
                        schedule = "ONCE", 
-                       starttime = "18:05")
+                       starttime = "11:02")
   # 
 }
