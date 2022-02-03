@@ -1,3 +1,5 @@
+###data is currently not making it into the database since the fraction of age specific data is to low. Data is saved on N but is not getting picked up. 
+
 library(here)
 source(here("Automation/00_Functions_automation.R"))
 
@@ -15,30 +17,33 @@ drive_auth(email = email)
 gs4_auth(email = email)
 
 # TR: pull urls from rubric instead
-rubric_i <- get_input_rubric() %>% filter(Short == "US_TX")
-ss_i     <- rubric_i %>% dplyr::pull(Sheet)
-ss_db    <- rubric_i %>% dplyr::pull(Source)
-
+# rubric_i <- get_input_rubric() %>% filter(Short == "US_TX")
+# ss_i     <- rubric_i %>% dplyr::pull(Sheet)
+# ss_db    <- rubric_i %>% dplyr::pull(Source)
+# 
 # reading data from Drive and last date entered
-db_drive <- get_country_inputDB("US_TX")
+#db_drive <- get_country_inputDB("US_TX")
+
+db_drive <- read_rds(paste0(dir_n,"deprecated/", ctr, ".rds"))
 
 last_date_drive <- db_drive %>%
   mutate(date_f = dmy(Date)) %>%
   dplyr::pull(date_f) %>%
   max()
 
-# reading "Last updated" date from the website
-m_url     <- "https://dshs.texas.gov/coronavirus/additionaldata/"
-html      <- read_html(m_url)
-# xpath extracted when inspecting the date element
-date_text <-
-  html_nodes(html, xpath = '//*[@id="ctl00_ContentPlaceHolder1_uxContent"]/h6[1]/b') %>%
-  html_text()
-loc_date1 <- str_locate(date_text, "Last updated: ")[2] + 1
-loc_date2 <- str_locate(date_text, '\\)')[1] - 1
-date_f  <- mdy(str_sub(date_text, loc_date1, loc_date2))
 
-if (date_f > last_date_drive){
+# reading "Last updated" date from the website
+# m_url     <- "https://dshs.texas.gov/coronavirus/additionaldata/"
+# html      <- read_html(m_url)
+# # xpath extracted when inspecting the date element
+# date_text <-
+#   html_nodes(html, xpath = '//*[@id="ctl00_ContentPlaceHolder1_uxContent"]/h6[1]/b') %>%
+#   html_text()
+# loc_date1 <- str_locate(date_text, "Last updated: ")[2] + 1
+# loc_date2 <- str_locate(date_text, '\\)')[1] - 1
+# date_f  <- mdy(str_sub(date_text, loc_date1, loc_date2))
+# 
+# if (date_f > last_date_drive){
   url <- "https://dshs.texas.gov/coronavirus/TexasCOVID19Demographics.xlsx"
   httr::GET(url, write_disk(tf <- tempfile(fileext = ".xlsx")))
 
@@ -189,7 +194,7 @@ if (date_f > last_date_drive){
   out <- bind_rows(db_cases, db_deaths, db_totals) %>%
     mutate(Country = "USA",
            Region = "Texas",
-           Code = paste0("US_TX", date),
+           Code = paste0("US-TX"),
            Date = date,
            AgeInt = case_when(Age == "0" ~ "1",
                               Age == "1" ~ "9",
@@ -203,16 +208,23 @@ if (date_f > last_date_drive){
                               Age == "UNK" ~ "",
                               TRUE ~ "5"),
            Metric = "Count") %>%
-    select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
-
+    select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) 
+  
+  
+ # db_drive <- db_drive[-11]
+out <- rbind(db_drive, out) %>% 
+  filter( Age != "Pending DOB")
   ############################################
   #### uploading database to Google Drive ####
   ############################################
-  # This command append new rows at the end of the sheet
-  sheet_append(out,
-               ss = ss_i,
-               sheet = "database")
-  log_update(pp = ctr, N = nrow(out))
+  # This command saves o dataset with cases included that is not picked up
+write_rds(out, paste0(dir_n, "deprecated/", ctr,  "copy.rds"))
+
+out2 <- out %>% 
+  filter(Measure != "Cases")
+write_rds(out2, paste0(dir_n,"deprecated/", ctr, ".rds"))
+
+  log_update(pp = ctr, N = nrow(out2))
   ############################################
   #### uploading metadata to Google Drive ####
   ############################################
@@ -245,10 +257,10 @@ if (date_f > last_date_drive){
   file.remove(data_source)
   
 
-} else if (date_f == last_date_drive) {
-  cat(paste0("no new updates so far, last date: ", date_f))
-  log_update(pp = "US_Texas", N = 0)
-}
+# } else if (date_f == last_date_drive) {
+#   cat(paste0("no new updates so far, last date: ", date_f))
+#   log_update(pp = "US_Texas", N = 0)
+# }
 
 # TR : now, no matter what, whenever we rerun this script, we can still swap out totals,
 # and also do a re-sort. i.e. age stuff is always an append operation, but both-sex totals

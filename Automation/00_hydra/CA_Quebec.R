@@ -77,7 +77,7 @@ out <-
          Country = "Canada",
          Region = "Quebec",
          Date = ddmmyyyy(Date),
-         Code = paste0("CA_QC", Date),
+         Code = paste0("CA-QC"),
          AgeInt = case_when(Age == "90" ~ 15,
                             TRUE ~ 10),
          Metric = "Count") %>% 

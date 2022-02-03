@@ -133,18 +133,6 @@ BG_totals_in              <- read_csv(totals_local_path)
 
 # ------------------------------------
 # Translations
-#"Дата"                     "Date"
-#"Направени тестове"        "Tests"
-#"Тестове за денонощие"     "New Tests"
-#"Потвърдени случаи"        "Cases"
-#"Активни случаи"           "Active cases"
-#"Нови случаи за денонощие" "New cases"
-#"Хоспитализирани"          "Hospitalized"
-#"В интензивно отделение"   "ICU"
-#"Излекувани"               "Recovered" 
-#"Излекувани за денонощие"  "New recovered"
-#"Починали"                 "Deaths"
-#"Починали за денонощие"    "New deaths"
 # -------------------------------------
 
 # process case age data
@@ -175,7 +163,7 @@ BG_cases_out <-
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("BG",Date),
+    Code = paste0("BG"),
     Country = "Bulgaria",
     Region = "All",
     Sex = "b") %>% 
@@ -187,9 +175,12 @@ colnames(BG_deaths_in ) <- c("Date","Sex","Age","Value")
 all_ages <- c("0","12","15","17","20","30","40","50","60","70","80","90")
 BG_deaths_out <-
   BG_deaths_in %>% 
-  mutate(Sex = case_when(Sex %in% c("<U+043C><U+044A><U+0436>","мъж") ~ "m",
-                         Sex %in% c("<U+0436><U+0435><U+043D><U+0430>","жена") ~ "f",
-                         Sex == "-" ~ "UNK"),
+  # mutate(Sex = case_when(Sex %in% c("<U+043C><U+044A><U+0436>") ~ "m",
+  #                        Sex %in% c("<U+0436><U+0435><U+043D><U+0430>") ~ "f",
+  #                        Sex == "-" ~ "UNK"),
+         mutate(Sex = case_when(Sex %in% c("мъж") ~ "m",
+                                Sex %in% c("жена") ~ "f",
+                                Sex == "-" ~ "UNK"),
          Age = case_when(Age == "-" ~ "UNK",
                          Age == "0 - 12" ~ "0",
                          Age == "12 - 14" ~ "12",
@@ -221,9 +212,13 @@ BG_deaths_out <-
           Date = paste(sprintf("%02d",day(Date)),    
                        sprintf("%02d",month(Date)),  
                        year(Date),sep="."),
-          Code = paste0("BG",Date),
+          Code = paste0("BG"),
           Country = "Bulgaria",
           Region = "All")%>% 
+  # mutate(Sex = case_when(
+  #   Sex == "жена" ~ "f",
+  #   Sex == "мъж" ~ "m"
+  # )) %>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)
   
@@ -231,7 +226,7 @@ BG_deaths_out <-
 
   
 BG_TOT_out <-
-  BG_TOT_in %>% 
+  BG_totals_in %>% 
   select(Date = 1,
          Tests = 2,
          Cases = 4,
@@ -245,7 +240,7 @@ BG_TOT_out <-
          Date = paste(sprintf("%02d",day(Date)),    
                       sprintf("%02d",month(Date)),  
                       year(Date),sep="."),
-         Code = paste0("BG",Date),
+         Code = paste0("BG"),
          Metric = "Count"
          )
 

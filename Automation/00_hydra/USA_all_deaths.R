@@ -51,7 +51,7 @@ out <- db3 %>%
          Metric = "Count",
          Measure = "Deaths",
          Date = ddmmyyyy(date_f),
-         Code = paste0("US", Date)) %>%
+         Code = paste0("US")) %>%
   arrange(date_f, Sex, Measure, suppressWarnings(as.integer(Age))) %>%
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
 

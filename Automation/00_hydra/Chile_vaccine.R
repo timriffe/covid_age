@@ -49,10 +49,12 @@ out1 <- vacc1 %>%
   #age goes up to 221, but after 104 values are almost 0, remove ages above 105 
   subset(Age < 106)%>%
   subset(Value != "NA")%>%
+  tidyr::complete(Date, Age, fill = list(Value = 0)) %>% 
   mutate(
     Metric = "Count", 
     Sex= "b",
-    AgeInt= "1")  %>%
+    AgeInt= "1",
+    Measure = "Vaccination1") %>% 
   arrange(Age, Date) %>%
   group_by(Age) %>% 
   mutate(Value = cumsum(Value)) %>% 
@@ -62,7 +64,7 @@ out1 <- vacc1 %>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("CL_All",Date),
+    Code = paste0("CL"),
     Country = "Chile",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -80,10 +82,12 @@ out2 <- vacc2 %>%
   #especially during first 6 weeks when people where not to able to get second vaccine yet
   #age goes up to 221, but after 104 values are 0, remove ages above 105 
   subset(Age < 106)%>%
+  tidyr::complete(Date, Age, fill = list(Value = 0)) %>% 
   mutate(
     Metric = "Count", 
     Sex= "b",
-    AgeInt= "1")  %>%
+    AgeInt= "1",
+    Measure = "Vaccination2")  %>%
   arrange(Age, Date) %>%
   group_by(Age) %>% 
   mutate(Value = cumsum(Value)) %>% 
@@ -93,7 +97,7 @@ out2 <- vacc2 %>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("CL_All",Date),
+    Code = paste0("CL"),
     Country = "Chile",
     Region = "All",)%>% 
 select(Country, Region, Code, Date, Sex, 
@@ -111,10 +115,12 @@ outtot <- vacctot %>%
   #especially during first 6 weeks when people where not to able to get second vaccine yet
   #age goes up to 221, but after 104 values are 0, remove ages above 105 
   subset(Age < 106)%>%
+  tidyr::complete(Date, Age, fill = list(Value = 0)) %>% 
   mutate(
     Metric = "Count", 
-    Sex = "b",
-    AgeInt = "1")  %>%
+    Sex= "b",
+    AgeInt= "1",
+    Measure = "Vaccinations")  %>%
   arrange(Age, Date) %>%
   group_by(Age) %>% 
   mutate(Value = cumsum(Value)) %>% 
@@ -124,7 +130,7 @@ outtot <- vacctot %>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("CL_All",Date),
+    Code = paste0("CL"),
     Country = "Chile",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -136,6 +142,15 @@ outtot <- vacctot %>%
 #put together 
 
 out <- rbind(out1, out2, outtot)
+
+##adding ages 0 to 9
+small_ages<- out %>% 
+  filter(Age == "10") %>% 
+  mutate(Age = "0",
+         AgeInt = 2L,
+         Value = "0")
+out <- rbind(out, small_ages) %>% 
+  sort_input_data()
 
 #converting to character, because combining did not work otherwise 
 #db_drive <- db_drive %>% 

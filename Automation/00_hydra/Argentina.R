@@ -35,11 +35,12 @@ download.file(data_url, destfile = data_source, mode = "wb")
 
 db <- read_csv(unz(data_source, paste0(ayer,"-argentina.csv")), 
                skip = 1,
-               col_names = c("Country","Region","Code","Date","Sex","Age","AgeInt","Metric","Measure","Value"))
+               col_names = c("Country","Region","Code","Date","Sex","Age","AgeInt","Metric","Measure","Value")) %>% 
+  mutate(Sex = ifelse(Sex == "x","UNK",Sex)) %>% 
+  filter(!(Sex == "UNK" & Value == 0)) 
 
 
-unique(db$Age) %>% sort()
-unique(db$Sex)
+
 
 db_total_by_sex <- 
   db %>% 
@@ -78,7 +79,7 @@ out <-
             db_total_by_age,
             db_totals) %>% 
   sort_input_data()
-
+out$Code = substr(out$Code,1,nchar(out$Code)-10)
 
 ############################################
 #### saving database in N Drive ####

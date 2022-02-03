@@ -12,7 +12,8 @@ logfile <- here("buildlog.md")
 ### Get data ########################################################
 
 
-inputDB <- readRDS(here("Data","inputDBresolved.rds"))
+inputDB <- data.table::fread(here("Data","inputDBresolved.csv"),
+                             encoding = "UTF-8")
 
 
 # this script transforms the inputDB as required, and produces standardized measures and metrics
@@ -63,7 +64,7 @@ A <- AA[ , try_step(process_function = convert_fractions_sexes,
 # Convert fractions within sexes to counts
 A <- A[ , try_step(process_function = convert_fractions_within_sex,
                    chunk = .SD,
-                   byvars = c("Code","Sex","Measure"),
+                   byvars = c("Code", "Sex", "Measure"),
                    logfile = logfile),
         by=list(Country, Region, Date, Sex, Measure), 
         .SDcols = icols][,..icols]
@@ -157,7 +158,7 @@ I <- H[ , try_step(process_function = infer_both_sex,
         by = list(Country, Region, Date, Measure), 
         .SDcols = icols][,..icols]
 
-  
+# saveRDS(I, file = "Data/step_I_testing_maybe_lower_closeout.rds")  
 ### Adjust closeout age #############################################
 
 # Log
@@ -186,21 +187,20 @@ inputCounts <- J[ , AgeInt := add_AgeInt(Age, omega = 105),
   as.data.frame()
 
 # Save
-saveRDS(inputCounts, file = here("Data","inputCounts.rds"))
-
+# saveRDS(inputCounts, file = here("Data","inputCounts.rds"))
+data.table::fwrite(inputCounts, file = here::here("Data","inputCounts.csv"))
 # List of everything
-# COMPONENTS <- list(inputDB = inputDB, 
-#                    A = A, 
-#                    B = B, 
-#                    C = C, 
-#                    D = D, 
-#                    E = E, 
-#                    G = G, 
-#                    H = H, 
-#                    I = I, 
-#                    J = J)
-# 
-# # Save list
-# save(COMPONENTS, file = here("Data","ProcessingSteps.Rdata"))
+COMPONENTS <- list(inputDB = inputDB, 
+                   A = A, 
+                   B = B, 
+                   C = C, 
+                   D = D, 
+                   E = E, 
+                   G = G, 
+                   H = H, 
+                   I = I, 
+                   J = J)
 
-
+# Save list
+save(COMPONENTS, file = here::here("Data","ProcessingSteps.Rdata"))
+rm(A,B,C,D,E,G,H,I,J,COMPONENTS);gc()

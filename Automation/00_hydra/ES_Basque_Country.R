@@ -209,7 +209,7 @@ PVout <-
   mutate(Date = paste(sprintf("%02d",day(Date)),    
                       sprintf("%02d",month(Date)),  
                       year(Date),sep="."),
-         Code = paste0("ES_PV_",Date),
+         Code = paste0("ES-PV"),
          Metric = "Count",
          Country = "Spain",
          Region = "Basque Country") %>% 

@@ -15,8 +15,11 @@ n.cores <- min(round(freesz / 16),20)
 ### Load data #######################################################
 
 # Count data
-inputCounts <- readRDS(here::here("Data","inputCounts.rds"))
-inputCounts$Metric <- NULL
+inputCounts <- data.table::fread(here::here("Data","inputCounts.csv"),
+                                 encoding = "UTF-8") %>% 
+  dplyr::filter(Measure %in% c("Cases","Deaths","Tests")) %>% 
+  select(-Metric)
+
  
 # Offsets
 Offsets     <- readRDS(here::here("Data","Offsets.rds"))
@@ -29,8 +32,14 @@ inputCounts <-
   arrange(Country, Region, Date, Measure, Sex, Age) %>% 
   group_by(Code, Sex, Measure, Date) %>% 
   mutate(id = cur_group_id(),
-         core_id = sample(1:n.cores,size=1,replace = TRUE)) %>% 
-  ungroup() 
+         core_id = sample(1:n.cores,
+                          size = 1,
+                          replace = TRUE),
+         toss = any(is.na(Value))) %>% 
+  ungroup() %>% 
+  arrange(core_id,id, Age) %>% 
+  filter(!toss) %>% 
+  select(-toss)
 
 # nr rows per core
 # inputCounts$core_id %>% table()
@@ -82,12 +91,12 @@ log_section("Age harmonization",
 #           OAnew = 100)
 # stopCluster(cl)
 
-saveRDS(iLout1e5, file = here::here("Data","iLout1e5.rds"))
+# saveRDS(iLout1e5, file = here::here("Data","iLout1e5.rds"))
  
 out5 <- 
   rbindlist(iLout1e5) 
   # Get into one data set
-saveRDS(out5, file = here::here("Data","Output_5_before_sex_scaling_etc.rds"))
+data.table::fwrite(out5, file = here::here("Data","Output_5_before_sex_scaling_etc.csv"))
  rm(iL);rm(iLout1e5)
 
 ids_out  <- out5$id %>% unique() %>% sort()
@@ -97,7 +106,8 @@ HarmonizationFailures <-
   inputCounts %>% 
   filter(id %in% failures)
 
-saveRDS(HarmonizationFailures, file = here::here("Data","HarmonizationFailures.rds"))
+data.table::fwrite(HarmonizationFailures, file = here::here("Data","HarmonizationFailures.csv"))
+# saveRDS(HarmonizationFailures, file = here::here("Data","HarmonizationFailures.rds"))
 
 # Edit results
 # outputCounts_5_1e5 <- out5 %>%  
@@ -126,42 +136,10 @@ outputCounts_5_1e5 <-
   pivot_wider(names_from = "Measure", values_from = "Value") %>% 
   dplyr::select(Country, Region, Code, Date, Sex, Age, AgeInt, Cases, Deaths, Tests) %>% 
   arrange(Country, Region, dmy(Date), Sex, Age) 
+
 # Save binary
-
-# if (hours < Inf){
-#   outputCounts_5_1e5_hold <- readRDS(here("Data","Output_5.rds"))
-#   outputCounts_5_1e5_out <-
-#     outputCounts_5_1e5_hold %>% 
-#     pivot_longer(cols = Cases:Tests,
-#                  names_to = "Measure",
-#                  values_to = "Value") %>% 
-#     filter(!is.na(Value)) %>% 
-#     mutate(Short = add_Short(Code,Date),
-#            checkid = paste(Country,Region,Measure,Short)) %>% 
-#     # remove anything we had before that we just re-processed.
-#     # unfortunately also throws out anything that didn't throw an
-#     # error previous time but did so this time.
-#     filter(!checkid %in% codes_in) %>% 
-#     pivot_wider(names_from = Measure,
-#                 values_from = Value) %>% 
-#     # append the stuff we just processed
-#     bind_rows(outputCounts_5_1e5) %>% 
-#     # Get date into correct format
-#     mutate(date = dmy(Date)) %>% 
-#     # Sort
-#     arrange(Country, Region, date, Sex, Age) %>% 
-#     select(-date, -Short, -checkid)
-#   
-#   saveRDS(outputCounts_5_1e5_out, here("Data","Output_5.rds"))
-#   
-#   outputCounts_5_1e5 <- outputCounts_5_1e5_out
-#   
-# } else {
-  saveRDS(outputCounts_5_1e5, here::here("Data","Output_5.rds"))
-# }
-
-
-
+# saveRDS(outputCounts_5_1e5, here::here("Data","Output_5.rds"))
+data.table::fwrite(outputCounts_5_1e5, file = here::here("Data","Output_5_internal.csv"))
 
 # Round to full integers
 outputCounts_5_1e5_rounded <- 
@@ -204,8 +182,8 @@ outputCounts_10 <-
   group_by(Country, Region, Code, Date, Sex, Age) %>% 
   summarize(Cases = sum(Cases),
             Deaths = sum(Deaths),
-            Tests = sum(Tests)) %>% 
-  ungroup() %>% 
+            Tests = sum(Tests),
+            .groups= "drop") %>% 
   # Replace age interval values
   mutate(AgeInt = ifelse(Age == 100, 5, 10))
 
@@ -241,42 +219,6 @@ data.table::fwrite(outputCounts_10_rounded,
 
 # Save binary
 
-saveRDS(outputCounts_10, here::here("Data","Output_10.rds"))
+# saveRDS(outputCounts_10, here::here("Data","Output_10.rds"))
+data.table::fwrite(outputCounts_10, file = here::here("Data","output_10_internal.csv"))
 
-
-
-### Checks ##########################################################
-
-# Check?
-spot_checks <- FALSE
-
-if (spot_checks){
-  
-# Once-off diagnostic plot: Data preparation
-ASCFR5 <- 
-outputCounts_5_1e5 %>% 
-    group_by(Country, Region, Code, Sex) %>% 
-    mutate(D = sum(Deaths)) %>% 
-    ungroup() %>% 
-    mutate(ASCFR = Deaths / Cases,
-           ASCFR = na_if(ASCFR, Deaths == 0)) %>% 
-    dplyr::filter(!is.na(ASCFR),
-           Sex == "b",
-           D >= 100) 
-
-# Once-off diagnostic plot: Plot
-ASCFR5 %>% 
-  ggplot(aes(x=Age, y = ASCFR, group = interaction(Country, Region, Code))) + 
-  geom_line(alpha=.05) + 
-  scale_y_log10() + 
-  xlim(20,100) + 
-  geom_quantile(ASCFR5,
-                mapping=aes(x=Age, y = ASCFR), 
-                method = "rqss",
-                quantiles=c(.025,.25,.5,.75,.975), 
-                lambda = 2,
-                inherit.aes = FALSE,
-                color = "tomato",
-                size = 1)
-
-}

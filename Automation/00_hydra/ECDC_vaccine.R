@@ -29,7 +29,7 @@ Out= In %>%
   #select countries we need 
   subset(Region== "BG"| Region== "CY" | Region== "HR"| Region== "HU"|  Region== "IE"| 
           Region== "LU" | Region== "MT" | Region== "RO"| Region== "PL")%>%
-  select(YearWeekISO, Vaccinations= UnknownDose, Vaccination1= FirstDose, Vaccination2= SecondDose, Short=Region,TargetGroup)%>%
+  select(YearWeekISO, Vaccination1= FirstDose, Vaccination2= SecondDose, Vaccination3= DoseAdditional1, Short=Region,TargetGroup)%>%
   #remove category medical personnel and long term care residents 
   subset(TargetGroup != "HCW") %>%
   subset(TargetGroup != "LTCF")%>%
@@ -64,6 +64,36 @@ Out= In %>%
                      `Age70_79`="70",
                      `Age80+`="80",
                      `AgeUNK`="UNK"))%>% 
+    mutate(Country= recode(Short, 
+                     `BG`= "Bulgaria",
+                     `CY`= "Cyprus",
+                     `HR`= "Croatia",
+                     `HU`= "Hungary",
+                     `IE`= "Ireland",
+                     `LU`= "Luxembourg",
+                     `MT`="Malta",
+                     `PL`="Poland",
+                     `RO`="Romania")) %>% 
+  mutate(
+    Metric = "Count",
+    Sex= "b",
+    Region="All")%>%
+  tidyr::complete(Age, nesting(Date, Measure, Country, Metric, Sex, Region), fill=list(Value=0)) %>%  
+  mutate(
+    Date = ymd(Date),
+    Date = paste(sprintf("%02d",day(Date)),    
+                 sprintf("%02d",month(Date)),  
+                 year(Date),sep="."),
+    Code = case_when( 
+      Country == "Bulgaria" ~  paste0("BG"),
+      Country == "Croatia" ~  paste0("HR"),
+      Country == "Cyprus" ~  paste0("CY"),
+      Country == "Hungary" ~  paste0("HU"),
+      Country == "Ireland" ~  paste0("IE"),
+      Country == "Luxembourg" ~  paste0("LU"),
+      Country == "Malta" ~  paste0("MT"),
+      Country == "Poland" ~  paste0("PL"),
+      Country == "Romania" ~  paste0("RO")))%>% 
   mutate(AgeInt = case_when(
     Age == "15" ~ 3L,
     Age == "18" ~ 7L,
@@ -74,31 +104,11 @@ Out= In %>%
     Age == "70" ~ 10L,
     Age == "80" ~ 25L,
     Age == "UNK" ~ NA_integer_,
+    Age == "TOT" ~ NA_integer_,
     TRUE ~ 5L))%>%
-  mutate(
-    Metric = "Count",
-    Sex= "b",
-    Region="All")%>%
-  mutate(Country= recode(Short, 
-                     `BG`= "Bulgaria",
-                     `CY`= "Cyprus",
-                     `HR`= "Croatia",
-                     `HU`= "Hungary",
-                     `IE`= "Ireland",
-                     `LU`= "Luxembourg",
-                     `MT`="Malta",
-                     `PL`="Poland",
-                     `RO`="Romania"))%>% 
-  mutate(
-    Date = ymd(Date),
-    Date = paste(sprintf("%02d",day(Date)),    
-                 sprintf("%02d",month(Date)),  
-                 year(Date),sep="."),
-    Code = paste0(Short,Date))%>% 
   select(Country, Region, Code, Date, Sex, 
-         Age, AgeInt, Metric, Measure, Value)
-
-
+         Age, AgeInt, Metric, Measure, Value) %>% 
+  sort_input_data()
 
 #save output data 
 write_rds(Out, paste0(dir_n, ctr, ".rds"))

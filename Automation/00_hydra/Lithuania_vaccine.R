@@ -65,7 +65,8 @@ select(Sex=sex, birth= birth_year_noisy, Date= vaccination_date, ID = pseudo_id,
   separate(Date, c("Date", "Time"), " ")%>%
   mutate(Sex= recode(Sex, 
                      `M`= "m",
-                     `V`= "f")) %>% 
+                     `V`= "f",
+                     `CenzÅ«ruota` = "b")) %>% 
   mutate(Age= 2021- birth)%>%    
 #  filter(Drug != "Johnson & Johnson") %>% 
   group_by(ID) %>% 
@@ -88,7 +89,7 @@ select(Sex=sex, birth= birth_year_noisy, Date= vaccination_date, ID = pseudo_id,
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("LT_All",Date),
+    Code = paste0("LT"),
     Country = "Lithuania",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -142,7 +143,8 @@ Out_vaccine2= In %>%
   separate(Date, c("Date", "Time"), " ")%>%
   mutate(Sex= recode(Sex, 
                      `M`= "m",
-                     `V`= "f")) %>% 
+                     `V`= "f",
+                     `CenzÅ«ruota` = "b")) %>% 
   mutate(Age= 2021- birth)%>%
   group_by(ID) %>% 
   mutate(n = row_number()) %>% 
@@ -165,21 +167,66 @@ Out_vaccine2= In %>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("LT_All",Date),
+    Code = paste0("LT"),
     Country = "Lithuania",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)
 
-####just a test
-test <- Out_vaccine2 %>% 
-  group_by(Date) %>% 
-  summarise(Vac = sum(Value))
+
+Out_vaccine3= In %>%
+  #remove missing age information 
+  filter(!is.na(birth_year_noisy)) %>% 
+  select(Sex=sex, birth= birth_year_noisy, Date= vaccination_date, ID = pseudo_id, Drug = drug_manufacturer)%>%
+  separate(Date, c("Date", "Time"), " ")%>%
+  mutate(Sex= recode(Sex, 
+                     `M`= "m",
+                     `V`= "f",
+                     `CenzÅ«ruota` = "b")) %>% 
+  mutate(Age= 2021- birth)%>%
+  group_by(ID) %>% 
+  mutate(n = row_number()) %>% 
+  filter(n == 3) %>% 
+  group_by(Date, Sex, Age) %>%   
+  summarize(Value = n())%>%
+  ungroup() %>% 
+  tidyr::complete(Date, nesting(Sex, Age), fill=list(Value=0)) %>% 
+  arrange(Date,Sex, Age) %>% 
+  group_by(Sex, Age) %>% 
+  mutate(Value = cumsum(Value)) %>% 
+  ungroup() %>% 
+  #age lets assume we just take current year 
+  mutate(
+    Measure = "Vaccination3",
+    Metric = "Count", 
+    AgeInt= "1")%>% 
+  mutate(
+    Date = ymd(Date),
+    Date = paste(sprintf("%02d",day(Date)),    
+                 sprintf("%02d",month(Date)),  
+                 year(Date),sep="."),
+    Code = paste0("LT"),
+    Country = "Lithuania",
+    Region = "All",)%>% 
+  select(Country, Region, Code, Date, Sex, 
+         Age, AgeInt, Metric, Measure, Value)
 
 #put them together 
 
 out <- bind_rows(Out_vaccine1,
-                 Out_vaccine2)
+                 Out_vaccine2,
+                 Out_vaccine3)
+
+##calculating both sexes
+sexes <- out %>% 
+  filter(Sex != "b") %>% 
+  group_by(Country, Region, Code, Date, Age, AgeInt, Metric, Measure) %>% 
+  summarise(Value = sum(Value)) %>% 
+  mutate(Sex = "b")
+
+out <- rbind(out, sexes) %>% 
+  sort_input_data() %>% 
+  filter(Age != "-1")
 
 
 #save output data

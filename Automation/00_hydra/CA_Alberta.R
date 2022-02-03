@@ -73,7 +73,7 @@ df_cases2$Measure = "Cases"
 df_cases2$Date <- ddmmyyyy(df_cases2$Date)
 names(df_cases2)[3] <- "Value"
 cases <- df_cases2 %>% 
-  mutate(Code = paste0("CA_AB", Date))
+  mutate(Code = paste0("CA-AB"))
 
 cases <- cases %>% 
 mutate(Age = case_when(
@@ -102,7 +102,8 @@ cases <- cases %>%
   mutate(Sex = case_when(
     Gender == "Female" ~ "f",
     Gender == "Male" ~ "m",
-    Gender == "Unknown" ~ "UNK"))
+    Gender == "Unknown" ~ "UNK",
+    is.na(Gender) ~ "UNK"))
 
 
 cases <- cases[-1]
@@ -133,7 +134,7 @@ df_death2$Measure = "Death"
 df_death2$Date <- ddmmyyyy(df_death2$Date)
 names(df_death2)[3] <- "Value"
 death <- df_death2 %>% 
-  mutate(Code = paste0("CA_AB", Date))
+  mutate(Code = paste0("CA-AB"))
 
 death <- death %>% 
   mutate(Age = case_when(
@@ -162,7 +163,8 @@ death <- death %>%
   mutate(Sex = case_when(
     Gender == "Female" ~ "f",
     Gender == "Male" ~ "m",
-    Gender == "Unknown" ~ "UNK"))
+    Gender == "Unknown" ~ "UNK",
+    is.na(Gender) ~ "UNK"))
 
 death <- death[-1]
 
@@ -359,7 +361,7 @@ out <-
                             TRUE ~ 10),
          Country = "Canada",
          Region = "Alberta",
-         Code = paste0("CA_AB",Date),
+         Code = paste0("CA-AB"),
          Metric = "Count") %>% 
   sort_input_data()
 

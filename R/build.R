@@ -17,12 +17,12 @@ log_section("New build log", append = FALSE)
 # ---------------------- #
 
 # Resolve overlapping sources
-source(here("R","01.5_resolve_sources.R"))
+source(here::here("R","01.5_resolve_sources.R"))
 
 # ---------------------- #
 
 # Harmonize Measure, Metric, and Scaling
-source(here("R","02_harmonize_metrics.R"))
+source(here::here("R","02_harmonize_metrics.R"))
 
 # ---------------------- #
 
@@ -32,52 +32,47 @@ source(here("R","02_harmonize_metrics.R"))
 
 # Harmonize Age groups
 
-source(here("R","04_harmonize_age_groups.R"))
+source(here::here("R","04_harmonize_age_groups.R"))
 
 # ---------------------- #
 
+# gather metadata
 
-if(wday(today()) == 1){
-  
-  # um, let's just do this Wed and Sun?
-  source(here("R","05_compile_metadata.R"))
-  
-  # ---------------------- #
-  
-  
-  # Build dashboards
-  # Temporarily disabled on hydra because default run
-  # doesn't have pandoc?
-  source(here("R","06_data_dashes.R"))
-  
-    
-  # ---------------------- #
-  
-  # Quality metrics
-  
-  source(here("R","07_quality_metrics.R"))
+source(here::here("R","05_compile_metadata.R"))
 
-}
+# ---------------------- #
+
+# Build dashboards
+
+source(here::here("R","06_data_dashes.R")) 
+
+# ---------------------- #
+
+# Quality metrics
+
+source(here::here("R","07_quality_metrics.R"))
 
 # ---------------------- #
 
 # Coverage Map
 
-source(here("R","08_coverage_map.R"))
+source(here::here("R","08_coverage_map.R"))
 
 # ---------------------- #
 
 # push to OSF
 
-source(here("R","09_push_osf.R"))
+source(here::here("R","09_push_osf.R"))
 
 # ---------------------- #
 
 # git commit artifacts
-source(here("R","10_commit_files.R"))
+
+source(here::here("R","10_commit_files.R"))
 
 # ---------------------- #
 
 # update build log / communications
-source(here("R","11_email_and_tweet.R"))
+
+source(here::here("R","11_email_and_tweet.R"))
 

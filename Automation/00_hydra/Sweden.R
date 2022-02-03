@@ -18,13 +18,13 @@ drive_auth(email = email)
 gs4_auth(email = email)
 
 # data from drive 
-rubric_i <- get_input_rubric() %>% filter(Short == "SE")
-ss_i     <- rubric_i %>% dplyr::pull(Sheet)
-ss_db    <- rubric_i %>% dplyr::pull(Source)
-
-print(paste0("Starting data retrieval for Sweden..."))
-
-# ~~~~~~~~~~~~~~~~~~~
+# rubric_i <- get_input_rubric() %>% filter(Short == "SE")
+# ss_i     <- rubric_i %>% dplyr::pull(Sheet)
+# ss_db    <- rubric_i %>% dplyr::pull(Source)
+# 
+# print(paste0("Starting data retrieval for Sweden..."))
+# 
+# # ~~~~~~~~~~~~~~~~~~~
 # When using it daily
 # ~~~~~~~~~~~~~~~~~~~
 
@@ -43,7 +43,8 @@ date_f <- read_xlsx(data_source, sheet = 1) %>%
   ymd()
 
 # reading data from Drive and last date entered 
-db_drive <- get_country_inputDB("SE")
+db_drive <-  read_rds(paste0(dir_n, ctr, ".rds")) %>% 
+  mutate(Code = "SE")
 
 last_date_drive <- db_drive %>% 
   filter(Measure %in% c("Cases","Deaths")) %>% 
@@ -105,7 +106,7 @@ if (date_f > last_date_drive){
     gather(Cases, Deaths, key = Measure, value = Value) %>% 
     mutate(Country = "Sweden",
            Region = "All",
-           Code = paste0("SE", date),
+           Code = paste0("SE"),
            Date = date,
            AgeInt = case_when(
              Age == "TOT" | Age == "UNK" ~ ""
@@ -175,8 +176,9 @@ if (date_f > last_date_drive){
   if (update_vaccines){
   print("New vaccination data available - updating..")  
     
-    vac_sex <- read_xlsx(data_source_vac, sheet = 4)
-    vac_age <- read_xlsx(data_source_vac, sheet = 3)
+    vac_sex <- read_xlsx(data_source_vac, sheet = 6)
+    vac_age <- read_xlsx(data_source_vac, sheet = 4)
+    vacc3_age <- read_xlsx(data_source_vac, sheet = 5)
     
     # Get data by sex
     
@@ -198,8 +200,8 @@ if (date_f > last_date_drive){
         ) 
         , Measure = case_when(
           # Changed on 20210423 by Diego after codes changed
-          grepl("inst 1 dos", Measure, ignore.case = T) ~ "Vaccination1"
-          , grepl("rdigvaccinerade", Measure, ignore.case = T) ~ "Vaccination2"
+          grepl("Minst 1 dos", Measure, ignore.case = T) ~ "Vaccination1"
+          , grepl("Minst 2 doser", Measure, ignore.case = T) ~ "Vaccination2"
           # grepl("1", Measure, ignore.case = T) ~ "Vaccination1"
           # , grepl("2", Measure, ignore.case = T) ~ "Vaccination2"
         )
@@ -229,8 +231,8 @@ if (date_f > last_date_drive){
         Measure = case_when(
           # grepl("1", Measure, ignore.case = T) ~ "Vaccination1"
           # , grepl("2", Measure, ignore.case = T) ~ "Vaccination2"
-          grepl("inst 1 dos", Measure, ignore.case = T) ~ "Vaccination1"
-          , grepl("rdigvaccinerade", Measure, ignore.case = T) ~ "Vaccination2"
+          grepl("Minst 1 dos", Measure, ignore.case = T) ~ "Vaccination1"
+          , grepl("Minst 2 doser", Measure, ignore.case = T) ~ "Vaccination2"
         )
         , Age_low = as.numeric(str_extract(Age, "^[0-9]{2}"))
         , Age_high = as.numeric(str_extract(Age, "[0-9]{2}$"))
@@ -244,11 +246,54 @@ if (date_f > last_date_drive){
       ) %>%  
       select(Sex, Age, AgeInt, Measure, Value)
     
+    
+    small_ages <- vac_a2 %>% 
+         filter(Age == "12") %>% 
+         mutate(Age = "0",
+                AgeInt = 12L,
+                Value = 0)
+    vac_a2 <- rbind(vac_a2, small_ages)
+    
+    
+    #data by age for third vaccination
+    
+    vac_a3 <-
+      vacc3_age %>% 
+      filter(grepl("Sverige", Region)) %>% 
+      select(
+        Value = contains("antal")
+        # , Measure = Dosnummer
+        , Measure = Vaccinationsstatus
+        , Age = ends_with("ldersgrupp")
+      ) %>% 
+      # filter(!grepl("^Total", Age)) %>% 
+      mutate(
+        Measure = "Vaccination3", 
+        Age_low = as.numeric(str_extract(Age, "^[0-9]{2}"))
+        , Age_high = as.numeric(str_extract(Age, "[0-9]{2}$"))
+        , Age = as.character(Age_low)
+        , AgeInt = as.character(ifelse(!is.na(Age_high), Age_high-Age_low+1, 15))
+        , Sex = "b"
+        # Add empty row for UNK
+        , Age = ifelse(is.na(Age), "UNK", Age)
+        , AgeInt = ifelse(Age == "UNK", "", AgeInt)
+        , Value = ifelse(Age == "UNK", 0, Value)
+      ) %>%  
+      select(Sex, Age, AgeInt, Measure, Value)
+    
+    small_ages <- vac_a3 %>% 
+      filter(Age == "18") %>% 
+      mutate(Age = "0",
+             AgeInt = 18L,
+             Value = 0)
+    vac_a3 <- rbind(vac_a3, small_ages)
+    
+    
     out_vac <-
-      bind_rows(vac_s2, vac_a2) %>% 
+      bind_rows(vac_s2, vac_a2, vac_a3) %>% 
       mutate(Country = "Sweden",
              Region = "All",
-             Code = paste0("SE", date),
+             Code = paste0("SE"),
              Date = date,
              Metric = "Count"
       ) %>% 
@@ -267,9 +312,8 @@ if (date_f > last_date_drive){
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # uploading database to Google Drive 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  sheet_append(out,
-               ss = ss_i,
-               sheet = "database")
+  write_rds(db_drive, paste0(dir_n, ctr, ".rds"))
+  
   log_update(pp = "Sweden", N = nrow(out))
   
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -299,3 +343,51 @@ if (date_f > last_date_drive){
   cat(paste0("no new updates so far, last date: ", date_f))
   log_update(pp = "Sweden", N = 0)
 }
+
+
+
+
+#temporal
+# db_drive <- get_country_inputDB("SE")
+# 
+# 
+# small_ages1 <- db_drive %>% 
+#   filter(Measure == "Vaccination1" |
+#            Measure == "Vaccination2") %>% 
+#   mutate(Date = dmy(Date)) %>% 
+#   filter(Date >= "2021-10-20",
+#          Age == "12") %>% 
+#   mutate(Age = "0",
+#          AgeInt = 12L,
+#          Value = 0,
+#          Date = ddmmyyyy(Date))
+# 
+# 
+# small_ages2 <- db_drive %>% 
+#   filter(Measure == "Vaccination1" |
+#            Measure == "Vaccination2") %>% 
+#   mutate(Date = dmy(Date)) %>% 
+#   filter(Date <= "2021-10-19",
+#          Date >= "2021-09-08",
+#          Age == "16") %>% 
+#   mutate(Age = "0",
+#          AgeInt = 16L,
+#          Value = 0,
+#          Date = ddmmyyyy(Date))
+# 
+# 
+# small_ages3 <- db_drive %>% 
+#   filter(Measure == "Vaccination1" |
+#            Measure == "Vaccination2") %>% 
+#   mutate(Date = dmy(Date)) %>% 
+#   filter(Date <= "2021-09-07",
+#          Age == "18") %>% 
+#   mutate(Age = "0",
+#          AgeInt = 18L,
+#          Value = 0,
+#          Date = ddmmyyyy(Date))
+# 
+# db_drive <- rbind(db_drive, small_ages1, small_ages2, small_ages3) %>% 
+#   sort_input_data()
+# 
+

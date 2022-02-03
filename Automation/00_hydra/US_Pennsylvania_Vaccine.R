@@ -1,6 +1,6 @@
 #Pennsylvenia Vaccine 
 library(here)
-source(here("Automation", "00_Functions_automation.R"))
+source(here("Automation/00_Functions_automation.R"))
 
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
@@ -22,7 +22,8 @@ gs4_auth(email = email)
 
 # reading in archive data  
 
-DataArchive <- read_rds(paste0(dir_n, ctr, ".rds"))
+DataArchive <- read_rds(paste0(dir_n, ctr, ".rds")) %>% 
+  mutate(Value = as.numeric(Value))
 
 last_date_archive <- DataArchive %>% 
   mutate(date_max = dmy(Date)) %>% 
@@ -99,7 +100,7 @@ Out_vaccine_age= Vaccine_age %>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("US_PA",Date),
+    Code = paste0("US-PA"),
     Country = "USA",
     Region = "Pennsylvania",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -128,7 +129,7 @@ Out_vaccine_sex = Vaccine_sex %>%
          Date = paste(sprintf("%02d",day(Date)),    
                       sprintf("%02d",month(Date)),  
                       year(Date),sep="."),
-         Code = paste0("US_PA",Date),
+         Code = paste0("US-PA"),
          Country = "USA",
          Region = "Pennsylvania",
          AgeInt= as.character(AgeInt))%>% 
@@ -141,6 +142,15 @@ Out <- bind_rows(DataArchive,
                 Out_vaccine_age,
                 Out_vaccine_sex)
 
+##adding age group 0 to 9
+small_ages <- Out %>% 
+  filter(Age == "10") %>% 
+  mutate(Age = "0",
+         AgeInt = 10L,
+         Value = 0)
+
+Out <- rbind(Out, small_ages) %>% 
+  sort_input_data()
 #save output 
 
 write_rds(Out, paste0(dir_n, ctr, ".rds"))

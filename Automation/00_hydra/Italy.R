@@ -15,17 +15,27 @@ drive_auth(email = email)
 gs4_auth(email = email)
 
 # links to spreadsheet in Drive
-rubric_i <- get_input_rubric() %>% filter(Short == "IT")
-ss_i     <- rubric_i %>% dplyr::pull(Sheet)
+# rubric_i <- get_input_rubric() %>% filter(Short == "IT")
+# ss_i     <- rubric_i %>% dplyr::pull(Sheet)
+# 
+# db_drive <- get_country_inputDB("IT")
+# 
+# last_date_drive <- db_drive %>% 
+#   mutate(date_f = dmy(Date)) %>% 
+#   dplyr::pull(date_f) %>% 
+#   max()
 
-db_drive <- get_country_inputDB("IT")
-
-last_date_drive <- db_drive %>% 
-  mutate(date_f = dmy(Date)) %>% 
-  dplyr::pull(date_f) %>% 
+###get the last update from drive and select deaths and cases
+it <- read_rds(paste0(dir_n, ctr, ".rds"))
+it <- it %>% 
+  filter(Measure != "Vaccination1") %>% 
+  filter(Measure != "Vaccination2") %>% 
+  filter(Measure != "Vaccination3") 
+  
+  last_date_n <- it %>%
+  mutate(date_f = dmy(Date)) %>%
+  dplyr::pull(date_f) %>%
   max()
-
-
 # loading Excel file from the website 
 # "https://www.epicentro.iss.it/coronavirus/sars-cov-2-sorveglianza-dati"
 data_source <- paste0(dir_n, "Data_sources/", ctr, "/", ctr, "_data_", today(), ".xlsx")
@@ -37,7 +47,7 @@ db_age <- read_xlsx(data_source, sheet = "sesso_eta")
 
 date_f <- db_age %>% dplyr::pull(iss_date) %>% unique() %>% dmy
 
-if (date_f > last_date_drive){
+if (date_f > last_date_n){
   
   db_age2 <- db_age %>% 
     rename(Sex = 2,
@@ -86,7 +96,7 @@ if (date_f > last_date_drive){
     mutate(Country = "Italy",
            Region = "All",
            Date = ddmmyyyy(date_f),
-           Code = paste0("IT", Date),
+           Code = paste0("IT"),
            AgeInt = case_when(Age == "90" ~ 15,
                               TRUE ~ 10),
            Metric = "Count") %>% 
@@ -97,9 +107,9 @@ if (date_f > last_date_drive){
   ############################################
   
   # This command append new rows at the end of the sheet
-  sheet_append(out_drive,
-               ss = ss_i,
-               sheet = "database")
+  # sheet_append(out_drive,
+  #              ss = ss_i,
+  #              sheet = "database")
 
 } 
 
@@ -112,9 +122,10 @@ vacc2 <- vacc %>%
   rename(Date = 1,
          Age = 4, 
          Vaccination1 = prima_dose,
-         Vaccination2 = seconda_dose) %>% 
-  select(Date, Age, Vaccination1, Vaccination2) %>% 
-  gather(Vaccination1, Vaccination2, key = "Measure", value = new) %>% 
+         Vaccination2 = seconda_dose,
+         Vaccination3 = dose_addizionale_booster) %>% 
+  select(Date, Age, Vaccination1, Vaccination2, Vaccination3) %>% 
+  gather(Vaccination1, Vaccination2, Vaccination3, key = "Measure", value = new) %>% 
   mutate(Age = as.integer(str_sub(Age, 1, 2))) %>% 
   group_by(Date, Measure, Age) %>% 
   summarise(new = sum(new)) %>% 
@@ -123,14 +134,14 @@ ages <- c(0, unique(vacc2$Age)) %>% sort()
 
 vacc3 <- vacc2 %>% 
   tidyr::complete(Measure, Age = ages, Date, fill = list(new = 0))  %>% 
-  group_by(Measure) %>% 
+  group_by(Measure, Age) %>% 
   mutate(Value = cumsum(new)) %>% 
   arrange(Date, Measure, Age) %>% 
   ungroup() %>% 
   mutate(Country = "Italy",
        Region = "All",
        Date = ddmmyyyy(Date),
-       Code = paste0("IT", Date),
+       Code = paste0("IT"),
        Sex = "b",
        Age = as.character(Age),
        AgeInt = case_when(Age == "90" ~ 15,
@@ -140,12 +151,40 @@ vacc3 <- vacc2 %>%
        Metric = "Count") %>% 
   sort_input_data()
 
-out <- 
-  bind_rows(out_drive, 
-            vacc3,
-            db_drive %>% select(-Short)) %>% 
+##get totals from a different source
+library(reshape2)
+totals <- read.csv("https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-andamento-nazionale/dpc-covid19-ita-andamento-nazionale.csv")
+totals <- totals %>% 
+  select(Date = data, Cases = totale_casi, Deaths = deceduti)
+totals <- melt(totals, id = "Date")
+names(totals)[2] <- "Measure"
+names(totals)[3] <- "Value"
+totals$Date = substr(totals$Date,1,nchar(totals$Date)-9)
+
+totals <- totals %>% 
+  mutate(Sex = "b",
+         Country = "Italy",
+         Region = "All",
+         Age = "TOT",
+         AgeInt = NA,
+         Metric = "Count",
+  Date = ymd(Date),
+Date = paste(sprintf("%02d",day(Date)),    
+             sprintf("%02d",month(Date)),  
+             year(Date),sep="."),
+Code = paste0("IT"))%>% 
   sort_input_data()
 
+
+out <- 
+  bind_rows(out_drive, 
+            vacc3, it)%>%
+  filter(Age != "TOT") %>% 
+  sort_input_data()
+
+out <- bind_rows(out, totals) %>% 
+  unique() %>% 
+  sort_input_data()
 nrow(out_drive)
 nrow(vacc3)
 write_rds(out, paste0(dir_n, ctr, ".rds"))
@@ -155,34 +194,34 @@ log_update(pp = ctr, N = nrow(out_drive) + nrow(vacc3))
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # (Only Once!!!!)
 
-# db_bol <- get_country_inputDB("ITbol")
-# db_inf <- get_country_inputDB("ITinfo")
-# 
-# db_inf2 <- db_inf %>% 
-#   filter(Measure != "ASCFR") %>% 
-#   mutate(Date = dmy(Date))
-# 
-# info_dates <- db_inf2 %>% 
-#   select(Date) %>% 
-#   dplyr::pull()
-# 
-# clean_bol <- db_bol %>% 
-#   mutate(Date = dmy(Date)) %>% 
-#   filter(!(Measure == "Deaths" & Sex == "b" & Date %in% info_dates)) %>% 
-#   arrange(Date, Measure, Sex, Age)
-# 
-# out <- bind_rows(db_inf2, 
-#                  clean_bol) %>% 
-#   arrange(Date, Measure, Sex, Age) %>% 
-#   mutate(Date = ddmmyyyy(Date),
-#          Code = paste0("IT", Date)) %>% 
-#   select(-Short)
-# 
-# test <- 
-# out %>% 
-#   filter(Age == 0) %>% 
-#   group_by(Date, Measure, Sex) %>% 
-#   summarise(n())
+#  db_bol <- get_country_inputDB("ITbol")
+#  db_inf <- get_country_inputDB("ITinfo")
+# # 
+#  db_inf2 <- db_inf %>% 
+#    filter(Measure != "ASCFR") %>% 
+#    mutate(Date = dmy(Date))
+# # 
+#  info_dates <- db_inf2 %>% 
+#    select(Date) %>% 
+#    dplyr::pull()
+# # 
+#  clean_bol <- db_bol %>% 
+#    mutate(Date = dmy(Date)) %>% 
+#    filter(!(Measure == "Deaths" & Sex == "b" & Date %in% info_dates)) %>% 
+#    arrange(Date, Measure, Sex, Age)
+# # 
+#  out <- bind_rows(db_inf2, 
+#                   clean_bol) %>% 
+#    arrange(Date, Measure, Sex, Age) %>% 
+#    mutate(Date = ddmmyyyy(Date),
+#           Code = paste0("IT", Date)) %>% 
+#    select(-Short)
+# # 
+#  test <- 
+#  out %>% 
+#    filter(Age == 0) %>% 
+#    group_by(Date, Measure, Sex) %>% 
+#    summarise(n())
 # 
 # sheet_append(out,
 #              ss = ss_i,
@@ -190,4 +229,5 @@ log_update(pp = ctr, N = nrow(out_drive) + nrow(vacc3))
 
 
 
+#ita <- read_rds(paste0(dir_n, ctr, ".rds"))
 

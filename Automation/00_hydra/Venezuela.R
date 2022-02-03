@@ -91,7 +91,7 @@ if (date_f > last_date_drive) {
     mutate(Region = "All",
            Date = d,
            Country = "Venezuela",
-           Code = paste0("VE", Date),
+           Code = paste0("VE"),
            AgeInt = case_when(Age == "TOT" ~ NA_real_,
                               Age == "90" ~ 15,
                               TRUE ~ 10),

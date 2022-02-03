@@ -27,7 +27,7 @@ gs4_auth(email = email)
 ################ CASES ####################
 ###########################################
 
-NUTS3 <- tibble(
+CZNUTS3 <- tibble(
   code = c("CZ010", "CZ020", "CZ031", "CZ032", 
            "CZ041", "CZ042", "CZ051", "CZ052", 
            "CZ053", "CZ063", "CZ064", "CZ071", 
@@ -40,49 +40,42 @@ NUTS3 <- tibble(
 # Getting the data from the Health Ministery website
 cases_url <- "https://onemocneni-aktualne.mzcr.cz/api/v2/covid-19/osoby.csv" 
 
-cz_cases <- read.csv(cases_url, 
-                   header = TRUE, 
-                   col.names = c("Date",
-                                 "Age", # exact age
-                                 "Sex2", # M=male, Z=female
-                                 "NUTS3", #region of hygiene station which provides data, according to NUTS 3
-                                 "LAU1", # region on LAU1 structure
-                                 "Abroad_inf", # 1=claimed to be infected abroad
-                                 "Country_inf" # claimed country of infection
-                   )) %>% 
-  mutate(Sex = ifelse(Sex2 == "M","m","f"), 
-         Date = as.Date(Date, "%Y-%m-%d")) %>% 
-  select(-Sex2)
 
-cz_cases %>%  dplyr::pull("Age") %>%  unique()
-
-Ages_All <- c(0,1,seq(5,100,by=5))
-DateRange <- range(cz_cases$Date)
-Dates_All <- seq(DateRange[1],DateRange[2],by="days")
-
-# extracting NUTS3 from LAU1 when NUTS3 is empty
-cz_cases2 <- cz_cases %>% 
+cz_cases <- read_csv(cases_url) # note id col is now in front, and other
+# column order should be checked. read_csv() gives us these names:
+ # "id","datum","vek","pohlavi","kraj_nuts_kod",
+ # "okres_lau_kod","nakaza_v_zahranici" , "nakaza_zeme_csu_kod", "reportovano_khs"
+cz_cases2 <-
+  cz_cases %>% 
+  select(Date = datum, Age = vek, Sex2 = pohlavi, NUTS3 = kraj_nuts_kod, LAU1 = okres_lau_kod) %>% 
+  mutate(Sex = ifelse(Sex2 == "M","m","f")) %>% 
+  select(-Sex2) %>% 
+  # extracting NUTS3 from LAU1 when NUTS3 is empty
   mutate(NUTS3 = ifelse(NUTS3 == "", str_sub(LAU1, 1, 5), NUTS3))
 
+cz_cases2 %>%  dplyr::pull("Age") %>%  unique()
+
+Ages_All <- c(0,1,seq(5,100,by=5))
+DateRange <- range(cz_cases2$Date)
+Dates_All <- seq(DateRange[1],DateRange[2],by="days")
+
+
+
+
+# TR:7 Dec 2021: the results here contain duplicates of (Sex, Age, Date, Measure, Metric), needs checking
 ### DATA ON NUTS3 level
 cz_cases_region_ss <- 
   cz_cases2 %>% 
-  select("NUTS3",  "Date", "Sex", "Age") %>% 
-  mutate(Region = as.factor(NUTS3),
-         # grouping age
-      Age5 = Age - Age %% 5,
-      Age = case_when(Age == 0 ~ 0,
-                      Age >= 100 ~ 100,
-                      TRUE ~ Age5)
-  ) %>% 
+  select(Region = NUTS3, Date,Sex,Age) %>% 
+  mutate(Age = case_when(between(Age,1,4) ~ 1,
+                         Age >= 100 ~ 100,
+                         TRUE ~ Age - Age %% 5)) %>% 
   ### select
-  select(Region, Date, Sex, Age, -Age5) %>% 
+  select(Region, Date, Sex, Age) %>% 
   group_by(Region, Date, Age, Sex) %>% 
-  summarise(Value = n()) %>% 
-  ungroup() %>% 
-  ### complete = Turns implicit missing values into explicit missing values => chci 
-  ### vektor ttech vek skupin explicitne
-  tidyr::complete(Region, 
+  summarise(Value = n(), .groups = "drop") %>% 
+  ### complete = Turns implicit missing values into explicit 0s 
+  tidyr::complete(Region = CZNUTS3$code, 
            Date = Dates_All, 
            Age = Ages_All, 
            Sex, 
@@ -98,10 +91,8 @@ cz_cases_region_ss <-
                             TRUE ~ 5), # what about the 100+? 
          Metric = "Count", 
          Measure = "Cases",
-         Date = paste(sprintf("%02d",day(Date)),    
-                      sprintf("%02d",month(Date)),  
-                      year(Date),sep="."),
-         Code = paste("CZ", Region, Date, sep = "_")) %>% 
+         Date = ddmmyyyy(Date),
+         Code = paste("CZ", Region, sep = "-")) %>% 
   select(Country, 
          Region, 
          Code, 
@@ -113,7 +104,14 @@ cz_cases_region_ss <-
          Measure, 
          Value)%>%
   mutate(Age= as.character(Age))
- 
+
+# cz_cases_region_ss %>% 
+#   group_by(Region,Sex,Age,Date,Measure,Metric) %>% 
+#   mutate(n = n(),
+#          i = 1:n()) %>% 
+#   ungroup() %>% 
+#   filter(n>1)
+
 
 ###########################################
 ################ DEATHS ###################
@@ -122,43 +120,41 @@ cz_cases_region_ss <-
 # Getting the data from the Health Ministery website
 deaths_url <- "https://onemocneni-aktualne.mzcr.cz/api/v2/covid-19/umrti.csv"
 
-cz_deaths<-read.csv(deaths_url, 
-                    header = TRUE, 
-                    col.names = c("Date", 
-                                  "Age", 
-                                  "Sex2", 
-                                  "NUTS3", # "kraj" - NUTS 3 administrative unit
-                                  "LAU1") # "okres" - LAU 1 administrative unit
-) %>% 
-  mutate(Sex = ifelse(Sex2 == "M","m","f"),  # no unknown Sex?
-         Date = as.Date(Date, "%Y-%m-%d")) %>% 
-  select(-Sex2)
+# TR: 7 Dec, 2021: this should be read in using read_csv() and colnames matched using select(),
+# as in the above for cases.
+cz_deaths_in <- read_csv(deaths_url)
 
-cz_deaths %>%  dplyr::pull("Age") %>%  unique()
+cz_deaths2 <-
+  cz_deaths_in %>% 
+  select(Date = datum, Age = vek, Sex = pohlavi, NUTS3 = kraj_nuts_kod, LAU1 = okres_lau_kod) %>% 
+  mutate(Sex = case_when(Sex == "M" ~ "m",
+                         Sex == "F" ~ "f",
+                         TRUE ~ "UNK"), 
+         NUTS3 = ifelse(NUTS3 == "", str_sub(LAU1, 1, 5), NUTS3))
+
+# cz_deaths2 %>%  dplyr::pull(Age) %>%  unique()
 
 
 # we'll use the same Ages_All
 
-DateRangeD <- range(cz_deaths$Date)
+DateRangeD <- range(cz_deaths2$Date)
 Dates_AllD <- seq(DateRange[1],DateRange[2],by="days")
 
 ### DATA ON NUTS3 level
 cz_deaths_region_ss <- 
-  cz_deaths %>% 
-  select("NUTS3",  "Date", "Sex", "Age") %>% 
-  mutate(Region = as.factor(NUTS3),
-         # grouping age
-         Age5 = Age - Age %% 5,
-         Age = case_when(Age == 0 ~ 0,
+  cz_deaths2 %>% 
+  select(Region = NUTS3,  Date, Sex, Age) %>% 
+  mutate(Age5 = Age - Age %% 5,
+         Age = case_when(between(Age,1,4) ~ 1,
                         Age >= 100 ~ 100,
-                        TRUE ~ Age5)
+                        TRUE ~  Age - Age %% 5)
   ) %>% 
   select(Region, Date, Sex, Age) %>% 
   group_by(Region, Date, Age, Sex) %>% 
   summarise(Value = n(),
             .groups = "drop") %>% 
   ungroup() %>% 
-  tidyr::complete(Region, 
+  tidyr::complete(Region = CZNUTS3$code, 
            Date = Dates_AllD, 
            Age = Ages_All, 
            Sex, 
@@ -171,10 +167,8 @@ cz_deaths_region_ss <-
   mutate(AgeInt = 5, # what about the 100+? 
          Metric = "Count", 
          Measure = "Deaths",
-         Date = paste(sprintf("%02d",day(Date)),    
-                      sprintf("%02d",month(Date)),  
-                      year(Date),sep="."),
-         Code = paste("CZ", Region, Date, sep = "_"),
+         Date = ddmmyyyy(Date),
+         Code = paste("CZ", Region, sep = "-"),
          Country = "Czechia") %>% 
   select(Country, 
          Region, 
@@ -188,69 +182,46 @@ cz_deaths_region_ss <-
          Value)%>%
   mutate(Age= as.character(Age))
 
-
-
 ###########################################
 ################ VACCINATION ##############
 ###########################################
 
 vaccine_url <- "https://onemocneni-aktualne.mzcr.cz/api/v2/covid-19/ockovani.csv"
 
-vaccines <- read.csv(vaccine_url, 
-                     header = T, 
-                     encoding = "UTF-8",
-                     col.names = c("Date", 
-                                   "vaccine", # Comirnaty, Moderna, AstraZeneca
-                                   "NUTS3", 
-                                   "Region", # names of the regions
-                                   "AgeGroup",
-                                   "first_dose", 
-                                   "second_dose", 
-                                   "n_dose")) %>% 
-  mutate(Date = as.Date(Date, "%Y-%m-%d"))
+vacc_in    <- read_csv(vaccine_url)
+
+DateRangeV <- range(vacc_in$datum)
+Dates_AllV <- seq(DateRangeV[1],DateRangeV[2],by="days")
+all_ages_V <- vacc_in$vekova_skupina %>% unique()
 
 
-# unfortunatelly only age 80+ is registered, although the 80+ group 
-# is the group of first preference in vaccination
-
-
-#Original Code from Anna Altova 
-
-#cz_vaccines <- vaccines %>% 
- # mutate(Region = as.factor(Region), 
-         #NUTS3 = as.factor(NUTS3)) %>% 
-  #tidyr::complete(nesting(NUTS3,Region), Date, AgeGroup, vaccine, fill = list(first_dose = 0, 
-                                                                       #second_dose = 0, 
-                                                                       #n_dose = 0)) %>% 
-  #arrange(Date, Region, NUTS3, AgeGroup, vaccine) %>%
-  #group_by(Region, NUTS3, AgeGroup, vaccine) %>% 
-  #mutate(Vaccination1 = cumsum(first_dose), 
-        # Vaccination2 = cumsum(second_dose), 
-         #Vaccinations = cumsum(n_dose)) %>% 
-  #ungroup() %>% 
-  #select(Date, Region, NUTS3, AgeGroup, VaccineType = vaccine, 
-         #Vaccination1, Vaccination2, Vaccinations) %>% 
-  #pivot_longer(-c(Date, Region, NUTS3, AgeGroup, VaccineType), names_to = "Measure", values_to = "Value") %>% 
-  #mutate(AgeGroup = na_if(AgeGroup, "neza?azeno"), 
-         #Country = "Czechia") %>% 
-  #select(Country, Region, NUTS3, Date, AgeGroup, VaccineType, Measure, Value)
-
-
-# JD Adaption to database 
-
-cz_vaccines <- vaccines %>% 
-  mutate(Region = as.factor(NUTS3)) %>%  
-  rename(Age= AgeGroup)%>% 
-  tidyr::complete(nesting(Region), Date, Age, fill = list(first_dose = 0, 
-                                                          second_dose = 0, 
-                                                          n_dose = 0)) %>% 
-  arrange(Date, Region, Age) %>%
-  group_by(Region, Age) %>% 
+# vacc_in cont
+cz_vaccines <- 
+  vacc_in %>% 
+  select(Date = datum,
+         Age = vekova_skupina,
+         NUTS3 = kraj_nuts_kod,
+         first_dose = prvnich_davek,
+         second_dose = druhych_davek,
+         n_dose = celkem_davek ) %>% 
+  group_by(Date, Age, NUTS3) %>% 
+  summarize(first_dose = sum(first_dose),
+            second_dose = sum(second_dose),
+            n_dose = sum(n_dose),
+            .groups = "drop") %>% 
+  tidyr::complete(NUTS3 = CZNUTS3$code, 
+                  Date = Dates_AllV, 
+                  Age = all_ages_V, 
+                  fill = list(first_dose = 0, 
+                              second_dose = 0, 
+                              n_dose = 0)) %>% 
+  arrange(NUTS3, Age, Date) %>%
+  group_by(NUTS3, Age) %>% 
   mutate(Vaccination1 = cumsum(first_dose), 
          Vaccination2 = cumsum(second_dose), 
          Vaccinations = cumsum(n_dose)) %>% 
   ungroup() %>% 
-  select(Date, Region, Age, 
+  select(Date, Region = NUTS3, Age, 
          Vaccination1, Vaccination2, Vaccinations) %>% 
   pivot_longer(-c(Date, Region, Age), names_to = "Measure", values_to = "Value") %>% 
   mutate(Age= case_when ( 
@@ -268,28 +239,20 @@ cz_vaccines <- vaccines %>%
                   Age ==  "70-74"~"70",
                   Age ==  "75-79"~"75",
                   Age ==  "80+"~"80",
-                  Age == "nezařazeno" ~ "UNK"))%>% # not sure if best way to rename nezařazeno to UNK, returns NA is this step
-  mutate(Age = case_when(
-    is.na(Age)~ "UNK",
-    TRUE~ as.character(Age))) %>%
-  mutate(AgeInt = case_when(
-    Age == "0" ~ 18L,
-    Age == "18" ~ 7L,
-    Age == "80" ~ 25L,
-    Age == "UNK" ~ NA_integer_,
-    TRUE ~ 5L))%>% 
-  mutate(
+                  TRUE ~ "UNK"),
+         AgeInt = case_when(
+                  Age == "0" ~ 18L,
+                  Age == "18" ~ 7L,
+                  Age == "80" ~ 25L,
+                  Age == "UNK" ~ NA_integer_,
+                  TRUE ~ 5L),
     Country = "Czechia",
     Sex= "b",
-    Date = ymd(Date),
-    Date = paste(sprintf("%02d",day(Date)),    
-                 sprintf("%02d",month(Date)),  
-                 year(Date),sep="."),
-    Code = paste("CZ", Region, Date, sep = "_"),
+    Date = ddmmyyyy(Date),
+    Code = paste("CZ", Region, sep = "-"),
     Metric= "Count") %>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)
-
 
 
 #Anna Altova:
@@ -313,7 +276,7 @@ cz_spreadsheet_region <-
   bind_rows(cz_cases_region_ss, 
             cz_deaths_region_ss,
             cz_vaccines) %>% 
-  left_join(NUTS3, by = c("Region" = "code")) %>% 
+  left_join(CZNUTS3, by = c("Region" = "code")) %>% 
   select(Country, Region = name, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
   sort_input_data()
 
@@ -325,35 +288,29 @@ Ages_all_single <- 0:100
 
 cz_cases_all_ss <- 
   cz_cases2 %>% 
-  select("NUTS3",  "Date", "Sex", "Age") %>% 
-  mutate(Region = "All",
-         # grouping age
-         Age = ifelse(Age >= 100, 100, Age)) %>% 
+  select(Date, Sex, Age) %>% 
+  mutate(Age = ifelse(Age >= 100, 100, Age)) %>% 
   ### select
-  select(Region, Date, Sex, Age,) %>% 
-  group_by(Region, Date, Age, Sex) %>% 
-  summarise(Value = n()) %>% 
-  ungroup() %>% 
-  ### complete = Turns implicit missing values into explicit missing values => chci 
-  ### vektor ttech vek skupin explicitne
-  tidyr::complete(Region = "All",
-           Date = Dates_All, 
-           Age = Ages_all_single, 
-           Sex, 
-           fill = list(Value = 0)) %>% 
-  arrange(Region, Sex, Age, Date) %>% 
-  group_by(Region, Sex, Age) %>% 
+  select(Date, Sex, Age,) %>% 
+  group_by(Date, Age, Sex) %>% 
+  summarise(Value = n(), .groups = "drop") %>% 
+  tidyr::complete(
+    Date = Dates_All, 
+    Age = Ages_all_single, 
+    Sex, 
+    fill = list(Value = 0)) %>% 
+  arrange(Sex, Age, Date) %>% 
+  group_by(Sex, Age) %>% 
   mutate(Value = cumsum(Value)) %>%  # cumulative!
   ungroup() %>% 
-  arrange(Region, Date, Sex, Age) %>% 
+  arrange(Date, Sex, Age) %>% 
   mutate(Country = "Czechia",
+         Region = "All",
          AgeInt = ifelse(Age == 100,5,1), 
          Metric = "Count", 
          Measure = "Cases",
-         Date = paste(sprintf("%02d",day(Date)),    
-                      sprintf("%02d",month(Date)),  
-                      year(Date),sep="."),
-         Code = paste("CZ", Date, sep = "_")) %>% 
+         Date = ddmmyyyy(Date),
+         Code = paste("CZ")) %>% 
   select(Country, 
          Region, 
          Code, 
@@ -366,34 +323,31 @@ cz_cases_all_ss <-
          Value)
 
 cz_deaths_all_ss <- 
-  cz_deaths %>% 
-  select("NUTS3",  "Date", "Sex", "Age") %>% 
-  mutate(Region = "All",
-         # grouping age
-         Age = ifelse(Age >= 100, 100, Age)) %>% 
-  select(Region, Date, Sex, Age) %>% 
-  group_by(Region, Date, Age, Sex) %>% 
+  cz_deaths2 %>% 
+  select(Date, Sex, Age) %>% 
+  mutate(Age = ifelse(Age >= 100, 100, Age)) %>% 
+  select(Date, Sex, Age) %>% 
+  group_by(Date, Age, Sex) %>% 
   summarise(Value = n(),
             .groups = "drop") %>% 
   ungroup() %>% 
-  tidyr::complete(Region = "All",
-           Date = Dates_AllD, 
-           Age = Ages_all_single, 
-           Sex, 
-           fill = list(Value = 0)) %>% 
-  arrange(Region, Sex, Age, Date) %>% 
-  group_by(Region, Sex, Age) %>% 
+  tidyr::complete(
+    Date = Dates_AllD, 
+    Age = Ages_all_single, 
+    Sex, 
+    fill = list(Value = 0)) %>% 
+  arrange(Sex, Age, Date) %>% 
+  group_by(Sex, Age) %>% 
   mutate(Value = cumsum(Value)) %>%  # cumulative!
   ungroup() %>% 
-  arrange(Region, Date, Sex, Age) %>% 
+  arrange(Date, Sex, Age) %>% 
   mutate(AgeInt = ifelse(Age == 100,5,1), 
          Metric = "Count", 
          Measure = "Deaths",
-         Date = paste(sprintf("%02d",day(Date)),    
-                      sprintf("%02d",month(Date)),  
-                      year(Date),sep="."),
-         Code = paste("CZ", Date, sep = "_"),
-         Country = "Czechia") %>% 
+         Date = ddmmyyyy(Date),
+         Code = paste("CZ"),
+         Country = "Czechia",
+         Region = "All") %>% 
   select(Country, 
          Region, 
          Code, 
@@ -424,7 +378,11 @@ cz_spreadsheet_all <-
 
 out <- bind_rows(cz_spreadsheet_all, cz_spreadsheet_region)
 
-unique(out$Region)
+# out %>% 
+#   group_by(Region, Sex, Date, Age, Measure, Metric) %>% 
+#   mutate(i = 1:n()) %>% 
+#   ungroup() %>% 
+#   dplyr::filter(i > 1)
 ###########################
 #### Saving data in N: ####
 ###########################

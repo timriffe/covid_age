@@ -26,7 +26,7 @@ rubric_i <- get_input_rubric() %>% filter(Short == "CA")
 ss_i     <- rubric_i %>% dplyr::pull(Sheet)
 ss_db    <- rubric_i %>% dplyr::pull(Source)
 
-db <- read_csv("U:/nextcloud/Projects/COVID_19/COVerAge-DB/canada/201019_13100781-eng/13100781.csv", 
+db <- read_csv("U:/nextcloud/Projects/COVID_19/COVerAge-DB/canada/201019_13100781-eng/13100781.csv",
                col_types = cols(.default = "c"))
 
 # from long to wide format

@@ -98,7 +98,8 @@ db_c2 <-
       Sex = case_when(sex == "male" ~ "m",
                       sex == "female" ~ "f",
                       sex == "total" ~ "b",
-                      TRUE ~ "o")) %>% 
+                      sex == "TOT" ~ "b",
+                      TRUE ~ "UNK")) %>% 
   arrange(Sex, Age, date) %>% 
   group_by(Sex, Age) %>% 
   mutate(Value = cumsum(n)) %>% 
@@ -117,7 +118,7 @@ db_c2 <-
 db_t2 <-
   db_t %>% 
   mutate(Age = "TOT",
-         Sex = "TOT",
+         Sex = "b",
          n = n_pos + n_neg) %>% 
   arrange(date) %>% 
   mutate(Value = cumsum(n)) %>% 
@@ -166,7 +167,8 @@ db_d2 <-
          Sex = recode(sex,
                       "male" = "m",
                       "female" = "f",
-                      "total" = "b")) %>% 
+                      "total" = "b",
+                      "TOT" = "b")) %>% 
   group_by(Sex, Date) %>% 
   do(get_zero(chunk = .data)) %>% 
   ungroup() %>% 
@@ -183,7 +185,8 @@ db_d2 <-
                             Age == "90" ~15L,
                             Age == "TOT" ~ NA_integer_,
                             TRUE ~ 10L)) %>% 
-  filter(Age != "TOT")
+  filter(Age != "TOT") %>% 
+  filter(Age != "Ukjent")
 
 # Merge files, create more columns ####
 #######################################
@@ -195,7 +198,7 @@ captured <-
   mutate(Date = paste(sprintf("%02d",day(Date)),    
                       sprintf("%02d",month(Date)),  
                       year(Date),sep="."),
-         Code = paste0("NO",Date)) 
+         Code = paste0("NO")) 
 
 # bind data, only keeping Deaths prior to just-captured deaths ####
 # treat cases and tests as completely refreshing
@@ -217,14 +220,18 @@ db_drive2 <- db_drive %>%
   filter(!(Date %in% dates_db_d2 & Measure == "Deaths"),
          !(Date %in% dates_db_c2 & Measure == "Cases"),
          !(Date %in% dates_db_t2 & Measure == "Tests")) %>% 
-  mutate(Value = as.double(Value)) 
+  mutate(Value = as.double(Value)) %>% 
+  mutate(Sex = case_when(
+    Sex == "TOT" ~ "b",
+    TRUE ~ Sex
+  ))
 
 out <- 
   bind_rows(db_drive2, db_d2, db_c2, db_t2) %>% 
   mutate(Date = paste(sprintf("%02d",day(Date)),    
                       sprintf("%02d",month(Date)),  
                       year(Date),sep="."),
-         Code = paste0("NO",Date)) %>% 
+         Code = paste0("NO")) %>% 
   sort_input_data() %>% 
   unique()
 

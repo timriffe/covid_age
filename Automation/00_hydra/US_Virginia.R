@@ -96,7 +96,7 @@ out <- bind_rows(db_age2, db_sex2, db_tests2) %>%
   mutate(Country = "USA",
          Region = "Virginia",
          Date = ddmmyyyy(date_f),
-         Code = paste0("US_VA", Date),
+         Code = paste0("US-VA"),
          Metric = "Count") %>% 
   arrange(Region, date_f, Measure, Sex, suppressWarnings(as.integer(Age))) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)

@@ -16,8 +16,8 @@ log_section("update build series log", append = TRUE, logfile = logfile)
 
 
 Date <- lubridate::today()
-idb  <- readRDS(here::here("Data","inputDB.rds"))
-o5   <- readRDS(here::here("Data","Output_5.rds"))
+idb  <- data.table::fread(here::here("Data","inputDB_internal.csv"),encoding = "UTF-8")
+o5   <- data.table::fread(here::here("Data","Output_5_internal.csv"),encoding = "UTF-8")
 
 append_this <- tibble(Date = Date,
                       `Rows (inputDB)` = nrow(idb),
@@ -38,3 +38,24 @@ write_sheet(OUT, ss = ss, sheet = "build log")
 # we can then set up this sheet to send notification when updated.
 rm(list=ls())
 gc()
+
+do.this <- FALSE
+if (do.this){
+  oc <-
+  o10 %>% 
+    select(Country, Region) %>% 
+    distinct()
+  
+  ic <-
+    inputDB %>% 
+    select(Country, Region) %>% 
+    distinct()
+  
+  anti_join(oc,ic)
+  inputDB$Country %>% unique(
+    
+  )
+  inputDB %>% dplyr::filter(Country == "1")
+  inputDB %>% dplyr::filter(!is.na(`.`))
+}
+

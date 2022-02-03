@@ -21,8 +21,8 @@ add_b_margin <- function(chunk){
 
 # Script should calculate
 
-inputDB   <- readRDS(here::here("Data","inputDB.rds"))
-Output_10 <- readRDS(here::here("Data","Output_10.rds"))
+inputDB   <- data.table::fread(here::here("Data","inputDB_internal.csv"),encoding = "UTF-8")
+Output_10 <- data.table::fread(here::here("Data","Output_10_internal.csv"),encoding = "UTF-8")
 Offsets   <- readRDS(here::here("Data","Offsets.rds"))
 Metadata  <- readRDS(here::here("Data","metadata_important.rds"))
 # I How aggressive is scaling? (also UNK rescaling) - time varying

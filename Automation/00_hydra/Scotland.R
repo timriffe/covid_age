@@ -100,7 +100,7 @@ sc <-
                       sprintf("%02d",month(Date)),  
                       year(Date), 
                       sep = "."),
-         Code = paste0('GB_SCO_',Date)) %>% 
+         Code = paste0('GB-SCT')) %>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)
   
@@ -182,7 +182,7 @@ sct <-
                       sprintf("%02d",month(Date)),  
                       year(Date), 
                       sep = "."),
-         Code = paste0('GB_SCO_',Date)) %>% 
+         Code = paste0('GB-SCT')) %>% 
   select(all_of(colnames(sc)))
   
 # --------------------------------
@@ -206,7 +206,7 @@ TOT <-
                       sprintf("%02d",month(Date)),  
                       year(Date), 
                       sep = "."),
-         Code = paste0("GB_SCO_", Date)) %>% 
+         Code = paste0("GB-SCT")) %>% 
   select(all_of(colnames(sc)))
 
 # --------------------------------

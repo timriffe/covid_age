@@ -28,7 +28,7 @@ library(arrow)
 
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
-  email <- "jessica_d.1994@yahoo.de"
+  email <- "maxi.s.kniffka@gmail.com"
 }
 gs4_auth(email = email)
 
@@ -58,12 +58,13 @@ dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 #read in data faster 
 
-data1=read_parquet("K:/CDC_Covid/covid_case_restricted_detailed-master_08_2021/COVID_Cases_Restricted_Detailed_08172021_Part_1.parquet")
-data2=read_parquet("K:/CDC_Covid/covid_case_restricted_detailed-master_08_2021/COVID_Cases_Restricted_Detailed_08172021_Part_2.parquet")
+data1=read_parquet("K:/CDC_Covid/covid_case_restricted_detailed-master_03_01_2022/COVID_Cases_Restricted_Detailed_01032022_Part_1.parquet")
+data2=read_parquet("K:/CDC_Covid/covid_case_restricted_detailed-master_03_01_2022/COVID_Cases_Restricted_Detailed_01032022_Part_2.parquet")
+data3=read_parquet("K:/CDC_Covid/covid_case_restricted_detailed-master_03_01_2022/COVID_Cases_Restricted_Detailed_01032022_Part_3.parquet")
 
 
 # Add datasets vertically
-IN <- rbind(data1, data2)
+IN <- rbind(data1, data2, data3)
 
 rm(data1,data2);gc()
 glimpse(IN)
@@ -71,11 +72,13 @@ states <- c("AZ","AR", "DE","GU","ID","KS","ME","MA","MN","MT","NV","NJ","NC","O
 
 Out <-
   IN %>%
+  filter(res_state %in% states) %>%
   select(Date = cdc_case_earliest_dt, 
          Sex = sex, 
          Age = age_group, 
          State = res_state)%>%
   mutate(Sex =  case_when(is.na(Sex) ~ "UNK",
+                          Sex == "NA" ~ "UNK",
                         Sex== "Unknown" ~ "UNK",
                         Sex== "Missing" ~ "UNK",
                         Sex== "Other" ~ "UNK",
@@ -136,8 +139,8 @@ mutate(
                    `SC`= "South Carolina",	
                    `TN`= "Tennessee",	
                    `VA`=  "Virginia"),
-    Code= paste0 ("US_", State, Date)) %>% 
-  select(Country, Region, State, Code, Date, Sex, 
+    Code= paste0 ("US-", State)) %>% 
+  select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)
 
 View(Out)

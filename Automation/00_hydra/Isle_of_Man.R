@@ -61,7 +61,7 @@ Cases_out= In_cases%>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("IM",Date),
+    Code = paste0("IM"),
     Country = "Isle of Man",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -94,7 +94,7 @@ Cases_out_sex= In_cases_sex%>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("IM",Date),
+    Code = paste0("IM"),
     Country = "Isle of Man",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -120,7 +120,7 @@ mutate(
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("IM",Date),
+    Code = paste0("IM"),
     Country = "Isle of Man",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -142,7 +142,7 @@ death_total= In_total %>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("IM",Date),
+    Code = paste0("IM"),
     Country = "Isle of Man",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -163,7 +163,7 @@ test_total= In_total %>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("IM",Date),
+    Code = paste0("IM"),
     Country = "Isle of Man",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -232,7 +232,7 @@ Out_vaccine = In_vaccine %>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("IM",Date),
+    Code = paste0("IM"),
     Country = "Isle of Man",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 

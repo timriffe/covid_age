@@ -39,13 +39,17 @@ log_section(paste(Sys.time(),"updates"),
 
 #source("R_checks/inputDB_check.R")
 email <- Sys.getenv("email")
-gs4_auth(email = email)
-drive_auth(email = email)
+gs4_auth(email = email, 
+         scopes = c("https://www.googleapis.com/auth/spreadsheets",
+                    "https://www.googleapis.com/auth/drive"))
+drive_auth(email = email,
+           scopes = c("https://www.googleapis.com/auth/spreadsheets",
+                      "https://www.googleapis.com/auth/drive"))
 
 # these parameters to grab templates that were modified between 12 and 2 hours ago,
 # a 10-hour window. This will be run every 8 hours, so this implies overlap.
-hours_from <- 12
-hours_to   <- 2
+# hours_from <- 175
+# hours_to   <- 2
 
 
 # which templates were updated within last hours_from hours?
@@ -54,65 +58,30 @@ hours_to   <- 2
 # changed Short code to _NA but still. Check again in a few days.
 # Until then always load Namibia.
 rubric <- get_input_rubric()
-NAM    <- rubric %>% filter(Country == "Namibia")
-rubric <- get_rubric_update_window(hours_from, hours_to)
-rubric <- bind_rows(rubric, NAM)
+# NAM    <- rubric %>% filter(Country == "Namibia")
+# rubric <- get_rubric_update_window(hours_from, hours_to)
+# rubric <- bind_rows(rubric, NAM)
 
 if (nrow(rubric) > 0){
   # read in modified data templates (this is the slowest part)
   # rubric <- get_input_rubric()
   inputDB <- compile_inputDB(rubric, hours = Inf)
   
-  # EA: temporal fix while solving issue with additional columns in the InputDB.csv (12.08.2021)
+  # EA: temporary fix while solving issue with additional columns in the InputDB.csv (12.08.2021)
   try(inputDB <- 
         inputDB %>% 
         select(-y))
   
-  try(inputDB <- 
-        inputDB %>% 
-        select(-'2499'))
-  
-  # saveRDS(inputDB,here("Data","inputDBhold.rds"))
+  data.table::fwrite(inputDB, file = here::here("Data","inputDBhold.csv"))
+  # saveRDS(inputDB, here::here("Data","inputDBhold.rds"))
   # what data combinations have we read in?
   
-  # EA: No need to paste "Country", "Region", as "Short" variable includes information of both.
-  # Better to only use "Short", as there could be wrong spelling of Country names or regions
-  # Added on 16.08.2021
-  
-  codesIN     <- with(inputDB, paste(Short, Measure)) %>% unique()
-  
-  # Read in previous unfiltered inputDB
-  inputDBhold <- readRDS(here::here("Data","inputDBhold.rds"))
-  
-  # EA: temporal fix while solving issue with additional columns in the InputDB.csv (12.08.2021)
-  try(inputDBhold <- 
-        inputDBhold %>% 
-        select(-y))
-  
-  try(inputDBhold <- 
-        inputDBhold %>% 
-        select(-'2499'))
-  
-  # remove any codes we just read in
-  inputDBhold <- 
-    inputDBhold %>% 
-    mutate(checkid = paste(Short, Measure)) %>% 
-    filter(!checkid %in% codesIN) %>% 
-    select(-checkid)
-
-  # bind on the data we just read in
-  inputDBhold <- bind_rows(inputDBhold, inputDB) %>% 
-    sort_input_data()
-  
-  # resave out to the full unfiltered inputDB.
-  saveRDS(inputDBhold, here::here("Data","inputDBhold.rds"))
-  
-  # TR: this is temporary:
+  # TR: templateID is temporary:
   inputDB$templateID <- NULL
   
   
   # remove non-standard Measure:
-  Measures <- c("Cases","Deaths","Tests","ASCFR","Vaccinations","Vaccination1","Vaccination2")
+  Measures <- c("Cases","Deaths","Tests","ASCFR","Vaccinations","Vaccination1","Vaccination2", "Vaccination3", "VaccinationBooster")
   n <- inputDB %>% dplyr::pull(Measure) %>% `%in%`(Measures)
   # sum(n)
   if (sum(!n) > 0){
@@ -180,6 +149,7 @@ if (nrow(rubric) > 0){
     }
   }
   
+  
   n <- is.na(dmy(inputDB$Date))
   # sum(n)
   if (sum(n) > 0){
@@ -213,32 +183,27 @@ if (nrow(rubric) > 0){
   # -------------------------------------- #
   # now swap out data in inputDB files
   
-  ids_new       <- with(inputDB, paste(Country,Region,Measure,Short))
-  
-  inputDB_prior <- readRDS(here::here("Data","inputDB.rds")) %>% 
-    mutate(Short = add_Short(Code,Date))
+  # ids_new       <- with(inputDB, paste(Country,Region,Measure,Short))
+  # inputDB_prior <-
+  # data.table::fread(file = here::here("Data","inputDB.csv"),
+  #                   encoding = "UTF-8") %>% 
+  #   mutate(Short = add_Short(Code,Date))
+  # inputDB_prior <- readRDS(here::here("Data","inputDB.rds")) %>% 
+  #   mutate(Short = add_Short(Code,Date))
   
   # EA: temporal fix while solving issue with additional columns in the InputDB.csv
-  try(inputDB_prior <- 
-        inputDB_prior %>% 
-        select(-'2499'))
+
   
-  try(inputDB_prior <- 
-        inputDB_prior %>% 
-        select(-y))
+  # try(inputDB_prior <- 
+  #       inputDB_prior %>% 
+  #       select(-y))
+  # try(inputDB_prior <- 
+  #       inputDB_prior %>% 
+  #       select(-`.`))
   
   inputDB_out <-
-    inputDB_prior %>% 
-    mutate(checkid = paste(Country,Region,Measure,Short)) %>% 
-    filter(!checkid %in% ids_new) %>% 
-    select(-checkid) %>% 
-    bind_rows(inputDB) %>% 
-    sort_input_data()
-  
-  # TR: added 09.11.2020 because some people seem to reserve blocks in the database with NAs. hmm.
-  inputDB_out <- 
-    # inputDB %>% 
-    inputDB_out %>% 
+    inputDB %>% 
+    sort_input_data() %>% 
     filter(!is.na(Value),
            !is.na(Region),
            !is.na(Country),
@@ -248,14 +213,15 @@ if (nrow(rubric) > 0){
   #   inputDB_out %>% 
   #   filter(Country != "1")
   
-  saveRDS(inputDB_out, here::here("Data","inputDB.rds"))
-
+  # saveRDS(inputDB_out, here::here("Data","inputDB.rds"))
+  data.table::fwrite(inputDB_out, file = here::here("Data","inputDB_internal.csv"))
   #saveRDS(inputDB, here("Data","inputDB_i.rds"))
-  
+  Sys.sleep(1)
   # public file, full precision.
   header_msg <- paste("COVerAGE-DB input database, filtered after some simple checks:",timestamp(prefix = "", suffix = ""))
   data.table::fwrite(as.list(header_msg), 
                      file = here::here("Data","inputDB.csv"))
+  Sys.sleep(1)
   data.table::fwrite(inputDB_out, 
                      file = here::here("Data","inputDB.csv"), 
                      append = TRUE, col.names = TRUE)
@@ -289,15 +255,13 @@ schedule_this <- FALSE
 if (schedule_this){
   # TR: note, if you schedule this, you should make sure it's not already scheduled
   # by someone else!
-  me.this.is.me <- Sys.getenv("USERNAME")
   library(taskscheduleR)
-  taskscheduler_delete("COVerAGE-DB-every-8-hour-inputDB-updates")
-  taskscheduler_create(taskname = "COVerAGE-DB-every-8-hour-inputDB-updates", 
-                       rscript =  paste0(Sys.getenv("path_repo"), "/R/01_update_inputDB.R"), 
+  taskscheduler_delete("COVerAGE-DB-thrice-weekly-inputDB-updates")
+  taskscheduler_create(taskname = "COVerAGE-DB-thrice-weekly-inputDB-updates", 
+                       rscript =  here::here("R","01_update_inputDB.R"), 
                        schedule = "WEEKLY",
-                       days = "SUN",
-                       starttime = "18:00",
-                       startdate = format(Sys.Date(), "%m/%d/%Y"))
+                       days = c("SAT","TUE","THU"),
+                       starttime = "23:07")
   # 
 }
 
@@ -308,13 +272,12 @@ schedule_this <- FALSE
 if (schedule_this){
   # TR: note, if you schedule this, you should make sure it's not already scheduled
   # by someone else!
-  me.this.is.me <- Sys.getenv("USERNAME")
+  
   library(taskscheduleR)
-  taskscheduler_delete("COVerAGE-DB-every-8-hour-inputDB-updates-test")
-  taskscheduler_create(taskname = "COVerAGE-DB-every-8-hour-inputDB-updates-test", 
-                       rscript =  paste0(Sys.getenv("path_repo"), "/R/01_update_inputDB.R"), 
+  taskscheduler_delete("COVerAGE-DB-inputDB-updates-test")
+  taskscheduler_create(taskname = "COVerAGE-DB-inputDB-updates-test", 
+                       rscript =  here::here("R/01_update_inputDB.R"), 
                        schedule = "ONCE", 
-                       starttime = "17:25",
-                       startdate = format(Sys.Date(), "%m/%d/%Y"))
+                       starttime = "17:11")
   # 
 }

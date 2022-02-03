@@ -125,7 +125,7 @@ Age <-
                sprintf("%02d",month(Date)),  
                year(Date),sep="."),
          Metric = "Count",
-         Code = paste0("US_IA_",Date),
+         Code = paste0("US-IA"),
          Sex = "b"
   )
 
@@ -149,7 +149,7 @@ Tests <-
          Date = paste(sprintf("%02d", day(Date)),    
                       sprintf("%02d", month(Date)),  
                       year(Date), sep = "."),
-         Code = paste0("US_IA_", Date),
+         Code = paste0("US-IA"),
          Sex = "b")
 
 
@@ -170,7 +170,7 @@ Sex <- SexIN %>%
            Date = paste(sprintf("%02d", day(Date)),    
                         sprintf("%02d", month(Date)),  
                         year(Date), sep = "."),
-           Code = paste0("US_IA_", Date))
+           Code = paste0("US-IA"))
 
 
 # Bind together

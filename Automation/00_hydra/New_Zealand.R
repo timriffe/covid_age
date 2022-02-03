@@ -24,6 +24,13 @@ ss_db    <- rubric_i %>% dplyr::pull(Source)
 
 # reading data from Montreal and last date entered 
 db_drive <- get_country_inputDB("NZ")
+db_drive <- db_drive %>% 
+  mutate(Sex = case_when(
+         Sex == "b" ~ "b",
+         Sex == "f" ~ "f",
+         Sex == "m" ~ "m",
+         Sex == "UNK" ~ "UNK",
+         TRUE ~ "b"))
 
 last_date_drive <- db_drive %>% 
   mutate(date_f = dmy(Date)) %>% 
@@ -61,8 +68,7 @@ if (date_f > last_date_drive){
 #  url1 <- html_nodes(html, xpath = '/html/body/div[2]/div/div[1]/section/div[2]/section/div/div/div[2]/div[2]/div/article/div[2]/div/div/p[13]/a') %>%
 #    html_attr("href")
 
-url1 <- paste0("https://www.health.govt.nz/system/files/documents/pages/covid_cases_",today(), ".csv")  
-    
+  url1 <- paste0("https://www.health.govt.nz/system/files/documents/pages/covid_cases_",today(), ".csv")  
   db_c <- read_csv(paste0(url1)) %>% 
     as_tibble()
   
@@ -126,7 +132,7 @@ url1 <- paste0("https://www.health.govt.nz/system/files/documents/pages/covid_ca
                         sprintf("%02d",month(date_f)),
                         year(date_f),
                         sep="."),
-           Code = paste0("NZ",Date),
+           Code = paste0("NZ"),
            Metric = "Count",
            Measure = "Cases",
            AgeInt = case_when(Age == "90" ~ 15,
@@ -175,7 +181,7 @@ url1 <- paste0("https://www.health.govt.nz/system/files/documents/pages/covid_ca
 db_v <- 
     read_xlsx(data_source6,
     sheet = "DHBofResidence by ethnicity")%>%
-  select(Age= `Age group`, Sex= Gender, Vaccination1= `First dose administered`, Vaccination2= `Second dose administered`)%>%
+  select(Age= `Age group`, Sex= Gender, Vaccination1= `At least partially vaccinated`, Vaccination2= `Fully vaccinated`)%>%
   pivot_longer(!Age & !Sex, names_to= "Measure", values_to= "Value")%>%
   #sum up numbers that were separated by race 
   group_by(Age, Sex, Measure) %>% 
@@ -198,7 +204,7 @@ db_v <-
   Country = "New Zealand",
   Region = "All",
   Date = ddmmyyyy(date),
-  Code = paste0("NZ",Date),
+  Code = paste0("NZ"),
   Metric = "Count")%>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)
@@ -305,7 +311,7 @@ db_v <-
                         sprintf("%02d",month(date_f)),
                         year(date_f),
                         sep="."),
-           Code = paste0("NZ",Date),
+           Code = paste0("NZ"),
            Metric = "Count") %>% 
     bind_rows(db_v)
   
@@ -346,79 +352,86 @@ db_v <-
   # filling missing dates between equal deaths
   ############################################
 
-  db_dh <- 
-    db_drive_out %>% 
-    filter(Measure == "Deaths") %>% 
-    mutate(date_f = dmy(Date)) %>% 
-    select(date_f, Sex, Age, AgeInt, Metric, Measure, Value)
+#  db_dh <- 
+#    db_drive_out %>% 
+#    filter(Measure == "Deaths") %>% 
+#    mutate(date_f = dmy(Date)) %>% 
+#    select(date_f, Sex, Age, AgeInt, Metric, Measure, Value)
     
-  db_dh2 <- 
-    db_dh %>% 
-    group_by(Age, Value) %>% 
-    mutate(Val2 = mean(Value),
-           orig = min(date_f),
-           dest = max(date_f)) %>% 
-    arrange(Age, date_f) %>% 
-    ungroup() %>% 
-    filter(date_f == orig | date_f == dest) %>% 
-    mutate(wtf = case_when(date_f == orig ~ "origin",
-                           date_f == dest ~ "destin"))
+#  db_dh2 <- 
+#   db_dh %>% 
+#    group_by(Age, Value) %>% 
+#    mutate(Val2 = mean(Value),
+#           orig = min(date_f),
+#           dest = max(date_f)) %>% 
+#    arrange(Age, date_f) %>% 
+#    ungroup() %>% 
+#    filter(date_f == orig | date_f == dest) %>% 
+#    mutate(wtf = case_when(date_f == orig ~ "origin",
+#                           date_f == dest ~ "destin"))
     
-  combs <- db_dh2 %>% 
-    select(Sex, Age, AgeInt, Metric, Measure, Val2) %>% 
-    unique()
+#  combs <- db_dh2 %>% 
+#    select(Sex, Age, AgeInt, Metric, Measure, Val2) %>% 
+#    unique()
   
-  db_filled1 <- NULL
-  for(i in 1:dim(combs)[1]){
-    a <- combs[i,2] %>% dplyr::pull()
-    s <- combs[i,1] %>% dplyr::pull()
-    v <- combs[i,6] %>% dplyr::pull()
-    db_dh3 <- 
-      db_dh2 %>% 
-      filter(Age == a,
-             Sex == s,
-             Value == v)
+#  db_filled1 <- NULL
+#  for(i in 1:dim(combs)[1]){
+#    a <- combs[i,2] %>% dplyr::pull()
+#    s <- combs[i,1] %>% dplyr::pull()
+#    v <- combs[i,6] %>% dplyr::pull()
+#    db_dh3 <- 
+#      db_dh2 %>% 
+#      filter(Age == a,
+#             Sex == s,
+#             Value == v)
     
-    d1 <- min(db_dh3$date_f)
-    d2 <- max(db_dh3$date_f)
+#    d1 <- min(db_dh3$date_f)
+#    d2 <- max(db_dh3$date_f)
     
-    db_dh4 <- db_dh3 %>% 
-      tidyr::complete(date_f = seq(d1, d2, "1 day"), Sex, Age, AgeInt, Metric, Measure, Value)
+#    db_dh4 <- db_dh3 %>% 
+#      tidyr::complete(date_f = seq(d1, d2, "1 day"), Sex, Age, AgeInt, Metric, Measure, Value)
     
-    db_filled1 <- db_filled1 %>% 
-      bind_rows(db_dh4)
-  }
+#    db_filled1 <- db_filled1 %>% 
+#      bind_rows(db_dh4)
+#  }
   
   # keep dates in which the 11 age groups have information all together
   
-  date_lupdate <- 
-    db_last_update %>% 
-    filter(Measure == "Deaths") %>% 
-    mutate(date_f = dmy(Date)) %>% 
-    select(date_f) %>%
-    unique() %>% 
-    dplyr::pull()
+#  date_lupdate <- 
+#    db_last_update %>% 
+#    filter(Measure == "Deaths") %>% 
+#    mutate(date_f = dmy(Date)) %>% 
+#    select(date_f) %>%
+#    unique() %>% 
+#    dplyr::pull()
   
-  db_deaths_out <- db_filled1 %>% 
-    select(date_f, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
-    filter(date_f != date_lupdate) %>% 
-    group_by(date_f) %>% 
-    filter(n() == 11) %>% 
-    mutate(Country = "New Zealand",
-           Region = "All",
-           Date = paste(sprintf("%02d",day(date_f)),
-                        sprintf("%02d",month(date_f)),
-                        year(date_f),
-                        sep="."),
-           Code = paste0("NZ",Date),
-           Metric = "Count")
+#  db_deaths_out <- db_filled1 %>% 
+#    select(date_f, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
+#    filter(date_f != date_lupdate) %>% 
+#    group_by(date_f) %>% 
+#    filter(n() == 11) %>% 
+#    mutate(Country = "New Zealand",
+#           Region = "All",
+#           Date = paste(sprintf("%02d",day(date_f)),
+#                        sprintf("%02d",month(date_f)),
+#                        year(date_f),
+#                        sep="."),
+#           Code = paste0("NZ",Date),
+#           Metric = "Count")
   
-  
-  
+  ###get a dataset without the wrong data that has been collected for tests
+  db_drive_out <- db_drive_out %>%
+    filter(Age != "Asian") %>% 
+    filter(Age != "European/Other") %>% 
+    filter(Age != "Female") %>% 
+    filter(Age != "Male") %>% 
+    filter(Age != "Māori") %>% 
+    filter(Age != "Pacific peoples")
+    
   # putting together cases database, last update, and deaths
   ########################################################
   
-  out <- bind_rows(db_c6, db_last_update, db_deaths_out,db_v) %>% 
+  out <- bind_rows(db_c6, db_drive_out) %>% 
     mutate(date_f = dmy(Date)) %>% 
     arrange(date_f, Sex, Measure, suppressWarnings(as.integer(Age))) %>% 
     select(Country,Region, Code,  Date, Sex, Age, AgeInt, Metric, Measure, Value)
@@ -543,7 +556,8 @@ db_v <-
   
   
   
-  
+#nz <- read_rds(paste0(dir_n, ctr, ".rds"))
+
   
   
   

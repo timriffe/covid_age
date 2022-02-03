@@ -94,7 +94,7 @@ if (date_new > date_max){
            Date = paste(sprintf("%02d",day(Date)),    
                         sprintf("%02d",month(Date)),  
                         year(Date),sep="."),
-           Code = paste0("US_ME_",Date)
+           Code = paste0("US-ME")
            ) %>% 
     select(Country, Region, Code, Date, 
            Sex, Age, AgeInt,

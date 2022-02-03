@@ -23,8 +23,13 @@ dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 
 # Drive credentials
-drive_auth(email = email)
-gs4_auth(email = email)
+gs4_auth(email = email,
+         scopes = c("https://www.googleapis.com/auth/spreadsheets",
+                    "https://www.googleapis.com/auth/drive"))
+drive_auth(email = email,
+           scopes = c("https://www.googleapis.com/auth/spreadsheets",
+                      "https://www.googleapis.com/auth/drive"))
+
 
 
 if (system("whoami",intern=TRUE) == "tim"){
@@ -127,7 +132,7 @@ Cases_out <-
          Country = "Vietnam",
          Region = "All",
          Date = ddmmyyyy(date),
-         Code = paste0("VT",Date),
+         Code = paste0("VT"),
          AgeInt = case_when(
            Age == 0 ~ 1L,
            Age == 1 ~ 4L,
@@ -189,7 +194,7 @@ Deaths_out <-
          Country = "Vietnam",
          Region = "All",
          Date = ddmmyyyy(date),
-         Code = paste0("VT",Date),
+         Code = paste0("VT"),
          AgeInt = case_when(
            Age == 0 ~ 1L,
            Age == 1 ~ 4L,

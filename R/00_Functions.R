@@ -14,7 +14,7 @@ packages_CRAN <- c("tidyverse","lubridate","gargle","ungroup","HMDHFDplus",
                    "tictoc","parallel","data.table","git2r","usethis",
                    "remotes","here","knitr","rmarkdown","googledrive","zip",
                    "cartography","rgdal","tmap","svglite",
-                   "countrycode","wpp2019","memuse")
+                   "countrycode","wpp2019","memuse","shiny","DT")
 # install.packages("tidyverse")
 # Install required CRAN packages if not available yet
 if(!sum(!p_isinstalled(packages_CRAN))==0) {
@@ -331,24 +331,26 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
     
     hydra_path <- "N:/COVerAGE-DB/Automation/Hydra"
     
+    # TR: 16.12.2021: if we exclude some Hydra files then are literally omitted from the build AFAIK.
+    
     # EA: Only reading those files in N:/ that were modified during the last 12 hours, similar to those in Drive
     # added on 13.08.2021
-    max_t <- 12
-    
-    local_files <- 
-      rubric_hydra %>% 
-      mutate(local_files = paste0(hydra_path, "/", hydra_name, ".rds"),
-             modif_time = file.info(local_files)$mtime,
-             hours_diff = difftime(Sys.time(), modif_time, units = "hours") %>% unclass()) %>% 
-      filter(hours_diff < max_t) %>% 
-      dplyr::pull(local_files)
-    
-    # local_files <-
-    #   rubric_hydra %>%
-    #   dplyr::pull(hydra_name) %>%
-    #   paste0(".rds")
+    # max_t <- 12
     # 
-    # local_files <-  file.path(hydra_path,local_files)
+    # local_files <- 
+    #   rubric_hydra %>% 
+    #   mutate(local_files = paste0(hydra_path, "/", hydra_name, ".rds"),
+    #          modif_time = file.info(local_files)$mtime,
+    #          hours_diff = difftime(Sys.time(), modif_time, units = "hours") %>% unclass()) %>% 
+    #   filter(hours_diff < max_t) %>% 
+    #   dplyr::pull(local_files)
+    
+     local_files <-
+       rubric_hydra %>%
+       dplyr::pull(hydra_name) %>%
+       paste0(".rds")
+     
+     local_files <-  file.path(hydra_path,local_files)
     
     
     
@@ -364,7 +366,8 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
           ungroup() %>% 
           mutate(Age = as.character(Age),
                  AgeInt = as.integer(AgeInt), 
-                 Value = as.double(Value))
+                 Value = as.double(Value)) %>% 
+          select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
       )
         
       try(
@@ -505,7 +508,7 @@ get_input_rubric <- function(tab = "input") {
   # Read spreadsheet
   input_rubric <- read_sheet(ss_rubric, sheet = tab) %>% 
     # Drop if no source spreadsheet
-    filter(!is.na(Sheet))
+    filter(!is.na(Loc))
   
   # Return tibble
   input_rubric
@@ -517,26 +520,48 @@ get_input_rubric <- function(tab = "input") {
 # Load just a single country
 # @param ShortCode character specifying country to load
 
-get_country_inputDB <- function(ShortCode) {
+get_country_inputDB <- function(ShortCode, rubric) {
   
   # Get spreadsheet
-  rubric <- get_input_rubric(tab = "input")
-  
+  if (missing(rubric)){
+    rubric <- get_input_rubric(tab = "input")
+  }
+ 
   # Find spreadsheet for country
-  ss_i   <- rubric %>% filter(Short == ShortCode) %>% '$'(Sheet)
+  rubric_i   <- rubric %>% 
+    filter(Short == ShortCode)
   
+  if (rubric_i$Loc == "d"){
+    ss_i <-  rubric_i$Sheet
   # Load spreadsheet
-  out <- read_sheet(ss_i, 
+  out_ <- read_sheet(ss_i, 
                     sheet = "database", 
                     na = "NA", 
                     col_types= "cccccciccd",
                     range = "database!A:J")
+  }
+  if (rubric_i$Loc == "n"){
+    hydra_name <- paste0(rubric_i$hydra_name,".rds")
+    hydra_path <- file.path("N:/COVerAGE-DB/Automation/Hydra",hydra_name)
+    if (file.exists(hydra_path)) {
+      out_ <- readRDS(hydra_path)
+    } else {
+      cat("N drive file",hydra_path,"not found\nIs the name right in the input rubric?\nOr maybe you're not on an MPIDR machine?\n")
+      out <- NULL
+    }
+  }
+  
+  if (!exists("out_")){
+    cat()
+  }
   
   # Assign short code
-  out$Short <- add_Short(out$Code,out$Date)
-  
+  if (!is.null(out_)){
+    out_$Short <- add_Short(out_$Code,out_$Date)
+  }
+
   # Output
-  out
+  out_
   
 }
 
@@ -546,10 +571,15 @@ get_country_inputDB <- function(ShortCode) {
 # @param inputDB tibble Input data with data to be replaced
 # @param ShortCode character Code of country 
 
-swap_country_inputDB <- function(inputDB, ShortCode) {
+swap_country_inputDB <- function(inputDB, ShortCode, rubric) {
   
+  # Get spreadsheet
+  if (missing(rubric)){
+    rubric <- get_input_rubric(tab = "input")
+  }
   # Get data for country
-  X <- get_country_inputDB(ShortCode)
+  X <- get_country_inputDB(ShortCode = ShortCode, 
+                           rubric = rubric)
   
   # Filter old data out
   inputDB <-
@@ -2231,7 +2261,8 @@ process_counts <- function(inputDB, Offsets = NULL, N = 10){
 # function that filters rubric down to just those templates that have been updated
 # in a given time reference window (t-hours_from, t-hours_to)
 get_rubric_update_window <- function(hours_from = 12, hours_to = 2){
-  rubric <- get_input_rubric(tab = "input")
+  rubric <- get_input_rubric(tab = "input") %>% 
+    dplyr::filter(Loc == "d")
   
   cutofftime <- format(Sys.time()-hours_from*60*60, "%Y-%m-%dT%H:%M:00")
   query <- paste0("modifiedTime > '",

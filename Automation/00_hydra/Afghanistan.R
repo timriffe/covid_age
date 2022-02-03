@@ -33,7 +33,29 @@ ss_db <- rubric %>%
 
 # read in current state of the data
 AFin <- get_country_inputDB("AF") %>% 
-  select(-Short)
+  select(-Short) 
+
+#  AFrm_duplicates <-
+#  AFin %>% 
+#    group_by(Sex,Age,Date,Measure,Metric) %>% 
+#    mutate(i = 1:n()) %>% 
+#    ungroup() %>% 
+#    filter(i == 1) %>% 
+#    select(-i) %>% 
+#    sort_input_data()
+#  
+# sheet_write(AFrm_duplicates, ss = ss_i, sheet = "database")
+
+# AFin %>% 
+#   group_by(Sex,Age,Date,Measure,Metric) %>% 
+#   mutate(n=n(),
+#          i = 1:n()) %>% 
+#   ungroup() %>% 
+#   filter(n > 1) %>% 
+#   pivot_wider(names_from = i, values_from = Value) %>% 
+#   mutate(Diff = `2` - `1`) %>% 
+#   View()
+
 
 dates_in  <- AFin %>% 
   dplyr::pull(Date) %>% 
@@ -138,7 +160,7 @@ if (length(files_Deaths) > 0){
     
     tibble(Country = "Afghanistan",
            Region = "All",
-           Code = paste0("AF",Datec),
+           Code = paste0("AF"),
            Date = Datec, 
            Sex = "b", 
            Age = "TOT", 
@@ -158,7 +180,7 @@ if (length(files_Deaths) > 0){
            Date = paste(sprintf("%02d",day(Date)),    
                         sprintf("%02d",month(Date)),  
                         year(Date),sep="."),
-           Code = paste0("AF",Date)) %>% 
+           Code = paste0("AF")) %>% 
     select(all_of(colnames(AFin))) %>% 
     sort_input_data()
   

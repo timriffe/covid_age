@@ -50,7 +50,7 @@ Out <- In %>%
   select(Date= DATE, Region= REGION, Age= AGEGROUP, Vaccination1= CUMUL_VAC_1, Vaccination2= CUMUL_VAC_2, Vaccinations= CUMUL)%>%
   pivot_longer(!Age & !Date & !Region, names_to= "Measure", values_to= "Value")%>%
   mutate(Age=recode(Age, 
-                    `0-17 anos`="0",
+                    `12-17 anos`="12",
                     `18-24 anos`="18",
                     `25-49 anos`="25",
                     `50-64 anos`="50",
@@ -61,7 +61,7 @@ Out <- In %>%
   mutate(Age = case_when(is.na(Age) ~ "UNK",
                          TRUE~ as.character(Age))) %>%
   mutate(AgeInt = case_when(
-    Age == "0" ~ 18L,
+    Age == "12" ~ 6L,
     Age == "18" ~ 7L,
     Age == "25" ~ 25L,
     Age == "80" ~ 25L,
@@ -72,17 +72,25 @@ Out <- In %>%
     Metric = "Count", 
     Sex= "b") %>% 
   mutate(
-    Date = ddmmyyyy(Date),
-  #  Date = paste(sprintf("%02d",day(Date)),    
-   #              sprintf("%02d",month(Date)),  
-    #             year(Date),sep="."),
-    Code = paste0("PT_All",Date),
+    # Date = dmy(Date),
+    Date = paste(sprintf("%02d",day(Date)),    
+                 sprintf("%02d",month(Date)),  
+                 year(Date),sep="."),
+    Code = paste0("PT"),
     Country = "Portugal",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)
 
+###adding rows for age zero to eleven for the age harmonization
+smal_ages <- Out %>% 
+  filter(Age == 12) %>% 
+  mutate(Age = 0,
+         AgeInt = 12L,
+         Value = 0)
   
+Out <- rbind(Out, smal_ages) %>% 
+  sort_input_data()
 #save output data 
 write_rds(Out, paste0(dir_n, ctr, ".rds"))
 

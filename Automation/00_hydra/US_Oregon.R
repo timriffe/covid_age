@@ -81,7 +81,7 @@ if (length(files_new) > 0){
       mutate(Sex = case_when(Sex == "Total" ~ "b",
                              Sex == "Female" ~ "f",
                              Sex == "Male" ~ "m",
-                             TRUE ~ "o")) %>% 
+                             TRUE ~ "UNK")) %>% 
       filter(Sex %in% c("b", "m", "f")) %>% 
       select(Sex, Cases, Deaths) %>% 
       mutate(Age = "TOT",
@@ -118,7 +118,7 @@ if (length(files_new) > 0){
            Date = paste(sprintf("%02d",day(Date)),    
                         sprintf("%02d",month(Date)),  
                         year(Date),sep="."),
-           Code = paste0("US_OR_",Date)) %>% 
+           Code = paste0("US-OR")) %>% 
     select(all_of(colnames(inOR))) %>% 
     sort_input_data()
 

@@ -150,8 +150,13 @@ db_v2 <- db_v %>%
          new = COUNT) %>% 
   separate(Age, c("Age", "trash"), sep = "-") %>% 
   mutate(Date = ymd(Date),
-         Measure = ifelse(Measure == "A", "Vaccination1", "Vaccination2"),
-         Age = case_when(Age == "85+" ~ "90",
+         Measure = case_when(Measure == "A" ~ "Vaccination1", 
+                             Measure == "B" ~ "Vaccination2",
+                             Measure == "C" ~ "Vaccination2",
+                             Measure == "E" ~ "Vaccination3"
+                             ),
+         Age = case_when(Age == "85+" ~ "85",
+                         Age == "00" ~ "0",
                          is.na(Age) ~ "UNK",
                          TRUE ~ Age),
          Sex = case_when(Sex == "M" ~ "m",
@@ -207,32 +212,47 @@ out <- bind_rows(db_nal,
                  db_v2 %>% 
                    filter(Region != "UNK")) %>% 
   mutate(Country = "Belgium",
-         AgeInt = case_when(Measure == "Cases" & Age != "90" ~ 10,
-                            Measure == "Cases" & Age == "90" ~ 15,
-                            Measure == "Deaths" & Age == "0" ~ 25,
-                            Measure == "Deaths" & Age %in% c("25", "45") ~ 20,
-                            Measure == "Deaths" & Age == "65" ~ 10,
-                            Measure == "Deaths" & Age == "75" ~ 15,
-                            Measure == "Deaths" & Age == "90" ~ 15,
+         AgeInt = case_when(Measure == "Cases" & Age != "90" ~ 10L,
+                            Measure == "Cases" & Age == "90" ~ 15L,
+                            Measure == "Deaths" & Age == "0" ~ 25L,
+                            Measure == "Deaths" & Age %in% c("25", "45") ~ 20L,
+                            Measure == "Deaths" & Age == "65" ~ 10L,
+                            Measure == "Deaths" & Age == "75" ~ 15L,
+                            Measure == "Deaths" & Age == "90" ~ 15L,
                             #JD: The AgeInt information for vaccines was missing
-                            Measure == "Vaccination1" & Age == "0" ~ 18,
-                            Measure == "Vaccination2" & Age == "0" ~ 18,
-                            Measure == "Vaccination1" & Age == "18" ~ 16,
-                            Measure == "Vaccination2" & Age == "18" ~ 16,
-                            Measure == "Vaccination1" & Age == "90" ~ 15,
-                            Measure == "Vaccination2" & Age == "90" ~ 15,
-                            Measure == "Vaccination1" & Age %in% c("35", "45", "55","65","75") ~ 10,
-                            Measure == "Vaccination2" & Age %in% c("35", "45", "55","65","75") ~ 10),
+                            Measure == "Vaccination1" & Age == "0" ~ 12L,
+                            Measure == "Vaccination2" & Age == "0" ~ 12L,
+                            Measure == "Vaccination3" & Age == "0" ~ 12L,
+                            
+                            Measure == "Vaccination1" & Age == "12" ~ 4L,
+                            Measure == "Vaccination2" & Age == "12" ~ 4L,
+                            Measure == "Vaccination3" & Age == "12" ~ 4L,
+                            
+                            Measure == "Vaccination1" & Age == "16" ~ 2L,
+                            Measure == "Vaccination2" & Age == "16" ~ 2L,
+                            Measure == "Vaccination3" & Age == "16" ~ 2L,
+ 
+                            Measure == "Vaccination1" & Age == "18" ~ 7L,
+                            Measure == "Vaccination2" & Age == "18" ~ 7L,
+                            Measure == "Vaccination3" & Age == "18" ~ 7L,
+
+                            Measure == "Vaccination1" & Age == "85" ~ 20L,
+                            Measure == "Vaccination2" & Age == "85" ~ 20L,
+                            Measure == "Vaccination3" & Age == "85" ~ 20L,
+                            
+                            Measure == "Vaccination1" & Age %in% c("25", "35", "45", "55","65","75") ~ 10L,
+                            Measure == "Vaccination3" & Age %in% c("25", "35", "45", "55","65","75") ~ 10L,
+                            Measure == "Vaccination2" & Age %in% c("25", "35", "45", "55","65","75") ~ 10L),
          date_f = Date,
          Date = paste(sprintf("%02d",day(date_f)),
                       sprintf("%02d",month(date_f)),
                       year(date_f),
                       sep="."),
          Code = case_when(
-           Region == "All" ~ paste0("BE", Date),
-           Region == "Flanders" ~ paste0("BE_VLG", Date),
-           Region == "Wallonia" ~ paste0("BE_WAL", Date),
-           Region == "Brussels" ~ paste0("BE_BRU", Date)),
+           Region == "All" ~ paste0("BE"),
+           Region == "Flanders" ~ paste0("BE-VLG"),
+           Region == "Wallonia" ~ paste0("BE-WAL"),
+           Region == "Brussels" ~ paste0("BE-BRU")),
          Metric = "Count") %>% 
   arrange(Region, date_f, Measure, Sex, suppressWarnings(as.integer(Age))) %>% 
   select(Country, Region, Code,  Date, Sex, Age, AgeInt, Metric, Measure, Value)

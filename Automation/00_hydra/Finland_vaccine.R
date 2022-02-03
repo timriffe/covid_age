@@ -15,7 +15,11 @@ gs4_auth(email = Sys.getenv("email"))
 
 #read in archived  data 
 
-DataArchive <- read_rds(paste0(dir_n, ctr, ".rds"))
+DataArchive <- read_rds(paste0(dir_n, ctr, ".rds")) %>% 
+  mutate(Measure = case_when(
+    Measure == "Third dose" ~ "Vaccination3",
+    TRUE ~ Measure
+  ))
 
 last_date_archive <- DataArchive %>% 
   mutate(date_max = dmy(Date)) %>% 
@@ -71,12 +75,13 @@ Out_vaccine= In_vaccine%>%
                       `80+`="80"),
          Measure=recode(Measure,
                         `First dose`="Vaccination1",
-                        `Second dose`="Vaccination2"),
+                        `Second dose`="Vaccination2",
+                        `Third dose`="Vaccination3"),
          Metric = "Count",
          Sex= "b")%>%
   mutate(AgeInt = case_when(
-    Age == "0" ~ 12L,
-    Age == "12" ~ 8L,
+    Age == "12" ~ 4L,
+    Age == "18" ~ 4L,
     Age == "80" ~ 25L,
     Age == "UNK" ~ NA_integer_,
     TRUE ~ 5L))%>% 
@@ -86,18 +91,28 @@ Out_vaccine= In_vaccine%>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("FI",Date),
+    Code = paste0("FI"),
     Country = "Finland",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)
 
+small_ages <- Out_vaccine %>% 
+  filter(Age == "12") %>% 
+  mutate(Age = 0,
+         AgeInt = 12L,
+         Value = 0)
 
+Out_vaccine <- rbind(Out_vaccine, small_ages) %>% 
+  sort_input_data()
 
 #put together
 
 
-Out= rbind(DataArchive,Out_vaccine)
+Out= rbind(DataArchive,Out_vaccine) %>% 
+  unique()
+
+
 
 #save output 
 
@@ -128,13 +143,6 @@ file.remove(data_source)
 } else if (date == last_date_archive) {
   log_update(pp = ctr, N = 0)
 }
-
-
-
-
-
-
-
 
 
 
