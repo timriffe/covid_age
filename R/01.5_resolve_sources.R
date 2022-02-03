@@ -4,13 +4,13 @@ logfile <- here("buildlog.md")
 
 log_section("begin resolution of multiple sources per population", logfile = logfile)
 
-check_mf <- function(Sex, isECDC){
-  if (any(isECDC)){
-    out = all(c("m","f") %in% Sex[!isECDC])
-    return( rep(out,length(Sex)))
-  }
-  rep(TRUE, length(Sex))
-}
+# check_mf <- function(Sex, isECDC){
+#   if (any(isECDC)){
+#     out = all(c("m","f") %in% Sex[!isECDC])
+#     return( rep(out,length(Sex)))
+#   }
+#   rep(TRUE, length(Sex))
+# }
 
 idb <- data.table::fread(here("Data","inputDB_internal.csv"),encoding = "UTF-8")
 
@@ -20,6 +20,22 @@ idb <- idb %>%
   # TR: new, can't age harmonize until we understand lower bounds better.
   # plus intervals tend to be super wide.
   filter(!Measure %in% c("Vaccinations","Vaccination1","Vaccionation2"))
+
+data.table::fwrite(idb,file= "Data/inputDBresolved.csv")
+
+
+
+
+
+# Deprecated!
+# TR: As of 3 Feb, 2022 we no longer can allow multiple sources per location / measure / sex / date, 
+# as there is no way to detect them. Code uniquely identifies a location, and not a source. We no
+# longer have internal general purpose identifiers.
+
+# Redundancies must now be hunted down and resolved definitively
+
+
+
 
 # Trying with the inputDB in OSF
 # osf_retrieve_file("9dsfk") %>%
@@ -44,102 +60,102 @@ idb <- idb %>%
 log_section("Resolve USA CDC overlaps", logfile = logfile)
 
 # 1: subset idb to US states, deaths 
-
-USA <- idb %>% 
-  filter(Country == "USA",
-         Region != "All",
-         Region != "NYC",
-         Measure == "Deaths")
-
-# Remove that subset
-idb <- idb %>% 
-  filter(!(Country == "USA" &
-           Region != "All" &
-           Region != "NYC" &
-           Measure == "Deaths"))
-
-# 2: create isoweek column
-USA<-
-  USA %>% 
-  mutate(Date = dmy(Date),
-         week = week(Date),
-         year = isoyear(Date)) 
-
-# 3: create binary source column (CDC or no)
-USA <- 
-  USA %>% 
-  mutate(isCDC = grepl(Code, pattern = "CDC"))
-
-# 4: create column for overlap
-USA <-
-  USA %>% 
-  group_by(Region, Sex, year, week) %>% 
-  mutate(overlap = any(isCDC) & any(!isCDC)) %>% 
-  ungroup() 
+# 
+# USA <- idb %>% 
+#   filter(Country == "USA",
+#          Region != "All",
+#          Region != "NYC",
+#          Measure == "Deaths")
+# 
+# # Remove that subset
+# idb <- idb %>% 
+#   filter(!(Country == "USA" &
+#            Region != "All" &
+#            Region != "NYC" &
+#            Measure == "Deaths"))
+# 
+# # 2: create isoweek column
+# USA<-
+#   USA %>% 
+#   mutate(Date = dmy(Date),
+#          week = week(Date),
+#          year = isoyear(Date)) 
+# 
+# # 3: create binary source column (CDC or no)
+# USA <- 
+#   USA %>% 
+#   mutate(isCDC = grepl(Code, pattern = "CDC"))
+# 
+# # 4: create column for overlap
+# USA <-
+#   USA %>% 
+#   group_by(Region, Sex, year, week) %>% 
+#   mutate(overlap = any(isCDC) & any(!isCDC)) %>% 
+#   ungroup() 
 
 # 5) remove overlap & !isCDC
-USAout <- 
-  USA %>% 
-  filter(overlap & !isCDC)
+# USAout <- 
+#   USA %>% 
+#   filter(overlap & !isCDC)
+# 
+# USA <- 
+#   USA %>% 
+#   filter(!(overlap & !isCDC)) %>% 
+#   select(-isCDC, -overlap, -week, -year) %>% 
+#   mutate(Date = ddmmyyyy(Date),
+#          Code = gsub(Code, pattern = "CDC_", replacement = ""))
+# 
+# # 6) append
+# idb <-
+#   idb %>% 
+#   bind_rows(USA)
 
-USA <- 
-  USA %>% 
-  filter(!(overlap & !isCDC)) %>% 
-  select(-isCDC, -overlap, -week, -year) %>% 
-  mutate(Date = ddmmyyyy(Date),
-         Code = gsub(Code, pattern = "CDC_", replacement = ""))
-
-# 6) append
-idb <-
-  idb %>% 
-  bind_rows(USA)
-
-cat("USA CDC resolved\n",nrow(USAout),"rows removed\n", file = logfile, append = TRUE)
+# cat("USA CDC resolved\n",nrow(USAout),"rows removed\n", file = logfile, append = TRUE)
 
 # -------------------------------------- #
 # Resolve Brazil states                  #                
 # -------------------------------------- #
 # daily
 # rule: always prefer TRC if there is overlap within a day
-log_section("Resolve Brazil TRC overlaps", logfile = logfile)
-
-
-BRA <- idb %>% 
-  filter(Country == "Brazil")
-n1 <- nrow(BRA)
-idb <- 
-  idb %>% 
-  filter(Country != "Brazil")
-
-# detect TRC
-BRA <-
-  BRA %>% 
-  mutate(isTRC = grepl(Code, pattern = "TRC"))
-
-# detect overlap
-BRA <-
-  BRA %>% 
-  group_by(Region, Date, Sex, Measure) %>% 
-  mutate(overlap = any(isTRC) & any(!isTRC)) %>% 
-  ungroup()
-
-# over overlap, remove !isTRC
-BRAout <- 
-  BRA %>% 
-  filter(overlap & !isTRC)
-
-BRA <-
-  BRA %>% 
-  filter(!(overlap & !isTRC)) %>% 
-  select(-isTRC, -overlap) %>% 
-  mutate(Code = gsub(Code, pattern = "TRC_", replacement = ""))
-
-n2 <- nrow(BRA)
-
-# append
-idb <- idb %>% 
-  bind_rows(BRA)
-cat("Brazil TRC resolved\n",n1-n2,"rows removed\n", file = logfile, append = TRUE)
+# log_section("Resolve Brazil TRC overlaps", logfile = logfile)
+# 
+# 
+# BRA <- idb %>% 
+#   filter(Country == "Brazil")
+# n1 <- nrow(BRA)
+# idb <- 
+#   idb %>% 
+#   filter(Country != "Brazil")
+# 
+# # detect TRC
+# BRA <-
+#   BRA %>% 
+#   mutate(isTRC = grepl(Code, pattern = "TRC"))
+# 
+# # detect overlap
+# BRA <-
+#   BRA %>% 
+#   group_by(Region, Date, Sex, Measure) %>% 
+#   mutate(overlap = any(isTRC) & any(!isTRC)) %>% 
+#   ungroup()
+# 
+# # over overlap, remove !isTRC
+# BRAout <- 
+#   BRA %>% 
+#   filter(overlap & !isTRC)
+# 
+# BRA <-
+#   BRA %>% 
+#   filter(!(overlap & !isTRC)) %>% 
+#   select(-isTRC, -overlap) %>% 
+#   mutate(Code = gsub(Code, pattern = "TRC_", replacement = ""))
+# 
+# n2 <- nrow(BRA)
+# 
+# # append
+# idb <- idb %>% 
+#   bind_rows(BRA)
+# cat("Brazil TRC resolved\n",n1-n2,"rows removed\n", file = logfile, append = TRUE)
 
 
 # -------------------------------------- #
@@ -197,34 +213,34 @@ cat("Brazil TRC resolved\n",n1-n2,"rows removed\n", file = logfile, append = TRU
 # rule: always prefer national source if there is overlap within a week.
 # This might mean throwing out more than one day of 
 # death data collected from the state. 
-log_section("Resolve ECDC overlaps", logfile = logfile)
-
-
-ever_ecdc_countries <-
-  idb %>% 
-  filter(grepl(Code, pattern = "ECDC")) %>% 
-  dplyr::pull(Country) %>% 
-  unique()
- 
-ECDC <- idb %>% 
-  filter(Country %in% ever_ecdc_countries & Region == "All")
-n1   <- nrow(ECDC)
-
-idb <-
-  idb %>% 
-  filter(!(Country %in% ever_ecdc_countries & Region == "All"))
-
-# define week and isoyear
-ECDC <-
-  ECDC %>% 
-  mutate(Date = dmy(Date),
-         week = week(Date),
-         year = isoyear(Date)) 
+# log_section("Resolve ECDC overlaps", logfile = logfile)
+# 
+# 
+# ever_ecdc_countries <-
+#   idb %>% 
+#   filter(grepl(Code, pattern = "ECDC")) %>% 
+#   dplyr::pull(Country) %>% 
+#   unique()
+#  
+# ECDC <- idb %>% 
+#   filter(Country %in% ever_ecdc_countries & Region == "All")
+# n1   <- nrow(ECDC)
+# 
+# idb <-
+#   idb %>% 
+#   filter(!(Country %in% ever_ecdc_countries & Region == "All"))
+# 
+# # define week and isoyear
+# ECDC <-
+#   ECDC %>% 
+#   mutate(Date = dmy(Date),
+#          week = week(Date),
+#          year = isoyear(Date)) 
 
 # id ECDC
-ECDC <-
-  ECDC %>% 
-  mutate(isECDC = grepl(Code, pattern = "ECDC_"))
+# ECDC <-
+#   ECDC %>% 
+#   mutate(isECDC = grepl(Code, pattern = "ECDC_"))
 
 # when checking need to also add both- sex ECDC for those countries
 # where we only collect both-sex data (Finland)
@@ -244,25 +260,25 @@ ECDC <-
 
 
 
-ECDC <-
-  ECDC %>% 
-  group_by(Country, year, week, Sex, Measure) %>% 
-  mutate(overlap = any(isECDC) & any(!isECDC)) %>% 
-  group_by(Country, year, week, Measure) %>% 
-  mutate(mf = check_mf(Sex, isECDC),
-         overlap = ifelse(mf & isECDC, TRUE, overlap)) %>% 
-  ungroup() %>% 
-  select(-mf)
-
-
-# if there is overlap, then keep !isECDC
-ECDCout <- 
-  ECDC %>% 
-  filter(overlap & isECDC)
-
-ECDC <- 
-  ECDC %>% 
-  filter(!(overlap & isECDC))
+# ECDC <-
+#   ECDC %>% 
+#   group_by(Country, year, week, Sex, Measure) %>% 
+#   mutate(overlap = any(isECDC) & any(!isECDC)) %>% 
+#   group_by(Country, year, week, Measure) %>% 
+#   mutate(mf = check_mf(Sex, isECDC),
+#          overlap = ifelse(mf & isECDC, TRUE, overlap)) %>% 
+#   ungroup() %>% 
+#   select(-mf)
+# 
+# 
+# # if there is overlap, then keep !isECDC
+# ECDCout <- 
+#   ECDC %>% 
+#   filter(overlap & isECDC)
+# 
+# ECDC <- 
+#   ECDC %>% 
+#   filter(!(overlap & isECDC))
 
 # ECDC %>% 
 #   group_by(Country, year, week, Measure) %>% 
@@ -273,23 +289,22 @@ ECDC <-
 # TR: new check: if !isECDC in subset has m,f, then remove ECDC b
 
 # remove extra columns, recode Date
-ECDC <- 
-  ECDC %>% 
-  mutate(Date = ddmmyyyy(Date)) %>% 
-  select(-year, -week, -overlap, -isECDC) %>% 
-  mutate(Code = gsub(Code, pattern = "ECDC_", replacement = ""))
-n2 <- nrow(ECDC)
-# Append:
-idb <-
-  idb %>% 
-  bind_rows(ECDC)
-cat("ECDC resolved\n",n1-n2,"rows removed\n", file = logfile, append = TRUE)
+# ECDC <- 
+#   ECDC %>% 
+#   mutate(Date = ddmmyyyy(Date)) %>% 
+#   select(-year, -week, -overlap, -isECDC) %>% 
+#   mutate(Code = gsub(Code, pattern = "ECDC_", replacement = ""))
+# n2 <- nrow(ECDC)
+# # Append:
+# idb <-
+#   idb %>% 
+#   bind_rows(ECDC)
+# cat("ECDC resolved\n",n1-n2,"rows removed\n", file = logfile, append = TRUE)
 
 # --------------------------------------------------- #
 # here, Code column should no longer identify source. #
 # --------------------------------------------------- #
 
-data.table::fwrite(idb,file= "Data/inputDBresolved.csv")
 
 # idb <-
 #   idb %>% 
