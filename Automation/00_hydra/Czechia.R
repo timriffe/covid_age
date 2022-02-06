@@ -79,7 +79,8 @@ cz_cases_region_ss <-
   select(Code, Date, Sex, Age) %>% 
   mutate(Age = case_when(between(Age,1,4) ~ 1,
                          Age >= 100 ~ 100,
-                         TRUE ~ Age - Age %% 5)) %>% 
+                         TRUE ~ Age - Age %% 5),
+         Code = ifelse(is.na(Code),"UNK",Code)) %>% 
   ### select
   select(Code, Date, Sex, Age) %>% 
   group_by(Code, Date, Age, Sex) %>% 
@@ -104,7 +105,7 @@ cz_cases_region_ss <-
          Measure = "Cases",
          Date = ddmmyyyy(Date)) %>% 
   mutate(Age= as.character(Age)) %>% 
-  left_join(CZNUTS3, by = Code) %>% 
+  left_join(CZNUTS3, by = "Code") %>% 
   select(Country, 
          Region = `Natural Region Names`,
          Code, 
@@ -330,7 +331,7 @@ cz_cases_all_ss <-
          Metric = "Count", 
          Measure = "Cases",
          Date = ddmmyyyy(Date),
-         Code = paste("CZ", Date, sep = "_"),
+         Code = "CZ",
          Age = as.character(Age)) %>% 
   select(Country, 
          Region, 
@@ -366,7 +367,7 @@ cz_deaths_all_ss <-
          Metric = "Count", 
          Measure = "Deaths",
          Date = ddmmyyyy(Date),
-         Code = paste("CZ", Date, sep = "_"),
+         Code = "CZ",
          Country = "Czechia",
          Region = "All",
          Age = as.character(Age)) %>% 
@@ -399,7 +400,8 @@ cz_spreadsheet_all <-
   arrange(dmy(Date), Sex, Measure, Age) %>% 
   mutate(Age = as.character(Age))
 
-out <- bind_rows(cz_spreadsheet_all, cz_spreadsheet_region)
+out <- bind_rows(cz_spreadsheet_all, cz_spreadsheet_region) %>% 
+  dplyr::filter(Region != "UNK")
 
 
 
