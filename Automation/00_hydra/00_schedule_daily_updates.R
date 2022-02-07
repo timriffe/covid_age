@@ -123,7 +123,7 @@ for(c in scripts){
 # for individual scheduling
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sched("Portugal_Vaccine", tm = "08:34", email = auto_update_email, wd = auto_update_wd)
+sched("USA_all", tm = "09:34", email = auto_update_email, wd = auto_update_wd)
 
 #sch = "WEEKLY"
 
