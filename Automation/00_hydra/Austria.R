@@ -122,6 +122,10 @@ vacc3 <- vacc2 %>%
                             TRUE ~ "10"),
          AgeInt = as.integer(AgeInt)) %>%
   filter(Age != "NichtZuordenbar") %>%
+  mutate(Code = case_when(
+    Region == "UNK" ~ "AT-UNK+",
+    TRUE ~ Code
+  )) %>% 
   sort_input_data()
 
 

@@ -193,7 +193,7 @@ BG_deaths_out <-
                          Age == "60 - 69" ~ "60",
                          Age == "70 - 79" ~ "70",
                          Age == "80 - 89" ~ "80",
-                         Age == "90+" ~ "90"),
+                         Age == "90+" ~ "90")
         ) %>% 
   tidyr::complete(Age = all_ages, Sex, Date, fill = list(Value=0)) %>% 
   arrange(Sex, Age, Date) %>% 

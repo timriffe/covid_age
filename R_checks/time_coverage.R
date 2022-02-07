@@ -38,9 +38,35 @@ cases <- inputDB3 %>%
   filter(Measure == "Cases")
 
 
+
+cts <- cases %>%
+  drop_na(Country) %>% 
+  select(Country) %>% 
+  unique() %>% 
+  mutate(id = 1:n(),
+         gr = floor(id/12) + 1)
+
+
+for(i in 1:max(cts$gr)){
+  cts_t <- 
+    cts %>% 
+    filter(gr == i) %>% 
+    dplyr::pull(Country)
+  
+  cases %>% 
+    ggplot(aes(x = Date, y = reorder(Country, Date, FUN = max)))+
+    geom_point(color = rgb(0,0,1,0.5))+
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+  
+  
+  ggsave(paste0("R_checks/coverage/cases", i, ".png")) 
+}
+
+
 cases %>% 
   ggplot(aes(x = Date, y = reorder(Country, Date, FUN = max)))+
-  geom_point(color = rgb(0,0,1,0.5))
+  geom_point(color = rgb(0,0,1,0.5))+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
 
 death <- inputDB3 %>% 
@@ -49,7 +75,8 @@ death <- inputDB3 %>%
 
 death %>% 
   ggplot(aes(x = Date, y = reorder(Country, Date, FUN = max)))+
-  geom_point(color = rgb(0,0,1,0.5))
+  geom_point(color = rgb(0,0,1,0.5))+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
 
 test <- inputDB3 %>% 
@@ -58,7 +85,8 @@ test <- inputDB3 %>%
 
 test %>% 
   ggplot(aes(x = Date, y = reorder(Country, Date, FUN = max)))+
-  geom_point(color = rgb(0,0,1,0.5))
+  geom_point(color = rgb(0,0,1,0.5))+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
 
 vacc1 <- inputDB3 %>% 
@@ -67,7 +95,8 @@ vacc1 <- inputDB3 %>%
 
 vacc1 %>% 
   ggplot(aes(x = Date, y = reorder(Country, Date, FUN = max)))+
-  geom_point(color = rgb(0,0,1,0.5))
+  geom_point(color = rgb(0,0,1,0.5))+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
 
 vacc2 <- inputDB3 %>% 
@@ -76,7 +105,8 @@ vacc2 <- inputDB3 %>%
 
 vacc2 %>% 
   ggplot(aes(x = Date, y = reorder(Country, Date, FUN = max)))+
-  geom_point(color = rgb(0,0,1,0.5))
+  geom_point(color = rgb(0,0,1,0.5))+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
 
 vacc3 <- inputDB3 %>% 
@@ -85,4 +115,5 @@ vacc3 <- inputDB3 %>%
 
 vacc3 %>% 
   ggplot(aes(x = Date, y = reorder(Country, Date, FUN = max)))+
-  geom_point(color = rgb(0,0,1,0.5))
+  geom_point(color = rgb(0,0,1,0.5))+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
