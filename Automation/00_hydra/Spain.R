@@ -46,6 +46,11 @@ file.remove(data_source)
 # glimpse(IN)
 # IN$grupo_edad %>% unique()
 # unique(IN$sexo) 
+# geo_ss <- "https://docs.google.com/spreadsheets/d/1gbP_TTqc96PxeZCpwKuZJB1sxxlfbBjlQj-oxXD2zAs/edit#gid=0"
+# geo_lookup <- read_sheet(ss = geo_ss) %>% 
+#   mutate(Code = coalesce(`ISO 3166-2`, `Internal Code`)) %>% 
+#   dplyr::filter(!is.na(Code))
+
 in2 <-
   IN %>% 
   select(Short = provincia_iso, 
@@ -55,8 +60,9 @@ in2 <-
          Cases = num_casos,
          Deaths = num_def) %>% 
   mutate(Short = ifelse(is.na(Short),"NA",Short),
+         Short = ifelse(Short == "NC", "UNK+", Short),
          Region = recode(Short,
-                         "A" = "Alicante",
+                         "A" = "Alicante",      #
                          "AB" = "Albacete",
                          "AL" = "Almeria",
                          "AV" = "Avila",
@@ -73,9 +79,9 @@ in2 <-
                          "CS" = "Castellon",
                          "CU" = "Cuenca", 
                          "GC" = "Las Palmas", 
-                         "GI" = "Girona", 
+                         "GI" = "Girona",      #
                          "GR" = "Granada", 
-                         "GU" = "Guadalajara", 
+                         "GU" = "Guadalajara", #
                          "H" = "Huelva",  
                          "HU" = "Huesca",
                          "J" = "Jaen",  
@@ -94,7 +100,7 @@ in2 <-
                          "PM" = "Illes Balears", 
                          "PO" = "Pontevedra", 
                          "S" = "Cantabria",  
-                         "SA" = "Salamanc", 
+                         "SA" = "Salamanca", 
                          "SE" = "Sevilla", 
                          "SG" = "Segovia", 
                          "SO" = "Soria", 
@@ -108,7 +114,7 @@ in2 <-
                          "VI" = "Araba", 
                          "Z" = "Zaragoza",  
                          "ZA" = "Zamora",
-                         "NC" = "UNK",
+                         "UNK+" = "UNK",
                           "ML" = "Melilla"),
          Age = recode(Age,
                       "0-9" = "0",
@@ -150,7 +156,7 @@ in2 <-
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
   mutate(Date = ddmmyyyy(Date)) %>% 
   sort_input_data() 
-
+in2$Code %>% unique()
 
 nal <- in2 %>% 
   group_by(Country, Date, Sex, Age, AgeInt, Metric, Measure) %>% 
