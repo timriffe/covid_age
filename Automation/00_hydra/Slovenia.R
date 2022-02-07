@@ -46,7 +46,7 @@ deaths_url <- paste0("https://www.nijz.si",
 ##############
 
 db_c <- rio::import(cases_url, 
-                    sheet = "Tabela 4", 
+                    sheet = "Tabela 5", 
                     skip = 2) %>%
   as_tibble() 
 
@@ -123,7 +123,7 @@ out <- bind_rows(db_c3, db_d3) %>%
                       sprintf("%02d", month(date_f)),
                       year(date_f), sep = "."),
          Country = "Slovenia",
-         Code = paste0("SI", Date),
+         Code = paste0("SI"),
          Region = "All",
          AgeInt = case_when(Age == "0" & Measure == "Deaths" & (Sex == "b" | Sex == "m") ~ 35L, 
                             Age == "0" & Measure == "Deaths" & Sex == "f" ~ 45L, 

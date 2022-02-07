@@ -269,7 +269,7 @@ Out <-
   bind_rows(total, 
             Out_vaccine1_age, 
             Out_vaccine2_age) %>%
-  mutate(Code = paste("ES",Short,Date,sep="_")) %>% 
+  mutate(Code = paste("ES",Short, sep="-")) %>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value) %>% 
   sort_input_data()
@@ -294,7 +294,8 @@ Out_final1 = bind_rows(DataArchive,Out)%>%
   mutate(keep = Value == max(Value)) %>% 
   ungroup() %>% 
   dplyr::filter(keep) %>% 
-  select(-keep)
+  select(-keep) %>% 
+  unique()
 
 
 

@@ -132,7 +132,7 @@ Cases_out <-
          Country = "Vietnam",
          Region = "All",
          Date = ddmmyyyy(date),
-         Code = paste0("VT",Date),
+         Code = paste0("VT"),
          AgeInt = case_when(
            Age == 0 ~ 1L,
            Age == 1 ~ 4L,
@@ -194,7 +194,7 @@ Deaths_out <-
          Country = "Vietnam",
          Region = "All",
          Date = ddmmyyyy(date),
-         Code = paste0("VT",Date),
+         Code = paste0("VT"),
          AgeInt = case_when(
            Age == 0 ~ 1L,
            Age == 1 ~ 4L,

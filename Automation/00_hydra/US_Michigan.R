@@ -132,7 +132,7 @@ if (date_f > last_date_drive){
            Country = "USA",
            Region = "Michigan",
            Date = d,
-           Code = paste0("US_MI", d),
+           Code = paste0("US-MI"),
            Metric = "Count") %>% 
     arrange(Measure, Sex, suppressWarnings(as.integer(Age))) %>% 
     select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) 

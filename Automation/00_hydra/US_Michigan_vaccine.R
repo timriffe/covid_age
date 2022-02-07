@@ -118,7 +118,7 @@ mutate(Measure = recode(Measure,
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("US_MI",Date),
+    Code = paste0("US-MI"),
     Country = "USA",
     Region = "Michigan",
     Metric= "Count")%>% 

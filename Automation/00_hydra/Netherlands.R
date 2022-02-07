@@ -107,7 +107,7 @@ Cases2 <-
          Date = paste(sprintf("%02d", day(date)),
                       sprintf("%02d", month(date)),
                       year(date), sep = "."),
-         Code = paste0("NL",Date),
+         Code = paste0("NL"),
          Metric = "Count",
          Measure = "Cases",
          AgeInt = case_when(
@@ -174,7 +174,7 @@ Deaths <- NL %>%
            ),
            Metric = "Count",
            Measure = "Deaths",
-           Code = paste0("NL",Date)
+           Code = paste0("NL")
     ) %>% 
     filter(!(Sex == "UNK" & Value == 0),
            !(Age == "UNK" & Value == 0)) %>% 

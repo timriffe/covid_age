@@ -91,7 +91,7 @@ Out_vaccine= In_vaccine%>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("FI",Date),
+    Code = paste0("FI"),
     Country = "Finland",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -109,7 +109,8 @@ Out_vaccine <- rbind(Out_vaccine, small_ages) %>%
 #put together
 
 
-Out= rbind(DataArchive,Out_vaccine)
+Out= rbind(DataArchive,Out_vaccine) %>% 
+  unique()
 
 
 

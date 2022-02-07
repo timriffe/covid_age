@@ -49,8 +49,25 @@ links <-
   select(url) %>% 
   mutate(p2 = str_locate(url, "/dow") - 1,
          date = str_sub(url, 24, p2[,"start"]),
-         url2 = paste0("https://www.mass.gov", url),
-         date_f = mdy(date))
+         url2 = paste0("https://www.mass.gov", url))
+
+links$date <- gsub("january", "01", links$date)
+links$date <- gsub("february", "02", links$date)
+links$date <- gsub("march", "03", links$date)
+links$date <- gsub("april", "04", links$date)
+links$date <- gsub("may", "05", links$date)
+links$date <- gsub("june", "06", links$date)
+links$date <- gsub("july", "07", links$date)
+links$date <- gsub("august", "08", links$date)
+links$date <- gsub("september", "09", links$date)
+links$date <- gsub("october", "10", links$date)
+links$date <- gsub("november", "11", links$date)
+links$date <- gsub("december", "12", links$date)
+links$date <- gsub("21-0", "21", links$date)
+
+
+links <- links %>% 
+  mutate(date_f = mdy(date))
 
 # to download all previous dates
 # for(i in 1:nrow(links)){
@@ -217,7 +234,7 @@ db_all <-
          Date = paste(sprintf("%02d", day(date_f)),
                       sprintf("%02d", month(date_f)),
                       year(date_f), sep = "."),
-         Code = paste0("US_MA", Date),
+         Code = paste0("US-MA"),
          Metric = "Count") %>% 
   arrange(date_f, Sex, Measure, suppressWarnings(as.integer(Age))) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
@@ -311,7 +328,7 @@ v_age2 <-
 # Note that sex == other is coded as unknown, after checking with Jessica on 
 # 20210330
 
-v_sex <- read_xlsx(v_data_source, sheet = "Sex – municipality", skip = 1)
+v_sex <- read_xlsx(v_data_source, sheet = 4, skip = 1)
 v_sex[v_sex == "*"] <- NA
 
 v_sex2 <- 
@@ -346,7 +363,7 @@ out_vac <-
     Country = "USA",
     Region = "Massachusetts",
     Date = paste(sprintf("%02d", day(date_f)),  sprintf("%02d", month(date_f)), year(date_f), sep = "."),
-    Code = paste0("US_MA", Date),
+    Code = paste0("US-MA"),
     Metric = "Count",
   ) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 

@@ -40,11 +40,11 @@ death3 <- death2 %>%
   group_by(Sex, Age) %>% 
   mutate(Value = cumsum(Value)) %>% 
   ungroup() %>% 
-  mutate(Measure = "Death",
+  mutate(Measure = "Deaths",
     Metric = "Count") %>% 
 arrange(Date, Sex, Age) %>% 
   mutate(Date= ddmmyyyy(Date),
-         Code = paste0("PR",Date),
+         Code = paste0("PR"),
          Age = case_when(Age == "0 a 9" ~ "0",
                          Age == "10 a 19" ~ "10",
                          Age == "20 a 29" ~ "20",
@@ -83,7 +83,7 @@ cases3 <- cases2 %>%
          Metric = "Count") %>% 
   arrange(Date, Sex, Age) %>% 
   mutate(Date= ddmmyyyy(Date),
-         Code = paste0("PR",Date),
+         Code = paste0("PR"),
          Age = as.character(Age),
          Age = case_when(is.na(Age) ~ "UNK",
            TRUE ~ Age),
@@ -118,7 +118,7 @@ tests3 <- tests2 %>%
          Metric = "Count") %>% 
   arrange(Date, Sex, Age) %>%  
   mutate(Date= ddmmyyyy(Date),
-         Code = paste0("PR",Date),
+         Code = paste0("PR"),
          Age = case_when(Age == "0 a 9" ~ "0",
                          Age == "10 a 19" ~ "10",
                          Age == "20 a 29" ~ "20",
@@ -157,11 +157,11 @@ vaccine3 <- vaccine2 %>%
   group_by(Sex, Age) %>% 
   mutate(Value = cumsum(Value)) %>% 
   ungroup() %>% 
-  mutate(Measure = "Vaccination 1",
+  mutate(Measure = "Vaccination1",
          Metric = "Count") %>% 
   arrange(Date, Sex, Age) %>%  
   mutate(Date= ddmmyyyy(Date),
-         Code = paste0("PR",Date),
+         Code = paste0("PR"),
          Age = case_when(Age == "12 a 15" ~ "12",
                          Age == "16 a 19" ~ "16",
                          Age == "20 a 29" ~ "20",
@@ -199,11 +199,11 @@ vaccine5 <- vaccine4 %>%
   group_by(Sex, Age) %>% 
   mutate(Value = cumsum(Value)) %>% 
   ungroup() %>% 
-  mutate(Measure = "Vaccination 2",
+  mutate(Measure = "Vaccination2",
          Metric = "Count") %>% 
   arrange(Date, Sex, Age) %>%  
   mutate(Date= ddmmyyyy(Date),
-         Code = paste0("PR",Date),
+         Code = paste0("PR"),
          Age = case_when(Age == "12 a 15" ~ "12",
                          Age == "16 a 19" ~ "16",
                          Age == "20 a 29" ~ "20",

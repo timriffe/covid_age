@@ -82,7 +82,7 @@ c$Country <-  "Chile"
 
 c$Region <- "All"
 
-c$Code <- paste("CL", c$Date, sep = "")
+c$Code <- paste("CL")
 
 c$Metric <- "Count"
 
@@ -290,7 +290,7 @@ dd5$Country <-"Chile"
 
 dd5$Region <- "All"
 
-dd5$Code <- paste("CL", dd5$Date, sep = "")
+dd5$Code <- paste("CL")
 
 dd5$Metric <- "Count"
 

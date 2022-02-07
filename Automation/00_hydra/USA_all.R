@@ -68,7 +68,7 @@ case_age_out= cases_age_in%>%
     Date = paste(sprintf("%02d",day(Date)),
                  sprintf("%02d",month(Date)),
                  year(Date),sep="."),
-    Code = paste0("US_All",Date),
+    Code = paste0("US"),
     Country = "USA",
     Region = "All",)%>%
   select(Country, Region, Code, Date, Sex,
@@ -114,7 +114,7 @@ case_sex_out= cases_sex_in%>%
     Date = paste(sprintf("%02d",day(Date)),
                  sprintf("%02d",month(Date)),
                  year(Date),sep="."),
-    Code = paste0("US_All",Date),
+    Code = paste0("US"),
     Country = "USA",
     Region = "All",)%>%
   select(Country, Region, Code, Date, Sex,

@@ -90,7 +90,7 @@ out <-
          Country = "Hungary",
          Region = "All",
          Date = ddmmyyyy(date),
-         Code = paste0("HU",Date),
+         Code = paste0("HU"),
          AgeInt = 1L,
          Age = as.character(Age)) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)

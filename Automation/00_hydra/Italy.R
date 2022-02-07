@@ -96,7 +96,7 @@ if (date_f > last_date_n){
     mutate(Country = "Italy",
            Region = "All",
            Date = ddmmyyyy(date_f),
-           Code = paste0("IT", Date),
+           Code = paste0("IT"),
            AgeInt = case_when(Age == "90" ~ 15,
                               TRUE ~ 10),
            Metric = "Count") %>% 
@@ -141,7 +141,7 @@ vacc3 <- vacc2 %>%
   mutate(Country = "Italy",
        Region = "All",
        Date = ddmmyyyy(Date),
-       Code = paste0("IT", Date),
+       Code = paste0("IT"),
        Sex = "b",
        Age = as.character(Age),
        AgeInt = case_when(Age == "90" ~ 15,
@@ -172,7 +172,7 @@ totals <- totals %>%
 Date = paste(sprintf("%02d",day(Date)),    
              sprintf("%02d",month(Date)),  
              year(Date),sep="."),
-Code = paste0("IT",Date))%>% 
+Code = paste0("IT"))%>% 
   sort_input_data()
 
 
@@ -183,6 +183,7 @@ out <-
   sort_input_data()
 
 out <- bind_rows(out, totals) %>% 
+  unique() %>% 
   sort_input_data()
 nrow(out_drive)
 nrow(vacc3)

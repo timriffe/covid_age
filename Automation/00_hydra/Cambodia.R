@@ -151,7 +151,7 @@ out <- bind_rows(db_c2, db_d2) %>%
          AgeInt = case_when(Age == "TOT" ~ NA_real_,
                             TRUE ~ 5),
          Date = ddmmyyyy(Date),
-         Code = paste0("KH", Date),
+         Code = paste0("KH"),
          Metric = "Count") %>% 
   sort_input_data()
 

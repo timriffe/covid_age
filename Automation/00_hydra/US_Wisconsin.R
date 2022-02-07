@@ -268,7 +268,7 @@ db_out2 <- db_out %>%
 Date = paste(sprintf("%02d",day(Date)),    
              sprintf("%02d",month(Date)),  
              year(Date),sep="."),
-Code = paste0("US_WI_",Date))%>% 
+Code = paste0("US-WI"))%>% 
   sort_input_data()
 
 

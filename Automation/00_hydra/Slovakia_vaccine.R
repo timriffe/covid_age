@@ -82,7 +82,7 @@ Out= In %>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("SK_",Short,Date),
+    Code = paste0("SK-",Short),
     Country = "Slovakia")%>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value) %>% 
@@ -102,7 +102,7 @@ totals <- Out %>%
   mutate(Value = as.numeric(Value)) %>% 
   group_by(Country, Date, Sex, Age, AgeInt, Metric, Measure) %>% 
   summarise(Value = sum(Value)) %>% 
-  mutate(Code = paste0("SK_", Date),
+  mutate(Code = paste0("SK"),
          Region = "All") %>% 
   sort_input_data()
 

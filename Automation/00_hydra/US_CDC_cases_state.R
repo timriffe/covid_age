@@ -78,6 +78,7 @@ Out <-
          Age = age_group, 
          State = res_state)%>%
   mutate(Sex =  case_when(is.na(Sex) ~ "UNK",
+                          Sex == "NA" ~ "UNK",
                         Sex== "Unknown" ~ "UNK",
                         Sex== "Missing" ~ "UNK",
                         Sex== "Other" ~ "UNK",
@@ -138,7 +139,7 @@ mutate(
                    `SC`= "South Carolina",	
                    `TN`= "Tennessee",	
                    `VA`=  "Virginia"),
-    Code= paste0 ("US_", State, Date)) %>% 
+    Code= paste0 ("US-", State)) %>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)
 

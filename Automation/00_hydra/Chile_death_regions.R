@@ -229,7 +229,7 @@ dd5_reg= dd5_reg %>%
                     
                     
                     
-dd5_reg$Code <- paste("CL", dd5_reg$Region,dd5_reg$Date, sep = "")
+dd5_reg$Code <- paste("CL", dd5_reg$Region, sep = "-")
 
 dd5_reg$Metric <- "Count"
 

@@ -64,7 +64,7 @@ arrange(Age, Date,Measure) %>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("US_VT",Date),
+    Code = paste0("US-VT"),
     Country = "USA",
     Region = "Vermont",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -108,7 +108,7 @@ arrange(Sex, Date,Measure) %>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("US_VT",Date),
+    Code = paste0("US-VT"),
     Country = "USA",
     Region = "Vermont",)%>% 
   select(Country, Region, Code, Date, Sex, 

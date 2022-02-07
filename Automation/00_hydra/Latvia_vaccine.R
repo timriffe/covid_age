@@ -44,10 +44,11 @@ In_vaccine= read_excel(data_source)
 #Process data
 
 Out_vaccine= In_vaccine %>%
-  select(Date= `Vakcinācijas datums`, Measure= `Vakcīnas kārtas numurs`, Age=`Vakcinētās personas vecums`, Sex= `Vakcinētās personas dzimums`, Value= `Vakcinēto personu skaits`)%>%
+  select(Date= `Vakcinācijas datums`, Measure= `Vakcinācijas posms`, Age=`Vakcinētās personas vecums`, Sex= `Vakcinētās personas dzimums`, Value= `Vakcinēto personu skaits`) %>% 
   mutate(Measure= recode(Measure, 
-                       `1` = "Vaccination1",
-                       `2`= "Vaccination2"))%>%
+                       `1.pote` = "Vaccination1",
+                       `2.pote`= "Vaccination2",
+                       `3.pote`= "Vaccination3"))%>%
   mutate(Sex = case_when(
   is.na(Sex)~ "UNK",
   Sex == "V" ~ "m",
@@ -69,7 +70,7 @@ Out_vaccine= In_vaccine %>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("LV_All",Date),
+    Code = paste0("LV"),
     Country = "Latvia",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 

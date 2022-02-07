@@ -36,9 +36,12 @@ Out <- IN %>%
   mutate(Sex = recode(Sex,
                       `Unknown`= "UNK",
                       `Not reported` = "UNK",
-                      `Other` = "UNK"))%>%
+                      `Other` = "UNK"))
+Out$Value <- as.numeric(Out$Value)
+Out <- Out %>% 
   mutate(AgeInt = case_when(
-    Age == "0-11" ~ 12L,
+    Age == "0-4" ~ 5L,
+    Age == "05-11" ~ 7L,
     Age == "0-15" ~ 16L,
     Age == "0-17" ~ 18L,# The age groups vary by time and region, not sure if this is the best way to deal with that 
     Age == "12-17" ~ 6L,
@@ -56,9 +59,10 @@ Out <- IN %>%
     Age == "All ages" ~ NA_integer_,
     TRUE ~ 5L))%>%
   mutate(Age=recode(Age, 
+                    `0-4`="0",
                     `0-15`="0",
                     `0-17`="0",
-                    `0-11`="0",
+                    `05-11`="5",
                     `12-17`="12",
                     `16-69`="16",
                     `18-69`="18",
@@ -74,26 +78,28 @@ Out <- IN %>%
                     `80+`="80",
                     `Unknown`="UNK",
                     `Not reported`="UNK",
-                    `All ages`="TOT" ))%>%
-  mutate(Value=recode(Value, 
-                    `<5`="2"))%>%
-  subset(Value != ("na"))%>% #Mostly in Quebec Vaccination2 had na. decided to remove them, because according to vaccine brands 
+                    `All ages`="TOT" )) %>% 
+  group_by(Region, Date, Sex, Age, Measure, AgeInt) %>% 
+  summarise(Value = sum(Value)) %>% 
+  # mutate(Value=recode(Value, 
+  #                   `<5`="2"))%>%
+  subset(!is.na(Value)) %>%  #Mostly in Quebec Vaccination2 had na. decided to remove them, because according to vaccine brands 
                               #and time they started to vaccinate there should be a Vaccine2, so replacing with 0 seems like the wrong information
-  mutate(Short = recode(Region,
-                      "Newfoundland and Labrador" = "NL",
-                      "Nova Scotia" = "NS",
-                      "Quebec"= "AS", 
-                      "Manitoba" ="MB",
-                      "Saskatchewan" ="SK",
-                      "Yukon"= "YT",
-                      "Northwest Territories"= "NT",
-                      "Nunavut"= "NU",
-                      "Prince Edward Island" ="PE",
-                      "New Brunswick" ="NB",
-                      "Alberta"= "AB",
-                      "British Columbia"= "BC",
-                      "Ontario" ="ON",
-                      "Canada"= "All"), 
+  mutate(Code = recode(Region,
+                      "Newfoundland and Labrador" = "CA-NL",
+                      "Nova Scotia" = "CA-NS",
+                      "Quebec"= "CA-QC", 
+                      "Manitoba" ="CA-MB",
+                      "Saskatchewan" ="CA-SK",
+                      "Yukon"= "CA-YT",
+                      "Northwest Territories"= "CA-NT",
+                      "Nunavut"= "CA-NU",
+                      "Prince Edward Island" ="CA-PE",
+                      "New Brunswick" ="CA-NB",
+                      "Alberta"= "CA-AB",
+                      "British Columbia"= "CA-BC",
+                      "Ontario" ="CA-ON",
+                      "Canada"= "CA"), 
        Region = recode(Region, 
                        `Canada`="All"))%>% 
   mutate(
@@ -101,7 +107,7 @@ Out <- IN %>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste("CA",Short,Date,sep="_"),
+    # Code = paste("CA",Short),
     Country ="Canada" ,
     Metric = "Count",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -109,28 +115,28 @@ Out <- IN %>%
   
 
 #Contains all values with >, remove > and impute 2
-
-Out1 <- 
-  Out %>% subset(substr(Value,1,1)== ">") %>%
-  separate(Value, c("col", "Value"), ">", fill = "left") %>%
-  mutate(Value = as.numeric(Value), 
-         Value = Value+2,
-         Value = as.character(Value)) %>%
-  select(-col) 
-  
-# Contains all data without <> 
-
-Out2 <- 
-  Out %>% 
-  subset(substr(Value,1,1)!= ">")
-
-#put both togehter again
-
-outfinal <- bind_rows(Out1, Out2)
+# 
+# Out1 <- 
+#   Out %>% subset(substr(Value,1,1)== ">") %>%
+#   separate(Value, c("col", "Value"), ">", fill = "left") %>%
+#   mutate(Value = as.numeric(Value), 
+#          Value = Value+2,
+#          Value = as.character(Value)) %>%
+#   select(-col) 
+#   
+# # Contains all data without <> 
+# 
+# Out2 <- 
+#   Out %>% 
+#   subset(substr(Value,1,1)!= ">")
+# 
+# #put both togehter again
+# 
+# outfinal <- bind_rows(Out1, Out2)
 
 #save output data 
-write_rds(outfinal, paste0(dir_n, ctr, ".rds"))
-log_update(pp = ctr, N = nrow(outfinal))
+write_rds(Out, paste0(dir_n, ctr, ".rds"))
+log_update(pp = ctr, N = nrow(Out))
 
 # now archive
 

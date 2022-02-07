@@ -44,7 +44,7 @@ Out_vaccine1= In %>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("UY",Date),
+    Code = paste0("UY"),
     Country = "Uruguay",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -73,7 +73,7 @@ select(Date= date,total_fully_12_17,total_fully_18_24, total_fully_25_34, total_
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("UY",Date),
+    Code = paste0("UY"),
     Country = "Uruguay",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 

@@ -58,7 +58,7 @@ vacc_out <- vacc_out %>%
                  sprintf("%02d",month(Date)),
                  year(Date),
                  sep="."),
-    Code = paste0("GB_EN_",Date)) %>% 
+    Code = paste0("GB-ENG")) %>% 
   sort_input_data()
 
 small_ages <- vacc_out %>% 

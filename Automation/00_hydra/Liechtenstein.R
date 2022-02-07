@@ -119,7 +119,7 @@ out_age2020_tests= age2020 %>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("LI_All",Date),
+    Code = paste0("LI"),
     Country = "Liechtenstein",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -177,7 +177,7 @@ select(1, 6,8,10) %>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("LI_All",Date),
+    Code = paste0("LI"),
     Country = "Liechtenstein",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -231,7 +231,7 @@ out_sex_2020_tests= sex2020 %>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("LI_All",Date),
+    Code = paste0("LI"),
     Country = "Liechtenstein",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -280,7 +280,7 @@ out_sex2020_cases= sex2020 %>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("LI_All",Date),
+    Code = paste0("LI"),
     Country = "Liechtenstein",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -346,7 +346,7 @@ out_age2021_test= age2021%>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("LI_All",Date),
+    Code = paste0("LI"),
     Country = "Liechtenstein",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -405,7 +405,7 @@ out_age2021_cases= age2021%>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("LI_All",Date),
+    Code = paste0("LI"),
     Country = "Liechtenstein",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -460,7 +460,7 @@ out_sex_2021_tests= sex2021 %>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("LI_All",Date),
+    Code = paste0("LI"),
     Country = "Liechtenstein",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -509,7 +509,7 @@ out_sex2021_cases= sex2021%>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("LI_All",Date),
+    Code = paste0("LI"),
     Country = "Liechtenstein",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 

@@ -249,10 +249,10 @@ out <- bind_rows(db_nal,
                       year(date_f),
                       sep="."),
          Code = case_when(
-           Region == "All" ~ paste0("BE", Date),
-           Region == "Flanders" ~ paste0("BE_VLG", Date),
-           Region == "Wallonia" ~ paste0("BE_WAL", Date),
-           Region == "Brussels" ~ paste0("BE_BRU", Date)),
+           Region == "All" ~ paste0("BE"),
+           Region == "Flanders" ~ paste0("BE-VLG"),
+           Region == "Wallonia" ~ paste0("BE-WAL"),
+           Region == "Brussels" ~ paste0("BE-BRU")),
          Metric = "Count") %>% 
   arrange(Region, date_f, Measure, Sex, suppressWarnings(as.integer(Age))) %>% 
   select(Country, Region, Code,  Date, Sex, Age, AgeInt, Metric, Measure, Value)

@@ -198,7 +198,7 @@ captured <-
   mutate(Date = paste(sprintf("%02d",day(Date)),    
                       sprintf("%02d",month(Date)),  
                       year(Date),sep="."),
-         Code = paste0("NO",Date)) 
+         Code = paste0("NO")) 
 
 # bind data, only keeping Deaths prior to just-captured deaths ####
 # treat cases and tests as completely refreshing
@@ -231,7 +231,7 @@ out <-
   mutate(Date = paste(sprintf("%02d",day(Date)),    
                       sprintf("%02d",month(Date)),  
                       year(Date),sep="."),
-         Code = paste0("NO",Date)) %>% 
+         Code = paste0("NO")) %>% 
   sort_input_data() %>% 
   unique()
 

@@ -40,7 +40,7 @@ c_input %>%
          Country = ctr,
          Region = "All",
          Metric = "Count",
-         Code = paste0("CL",Date),
+         Code = paste0("CL"),
          AgeInt = ifelse(Age == "80", 25L,5L)) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value = `Casos confirmados`) 
 
@@ -180,7 +180,7 @@ Deaths <-
          Measure = "Deaths",
          Metric = "Count",
          Date = ddmmyyyy(Date),
-         Code = paste0("CL",Date),
+         Code = paste0("CL"),
          AgeInt = case_when(Age == "0" ~ 1L,
                             Age == "1" ~ 4L,
                             Age == "UNK" ~ NA_integer_,

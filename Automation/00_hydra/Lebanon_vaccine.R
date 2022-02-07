@@ -102,7 +102,7 @@ Age_Out= Age_in %>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("LB",Date),
+    Code = paste0("LB"),
     Country = "Lebanon",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -152,7 +152,7 @@ Sex_Out= Sex_in %>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("LB",Date),
+    Code = paste0("LB"),
     Country = "Lebanon",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 

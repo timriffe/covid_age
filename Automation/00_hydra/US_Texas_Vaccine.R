@@ -94,7 +94,7 @@ Out_Vaccine_Age = In_vaccine_age %>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("US_TX",Date),
+    Code = paste0("US-TX"),
     Country = "USA",
     Region = "Texas",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -146,7 +146,7 @@ Out_Vaccine_dose <- In_vaccine_dose %>%
          Date = paste(sprintf("%02d",day(Date)),    
                       sprintf("%02d",month(Date)),  
                       year(Date),sep="."),
-         Code = paste0("US_TX",Date),
+         Code = paste0("US-TX"),
          Country = "USA",
          Region = "Texas",)%>% 
   select(Country, Region, Code, Date, Sex, 

@@ -52,7 +52,7 @@ db_ma2 <- db_ma %>%
   filter(sum(Value) >= 50) %>% 
   ungroup() %>% 
   mutate(Date = ddmmyyyy(Date),
-         Code = paste0("CA_MA", Date),
+         Code = paste0("CA-MA"),
          AgeInt = case_when(Age == "90" ~ 15,
                             TRUE ~ 10)) %>% 
   select(-New)
@@ -100,7 +100,7 @@ db_sk2 <- db_sk %>%
   filter(sum(Value) >= 50) %>% 
   ungroup() %>% 
   mutate(Date = ddmmyyyy(Date),
-         Code = paste0("CA_SK", Date),
+         Code = paste0("CA-SK"),
          AgeInt = case_when(Age == "80" ~ 25,
                             TRUE ~ 10)) %>% 
   select(-New)

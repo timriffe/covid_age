@@ -100,7 +100,7 @@ Out_vaccine_age= Vaccine_age %>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("US_PA",Date),
+    Code = paste0("US-PA"),
     Country = "USA",
     Region = "Pennsylvania",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -129,7 +129,7 @@ Out_vaccine_sex = Vaccine_sex %>%
          Date = paste(sprintf("%02d",day(Date)),    
                       sprintf("%02d",month(Date)),  
                       year(Date),sep="."),
-         Code = paste0("US_PA",Date),
+         Code = paste0("US-PA"),
          Country = "USA",
          Region = "Pennsylvania",
          AgeInt= as.character(AgeInt))%>% 

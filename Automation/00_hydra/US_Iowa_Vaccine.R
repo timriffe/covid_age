@@ -88,13 +88,17 @@ Out_vaccine <- as.data.table(Out_vaccine)
 Out_vaccine <- melt(Out_vaccine, id = c("Date", "Age", "Sex", "AgeInt"))  
 names(Out_vaccine)[6] <- "Value"
 names(Out_vaccine)[5] <- "Measure"
+Out_vaccine$Measure <- as.character(Out_vaccine$Measure)
 Out_vaccine <- Out_vaccine %>% 
   arrange(Date, Measure, Age) %>% 
   mutate(Date= ddmmyyyy(Date)) %>% 
   mutate(Country = "USA",
            Region = "Iowa",
-           Code = paste0("US_IA",Date),
+           Code = paste0("US-IA"),
            Metric = "Count") %>% 
+  mutate(Measure = case_when(
+    Measure == "Vaccination" ~ "Vaccinations",
+    TRUE ~ Measure)) %>% 
   sort_input_data()
 write_rds(Out_vaccine, paste0(dir_n, ctr, ".rds"))
   

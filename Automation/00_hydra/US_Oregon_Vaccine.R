@@ -94,7 +94,7 @@ Age_out= Age_in %>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("US_OR",Date),
+    Code = paste0("US-OR"),
     Country = "USA",
     Region = "Oregon",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -126,7 +126,7 @@ Sex_out= Age_in %>%
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Code = paste0("US_OR",Date),
+    Code = paste0("US-OR"),
     Country = "USA",
     Region = "Oregon",)%>% 
   select(Country, Region, Code, Date, Sex, 
