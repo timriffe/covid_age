@@ -20,22 +20,21 @@ if (class(a)[1]=="try-error"){
 }
 
 # Functions
-source(here::here("R","00_Functions.R"))
+# source(here::here("R","00_Functions.R"))
 
-logfile <- here::here("inputDB_compile_log.md")
 
 # read in the log file, do we start a new one?
-# if it's Sunday then yes.
-new_log <- !(today() %>% weekdays()) == "Sunday" & 
-  (Sys.time() %>% hour()) < 8
-
-log_section(paste(today(),"inputDB updates"), 
-            append = new_log, 
-            logfile = logfile)
-
-log_section(paste(Sys.time(),"updates"),
-            append = TRUE,
-            logfile = logfile)
+# # if it's Sunday then yes.
+# new_log <- !(today() %>% weekdays()) == "Sunday" & 
+#   (Sys.time() %>% hour()) < 8
+# 
+# log_section(paste(today(),"inputDB updates"), 
+#             append = new_log, 
+#             logfile = logfile)
+# 
+# log_section(paste(Sys.time(),"updates"),
+#             append = TRUE,
+#             logfile = logfile)
 
 #source("R_checks/inputDB_check.R")
 email <- Sys.getenv("email")
@@ -67,11 +66,6 @@ if (nrow(rubric) > 0){
   # rubric <- get_input_rubric()
   inputDB <- compile_inputDB(rubric, hours = Inf)
   
-  # EA: temporary fix while solving issue with additional columns in the InputDB.csv (12.08.2021)
-  try(inputDB <- 
-        inputDB %>% 
-        select(-y))
-  
   data.table::fwrite(inputDB, file = here::here("Data","inputDBhold.csv"))
   # saveRDS(inputDB, here::here("Data","inputDBhold.rds"))
   # what data combinations have we read in?
@@ -79,127 +73,115 @@ if (nrow(rubric) > 0){
   # TR: templateID is temporary:
   inputDB$templateID <- NULL
   
-  
   # remove non-standard Measure:
   Measures <- c("Cases","Deaths","Tests","ASCFR","Vaccinations","Vaccination1","Vaccination2", "Vaccination3", "VaccinationBooster")
-  n <- inputDB %>% dplyr::pull(Measure) %>% `%in%`(Measures)
-  # sum(n)
-  if (sum(!n) > 0){
-    inputDB <- inputDB %>% filter(n) 
-    log_section("Filter valid Measure entries:", 
-                append = TRUE, 
-                logfile = logfile)
-    cat("Valid Measures include:", paste(Measures, collapse = ","), 
-        file = logfile, 
-        append = TRUE)
-    cat("\n",sum(!n),"rows removed", 
-        file = logfile, 
-        append = TRUE)
-  }
+  measureCodes <- inputDB %>% 
+    dplyr::filter(!Measure %in% Measures) %>% 
+    mutate(reason = "Measure code")
+  
+  inputDB <- inputDB %>% 
+    dplyr::filter(Measure %in% Measures)
   
   # remove non-standard Metric:
   Metrics <- c("Count","Fraction","Ratio")
-  n <- inputDB %>% dplyr::pull(Metric) %>% `%in%`(Metrics)
-  # sum(n)
-  if (sum(!n) > 0){
-    inputDB <- inputDB %>% filter(n)
-    log_section("Filter valid Metric entries:", 
-                append = TRUE, 
-                logfile = logfile)
-    cat("Valid Metrics include:",paste(Metrics,collapse=","), 
-        file = logfile, 
-        append = TRUE)
-    cat("\n",sum(!n),"rows removed", 
-        file = logfile, 
-        append = TRUE)
-  }
+  metricCodes <- inputDB %>% 
+    dplyr::filter(!Metric %in% Metrics) %>% 
+    mutate(reason = "bad Metric")
+  
+  inputDB <- inputDB %>% 
+    dplyr::filter(Metric %in% Metrics)
+  
   
   # remove non-standard Sex:
   Sexes <- c("m","f","b","UNK")
-  n <- inputDB %>% dplyr::pull(Sex) %>% `%in%`(Sexes)
-  # sum(n)
-  if (sum(!n) > 0){
-    inputDB <- inputDB %>% filter(n)
-    log_section("Filter valid Sex entries:", 
-                append = TRUE, 
-                logfile = logfile)
-    cat("Valid Sex values include:",paste(Sexes,collapse=","), 
-        file = logfile, 
-        append = TRUE)
-    cat("\n",sum(!n),"rows removed", 
-        file = logfile, 
-        append = TRUE)
-  }
+  sexCodes <- inputDB %>% 
+    dplyr::filter(!Sex %in% Sexes)%>% 
+    mutate(reason = "bad Sex code")
   
-  
+  inputDB <- inputDB %>% 
+    dplyr::filter(Sex %in% Sexes)
   
   # filters: remove any code that has a duplicate entry
-  n <- duplicated(inputDB[,c("Code","Sex","Age","Measure","Metric")])
-  # sum(n)
-  if (sum(n) > 0){
-    rmcodes <- inputDB %>% filter(n) %>% dplyr::pull(Code) %>% unique()
-    inputDB <- inputDB %>% filter(!Code%in%rmcodes)
-    if (length(rmcodes)>0){
-      log_section("Duplicates detected. Following `Code`s removed:", 
-                  append = TRUE, 
-                  logfile = logfile)
-      cat(paste(rmcodes, collapse = "\n"), 
-          file = logfile, 
-          append = TRUE)
-    }
-  }
+  # TR: this particular step is very slow to process.
+  # There are quicker ways to do the filter, but to
+  # both keep the discarded chunks and do the filter
+  # we need a better strategy
+  inputDB <- inputDB %>% 
+    group_by(Code, Date, Sex, Age, Measure, Metric) %>% 
+    mutate(n = n()) %>% 
+    ungroup() %>% 
+    group_by(Code, Date, Sex, Measure, Metric) %>% 
+    mutate(keep = all(n == 1)) %>% 
+    ungroup()
+  
+  # append this to failures later
+  dups <- inputDB %>% 
+    dplyr::filter(!keep) %>% 
+    mutate(reason = "duplicate") %>% 
+    dplyr::select(-n,-keep)
+  
+  # now for another filter
+  inputDB <- inputDB %>% 
+    dplyr::filter(keep) %>% 
+    dplyr::select(-n, -keep)
+  
+  NAdates <- inputDB %>% 
+    dplyr::filter(Date == "NA.NA.NA") %>% 
+    mutate(reason = "NA dates")
+  
+  inputDB <- inputDB %>% 
+    dplyr::filter(Date != "NA.NA.NA")
   
   
-  n <- is.na(dmy(inputDB$Date))
-  # sum(n)
-  if (sum(n) > 0){
-    rmcodes <- inputDB %>% filter(n) %>% dplyr::pull(Code) %>% unique()
-    inputDB <- inputDB %>% filter(!Code%in%rmcodes)
-    if (length(rmcodes)>0){
-      log_section("Bad Dates detected. Following `Code`s removed:", 
-                  append = TRUE, 
-                  logfile = logfile)
-      cat(paste(rmcodes, collapse = "\n"), 
-          file = logfile, 
-          append = TRUE)
-    }
-  }
+  # check for valid dates:
+  inputDB <-
+    inputDB %>% 
+    mutate(keep = !is.na(dmy(Date))) %>% 
+    ungroup()
   
+  # save bad dates to append to failures
+  badDates <- inputDB %>% 
+    dplyr::filter(!keep) %>% 
+    mutate(reason = "bad date") %>% 
+    dplyr::select(-keep)
+  
+  # now for next filter
+  inputDB <- inputDB %>% 
+    dplyr::filter(keep) %>% 
+    dplyr::select(-keep)
+
+
   # remove future dates
-  n <- dmy(inputDB$Date) > today()
-  if (sum(n) > 0){
-    rmcodes <- inputDB %>% filter(n) %>% dplyr::pull(Code) %>% unique()
-    inputDB <- inputDB %>% filter(!Code%in%rmcodes)
-    if (length(rmcodes)>0){
-      log_section("Future Dates detected. Following `Code`s removed:", 
-                  append = TRUE, 
-                  logfile = logfile)
-      cat(paste(rmcodes, collapse = "\n"), 
-          file = logfile, 
-          append = TRUE)
-    }
-  }
+  inputDB <-
+    inputDB %>% 
+    mutate(keep = dmy(Date) <= today())
+  
+  futureDates <-
+    inputDB %>% 
+    dplyr::filter(!keep) %>% 
+    mutate(reason = "future date") %>% 
+    dplyr::select(-keep)
+  
+  inputDB <-
+    inputDB %>%
+    dplyr::filter(keep) %>% 
+    select(-keep)
+  # -------------------------------------- #
+
+  # Filter down to valid geo codes
+  geo_ss <- "https://docs.google.com/spreadsheets/d/1gbP_TTqc96PxeZCpwKuZJB1sxxlfbBjlQj-oxXD2zAs/edit#gid=0"
+  geo_lookup <- read_sheet(ss = geo_ss) %>% 
+    mutate(Code = coalesce(`ISO 3166-2`, `Internal Code`)) %>% 
+    dplyr::filter(!is.na(Code))
+
+  bad_Codes <- inputDB %>% 
+    filter(!Code %in% geo_lookup$Code ) %>% 
+    mutate(reason = "bad Code")
+  
+  inputDB <- inputDB %>% 
+    dplyr::filter(Code %in% geo_lookup$Code)
   
   # -------------------------------------- #
-  # now swap out data in inputDB files
-  
-  # ids_new       <- with(inputDB, paste(Country,Region,Measure,Short))
-  # inputDB_prior <-
-  # data.table::fread(file = here::here("Data","inputDB.csv"),
-  #                   encoding = "UTF-8") %>% 
-  #   mutate(Short = add_Short(Code,Date))
-  # inputDB_prior <- readRDS(here::here("Data","inputDB.rds")) %>% 
-  #   mutate(Short = add_Short(Code,Date))
-  
-  # EA: temporal fix while solving issue with additional columns in the InputDB.csv
-
-  
-  # try(inputDB_prior <- 
-  #       inputDB_prior %>% 
-  #       select(-y))
-  # try(inputDB_prior <- 
-  #       inputDB_prior %>% 
-  #       select(-`.`))
   
   inputDB_out <-
     inputDB %>% 
@@ -209,13 +191,24 @@ if (nrow(rubric) > 0){
            !is.na(Country),
            !is.na(dmy(Date))) 
   
-  # inputDB_out <- 
-  #   inputDB_out %>% 
-  #   filter(Country != "1")
+  # -------------------------------------- #
+  inputDB_failures <- bind_rows(
+    measureCodes,
+    metricCodes,
+    sexCodes,
+    NAdates,
+    badDates,
+    futureDates,
+    dups,
+    bad_Codes
+  )
   
-  # saveRDS(inputDB_out, here::here("Data","inputDB.rds"))
+  
   data.table::fwrite(inputDB_out, file = here::here("Data","inputDB_internal.csv"))
-  #saveRDS(inputDB, here("Data","inputDB_i.rds"))
+  
+  # unlink( here::here("Data","inputDB_failures.csv"))
+  data.table::fwrite(inputDB_failures, file = here::here("Data","inputDB_failures.csv"))
+  
   Sys.sleep(1)
   # public file, full precision.
   header_msg <- paste("COVerAGE-DB input database, filtered after some simple checks:",timestamp(prefix = "", suffix = ""))
@@ -251,6 +244,18 @@ if (nrow(rubric) > 0){
   
   git2r::push(repo,credentials = cred_token())
 }
+
+
+
+# also copy rds files to N://COVerAGE-DB/Data
+cdb_files  <- c("inputDB_internal.csv","inputDBhold.csv","inputDB_failures.csv")
+files_from <- file.path("Data",cdb_files)
+file.copy(from = files_from, 
+          to = "N:/COVerAGE-DB/Data", 
+          overwrite = TRUE)
+
+
+
 schedule_this <- FALSE
 if (schedule_this){
   # TR: note, if you schedule this, you should make sure it's not already scheduled
@@ -278,6 +283,6 @@ if (schedule_this){
   taskscheduler_create(taskname = "COVerAGE-DB-inputDB-updates-test", 
                        rscript =  here::here("R/01_update_inputDB.R"), 
                        schedule = "ONCE", 
-                       starttime = "17:11")
+                       starttime = "11:02")
   # 
 }
