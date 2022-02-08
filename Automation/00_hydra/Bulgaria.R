@@ -173,14 +173,15 @@ BG_cases_out <-
 colnames(BG_deaths_in ) <- c("Date","Sex","Age","Value")
 
 all_ages <- c("0","12","15","17","20","30","40","50","60","70","80","90")
+
+
+BG_deaths_in$Sex <- BG_deaths_in$Sex %>%  nchar()
+
 BG_deaths_out <-
   BG_deaths_in %>% 
-  # mutate(Sex = case_when(Sex %in% c("<U+043C><U+044A><U+0436>") ~ "m",
-  #                        Sex %in% c("<U+0436><U+0435><U+043D><U+0430>") ~ "f",
-  #                        Sex == "-" ~ "UNK"),
-         mutate(Sex = case_when(Sex %in% c("мъж") ~ "m",
-                                Sex %in% c("жена") ~ "f",
-                                Sex == "-" ~ "UNK"),
+mutate(Sex = case_when(Sex =="3" ~ "m",
+                                Sex == "4" ~ "f",
+                                Sex == "1" ~ "UNK"),
          Age = case_when(Age == "-" ~ "UNK",
                          Age == "0 - 12" ~ "0",
                          Age == "12 - 14" ~ "12",
@@ -193,7 +194,7 @@ BG_deaths_out <-
                          Age == "60 - 69" ~ "60",
                          Age == "70 - 79" ~ "70",
                          Age == "80 - 89" ~ "80",
-                         Age == "90+" ~ "90"),
+                         Age == "90+" ~ "90")
         ) %>% 
   tidyr::complete(Age = all_ages, Sex, Date, fill = list(Value=0)) %>% 
   arrange(Sex, Age, Date) %>% 
@@ -215,10 +216,6 @@ BG_deaths_out <-
           Code = paste0("BG"),
           Country = "Bulgaria",
           Region = "All")%>% 
-  # mutate(Sex = case_when(
-  #   Sex == "жена" ~ "f",
-  #   Sex == "мъж" ~ "m"
-  # )) %>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)
   

@@ -97,7 +97,8 @@ dates_ined <- deaths_ined$Date %>% unique()
 
 # loading data from Drive
 # ~~~~~~~~~~~~~~~~~~~~~~~
-db_drive <- get_country_inputDB("UA")
+db_drive <- get_country_inputDB("UA") %>% 
+  mutate(Code = "UA")
 
 deaths_drive <- 
   db_drive %>% 

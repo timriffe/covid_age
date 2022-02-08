@@ -88,7 +88,7 @@ Out <- Out %>%
   mutate(Code = recode(Region,
                       "Newfoundland and Labrador" = "CA-NL",
                       "Nova Scotia" = "CA-NS",
-                      "Quebec"= "CA-AS", 
+                      "Quebec"= "CA-QC", 
                       "Manitoba" ="CA-MB",
                       "Saskatchewan" ="CA-SK",
                       "Yukon"= "CA-YT",

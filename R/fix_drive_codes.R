@@ -5,24 +5,55 @@ rubric <- get_input_rubric() %>%
 
 Lookup <- read_sheet(ss = "https://docs.google.com/spreadsheets/d/1gbP_TTqc96PxeZCpwKuZJB1sxxlfbBjlQj-oxXD2zAs/edit#gid=0")
 
+ii <- 125
+(loc <- rubric$Short[ii])
 
+# get url
+ss <- rubric %>% dplyr::filter(Short == loc) %>% dplyr::pull(Sheet)
+# open in browser
+browseURL(ss)
 # for (loc in rubric$Short){
+# X <- read_sheet(ss, 
+#                    sheet = "database", 
+#                    na = "NA", 
+#                    col_types= "cccccciccc",
+#                    range = "database!A:J") %>% 
+#   mutate(Value = parse_number(Value)) %>% 
+#   left_join(Lookup, by = c("Country","Region")) %>% 
+#   dplyr::select(-Code) %>% 
+#   rename(Code = `ISO 3166-2`) %>% 
+#   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
+
+
+# get and fix database tab
 X <- get_country_inputDB(loc) %>% 
   left_join(Lookup, by = c("Country","Region")) %>% 
   dplyr::select(-Code) %>% 
   rename(Code = `ISO 3166-2`) %>% 
+  mutate(Code = ifelse(is.na(Code),`Internal Code`,Code )) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
+X
+any(is.na(X$Region))
 
-ss <- rubric %>% dplyr::filter(Short == loc) %>% dplyr::pull(Sheet)
 
+
+
+# post new data
+write_sheet(X, ss = ss, sheet = "database")
+
+
+# detect template tab name
 i_want_this_sheet <-
   gs4_get(ss)[["sheets"]][["name"]] %>% 
   grepl(pattern = "template", ignore.case = TRUE) %>% 
   which()
 
+# detect nrow to skip
 my_skippy <- 
   read_sheet(ss, sheet = i_want_this_sheet, range = "J1:J100") %>% 
   mutate(skippy = `...1` == "Value") %>% pull(skippy) %>% which() + 1
+
+# grab data, parse
 this_range <- paste0("A",my_skippy,":","J2000")
 template_up <- 
   read_sheet(ss, 
@@ -55,13 +86,18 @@ col_index <- read_sheet(ss,
   lubridate::dmy() %>% 
   is.na() %>% `!` %>% which()
 
+# template object to post
 template_up <- 
   template_up %>% 
   mutate(Date = gs4_formula(paste0("=$",LETTERS[col_index],"$",the_date_row)))
 
-out_range<- paste0("A",my_skippy,":","J",nrow(template_up)+my_skippy)
+out_range <- paste0("A",my_skippy,":","J",nrow(template_up)+my_skippy)
+
+# write, and visually check
 range_write(ss,
             data = template_up,
             sheet = i_want_this_sheet,
             range = out_range)
+
+
 # }
