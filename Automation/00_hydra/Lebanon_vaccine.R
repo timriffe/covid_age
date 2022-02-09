@@ -17,7 +17,7 @@ if (!"email" %in% ls()){
 
 # info country and N drive address
 
-ctr          <- "Lebanon" # it's a placeholder
+ctr          <- "Lebanon_vaccine" # it's a placeholder
 dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 
@@ -25,21 +25,6 @@ dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 drive_auth(email = email)
 gs4_auth(email = email)
 
-# Drive urls
-rubric <- get_input_rubric() %>% filter(Short == "LB")
-
-ss_i <- rubric %>% 
-  dplyr::pull(Sheet)
-
-ss_db <- rubric %>% 
-  dplyr::pull(Source)
-
-# reading data from Drive and last date entered 
-
-In_drive <- get_country_inputDB("LB")%>% 
-  select(-Short)%>%
-  mutate(AgeInt= as.character(AgeInt))%>%
-  subset(Measure!= "Vaccinations")
 
 
 #Read in manually downloaded data from drive until download can be automated 
@@ -80,7 +65,6 @@ all_lists <- mapply(c, all_content, all_filenames, SIMPLIFY = FALSE)
 
 Age_in <- rbindlist(all_lists, fill = T)
 
-View(Age_in)
 #Process age data 
 
 
@@ -131,6 +115,7 @@ Sex_in <- rbindlist(all_lists, fill = T)
 
 
 
+
 #Process sex data 
 
 
@@ -140,8 +125,11 @@ Sex_Out= Sex_in %>%
   mutate(Sex = case_when(
     Sex == "MALE" ~ "m",
     Sex == "FEMALE" ~ "f",
+    Sex == "أنثى" ~ "f",
+    Sex == "ذكر" ~ "m",
+    Sex == "Missing" ~ "UNK",
     Sex2 == "أنثى" ~ "f", #translate because some file use arabic names 
-    Sex2 == "ذكر" ~ "m"))%>%
+    Sex2 == "ذكر" ~ "m")) %>% 
   mutate(
     Measure = "Vaccinations",
     Metric = "Count",
@@ -163,20 +151,16 @@ Sex_Out= Sex_in %>%
 
 
 #Put dataframes together
-Out<- bind_rows(In_drive,
-                Sex_Out,
-                Age_Out)
+Out<- bind_rows(Sex_Out,
+                Age_Out) %>% 
+  sort_input_data()
+
+# upload to N
 
 
-# upload to Drive, overwrites
-
-write_sheet(Out, 
-            ss = ss_i, 
-            sheet = "database")
 
 
-#log_update("Bulgaria", N = nrow(BG_out))
-
+write_rds(Out, paste0(dir_n, ctr, ".rds"))
 
 
 ## ------------------------------------------
