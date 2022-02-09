@@ -99,10 +99,8 @@ Age_Out= Age_in %>%
     Sex= "b")%>% 
   mutate(
     Date = dmy(Date),
-    Date = paste(sprintf("%02d",day(Date)),    
-                 sprintf("%02d",month(Date)),  
-                 year(Date),sep="."),
-    Code = paste0("LB"),
+    Date = ddmmyyyy(Date),
+    Code = "LB",
     Country = "Lebanon",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -149,10 +147,8 @@ Sex_Out= Sex_in %>%
     Age= "TOT")%>% 
   mutate(
     Date = dmy(Date),
-    Date = paste(sprintf("%02d",day(Date)),    
-                 sprintf("%02d",month(Date)),  
-                 year(Date),sep="."),
-    Code = paste0("LB"),
+    Date = ddmmyyyy(Date),
+    Code = "LB",
     Country = "Lebanon",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 

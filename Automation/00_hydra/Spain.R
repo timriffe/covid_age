@@ -156,7 +156,7 @@ in2 <-
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
   mutate(Date = ddmmyyyy(Date)) %>% 
   sort_input_data() 
-in2$Code %>% unique()
+
 
 nal <- in2 %>% 
   group_by(Country, Date, Sex, Age, AgeInt, Metric, Measure) %>% 
@@ -167,7 +167,7 @@ nal <- in2 %>%
 
 out <- bind_rows(nal, in2) %>% 
   sort_input_data()
-
+# out$Region %>% unique()
 
 # saving data into N drive
 write_rds(out, paste0(dir_n, ctr, ".rds"))
