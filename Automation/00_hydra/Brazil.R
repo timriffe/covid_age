@@ -41,13 +41,15 @@ for(ss_i in links_br){
     out %>% 
     bind_rows(temp)
 }
-
+out2 <- out
+out2$Code = substr(out2$Code,1,nchar(out2$Code)-10)
+out2$Code <- gsub("_", "-", out2$Code)
 ####################################
 #### saving database in N Drive ####
 ####################################
 #Since output data = input data only the output data gets saved
 
-write_rds(out, paste0(dir_n, ctr, ".rds"))
+write_rds(out2, paste0(dir_n, ctr, ".rds"))
 
 # updating hydra dashboard
 log_update(pp = ctr, N = nrow(out))
