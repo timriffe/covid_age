@@ -159,9 +159,10 @@ vaccine=CAvaccine_in %>%
 # bind together 
 CAout <- bind_rows(CAage, CAsex, Tests,vaccine,Prior_data) %>% 
   filter(Age != "Total") %>% 
-  sort_input_data()
+  sort_input_data()%>% 
+  mutate(Code = "US-CA")
 
-n <- duplicated(CAout[,c("Code","Sex","Age","Measure","Metric")]) 
+n <- duplicated(CAout[,c("Date", "Sex","Age","Measure","Metric")]) 
 CAout <- 
   CAout[!n, ]
 
