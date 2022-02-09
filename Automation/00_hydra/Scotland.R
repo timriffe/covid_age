@@ -220,7 +220,8 @@ Date_trends <- sct %>% dplyr::pull(Date) %>% dmy() %>% max()
 ###########################################adapt here, how data gets read in############new from rds
 SCin       <- 
   read_rds(paste0(dir_n, ctr, ".rds")) %>% 
-  filter(Age != "TOT")
+  filter(Age != "TOT") %>% 
+  mutate(Code = "GB-SCT")
 
 
 # 1) remove Date_cases if present:
