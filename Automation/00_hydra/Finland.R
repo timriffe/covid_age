@@ -14,8 +14,9 @@ ctr <- "Finland"
 sht <- "FI"
 dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 
-rubric <- get_input_rubric() %>% 
-     filter(Short == sht)
+rubric <- 
+  get_input_rubric() %>% 
+  filter(Short == sht)
 
 ss_i  <- rubric$Sheet
 ss_db <- rubric$Source
