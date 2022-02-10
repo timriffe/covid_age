@@ -1,36 +1,47 @@
-# England & Wales
-rm(list=ls())
-getwd()
+library(readr)
+library(tidyverse)
+library(lubridate)
+library(rvest)
+library(googlesheets4)
+library(googledrive)
+source(here::here("Automation/00_Functions_automation.R"))
+
+
+ctr          <- "England_and_Wales" # it's a placeholder
+dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 # load packages
-library(tidyverse)
-library(here)
-library(readxl)
-library(lubridate)
-library(googlesheets4)
-
-sort_input_data <- function(X){
-  X %>% 
-    mutate(Date2 = dmy(Date)) %>% 
-    arrange(Country,
-            Region,
-            Date2,
-            Code,
-            Sex, 
-            Measure,
-            Metric,
-            suppressWarnings(as.integer(Age))) %>% 
-    dplyr::select(-Date2)
-}
+# library(tidyverse)
+# library(here)
+# library(readxl)
+# library(lubridate)
+# library(googlesheets4)
+# 
+# sort_input_data <- function(X){
+#   X %>% 
+#     mutate(Date2 = dmy(Date)) %>% 
+#     arrange(Country,
+#             Region,
+#             Date2,
+#             Code,
+#             Sex, 
+#             Measure,
+#             Metric,
+#             suppressWarnings(as.integer(Age))) %>% 
+#     dplyr::select(-Date2)
+# }
 
 # check here for new url:
 # https://www.ons.gov.uk/peoplepopulationandcommunity/birthsdeathsandmarriages/deaths/datasets/weeklyprovisionalfiguresondeathsregisteredinenglandandwales
 
 deaths_url <- "https://www.ons.gov.uk/file?uri=%2fpeoplepopulationandcommunity%2fbirthsdeathsandmarriages%2fdeaths%2fdatasets%2fweeklyprovisionalfiguresondeathsregisteredinenglandandwales%2f2021/publishedweek292021.xlsx"
 
-download.file(deaths_url, destfile = ("../data/UKdeaths2.xlsx"))
+data_source <- paste0(dir_n, "Data_sources/", ctr, "/deaths",today(), ".csv")
 
-X     <- read_xlsx("../data/UKdeaths2.xlsx", 
+download.file(deaths_url, data_source, mode = "wb")
+
+
+X     <- read_xlsx(data_source, 
                    sheet = "Covid-19 - Weekly occurrences", 
                    skip = 5)
 X     <- X[6:25,3:(ncol(X)-1)]
@@ -90,7 +101,7 @@ Deaths_b <- X %>%
 ##########################
 # Males
 
-X     <- read_xlsx("../data/UKdeaths2.xlsx", 
+X     <- read_xlsx(data_source, 
                    sheet = "Covid-19 - Weekly occurrences", 
                    skip = 5)
 X     <- X[28:47,3:(ncol(X)-1)]
@@ -151,7 +162,7 @@ Deaths_m <- X %>%
 ##########################
 # Females
 
-X     <- read_xlsx("UKdeaths2.xlsx", 
+X     <- read_xlsx(data_source, 
                    sheet = "Covid-19 - Weekly occurrences", 
                    skip = 5)
 X     <- X[50:69,3:(ncol(X)-1)]
@@ -213,9 +224,7 @@ Deaths_f <- X %>%
 # Combining dfs
 Deaths <- rbind(Deaths_b, Deaths_m, Deaths_f)
 
-# push output to Drive:  
-ss <- "https://docs.google.com/spreadsheets/d/1N1S76go_EaqoWWylITy0DV7HHPpeeNunAbH5_5KxPAE/edit#gid=0"
+write_rds(Deaths, paste0(dir_n, ctr, ".rds"))
 
-# This is aggressive. It overwrites the tab. That works for deaths-only so far, but it may need to 
-# be more nuanced when cases are added to, if they are retrieved in some other way.
-write_sheet(Deaths, ss, sheet = "database")
+# updating hydra dashboard
+log_update(pp = ctr, N = nrow(Deaths))

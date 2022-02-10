@@ -88,7 +88,7 @@ scripts <- c('US_Virginia', 'USA_all_deaths', 'Netherlands', 'Estonia',
              'ECDC_vaccine', 'Slovakia_vaccine', 'Germany_vaccine', 'US_Pennsylvania_vaccine', 'USA_vaccine',
              'Australia_vaccine', 'US_Idaho', 'USA_all', 'Brazil', 'New_Zealand', 'Maldives', 'Japan', 
              'Romania', 'Puerto_Rico', 'Scotland_Vaccine', 'Switzerland_Vaccine', 'Norway_Vaccine', 'France_Vaccine',
-             'England_Vaccine')
+             'England_Vaccine', 'England', 'England_and_Wales')
 
 # Scheduling all scripts at once
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -123,7 +123,7 @@ for(c in scripts){
 # for individual scheduling
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sched("USA_all", tm = "09:34", email = auto_update_email, wd = auto_update_wd)
+sched("England_and_Wales", tm = "10:28", email = auto_update_email, wd = auto_update_wd)
 
 #sch = "WEEKLY"
 

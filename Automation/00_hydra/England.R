@@ -1,36 +1,27 @@
-# set working dir
-#setwd("/Users/franciscorowe/Dropbox/Francisco/Research/publications/2021/coverage-db/data")
-getwd()
-
-# load packages
+library(readr)
 library(tidyverse)
-library(here)
-library(readxl)
 library(lubridate)
+library(rvest)
 library(googlesheets4)
+library(googledrive)
+source(here::here("Automation/00_Functions_automation.R"))
 
-sort_input_data <- function(X){
-  X %>% 
-    mutate(Date2 = dmy(Date)) %>% 
-    arrange(Country,
-            Region,
-            Date2,
-            Code,
-            Sex, 
-            Measure,
-            Metric,
-            suppressWarnings(as.integer(Age))) %>% 
-    dplyr::select(-Date2)
-}
 
-# check here for new url:
-# https://www.england.nhs.uk/statistics/statistical-work-areas/covid-19-daily-deaths/
+ctr          <- "England" # it's a placeholder
+dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
+
+
 
 deaths_url <- "https://www.england.nhs.uk/statistics/wp-content/uploads/sites/2/2022/01/COVID-19-total-announced-deaths-28-January-2022.xlsx"
 
-download.file(deaths_url, destfile = ("../data/ENdeaths.xlsx"))
+data_source <- paste0(dir_n, "Data_sources/", ctr, "/deaths",today(), ".csv")
 
-X     <- read_xlsx("../data/ENdeaths.xlsx", 
+download.file(deaths_url, data_source, mode = "wb")
+
+
+# download.file(deaths_url, destfile = ("../data/ENdeaths.xlsx"))
+
+X     <- read_xlsx(data_source, 
                sheet = "Tab3 Deaths by age", 
                skip = 15)
 X     <- X[3:7,-c(1,2,3)]
@@ -66,7 +57,7 @@ Deaths <- X %>%
            sprintf("%02d", month(dates)),
            year(dates),
            sep="."),
-         Code = paste0("GB_EN", Date),
+         Code = paste0("GB-EN"),
          Measure = "Deaths",
          Metric = "Count",
          Region = "All") %>% 
@@ -74,12 +65,9 @@ Deaths <- X %>%
          Sex, Age, AgeInt, Metric, Measure, Value) %>% 
   sort_input_data()
 
-# push output to Drive:  
-ss <- "https://docs.google.com/spreadsheets/d/1E7rXv46X_RcQBHNL3YeBC3-JmhhkG4PoJKMsdxQUtvM/edit#gid=0"
+write_rds(Deaths, paste0(dir_n, ctr, ".rds"))
 
-# This is aggressive. It overwrites the tab. That works for deaths-only so far, but it may need to 
-# be more nuanced when cases are added to, if they are retrieved in some other way.
-write_sheet(Deaths, ss, sheet = "database")
-
+# updating hydra dashboard
+log_update(pp = ctr, N = nrow(Deaths))
 
 
