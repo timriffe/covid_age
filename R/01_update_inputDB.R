@@ -206,9 +206,10 @@ if (nrow(rubric) > 0){
   
   data.table::fwrite(inputDB_out, file = here::here("Data","inputDB_internal.csv"))
   
-  # unlink( here::here("Data","inputDB_failures.csv"))
+  # unlink( here::here("Data","inputDB_failures.csv"), force = TRUE)
+  # View(inputDB_failures)
   data.table::fwrite(inputDB_failures, file = here::here("Data","inputDB_failures.csv"))
-  
+  write_csv(inputDB_failures, file = here::here("Data","inputDB_failures.csv"))
   Sys.sleep(1)
   # public file, full precision.
   header_msg <- paste("COVerAGE-DB input database, filtered after some simple checks:",timestamp(prefix = "", suffix = ""))

@@ -78,7 +78,7 @@ B <- A[ , try_step(process_function = redistribute_unknown_age,
                    chunk = .SD,
                    byvars = c("Code","Date","Sex","Measure"),
                    logfile = logfile), 
-        by = list(Coden, Date, Sex, Measure), 
+        by = list(Code, Date, Sex, Measure), 
         .SDcols = icols][,..icols]
 
 ### Scale to totals (within sex) ####################################
