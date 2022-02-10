@@ -53,6 +53,29 @@ ss_db <- rubric$Source
 # drive_put(media = fi_deaths_png,
 #           path = googledrive::as_id(ss_db))
 
+
+deaths <- 
+  read_delim("https://sampo.thl.fi/pivot/prod/en/epirapo/covid19case/fact_epirapo_covid19case.csv?row=sex-444328&column=ttr10yage-444309&filter=measure-492118&filter=dateweek20200101-509030&", delim = ";")
+
+deaths2 <- 
+  deaths %>% 
+  mutate(Sex = case_when(Gender == "Women" ~ "f",
+                         Gender == "Men" ~ "m",
+                         Gender == "All sexes" ~ "b"),
+         Age = str_sub(Age, 1, 2),
+         Age = case_when(Age == "00" ~ "0",
+                         Age == "Al" ~ "TOT",
+                         TRUE ~ Age))
+
+test <- 
+  deaths2 %>% 
+  filter(Age == "TOT",
+         Sex != "b") %>% 
+  mutate(val = ifelse(val == "..", "0", val),
+         val = val %>% as.double()) %>% 
+  group_by(Sex) %>% 
+  summarise(val = sum(val))
+
 # -------------------------------------
 # Now get cases:
 fi_case_url <- "https://opendata.arcgis.com/datasets/aa28e00e8b8647deb3d2573b4d19f73c_0.csv"
