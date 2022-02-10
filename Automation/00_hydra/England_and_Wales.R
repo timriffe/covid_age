@@ -89,7 +89,7 @@ Deaths_b <- X %>%
       sep="."),
     Sex = "b",
     Country = "England and Wales",
-    Code = paste0("GB_ENW", Date),
+    Code = paste0("GB-EAW"),
     Measure = "Deaths",
     Metric = "Count",
     Region = "All") %>% 
@@ -151,7 +151,7 @@ Deaths_m <- X %>%
     sep="."),
   Sex = "m",
   Country = "England and Wales",
-  Code = paste0("GB_ENW", Date),
+  Code = paste0("GB-EAW"),
   Measure = "Deaths",
   Metric = "Count",
   Region = "All") %>% 
@@ -211,7 +211,7 @@ Deaths_f <- X %>%
     sep="."),
   Sex = "f",
   Country = "England and Wales",
-  Code = paste0("GB_ENW", Date),
+  Code = paste0("GB-EAW"),
   Measure = "Deaths",
   Metric = "Count",
   Region = "All") %>% 
