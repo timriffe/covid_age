@@ -202,7 +202,7 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
   # rubric <- rubric %>% 
   #   filter(Rows > 0) # just always read all files from Hyrdra?
   # 
-  on_hydra <- Sys.info()["nodename"] %in% c("HYDRA01","HYDRA02")
+  on_hydra <- Sys.info()["nodename"] %in% c("HYDRA01","HYDRA02","HYDRA11")
   if ( on_hydra ){
     
     rubric_hydra <- 
