@@ -10,6 +10,7 @@ if (!"email" %in% ls()){
 gs4_auth(email = email)
 drive_auth(email = email)
 
+# info country and N drive address
 ctr <- "Finland"
 sht <- "FI"
 dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
@@ -65,16 +66,75 @@ deaths2 <-
          Age = str_sub(Age, 1, 2),
          Age = case_when(Age == "00" ~ "0",
                          Age == "Al" ~ "TOT",
-                         TRUE ~ Age))
+                         TRUE ~ Age),
+         val = val %>% as.double()) %>% 
+  select(-Gender)
 
-test <- 
+# sex distribution at young ages for imputation
+sex_dist <- 
   deaths2 %>% 
-  filter(Age == "TOT",
-         Sex != "b") %>% 
+  filter(Sex != "b",
+         Age %in% c("30", "40")) %>% 
   mutate(val = ifelse(val == "..", "0", val),
          val = val %>% as.double()) %>% 
   group_by(Sex) %>% 
-  summarise(val = sum(val))
+  summarise(val = sum(val)) %>% 
+  ungroup() %>% 
+  group_by() %>% 
+  mutate(prop = val/sum(val)) %>% 
+  select(-val)
+
+# censored value in young ages
+val_miss <- 
+  deaths2 %>% 
+  filter(Sex == "b") %>% 
+  mutate(Age = ifelse(Age != "TOT", "no_tot", Age)) %>% 
+  drop_na() %>% 
+  group_by(Age) %>% 
+  summarise(val = sum(val)) %>% 
+  spread(Age, val) %>% 
+  mutate(miss = TOT - no_tot) %>% 
+  dplyr::pull(miss)
+
+# ages to be dropped due to missing values
+age_drop <- 
+  deaths2 %>% 
+  filter(Sex == "b",
+         is.na(val),
+         Age != "0") %>% 
+  dplyr::pull(Age)
+
+# dropping ages
+deaths3 <- 
+  deaths2 %>% 
+  filter(Age != age_drop) %>% 
+  mutate(val = ifelse(Sex == "b" & Age == "0", val_miss, val))
+
+
+deaths_out <- 
+  deaths3 %>% 
+  filter(Age != age_drop) %>% 
+  left_join(sex_dist) %>% 
+  left_join(deaths3 %>% 
+              filter(Sex == "b",
+                     Age != age_drop) %>% 
+              select(Age, val_tot = val)) %>% 
+  mutate(val = ifelse(is.na(val), val_tot * prop, val),
+         val = round(val)) %>% 
+  select(-val_tot, -prop, Value = val) %>% 
+  mutate(Measure = "Deaths",
+         AgeInt = case_when(Age == "0" ~ as.numeric(lead(Age)) - as.numeric(Age),
+                            Age == "80" ~ 25,
+                            Age == "TOT" ~ NA_real_,
+                            TRUE ~ 10),
+         Country = "Finland",
+         Code = "FI",
+         Metric = "Count",
+         Region = "All",
+         Date = ddmmyyyy(today())) %>% 
+  select(Country, Region, Code, Date, Sex, Age, 
+         AgeInt, Metric, Measure, Value)
+
 
 # -------------------------------------
 # Now get cases:
@@ -133,16 +193,17 @@ Cases <-
          AgeInt, Metric, Measure, Value)
     
 
-# 
-FI_in <- get_country_inputDB("FI") %>% 
-  select(-Short) %>% 
-  sort_input_data()
+# importing stored data 
+FI_in <- read_rds(paste0(dir_n, ctr, ".rds"))
 
-# filter and merge
+
 FI_out <-
   FI_in %>% 
+  # keeping deaths
   dplyr::filter(Measure != "Cases") %>% 
-  bind_rows(Cases) %>% 
+  # adding all cases and new deaths
+  bind_rows(Cases,
+            deaths_out) %>% 
   # remove duplicates, select larger value
   group_by(Region, Measure, Metric, Sex, Age, Date) %>% 
   mutate(isMax = Value == max(Value)) %>% 
@@ -150,6 +211,23 @@ FI_out <-
   dplyr::filter(isMax) %>% 
   sort_input_data() 
 
+
+# # 
+# FI_in <- get_country_inputDB("FI") %>% 
+#   select(-Short) %>% 
+#   sort_input_data()
+# 
+# # filter and merge
+# FI_out <-
+#   FI_in %>% 
+#   dplyr::filter(Measure != "Cases") %>% 
+#   bind_rows(Cases) %>% 
+#   # remove duplicates, select larger value
+#   group_by(Region, Measure, Metric, Sex, Age, Date) %>% 
+#   mutate(isMax = Value == max(Value)) %>% 
+#   ungroup() %>% 
+#   dplyr::filter(isMax) %>% 
+#   sort_input_data() 
 
 
 
@@ -170,8 +248,12 @@ log_update("Finland", N = nrow(Cases))
 ############################################
 
 data_cases <- paste0(dir_n, "Data_sources/", ctr, "/cases_",today(), ".csv")
+data_deaths <- paste0(dir_n, "Data_sources/", ctr, "/deaths_",today(), ".csv")
 
-write_csv(Cases, data_cases )
+write_csv(CasesIN, data_cases)
+write_csv(deaths, data_deaths)
+
+data_source <- c(data_cases, data_deaths)
 
 zipname <- paste0(dir_n, 
                   "Data_sources/", 
@@ -183,13 +265,13 @@ zipname <- paste0(dir_n,
                   ".zip")
 
 zipr(zipname, 
-     data_cases, 
+     data_source, 
      recurse = TRUE, 
      compression_level = 9,
      include_directories = TRUE)
 
 # clean up file chaff
-file.remove(data_cases)
+file.remove(data_source)
 
 
 
