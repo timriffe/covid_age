@@ -5,7 +5,7 @@ source("R/00_Functions.R")
 
 usethis::create_github_token()
 gitcreds::gitcreds_set()
-credentials::set_github_pat(force_new=TRUE)
+# credentials::set_github_pat(force_new=TRUE)
 # ENVIRON needs variables set for
 # GITHUB_PAT
 # OSF_PAT
