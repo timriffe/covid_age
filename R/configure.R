@@ -1,6 +1,9 @@
 # first install most of the requisites
-source("R/00_Functions.R")
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
 
+setwd(wd_sched_detect())
+here::i_am("covid_age.Rproj")
+startup::startup()
 # R session might need a restart at more than one point in this sequence
 
 usethis::create_github_token()
@@ -18,4 +21,4 @@ gitcreds::gitcreds_set()
 # What else is there to do?
 
 # In terminal, type:
-# git remote set-url origin https://big_huge_github_path_you_just_made@github.com/YourAcct/covid_age.git
+# git remote set-url origin https://github.com/YourAcct/covid_age.git
