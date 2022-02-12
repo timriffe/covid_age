@@ -25,8 +25,8 @@ ss_db <- rubric %>%
   dplyr::pull(Source)
 
 # Which weeks does the sheet already contain?
-ECDCin <- get_country_inputDB("ECDC") %>% 
-  select(-Short)
+ECDCin <- get_country_inputDB("ECDC")# %>% 
+  #select(-Short)
 
 dates_in  <- ECDCin %>% 
   dplyr::pull(Date) %>% 
@@ -195,7 +195,7 @@ PrepIN <-
              Date = Date_i,
              Date = ddmmyyyy(Date),
              Metric = "Count",
-             Short = recode(Country,
+             Code = recode(Country,
                "Austria" = "AT",
                "Belgium" = "BE",
                "Bulgaria" = "BG",
@@ -224,7 +224,7 @@ PrepIN <-
                "Slovakia" = "SK",
                "Sweden" = "SE",
                "United Kingdom" = "GB"),
-             Code = paste0(Short,"_ECDC_",Date),
+             # Code = paste0(Short,"_ECDC_",Date),
              AgeInt = ifelse(Age == "80", 25, 10)) %>% 
       select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
       filter(!is.na(Value))

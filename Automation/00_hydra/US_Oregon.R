@@ -24,8 +24,8 @@ ss_db <- rubric %>%
   dplyr::pull(Source)
 
 # read in current state of the data
-inOR <- get_country_inputDB("US_OR") %>% 
-  select(-Short)
+inOR <- get_country_inputDB("US_OR")# %>% 
+  #select(-Short)
 
 dates_in  <- 
   inOR %>% 

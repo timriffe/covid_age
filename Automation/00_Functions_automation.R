@@ -134,7 +134,7 @@ get_country_inputDB <- function(ShortCode) {
   }
 
   # Assign short code
-  out$Short <- add_Short(out$Code,out$Date)
+  # out$Short <- add_Short(out$Code,out$Date)
   
   # Output
   out

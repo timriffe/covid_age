@@ -15,8 +15,8 @@ drive_auth(email = email)
 gs4_auth(email = email)
 
 # get current state of database
-PVin <- get_country_inputDB("ES_PV") %>% 
-  select(-Short)
+PVin <- get_country_inputDB("ES_PV") #%>% 
+  #select(-Short)
 
 # get drive links
 ES_PV_meta <- 

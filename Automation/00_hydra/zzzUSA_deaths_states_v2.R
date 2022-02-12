@@ -210,7 +210,7 @@ db5 <- db4 %>%
   mutate(Country = "USA",
          Region = State,
          Date = date_data,
-         short = case_when(State == 'Alabama' ~ 'US_CDC_AL',
+         Code = case_when(State == 'Alabama' ~ 'US_CDC_AL',
                            State == 'Alaska' ~ 'US_CDC_AK',
                            State == 'Arizona' ~ 'US_CDC_AZ',
                            State == 'Arkansas' ~ 'US_CDC_AR',
@@ -268,7 +268,6 @@ db5 <- db4 %>%
                            State == 'Puerto Rico' ~ 'US_CDC_PR',
                            State == 'United States Minor Outlying Islands' ~ 'US_CDC_UM',
                            State == 'U.S. Virgin Islands' ~ 'US_CDC_VI'),
-         Code = paste0(short, Date),
          AgeInt = case_when(Age == "0" ~ "1",
                             Age == "1" ~ "4",
                             Age == "85" ~ "20",
@@ -282,7 +281,7 @@ db5 <- db4 %>%
 out <- db_drive %>% 
   filter(Date != date_data) %>% 
   mutate(AgeInt = as.character(AgeInt)) %>% 
-  select(-Short) %>% 
+  #select(-Short) %>% 
   bind_rows(db5) %>% 
   sort_input_data()
 

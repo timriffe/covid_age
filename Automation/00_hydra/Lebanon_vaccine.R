@@ -37,7 +37,7 @@ ss_db <- rubric %>%
 # reading data from Drive and last date entered 
 
 In_drive <- get_country_inputDB("LB")%>% 
-  select(-Short)%>%
+  #select(-Short)%>%
   mutate(AgeInt= as.character(AgeInt))%>%
   subset(Measure!= "Vaccinations")
 

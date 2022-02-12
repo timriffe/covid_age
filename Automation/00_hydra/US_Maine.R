@@ -22,7 +22,7 @@ ss_db    <- rubric_i %>% dplyr::pull(Source)
 
 # read in current 
 ME_in <- get_country_inputDB("US_ME") %>% 
-  select(-Short) %>% 
+  #select(-Short) %>% 
   mutate(Code = paste0("US_ME_",Date))
 
 date_max <-

@@ -319,8 +319,8 @@ db_v <-
   ########################################
   
   db_dv1 <- db_drive %>% 
-    filter(Measure != "Cases") %>% 
-    select(-Short)
+    filter(Measure != "Cases") #%>% 
+    #select(-Short)
   
   # combinations in the no-case base
   db_in <- db_dv1 %>% 

@@ -103,8 +103,8 @@ db_drive <- get_country_inputDB("UA") %>%
 deaths_drive <- 
   db_drive %>% 
   filter(Measure == "Deaths",
-    !Date %in% dates_ined) %>% 
-  select(-Short)
+    !Date %in% dates_ined)# %>% 
+  #select(-Short)
 
 # all data together
 # ~~~~~~~~~~~~~~~~~
