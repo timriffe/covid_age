@@ -269,7 +269,8 @@ Out <-
   bind_rows(total, 
             Out_vaccine1_age, 
             Out_vaccine2_age) %>%
-  mutate(Code = paste("ES",Short, sep="-")) %>% 
+  mutate(Code = paste("ES",Short, sep="-"),
+         Code = ifelse(Region == "All","ES",Code)) %>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value) %>% 
   sort_input_data()
