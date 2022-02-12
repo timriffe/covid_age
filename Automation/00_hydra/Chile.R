@@ -1,5 +1,5 @@
-library(here)
-source(here("Automation/00_Functions_automation.R"))
+
+source(here::here("Automation/00_Functions_automation.R"))
 #written by Rafael 
 # edited by Jessica
 # refactored by Tim (27 Nov, 2021)
