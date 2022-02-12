@@ -508,7 +508,7 @@ get_input_rubric <- function(tab = "input") {
   # Read spreadsheet
   input_rubric <- read_sheet(ss_rubric, sheet = tab) %>% 
     # Drop if no source spreadsheet
-    filter(!is.na(Loc))
+    dplyr::filter(!is.na(Loc))
   
   # Return tibble
   input_rubric
