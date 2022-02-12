@@ -14,9 +14,6 @@ dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 # Drive credentials
 drive_auth(email = email)
 gs4_auth(email = email)
-# TR: pull urls from rubric instead 
-rubric_i <- get_input_rubric() %>% filter(Short == "CL")
-ss_i     <- rubric_i %>% dplyr::pull(Sheet)
 
 
 #not use this anymore after Rafael sent new script
