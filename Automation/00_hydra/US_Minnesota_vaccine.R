@@ -33,8 +33,7 @@ ss_db <- rubric %>%
 
 # reading data from Drive and last date entered 
 
-In_drive <- get_country_inputDB("US_MN")#%>% 
-  #select(-Short)
+In_drive <-  read_sheet(ss = ss_i, sheet = "database")
 
 
 #read in new data 

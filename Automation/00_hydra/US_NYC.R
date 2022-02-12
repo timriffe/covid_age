@@ -20,7 +20,7 @@ ss_db    <- rubric_i %>% dplyr::pull(Source)
 
 
 # reading data from Drive and last date entered 
-db_drive <- get_country_inputDB("US_NYC")
+db_drive <- read_sheet(ss = ss_i, sheet = "database")
 
 last_date_drive <- db_drive %>% 
   mutate(date_f = dmy(Date)) %>% 

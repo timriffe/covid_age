@@ -31,8 +31,7 @@ at_rubric <- get_input_rubric() %>% filter(Short == "US_ID")
 ss_i   <- at_rubric %>% dplyr::pull(Sheet)
 ss_db  <- at_rubric %>% dplyr::pull(Source)
 
-db_drive <- get_country_inputDB("US_ID")#%>%
-  #select(-Short)
+db_drive <- read_sheet(ss = ss_i, sheet = "database")
 
 last_date_archive <- db_drive %>% 
   mutate(date_max = dmy(Date)) %>% 

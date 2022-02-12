@@ -25,7 +25,7 @@ ss_db <- rubric %>%
   dplyr::pull(Source)
 
 # Which weeks does the sheet already contain?
-ECDCin <- get_country_inputDB("ECDC")# %>% 
+ECDCin <-read_sheet(ss = ss_i, sheet = "database")# %>% 
   #select(-Short)
 
 dates_in  <- ECDCin %>% 

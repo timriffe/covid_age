@@ -79,7 +79,7 @@ dates_vacc_n <- db_n %>%
 
 # reading new deaths from Drive
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-db_drive <- get_country_inputDB("DK")
+db_drive <- read_sheet(ss = ss_i, sheet = "database")
 
 db_drive_deaths <- db_drive %>% 
   mutate(Date = dmy(Date)) %>% 

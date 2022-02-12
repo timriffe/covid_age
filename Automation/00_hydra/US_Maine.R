@@ -21,9 +21,9 @@ ss_i     <- rubric_i %>% dplyr::pull(Sheet)
 ss_db    <- rubric_i %>% dplyr::pull(Source)
 
 # read in current 
-ME_in <- get_country_inputDB("US_ME") %>% 
+ME_in <-  read_sheet(ss = ss_i, sheet = "database") %>% 
   #select(-Short) %>% 
-  mutate(Code = paste0("US_ME_",Date))
+  mutate(Code = "US-ME")
 
 date_max <-
   ME_in %>% 
