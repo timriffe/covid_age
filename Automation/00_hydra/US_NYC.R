@@ -117,10 +117,8 @@ if (date_f > last_date_drive){
   out <- bind_rows(db_a2_c, db_a2_d, db_s2, db_t3) %>% 
     mutate(Country = "USA",
            Region = "New York City",
-           Date = paste(sprintf("%02d", day(date_f)),
-                        sprintf("%02d", month(date_f)),
-                        year(date_f), sep = "."),
-           Code = paste0("US-NYC+"),
+           Date = ddmmyyyy(date_f),
+           Code = "US-NYC+",
            AgeInt = case_when(Age == "0" & Measure == "Deaths" ~ "18",
                               Age == "0" & (Measure == "Cases" | Measure == "Tests") ~ "5",
                               Age == "5" & (Measure == "Cases" | Measure == "Tests") ~ "8",
