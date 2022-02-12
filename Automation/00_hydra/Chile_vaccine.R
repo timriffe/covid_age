@@ -1,5 +1,5 @@
-library(here)
-source(here("Automation/00_Functions_automation.R"))
+
+source(here::here("Automation/00_Functions_automation.R"))
 
 if (!"email" %in% ls()){
   email <- "kikepaila@gmail.com"
@@ -38,19 +38,19 @@ vacctot <- read_csv ("https://raw.githubusercontent.com/MinCiencia/Datos-COVID19
 
 #process data
 #vaccination 1 
-
+all_ages <- 0:105 #
 
 out1 <- vacc1 %>%
   select(Age=Edad, Date= Fecha, Vaccination1= `Primera Dosis`)%>%
   pivot_longer(!Age & !Date, names_to= "Measure", values_to= "Value")%>%
   #age goes up to 221, but after 104 values are almost 0, remove ages above 105 
-  subset(Age < 106)%>%
-  subset(Value != "NA")%>%
-  tidyr::complete(Date, Age, fill = list(Value = 0)) %>% 
+  dplyr::filter(Age < 106,
+                Value != "NA")%>%
+  tidyr::complete(Date, Age = all_ages, fill = list(Value = 0)) %>% 
   mutate(
     Metric = "Count", 
     Sex= "b",
-    AgeInt= "1",
+    AgeInt= 1L,
     Measure = "Vaccination1") %>% 
   arrange(Age, Date) %>%
   group_by(Age) %>% 
@@ -58,16 +58,13 @@ out1 <- vacc1 %>%
   ungroup()%>% 
     mutate(
     Date = ymd(Date),
-    Date = paste(sprintf("%02d",day(Date)),    
-                 sprintf("%02d",month(Date)),  
-                 year(Date),sep="."),
-    Code = paste0("CL"),
+    Date = ddmmyyyy(Date),
+    Code = "CL",
     Country = "Chile",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)%>% 
-  mutate(Age = as.character(Age))%>% 
-  mutate(AgeInt = as.character(AgeInt))
+  mutate(Age = as.character(Age))
 
 
 #Vaccination 2 
@@ -79,11 +76,11 @@ out2 <- vacc2 %>%
   #especially during first 6 weeks when people where not to able to get second vaccine yet
   #age goes up to 221, but after 104 values are 0, remove ages above 105 
   subset(Age < 106)%>%
-  tidyr::complete(Date, Age, fill = list(Value = 0)) %>% 
+  tidyr::complete(Date, Age = all_ages, fill = list(Value = 0)) %>% 
   mutate(
     Metric = "Count", 
     Sex= "b",
-    AgeInt= "1",
+    AgeInt= 1L,
     Measure = "Vaccination2")  %>%
   arrange(Age, Date) %>%
   group_by(Age) %>% 
@@ -91,16 +88,13 @@ out2 <- vacc2 %>%
   ungroup()%>% 
   mutate(
     Date = ymd(Date),
-    Date = paste(sprintf("%02d",day(Date)),    
-                 sprintf("%02d",month(Date)),  
-                 year(Date),sep="."),
-    Code = paste0("CL"),
+    Date = ddmmyyyy(Date),
+    Code = "CL",
     Country = "Chile",
     Region = "All",)%>% 
 select(Country, Region, Code, Date, Sex, 
 Age, AgeInt, Metric, Measure, Value)%>% 
-  mutate(Age = as.character(Age))%>% 
-  mutate(AgeInt = as.character(AgeInt))
+  mutate(Age = as.character(Age))
 
 
 #Vaccinations 
@@ -112,11 +106,11 @@ outtot <- vacctot %>%
   #especially during first 6 weeks when people where not to able to get second vaccine yet
   #age goes up to 221, but after 104 values are 0, remove ages above 105 
   subset(Age < 106)%>%
-  tidyr::complete(Date, Age, fill = list(Value = 0)) %>% 
+  tidyr::complete(Date, Age = all_ages, fill = list(Value = 0)) %>% 
   mutate(
     Metric = "Count", 
     Sex= "b",
-    AgeInt= "1",
+    AgeInt= 1L,
     Measure = "Vaccinations")  %>%
   arrange(Age, Date) %>%
   group_by(Age) %>% 
@@ -124,16 +118,13 @@ outtot <- vacctot %>%
   ungroup()%>% 
   mutate(
     Date = ymd(Date),
-    Date = paste(sprintf("%02d",day(Date)),    
-                 sprintf("%02d",month(Date)),  
-                 year(Date),sep="."),
-    Code = paste0("CL"),
+    Date = ddmmyyyy(Date),
+    Code = "CL",
     Country = "Chile",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)%>% 
-  mutate(Age = as.character(Age))%>% 
-  mutate(AgeInt = as.character(AgeInt))
+  mutate(Age = as.character(Age))
 
 
 #put together 
@@ -141,13 +132,14 @@ outtot <- vacctot %>%
 out <- rbind(out1, out2, outtot)
 
 ##adding ages 0 to 9
-small_ages<- out %>% 
-  filter(Age == "10") %>% 
-  mutate(Age = "0",
-         AgeInt = 2L,
-         Value = "0")
-out <- rbind(out, small_ages) %>% 
-  sort_input_data()
+# small_ages<- out %>% 
+#   filter(Age == "10") %>% 
+#   mutate(Age = "0",
+#          AgeInt = 2L,   # TR: AgeInt = 2 was off, and some ages missing
+#          Value = "0")
+# out <- rbind(out, small_ages) %>% 
+#   sort_input_data()
+out <- sort_input_data(out)
 
 #converting to character, because combining did not work otherwise 
 #db_drive <- db_drive %>% 
