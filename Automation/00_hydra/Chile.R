@@ -154,7 +154,7 @@ x <- 0:10
 between(x,1,9)
 
 dd1 <- dd %>% 
-  filter(ANO_DEF >= 2020 & CODIGO_SUBCATEGORIA_DIAG1 == "U071") %>% 
+  dplyr::filter(ANO_DEF >= 2020 & CODIGO_SUBCATEGORIA_DIAG1 == "U071") %>% 
   mutate(EDAD_CANT = ifelse(EDAD_TIPO>1,0,EDAD_CANT), # if >1 == age in days or months
          Age = case_when(EDAD_CANT == 0 ~ "0",
                          between(EDAD_CANT,1,4) ~ "1",
@@ -232,14 +232,13 @@ Deaths_regions <-
                             Age == "UNK" ~ NA_integer_,
                             TRUE ~ 5L)) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
-  filter(! (Sex == "UNK" & Value == 0),
+  dplyr::filter(! (Sex == "UNK" & Value == 0),
          ! (Age == "UNK" & Value == 0))
 
 Deaths_all <- 
   Deaths_regions %>% 
   group_by(Country, Date, Sex, Age, AgeInt, Metric, Measure) %>% 
-  summarise(Value = sum(Value)) %>% 
-  ungroup() %>% 
+  summarise(Value = sum(Value), .groups = "drop") %>% 
   mutate(Region = "All",
          Code = "CL")
   
