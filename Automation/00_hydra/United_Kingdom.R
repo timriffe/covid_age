@@ -1,29 +1,16 @@
-# Totals
-# set working dir
-setwd("/Users/franciscorowe/Dropbox/Francisco/Research/publications/2021/coverage-db/data")
-#setwd("/Users/Franciscorowe 1/Dropbox/Francisco/Research/in_progress/coverage-db/data")
-getwd()
-
-# load packages
+library(readr)
 library(tidyverse)
-library(here)
-library(readxl)
 library(lubridate)
+library(rvest)
 library(googlesheets4)
+library(googledrive)
+source(here::here("Automation/00_Functions_automation.R"))
 
-sort_input_data <- function(X){
-  X %>% 
-    mutate(Date2 = dmy(Date)) %>% 
-    arrange(Country,
-            Region,
-            Date2,
-            Code,
-            Sex, 
-            Measure,
-            Metric,
-            suppressWarnings(as.integer(Age))) %>% 
-    dplyr::select(-Date2)
-}
+
+ctr          <- "United_Kingdom" # it's a placeholder
+dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
+
+
 
 # check here for new url:
 # https://www.ons.gov.uk/peoplepopulationandcommunity/birthsdeathsandmarriages/deaths/datasets/weeklyprovisionalfiguresondeathsregisteredinenglandandwales
@@ -31,21 +18,25 @@ sort_input_data <- function(X){
 #2020 data
 deaths_url <- "https://www.ons.gov.uk/file?uri=%2fpeoplepopulationandcommunity%2fbirthsdeathsandmarriages%2fdeaths%2fdatasets%2fweeklyprovisionalfiguresondeathsregisteredinenglandandwales%2f2020/publishedweek532020.xlsx"
 
-download.file(deaths_url, destfile = "../data/UKdeaths.xlsx")
+data_source1 <- paste0(dir_n, "Data_sources/", ctr, "/deaths2020",today(), ".csv")
+
+download.file(deaths_url, data_source1, mode = "wb")
 
 #2021 data
 # to be updated
 deaths_url <- "https://www.ons.gov.uk/file?uri=%2fpeoplepopulationandcommunity%2fbirthsdeathsandmarriages%2fdeaths%2fdatasets%2fweeklyprovisionalfiguresondeathsregisteredinenglandandwales%2f2021/publishedweek292021.xlsx"
 
-download.file(deaths_url, destfile = "../data/UKdeaths2.xlsx")
+data_source2 <- paste0(dir_n, "Data_sources/", ctr, "/deaths2021",today(), ".csv")
 
-X     <- read_xlsx("../data/UKdeaths.xlsx", 
+download.file(deaths_url, data_source2, mode = "wb")
+
+X     <- read_xlsx(data_source1, 
                    sheet = "UK - Covid-19 - Weekly reg", 
                    skip = 5)
 
 X     <- X[9:15, 13:ncol(X)]
 
-X2     <- read_xlsx("../data/UKdeaths2.xlsx", 
+X2     <- read_xlsx(data_source2, 
                    sheet = "UK - Covid-19 - Weekly reg", 
                    skip = 5)
 
@@ -84,7 +75,7 @@ Deaths_b <- X %>%
            sprintf("%02d", month(Date)),
            year(Date),
            sep="."),
-         Code = paste0("GB", Date),
+         Code = paste0("GB"),
          Measure = "Deaths",
          Metric = "Count",
          Region = "All") %>% 
@@ -96,13 +87,13 @@ Deaths_b <- X %>%
 ###########################
 # Males
 
-X     <- read_xlsx("../data/UKdeaths.xlsx", 
+X     <- read_xlsx(data_source1, 
                    sheet = "UK - Covid-19 - Weekly reg", 
                    skip = 5)
 
 X     <- X[18:24, 13:ncol(X)]
 
-X2     <- read_xlsx("../data/UKdeaths2.xlsx", 
+X2     <- read_xlsx(data_source2, 
                     sheet = "UK - Covid-19 - Weekly reg", 
                     skip = 5)
 
@@ -141,7 +132,7 @@ Deaths_m <- X %>%
       sprintf("%02d", month(Date)),
       year(Date),
       sep="."),
-    Code = paste0("GB",Date),
+    Code = paste0("GB"),
     Measure = "Deaths",
     Metric = "Count",
     Region = "All") %>% 
@@ -152,13 +143,13 @@ Deaths_m <- X %>%
 ###########################
 # Females
 
-X     <- read_xlsx("../data/UKdeaths.xlsx", 
+X     <- read_xlsx(data_source1, 
                    sheet = "UK - Covid-19 - Weekly reg", 
                    skip = 5)
 
 X     <- X[27:33, 13:ncol(X)]
 
-X2     <- read_xlsx("../data/UKdeaths2.xlsx", 
+X2     <- read_xlsx(data_source2, 
                     sheet = "UK - Covid-19 - Weekly reg", 
                     skip = 5)
 
@@ -197,7 +188,7 @@ Deaths_f <- X %>%
       sprintf("%02d", month(Date)),
       year(Date),
       sep="."),
-    Code = paste0("GB",Date),
+    Code = paste0("GB"),
     Measure = "Deaths",
     Metric = "Count",
     Region = "All") %>% 
@@ -210,12 +201,8 @@ Deaths_f <- X %>%
 Deaths <- rbind(Deaths_b, Deaths_m, Deaths_f)
 
 
-# push output to Drive:  
-ss <- "https://docs.google.com/spreadsheets/d/1Xv862F8FU5bZSLAKd2vxMnH4WeOe9VIphVdrTsvaBZU/edit#gid=0"
+write_rds(Deaths, paste0(dir_n, ctr, ".rds"))
 
-# This is aggressive. It overwrites the tab. That works for deaths-only so far, but it may need to 
-# be more nuanced when cases are added to, if they are retrieved in some other way.
+# updating hydra dashboard
+log_update(pp = ctr, N = nrow(Deaths))
 
-write_sheet(Deaths, ss, sheet = "database")
-
-# checker: https://mpidr.shinyapps.io/cleaning_tracker/

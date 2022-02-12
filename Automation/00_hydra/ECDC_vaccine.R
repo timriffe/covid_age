@@ -28,7 +28,8 @@ In= read.csv("https://opendata.ecdc.europa.eu/covid19/vaccine_tracker/csv/data.c
 Out= In %>%
   #select countries we need 
   subset(Region== "BG"| Region== "CY" | Region== "HR"| Region== "HU"|  Region== "IE"| 
-          Region== "LU" | Region== "MT" | Region== "RO"| Region== "PL")%>%
+          Region== "LU" | Region== "MT" | Region== "RO"| Region== "PL" | Region == "EL" | 
+           Region == "PT" | Region == "NO")%>%
   select(YearWeekISO, Vaccination1= FirstDose, Vaccination2= SecondDose, Vaccination3= DoseAdditional1, Short=Region,TargetGroup)%>%
   #remove category medical personnel and long term care residents 
   subset(TargetGroup != "HCW") %>%
@@ -73,7 +74,10 @@ Out= In %>%
                      `LU`= "Luxembourg",
                      `MT`="Malta",
                      `PL`="Poland",
-                     `RO`="Romania")) %>% 
+                     `RO`="Romania",
+                     `EL`="Greece",
+                     `PT`="Portugal",
+                     `NO`="Norway")) %>% 
   mutate(
     Metric = "Count",
     Sex= "b",
@@ -93,7 +97,10 @@ Out= In %>%
       Country == "Luxembourg" ~  paste0("LU"),
       Country == "Malta" ~  paste0("MT"),
       Country == "Poland" ~  paste0("PL"),
-      Country == "Romania" ~  paste0("RO")))%>% 
+      Country == "Romania" ~  paste0("RO"),
+      Country == "Greece" ~ "GR",
+      Country == "Portugal" ~ "PT",
+      Country == "Norway" ~ "NO"))%>% 
   mutate(AgeInt = case_when(
     Age == "15" ~ 3L,
     Age == "18" ~ 7L,
@@ -109,6 +116,13 @@ Out= In %>%
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value) %>% 
   sort_input_data()
+
+####we only need third vaccination for norway
+Out <- Out %>% 
+  filter(Country != "Norway" | Measure != "Vaccination1") %>% 
+  filter(Country != "Norway" | Measure != "Vaccination2")
+
+
 
 #save output data 
 write_rds(Out, paste0(dir_n, ctr, ".rds"))
