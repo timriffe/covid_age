@@ -546,7 +546,7 @@ get_country_inputDB <- function(ShortCode, rubric) {
       out_ <- readRDS(hydra_path)
     } else {
       cat("N drive file",hydra_path,"not found\nIs the name right in the input rubric?\nOr maybe you're not on an MPIDR machine?\n")
-      out <- NULL
+      out_ <- NULL
     }
   }
   

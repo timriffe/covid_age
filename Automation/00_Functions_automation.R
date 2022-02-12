@@ -89,55 +89,47 @@ get_input_rubric <- function(tab = "input") {
 # Load just a single country
 # @param ShortCode character specifying country to load
 
-get_country_inputDB <- function(ShortCode) {
+get_country_inputDB <- function(ShortCode, rubric) {
   
   # Get spreadsheet
-  rubric <- get_input_rubric(tab = "input")
+  if (missing(rubric)){
+    rubric <- get_input_rubric(tab = "input")
+  }
   
   # Find spreadsheet for country
-  # TR: this assumes everthing on Drive. 
-  ss_i   <- rubric %>% filter(Short == ShortCode) %>% '$'(Sheet)
-  
-  # Load spreadsheet
-  # out <- read_sheet(ss_i, 
-  #                   sheet = "database", 
-  #                   na = "NA")
-  # 
-  
-  out <- try(read_sheet(ss_i, 
-                        sheet = "database", 
-                        na = "NA", 
-                        col_types= "cccccciccd"))
-  
-  # If error
-  if (class(out)[1] == "try-error") {
-    
-    Sys.sleep(120)
-    
-    # Try to load again
-    out <- try(read_sheet(ss_i, 
-                          sheet = "database", 
-                          na = "NA", 
-                          col_types= "cccccciccd"))
-    
-    if (class(out)[1] == "try-error") {
-      
-      Sys.sleep(120)
-      
-      # Try to load again
-      out <- try(read_sheet(ss_i, 
-                            sheet = "database", 
-                            na = "NA", 
-                            col_types= "cccccciccd"))
-      
+  rubric_i   <- rubric %>% 
+    filter(Short == ShortCode)
+  if (rubric_i$Loc == "d"){
+    ss_i <-  rubric_i$Sheet
+    # Load spreadsheet
+    out_ <- read_sheet(ss_i, 
+                       sheet = "database", 
+                       na = "NA", 
+                       col_types= "cccccciccd",
+                       range = "database!A:J")
+  }
+  if (rubric_i$Loc == "n"){
+    hydra_name <- paste0(rubric_i$hydra_name,".rds")
+    hydra_path <- file.path("N:/COVerAGE-DB/Automation/Hydra",hydra_name)
+    if (file.exists(hydra_path)) {
+      out_ <- readRDS(hydra_path)
+    } else {
+      cat("N drive file",hydra_path,"not found\nIs the name right in the input rubric?\nOr maybe you're not on an MPIDR machine?\n")
+      out_ <- NULL
     }
   }
-
+  
+  # if (!exists("out_")){
+  #   cat()
+  # }
+  
   # Assign short code
-  # out$Short <- add_Short(out$Code,out$Date)
+  # if (!is.null(out_)){
+  #   out_$Short <- add_Short(out_$Code,out_$Date)
+  # }
   
   # Output
-  out
+  out_
   
 }
 
