@@ -77,7 +77,7 @@ vacc3 <- vacc2 %>%
                       year(Date),sep=".")) %>% 
   mutate(Code = case_when(
     Region == "CH" ~ paste0("CH"),
-    Region == "FL" ~ paste0("FL"),
+    Region == "FL" ~ paste0("LI"),
     Region == "unknown" ~ "CH-UNK+",
   TRUE ~ paste0("CH-",Region)
     )) %>% 
@@ -134,7 +134,7 @@ vaccsex3 <- vaccsex2 %>%
                       year(Date),sep=".")) %>% 
   mutate(Code = case_when(
     Region == "CH" ~ paste0("CH"),
-    Region == "FL" ~ paste0("FL"),
+    Region == "FL" ~ paste0("LI"),
     Region == "unknown" ~ "CH-UNK+",
     TRUE ~ paste0("CH-",Region)
   )) %>% 
