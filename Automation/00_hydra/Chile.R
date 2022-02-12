@@ -226,7 +226,7 @@ Deaths_regions <-
                           Region == 'Nuble' ~ 'CL_NB',
                           Region == 'Tarapaca' ~ 'CL_TA',
                           Region == 'Valparaiso' ~ 'CL_VS',
-                          TRUE ~ 'UNK'),
+                          TRUE ~ 'CL-UNK+'),
          AgeInt = case_when(Age == "0" ~ 1L,
                             Age == "1" ~ 4L,
                             Age == "UNK" ~ NA_integer_,
