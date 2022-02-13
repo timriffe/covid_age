@@ -55,7 +55,7 @@ get_input_rubric <- function(tab = "input") {
   
   input_rubric <- try(read_sheet(ss_rubric, sheet = tab) %>% 
              # Drop if no source spreadsheet
-             filter(!is.na(Sheet)))
+               dplyr::filter(!is.na(Sheet)))
   
   # If error
   if (class(input_rubric)[1] == "try-error") {
@@ -65,7 +65,7 @@ get_input_rubric <- function(tab = "input") {
     # Try to load again
     input_rubric <- try(read_sheet(ss_rubric, sheet = tab) %>% 
                           # Drop if no source spreadsheet
-                          filter(!is.na(Sheet)))
+                          dplyr::filter(!is.na(Sheet)))
     
     if (class(input_rubric)[1] == "try-error") {
       
@@ -74,7 +74,7 @@ get_input_rubric <- function(tab = "input") {
       # Try to load again
       input_rubric <- try(read_sheet(ss_rubric, sheet = tab) %>% 
                             # Drop if no source spreadsheet
-                            filter(!is.na(Sheet)))
+                            dplyr::filter(!is.na(Sheet)))
       
     }
   }
@@ -98,7 +98,7 @@ get_country_inputDB <- function(ShortCode, rubric) {
   
   # Find spreadsheet for country
   rubric_i   <- rubric %>% 
-    filter(Short == ShortCode)
+    dplyr::filter(Short == ShortCode)
   if (rubric_i$Loc == "d"){
     ss_i <-  rubric_i$Sheet
     # Load spreadsheet
