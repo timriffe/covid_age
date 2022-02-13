@@ -43,7 +43,8 @@ AA <- Z[ , try_step(
   process_function = resolve_UNKUNK,
   chunk = .SD,
   byvars = c("Code","Date","Measure"),
-  logfile = logfile),
+  logfile = logfile,
+  write_log = FALSE),
   by = list(Code, Date, Measure),
   .SDcols = icols][,..icols]
 
@@ -57,7 +58,8 @@ log_section("A (convert_fractions_sexes)", logfile = logfile)
 A <- AA[ , try_step(process_function = convert_fractions_sexes,
                    chunk = .SD,
                    byvars = c("Code","Date","Measure"),
-                   logfile = logfile),
+                   logfile = logfile,
+                   write_log = FALSE),
         by = list(Code, Date, Measure), 
         .SDcols = icols][,..icols]
 
@@ -65,7 +67,8 @@ A <- AA[ , try_step(process_function = convert_fractions_sexes,
 A <- A[ , try_step(process_function = convert_fractions_within_sex,
                    chunk = .SD,
                    byvars = c("Code","Date", "Sex", "Measure"),
-                   logfile = logfile),
+                   logfile = logfile,
+                   write_log = FALSE),
         by=list(Code, Date, Sex, Measure), 
         .SDcols = icols][,..icols]
 
@@ -77,7 +80,8 @@ log_section("B (redistribute_unknown_age)", logfile = logfile)
 B <- A[ , try_step(process_function = redistribute_unknown_age,
                    chunk = .SD,
                    byvars = c("Code","Date","Sex","Measure"),
-                   logfile = logfile), 
+                   logfile = logfile,
+                   write_log = FALSE), 
         by = list(Code, Date, Sex, Measure), 
         .SDcols = icols][,..icols]
 
@@ -89,7 +93,8 @@ log_section("C (rescale_to_total)", logfile = logfile)
 C <- B[ , try_step(process_function = rescale_to_total,
                    chunk = .SD,
                    byvars = c("Code","Date","Sex","Measure"),
-                   logfile = logfile), 
+                   logfile = logfile,
+                   write_log = FALSE), 
         by = list(Code, Date, Sex, Measure), 
         .SDcols = icols][,..icols]
 
@@ -101,7 +106,8 @@ log_section("D (infer_cases_from_deaths_and_ascfr)", logfile = logfile)
 D <- C[ , try_step(process_function = infer_cases_from_deaths_and_ascfr,
                    chunk = .SD,
                    byvars = c("Code","Date", "Sex"),
-                   logfile = logfile), 
+                   logfile = logfile,
+                   write_log = FALSE), 
         by = list(Code, Date, Sex), 
         .SDcols = icols][,..icols]
 
@@ -113,7 +119,8 @@ log_section("E (infer_deaths_from_cases_and_ascfr)", logfile = logfile)
 E <- D[ , try_step(process_function = infer_deaths_from_cases_and_ascfr,
                    chunk = .SD,
                    byvars = c("Code","Date", "Sex"),
-                   logfile = logfile), 
+                   logfile = logfile,
+                   write_log = FALSE), 
         by = list(Code, Date, Sex), 
         .SDcols = icols][,..icols]
 
@@ -127,7 +134,8 @@ log_section("G (redistribute_unknown_sex)", logfile = logfile)
 G <- E[ , try_step(process_function = redistribute_unknown_sex,
                    chunk = .SD,
                    byvars = c("Code","Date", "Age", "Measure"),
-                   logfile = logfile), 
+                   logfile = logfile,
+                   write_log = FALSE), 
         by = list(Code, Date, Age, Measure), 
         .SDcols = icols][,..icols]
 
@@ -139,7 +147,8 @@ log_section("H (rescale_sexes)", logfile = logfile)
 H <- G[ , try_step(process_function = rescale_sexes,
                    chunk = .SD,
                    byvars = c("Code","Date", "Measure"),
-                   logfile = logfile), 
+                   logfile = logfile,
+                   write_log = FALSE), 
         by = list(Code, Date, Measure), 
         .SDcols = icols][,..icols]
 
@@ -154,7 +163,8 @@ log_section("I (infer_both_sex)", logfile = logfile)
 I <- H[ , try_step(process_function = infer_both_sex,
                    chunk = .SD,
                    byvars = c("Code","Date", "Measure"),
-                   logfile = logfile), 
+                   logfile = logfile,
+                   write_log = FALSE), 
         by = list(Code, Date, Measure), 
         .SDcols = icols][,..icols]
 
@@ -172,7 +182,8 @@ J <- J[ , try_step(process_function = maybe_lower_closeout,
                    byvars = c("Code","Date", "Sex", "Measure"),
                    OAnew_min = 85,
                    Amax = 104,
-                   logfile = logfile), 
+                   logfile = logfile,
+                   write_log = FALSE), 
         by = list(Code, Date, Sex, Measure),
         .SDcols = icols][,..icols]
 
@@ -189,18 +200,14 @@ inputCounts <- J[ , AgeInt := add_AgeInt(Age, omega = 105),
 # Save
 # saveRDS(inputCounts, file = here("Data","inputCounts.rds"))
 data.table::fwrite(inputCounts, file = here::here("Data","inputCounts.csv"))
-# List of everything
-COMPONENTS <- list(inputDB = inputDB, 
-                   A = A, 
-                   B = B, 
-                   C = C, 
-                   D = D, 
-                   E = E, 
-                   G = G, 
-                   H = H, 
-                   I = I, 
-                   J = J)
 
-# Save list
-save(COMPONENTS, file = here::here("Data","ProcessingSteps.Rdata"))
-rm(A,B,C,D,E,G,H,I,J,COMPONENTS);gc()
+rm(inputDB,Z,AA,A,B,C,D,E,G,H,I,J);gc()
+
+# create failures object:
+
+# TR: tricky in infer after these steps because of Metric / Measure conversions.
+# namely, missing ASFCR Measure, or missing Fraction, or Ratio Metrics are artifacts.
+# ASCFR could results in Cases OR Deaths, as well. Code, Date, Sex?
+
+
+
