@@ -13,16 +13,23 @@ dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 # Drive credentials
 drive_auth(email = email)
 gs4_auth(email = email)
+
+# TR: major change 7 Feb 2022: Drive sheet is read separately 
+# when the inputDB is compiled. If collection changes for 
+# deaths in BC then we will rework it
+
 # TR: pull urls from rubric instead 
-rubric_i <- get_input_rubric() %>% filter(Short == "CA_BC")
-ss_i     <- rubric_i %>% dplyr::pull(Sheet)
-
-# loading deaths from Drive
-db_drive <- get_country_inputDB("CA_BC")
-
-db_d <- db_drive %>% 
-  filter(Measure == 'Deaths') %>% 
-  select(-Short)
+# rubric_i <- get_input_rubric() %>% filter(Short == "CA_BC")
+# ss_i     <- rubric_i %>% dplyr::pull(Sheet)
+# 
+# # loading deaths from Drive
+# db_drive <- get_country_inputDB("CA_BC_d")
+# 
+# db_d <- db_drive %>% 
+#   filter(Measure %in% c('Deaths','ASCFR')) %>% 
+#   select(-Short)
+# 
+# write_sheet(db_d, ss = ss_i, sheet = "database")
 
 #--------- input files -------------------------------------#
 data_source <- paste0(dir_n, "Data_sources/", ctr, "/cases",today(), ".csv")
@@ -65,9 +72,9 @@ out <-
                             Age == "UNK" ~ NA_real_,
                             TRUE ~ 10),
          Date = ddmmyyyy(Date),
-         Code = paste0("CA-BC"),
+         Code = "CA-BC",
          Metric = "Count") %>% 
-  bind_rows(db_d) %>% 
+  # bind_rows(db_d) %>% # TR: removed 7-Feb 2022
   sort_input_data()
   
 

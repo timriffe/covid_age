@@ -32,8 +32,8 @@ ss_db <- rubric %>%
 #new: db_drive <- read_rds(paste0(dir_n, ctr, ".rds"))
 
 # read in current state of the data
-AFin <- get_country_inputDB("AF") %>% 
-  select(-Short) 
+AFin <- get_country_inputDB("AF") #%>% 
+  #select(-Short) 
 
 #  AFrm_duplicates <-
 #  AFin %>% 
@@ -233,8 +233,8 @@ if (length(files_Deaths) > 0){
 
 do_this <- FALSE
 if(do_this){
-  AFin <- get_country_inputDB("AF") %>% 
-    select(-Short)
+  AFin <- get_country_inputDB("AF")# %>% 
+    #select(-Short)
   
   Sorted <-
   AFin %>% 

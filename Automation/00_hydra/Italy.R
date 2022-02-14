@@ -27,6 +27,7 @@ gs4_auth(email = email)
 
 ###get the last update from drive and select deaths and cases
 it <- read_rds(paste0(dir_n, ctr, ".rds"))
+
 it <- it %>% 
   filter(Measure != "Vaccination1") %>% 
   filter(Measure != "Vaccination2") %>% 
@@ -96,7 +97,7 @@ if (date_f > last_date_n){
     mutate(Country = "Italy",
            Region = "All",
            Date = ddmmyyyy(date_f),
-           Code = paste0("IT"),
+           Code = "IT",
            AgeInt = case_when(Age == "90" ~ 15,
                               TRUE ~ 10),
            Metric = "Count") %>% 
@@ -141,7 +142,7 @@ vacc3 <- vacc2 %>%
   mutate(Country = "Italy",
        Region = "All",
        Date = ddmmyyyy(Date),
-       Code = paste0("IT"),
+       Code = "IT",
        Sex = "b",
        Age = as.character(Age),
        AgeInt = case_when(Age == "90" ~ 15,
@@ -168,11 +169,9 @@ totals <- totals %>%
          Age = "TOT",
          AgeInt = NA,
          Metric = "Count",
-  Date = ymd(Date),
-Date = paste(sprintf("%02d",day(Date)),    
-             sprintf("%02d",month(Date)),  
-             year(Date),sep="."),
-Code = paste0("IT"))%>% 
+         Date = ymd(Date),
+         Date = ddmmyyyy(Date),
+         Code = "IT")%>% 
   sort_input_data()
 
 

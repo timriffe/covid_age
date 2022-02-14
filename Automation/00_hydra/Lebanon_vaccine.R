@@ -55,7 +55,7 @@ all_paths <-
 all_content <-
   all_paths %>%
   lapply(read_xlsx)
-        
+
 all_filenames <- all_paths %>%
   basename() %>%
   as.list()
@@ -176,7 +176,7 @@ data_source <- c(data_source_1, data_source_2)
 
 zipname <- paste0(dir_n, 
                   "Data_sources/", 
-                 ctr,
+                  ctr,
                   "/", 
                   ctr,
                   "_data_",
@@ -192,7 +192,6 @@ zip::zipr(zipname,
 file.remove(data_source)
 
 ##############################################################################
-
 
 
 

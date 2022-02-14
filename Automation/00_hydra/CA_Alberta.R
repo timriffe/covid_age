@@ -130,7 +130,7 @@ df_death2 <- arrange(df_death2, Date, Gender, Age)
 df_death2$Country = "Canada"
 df_death2$Region = "Alberta"
 df_death2$Metric = "Count"
-df_death2$Measure = "Death"
+df_death2$Measure = "Deaths"
 df_death2$Date <- ddmmyyyy(df_death2$Date)
 names(df_death2)[3] <- "Value"
 death <- df_death2 %>% 

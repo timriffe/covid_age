@@ -31,7 +31,7 @@ rubric_i <- get_input_rubric() %>% filter(Short == "US_MA")
 ss_i <- rubric_i %>% dplyr::pull(Sheet)
 
 # reading data from Drive and last date entered 
-db_drive <- get_country_inputDB("US_MA") 
+db_drive <- read_sheet(ss = ss_i, sheet = "database")
 
 db_drive_combs <- db_drive %>% 
   select(Date, Sex, Age, Measure) %>% 
