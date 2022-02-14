@@ -65,7 +65,17 @@ df_cases2 <- df_cases2 %>%
   group_by(Gender, Age) %>% 
   summarise(Cases = cumsum(Value),
             Date =Date)
+
 df_cases2 <- arrange(df_cases2, Date, Gender, Age)
+df_cases2 <- df_cases2 %>% 
+  mutate(Sex = case_when(
+    Gender == "Female" ~ "f",
+    Gender == "Male" ~ "m",
+    Gender == "Unknown" ~ "UNK",
+    is.na(Gender) ~ "UNK")) %>% 
+  group_by(Age, Sex, Date) %>% 
+  summarise(Cases = sum(Cases))
+
 df_cases2$Country = "Canada"
 df_cases2$Region = "Alberta"
 df_cases2$Metric = "Count"
@@ -98,15 +108,10 @@ cases <- cases %>%
        Age == "80" ~ 25L,
        Age == "UNK" ~ NA_integer_,
        TRUE ~ 10L))
-cases <- cases %>% 
-  mutate(Sex = case_when(
-    Gender == "Female" ~ "f",
-    Gender == "Male" ~ "m",
-    Gender == "Unknown" ~ "UNK",
-    is.na(Gender) ~ "UNK"))
 
 
-cases <- cases[-1]
+
+# cases <- cases[-1]
 
 #########now capturing death 
 names(df2)[6] <- "Status"
@@ -126,13 +131,22 @@ df_death2 <- df_death2 %>%
   group_by(Gender, Age) %>% 
   summarise(death = cumsum(Value),
             Date =Date)
-df_death2 <- arrange(df_death2, Date, Gender, Age)
+
+df_death2 <- df_death2 %>% 
+  mutate(Sex = case_when(
+    Gender == "Female" ~ "f",
+    Gender == "Male" ~ "m",
+    Gender == "Unknown" ~ "UNK",
+    is.na(Gender) ~ "UNK")) %>% 
+  group_by(Sex, Age, Date) %>% 
+  summarise(death = sum(death))
+df_death2 <- arrange(df_death2, Date, Sex, Age)
 df_death2$Country = "Canada"
 df_death2$Region = "Alberta"
 df_death2$Metric = "Count"
 df_death2$Measure = "Deaths"
 df_death2$Date <- ddmmyyyy(df_death2$Date)
-names(df_death2)[3] <- "Value"
+names(df_death2)[4] <- "Value"
 death <- df_death2 %>% 
   mutate(Code = paste0("CA-AB"))
 
@@ -159,14 +173,9 @@ death <- death %>%
     Age == "80" ~ 25L,
     Age == "UNK" ~ NA_integer_,
     TRUE ~ 10L))
-death <- death %>% 
-  mutate(Sex = case_when(
-    Gender == "Female" ~ "f",
-    Gender == "Male" ~ "m",
-    Gender == "Unknown" ~ "UNK",
-    is.na(Gender) ~ "UNK"))
 
-death <- death[-1]
+
+# death <- death[-1]
 
 
 #db_tot_age <- df3 %>% 
