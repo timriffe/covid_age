@@ -51,8 +51,8 @@ Z <- Z[ , try_step(
   by = list(Code, Date, Measure),
   .SDcols = icols][,..icols]
 
-A_failures  <- Z[!keep_]
-Z           <- Z[keep_]
+A_failures  <- Z[keep_ == FALSE]
+Z           <- Z[keep_ == TRUE]
 
 ### Convert fractions ###############################################
 
@@ -66,8 +66,8 @@ Z <- Z[ , try_step(process_function = convert_fractions_sexes,
          by = list(Code, Date, Measure), 
          .SDcols = icols][,..icols]
 
-B_failures <- Z[!keep_]
-Z          <- Z[keep_]
+B_failures <- Z[keep_ == FALSE]
+Z          <- Z[keep_ == TRUE]
 # Log 
 log_section("convert_fractions_within_sex", logfile = logfile)
 # Convert fractions within sexes to counts
@@ -77,8 +77,8 @@ Z <- Z[ , try_step(process_function = convert_fractions_within_sex,
         by=list(Code, Date, Sex, Measure), 
         .SDcols = icols][,..icols]
 
-C_failures <- Z[!keep_]
-Z          <- Z[keep_]
+C_failures <- Z[keep_ == FALSE]
+Z          <- Z[keep_ == TRUE]
 
 ### Distribute counts with unknown age ##############################
 
@@ -91,8 +91,8 @@ Z <- Z[ , try_step(process_function = redistribute_unknown_age,
         by = list(Code, Date, Sex, Measure), 
         .SDcols = icols][,..icols]
 
-C_failures <- Z[!keep_]
-Z          <- Z[keep_]
+C_failures <- Z[keep_ == FALSE]
+Z          <- Z[keep_ == TRUE]
 ### Scale to totals (within sex) ####################################
 
 # Log
@@ -104,8 +104,8 @@ Z <- Z[ , try_step(process_function = rescale_to_total,
         by = list(Code, Date, Sex, Measure), 
         .SDcols = icols][,..icols]
 
-D_failures <- Z[!keep_]
-Z          <- Z[keep_]
+D_failures <- Z[keep_ == FALSE]
+Z          <- Z[keep_ == TRUE]
 ### Derive counts from deaths and CFRs ##############################
 
 # Log
@@ -117,8 +117,8 @@ Z <- Z[ , try_step(process_function = infer_cases_from_deaths_and_ascfr,
         by = list(Code, Date, Sex), 
         .SDcols = icols][,..icols]
 
-E_failures <- Z[!keep_]
-Z          <- Z[keep_]
+E_failures <- Z[keep_ == FALSE]
+Z          <- Z[keep_ == TRUE]
 # Infer deaths from cases and CFRs ##################################
 
 # Log
@@ -130,8 +130,8 @@ Z <- Z[ , try_step(process_function = infer_deaths_from_cases_and_ascfr,
         by = list(Code, Date, Sex), 
         .SDcols = icols][,..icols]
 
-F_failures <- Z[!keep_]
-Z          <- Z[keep_]
+F_failures <- Z[keep_ == FALSE]
+Z          <- Z[keep_ == TRUE]
 # Drop ratio (just to be sure, above call probably did that)
 G_failures <- Z[Metric == "Ratio"] %>% 
   mutate(reason = "why are there still Ratio metrics?")
@@ -146,8 +146,8 @@ Z <- Z[ , try_step(process_function = redistribute_unknown_sex,
                    process_function_name = "redistribute_unknown_sex"), 
         by = list(Code, Date, Age, Measure), 
         .SDcols = icols][,..icols]
-H_failures <- Z[!keep_]
-Z          <- Z[keep_]
+H_failures <- Z[keep_ == FALSE]
+Z          <- Z[keep_ == TRUE]
 ### Scale sex-specific data to match combined sex data ##############
 
 # Log
@@ -159,8 +159,8 @@ Z <- Z[ , try_step(process_function = rescale_sexes,
         by = list(Code, Date, Measure), 
         .SDcols = icols][,..icols]
 
-I_failures <- Z[!keep_]
-Z          <- Z[keep_]
+I_failures <- Z[keep_ == FALSE]
+Z          <- Z[keep_ == TRUE]
 # Remove sex totals
 Z <- Z[Age != "TOT"]
 
@@ -175,8 +175,8 @@ Z <- Z[ , try_step(process_function = infer_both_sex,
         by = list(Code, Date, Measure), 
         .SDcols = icols][,..icols]
 
-J_failures <- Z[!keep_]
-Z          <- Z[keep_]
+J_failures <- Z[keep_ == FALSE]
+Z          <- Z[keep_ == TRUE]
 # saveRDS(I, file = "Data/step_I_testing_maybe_lower_closeout.rds")  
 ### Adjust closeout age #############################################
 
@@ -192,8 +192,8 @@ Z <- Z[ , try_step(process_function = maybe_lower_closeout,
         by = list(Code, Date, Sex, Measure),
         .SDcols = icols][,..icols]
 
-K_failures <- Z[!keep_]
-Z          <- Z[keep_]
+K_failures <- Z[keep_ == FALSE]
+Z          <- Z[keep_ == TRUE]
 
 ### Saving ##########################################################
 
