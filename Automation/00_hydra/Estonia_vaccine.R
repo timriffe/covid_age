@@ -100,7 +100,7 @@ Out_vaccine= In_vaccine%>%
   mutate(Code = case_when(
     Region == "Harju maakond" ~ "EE-37",
     Region == "Hiiu maakond" ~ "EE-39",
-    Region == "Ida-Viru maakond " ~ "EE-45",
+    Region == "Ida-Viru maakond" ~ "EE-45",
     Region == "JÃ¤rva maakond" ~ "EE-52",
     Region == "JÃµgeva maakond" ~ "EE-50",
     Region == "LÃ¤Ã¤ne-Viru maakond" ~ "EE-60",
@@ -112,7 +112,8 @@ Out_vaccine= In_vaccine%>%
     Region == "Tartu maakond" ~ "EE-79",
     Region == "VÃµru maakond" ~ "EE-87",
     Region == "Valga maakond" ~ "EE-81",
-    Region == "Viljandi maakond" ~ "EE-84"
+    Region == "Viljandi maakond" ~ "EE-84",
+    Region == "UNK" ~ "EE-UNK+"
   )) %>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)
