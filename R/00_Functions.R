@@ -144,17 +144,13 @@ log_processing_error <- function(chunk,
 
 
 ### try_step()
-# Try function on data and if error capture in log
 # @param process_function function Name of function to apply
 # @param chunk tibble Name of data
-# @param byvars character Names of grouping variables
-# @param logfile Name of log file
+# @param process_function_name character name of function applied
 
 try_step <- function(process_function, 
                      chunk, 
-                     byvars = c("Code","Sex"),
-                     logfile = "buildlog.md", 
-                     write_log = TRUE,
+                     process_function_name,
                      ...) {
   
   # Try function on chunc
@@ -163,21 +159,55 @@ try_step <- function(process_function,
   # If error happens...
   if (class(out)[1] == "try-error"){
     
-    if (write_log){
-      # ...write error to log
-      log_processing_error(chunk = chunk, 
-                           byvars = byvars,
-                           logfile = logfile)
-    }
     # ... return empty chunk
-    out <- chunk[0]
+    out <- chunk %>% 
+      mutate(keep_ = FALSE,
+             reason = process_function_name)
+  } else {
+    out <- out %>% 
+      mutate(keep_ = TRUE,
+             reason = NA_character_)
   }
   
   # Return result (potentially empty chunk)
   return(out)
-  
 }
 
+
+# Try function on data and if error capture in log
+# @param process_function function Name of function to apply
+# @param chunk tibble Name of data
+# @param byvars character Names of grouping variables
+# @param logfile Name of log file
+
+# try_step <- function(process_function, 
+#                      chunk, 
+#                      byvars = c("Code","Sex"),
+#                      logfile = "buildlog.md", 
+#                      write_log = TRUE,
+#                      ...) {
+#   
+#   # Try function on chunc
+#   out <- try(process_function(chunk = chunk, ...))
+#   
+#   # If error happens...
+#   if (class(out)[1] == "try-error"){
+#     
+#     if (write_log){
+#       # ...write error to log
+#       log_processing_error(chunk = chunk, 
+#                            byvars = byvars,
+#                            logfile = logfile)
+#     }
+#     # ... return empty chunk
+#     out <- chunk[0]
+#   }
+#   
+#   # Return result (potentially empty chunk)
+#   return(out)
+#   
+# }
+# 
 
 
 ### Main compile functions ##########################################
