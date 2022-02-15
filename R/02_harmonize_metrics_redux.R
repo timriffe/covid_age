@@ -192,7 +192,8 @@ Z <- Z[ , try_step(process_function = maybe_lower_closeout,
         by = list(Code, Date, Sex, Measure),
         .SDcols = icols][,..icols]
 
-K_failures <- Z[keep_ == FALSE]
+K_failures <- Z[keep_ == FALSE] 
+K_failures <- K_failures[ , Age := as.character(Age), ][, ..icols]
 Z          <- Z[keep_ == TRUE]
 
 ### Saving ##########################################################
@@ -202,8 +203,7 @@ Z          <- Z[keep_ == TRUE]
 inputCounts <- Z[ , AgeInt := add_AgeInt(Age, omega = 105),
                   by = list(Country, Region, Date, Sex, Measure)][, ..icolsIN] %>% 
   arrange(Country, Region, Sex, Measure, Age) %>% 
-  as.data.frame() %>% 
-  select(-keep_, -reason)
+  as.data.frame()
 
 inputCounts_failures <- bind_rows(
   A_failures,
