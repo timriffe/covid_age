@@ -44,7 +44,7 @@ Z <-
 # Log
 log_section("prep (resolve_UNKUNK)", logfile = logfile)
 
-Z <- Z[ , try_step(
+Z <- Z[ , try_step2(
   process_function = resolve_UNKUNK,
   chunk = .SD,
   process_function_name = "resolve_UNKUNK"),
@@ -60,7 +60,7 @@ Z           <- Z[keep_ == TRUE]
 log_section("convert_fractions_sexes", logfile = logfile)
 
 # Convert sex-specific fractions to counts
-Z <- Z[ , try_step(process_function = convert_fractions_sexes,
+Z <- Z[ , try_step2(process_function = convert_fractions_sexes,
                     chunk = .SD,
                     process_function_name = "convert_fractions_sexes"),
          by = list(Code, Date, Measure), 
@@ -71,7 +71,7 @@ Z          <- Z[keep_ == TRUE]
 # Log 
 log_section("convert_fractions_within_sex", logfile = logfile)
 # Convert fractions within sexes to counts
-Z <- Z[ , try_step(process_function = convert_fractions_within_sex,
+Z <- Z[ , try_step2(process_function = convert_fractions_within_sex,
                    chunk = .SD,
                    process_function_name = "convert_fractions_within_sex"),
         by=list(Code, Date, Sex, Measure), 
@@ -85,7 +85,7 @@ Z          <- Z[keep_ == TRUE]
 # Log
 log_section("redistribute_unknown_age", logfile = logfile)
 
-Z <- Z[ , try_step(process_function = redistribute_unknown_age,
+Z <- Z[ , try_step2(process_function = redistribute_unknown_age,
                    chunk = .SD,
                    process_function_name = "redistribute_unknown_age"), 
         by = list(Code, Date, Sex, Measure), 
@@ -98,7 +98,7 @@ Z          <- Z[keep_ == TRUE]
 # Log
 log_section("rescale_to_total", logfile = logfile)
 
-Z <- Z[ , try_step(process_function = rescale_to_total,
+Z <- Z[ , try_step2(process_function = rescale_to_total,
                    chunk = .SD,
                    process_function_name = "rescale_to_total"), 
         by = list(Code, Date, Sex, Measure), 
@@ -111,7 +111,7 @@ Z          <- Z[keep_ == TRUE]
 # Log
 log_section("infer_cases_from_deaths_and_ascfr", logfile = logfile)
 
-Z <- Z[ , try_step(process_function = infer_cases_from_deaths_and_ascfr,
+Z <- Z[ , try_step2(process_function = infer_cases_from_deaths_and_ascfr,
                    chunk = .SD,
                    process_function_name = "infer_cases_from_deaths_and_ascfr"), 
         by = list(Code, Date, Sex), 
@@ -124,7 +124,7 @@ Z          <- Z[keep_ == TRUE]
 # Log
 log_section("infer_deaths_from_cases_and_ascfr", logfile = logfile)
 
-Z <- Z[ , try_step(process_function = infer_deaths_from_cases_and_ascfr,
+Z <- Z[ , try_step2(process_function = infer_deaths_from_cases_and_ascfr,
                    chunk = .SD,
                    process_function_name = "infer_deaths_from_cases_and_ascfr"), 
         by = list(Code, Date, Sex), 
@@ -141,7 +141,7 @@ Z <- Z[Metric != "Ratio"]
 
 log_section("redistribute_unknown_sex", logfile = logfile)
 
-Z <- Z[ , try_step(process_function = redistribute_unknown_sex,
+Z <- Z[ , try_step2(process_function = redistribute_unknown_sex,
                    chunk = .SD,
                    process_function_name = "redistribute_unknown_sex"), 
         by = list(Code, Date, Age, Measure), 
@@ -153,7 +153,7 @@ Z          <- Z[keep_ == TRUE]
 # Log
 log_section("rescale_sexes", logfile = logfile)
 
-Z <- Z[ , try_step(process_function = rescale_sexes,
+Z <- Z[ , try_step2(process_function = rescale_sexes,
                    chunk = .SD,
                    process_function_name = "rescale_sexes"), 
         by = list(Code, Date, Measure), 
@@ -169,7 +169,7 @@ Z <- Z[Age != "TOT"]
 # Log
 log_section("infer_both_sex", logfile = logfile)
 
-Z <- Z[ , try_step(process_function = infer_both_sex,
+Z <- Z[ , try_step2(process_function = infer_both_sex,
                    chunk = .SD,
                    process_function_name = "infer_both_sex"), 
         by = list(Code, Date, Measure), 
@@ -186,7 +186,7 @@ log_section("maybe_lower_closeout", logfile = logfile)
 Z <- Z[ , Age := as.integer(Age), ][, ..icols]
 
 # Adjust
-Z <- Z[ , try_step(process_function = maybe_lower_closeout,
+Z <- Z[ , try_step2(process_function = maybe_lower_closeout,
                    chunk = .SD, 
                    process_function_name = "maybe_lower_closeout"), 
         by = list(Code, Date, Sex, Measure),
