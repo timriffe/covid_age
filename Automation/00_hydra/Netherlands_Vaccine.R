@@ -145,7 +145,12 @@ vacc_2021 <- read_rds("N:/COVerAGE-DB/Automation/Netherlands/Vaccinations of 202
   mutate(Value = case_when(
     is.na(Value) ~ 0,
     TRUE ~ Value
-  ))
+  )) %>% 
+  mutate(Age = case_when(
+    Value == "126414" ~ "55",
+    Value == "60175" ~ "55",
+    TRUE ~ Age))
+
 vacc_out <- rbind(vacc_2021, vacc_2022) %>% 
   sort_input_data()
 

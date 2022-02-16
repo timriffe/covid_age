@@ -111,19 +111,19 @@ if (nrow(rubric) > 0){
     mutate(n = n()) %>% 
     ungroup() %>% 
     group_by(Code, Date, Sex, Measure, Metric) %>% 
-    mutate(keep = all(n == 1)) %>% 
+    mutate(keep_ = all(n == 1)) %>% 
     ungroup()
   
   # append this to failures later
   dups <- inputDB %>% 
-    dplyr::filter(!keep) %>% 
+    dplyr::filter(!keep_) %>% 
     mutate(reason = "duplicate") %>% 
-    dplyr::select(-n,-keep)
+    dplyr::select(-n,-keep_)
   
   # now for another filter
   inputDB <- inputDB %>% 
-    dplyr::filter(keep) %>% 
-    dplyr::select(-n, -keep)
+    dplyr::filter(keep_) %>% 
+    dplyr::select(-n, -keep_)
   
   NAdates <- inputDB %>% 
     dplyr::filter(Date == "NA.NA.NA") %>% 
@@ -136,36 +136,36 @@ if (nrow(rubric) > 0){
   # check for valid dates:
   inputDB <-
     inputDB %>% 
-    mutate(keep = !is.na(dmy(Date))) %>% 
+    mutate(keep_ = !is.na(dmy(Date))) %>% 
     ungroup()
   
   # save bad dates to append to failures
   badDates <- inputDB %>% 
-    dplyr::filter(!keep) %>% 
+    dplyr::filter(!keep_) %>% 
     mutate(reason = "bad date") %>% 
-    dplyr::select(-keep)
+    dplyr::select(-keep_)
   
   # now for next filter
   inputDB <- inputDB %>% 
-    dplyr::filter(keep) %>% 
-    dplyr::select(-keep)
+    dplyr::filter(keep_) %>% 
+    dplyr::select(-keep_)
 
 
   # remove future dates
   inputDB <-
     inputDB %>% 
-    mutate(keep = dmy(Date) <= today())
+    mutate(keep_ = dmy(Date) <= today())
   
   futureDates <-
     inputDB %>% 
-    dplyr::filter(!keep) %>% 
+    dplyr::filter(!keep_) %>% 
     mutate(reason = "future date") %>% 
-    dplyr::select(-keep)
+    dplyr::select(-keep_)
   
   inputDB <-
     inputDB %>%
-    dplyr::filter(keep) %>% 
-    select(-keep)
+    dplyr::filter(keep_) %>% 
+    select(-keep_)
   # -------------------------------------- #
 
   # Filter down to valid geo codes
