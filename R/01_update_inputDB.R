@@ -202,7 +202,14 @@ if (nrow(rubric) > 0){
     dups,
     bad_Codes
   )
-  
+  rm( measureCodes,
+      metricCodes,
+      sexCodes,
+      NAdates,
+      badDates,
+      futureDates,
+      dups,
+      bad_Codes)
   
   data.table::fwrite(inputDB_out, file = here::here("Data","inputDB_internal.csv"))
   
