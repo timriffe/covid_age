@@ -75,7 +75,8 @@ out <-
          Code = "CA-BC",
          Metric = "Count") %>% 
   # bind_rows(db_d) %>% # TR: removed 7-Feb 2022
-  sort_input_data()
+  sort_input_data() %>% 
+  unique()
   
 
 # saving the csv
