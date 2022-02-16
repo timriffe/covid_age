@@ -33,7 +33,28 @@ Append= DataArchive%>%
   filter(Sex== "f"| Sex== "m"| Sex== "UNK"| Age == "TOT") %>% 
   mutate(Sex = case_when(
     Sex == "Texas" ~ "b",
-    TRUE ~ Sex))
+    TRUE ~ Sex)) %>% 
+  mutate(Age = case_when(
+    Age == "44327" ~ "5",
+    Age == "44545" ~ "12",
+    Age == "16-49" ~ "16",
+    Age == "44692" ~ "5",
+    Age == "44910" ~ "12",
+    Age == "50-64" ~ "50",
+    Age == "65-79" ~ "65",
+    Age == "80+" ~ "80",
+    Age == "Total" ~ "TOT",
+    Age == "Unknown" ~ "UNK",
+    TRUE  ~ Age
+  ),
+  AgeInt = case_when(
+    Age == "5" ~ 7L,
+    Age == "12" ~ 5L,
+    Age == "16" ~ 34L,
+    Age == "80" ~ 25L,
+    Age == "UNK" ~ NA_integer_,
+    TRUE ~ 15L)) %>% 
+  unique()
 
 
 #Download data 
@@ -73,13 +94,15 @@ Out_Vaccine_Age = In_vaccine_age %>%
   mutate(Value= cumsum(Doses)) %>% 
   ungroup() %>%
   mutate(Age=recode(Age, 
-                    `12-15 years`="12",
-                    `16-49 years`="16",
-                    `50-64 years`="50",
-                    `65-79 years`="65",
-                    `80+ years`="80",
+                    `16-49`="16",
+                    `50-64`="50",
+                    `65-79`="65",
+                    `80+`="80",
+                    `44692`="5",
+                    `44910`="12",
                     `Unknown`="UNK"))%>% 
   mutate(AgeInt = case_when(
+    Age == "5" ~ 7L,
     Age == "12" ~ 5L,
     Age == "16" ~ 34L,
     Age == "80" ~ 25L,
@@ -116,14 +139,16 @@ Out_Vaccine_dose <- In_vaccine_dose %>%
   select(Race = `Race/Ethnicity` , Sex = Gender, Age = `Age Group`,  Vaccinations= `Doses Administered`, Vaccination1= `People Vaccinated with at least One Dose` , Vaccination2= `People Fully Vaccinated`)%>%
   pivot_longer(!Age & !Sex & !Race, names_to= "Measure", values_to= "Value")%>%
    mutate(Age=recode(Age, 
-                    `12-15 years`="12",
-                    `16-49 years`="16",
-                    `50-64 years`="50",
-                    `65-79 years`="65",
-                    `80+ years`="80",
+                     `44692`="5",
+                     `44910`="12",
+                    `16-49`="16",
+                    `50-64`="50",
+                    `65-79`="65",
+                    `80+`="80",
                     `Unknown`="UNK",
                     `Total`="TOT"), 
           AgeInt = case_when(
+            Age == "5" ~ 7L,
             Age == "12" ~ 5L,
             Age == "16" ~ 34L,
             Age == "80" ~ 25L,

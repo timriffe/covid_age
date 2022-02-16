@@ -44,10 +44,9 @@ db_age2 <-
   db_age %>% 
   dplyr::filter(`Age Group Type` == "Case Age Group") %>% 
   rename(date = "Report Date",
-         Cases = "Number of Cases",
-         Deaths = "Number of Deaths") %>% 
+         Cases = "Number of Cases") %>% 
   separate("Age Group", c("Age", NA), sep = "-", fill = "right") %>% 
-  replace_na(list(Cases = 0, Deaths = 0)) %>% 
+  replace_na(list(Cases = 0)) %>% 
   mutate(date_f =  mdy(date),
          Age = gsub(Age, pattern = " Years", replacement = ""),
          Age = case_when(Age == "80+" ~ "80",
@@ -56,8 +55,8 @@ db_age2 <-
          AgeInt = case_when(Age == "UNK" ~ NA_integer_,
                             Age == "80" ~ 25L,
                             TRUE ~ 10L))  %>% 
-  dplyr::select(date_f, Age, AgeInt, Cases, Deaths) %>% 
-  pivot_longer(Cases:Deaths, names_to = "Measure", values_to = "new") %>% 
+  dplyr::select(date_f, Age, AgeInt, Cases) %>% 
+  pivot_longer(Cases, names_to = "Measure", values_to = "new") %>% 
   group_by(date_f, Age, AgeInt,Measure) %>% 
   summarise(Value = sum(new), .groups = "drop") %>% 
   mutate(Sex = "b")
@@ -65,15 +64,14 @@ db_age2 <-
  db_sex2 <- 
   db_sex %>% 
   rename(date = "Report Date",
-         Cases = "Number of Cases",
-         Deaths = "Number of Deaths") %>% 
-  replace_na(list(Cases = 0, Deaths = 0)) %>% 
+         Cases = "Number of Cases") %>% 
+  replace_na(list(Cases = 0)) %>% 
   mutate(date_f =  mdy(date)) %>% 
   mutate(Sex = case_when(Sex == "Female" ~ "f",
                          Sex == "Male" ~ "m",
                          TRUE ~ "UNK")) %>% 
-  select(date_f, Sex, Cases, Deaths) %>% 
-  pivot_longer(Cases:Deaths, names_to = "Measure", values_to = "Value") %>% 
+  select(date_f, Sex, Cases) %>% 
+  pivot_longer(Cases, names_to = "Measure", values_to = "Value") %>% 
   group_by(date_f, Sex, Measure) %>% 
   summarise(Value = sum(Value), .groups = "drop") %>% 
   mutate(Age = "TOT")
