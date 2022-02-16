@@ -21,7 +21,15 @@ data(World)
 
 Sys.sleep(120)
 # DB objects
-gs4_auth(email = Sys.getenv("email"))
+#source("R_checks/inputDB_check.R")
+email <- Sys.getenv("email")
+gs4_auth(email = email, 
+         scopes = c("https://www.googleapis.com/auth/spreadsheets",
+                    "https://www.googleapis.com/auth/drive"))
+drive_auth(email = email,
+           scopes = c("https://www.googleapis.com/auth/spreadsheets",
+                      "https://www.googleapis.com/auth/drive"))
+
 Sys.sleep(120)
 
 # several tries, just because.
