@@ -256,6 +256,7 @@ out <- db_drive %>%
   mutate(AgeInt = as.character(AgeInt)) %>% 
   #select(-Short) %>% 
   bind_rows(db5) %>% 
+  filter(Code != "US-MI") %>% ##deaths for michigan are collected from the national source
   sort_input_data() %>% 
   unique()
 
