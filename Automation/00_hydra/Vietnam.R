@@ -63,7 +63,11 @@ thisVT <- VTcaptured[whichVT2]
 file.list <- (file.path(capture_path, thisVT))
 df.list <- lapply(file.list, read_excel)
 
-IN <- bind_rows(df.list)
+
+IN <- bind_rows(df.list[1:19]) %>% 
+  distinct() %>% 
+  select(-1) %>% 
+  arrange(1)
 
 
 ###################################################################################
@@ -132,12 +136,15 @@ Cases_out <-
          Country = "Vietnam",
          Region = "All",
          Date = ddmmyyyy(date),
-         Code = paste0("VT"),
-         AgeInt = case_when(
-           Age == 0 ~ 1L,
-           Age == 1 ~ 4L,
-           TRUE ~ 5L),
+         Code = "VN",
          Age = as.character(Age),
+         Age = ifelse(is.na(Age),"UNK",Age),
+         AgeInt = case_when(
+           Age == "UNK" ~ NA_integer_
+           Age == "0" ~ 1L,
+           Age == "1" ~ 4L,
+           TRUE ~ 5L),
+       
          Sex = "b") %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
 
@@ -195,11 +202,13 @@ Deaths_out <-
          Region = "All",
          Date = ddmmyyyy(date),
          Code = paste0("VT"),
-         AgeInt = case_when(
-           Age == 0 ~ 1L,
-           Age == 1 ~ 4L,
-           TRUE ~ 5L),
          Age = as.character(Age),
+         Age = ifelse(is.na(Age),"UNK",Age),
+         AgeInt = case_when(
+           Age == "UNK" ~ NA_integer_
+           Age == "0" ~ 1L,
+           Age == "1" ~ 4L,
+           TRUE ~ 5L),
          Sex = "b") %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
 
