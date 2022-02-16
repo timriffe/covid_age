@@ -1,19 +1,26 @@
-library(here)
-source(here("Automation/00_Functions_automation.R"))
+
+source(here::here("Automation/00_Functions_automation.R"))
 #written by Rafael 
 # edited by Jessica
 # refactored by Tim (27 Nov, 2021)
+# then refactors by Enrique
+# then again by Tim (12 Feb, 2022)
 lapply(c("tidyverse", "ggpubr", "gridExtra","readr", "googledrive", "googlesheets4"),
        library, character.only=TRUE)
 
 
 if (!"email" %in% ls()){
-  email <- "jessica_d.1994@yahoo.de"
+  # email <- "jessica_d.1994@yahoo.de"
+  email <- "kikepaila@gmail.com"
 }
 
 # info country and N drive address
 ctr <- "Chile"
 dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
+
+# Drive credentials
+drive_auth(email = email)
+gs4_auth(email = email)
 
 ################# #
 # Cases file ####
@@ -72,8 +79,8 @@ guess_chile_url <- function(days = 20){
   correct_url <- maybe_urls[dates == most_recent]
   correct_url
 }
-"https://repositoriodeis.minsal.cl/DatosAbiertos/VITALES/DEFUNCIONES_FUENTE_DEIS_2016_2021_18112021.zip"
-
+# "https://repositoriodeis.minsal.cl/DatosAbiertos/VITALES/DEFUNCIONES_FUENTE_DEIS_2016_2021_18112021.zip"
+# url_deaths <- "https://repositoriodeis.minsal.cl/DatosAbiertos/VITALES/DEFUNCIONES_FUENTE_DEIS_2016_2021_03022022.zip"
 url_deaths= guess_chile_url()
 name_deaths = str_split(url_deaths, pattern = "/") %>% unlist() %>% rev() %>% '['(1)
 name_death_file= gsub(name_deaths,pattern="zip",replacement = "csv")
@@ -92,7 +99,9 @@ name_death_file= gsub(name_deaths,pattern="zip",replacement = "csv")
 data_source_zip <- paste0(dir_n, "Data_sources/", ctr, "/death_",today(), ".zip")
 #download zip file 
 options(timeout = 120)
-download.file(url_deaths, destfile = "test.zip",  method = "curl")
+# download.file(url_deaths, destfile = "test.zip",  method = "curl")
+# download.file(url_deaths, destfile = "test.zip")
+download.file(url_deaths, destfile = data_source_zip)
 
 
 
@@ -147,7 +156,7 @@ x <- 0:10
 between(x,1,9)
 
 dd1 <- dd %>% 
-  filter(ANO_DEF >= 2020 & CODIGO_SUBCATEGORIA_DIAG1 == "U071") %>% 
+  dplyr::filter(ANO_DEF >= 2020 & CODIGO_SUBCATEGORIA_DIAG1 == "U071") %>% 
   mutate(EDAD_CANT = ifelse(EDAD_TIPO>1,0,EDAD_CANT), # if >1 == age in days or months
          Age = case_when(EDAD_CANT == 0 ~ "0",
                          between(EDAD_CANT,1,4) ~ "1",
@@ -156,41 +165,91 @@ dd1 <- dd %>%
                          TRUE ~ (EDAD_CANT - EDAD_CANT %% 5) %>% as.character()),
          Sex = case_when(GLOSA_SEXO == "Hombre" ~ "m",
                          GLOSA_SEXO == "Mujer" ~ "f",
-                         TRUE ~ "UNK")) %>% 
-  count(Date = FECHA_DEF, Sex, Age) 
+                         TRUE ~ "UNK"),
+         Region = case_when(GLOSA_REG_RES == 'De Valparaíso' ~ 'Valparaiso',
+                            GLOSA_REG_RES == 'Metropolitana de Santiago' ~ 'Metropolitana Santiago',
+                            GLOSA_REG_RES == 'De Coquimbo' ~ 'Coquimbo',
+                            GLOSA_REG_RES == 'De Atacama' ~ 'Atacama',
+                            GLOSA_REG_RES == 'Del Maule' ~ 'Maule',
+                            GLOSA_REG_RES == 'De Ñuble' ~ 'Nuble',
+                            GLOSA_REG_RES == 'De Arica y Parinacota' ~ 'Arica y Parinacota',
+                            GLOSA_REG_RES == 'Del Libertador B. OHiggins' ~ 'Libertador B. OHiggins',
+                            GLOSA_REG_RES == 'De Los Lagos' ~ 'Los Lagos',
+                            GLOSA_REG_RES == 'Del Bíobío' ~ 'Biobio',
+                            GLOSA_REG_RES == 'De Antofagasta' ~ 'Antofagasta',
+                            GLOSA_REG_RES == 'De Aisén del Gral. C. Ibáñez del Campo' ~ 'Aisen Gral. C. Ibanez Campo',
+                            GLOSA_REG_RES == 'De La Araucanía' ~ 'La Araucania',
+                            GLOSA_REG_RES == 'De Los Ríos' ~ 'Los Rios',
+                            GLOSA_REG_RES == 'De Tarapacá' ~ 'Tarapaca',
+                            GLOSA_REG_RES == 'De Magallanes y de La Antártica Chilena' ~ 'Magallanes y Antartica',
+                            TRUE ~ "UNK")) %>% 
+  count(Date = FECHA_DEF,
+        Region,
+        Sex, 
+        Age) 
+
+unique(dd$GLOSA_REG_RES)
+unique(dd1$Region)
+unique(dd1$Age)
 
 all_dates <- seq(min(dd1$Date), max(dd1$Date),by ="days")
 all_ages  <-dd1$Age %>% unique() 
 all_sexes <- c("m","f","UNK")
 
-Deaths <-
+Deaths_regions <-
   dd1 %>% 
   tidyr::complete(Date = all_dates,
-
-           Age = all_ages,
-           Sex = all_sexes,
-           fill = list(n = 0)) %>% 
-  arrange(Sex, Age, Date) %>% 
-  group_by(Sex, Age) %>% 
+                  Region,
+                  Age = all_ages,
+                  Sex = all_sexes,
+                  fill = list(n = 0)) %>% 
+  arrange(Sex, Age, Region, Date) %>% 
+  group_by(Region, Sex, Age) %>% 
   mutate(Value = cumsum(n)) %>% 
   ungroup() %>% 
   select(-n) %>% 
   mutate(Country = ctr,
-         Region = "All",
          Measure = "Deaths",
          Metric = "Count",
          Date = ddmmyyyy(Date),
-         Code = paste0("CL"),
+         Code = case_when(Region == 'Aisen Gral. C. Ibanez Campo' ~ 'CL-AI',
+                          Region == 'Antofagasta' ~ 'CL-AN',
+                          Region == 'Arica y Parinacota' ~ 'CL-AP',
+                          Region == 'Atacama' ~ 'CL-AT',
+                          Region == 'Biobio' ~ 'CL-BI',
+                          Region == 'Coquimbo' ~ 'CL-CO',
+                          Region == 'La Araucania' ~ 'CL-AR',
+                          Region == 'Libertador B. OHiggins' ~ 'CL-LI',
+                          Region == 'Los Lagos' ~ 'CL-LL',
+                          Region == 'Los Rios' ~ 'CL-LR',
+                          Region == 'Magallanes y Antartica' ~ 'CL-MA',
+                          Region == 'Maule' ~ 'CL-ML',
+                          Region == 'Metropolitana Santiago' ~ 'CL-RM',
+                          Region == 'Nuble' ~ 'CL-NB',
+                          Region == 'Tarapaca' ~ 'CL-TA',
+                          Region == 'Valparaiso' ~ 'CL-VS',
+                          TRUE ~ 'CL-UNK+'),
          AgeInt = case_when(Age == "0" ~ 1L,
                             Age == "1" ~ 4L,
                             Age == "UNK" ~ NA_integer_,
                             TRUE ~ 5L)) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
-  filter(! (Sex == "UNK" & Value == 0),
+  dplyr::filter(! (Sex == "UNK" & Value == 0),
          ! (Age == "UNK" & Value == 0))
 
-
-out <- bind_rows(Cases, Deaths) %>% 
+Deaths_all <- 
+  Deaths_regions %>% 
+  group_by(Country, Date, Sex, Age, AgeInt, Metric, Measure) %>% 
+  summarise(Value = sum(Value), .groups = "drop") %>% 
+  mutate(Region = "All",
+         Code = "CL")
+  
+Deaths <- 
+  bind_rows(Deaths_all,
+            Deaths_regions)
+  
+out <- 
+  bind_rows(Cases, Deaths) %>% 
   sort_input_data()
 
 dim(out)

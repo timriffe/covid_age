@@ -15,23 +15,23 @@ gs4_auth(email = email)
 
 # Loading data from nextcloud
 #############################
-source_dir <- "U:/nextcloud/Projects/COVID_19/COVerAGE-DB/mexico"
+# source_dir <- "U:/nextcloud/Projects/COVID_19/COVerAGE-DB/mexico"
+# file_names <- list.files(source_dir, pattern = "\\.zip$")
+
+source_dir <- paste0(dir_n, "Data_sources/", ctr)
 file_names <- list.files(source_dir, pattern = "\\.zip$")
 
-ctr_dir <- paste0(dir_n, "Data_sources/", ctr)
-file_names_already <- list.files(ctr_dir, pattern = "\\.zip$")
-
 # only coping new data 
-new_data <- file_names[!(file_names %in% file_names_already)]
-dest_dir <- paste0(dir_n, "Data_sources/", ctr, "/", new_data)
-file.copy(paste0(source_dir, "/", new_data), dest_dir, T)
+new_data <- file_names
+# dest_dir <- paste0(dir_n, "Data_sources/", ctr, "/", new_data)
+# file.copy(paste0(source_dir, "/", new_data), dest_dir, T)
 
 
-if (identical(new_data, character(0))){
-  print("no new updates")
-  log_update(pp = ctr, N = 0)
-  
-} else {
+# if (identical(new_data, character(0))){
+#   print("no new updates")
+#   log_update(pp = ctr, N = 0)
+#   
+# } else {
   # choosing the last date to update the database
   all_dates <- ymd(str_sub(new_data, 13, 22))
   last_date <- max(all_dates) 
@@ -313,5 +313,4 @@ if (identical(new_data, character(0))){
   # updating hydra dashboard
   log_update(pp = ctr, N = nrow(out))
   
-  file.remove(paste0(source_dir, "/", file_names))
-}
+#}
