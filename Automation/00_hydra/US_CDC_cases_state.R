@@ -105,7 +105,10 @@ Out <-
                   `60 - 69 Years`="60",
                   `70 - 79 Years`="70",
                   `80+ Years`="80",
-                  `Unknown`="UNK"))%>% 
+                  `Missing`="UNK",
+                  `NA`="UNK")) %>% 
+  group_by(Date, Sex, State) %>% 
+  summarise(Value = sum(Value))
   mutate(AgeInt = case_when(
     Age == "80" ~ 25L,
     Age == "UNK" ~ NA_integer_,
