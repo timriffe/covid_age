@@ -34,7 +34,7 @@ library(googlesheets4)
 
 # MANUAL
 # this token is correct
-token <- "eyJpdiI6IjRlZzAwdEx2UzZZbUhWRk1STHNDU1E9PSIsInZhbHVlIjoiZWFONFE4U2tnRkZ4XC92amduaGRseDZrU3JuMldRNW0xUkZZOVRsUVlTUjlRWmVwNkVDSGdIbTF1WnQzOWVRZEUiLCJtYWMiOiIxMDhlNDBjNWY1YzdmMjY3ZjE2NzFjMGIwMDAxZjAwNDA1ZTM4M2YxYTkwZmJhYjFiOTA5ZDYyMzk4NTBlY2MyIn0="
+# token <- "eyJpdiI6IjRlZzAwdEx2UzZZbUhWRk1STHNDU1E9PSIsInZhbHVlIjoiZWFONFE4U2tnRkZ4XC92amduaGRseDZrU3JuMldRNW0xUkZZOVRsUVlTUjlRWmVwNkVDSGdIbTF1WnQzOWVRZEUiLCJtYWMiOiIxMDhlNDBjNWY1YzdmMjY3ZjE2NzFjMGIwMDAxZjAwNDA1ZTM4M2YxYTkwZmJhYjFiOTA5ZDYyMzk4NTBlY2MyIn0="
 
 # so, we need to iterate through dates to get our data:
 # number of daily deaths by gender and age group (10 years) 
@@ -45,9 +45,9 @@ dates <- seq.Date(dmy("16/03/2020"), current_day, by = "day")
 # curl into httr:
 # https://curl.trillworks.com/#r
 headers <- c(
-  `X-XSRF-TOKEN` = token,
+  # `X-XSRF-TOKEN` = token,
   # dont know if it is a private info
-  `User-Agent` = # your user-agent here
+  `User-Agent` = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36"
 )
 
 list_date <- list()

@@ -1,102 +1,160 @@
+# CDC state data: Arizona	AZ
+#Arkansas	AR
+#Delaware	DE
+#Guam 	GU
+#Idaho	ID
+#Kansas	KS
+#Maine	ME
+#Massachusetts	MA
+#Minnesota	MN
+#Montana	MT
+#Nevada	NV
+#New Jersey	NJ
+#North Carolina	NC
+#Oklahoma	OK
+#Oregon	OR
+#Pennsylvania	PA
+#South Carolina	SC
+#Tennessee	TN
+#Virginia	VA
 
-# This file is an outline of a proposed estimation protocol for US cases by age, sex, state
+library(here)
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
 
-# step 1 download case individual file.
+library(dplyr)
+library(lubridate)
+#install.packages("arrow")
+library(arrow)
+
+# assigning Drive credentials in the case the script is verified manually  
+if (!"email" %in% ls()){
+  email <- "maxi.s.kniffka@gmail.com"
+}
+gs4_auth(email = email)
+
+ctr          <- "US_CDC_cases_state" # it's a placeholder
+dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
+
+# Read in data 
 
 
-In= read.csv("https://data.cdc.gov/api/views/n8mc-b4w4/rows.csv?accessType=DOWNLOAD")
-##only 2 million cases
+# data1 <- read.csv(file= 'K:/CDC_Covid/covid_case_restricted_detailed-master_06_2021/data/2021-06-21/COVID_Cases_Restricted_Detailed_06212021_Part_1.csv', 
+#                   fileEncoding="UTF-8-BOM", na.strings=c('NA','','Missing'))
+# str(data1)
+# 
+# data2 <- read.csv(file= 'K:/CDC_Covid/covid_case_restricted_detailed-master_06_2021/data/2021-06-21/COVID_Cases_Restricted_Detailed_06212021_Part_2.csv',
+#                   fileEncoding="UTF-8-BOM",  na.strings=c('NA','','Missing')) 
+# 
+# str(data2)
+# 
+# data3 <- read.csv(file= 'K:/CDC_Covid/covid_case_restricted_detailed-master_06_2021/data/2021-06-21/COVID_Cases_Restricted_Detailed_06212021_Part_3.csv',
+#                   fileEncoding="UTF-8-BOM",  na.strings=c('NA','','Missing')) 
+# 
+# str(data3)
+# 
+# data4 <- read.csv(file= 'K:/CDC_Covid/covid_case_restricted_detailed-master_06_2021/data/2021-06-21/COVID_Cases_Restricted_Detailed_06212021_Part_4.csv',
+#                   fileEncoding="UTF-8-BOM",  na.strings=c('NA','','Missing')) 
 
-# step 2 aggregate by state, age, sex, date (or month as it were).
-#can decide if we want to filter by lab confirmed case and prob. case (current_status)
+
+#read in data faster 
+
+data1=read_parquet("K:/CDC_Covid/covid_case_restricted_detailed-master_03_01_2022/COVID_Cases_Restricted_Detailed_01032022_Part_1.parquet")
+data2=read_parquet("K:/CDC_Covid/covid_case_restricted_detailed-master_03_01_2022/COVID_Cases_Restricted_Detailed_01032022_Part_2.parquet")
+data3=read_parquet("K:/CDC_Covid/covid_case_restricted_detailed-master_03_01_2022/COVID_Cases_Restricted_Detailed_01032022_Part_3.parquet")
+
+
+# Add datasets vertically
+IN <- rbind(data1, data2, data3)
+
+rm(data1,data2);gc()
+glimpse(IN)
+states <- c("AZ","AR", "DE","GU","ID","KS","ME","MA","MN","MT","NV","NJ","NC","OK","OR","PA","SC","TN","VA", "IL")
+
 Out <-
-  In %>%
-  slice(1:2640947)%>%
-  select(Date = case_month, 
+  IN %>%
+  filter(res_state %in% states) %>%
+  select(Date = cdc_case_earliest_dt, 
          Sex = sex, 
          Age = age_group, 
          State = res_state)%>%
   mutate(Sex =  case_when(is.na(Sex) ~ "UNK",
-                          Sex== "Unknown" ~ "UNK",
-                          Sex== "Missing" ~ "UNK",
-                          Sex== "Other" ~ "UNK",
-                          Sex== "Male" ~ "m",
-                          Sex== "Female"~"f",
-                          TRUE ~ as.character(Sex)),
+                          Sex == "NA" ~ "UNK",
+                        Sex== "Unknown" ~ "UNK",
+                        Sex== "Missing" ~ "UNK",
+                        Sex== "Other" ~ "UNK",
+                        Sex== "Male" ~ "m",
+                        Sex== "Female"~"f",
+                        TRUE ~ as.character(Sex)),
          Age = case_when (is.na(Age) ~ "UNK",
-                          Age== "Unknown" ~" UNK",
-                          TRUE~ as.character(Age)))%>%
+                         Age== "Unknown" ~" UNK",
+                         TRUE~ as.character(Age)))%>%
   group_by(Date, Sex, Age, State) %>% 
   summarize(Value = n(), .groups = "drop")%>%
   tidyr::complete(Date, Sex, Age, State, fill = list(Value = 0)) %>% 
   arrange(Sex, Age, State, Date) %>% 
   group_by(Sex, Age, State) %>% 
   mutate(Value = cumsum(Value)) %>% 
-  ungroup()
-
-#2.1. make some plots to see how the data looks 
-
-setwd("U:/COVerAgeDB/CDC_public")
-
-doPlot= function(svc_name){
-  temp_df = subset(Out, State == svc_name)
-  Plot= ggplot(temp_df, aes(x =Date, y = Value, color = Age)) +geom_line() +ggtitle(svc_name)+ xlab("Cases by State")
-  print(Plot)
-  ggsave(sprintf("%s.jpeg", svc_name))
-  
-}
-
-
-lapply(unique(Out$State), doPlot)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# step 3 accumulate from the very beginning up to the most recent. Expecting monthly resolution
-
-# step 4 declare a cutoff, potentially January 2021?? Namely, Jessica found oddities in this series in 2020, but maybe age pyramids will be stabilized by jan 2021? Do a check, and if necessary move to Feb or March 2021, depends what we see.
-
-# step 5 we now have a cumulative series by age, sex, month, state. Convert each month-snapshot to an age-sex distribution summing to 1.
-
-# step 6 interpolate these distributions to daily resolution. linear is fine. See approx()
-
-# step 7 These can be formatted in the input format using Metric = "Fraction".
-
-# step 8 download and append a dataset of cumulative case totals by state and date.
-
-# fin. The default data processing pipeline will take care of the scaling.
-
-
-
-
-
-
-
-
+  ungroup()%>%
+  mutate(Age = recode(Age, 
+                  `0 - 9 Years`="0",
+                  `10 - 19 Years`="10",
+                  `20 - 29 Years`="20",
+                  `30 - 39 Years`="30",
+                  `40 - 49 Years`="40",
+                  `50 - 59 Years`="50",
+                  `60 - 69 Years`="60",
+                  `70 - 79 Years`="70",
+                  `80+ Years`="80",
+                  `Missing`="UNK",
+                  `NA`="UNK")) %>% 
+  group_by(Date, Sex, State) %>% 
+  summarise(Value = sum(Value))
+  mutate(AgeInt = case_when(
+    Age == "80" ~ 25L,
+    Age == "UNK" ~ NA_integer_,
+    TRUE ~ 10L))%>% 
+mutate(
+  Measure = "Cases",
+  Metric = "Count",
+  Country = "USA") %>% 
+  mutate(
+    Date = ymd(Date),
+    Date = paste(sprintf("%02d",day(Date)),    
+                 sprintf("%02d",month(Date)),  
+                 year(Date),sep="."),
+    Region= recode(State, 
+                   `AZ` = "Arizona",
+                   `AR`= "Arkansas",	
+                   `DE`= "Delaware",
+                   `GU`=  "Guam",
+                   `ID`= "Idaho",
+                   `KS`= "Kansas",	
+                   `ME`=  "Maine",	
+                   `MA`=  "Massachusetts",	
+                   `MN`=  "Minnesota",	
+                   `MT`=  "Montana",	
+                   `NV`=  "Nevada",	
+                   `NJ`=  "New Jersey",	
+                   `NC`=  "North Carolina",	
+                   `OK`=  "Oklahoma",	
+                   `OR`=  "Oregon",	
+                   `PA`=  "Pennsylvania",	
+                   `SC`= "South Carolina",	
+                   `TN`= "Tennessee",	
+                   `VA`=  "Virginia",
+                   `IL`= "Illinois"),
+    Code= paste0 ("US-", State)) %>% 
+  select(Country, Region, Code, Date, Sex, 
+         Age, AgeInt, Metric, Measure, Value)
 
 
+#save output data
+
+write_rds(Out, paste0(dir_n, ctr, ".rds"))
+
+#manual updates 
+#log_update(pp = ctr, N = nrow(Out)) 
 
 
-
-
-
-
-
-
-
-
-
+# input data is saved on K 
 
