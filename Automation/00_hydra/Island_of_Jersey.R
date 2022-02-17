@@ -38,7 +38,7 @@ ss_db <- rubric %>%
 
 vaccine= read.csv("https://www.gov.je/Datasets/ListOpenData?ListName=COVID19Weekly&clean=true")
 
-death= read.csv("https://www.gov.je/datasets/listopendata?listname=COVID19DeathsAge")
+death= read.csv("https://www.gov.je/datasets/listopendata?listname=COVID19DeathsAge")[-216,]
 
 
 #process deaths 

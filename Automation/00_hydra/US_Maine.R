@@ -21,9 +21,9 @@ ss_i     <- rubric_i %>% dplyr::pull(Sheet)
 ss_db    <- rubric_i %>% dplyr::pull(Source)
 
 # read in current 
-ME_in <- get_country_inputDB("US_ME") %>% 
-  select(-Short) %>% 
-  mutate(Code = paste0("US_ME_",Date))
+ME_in <-  read_sheet(ss = ss_i, sheet = "database") %>% 
+  #select(-Short) %>% 
+  mutate(Code = "US-ME")
 
 date_max <-
   ME_in %>% 
@@ -67,7 +67,7 @@ Age <-
            Age == "80" ~ 25L
          )
          ) %>% 
-  select(Date, Sex, Age, AgeInt, Cases = CASES, Deaths = DEATHS)
+  select(Date, Sex, Age, AgeInt, Cases = CASES)
 
 
 Sex <-
@@ -76,11 +76,11 @@ Sex <-
          Sex = ifelse(PATIENT_CURRENT_SEX == 'Female',"f","m"),
          Age = "TOT",
          AgeInt = NA_integer_) %>% 
-  select(Date, Sex, Age, AgeInt, Deaths = DEATHS, Cases = CASES)
+  select(Date, Sex, Age, AgeInt, Cases = CASES)
 
 MEout <-
   bind_rows(Age,Sex)  %>% 
-  pivot_longer(Cases:Deaths, names_to = "Measure", values_to = "Value") %>% 
+  pivot_longer(Cases, names_to = "Measure", values_to = "Value") %>% 
   mutate(Value = as.double(Value))
 
 date_new <- MEout$Date %>% unique()

@@ -97,7 +97,8 @@ Sex_out_vaccine= In %>%
 #put togehter and appand prev data
 out= rbind(DataArchive,out_vaccine_age, Sex_out_vaccine) %>% 
   mutate(Age = case_when(Age == "NYC" ~ "TOT",
-                         TRUE ~ Age))
+                         TRUE ~ Age)) %>% 
+  unique()
 
 #out= rbind(manual_data, out_vaccine_age, Sex_out_vaccine)
 

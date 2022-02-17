@@ -31,234 +31,233 @@ at_rubric <- get_input_rubric() %>% filter(Short == "US_ID")
 ss_i   <- at_rubric %>% dplyr::pull(Sheet)
 ss_db  <- at_rubric %>% dplyr::pull(Source)
 
-db_drive <- get_country_inputDB("US_ID")%>%
-  select(-Short)
+db_drive <- read_sheet(ss = ss_i, sheet = "database")
 
 last_date_archive <- db_drive %>% 
   mutate(date_max = dmy(Date)) %>% 
   dplyr::pull(date_max) %>% 
   max()
 
-
-#read in data deaths by age
-#read in most recent file 
-
 # 
-# all_paths_age_death <-
-#   list.files(path = dir_n_source,
-#              pattern = "*Age Groups",
-#              full.names = TRUE)
-
-
-df <- file.info(list.files(path= dir_n_source, 
-                           pattern = "*Age Groups",
-                           full.names = TRUE))
-
-
-most_recent_file_death= rownames(df)[which.max(df$mtime)]
-
-
-all_content_age_death <-
-  most_recent_file_death %>%
-  lapply(read_xlsx)
-
-all_filenames_age_death <- most_recent_file_death %>%
-  basename() %>%
-  as.list()
-
-#include filename to get date from filename 
-all_lists <- mapply(c, all_content_age_death, all_filenames_age_death, SIMPLIFY = FALSE)
-
-death_in <- rbindlist(all_lists, fill = T)
-
-#process
-
-death_out= death_in %>%
-  select(Age= ...1, Value=Deaths, Date= V1)%>%
-  mutate(Date= substr(Date, 11, 18))%>%
-  separate(Age, c("Age", "Int"), "-")%>%
-  mutate(Age=recode(Age, 
-                    `<18`= "0",
-                    `80+`= "80"))%>%
-  mutate(AgeInt = case_when(
-    Age == "0" ~ 18L,
-    Age == "18" ~ 12L,
-    Age == "80" ~ 25L,
-    Age == "UNK" ~ NA_integer_,
-    TRUE ~ 10L)) %>% 
-  mutate(Measure= "Deaths",
-         Metric = "Count",
-         Sex= "b") %>% 
-  mutate(
-    Date = ymd(Date),
-    Date = paste(sprintf("%02d",day(Date)),    
-                 sprintf("%02d",month(Date)),  
-                 year(Date),sep="."),
-    Code = paste0("US-ID"),
-    Country = "USA",
-    Region = "Idaho",)%>% 
-  select(Country, Region, Code, Date, Sex, 
-         Age, AgeInt, Metric, Measure, Value)
-
-
-
-#read in total deaths  
-
-# all_paths_tot_death <-
-#   list.files(path = xlsx_dir,
-#              pattern = "*Total Deaths",
-#              full.names = TRUE)
-
-
-df <- file.info(list.files(path= dir_n_source, 
-                           pattern = "*Total Deaths",
-                           full.names = TRUE))
-
-
-most_recent_file_death_tot= rownames(df)[which.max(df$mtime)]
-
-all_content_tot_death <-
-  most_recent_file_death_tot %>%
-  lapply(read_excel,col_names = FALSE )
-
-
-all_filenames_tot_death <- most_recent_file_death_tot %>%
-  basename() %>%
-  as.list()
-
-#include filename to get date from filename 
-all_lists <- mapply(c, all_content_tot_death, all_filenames_tot_death, SIMPLIFY = FALSE)
-
-death_in_tot <- rbindlist(all_lists, fill = T)
-
-#process 
-
-death_tot_out= death_in_tot%>%
-  select(Category= ...1, Value= ...2, Date= V1)%>%
-  subset(Category== "Deaths")%>%
-  mutate(Date= substr(Date, 17, 24))%>% 
-  mutate(Measure= "Deaths",
-         Metric = "Count",
-         Sex= "b",
-         Age= "TOT",
-         AgeInt=" ") %>% 
-  mutate(
-    Date = ymd(Date),
-    Date = paste(sprintf("%02d",day(Date)),    
-                 sprintf("%02d",month(Date)),  
-                 year(Date),sep="."),
-    Code = paste0("US-ID"),
-    Country = "USA",
-    Region = "Idaho",)%>% 
-  select(Country, Region, Code, Date, Sex, 
-         Age, AgeInt, Metric, Measure, Value)
-
-
-#read in deaths by sex 
-
-# all_paths_sex_death <-
-#   list.files(path = xlsx_dir,
-#              pattern = "Sex",
-#              full.names = TRUE)
-
-df <- file.info(list.files(path= dir_n_source, 
-                           pattern = "Sex",
-                           full.names = TRUE))
-
-
-most_recent_file_death_sex= rownames(df)[which.max(df$mtime)]
-
-all_content_sex_death <-
-  most_recent_file_death_sex %>%
-  lapply(read_excel)
-
-
-all_filenames_sex_death <- most_recent_file_death_sex %>%
-  basename() %>%
-  as.list()
-
-#include filename to get date from filename 
-all_lists <- mapply(c, all_content_sex_death, all_filenames_sex_death, SIMPLIFY = FALSE)
-
-death_in_sex <- rbindlist(all_lists, fill = T)
-
-#process death by sex 
-
-death_out_sex= death_in_sex%>%
-  select(Sex= ...1, Value=Deaths, Date=V1)%>%
-  mutate(Date= substr(Date, 4,11))%>%
-  mutate(Sex=recode(Sex, 
-                    `Female`= "f",
-                    `Male`= "m"))%>% 
-  mutate(Measure= "Deaths",
-         Metric = "Count",
-         Age= "TOT",
-         AgeInt=" ") %>% 
-  mutate(
-    Date = ymd(Date),
-    Date = paste(sprintf("%02d",day(Date)),    
-                 sprintf("%02d",month(Date)),  
-                 year(Date),sep="."),
-    Code = paste0("US-ID"),
-    Country = "USA",
-    Region = "Idaho",)%>% 
-  select(Country, Region, Code, Date, Sex, 
-         Age, AgeInt, Metric, Measure, Value)
-
-
-#read in most recent file cases age 
-
-df <- file.info(list.files(path= dir_n_source, 
-                           pattern = "*Total by Age",
-                           full.names = TRUE))
-
-
-most_recent_file_case_age= rownames(df)[which.max(df$mtime)]
-
-
-all_content_age_cases <-
-  most_recent_file_case_age %>%
-  lapply(read_excel)
-
-
-all_filenames_age_cases <- most_recent_file_case_age %>%
-  basename() %>%
-  as.list()
-
-#include filename to get date from filename 
-all_lists <- mapply(c, all_content_age_cases, all_filenames_age_cases, SIMPLIFY = FALSE)
-
-cases_in <- rbindlist(all_lists, fill = T)
-
-#process cases 
-
-cases_age_out=cases_in %>%
-  select(Age= ...1, Value=Count, Date= V1)%>%
-  mutate(Date= substr(Date, 23, 30))%>%
-  separate(Age, c("Age", "Int"), "-")%>%
-  mutate(Age=recode(Age, 
-                    `100+`= "100"))%>%
-  mutate(AgeInt = case_when(
-    Age == "0" ~ 5L,
-    Age == "5" ~ 8L,
-    Age == "13" ~ 5L,
-    Age == "18" ~ 12L,
-    Age == "100" ~ 5L,
-    Age == "UNK" ~ NA_integer_,
-    TRUE ~ 10L)) %>% 
-  mutate(Measure= "Cases",
-         Metric = "Count",
-         Sex= "b") %>% 
-  mutate(
-    Date = ymd(Date),
-    Date = paste(sprintf("%02d",day(Date)),    
-                 sprintf("%02d",month(Date)),  
-                 year(Date),sep="."),
-    Code = paste0("US-ID"),
-    Country = "USA",
-    Region = "Idaho",)%>% 
-  select(Country, Region, Code, Date, Sex, 
-         Age, AgeInt, Metric, Measure, Value)
+# #read in data deaths by age
+# #read in most recent file 
+# 
+# # 
+# # all_paths_age_death <-
+# #   list.files(path = dir_n_source,
+# #              pattern = "*Age Groups",
+# #              full.names = TRUE)
+# 
+# 
+# df <- file.info(list.files(path= dir_n_source, 
+#                            pattern = "*Age Groups",
+#                            full.names = TRUE))
+# 
+# 
+# most_recent_file_death= rownames(df)[which.max(df$mtime)]
+# 
+# 
+# all_content_age_death <-
+#   most_recent_file_death %>%
+#   lapply(read_xlsx)
+# 
+# all_filenames_age_death <- most_recent_file_death %>%
+#   basename() %>%
+#   as.list()
+# 
+# #include filename to get date from filename 
+# all_lists <- mapply(c, all_content_age_death, all_filenames_age_death, SIMPLIFY = FALSE)
+# 
+# death_in <- rbindlist(all_lists, fill = T)
+# 
+# #process
+# 
+# death_out= death_in %>%
+#   select(Age= ...1, Value=Deaths, Date= V1)%>%
+#   mutate(Date= substr(Date, 11, 18))%>%
+#   separate(Age, c("Age", "Int"), "-")%>%
+#   mutate(Age=recode(Age, 
+#                     `<18`= "0",
+#                     `80+`= "80"))%>%
+#   mutate(AgeInt = case_when(
+#     Age == "0" ~ 18L,
+#     Age == "18" ~ 12L,
+#     Age == "80" ~ 25L,
+#     Age == "UNK" ~ NA_integer_,
+#     TRUE ~ 10L)) %>% 
+#   mutate(Measure= "Deaths",
+#          Metric = "Count",
+#          Sex= "b") %>% 
+#   mutate(
+#     Date = ymd(Date),
+#     Date = paste(sprintf("%02d",day(Date)),    
+#                  sprintf("%02d",month(Date)),  
+#                  year(Date),sep="."),
+#     Code = paste0("US-ID"),
+#     Country = "USA",
+#     Region = "Idaho",)%>% 
+#   select(Country, Region, Code, Date, Sex, 
+#          Age, AgeInt, Metric, Measure, Value)
+# 
+# 
+# 
+# #read in total deaths  
+# 
+# # all_paths_tot_death <-
+# #   list.files(path = xlsx_dir,
+# #              pattern = "*Total Deaths",
+# #              full.names = TRUE)
+# 
+# 
+# df <- file.info(list.files(path= dir_n_source, 
+#                            pattern = "*Total Deaths",
+#                            full.names = TRUE))
+# 
+# 
+# most_recent_file_death_tot= rownames(df)[which.max(df$mtime)]
+# 
+# all_content_tot_death <-
+#   most_recent_file_death_tot %>%
+#   lapply(read_excel,col_names = FALSE )
+# 
+# 
+# all_filenames_tot_death <- most_recent_file_death_tot %>%
+#   basename() %>%
+#   as.list()
+# 
+# #include filename to get date from filename 
+# all_lists <- mapply(c, all_content_tot_death, all_filenames_tot_death, SIMPLIFY = FALSE)
+# 
+# death_in_tot <- rbindlist(all_lists, fill = T)
+# 
+# #process 
+# 
+# death_tot_out= death_in_tot%>%
+#   select(Category= ...1, Value= ...2, Date= V1)%>%
+#   subset(Category== "Deaths")%>%
+#   mutate(Date= substr(Date, 17, 24))%>% 
+#   mutate(Measure= "Deaths",
+#          Metric = "Count",
+#          Sex= "b",
+#          Age= "TOT",
+#          AgeInt=" ") %>% 
+#   mutate(
+#     Date = ymd(Date),
+#     Date = paste(sprintf("%02d",day(Date)),    
+#                  sprintf("%02d",month(Date)),  
+#                  year(Date),sep="."),
+#     Code = paste0("US-ID"),
+#     Country = "USA",
+#     Region = "Idaho",)%>% 
+#   select(Country, Region, Code, Date, Sex, 
+#          Age, AgeInt, Metric, Measure, Value)
+# 
+# 
+# #read in deaths by sex 
+# 
+# # all_paths_sex_death <-
+# #   list.files(path = xlsx_dir,
+# #              pattern = "Sex",
+# #              full.names = TRUE)
+# 
+# df <- file.info(list.files(path= dir_n_source, 
+#                            pattern = "Sex",
+#                            full.names = TRUE))
+# 
+# 
+# most_recent_file_death_sex= rownames(df)[which.max(df$mtime)]
+# 
+# all_content_sex_death <-
+#   most_recent_file_death_sex %>%
+#   lapply(read_excel)
+# 
+# 
+# all_filenames_sex_death <- most_recent_file_death_sex %>%
+#   basename() %>%
+#   as.list()
+# 
+# #include filename to get date from filename 
+# all_lists <- mapply(c, all_content_sex_death, all_filenames_sex_death, SIMPLIFY = FALSE)
+# 
+# death_in_sex <- rbindlist(all_lists, fill = T)
+# 
+# #process death by sex 
+# 
+# death_out_sex= death_in_sex%>%
+#   select(Sex= ...1, Value=Deaths, Date=V1)%>%
+#   mutate(Date= substr(Date, 4,11))%>%
+#   mutate(Sex=recode(Sex, 
+#                     `Female`= "f",
+#                     `Male`= "m"))%>% 
+#   mutate(Measure= "Deaths",
+#          Metric = "Count",
+#          Age= "TOT",
+#          AgeInt=" ") %>% 
+#   mutate(
+#     Date = ymd(Date),
+#     Date = paste(sprintf("%02d",day(Date)),    
+#                  sprintf("%02d",month(Date)),  
+#                  year(Date),sep="."),
+#     Code = paste0("US-ID"),
+#     Country = "USA",
+#     Region = "Idaho",)%>% 
+#   select(Country, Region, Code, Date, Sex, 
+#          Age, AgeInt, Metric, Measure, Value)
+# 
+# 
+# #read in most recent file cases age 
+# 
+# df <- file.info(list.files(path= dir_n_source, 
+#                            pattern = "*Total by Age",
+#                            full.names = TRUE))
+# 
+# 
+# most_recent_file_case_age= rownames(df)[which.max(df$mtime)]
+# 
+# 
+# all_content_age_cases <-
+#   most_recent_file_case_age %>%
+#   lapply(read_excel)
+# 
+# 
+# all_filenames_age_cases <- most_recent_file_case_age %>%
+#   basename() %>%
+#   as.list()
+# 
+# #include filename to get date from filename 
+# all_lists <- mapply(c, all_content_age_cases, all_filenames_age_cases, SIMPLIFY = FALSE)
+# 
+# cases_in <- rbindlist(all_lists, fill = T)
+# 
+# #process cases 
+# 
+# cases_age_out=cases_in %>%
+#   select(Age= ...1, Value=Count, Date= V1)%>%
+#   mutate(Date= substr(Date, 23, 30))%>%
+#   separate(Age, c("Age", "Int"), "-")%>%
+#   mutate(Age=recode(Age, 
+#                     `100+`= "100"))%>%
+#   mutate(AgeInt = case_when(
+#     Age == "0" ~ 5L,
+#     Age == "5" ~ 8L,
+#     Age == "13" ~ 5L,
+#     Age == "18" ~ 12L,
+#     Age == "100" ~ 5L,
+#     Age == "UNK" ~ NA_integer_,
+#     TRUE ~ 10L)) %>% 
+#   mutate(Measure= "Cases",
+#          Metric = "Count",
+#          Sex= "b") %>% 
+#   mutate(
+#     Date = ymd(Date),
+#     Date = paste(sprintf("%02d",day(Date)),    
+#                  sprintf("%02d",month(Date)),  
+#                  year(Date),sep="."),
+#     Code = paste0("US-ID"),
+#     Country = "USA",
+#     Region = "Idaho",)%>% 
+#   select(Country, Region, Code, Date, Sex, 
+#          Age, AgeInt, Metric, Measure, Value)
 
 #vaccines 
 

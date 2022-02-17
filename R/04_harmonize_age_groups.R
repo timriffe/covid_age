@@ -11,7 +11,9 @@ logfile <- here::here("buildlog.md")
 
 freesz  <- memuse::Sys.meminfo()$freeram@size
 n.cores <- min(round(freesz / 16),20)
-
+if (Sys.info()["nodename"] == "HYDRA11"){
+  n.cores <- 40
+}
 ### Load data #######################################################
 
 # Count data

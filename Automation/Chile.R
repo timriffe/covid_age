@@ -14,7 +14,7 @@ gs4_auth(email="")
 a1 <- range_read(ss= "https://docs.google.com/spreadsheets/d/1pM7PYqTUv7VYp3oOo6am7p6kKn_hQVntmk4QH9SYsKk/edit?usp=sharing",
                  sheet = "database_old.a")
 
-1 # To call my g-count
+# To call my g-count
 
 # Cases
 

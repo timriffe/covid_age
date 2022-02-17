@@ -1,8 +1,10 @@
-library(here)
-source(here("Automation/00_Functions_automation.R"))
+
+source(here::here("Automation/00_Functions_automation.R"))
 #written by Rafael 
 # edited by Jessica
 # refactored by Tim (27 Nov, 2021)
+# then refactors by Enrique
+# then again by Tim (12 Feb, 2022)
 lapply(c("tidyverse", "ggpubr", "gridExtra","readr", "googledrive", "googlesheets4"),
        library, character.only=TRUE)
 
@@ -154,7 +156,7 @@ x <- 0:10
 between(x,1,9)
 
 dd1 <- dd %>% 
-  filter(ANO_DEF >= 2020 & CODIGO_SUBCATEGORIA_DIAG1 == "U071") %>% 
+  dplyr::filter(ANO_DEF >= 2020 & CODIGO_SUBCATEGORIA_DIAG1 == "U071") %>% 
   mutate(EDAD_CANT = ifelse(EDAD_TIPO>1,0,EDAD_CANT), # if >1 == age in days or months
          Age = case_when(EDAD_CANT == 0 ~ "0",
                          between(EDAD_CANT,1,4) ~ "1",
@@ -210,36 +212,35 @@ Deaths_regions <-
          Measure = "Deaths",
          Metric = "Count",
          Date = ddmmyyyy(Date),
-         Code = case_when(Region == 'Aisen Gral. C. Ibanez Campo' ~ 'CL_AI',
-                          Region == 'Antofagasta' ~ 'CL_AN',
-                          Region == 'Arica y Parinacota' ~ 'CL_AP',
-                          Region == 'Atacama' ~ 'CL_AT',
-                          Region == 'Biobio' ~ 'CL_BI',
-                          Region == 'Coquimbo' ~ 'CL_CO',
-                          Region == 'La Araucania' ~ 'CL_AR',
-                          Region == 'Libertador B. OHiggins' ~ 'CL_LI',
-                          Region == 'Los Lagos' ~ 'CL_LL',
-                          Region == 'Los Rios' ~ 'CL_LR',
-                          Region == 'Magallanes y Antartica' ~ 'CL_MA',
-                          Region == 'Maule' ~ 'CL_ML',
-                          Region == 'Metropolitana Santiago' ~ 'CL_RM',
-                          Region == 'Nuble' ~ 'CL_NB',
-                          Region == 'Tarapaca' ~ 'CL_TA',
-                          Region == 'Valparaiso' ~ 'CL_VS',
-                          TRUE ~ 'UNK'),
+         Code = case_when(Region == 'Aisen Gral. C. Ibanez Campo' ~ 'CL-AI',
+                          Region == 'Antofagasta' ~ 'CL-AN',
+                          Region == 'Arica y Parinacota' ~ 'CL-AP',
+                          Region == 'Atacama' ~ 'CL-AT',
+                          Region == 'Biobio' ~ 'CL-BI',
+                          Region == 'Coquimbo' ~ 'CL-CO',
+                          Region == 'La Araucania' ~ 'CL-AR',
+                          Region == 'Libertador B. OHiggins' ~ 'CL-LI',
+                          Region == 'Los Lagos' ~ 'CL-LL',
+                          Region == 'Los Rios' ~ 'CL-LR',
+                          Region == 'Magallanes y Antartica' ~ 'CL-MA',
+                          Region == 'Maule' ~ 'CL-ML',
+                          Region == 'Metropolitana Santiago' ~ 'CL-RM',
+                          Region == 'Nuble' ~ 'CL-NB',
+                          Region == 'Tarapaca' ~ 'CL-TA',
+                          Region == 'Valparaiso' ~ 'CL-VS',
+                          TRUE ~ 'CL-UNK+'),
          AgeInt = case_when(Age == "0" ~ 1L,
                             Age == "1" ~ 4L,
                             Age == "UNK" ~ NA_integer_,
                             TRUE ~ 5L)) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
-  filter(! (Sex == "UNK" & Value == 0),
+  dplyr::filter(! (Sex == "UNK" & Value == 0),
          ! (Age == "UNK" & Value == 0))
 
 Deaths_all <- 
   Deaths_regions %>% 
   group_by(Country, Date, Sex, Age, AgeInt, Metric, Measure) %>% 
-  summarise(Value = sum(Value)) %>% 
-  ungroup() %>% 
+  summarise(Value = sum(Value), .groups = "drop") %>% 
   mutate(Region = "All",
          Code = "CL")
   

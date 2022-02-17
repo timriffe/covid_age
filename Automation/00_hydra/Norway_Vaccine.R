@@ -19,7 +19,7 @@ gs4_auth(email = email)
 
 all_paths <-
   list.files(path = dir_n_source,
-             pattern = "alder-2020-2021.csv",
+             pattern = "alder-2020",
              full.names = TRUE)
 
 all_content <-
@@ -38,7 +38,7 @@ vacc_in <- vacc_in[- grep("Covid", vacc_in$ï..Kilde..Nasjonalt.vaksinasjonsregi
 vacc_in$Date <- substr(vacc_in$V1,1, nchar(vacc_in$V1)-65)
 vacc_in <- vacc_in[,-2]
 vacc_in <- vacc_in %>% 
-separate(ï..Kilde..Nasjonalt.vaksinasjonsregister.SYSVAK..FHI, c("Age","Dose1 male", "Dose1 female","Dose2 male","Dose2 female"), sep = (";"))
+separate(ï..Kilde..Nasjonalt.vaksinasjonsregister.SYSVAK..FHI, c("Age","Dose1 male", "Dose1 female","Dose2 male","Dose2 female","Dose3 male","Dose3 female"), sep = (";"))
 vacc_in <- melt(vacc_in, id= c("Age", "Date"))
 names(vacc_in)[4] <- "Value"
 
@@ -77,16 +77,21 @@ vacc_out <- vacc_in %>%
   mutate(
     Measure = case_when(
       variable == "Dose1 male" ~ "Vaccination1",
-      variable == "Dose1 female" ~ "Vaccination1",
+      variable == "Dose1 female" ~ "Vaccination1",      
       variable == "Dose2 male" ~ "Vaccination2",
-      variable == "Dose2 female" ~ "Vaccination2"
+      variable == "Dose2 female" ~ "Vaccination2",
+      variable == "Dose3 female" ~ "Vaccination3",
+      variable == "Dose3 male" ~ "Vaccination3",
+
     ),
     Metric = "Count",
     Sex= case_when(
       variable == "Dose1 male" ~ "m",
       variable == "Dose1 female" ~ "f",
       variable == "Dose2 male" ~ "m",
-      variable == "Dose2 female" ~ "f"   
+      variable == "Dose2 female" ~ "f",         
+      variable == "Dose3 male" ~ "m",
+      variable == "Dose3 female" ~ "f"  
     )) %>% 
   filter(Date != "2021-12-07") 
 

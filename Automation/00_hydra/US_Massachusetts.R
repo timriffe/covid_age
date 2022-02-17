@@ -23,15 +23,19 @@ dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 drive_auth(email = email)
 gs4_auth(email = email)
 
-print(paste0("Starting data retrieval for US-MA..."))
+#print(paste0("Starting data retrieval for US-MA..."))
 
 # 2. Get data from the input rubric-----
-
-rubric_i <- get_input_rubric() %>% filter(Short == "US_MA")
-ss_i <- rubric_i %>% dplyr::pull(Sheet)
-
+# 
+# rubric_i <- get_input_rubric() %>% filter(Short == "US_MA")
+# ss_i <- rubric_i %>% dplyr::pull(Sheet)
+# 
 # reading data from Drive and last date entered 
-db_drive <- get_country_inputDB("US_MA") 
+
+db_drive <- read_rds(paste0(dir_n,ctr,".rds")) %>% 
+  filter(Measure != "Cases",
+         Measure != "Deaths")
+
 
 db_drive_combs <- db_drive %>% 
   select(Date, Sex, Age, Measure) %>% 
@@ -40,177 +44,193 @@ db_drive_combs <- db_drive %>%
 # 3. Download latest web data -----
 
 # 3.1. Cases and deaths =============
-
-m_url <- "https://www.mass.gov/info-details/archive-of-covid-19-cases-in-massachusetts"
-
-links <- 
-  scraplinks(m_url) %>% 
-  filter(str_detect(url, "raw-data")) %>% 
-  select(url) %>% 
-  mutate(p2 = str_locate(url, "/dow") - 1,
-         date = str_sub(url, 24, p2[,"start"]),
-         url2 = paste0("https://www.mass.gov", url))
-
-links$date <- gsub("january", "01", links$date)
-links$date <- gsub("february", "02", links$date)
-links$date <- gsub("march", "03", links$date)
-links$date <- gsub("april", "04", links$date)
-links$date <- gsub("may", "05", links$date)
-links$date <- gsub("june", "06", links$date)
-links$date <- gsub("july", "07", links$date)
-links$date <- gsub("august", "08", links$date)
-links$date <- gsub("september", "09", links$date)
-links$date <- gsub("october", "10", links$date)
-links$date <- gsub("november", "11", links$date)
-links$date <- gsub("december", "12", links$date)
-links$date <- gsub("21-0", "21", links$date)
-
-
-links <- links %>% 
-  mutate(date_f = mdy(date))
-
-# to download all previous dates
-# for(i in 1:nrow(links)){
-#   date <- links[i, 5] %>% dplyr::pull()
-#   data_source <- paste0(dir_n, "Data_sources/", ctr, "/", ctr, "_data_", date, ".zip")
-#   # data_source <- paste0(dir_n, "Data_sources/", ctr, "/covid-19-dashboard-10-15-2020.zip")
-#   cases_url <- links[i, 4] %>% dplyr::pull()
-#   download.file(cases_url, destfile = data_source, mode="wb")
-# }
-
-last_file <- 
-  links %>% 
-  arrange(desc(date_f)) %>% 
-  slice(1)
-  # group_by() %>% 
-  # filter(date_f == max(date_f)) %>% 
-  # ungroup() 
-
-date <- 
-  last_file %>% 
-  dplyr::pull(date_f) 
-
-url <- 
-  last_file %>% 
-  select(url2) %>% 
-  dplyr::pull()
-
-# DIEGO UPDATE 20210115:
-# The data format change in the webiste. Up to Dec 2020the data file was a zip file with different
-# Excel files inside, but it seems that since Jan 2021, the download is a sinlge Excel sheet
-
-# OLD CODE(2020) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 
+# m_url <- "https://www.mass.gov/info-details/archive-of-covid-19-cases-in-massachusetts"
+# 
+# links <- 
+#   scraplinks(m_url) %>% 
+#   filter(str_detect(url, "raw-data")) %>% 
+#   select(url) %>% 
+#   mutate(p2 = str_locate(url, "/dow") - 1,
+#          date = str_sub(url, 24, p2[,"start"]),
+#          url2 = paste0("https://www.mass.gov", url))
+# 
+# links$date <- gsub("january", "01", links$date)
+# links$date <- gsub("february", "02", links$date)
+# links$date <- gsub("march", "03", links$date)
+# links$date <- gsub("april", "04", links$date)
+# links$date <- gsub("may", "05", links$date)
+# links$date <- gsub("june", "06", links$date)
+# links$date <- gsub("july", "07", links$date)
+# links$date <- gsub("august", "08", links$date)
+# links$date <- gsub("september", "09", links$date)
+# links$date <- gsub("october", "10", links$date)
+# links$date <- gsub("november", "11", links$date)
+# links$date <- gsub("december", "12", links$date)
+# links$date <- gsub("21-0", "21", links$date)
+# 
+# 
+# links <- links %>% 
+#   mutate(date_f = mdy(date))
+# 
+# # to download all previous dates
+# # for(i in 1:nrow(links)){
+# #   date <- links[i, 5] %>% dplyr::pull()
+# #   data_source <- paste0(dir_n, "Data_sources/", ctr, "/", ctr, "_data_", date, ".zip")
+# #   # data_source <- paste0(dir_n, "Data_sources/", ctr, "/covid-19-dashboard-10-15-2020.zip")
+# #   cases_url <- links[i, 4] %>% dplyr::pull()
+# #   download.file(cases_url, destfile = data_source, mode="wb")
+# # }
+# 
+# last_file <- 
+#   links %>% 
+#   arrange(desc(date_f)) %>% 
+#   slice(1)
+#   # group_by() %>% 
+#   # filter(date_f == max(date_f)) %>% 
+#   # ungroup() 
+# 
+# date <- 
+#   last_file %>% 
+#   dplyr::pull(date_f) 
+# 
+# url <- 
+#   last_file %>% 
+#   select(url2) %>% 
+#   dplyr::pull()
+# 
+# # DIEGO UPDATE 20210115:
+# # The data format change in the webiste. Up to Dec 2020the data file was a zip file with different
+# # Excel files inside, but it seems that since Jan 2021, the download is a sinlge Excel sheet
+# 
+# # OLD CODE(2020) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# # data_source <- 
+# #   paste0(dir_n, "Data_sources/", ctr, "/", ctr, "_data_", date, ".zip")
+# 
+# # download.file(url, destfile = data_source, mode="wb")
+# # 
+# # data_source1 <- "CasesByAge.xlsx"
+# # unzip(zipfile = data_source, files = data_source1, exdir=".")
+# # age <- read_xlsx(data_source1)
+# # 
+# # data_source2 <- "CasesByDate.xlsx"
+# # unzip(zipfile = data_source, files = data_source2, exdir=".")
+# # cases_t <- read_xlsx(data_source2)
+# # 
+# # data_source3 <- "DateOfDeath.xlsx"
+# # unzip(zipfile = data_source, files = data_source3, exdir=".")
+# # deaths_t <- read_xlsx(data_source3)
+# # 
+# # file.remove(c(data_source1, data_source2, data_source3))
+# # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 
+# # NEW CODE ~~~~~~~~~~~~~
 # data_source <- 
-#   paste0(dir_n, "Data_sources/", ctr, "/", ctr, "_data_", date, ".zip")
-
+#   paste0(dir_n, "Data_sources/", ctr, "/", ctr, "_data_", date, ".xlsx")
+# 
 # download.file(url, destfile = data_source, mode="wb")
 # 
-# data_source1 <- "CasesByAge.xlsx"
-# unzip(zipfile = data_source, files = data_source1, exdir=".")
-# age <- read_xlsx(data_source1)
+# age <- read_xlsx(data_source, sheet = "CasesbyAge")
+# cases_t <- read_xlsx(data_source, sheet = "Cases (Report Date)")
+# deaths_t <- read_xlsx(data_source, sheet = "DateofDeath")
 # 
-# data_source2 <- "CasesByDate.xlsx"
-# unzip(zipfile = data_source, files = data_source2, exdir=".")
-# cases_t <- read_xlsx(data_source2)
 # 
-# data_source3 <- "DateOfDeath.xlsx"
-# unzip(zipfile = data_source, files = data_source3, exdir=".")
-# deaths_t <- read_xlsx(data_source3)
+# #JD: Made adjustment here: Prev. code was not selecting all columns with age groups
+# #Source prob. added columns later on
 # 
-# file.remove(c(data_source1, data_source2, data_source3))
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-# NEW CODE ~~~~~~~~~~~~~
-data_source <- 
-  paste0(dir_n, "Data_sources/", ctr, "/", ctr, "_data_", date, ".xlsx")
-
-download.file(url, destfile = data_source, mode="wb")
-
-age <- read_xlsx(data_source, sheet = "CasesbyAge")
-cases_t <- read_xlsx(data_source, sheet = "Cases (Report Date)")
-deaths_t <- read_xlsx(data_source, sheet = "DateofDeath")
-
-
-#JD: Made adjustment here: Prev. code was not selecting all columns with age groups
-#Source prob. added columns later on
-
+# # age2 <- 
+# #   age %>% 
+# #   select(1:9) %>% 
+# #   gather(-1, key = "Age", value = "Value") %>% 
+# #   separate(Age, c("Age", "trash")) %>% 
+# #   mutate(date_f = ymd(Date),
+# #          Age = ifelse(Age == "Unknown", "UNK", Age),
+# #          Sex = "b",
+# #          Measure = "Cases") %>% 
+# #   select(date_f, Sex, Age, Measure, Value) 
+# 
+# 
 # age2 <- 
 #   age %>% 
-#   select(1:9) %>% 
+#   #select(1:9) %>% 
 #   gather(-1, key = "Age", value = "Value") %>% 
+#   #remove Values from the columns we dont need 
+#   subset(Age != "Start Date")%>%
+#   subset(Age != "End Date")%>%
+#   subset(Age != "Average daily incidence rate per 100,000 (last 14 days)")%>%
+#   #add AgeInt before separating age groups because of distinction between 0-4 and 0-19 
+#   mutate(AgeInt = case_when(
+#     Age == "0-4 years" ~ 5L,
+#     Age == "0-19 years" ~ 20L,
+#     Age == "5-9 years" ~ 5L,
+#     Age == "10-14 years" ~ 5L,
+#     Age == "15-19 years" ~ 5L,
+#     Age == "80+ years" ~ 25L,
+#     Age == "UNK" ~ NA_integer_,
+#     TRUE ~ 10L))%>%
 #   separate(Age, c("Age", "trash")) %>% 
 #   mutate(date_f = ymd(Date),
 #          Age = ifelse(Age == "Unknown", "UNK", Age),
 #          Sex = "b",
 #          Measure = "Cases") %>% 
-#   select(date_f, Sex, Age, Measure, Value) 
-
-
-age2 <- 
-  age %>% 
-  #select(1:9) %>% 
-  gather(-1, key = "Age", value = "Value") %>% 
-  #remove Values from the columns we dont need 
-  subset(Age != "Start Date")%>%
-  subset(Age != "End Date")%>%
-  subset(Age != "Average daily incidence rate per 100,000 (last 14 days)")%>%
-  #add AgeInt before separating age groups because of distinction between 0-4 and 0-19 
-  mutate(AgeInt = case_when(
-    Age == "0-4 years" ~ 5L,
-    Age == "0-19 years" ~ 20L,
-    Age == "5-9 years" ~ 5L,
-    Age == "10-14 years" ~ 5L,
-    Age == "15-19 years" ~ 5L,
-    Age == "80+ years" ~ 25L,
-    Age == "UNK" ~ NA_integer_,
-    TRUE ~ 10L))%>%
-  separate(Age, c("Age", "trash")) %>% 
-  mutate(date_f = ymd(Date),
-         Age = ifelse(Age == "Unknown", "UNK", Age),
-         Sex = "b",
-         Measure = "Cases") %>% 
-  select(date_f, Sex, Age, Measure, Value, AgeInt)
-
+#   select(date_f, Sex, Age, Measure, Value, AgeInt)
+# 
+# # c2 <- 
+# #   cases_t %>% 
+# #   rename(Value = "Positive Total") %>% 
+# #   mutate(Sex = "b",
+# #          Age = "TOT",
+# #          date_f = ymd(Date),
+# #          Measure = "Cases") %>% 
+# #   select(date_f, Sex, Age, Measure, Value)
+# 
 # c2 <- 
 #   cases_t %>% 
 #   rename(Value = "Positive Total") %>% 
 #   mutate(Sex = "b",
 #          Age = "TOT",
 #          date_f = ymd(Date),
-#          Measure = "Cases") %>% 
-#   select(date_f, Sex, Age, Measure, Value)
-
-c2 <- 
-  cases_t %>% 
-  rename(Value = "Positive Total") %>% 
-  mutate(Sex = "b",
-         Age = "TOT",
-         date_f = ymd(Date),
-         Measure = "Cases",
-         AgeInt = case_when(Age == "TOT" | Age == "UNK" ~ NA_real_,
-                            TRUE ~ as.numeric(Age))) %>% 
-  select(date_f, Sex, Age, Measure, Value, AgeInt)
-
+#          Measure = "Cases",
+#          AgeInt = case_when(Age == "TOT" | Age == "UNK" ~ NA_real_,
+#                             TRUE ~ as.numeric(Age))) %>% 
+#   select(date_f, Sex, Age, Measure, Value, AgeInt)
+# 
+# # d2 <- deaths_t %>% 
+# #   rename(Value = "Confirmed Total",
+# #          Date = "Date of Death") %>% 
+# #   mutate(Sex = "b",
+# #          Age = "TOT",
+# #          date_f = ymd(Date),
+# #          Measure = "Deaths") %>% 
+# #   select(date_f, Sex, Age, Measure, Value)
+# 
 # d2 <- deaths_t %>% 
 #   rename(Value = "Confirmed Total",
 #          Date = "Date of Death") %>% 
 #   mutate(Sex = "b",
 #          Age = "TOT",
 #          date_f = ymd(Date),
-#          Measure = "Deaths") %>% 
-#   select(date_f, Sex, Age, Measure, Value)
-
-d2 <- deaths_t %>% 
-  rename(Value = "Confirmed Total",
-         Date = "Date of Death") %>% 
-  mutate(Sex = "b",
-         Age = "TOT",
-         date_f = ymd(Date),
-         Measure = "Deaths",
-         AgeInt = case_when(Age == "TOT" | Age == "UNK" ~ NA_real_,
-                            TRUE ~ as.numeric(Age))) %>% 
-  select(date_f, Sex, Age, Measure, Value, AgeInt)
-
+#          Measure = "Deaths",
+#          AgeInt = case_when(Age == "TOT" | Age == "UNK" ~ NA_real_,
+#                             TRUE ~ as.numeric(Age))) %>% 
+#   select(date_f, Sex, Age, Measure, Value, AgeInt)
+# 
+# # db_all <- 
+# #   bind_rows(age2, c2, d2) %>% 
+# #   mutate(Country = "USA",
+# #          Region = "Massachusetts",
+# #          Date = paste(sprintf("%02d", day(date_f)),
+# #                       sprintf("%02d", month(date_f)),
+# #                       year(date_f), sep = "."),
+# #          Code = paste0("US_MA", Date),
+# #          Metric = "Count",
+# #          AgeInt = case_when(Age == "0" ~ 20,
+# #                             Age == "80" ~ 25,
+# #                             Age == "TOT" | Age == "UNK" ~ NA_real_,
+# #                             TRUE ~ 10)) %>% 
+# #   arrange(date_f, Sex, Measure, suppressWarnings(as.integer(Age))) %>% 
+# #   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
+# 
 # db_all <- 
 #   bind_rows(age2, c2, d2) %>% 
 #   mutate(Country = "USA",
@@ -218,31 +238,15 @@ d2 <- deaths_t %>%
 #          Date = paste(sprintf("%02d", day(date_f)),
 #                       sprintf("%02d", month(date_f)),
 #                       year(date_f), sep = "."),
-#          Code = paste0("US_MA", Date),
-#          Metric = "Count",
-#          AgeInt = case_when(Age == "0" ~ 20,
-#                             Age == "80" ~ 25,
-#                             Age == "TOT" | Age == "UNK" ~ NA_real_,
-#                             TRUE ~ 10)) %>% 
+#          Code = paste0("US-MA"),
+#          Metric = "Count") %>% 
 #   arrange(date_f, Sex, Measure, suppressWarnings(as.integer(Age))) %>% 
 #   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
-
-db_all <- 
-  bind_rows(age2, c2, d2) %>% 
-  mutate(Country = "USA",
-         Region = "Massachusetts",
-         Date = paste(sprintf("%02d", day(date_f)),
-                      sprintf("%02d", month(date_f)),
-                      year(date_f), sep = "."),
-         Code = paste0("US-MA"),
-         Metric = "Count") %>% 
-  arrange(date_f, Sex, Measure, suppressWarnings(as.integer(Age))) %>% 
-  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
-
-db_all_combs <- 
-  db_all %>% 
-  select(Date, Sex, Age, Measure) %>% 
-  mutate(drive = 1)
+# 
+# db_all_combs <- 
+#   db_all %>% 
+#   select(Date, Sex, Age, Measure) %>% 
+#   mutate(drive = 1)
 
 # 3.2. Vaccine data =========
 
@@ -373,18 +377,17 @@ out_vac <-
 
 # Add cases
 
-db_drive2 <- 
-  db_drive %>% 
-  left_join(db_all_combs) %>% 
-  replace_na(list(drive = 2)) %>% 
-  filter(drive == 2,
-         Sex != "UNK",
-         Age != "UNK") %>% 
-  select(-drive)
+# db_drive2 <- 
+#   db_drive %>% 
+#   replace_na(list(drive = 2)) %>% 
+#   filter(drive == 2,
+#          Sex != "UNK",
+#          Age != "UNK") %>% 
+#   select(-drive)
 
 
 out <- 
-  bind_rows(db_drive2, db_all) %>% 
+db_drive %>% 
   mutate(date_f = dmy(Date)) %>% 
   arrange(date_f, Sex, Measure, suppressWarnings(as.integer(Age))) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
@@ -401,7 +404,7 @@ rows_to_add <- !new_vac %in% old_vac
   
 vac_data <- out_vac[rows_to_add, ]
 
-out <- bind_rows(out, vac_data)
+out <- bind_rows(out, vac_data) 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #### uploading database to Google Drive 
@@ -418,6 +421,6 @@ log_update(pp = ctr, N = nrow(out))
 #### uploading database to Google Drive 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-write_rds(db_all, "N:/COVerAGE-DB/Automation/Hydra/US_Massachusetts.rds")
+write_rds(out, "N:/COVerAGE-DB/Automation/Hydra/US_Massachusetts.rds")
 
 log_update(pp = "US_Massachusetts", N = nrow(db_all))
