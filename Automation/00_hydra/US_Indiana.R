@@ -112,50 +112,51 @@ Out_cases= IN_cases%>%
   
 
 #####################################Deaths#######################################################
-# 
-# Out_death= IN_death%>%
-#   select(Age = agegrp,Date=date, covid_deaths) %>% 
-#   mutate(
-#     Age = case_when(
-#       is.na(Age) ~ "UNK",
-#       TRUE~ as.character(Age))) %>%
-#   group_by(Date, Age) %>% 
-#   arrange(Age, Date) %>% 
-#   group_by(Age) %>% 
-#   mutate(Value = cumsum(covid_deaths)) %>% 
-#   ungroup() %>%
-#   mutate(Age=recode(Age, 
-#                     `0-19`="0",
-#                     `20-29`="20",
-#                     `30-39`="30",
-#                     `40-49`="40",
-#                     `50-59`="50",
-#                     `60-69`="60",
-#                     `70-79`="70",
-#                     `80+`="80",
-#                     `Unknown`="UNK"))%>% 
-#   mutate(AgeInt = case_when(
-#     Age == "0" ~ 20L,
-#     Age == "80" ~ 25L,
-#     Age == "UNK" ~ NA_integer_,
-#     TRUE ~ 10L))%>% 
-#   mutate(
-#     Measure = "Deaths",
-#     Metric = "Count",
-#     Sex= "b") %>% 
-#   mutate(
-#     Date = ymd(Date),
-#     Date = paste(sprintf("%02d",day(Date)),    
-#                  sprintf("%02d",month(Date)),  
-#                  year(Date),sep="."),
-#     Code = paste0("US-IN"),
-#     Country = "USA",
-#     Region = "Indiana",)%>% 
-#   select(Country, Region, Code, Date, Sex, 
-#          Age, AgeInt, Metric, Measure, Value)%>% 
-#   mutate(AgeInt = as.character(AgeInt))
-# 
-# 
+
+Out_death= IN_death%>%
+  select(Age = agegrp,Date=date, covid_deaths) %>%
+  mutate(
+    Age = case_when(
+      is.na(Age) ~ "UNK",
+      TRUE~ as.character(Age))) %>%
+  group_by(Date, Age) %>%
+  arrange(Age, Date) %>%
+  group_by(Age) %>%
+  mutate(Value = cumsum(covid_deaths)) %>%
+  ungroup() %>%
+  mutate(Age=recode(Age,
+                    `0-19`="0",
+                    `20-29`="20",
+                    `30-39`="30",
+                    `40-49`="40",
+                    `50-59`="50",
+                    `60-69`="60",
+                    `70-79`="70",
+                    `80+`="80",
+                    `Unknown`="UNK"))%>%
+  mutate(AgeInt = case_when(
+    Age == "0" ~ 20L,
+    Age == "80" ~ 25L,
+    Age == "UNK" ~ NA_integer_,
+    TRUE ~ 10L))%>%
+  mutate(
+    Measure = "Deaths",
+    Metric = "Count",
+    Sex= "b") %>%
+  filter(Date < "2020-09-26") %>% 
+  mutate(
+    Date = ymd(Date),
+    Date = paste(sprintf("%02d",day(Date)),
+                 sprintf("%02d",month(Date)),
+                 year(Date),sep="."),
+    Code = paste0("US-IN"),
+    Country = "USA",
+    Region = "Indiana",)%>%
+  select(Country, Region, Code, Date, Sex,
+         Age, AgeInt, Metric, Measure, Value)%>%
+  mutate(AgeInt = as.character(AgeInt))
+
+
 
 
 #automated vaccine data append 
@@ -253,7 +254,7 @@ select(Sex= gender, fully_vaccinated, first_dose_administered, Date= current_as_
 ######combine to one dataframe########## 
 
 out <- bind_rows(Out_cases,
-                #Out_death,
+                Out_death,
                 Out_vaccine_age,
                 Out_vaccine_sex,
                 vaccine_archive)%>%

@@ -166,6 +166,14 @@ n <- duplicated(CAout[,c("Date", "Sex","Age","Measure","Metric")])
 CAout <- 
   CAout[!n, ]
 
+CAout <- CAout %>% 
+  mutate(Date = dmy(Date)) %>%  
+  filter(Measure != "Deaths" | Date < "2020-09-26") %>% 
+  mutate(Date = ymd(Date),
+         Date = paste(sprintf("%02d",day(Date)),    
+                      sprintf("%02d",month(Date)),  
+                      year(Date),sep="."))
+
 
 # push to drive
 
