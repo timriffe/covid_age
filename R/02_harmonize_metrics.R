@@ -191,7 +191,7 @@ J <- J[ , try_step(process_function = maybe_lower_closeout,
 ### Saving ##########################################################
 
 # Formatting 
-
+# TR: add_AgeInt might not be working!!
 inputCounts <- J[ , AgeInt := add_AgeInt(Age, omega = 105),
                   by = list(Country, Region, Date, Sex, Measure)][, ..icolsIN] %>% 
   arrange(Country, Region, Sex, Measure, Age) %>% 
