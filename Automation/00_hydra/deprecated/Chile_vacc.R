@@ -19,8 +19,8 @@ ss_i     <- rubric_i %>% dplyr::pull(Sheet)
 
 # obtaining cases and deaths data from Drive
 db_drive <- 
-  get_country_inputDB("CL") %>% 
-  select(-Short)
+  get_country_inputDB("CL")# %>% 
+  #select(-Short)
 
 
 # vaccination data

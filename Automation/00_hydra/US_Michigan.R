@@ -20,7 +20,7 @@ ss_i     <- rubric_i %>% dplyr::pull(Sheet)
 ss_db    <- rubric_i %>% dplyr::pull(Source)
 
 # what's current most recent date?
-db_drive <- get_country_inputDB("US_MI")
+db_drive <-  read_sheet(ss = ss_i, sheet = "database")
 db_drive2 <- db_drive %>% 
   mutate(date_f = dmy(Date))
 

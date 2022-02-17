@@ -1,5 +1,5 @@
-library(here)
-source(here("Automation/00_Functions_automation.R"))
+
+source(here::here("Automation/00_Functions_automation.R"))
 library(readr)
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
@@ -14,7 +14,7 @@ dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 drive_auth(email = email)
 gs4_auth(email = email)
 
-at_rubric <- get_input_rubric() %>% filter(Short == "DK")
+at_rubric <- get_input_rubric() %>% dplyr::filter(Short == "DK")
 ss_i   <- at_rubric %>% dplyr::pull(Sheet)
 ss_db  <- at_rubric %>% dplyr::pull(Source)
 
@@ -22,7 +22,8 @@ ss_db  <- at_rubric %>% dplyr::pull(Source)
 # reading data from Denmark stored in N drive
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 db_n <- read_rds(paste0(dir_n, ctr, ".rds")) %>% 
-  mutate(Date = dmy(Date))   
+  mutate(Date = dmy(Date)) %>% 
+  filter(Date != "2021-06-20" | Value != "258806")
   # mutate(Value = as.character(Value)) %>%
   # mutate(Value = case_when((Code == "DK03.06.2021" & Age == "TOT" & Measure == "Deaths") ~ "2517",
   #                           TRUE ~ Value)) %>% 
@@ -60,31 +61,30 @@ unique(db_n$Measure)
 
 # identifying dates already captured in each measure
 dates_cases_n <- db_n %>% 
-  filter(Measure == "Cases") %>% 
+  dplyr::filter(Measure == "Cases") %>% 
   dplyr::pull(Date) %>% 
   unique() %>% 
   sort()
 
 dates_deaths_n <- db_n %>% 
-  filter(Measure == "Deaths") %>% 
+  dplyr::filter(Measure == "Deaths") %>% 
   dplyr::pull(Date) %>% 
   unique() %>% 
   sort()
 
 dates_vacc_n <- db_n %>% 
-  filter(Measure %in% c("Vaccination", "Vaccination1", "Vaccination2")) %>% 
+  dplyr::filter(Measure %in% c("Vaccinations", "Vaccination1", "Vaccination2")) %>% 
   dplyr::pull(Date) %>% 
   unique() %>% 
   sort()
 
 # reading new deaths from Drive
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-db_drive <- get_country_inputDB("DK")
+db_drive <- read_sheet(ss = ss_i, sheet = "database")
 
 db_drive_deaths <- db_drive %>% 
   mutate(Date = dmy(Date)) %>% 
-  select(-Short) %>% 
-  filter(Measure == "Deaths")
+  dplyr::filter(Measure == "Deaths")
 
 # filtering deaths not included yet
 db_deaths <- db_drive_deaths %>% 
@@ -100,7 +100,7 @@ db_deaths2 <-
       mutate(Age = "TOT",
              AgeInt = NA)
   ) %>% 
-  filter(Age != "UNK")
+  dplyr::filter(Age != "UNK")
 
 # reading new cases from the web
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -110,14 +110,14 @@ m_url_c <- "https://covid19.ssi.dk/overvagningsdata/download-fil-med-overvaagnin
 
 # capture all links with excel files
 links_c <- scraplinks(m_url_c) %>% 
-  filter(str_detect(link, "zip")) %>% 
+  dplyr::filter(str_detect(link, "zip")) %>% 
   separate(link, c("a", "b", "c", "d", "e", "Date", "g", "h")) %>% 
   mutate(Date = dmy(Date)) %>% 
   select(Date, url) %>% 
   drop_na()
 
 links_new_cases <- links_c %>% 
-  filter(!Date %in% dates_cases_n)
+ dplyr:: filter(!Date %in% dates_cases_n)
 
 links_new_cases <- links_c[1,]
 # downloading new cases data and loading it
@@ -147,6 +147,7 @@ if(dim(links_new_cases)[1] > 0){
              f = 2,
              m = 3,
              b = 4) %>% 
+      # TR: better replace w pivot_longer
       gather(-1, key = "Sex", value = "Values") %>% 
       separate(Values, c("Value", "trash"), sep = " ") %>% 
       mutate(Value = as.numeric(str_replace(Value, "\\.", "")),
@@ -182,14 +183,14 @@ m_url_v <- "https://covid19.ssi.dk/overvagningsdata/download-fil-med-vaccination
 #otherwise new files get filtered out 
 
 links_v <- scraplinks(m_url_v) %>% 
-  filter(str_detect(link, "zip")) %>% 
+  dplyr::filter(str_detect(link, "zip")) %>% 
   separate(link, c("a", "b", "c", "d", "e", "f", "g", "h"))%>%
   mutate(Date= dmy(f)) %>% 
   select(Date, url) %>% 
   drop_na()
 
 links_new_vacc <- links_v %>% 
-  filter(!Date %in% dates_vacc_n)
+  dplyr::filter(!Date %in% dates_vacc_n)
 # links_new_vacc <- links_v[1,]
 # downloading new vaccine data and loading it
 dim(links_new_vacc)[1] > 0
@@ -212,8 +213,7 @@ if(dim(links_new_vacc)[1] > 0){
              Vaccination2 = 5) %>% 
       gather(Vaccination1, Vaccination2, key = Measure, value = Value) %>% 
       group_by(Age, Sex, Measure) %>% 
-      summarise(Value = sum(Value)) %>% 
-      ungroup() %>%
+      summarise(Value = sum(Value),.groups = "drop")
       mutate(Sex = recode(Sex,
                           "K" = "f",
                           "M" = "m"),
@@ -228,11 +228,10 @@ if(dim(links_new_vacc)[1] > 0){
       bind_rows(
         db_v2 %>% 
           group_by(Sex, Measure, Date) %>% 
-          summarise(Value = sum(Value)) %>% 
-          ungroup() %>% 
+          summarise(Value = sum(Value), .groups = "drop") %>% 
           mutate(Age = "TOT")
       ) %>% 
-      filter(Age != "UNK")
+      dplyr::filter(Age != "UNK")
     
     db_vcc <- db_vcc %>% 
       bind_rows(db_v3)
@@ -247,7 +246,7 @@ if(dim(links_new_vacc)[1] > 0 | dim(links_new_cases)[1] > 0){
     bind_rows(db_cases, db_vcc) %>% 
     mutate(Date = ddmmyyyy(Date),
            Country = "Denmark",
-           Code = paste0("DK"),
+           Code = "DK",
            Region = "All",
            AgeInt = case_when(Age == "90" ~ 15L, 
                               Age == "TOT" ~ NA_integer_,
@@ -261,7 +260,13 @@ out <-
   mutate(Date = ddmmyyyy(Date)) %>% 
   bind_rows(db_cases_vcc) %>% 
   sort_input_data() %>% 
-  unique
+  distinct() # TR: should be without effect,
+            # and will not remove redundancies
+            # if values are different
+
+# TR: this pipeline ended with %>% unique. Is there not a better and more rigorous way to remove redundancies?
+# unique 
+  
 
 ###########################
 #### Saving data in N: ####

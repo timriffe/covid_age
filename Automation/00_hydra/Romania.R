@@ -35,9 +35,9 @@ ss_db <- rubric %>%
 
 # reading data from Drive 
 
-In_drive <- get_country_inputDB("RO")%>% 
-  select(-Short)%>% 
-  mutate(Value = as.character(Value))
+In_drive <- read_sheet(ss = ss_i, sheet = "database")#%>% 
+  #select(-Short)%>% 
+  # mutate(Value = as.character(Value)) # ?????
 
 #Read in downloads from N 
  

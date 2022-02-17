@@ -68,7 +68,7 @@ IN <- rbind(data1, data2, data3)
 
 rm(data1,data2);gc()
 glimpse(IN)
-states <- c("AZ","AR", "DE","GU","ID","KS","ME","MA","MN","MT","NV","NJ","NC","OK","OR","PA","SC","TN","VA")
+states <- c("AZ","AR", "DE","GU","ID","KS","ME","MA","MN","MT","NV","NJ","NC","OK","OR","PA","SC","TN","VA", "IL")
 
 Out <-
   IN %>%
@@ -105,7 +105,10 @@ Out <-
                   `60 - 69 Years`="60",
                   `70 - 79 Years`="70",
                   `80+ Years`="80",
-                  `Unknown`="UNK"))%>% 
+                  `Missing`="UNK",
+                  `NA`="UNK")) %>% 
+  group_by(Date, Sex, State) %>% 
+  summarise(Value = sum(Value))
   mutate(AgeInt = case_when(
     Age == "80" ~ 25L,
     Age == "UNK" ~ NA_integer_,
@@ -138,45 +141,12 @@ mutate(
                    `PA`=  "Pennsylvania",	
                    `SC`= "South Carolina",	
                    `TN`= "Tennessee",	
-                   `VA`=  "Virginia"),
+                   `VA`=  "Virginia",
+                   `IL`= "Illinois"),
     Code= paste0 ("US-", State)) %>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)
 
-View(Out)
-dat2 <- 
-  Out %>% 
-  mutate(Date = dmy(Date)) %>% 
-  group_by(Region, Date) %>% 
-  summarise(Value = sum(Value)) %>% 
-  ungroup()%>%
-  drop_na(Value) 
-
-cts <- dat2 %>%
-  drop_na(Value) %>% 
-  select(Region) %>% 
-  unique() %>% 
-  mutate(id = 1:n(),
-         gr = floor(id/12) + 1)
-
-
-for(i in 1:max(cts$gr)){
-  cts_t <- 
-    cts %>% 
-    filter(gr == i) %>% 
-    dplyr::pull(Region)
-  
-  dat2 %>% 
-    filter(Region %in% cts_t) %>% 
-    ggplot()+
-    geom_point(aes(Date, Value), size = 0.3)+
-    facet_wrap(~Region, scales = "free")+
-    theme(
-      axis.text.x = element_text(size = 5)
-    )
-  
-  ggsave(paste0("R_checks/quality_checks/CDC_checks", i, ".png")) 
-}
 
 #save output data
 

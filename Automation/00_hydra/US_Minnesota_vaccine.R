@@ -33,8 +33,7 @@ ss_db <- rubric %>%
 
 # reading data from Drive and last date entered 
 
-In_drive <- get_country_inputDB("US_MN")%>% 
-  select(-Short)
+In_drive <-  read_sheet(ss = ss_i, sheet = "database")
 
 
 #read in new data 
@@ -48,6 +47,7 @@ Out= IN_vaccine%>%
          Vaccination2= People.with.completed.vaccine.series) %>%
   pivot_longer(!Date & !Age, names_to= "Measure", values_to= "Value")%>%
   mutate(Age=recode(Age, 
+                    `5-11`="5",
                     `12-15`="12",
                     `16-17`="16",
                     `18-49`="18",
@@ -55,6 +55,7 @@ Out= IN_vaccine%>%
                     `65+`="65",
                     `Unknown/missing`="UNK"))%>% 
   mutate(AgeInt = case_when(
+    Age == "5" ~ 7L,
     Age == "12" ~ 4L,
     Age == "16" ~ 2L,
     Age == "18" ~ 32L,
@@ -79,13 +80,16 @@ Out= IN_vaccine%>%
 
 #get previous data 
 
-Out1 <- bind_rows(In_drive, Out)
+Out1 <- bind_rows(In_drive, Out) %>% 
+  sort_input_data() %>% 
+  unique()
 
 # upload to Drive, overwrites
 
 write_sheet(Out1, 
             ss = ss_i, 
-            sheet = "database")
+            sheet = "database") 
+  
 
 log_update("US_Minnesota_vaccine", N = nrow(Out))
 

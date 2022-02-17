@@ -202,7 +202,7 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
   # rubric <- rubric %>% 
   #   filter(Rows > 0) # just always read all files from Hyrdra?
   # 
-  on_hydra <- Sys.info()["nodename"] %in% c("HYDRA01","HYDRA02")
+  on_hydra <- Sys.info()["nodename"] %in% c("HYDRA01","HYDRA02","HYDRA11")
   if ( on_hydra ){
     
     rubric_hydra <- 
@@ -286,10 +286,10 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
     } else {
       
       # If data loaded get code
-      X <- 
-        X %>% 
-        mutate(Short = add_Short(Code, Date),
-               templateID = id)
+      # X <- 
+      #   X %>% 
+      #   mutate(Short = add_Short(Code, Date),
+      #          templateID = id)
       
       # Add to result list
       input_list[[id]] <- X
@@ -318,10 +318,10 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
       if (class(X)[1] == "try-error"){
         cat(i, "on 3rd try still didn't load\n")
       } else {
-        X <- 
-         X %>% 
-          mutate(Short = add_Short(Code, Date),
-                 templateID = i)
+        # X <- 
+        #  X %>% 
+        #   mutate(Short = add_Short(Code, Date),
+        #          templateID = i)
         input_list[[i]] <- X
       }
     }
@@ -378,9 +378,9 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
       
     }
     
-    hydra_data <- 
-      hydra_data %>% 
-      mutate(Short = add_Short(Code, Date))
+    # hydra_data <- 
+    #   hydra_data %>% 
+    #   mutate(Short = add_Short(Code, Date))
     
     # hydra_data <-
     #   lapply(local_files,
@@ -508,7 +508,7 @@ get_input_rubric <- function(tab = "input") {
   # Read spreadsheet
   input_rubric <- read_sheet(ss_rubric, sheet = tab) %>% 
     # Drop if no source spreadsheet
-    filter(!is.na(Loc))
+    dplyr::filter(!is.na(Loc))
   
   # Return tibble
   input_rubric
@@ -530,11 +530,10 @@ get_country_inputDB <- function(ShortCode, rubric) {
   # Find spreadsheet for country
   rubric_i   <- rubric %>% 
     filter(Short == ShortCode)
-  
   if (rubric_i$Loc == "d"){
     ss_i <-  rubric_i$Sheet
-  # Load spreadsheet
-  out_ <- read_sheet(ss_i, 
+    # Load spreadsheet
+    out_ <- read_sheet(ss_i, 
                     sheet = "database", 
                     na = "NA", 
                     col_types= "cccccciccd",
@@ -547,18 +546,18 @@ get_country_inputDB <- function(ShortCode, rubric) {
       out_ <- readRDS(hydra_path)
     } else {
       cat("N drive file",hydra_path,"not found\nIs the name right in the input rubric?\nOr maybe you're not on an MPIDR machine?\n")
-      out <- NULL
+      out_ <- NULL
     }
   }
   
-  if (!exists("out_")){
-    cat()
-  }
+  # if (!exists("out_")){
+  #   cat()
+  # }
   
   # Assign short code
-  if (!is.null(out_)){
-    out_$Short <- add_Short(out_$Code,out_$Date)
-  }
+  # if (!is.null(out_)){
+  #   out_$Short <- add_Short(out_$Code,out_$Date)
+  # }
 
   # Output
   out_
@@ -644,26 +643,26 @@ sort_input_data <- function(X) {
 # @param Code Character vector of long labels
 # @param Date Vector of dates
 
-add_Short <- function(Code, Date) {
-  
-  # Apply elementwise
-  mapply(function(Code, Date){
-    
-    # Remove date
-    Short <- gsub(pattern = Date, replacement = "", Code)
-    
-    # Remove last character if not a letter
-    last_char <- str_sub(Short,-1)
-    if (last_char %in% c("\\.","_","-")){
-      Short <- substr(Short,1,nchar(Short)-1)
-    }
-    
-    # Return short label
-    Short
-    
-  }, Code, Date)
-  
-}
+# add_Short <- function(Code, Date) {
+#   
+#   # Apply elementwise
+#   mapply(function(Code, Date){
+#     
+#     # Remove date
+#     Short <- gsub(pattern = Date, replacement = "", Code)
+#     
+#     # Remove last character if not a letter
+#     last_char <- str_sub(Short,-1)
+#     if (last_char %in% c("\\.","_","-")){
+#       Short <- substr(Short,1,nchar(Short)-1)
+#     }
+#     
+#     # Return short label
+#     Short
+#     
+#   }, Code, Date)
+#   
+# }
 
 
 #----------------------

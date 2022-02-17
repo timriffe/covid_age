@@ -23,7 +23,7 @@ ss_db    <- rubric_i %>% dplyr::pull(Source)
 # current operation just appends cases. I'd prefer to re-tabulate the full case history from the spreadsheet.
 
 # reading data from Montreal and last date entered 
-db_drive <- get_country_inputDB("NZ")
+db_drive <- read_sheet(ss = ss_i, sheet = "database")
 db_drive <- db_drive %>% 
   mutate(Sex = case_when(
          Sex == "b" ~ "b",
@@ -215,12 +215,21 @@ db_v <-
   ####################################
   
   # cases and deaths by age for the last update
-  m_url2 <- getURL(m_url)
-  tables <- readHTMLTable(m_url2) 
+
+
+html <-read_html(m_url)
+
+all_the_tables <- html %>% 
+  html_table(fill = TRUE, 
+             header=TRUE, 
+             convert = FALSE)
+
+  #m_url2 <- read_html(m_url)
+  #tables <- readHTMLTable(m_url2) 
   #JD: Changed position of these tabs
   #db_a <- tables[[3]]
-  db_a <- tables[[7]] 
-  db_s <- tables[[8]]
+  db_a <- all_the_tables[[7]] 
+  db_s <- all_the_tables[[8]]
   
   
   db_a2 <- db_a %>% 
@@ -265,17 +274,23 @@ db_v <-
   
   # tests by age and sex
   test_url <- "https://www.health.govt.nz/our-work/diseases-and-conditions/covid-19-novel-coronavirus/covid-19-data-and-statistics/testing-covid-19"
-  test_url2 <- getURL(test_url)
-  tables_test <- readHTMLTable(test_url2) 
-  db_ta <- tables_test[[12]] 
-  db_ts <- tables_test[[13]] 
+  
+  html <-read_html(test_url)
+  
+  all_the_tables <- html %>% 
+    html_table(fill = TRUE, 
+               header=TRUE, 
+               convert = FALSE)
+  db_ta <- all_the_tables[[12]] 
+  db_ts <- all_the_tables[[13]] 
   
   
   db_ta2 <- db_ta %>% 
     as_tibble() %>% 
     select(Age = 1,
-           Value = 2) %>% 
+            Value = 2) %>% 
     filter(Age != "Unknown") %>% 
+    mutate(Value = gsub(",", "",Value)) %>% 
     mutate(Value = as.numeric(Value)) %>% 
     separate(Age, c("Age", "trash"), sep = " to ") %>% 
     mutate(Age = case_when(Age == "80+" ~ "80",
@@ -295,6 +310,7 @@ db_v <-
            Age = "TOT") %>% 
     filter(Sex != "UNK",
            Sex != "b") %>% 
+    mutate(Value = gsub(",", "",Value)) %>% 
     mutate(Value = as.numeric(Value))
   
   db_tas <- bind_rows(db_ta2, db_ts2) %>% 
@@ -319,8 +335,8 @@ db_v <-
   ########################################
   
   db_dv1 <- db_drive %>% 
-    filter(Measure != "Cases") %>% 
-    select(-Short)
+    filter(Measure != "Cases") #%>% 
+    #select(-Short)
   
   # combinations in the no-case base
   db_in <- db_dv1 %>% 
