@@ -78,36 +78,78 @@ Cases1 <-
                          Agegroup == "<50" ~ "<50",  # can correct later.
                          Agegroup == "Unknown" ~ "UNK")
          ) %>% 
+  group_by(Date_statistics, Sex, Age, Province) %>% 
+  summarize(New = n()) %>% 
+  ungroup() %>% 
+  filter(!is.na(Province))
+
+Cases_total <-
+  NL %>%
+  mutate(Sex = case_when(
+    Sex == "Female" ~ "f",
+    Sex == "Male" ~ "m",
+    Sex == "Unknown" ~ "UNK"),
+    Age = case_when(Agegroup == "0-9" ~ "0",
+                    Agegroup == "10-19" ~ "10",
+                    Agegroup == "20-29" ~ "20",
+                    Agegroup == "30-39" ~ "30",
+                    Agegroup == "40-49" ~ "40",
+                    Agegroup == "50-59" ~ "50",
+                    Agegroup == "60-69" ~ "60",
+                    Agegroup == "70-79" ~ "70",
+                    Agegroup == "80-89" ~ "80",
+                    Agegroup == "90+" ~ "90",
+                    Agegroup == "<50" ~ "<50",  # can correct later.
+                    Agegroup == "Unknown" ~ "UNK")
+  ) %>% 
   group_by(Date_statistics, Sex, Age) %>% 
   summarize(New = n()) %>% 
-  ungroup() 
+  ungroup() %>% 
+  mutate(Province = "All")
+
+Cases1 <- rbind(Cases_total , Cases1) %>% 
+  arrange(Date_statistics, Province, Sex, Age)
 
 Cases_full <- 
   Cases1 %>% 
-  expand(Sex, Age, Date_statistics = dates_all) 
+  expand(Province, Sex, Age, Date_statistics = dates_all) 
 
 Cases2 <- 
   Cases_full %>% 
-  left_join(Cases1, by = c("Sex","Age","Date_statistics")) %>% 
+  left_join(Cases1, by = c("Sex","Age","Date_statistics", "Province")) %>% 
   replace_na(list(New = 0)) %>% 
   # tidyr::complete(Sex, Age, Date_statistics = dates_all, fill = list(New = 0)) %>% 
-  arrange(Sex, Age, Date_statistics) %>% 
-  group_by(Sex, Age) %>% 
+  arrange(Province, Sex, Age, Date_statistics) %>% 
+  group_by(Province, Sex, Age) %>% 
   mutate(Value = cumsum(New)) %>% 
   ungroup() %>% 
   # filter(!(Sex == "UNK" & Value == 0),
   #        !(Age == "UNK" & Value == 0)) %>% 
-  arrange(Date_statistics, Sex, Age) %>% 
-  select(date = Date_statistics, Sex, Age, Value) %>% 
+  arrange(Province, Date_statistics, Sex, Age) %>% 
+  select(date = Date_statistics,Region = Province, Sex, Age, Value) %>% 
   group_by(date, Sex) %>% 
   do(redistribute_under50(chunk = .data)) %>% 
   ungroup() %>% 
   mutate(Country = "Netherlands",
-         Region = "All",
+         #Region = Province,
          Date = paste(sprintf("%02d", day(date)),
                       sprintf("%02d", month(date)),
                       year(date), sep = "."),
-         Code = paste0("NL"),
+         Code = case_when(
+           Region == "All" ~ "NL",
+           Region == "Drenthe" ~ "NL-DR",
+           Region == "Flevoland" ~ "NL-FL",
+           Region == "Fryslân" ~ "NL-FR",
+           Region == "Gelderland" ~ "NL-GE",
+           Region == "Groningen" ~ "NL-GR",
+           Region == "Limburg" ~ "NL-LI",
+           Region == "Noord-Brabant" ~ "NL-NB",
+           Region == "Noord-Holland" ~ "NL-NH",
+           Region == "Overijssel" ~ "NL-OV",
+           Region == "Utrecht" ~ "NL-UT",
+           Region == "Zeeland" ~ "NL-ZE",
+           Region == "Zuid-Holland" ~ "NL-ZH"
+                    ),
          Metric = "Count",
          Measure = "Cases",
          AgeInt = case_when(
@@ -115,7 +157,8 @@ Cases2 <-
            Age == "90" ~ 15,
            TRUE ~ 10
          )) %>% 
-  select(Country, Region, Code, Date, Sex,Age, AgeInt, Metric, Measure, Value)
+  select(Country, Region, Code, Date, Sex,Age, AgeInt, Metric, Measure, Value) %>% 
+  sort_input_data()
   
 # Prepare Deaths:
 
@@ -149,20 +192,33 @@ Deaths <- NL %>%
       Sex == "Male" ~ "m",
       Sex == "Unknown" ~ "UNK")
   ) %>% 
-  select(date, Sex, Age) %>% 
-  group_by(date,Sex,Age) %>% 
+  select(Region = Province, date, Sex, Age) %>% 
+  group_by(Region, date,Sex,Age) %>% 
   summarize(Value = n()) %>% 
-  ungroup() %>% 
-  tidyr::complete(date = all_dates,
-             Sex,
-             Age = all_ages,
-             fill = list(Value = 0)) %>% 
-    arrange(Sex,Age,date) %>% 
-    group_by(Sex,Age) %>% 
+  ungroup() 
+  
+death_total <- Deaths %>% 
+  group_by(date, Sex, Age) %>% 
+  summarise(Value = sum(Value)) %>% 
+  mutate(Region = "All")
+Deaths <- rbind(Deaths, death_total) 
+  
+
+
+death_full <- 
+  Deaths %>% 
+  expand(Region, Sex, Age, date) 
+
+Deaths2 <- 
+  death_full %>% 
+  left_join(Deaths, by = c("Sex","Age","date", "Region")) %>% 
+  replace_na(list(Value = 0)) %>% 
+    arrange(Region,Sex,Age,date) %>% 
+    group_by(Region,Sex,Age) %>% 
     mutate(Value = cumsum(Value)) %>% 
     ungroup() %>% 
     mutate(Country = "Netherlands",
-           Region = "All",
+           #Region = "All",
            Date = paste(sprintf("%02d", day(date)),
                         sprintf("%02d", month(date)),
                         year(date), sep = "."),
@@ -174,17 +230,30 @@ Deaths <- NL %>%
            ),
            Metric = "Count",
            Measure = "Deaths",
-           Code = paste0("NL")
-    ) %>% 
+           Code = case_when(
+             Region == "All" ~ "NL",
+             Region == "Drenthe" ~ "NL-DR",
+             Region == "Flevoland" ~ "NL-FL",
+             Region == "Fryslân" ~ "NL-FR",
+             Region == "Gelderland" ~ "NL-GE",
+             Region == "Groningen" ~ "NL-GR",
+             Region == "Limburg" ~ "NL-LI",
+             Region == "Noord-Brabant" ~ "NL-NB",
+             Region == "Noord-Holland" ~ "NL-NH",
+             Region == "Overijssel" ~ "NL-OV",
+             Region == "Utrecht" ~ "NL-UT",
+             Region == "Zeeland" ~ "NL-ZE",
+             Region == "Zuid-Holland" ~ "NL-ZH"
+           )) %>% 
     filter(!(Sex == "UNK" & Value == 0),
            !(Age == "UNK" & Value == 0)) %>% 
     select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
 
-  
+
 # bind and sort:
 
 out <- 
-  bind_rows(Cases2, Deaths) %>%
+  bind_rows(Cases2, Deaths2) %>%
   mutate(date_f = dmy(Date)) %>% 
   filter(date_f >= dmy("01.03.2020")) %>% 
   arrange(date_f, Sex, Measure, suppressWarnings(as.integer(Age))) %>% 
