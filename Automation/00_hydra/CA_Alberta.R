@@ -172,7 +172,8 @@ death <- death %>%
     Age == "5" ~ 5L,
     Age == "80" ~ 25L,
     Age == "UNK" ~ NA_integer_,
-    TRUE ~ 10L))
+    TRUE ~ 10L)) %>% 
+  mutate(Value = as.character(Value))
 
 
 # death <- death[-1]
