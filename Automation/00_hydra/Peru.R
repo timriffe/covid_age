@@ -1,5 +1,5 @@
-library(here)
-source(here("Automation/00_Functions_automation.R"))
+
+source(here::here("Automation/00_Functions_automation.R"))
 #install.packages("archive")
 library(archive)
 #install.packages("archive")

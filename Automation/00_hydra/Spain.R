@@ -10,8 +10,12 @@ ctr <- "Spain"
 dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 # Drive credentials
-drive_auth(email = email)
-gs4_auth(email = email)
+drive_auth(email = email,
+           scopes = c("https://www.googleapis.com/auth/spreadsheets",
+                               "https://www.googleapis.com/auth/drive"))
+gs4_auth(email = email,
+         scopes = c("https://www.googleapis.com/auth/spreadsheets",
+                    "https://www.googleapis.com/auth/drive"))
 
 url <- "https://cnecovid.isciii.es/covid19/resources/casos_hosp_uci_def_sexo_edad_provres.csv"
 
@@ -46,10 +50,10 @@ file.remove(data_source)
 # glimpse(IN)
 # IN$grupo_edad %>% unique()
 # unique(IN$sexo) 
-# geo_ss <- "https://docs.google.com/spreadsheets/d/1gbP_TTqc96PxeZCpwKuZJB1sxxlfbBjlQj-oxXD2zAs/edit#gid=0"
-# geo_lookup <- read_sheet(ss = geo_ss) %>% 
-#   mutate(Code = coalesce(`ISO 3166-2`, `Internal Code`)) %>% 
-#   dplyr::filter(!is.na(Code))
+ # geo_ss <- "https://docs.google.com/spreadsheets/d/1gbP_TTqc96PxeZCpwKuZJB1sxxlfbBjlQj-oxXD2zAs/edit#gid=0"
+ # geo_lookup <- read_sheet(ss = geo_ss) %>% 
+ #   mutate(Code = coalesce(`ISO 3166-2`, `Internal Code`)) %>% 
+ #   dplyr::filter(!is.na(Code))
 
 in2 <-
   IN %>% 

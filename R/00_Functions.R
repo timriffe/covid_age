@@ -142,14 +142,12 @@ log_processing_error <- function(chunk,
   cat(marker, file = logfile, append = TRUE)
 }
 
-
 ### try_step()
 # Try function on data and if error capture in log
 # @param process_function function Name of function to apply
 # @param chunk tibble Name of data
 # @param byvars character Names of grouping variables
 # @param logfile Name of log file
-
 try_step <- function(process_function, 
                      chunk, 
                      byvars = c("Code","Sex"),
@@ -178,6 +176,71 @@ try_step <- function(process_function,
   
 }
 
+### try_step()
+# @param process_function function Name of function to apply
+# @param chunk tibble Name of data
+# @param process_function_name character name of function applied
+
+try_step2 <- function(process_function, 
+                     chunk, 
+                     process_function_name,
+                     ...) {
+  
+  # Try function on chunc
+  out <- try(process_function(chunk = chunk, ...))
+  
+  # If error happens...
+  if (class(out)[1] == "try-error"){
+    
+    # ... return empty chunk
+    out <- chunk %>% 
+      mutate(keep_ = FALSE,
+             reason = process_function_name)
+  } else {
+    out <- out %>% 
+      mutate(keep_ = TRUE,
+             reason = NA_character_)
+  }
+  
+  # Return result (potentially empty chunk)
+  return(out)
+}
+
+
+# Try function on data and if error capture in log
+# @param process_function function Name of function to apply
+# @param chunk tibble Name of data
+# @param byvars character Names of grouping variables
+# @param logfile Name of log file
+
+# try_step <- function(process_function, 
+#                      chunk, 
+#                      byvars = c("Code","Sex"),
+#                      logfile = "buildlog.md", 
+#                      write_log = TRUE,
+#                      ...) {
+#   
+#   # Try function on chunc
+#   out <- try(process_function(chunk = chunk, ...))
+#   
+#   # If error happens...
+#   if (class(out)[1] == "try-error"){
+#     
+#     if (write_log){
+#       # ...write error to log
+#       log_processing_error(chunk = chunk, 
+#                            byvars = byvars,
+#                            logfile = logfile)
+#     }
+#     # ... return empty chunk
+#     out <- chunk[0]
+#   }
+#   
+#   # Return result (potentially empty chunk)
+#   return(out)
+#   
+# }
+# 
 
 
 ### Main compile functions ##########################################
@@ -423,17 +486,25 @@ compile_offsetsDB <- function() {
   
   # Load offset overview spreadsheet
   ss_offsets <- "https://docs.google.com/spreadsheets/d/1z9Dg7iQWPdIGRI3rvgd-Dx3rE5RPNd7B_paOP86FRzA/edit#gid=0"
-  offsets_rubric <- read_sheet(ss_offsets, sheet = 'checklist') %>% 
-    filter(!is.na(Sheet))
+  offsets_rubric <- read_sheet(ss_offsets, sheet = 'rubric') %>% 
+    dplyr::filter(!is.na(Sheet),
+                  !is.na(Loc))
+  
+  sources_d <- offsets_rubric %>% 
+    dplyr::filter(Loc == "d")
+  
+  sources_n <- offsets_rubric %>% 
+    dplyr::filter(Loc == "n")
+  # rubric now
   
   # Empty list for results
-  off_list <- list()
+  off_list_d <- list()
   
   # Loop over countries
-  for (i in offsets_rubric$Short){
+  for (i in 1:nrow(sources_d)){
     
     # Get spreadsheet for country
-    ss_i <- offsets_rubric %>% filter(Short == i) %>% '$'(Sheet)
+    ss_i <- offsets_rubric$Sheet[i]
     
     # Try reading spreadhseet
     X <- try(read_sheet(ss_i, 
@@ -452,7 +523,7 @@ compile_offsetsDB <- function() {
       X <- try(read_sheet(ss_i, 
                           sheet = "population", 
                           na = "NA", 
-                          col_types = "ccccicd"))
+                          col_types = "ccccicd")) # revisit when Code added
       
     }
     
@@ -461,7 +532,7 @@ compile_offsetsDB <- function() {
     #   mutate(Short = i)
     # 
     # Add country to list for results
-    off_list[[i]] <- X
+    off_list_d[[i]] <- X
     
     # Wait a bit
     Sys.sleep(20) 
@@ -469,7 +540,7 @@ compile_offsetsDB <- function() {
   }
   
   # Catch additional errors
-  errors <- lapply(off_list,function(x){length(x)==1}) %>% unlist()
+  errors <- lapply(off_list_d,function(x){length(x)==1}) %>% unlist()
   
   # Show countries with additional errors
   if (sum(errors) > 0){
@@ -477,12 +548,12 @@ compile_offsetsDB <- function() {
     
     prob_codes <- offsets_rubric %>% mutate(Code=paste(Country,Region)) %>% dplyr::pull(Code) %>% '['(errors)
     cat("\nThe following code(s) did not read properly:\n",paste(prob_codes,collapse = "\n"))
-    off_list <- off_list[!errors]
+    off_list_d <- off_list_d[!errors]
   }
   
   # Bind and sort
   offsetsDB <- 
-    off_list %>% 
+    off_list_d %>% 
     bind_rows() %>% 
     arrange(Country, Region, Sex) %>% 
     dplyr::select(Country, Region, Date, Sex, Age, AgeInt, Population)

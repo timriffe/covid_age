@@ -6,6 +6,16 @@ source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functio
 setwd(wd_sched_detect())
 here::i_am("covid_age.Rproj")
 
+email <- Sys.getenv("email")
+gs4_auth(email = email, 
+         scopes = c("https://www.googleapis.com/auth/spreadsheets",
+                    "https://www.googleapis.com/auth/drive"))
+drive_auth(email = email,
+           scopes = c("https://www.googleapis.com/auth/spreadsheets",
+                      "https://www.googleapis.com/auth/drive"))
+
+
+
 library(lubridate)
 library(googlesheets4)
 library(tidyverse)
