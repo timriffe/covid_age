@@ -141,8 +141,7 @@ cz_deaths2 <-
   select(Date = datum, Age = vek, Sex = pohlavi, code = kraj_nuts_kod, LAU1 = okres_lau_kod) %>% 
 
   mutate(Sex = case_when(Sex == "M" ~ "m",
-                         Sex == "F" ~ "f",
-                         TRUE ~ "UNK"), 
+                         TRUE ~ "f"), 
          code = ifelse(code == "", str_sub(LAU1, 1, 5), code)) %>% 
   left_join(CZNUTS3, by = "code") %>% 
   select(Code, Date, Sex, Age) 
