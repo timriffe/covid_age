@@ -9,7 +9,7 @@ logfile <- here::here("buildlog.md")
 
 log_section("push outputs to OSF", append = TRUE, logfile = logfile)
 
-files_data <- c("inputDB","Output_5","Output_10","qualityMetrics")
+files_data <- c("inputDB","Output_5","Output_10") # TR: add quality metrics after it's vetted
 for (fl in files_data){
   zip::zip(here::here("Data", paste0(fl,".zip")), 
          files = file.path("Data", paste0(fl,".csv")), 
@@ -49,8 +49,7 @@ for (i in 1:length(files)){
 cdb_files <- c("inputDB.csv","inputDB_internal.csv","inputDBhold.csv","inputDB_failures.csv",
                 "inputCounts.csv","Output_5.csv","Output_5_internal.csv",
                 "Output_10.csv","Output_10_internal.csv","Offsets.csv",
-               "HarmonizationFailures.csv",
-               "qualityMetrics.csv")
+               "HarmonizationFailures.csv") #a dd quality metrics later
 files_from <- file.path("Data",cdb_files)
 
 file.copy(from = files_from, 

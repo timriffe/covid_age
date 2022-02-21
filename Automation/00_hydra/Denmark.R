@@ -9,6 +9,7 @@ if (!"email" %in% ls()){
 # info country and N drive address
 ctr <- "Denmark"
 dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
+dir_n_source <- "N:/COVerAGE-DB/Automation/Denmark/"
 
 # Drive credentials
 drive_auth(email = email)
@@ -88,19 +89,77 @@ db_drive_deaths <- db_drive %>%
 
 # filtering deaths not included yet
 db_deaths <- db_drive_deaths %>% 
-  filter(!Date %in% dates_deaths_n)
+  filter(!Date %in% dates_deaths_n) %>% 
+  mutate(Age = as.character(Age))
 
 db_deaths2 <- 
   db_deaths %>% 
-  bind_rows(
-    db_deaths %>% 
+  # bind_rows(
+  #   db_deaths %>% 
       group_by(Country, Region, Code, Date, Sex, Metric, Measure) %>% 
       summarise(Value = sum(Value)) %>% 
       ungroup() %>% 
       mutate(Age = "TOT",
-             AgeInt = NA)
-  ) %>% 
+             AgeInt = NA)%>% 
   dplyr::filter(Age != "UNK")
+
+
+##now getting data that is scraped by a python script
+
+
+deaths_py <-list.files(path= dir_n_source, 
+                pattern = ".xlsx",
+                full.names = TRUE)
+
+
+
+
+all_content_age_death <-
+  deaths_py %>%
+  lapply(read_xlsx)
+
+all_filenames_age_death <- deaths_py %>%
+  basename() %>%
+  as.list()
+
+#include filename to get date from filename 
+all_lists <- mapply(c, all_content_age_death, all_filenames_age_death, SIMPLIFY = FALSE)
+
+deaths_py_in <- rbindlist(all_lists, fill = T)
+
+
+deaths_py_out <- deaths_py_in %>% 
+  select(Age = age_group, Value = deaths, Date = `V1`) %>% 
+  mutate(Value = gsub(",", "", Value),
+         Value = as.numeric(Value),
+         Date = substr(Date, 15, 22),
+         Date = as.Date(as.character(Date),format="%Y%m%d"),
+         Measure = "Deaths",
+         Country = "Denmark",
+         Region = "All",
+         Code = "DK",
+         Sex = "b",
+         Age = case_when(
+           Age == "0-9" ~ "0",
+           Age == "10-19" ~ "10",
+           Age == "20-29" ~ "20",
+           Age == "30-39" ~ "30",
+           Age == "40-49" ~ "40",
+           Age == "50-59" ~ "50",
+           Age == "60-69" ~ "60",
+           Age == "70-79" ~ "70",
+           Age == "80-89" ~ "80",
+           Age == "90+" ~ "90" 
+         ),
+         AgeInt = case_when(
+           Age == "90" ~ 15L,
+           TRUE ~ 10L
+         ),
+         Metric = "Count") %>% 
+  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
+
+
+
 
 # reading new cases from the web
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -213,7 +272,7 @@ if(dim(links_new_vacc)[1] > 0){
              Vaccination2 = 5) %>% 
       gather(Vaccination1, Vaccination2, key = Measure, value = Value) %>% 
       group_by(Age, Sex, Measure) %>% 
-      summarise(Value = sum(Value),.groups = "drop")
+      summarise(Value = sum(Value),.groups = "drop") %>% 
       mutate(Sex = recode(Sex,
                           "K" = "f",
                           "M" = "m"),
@@ -256,7 +315,7 @@ if(dim(links_new_vacc)[1] > 0 | dim(links_new_cases)[1] > 0){
 }
 
 out <- 
-  bind_rows(db_n, db_deaths2) %>% 
+  bind_rows(db_n, db_deaths2, deaths_py_out) %>% 
   mutate(Date = ddmmyyyy(Date)) %>% 
   bind_rows(db_cases_vcc) %>% 
   sort_input_data() %>% 
