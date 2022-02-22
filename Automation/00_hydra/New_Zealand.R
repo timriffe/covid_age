@@ -15,7 +15,7 @@ ctr <- "New Zealand"
 dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 # TR: pull urls from rubric instead 
-rubric_i <- get_input_rubric() %>% filter(Short == "NZ")
+rubric_i <- get_input_rubric() %>% dplyr::filter(Short == "NZ")
 ss_i     <- rubric_i %>% dplyr::pull(Sheet)
 ss_db    <- rubric_i %>% dplyr::pull(Source)
 
@@ -132,7 +132,7 @@ if (date_f > last_date_drive){
                         sprintf("%02d",month(date_f)),
                         year(date_f),
                         sep="."),
-           Code = paste0("NZ"),
+           Code = "NZ",
            Metric = "Count",
            Measure = "Cases",
            AgeInt = case_when(Age == "90" ~ 15,
@@ -204,7 +204,7 @@ db_v <-
   Country = "New Zealand",
   Region = "All",
   Date = ddmmyyyy(date),
-  Code = paste0("NZ"),
+  Code = "NZ",
   Metric = "Count")%>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)
@@ -327,7 +327,7 @@ all_the_tables <- html %>%
                         sprintf("%02d",month(date_f)),
                         year(date_f),
                         sep="."),
-           Code = paste0("NZ"),
+           Code = "NZ",
            Metric = "Count") %>% 
     bind_rows(db_v)
   
