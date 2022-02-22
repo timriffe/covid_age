@@ -37,8 +37,8 @@ X     <- read_xlsx(data_source1,
 X     <- X[9:15, 13:ncol(X)]
 
 X2     <- read_xlsx(data_source2, 
-                   sheet = "UK - Covid-19 - Weekly reg", 
-                   skip = 5)
+                    sheet = "UK - Covid-19 - Weekly reg", 
+                    skip = 5)
 
 X2     <- X2[10:16, 3:ncol(X2)]
 
@@ -60,27 +60,27 @@ Deaths_b <- X %>%
   mutate(Value = cumsum(Value)) %>% 
   ungroup() %>% 
   mutate(AgeInt = case_when(
-                        Age == 0 ~ 1,
-                         Age == 1 ~ 14,
-                         Age == 15 ~ 30,
-                         Age == 45 ~ 20,
-                         Age == 65 ~ 10,
-                         Age == 75 ~ 10,
-                         Age == 85 ~ 20),
-         Date = ymd(dates),
-         Sex = "b",
-         Country = "United Kingdom",
-         Date = paste(
-           sprintf("%02d", day(Date)),
-           sprintf("%02d", month(Date)),
-           year(Date),
-           sep="."),
-         Code = paste0("GB"),
-         Measure = "Deaths",
-         Metric = "Count",
-         Region = "All") %>% 
+    Age == 0 ~ 1,
+    Age == 1 ~ 14,
+    Age == 15 ~ 30,
+    Age == 45 ~ 20,
+    Age == 65 ~ 10,
+    Age == 75 ~ 10,
+    Age == 85 ~ 20),
+    Date = ymd(dates),
+    Sex = "b",
+    Country = "United Kingdom",
+    Date = paste(
+      sprintf("%02d", day(Date)),
+      sprintf("%02d", month(Date)),
+      year(Date),
+      sep="."),
+    Code = paste0("GB"),
+    Measure = "Deaths",
+    Metric = "Count",
+    Region = "All") %>% 
   dplyr::select(Country, Region, Code, Date, 
-         Sex, Age, AgeInt, Metric, Measure, Value) %>% 
+                Sex, Age, AgeInt, Metric, Measure, Value) %>% 
   sort_input_data()
 
 
@@ -137,7 +137,7 @@ Deaths_m <- X %>%
     Metric = "Count",
     Region = "All") %>% 
   dplyr::select(Country, Region, Code, Date, 
-         Sex, Age, AgeInt, Metric, Measure, Value) %>% 
+                Sex, Age, AgeInt, Metric, Measure, Value) %>% 
   sort_input_data()
 
 ###########################
@@ -205,4 +205,3 @@ write_rds(Deaths, paste0(dir_n, ctr, ".rds"))
 
 # updating hydra dashboard
 log_update(pp = ctr, N = nrow(Deaths))
-
