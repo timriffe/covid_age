@@ -54,3 +54,31 @@
 # Age harmonization 
  Tue Feb 22 23:55:23 2022 
 
+
+# Compile metadata 
+ Wed Feb 23 02:54:33 2022 
+
+
+# remake coverage map 
+ Wed Feb 23 02:54:34 2022 
+
+
+# remake coverage map 
+ Wed Feb 23 09:01:43 2022 
+
+
+# update build series log 
+ Wed Feb 23 09:40:53 2022 
+
+
+# push outputs to OSF 
+ Wed Feb 23 09:43:03 2022 
+
+
+# push outputs to OSF 
+ Wed Feb 23 09:46:19 2022 
+
+
+# Commit dashboards and buildlog 
+ Wed Feb 23 10:00:34 2022 
+
