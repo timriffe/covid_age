@@ -136,7 +136,7 @@ sched("Island_of_Jersey", tm = "14:48", email = auto_update_email, wd = auto_upd
 # taskscheduler_delete("COVerAGE-DB-automatic-daily-build")
 # taskscheduler_delete("COVerAGE-DB-every-8-hour-inputDB-updates")
 
-delete_sched("US_Indiana")
+delete_sched("England_and_Wales")
 
 
 

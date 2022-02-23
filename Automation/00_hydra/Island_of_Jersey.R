@@ -158,6 +158,13 @@ Date)%>%
   #remove NAs at the beginning of vaccination process
   subset(Value!= is.na(Value))
   
+
+Vaccine_out <- Vaccine_out %>% ##there is an issue in the data
+  mutate(Value = as.numeric(Value)) %>%  
+  mutate(Value = case_when(
+    Value == 52725 ~ 5725,
+    TRUE ~ Value
+  ))
   
 #put togehter 
 
