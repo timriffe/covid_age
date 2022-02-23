@@ -163,6 +163,7 @@ Vaccine_out <- Vaccine_out %>% ##there is an issue in the data
   mutate(Value = as.numeric(Value)) %>%  
   mutate(Value = case_when(
     Value == 52725 ~ 5725,
+    (Value == 8749 & Age == 0)~ 70,
     TRUE ~ Value
   ))
   
