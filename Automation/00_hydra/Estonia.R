@@ -45,9 +45,10 @@ RegionCode <- matrix(c(
 dimnames = list(NULL, c("Code","Region"))) %>% 
   as_tibble()
 
-db$County %>% unique()
-db$ResultTime %>% as_date() %>% table()
+# db$County %>% unique()
+# db$ResultTime %>% as_date() %>% table()
 db2 <- db %>% 
+  select(-id) %>% 
   rename(Sex = Gender) %>% 
   tidyr::separate(AgeGroup, c("Age","age2"), "-") %>% 
   mutate(Test = 1,
@@ -61,7 +62,7 @@ db2 <- db %>%
          Code = case_when(
            County == "Harju maakond" ~ "EE-37",
            County == "Hiiu maakond" ~ "EE-39",
-           County == "Ida-Viru maakond " ~ "EE-45",
+           County == "Ida-Viru maakond" ~ "EE-45",
            County == "Järva maakond" ~ "EE-52",
            County == "Jõgeva maakond" ~ "EE-50",
            County == "Lääne-Viru maakond" ~ "EE-60",
@@ -130,14 +131,14 @@ db_all <- bind_rows(db3,
   dplyr::filter(
     !(Age == "UNK" & Value == 0),
     !(Sex == "UNK" & Value == 0)) %>%
-  mutate(Region = "All",
-         Date = ddmmyyyy(date_f),
+  mutate(Date = ddmmyyyy(date_f),
          Country = "Estonia",
-         Code = paste0("EE"),
+         # Code = paste0("EE"),
          AgeInt = case_when(Age == "TOT" | Age == "UNK" ~ NA_real_, 
                             Age == "85" ~ 20,
                             TRUE ~ 5),
          Metric = "Count") %>% 
+  left_join(RegionCode, by = "Code") %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
   sort_input_data()
 
