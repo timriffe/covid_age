@@ -49,9 +49,9 @@ vacc_out <- vacc_out %>%
       Age == "90" ~ 15L,
       TRUE ~ 5L
     ),
-    Country = "United Kingdom",
+    Country = "England",
     Metric = "Count",
-    Region = "England",
+    Region = "All",
     Sex = "b",
     Date = ymd(Date),
     Date = paste(sprintf("%02d",day(Date)),
