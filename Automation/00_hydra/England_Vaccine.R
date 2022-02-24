@@ -49,9 +49,9 @@ vacc_out <- vacc_out %>%
       Age == "90" ~ 15L,
       TRUE ~ 5L
     ),
-    Country = "England",
+    Country = "United Kingdom",
     Metric = "Count",
-    Region = "All",
+    Region = "England",
     Sex = "b",
     Date = ymd(Date),
     Date = paste(sprintf("%02d",day(Date)),
@@ -69,6 +69,9 @@ small_ages <- vacc_out %>%
 
 vacc_out <- rbind(vacc_out, small_ages) %>% 
   sort_input_data()
+
+##work on getting regional data
+#https://api.coronavirus.data.gov.uk/v2/data?areaType=region&metric=vaccinationsAgeDemographics&format=csv
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # uploading database to Google Drive and N
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
