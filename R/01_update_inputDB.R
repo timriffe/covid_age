@@ -74,7 +74,8 @@ if (nrow(rubric) > 0){
   inputDB$templateID <- NULL
   
   # remove non-standard Measure:
-  Measures <- c("Cases","Deaths","Tests","ASCFR","Vaccinations","Vaccination1","Vaccination2", "Vaccination3", "VaccinationBooster")
+  Measures <- c("Cases","Deaths","Tests","ASCFR","Vaccinations",
+                "Vaccination1","Vaccination2", "Vaccination3", "Vaccination4", "VaccinationBooster")
   measureCodes <- inputDB %>% 
     dplyr::filter(!Measure %in% Measures) %>% 
     mutate(reason = "Measure code")
