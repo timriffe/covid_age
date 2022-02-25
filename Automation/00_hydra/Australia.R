@@ -1,4 +1,3 @@
-#demographics for victoria https://www.covid19data.com.au/demographics
 
 library(here)
 source(here("Automation/00_Functions_automation.R"))
@@ -17,47 +16,48 @@ if (!"email" %in% ls()){
 ctr          <- "Australia" # it's a placeholder
 dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
-##cases for new south wales australia
-nsw_regional_cases <- read.csv("https://data.nsw.gov.au/data/dataset/aefcde60-3b0c-4bc0-9af1-6fe652944ec2/resource/5d63b527-e2b8-4c42-ad6f-677f14433520/download/confirmed_cases_table1_location_agg.csv")
-nsw_regional_cases_out <- nsw_regional_cases %>% 
-  select(Date = notification_date, Postcode = postcode, Region = lhd_2010_name, Subregion = lga_name19, Test = confirmed_by_pcr, Value = confirmed_cases_count) %>% 
-  
-  
 
 
-
-
-nsw_cases_age <- read.csv("https://data.nsw.gov.au/data/dataset/3dc5dc39-40b4-4ee9-8ec6-2d862a916dcf/resource/4b03bc25-ab4b-46c0-bb3e-0c839c9915c5/download/confirmed_cases_table2_age_group_agg.csv")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+nsw_cases_age <- read.csv("https://data.nsw.gov.au/data/dataset/3dc5dc39-40b4-4ee9-8ec6-2d862a916dcf/resource/4b03bc25-ab4b-46c0-bb3e-0c839c9915c5/download/confirmed_cases_table2_age_group_agg.csv") %>% 
+  select(Date = notification_date, Age = age_group, Value = confirmed_cases_count) %>% 
+  group_by(Date, Age) %>% 
+  summarise(Value = sum(Value)) %>% 
+  ungroup() %>% 
+  tidyr::complete(Date, nesting(Age), fill=list(Value=0)) %>% 
+  arrange(Date, Age) %>% 
+  group_by(Age) %>% 
+  mutate(Value = cumsum(Value)) %>% 
+  ungroup() %>% 
+  mutate(Sex = "b",
+         Country = "Australia",
+         Region = "New South Wales",
+         Measure = "Cases",
+         Metric = "Count",
+         Code = "AU-NSW",
+         Age = case_when(
+           Age == "AgeGroup_0-19" ~ "0",
+           Age == "AgeGroup_20-24" ~ "20",
+           Age == "AgeGroup_25-29" ~ "25",
+           Age == "AgeGroup_30-34" ~ "30",
+           Age == "AgeGroup_35-39" ~ "35",
+           Age == "AgeGroup_40-44" ~ "40",
+           Age == "AgeGroup_45-49" ~ "45",
+           Age == "AgeGroup_50-54" ~ "50",
+           Age == "AgeGroup_55-59" ~ "55",
+           Age == "AgeGroup_60-64" ~ "60",
+           Age == "AgeGroup_65-69" ~ "65",
+           Age == "AgeGroup_70+" ~ "70",
+           Age == "AgeGroup_None" ~ "UNK" ),
+         AgeInt = case_when(
+         Age == "0" ~ 20L,
+         Age == "70" ~ 35L,
+         Age == "UNK" ~ NA_integer_,
+         TRUE ~ 5L),
+         Date = ymd(Date),
+         Date = paste(sprintf("%02d",day(Date)),    
+                      sprintf("%02d",month(Date)),  
+                      year(Date),sep=".")) %>% 
+  sort_input_data()
 
 
 
@@ -66,15 +66,6 @@ nsw_cases_age <- read.csv("https://data.nsw.gov.au/data/dataset/3dc5dc39-40b4-4e
 
 
 ##victoria
-vic_cases_age <- read.csv("https://data.nsw.gov.au/data/dataset/f9fe3aba-8b79-4e7a-a165-e4c53e22cf0d/resource/0325e760-26a5-4b9b-9681-42ef723ce6be/download/covid-19-tests-by-date-and-age-range.csv")
+#vic_cases_age <- read.csv("https://data.nsw.gov.au/data/dataset/f9fe3aba-8b79-4e7a-a165-e4c53e22cf0d/resource/0325e760-26a5-4b9b-9681-42ef723ce6be/download/covid-19-tests-by-date-and-age-range.csv")
 
-##try again to download the local data
-https://www.coronavirus.vic.gov.au/victorian-coronavirus-covid-19-data
-https://www.dhhs.vic.gov.au/sites/default/files/documents/202202/NCOV_COVID_Cases_by_Age_Group_20220224.csv
-https://www.dhhs.vic.gov.au/sites/default/files/documents/202202/NCOV_COVID_Cases_by_Age_Group_20220224.csv
-##no data for act
-##no data for northern teretories
-##no data on queensland (only daily table, scrapable)
-##no data on south australia (only daily table, scrapable)
-##no data for tasmania
-##western australia (dashboard)
+
