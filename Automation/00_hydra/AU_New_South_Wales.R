@@ -13,9 +13,11 @@ if (!"email" %in% ls()){
 
 # info country and N drive address
 
-ctr          <- "Australia" # it's a placeholder
+ctr          <- "AU_New_South_Wales" # it's a placeholder
 dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
 
 
 nsw_cases_age <- read.csv("https://data.nsw.gov.au/data/dataset/3dc5dc39-40b4-4ee9-8ec6-2d862a916dcf/resource/4b03bc25-ab4b-46c0-bb3e-0c839c9915c5/download/confirmed_cases_table2_age_group_agg.csv") %>% 
@@ -59,13 +61,36 @@ nsw_cases_age <- read.csv("https://data.nsw.gov.au/data/dataset/3dc5dc39-40b4-4e
                       year(Date),sep=".")) %>% 
   sort_input_data()
 
+#save output 
+
+write_rds(nsw_cases_age, paste0(dir_n, ctr, ".rds"))
+
+log_update(pp = ctr, N = nrow(nsw_cases_age))
 
 
+#Archive 
+
+data_source <- paste0(dir_n, "Data_sources/", ctr, "/vaccine_age_",today(), ".csv")
+
+write_csv(nsw_cases_age, data_source)
+
+zipname <- paste0(dir_n, 
+                  "Data_sources/", 
+                  ctr,
+                  "/", 
+                  ctr,
+                  "_data_",
+                  today(), 
+                  ".zip")
+
+zip::zipr(zipname, 
+          data_source, 
+          recurse = TRUE, 
+          compression_level = 9,
+          include_directories = TRUE)
+
+file.remove(data_source)
 
 
-
-
-##victoria
-#vic_cases_age <- read.csv("https://data.nsw.gov.au/data/dataset/f9fe3aba-8b79-4e7a-a165-e4c53e22cf0d/resource/0325e760-26a5-4b9b-9681-42ef723ce6be/download/covid-19-tests-by-date-and-age-range.csv")
 
 
