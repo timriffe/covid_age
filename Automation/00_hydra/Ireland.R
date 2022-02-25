@@ -216,16 +216,18 @@ log_update(pp = ctr, N = nrow(out))
 
 #archive input data 
 
-data_source_b <- paste0(dir_n, "Data_sources/", ctr, "boosters_",today(), ".csv")
-data_source_v <- paste0(dir_n, "Data_sources/", ctr, "vaccinations_",today(), ".csv")
-data_source_c <- paste0(dir_n, "Data_sources/", ctr, "cases_",today(), ".csv")
-data_source_d <- paste0(dir_n, "Data_sources/", ctr, "deaths_",today(), ".csv")
+data_source_b <- paste0(dir_n, "Data_sources/", ctr, "/boosters_",today(), ".csv")
+data_source_v <- paste0(dir_n, "Data_sources/", ctr, "/vaccinations_",today(), ".csv")
+data_source_c <- paste0(dir_n, "Data_sources/", ctr, "/cases_",today(), ".csv")
+data_source_d <- paste0(dir_n, "Data_sources/", ctr, "/deaths_",today(), ".csv")
 
 
 write_csv(bIN, data_source_b)
 write_csv(vIN, data_source_v)
 write_csv(cIN, data_source_c)
 write_csv(deaths_append, data_source_d)
+
+data_source <- c(data_source_b, data_source_v,data_source_c, data_source_d )
 
 zipname <- paste0(dir_n, 
                   "Data_sources/", 
@@ -236,14 +238,14 @@ zipname <- paste0(dir_n,
                   today(), 
                   ".zip")
 
-zip::zipr(zipname, 
-          c(data_source_b, data_source_v, data_source_c, data_source_d), 
-          recurse = TRUE, 
-          compression_level = 9,
-          include_directories = TRUE)
+zipr(zipname, 
+     data_source, 
+     recurse = TRUE, 
+     compression_level = 9,
+     include_directories = TRUE)
 
+# clean up file chaff
 file.remove(data_source)
-
 
 
 

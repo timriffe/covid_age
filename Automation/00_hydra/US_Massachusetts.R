@@ -411,11 +411,11 @@ out <- bind_rows(out, vac_data)
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # This command append new rows at the end of the sheet
-write_sheet(out,
-            ss = ss_i,
-            sheet = "database")
+# write_sheet(out,
+#             ss = ss_i,
+#             sheet = "database")
 
-log_update(pp = ctr, N = nrow(out))
+#log_update(pp = ctr, N = nrow(out))
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #### uploading database to Google Drive 
@@ -423,4 +423,4 @@ log_update(pp = ctr, N = nrow(out))
 
 write_rds(out, "N:/COVerAGE-DB/Automation/Hydra/US_Massachusetts.rds")
 
-log_update(pp = "US_Massachusetts", N = nrow(db_all))
+log_update(pp = "US_Massachusetts", N = nrow(out))
