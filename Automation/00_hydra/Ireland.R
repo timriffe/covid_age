@@ -7,8 +7,27 @@ startup::startup()
 library(readr)
 library(tidyverse)
 library(janitor)
-
 library(rjson)
+
+
+email <- Sys.getenv("email")
+
+
+ctr          <- "Ireland" # it's a placeholder
+dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
+
+if (email == "tim.riffe@gmail.com"){
+  gs4_auth(email = email, 
+           scopes = c("https://www.googleapis.com/auth/spreadsheets",
+                      "https://www.googleapis.com/auth/drive"))
+  drive_auth(email = email,
+             scopes = c("https://www.googleapis.com/auth/spreadsheets",
+                        "https://www.googleapis.com/auth/drive"))
+} else {
+  gs4_auth(email)
+  drive_auth(email)
+}
+
 cases_url_fat <- "https://opendata.arcgis.com/api/v3/datasets/67b8175576fe44e9ab193c4a5dc2ff9a_0/downloads/data?format=csv&spatialRefId=4326"
 cases_url  <- "https://opendata.arcgis.com/api/v3/datasets/d8eb52d56273413b84b0187a4e9117be_0/downloads/data?format=csv&spatialRefId=4326"
 vac_url    <- "https://opendata.arcgis.com/api/v3/datasets/0101ed10351e42968535bb002f94c8c6_0/downloads/data?format=csv&spatialRefId=4326"
@@ -168,5 +187,63 @@ Everything <-
   mutate(Country = "Ireland",
          Region = "All",
          Metric = "Count") 
+
+IE_in <- get_country_inputDB("IE")
+
+Everything_new <-
+  Everything %>% 
+  dplyr::filter(Age != "TOT") %>% 
+  select(Date, Measure, Sex) %>% 
+  distinct()%>% 
+  mutate(new = TRUE)
+
+
+# inventory %>% 
+#   select(Date, Measure, Sex)
+Deaths_append <- 
+  IE_in %>% 
+  anti_join(Everything_new,
+          by = c("Date","Measure","Sex"))
+  
+out <- bind_rows(Everything,
+                        Deaths_append)
+
+saveRDS(Everything, file = "N://COVerAGE-DB/Automation/Hydra/Ireland.rds")
+
+log_update(pp = ctr, N = nrow(out)) 
+
+
+
+#archive input data 
+
+data_source_b <- paste0(dir_n, "Data_sources/", ctr, "boosters_",today(), ".csv")
+data_source_v <- paste0(dir_n, "Data_sources/", ctr, "vaccinations_",today(), ".csv")
+data_source_c <- paste0(dir_n, "Data_sources/", ctr, "cases_",today(), ".csv")
+data_source_d <- paste0(dir_n, "Data_sources/", ctr, "deaths_",today(), ".csv")
+
+
+write_csv(bIN, data_source_b)
+write_csv(vIN, data_source_v)
+write_csv(cIN, data_source_c)
+write_csv(deaths_append, data_source_d)
+
+zipname <- paste0(dir_n, 
+                  "Data_sources/", 
+                  ctr,
+                  "/", 
+                  ctr,
+                  "_data_",
+                  today(), 
+                  ".zip")
+
+zip::zipr(zipname, 
+          c(data_source_b, data_source_v, data_source_c, data_source_d), 
+          recurse = TRUE, 
+          compression_level = 9,
+          include_directories = TRUE)
+
+file.remove(data_source)
+
+
 
 
