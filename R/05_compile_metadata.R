@@ -19,8 +19,13 @@ log_section("Compile metadata",
 # }
 # This reads it in
 #inputDB <-  readRDS(here("Data","inputDB.rds"))
-
-gs4_auth(email = Sys.getenv("email"))
+email <- Sys.getenv("email")
+gs4_auth(email = email, 
+         scopes = c("https://www.googleapis.com/auth/spreadsheets",
+                    "https://www.googleapis.com/auth/drive"))
+drive_auth(email = email,
+           scopes = c("https://www.googleapis.com/auth/spreadsheets",
+                      "https://www.googleapis.com/auth/drive"))
 
 
 rubric <- get_input_rubric()
