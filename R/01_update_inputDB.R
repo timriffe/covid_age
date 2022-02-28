@@ -92,6 +92,11 @@ if (nrow(rubric) > 0){
   inputDB <- inputDB %>% 
     dplyr::filter(Metric %in% Metrics)
   
+  # remove bad Age codes
+  Ages <- c("TOT","UNK", as.character(0:105))
+  ageCodes <- inputDB %>% 
+    dplyr::filter(!Age %in% Ages) %>% 
+    mutate(reason = "bad Age")
   
   # remove non-standard Sex:
   Sexes <- c("m","f","b","UNK")
@@ -197,6 +202,7 @@ if (nrow(rubric) > 0){
     measureCodes,
     metricCodes,
     sexCodes,
+    ageCodes,
     NAdates,
     badDates,
     futureDates,
@@ -206,6 +212,7 @@ if (nrow(rubric) > 0){
   rm( measureCodes,
       metricCodes,
       sexCodes,
+      ageCodes,
       NAdates,
       badDates,
       futureDates,
