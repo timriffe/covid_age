@@ -49,7 +49,7 @@ for (i in 1:length(files)){
 cdb_files <- c("inputDB.csv","inputDB_internal.csv","inputDBhold.csv","inputDB_failures.csv",
                 "inputCounts.csv","Output_5.csv","Output_5_internal.csv",
                 "Output_10.csv","Output_10_internal.csv","Offsets.csv",
-               "HarmonizationFailures.csv") #a dd quality metrics later
+               "HarmonizationFailures.csv","qualityMetrics.csv") #a dd quality metrics later
 files_from <- file.path("Data",cdb_files)
 
 file.copy(from = files_from, 
