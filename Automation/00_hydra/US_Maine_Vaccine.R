@@ -21,7 +21,7 @@ ss_db <- rubric %>%
 # reading data from Drive and last date entered 
 
 In_drive <-  read_sheet(ss = ss_i, sheet = "database_vaccine") %>% 
-  mutate(Code == "UN-ME")
+  mutate(Code = "UN-ME")
 
 
 write_rds(In_drive, paste0(dir_n, ctr, ".rds"))

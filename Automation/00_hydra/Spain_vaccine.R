@@ -41,7 +41,17 @@ download.file(url_d, data_source, mode = "wb")
 
 ###########################################################################################
 DataArchive <- read_rds(paste0(dir_n, ctr, ".rds")) %>% 
-  mutate(AgeInt = as.integer(AgeInt))
+  mutate(AgeInt = as.integer(AgeInt)) 
+  # mutate(Region = case_when(
+  #   Region == "Totales" ~ "All",
+  #   TRUE ~ Region
+  # ),
+  # Code = case_when(
+  #   Region == "Madrid" ~ "ES-M",
+  #   Region == "All" ~ "ES",
+  #   Region == "Asturias" ~ "ES-O",
+  #   Region == "Cantabria" ~ "ES-S",
+  #   Region == "La Rioja" ~ "ES-LO"))
 
 
 # fixing age intervals for 18
@@ -101,6 +111,10 @@ total <-
                         "Ceuta"= "CE",
                         "Melilla" ="ML",
                         "Totales"= "All"), 
+         Region = case_when(
+           Region == "Totales" ~ "All",
+           TRUE ~ Region
+         ),
          Metric= "Count",
          Sex = "b",
          Age = "TOT", 
@@ -130,6 +144,7 @@ Out_vaccine1_age = In_vaccine1_age%>%
     TRUE ~ 10L)) %>%
   dplyr::filter(!Region %in% c("Fuerzas Armadas","Sanidad Exterior" )) %>%# delete armed forces from region  
   mutate(Region = recode(Region,
+                         "Totales" = "All",
                          "Total España"= "All",
                          "Castilla - La Mancha"= "Castilla La Mancha"),
          Short = recode(Region,
@@ -181,22 +196,23 @@ Out_vaccine2_age= In_vaccine2_age %>%
     TRUE~ 10L))%>%
   dplyr::filter(!Region %in% c("Fuerzas Armadas","Sanidad Exterior" )) %>%# delete armed forces from region  
   mutate(Region= recode(Region,
+                        "Totales" = "All",
                         "Total España"= "All",
                         "Castilla - La Mancha"= "Castilla La Mancha"),
          Short = recode(Region,
                         "Andalucía" = "AN",
                         "Aragón" = "AR",
-                        "Asturias"= "AS", 
+                        "Asturias"= "O", 
                         "Baleares" ="IB",
                         "Canarias" ="CN",
-                        "Cantabria"= "CB",
+                        "Cantabria"= "S",
                         "Castilla y Leon"= "CL",
                         "Castilla La Mancha"= "CM",
                         "Cataluña" ="CT",
                         "C. Valenciana" ="VC",
                         "Extremadura"= "EX",
                         "Galicia"= "GA",
-                        "La Rioja" ="RI",
+                        "La Rioja" ="LO",
                         "Madrid"= "M",
                         "Murcia"= "MU",
                         "Navarra"= "NA",
@@ -270,7 +286,8 @@ Out <-
             Out_vaccine1_age, 
             Out_vaccine2_age) %>%
   mutate(Code = paste("ES",Short, sep="-"),
-         Code = ifelse(Region == "All","ES",Code)) %>% 
+         Code = case_when(Region == "All"~"ES",
+                          TRUE ~ Code)) %>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value) %>% 
   sort_input_data()
