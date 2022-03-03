@@ -53,7 +53,6 @@ db_input <- data.table::fread(here("Data","inputDB_internal.csv"),encoding = "UT
 db_input <- db_input %>% 
   mutate(Country = ifelse(Country == "US","USA",Country))
 
-
 # checking coordinate system
 st_crs(World)
 
@@ -68,18 +67,23 @@ World$name[World$name == "Czech Rep." ]     <- "Czechia"
 World$name[World$name == "Central African Rep." ]     <- "Central African Republic"
 World$name[World$name == "Eq. Guinea" ]     <- "Equatorial Guinea"
 World$name[World$name == "S. Sudan" ]     <- "South Sudan"
-
+World$name[World$name == "Macedonia" ]     <- "North Macedonia"
+World$name[World$name == "Bosnia and Herz."] <- "Bosnia and Herzegovina"
 # remove Antarctica
 World <- World[!World$name == "Antarctica",]
+
+World$name
+all(db_pops$Country %in% World$name)
+dbc <- db_pops$Country %>% unique()
+dbc[!dbc%in%World$name]
+
 
 # add Robinson projection
 world_rob<-st_transform(World, "+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
 world_rob %>% ggplot() + geom_sf()
 
 
-# all(db_pops$Country %in% World$name)
-# dbc <- db_pops$Country %>% unique()
-# dbc[!dbc%in%World$name]
+
 
 have_in_idb <- 
   db_input %>% 

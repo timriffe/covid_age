@@ -61,8 +61,7 @@ sc <-
          Sex, 
          Age = AgeGroup, 
          Cases = TotalPositive, 
-         Deaths = TotalDeaths, 
-         Negative = TotalNegative) %>% 
+         Deaths = TotalDeaths) %>% 
   filter(Age != 'Total')%>%
   mutate(
     Date = ymd(Date),
@@ -77,7 +76,6 @@ sc <-
                  '85plus' = "85"),
     Sex = recode(Sex,'Female' = 'f',
                  'Male' = 'm'),
-    Tests = Cases + Negative,
     AgeInt = case_when(
       Age == "0" ~ 15,
       Age == "15" ~ 5,
@@ -89,8 +87,7 @@ sc <-
       Age == "85" ~ 20)) %>% 
   filter(Age != "60+") %>% 
   filter(Age != "0 to 59") %>% 
-  select(-Negative) %>% 
-  pivot_longer(Cases:Tests, 
+  pivot_longer(Cases:Deaths, 
                names_to = "Measure",
                values_to = "Value") %>% 
   mutate(Country = "Scotland",
@@ -138,8 +135,7 @@ sct <-
          Sex, 
          Age = AgeGroup, 
          Cases = CumulativePositive, 
-         Deaths = CumulativeDeaths, 
-         Negative = CumulativeNegative) %>%
+         Deaths = CumulativeDeaths) %>%  
   mutate(
     Date = ymd(Date),
     Age = recode(Age,
@@ -155,7 +151,6 @@ sct <-
     Sex = recode(Sex,'Female' = 'f',
                  'Male' = 'm',
                  'Total' = 'b'),
-    Tests = Cases + Negative,
     AgeInt = case_when(
       Age == "TOT" ~ NA_real_,
       Age == "0" ~ 15,
@@ -168,8 +163,7 @@ sct <-
       Age == "85" ~ 20)) %>% 
   filter(Age != "60+") %>% 
   filter(Age != "0 to 59") %>% 
-  select(-Negative) %>% 
-  pivot_longer(Cases:Tests,
+  pivot_longer(Cases:Deaths,
                names_to = "Measure",
                values_to = "Value") %>% 
   filter(Date >= ymd("2020-03-09")) %>% 

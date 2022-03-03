@@ -11,8 +11,9 @@ dir_n  <- "N:/COVerAGE-DB/Automation/Hydra/"
 NO_dir <- paste0(dir_n, "Data_sources/", ctr, "/")
 
 # Drive credentials
-drive_auth(email = email)
-gs4_auth(email = email)
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
+
 
 # drive urls
 rubric <- get_input_rubric() %>% 

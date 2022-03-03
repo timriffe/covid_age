@@ -23,10 +23,10 @@ inputDB2 <- inputDB %>%
   mutate(Value = 1) 
   #mutate(CountryRegion = paste0(Country,"-",Region))
 
-inputDB3$Month <- sub("...", "", inputDB2$Date)
-inputDB3$Year <- sub("......", "", inputDB2$Date)
-inputDB3$Month = substr(inputDB3$Month,1,nchar(inputDB3$Month)-5)
-inputDB3 <- inputDB3 %>% 
+inputDB2$Month <- sub("...", "", inputDB2$Date)
+inputDB2$Year <- sub("......", "", inputDB2$Date)
+inputDB2$Month = substr(inputDB2$Month,1,nchar(inputDB2$Month)-5)
+inputDB2 <- inputDB2 %>% 
 filter(Year != "2014",
        Year != "2016") %>%   
 mutate(Date = paste0(Year,Month)) %>% 
@@ -34,13 +34,14 @@ mutate(Date = paste0(Year,Month)) %>%
   summarise(Value = sum(Value)) %>% 
   mutate(Value = 1)
 
-cases <- inputDB3 %>% 
+cases <- inputDB2 %>% 
   filter(Measure == "Cases")
 
 
 
 cts <- cases %>%
-  drop_na(Country) %>% 
+  # drop_na(Country) %>% 
+  ungroup() %>% 
   select(Country) %>% 
   unique() %>% 
   mutate(id = 1:n(),
@@ -54,6 +55,7 @@ for(i in 1:max(cts$gr)){
     dplyr::pull(Country)
   
   cases %>% 
+    filter(Country %in% cts_t) %>%
     ggplot(aes(x = Date, y = reorder(Country, Date, FUN = max)))+
     geom_point(color = rgb(0,0,1,0.5))+
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
@@ -63,57 +65,158 @@ for(i in 1:max(cts$gr)){
 }
 
 
-cases %>% 
-  ggplot(aes(x = Date, y = reorder(Country, Date, FUN = max)))+
-  geom_point(color = rgb(0,0,1,0.5))+
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
 
-death <- inputDB3 %>% 
+
+
+
+
+
+death <- inputDB2 %>% 
   filter(Measure == "Deaths")
 
 
-death %>% 
-  ggplot(aes(x = Date, y = reorder(Country, Date, FUN = max)))+
-  geom_point(color = rgb(0,0,1,0.5))+
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+cts <- death %>%
+  # drop_na(Country) %>% 
+  ungroup() %>% 
+  select(Country) %>% 
+  unique() %>% 
+  mutate(id = 1:n(),
+         gr = floor(id/12) + 1)
 
 
-test <- inputDB3 %>% 
+for(i in 1:max(cts$gr)){
+  cts_t <- 
+    cts %>% 
+    filter(gr == i) %>% 
+    dplyr::pull(Country)
+  
+  death %>% 
+    filter(Country %in% cts_t) %>%
+    ggplot(aes(x = Date, y = reorder(Country, Date, FUN = max)))+
+    geom_point(color = rgb(0,0,1,0.5))+
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+  
+  
+  ggsave(paste0("R_checks/coverage/death", i, ".png")) 
+}
+
+
+
+test <- inputDB2 %>% 
   filter(Measure == "Tests")
 
 
-test %>% 
-  ggplot(aes(x = Date, y = reorder(Country, Date, FUN = max)))+
-  geom_point(color = rgb(0,0,1,0.5))+
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+cts <- test %>%
+  # drop_na(Country) %>% 
+  ungroup() %>% 
+  select(Country) %>% 
+  unique() %>% 
+  mutate(id = 1:n(),
+         gr = floor(id/12) + 1)
 
 
-vacc1 <- inputDB3 %>% 
+for(i in 1:max(cts$gr)){
+  cts_t <- 
+    cts %>% 
+    filter(gr == i) %>% 
+    dplyr::pull(Country)
+  
+  test %>% 
+    filter(Country %in% cts_t) %>%
+    ggplot(aes(x = Date, y = reorder(Country, Date, FUN = max)))+
+    geom_point(color = rgb(0,0,1,0.5))+
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+  
+  
+  ggsave(paste0("R_checks/coverage/tests", i, ".png")) 
+}
+
+
+vacc1 <- inputDB2 %>% 
   filter(Measure == "Vaccination1")
 
+cts <- vacc1 %>%
+  # drop_na(Country) %>% 
+  ungroup() %>% 
+  select(Country) %>% 
+  unique() %>% 
+  mutate(id = 1:n(),
+         gr = floor(id/12) + 1)
 
-vacc1 %>% 
-  ggplot(aes(x = Date, y = reorder(Country, Date, FUN = max)))+
-  geom_point(color = rgb(0,0,1,0.5))+
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
+for(i in 1:max(cts$gr)){
+  cts_t <- 
+    cts %>% 
+    filter(gr == i) %>% 
+    dplyr::pull(Country)
+  
+  vacc1 %>% 
+    filter(Country %in% cts_t) %>%
+    ggplot(aes(x = Date, y = reorder(Country, Date, FUN = max)))+
+    geom_point(color = rgb(0,0,1,0.5))+
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+  
+  
+  ggsave(paste0("R_checks/coverage/vacc1", i, ".png")) 
+}
 
-vacc2 <- inputDB3 %>% 
+vacc2 <- inputDB2 %>% 
   filter(Measure == "Vaccination2")
 
 
-vacc2 %>% 
-  ggplot(aes(x = Date, y = reorder(Country, Date, FUN = max)))+
-  geom_point(color = rgb(0,0,1,0.5))+
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+cts <- vacc2 %>%
+  # drop_na(Country) %>% 
+  ungroup() %>% 
+  select(Country) %>% 
+  unique() %>% 
+  mutate(id = 1:n(),
+         gr = floor(id/12) + 1)
 
 
-vacc3 <- inputDB3 %>% 
+for(i in 1:max(cts$gr)){
+  cts_t <- 
+    cts %>% 
+    filter(gr == i) %>% 
+    dplyr::pull(Country)
+  
+  vacc2 %>% 
+    filter(Country %in% cts_t) %>%
+    ggplot(aes(x = Date, y = reorder(Country, Date, FUN = max)))+
+    geom_point(color = rgb(0,0,1,0.5))+
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+  
+  
+  ggsave(paste0("R_checks/coverage/vacc2", i, ".png")) 
+}
+
+vacc3 <- inputDB2 %>% 
   filter(Measure == "Vaccination3")
 
 
-vacc3 %>% 
-  ggplot(aes(x = Date, y = reorder(Country, Date, FUN = max)))+
-  geom_point(color = rgb(0,0,1,0.5))+
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+cts <- vacc3 %>%
+  # drop_na(Country) %>% 
+  ungroup() %>% 
+  select(Country) %>% 
+  unique() %>% 
+  mutate(id = 1:n(),
+         gr = floor(id/12) + 1)
+
+
+for(i in 1:max(cts$gr)){
+  cts_t <- 
+    cts %>% 
+    filter(gr == i) %>% 
+    dplyr::pull(Country)
+  
+  vacc3 %>% 
+    filter(Country %in% cts_t) %>%
+    ggplot(aes(x = Date, y = reorder(Country, Date, FUN = max)))+
+    geom_point(color = rgb(0,0,1,0.5))+
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+  
+  
+  ggsave(paste0("R_checks/coverage/vacc3", i, ".png")) 
+}
+
