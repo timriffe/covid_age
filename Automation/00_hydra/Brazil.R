@@ -45,14 +45,12 @@ df_states <- tibble(uf = c("all", "AC", "AL", "AM", "AP",
                               "Rondônia", "Roraima", "Rio Grande do Sul", "Santa Catarina",
                               "Sergipe", "São Paulo", "Tocantis"))
 
-# Brazilian states
-df_states <- tibble(uf = c("all", "AC"),
-                    state = c("All", "Acre"))
+# df_states <- tibble(uf = c("all", "AC"),
+#                     state = c("All", "Acre"))
 
 df <- tibble()
 start_time <- Sys.time()
 for(i in 1:length(df_states$uf)) {
-# for(i in 1:length(df_states$uf)) {
   for(j in 1:length(dates)) {
     
     # curl into httr
@@ -83,7 +81,7 @@ for(i in 1:length(df_states$uf)) {
                        new = as.numeric(raw2),
                        date = dates[j],
                        uf = df_states$uf[i]))
-    cat("i: ", i, " j: ", j, "\n")
+    cat("State: ", df_states$state[i], " Date: ", as.character(dates[j]), "\n")
   }
 }
 end_time <- Sys.time()
