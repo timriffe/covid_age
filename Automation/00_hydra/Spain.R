@@ -10,12 +10,16 @@ ctr <- "Spain"
 dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 # Drive credentials
-drive_auth(email = email,
-           scopes = c("https://www.googleapis.com/auth/spreadsheets",
-                               "https://www.googleapis.com/auth/drive"))
-gs4_auth(email = email,
-         scopes = c("https://www.googleapis.com/auth/spreadsheets",
-                    "https://www.googleapis.com/auth/drive"))
+# drive_auth(email = email,
+#            scopes = c("https://www.googleapis.com/auth/spreadsheets",
+#                                "https://www.googleapis.com/auth/drive"))
+# gs4_auth(email = email,
+#          scopes = c("https://www.googleapis.com/auth/spreadsheets",
+#                     "https://www.googleapis.com/auth/drive"))
+# 
+
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
 
 url <- "https://cnecovid.isciii.es/covid19/resources/casos_hosp_uci_def_sexo_edad_provres.csv"
 
