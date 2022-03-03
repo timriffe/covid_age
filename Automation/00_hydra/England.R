@@ -207,6 +207,15 @@ Regional_Cases <- regional_cases_in %>%
   sort_input_data()
 
 
+##subsubtrgional data
+subregional_cases_url <- "https://api.coronavirus.data.gov.uk/v2/data?areaType=ltla&metric=newCasesBySpecimenDateAgeDemographics&format=csv"
+data_source3.2 <- paste0(dir_n, "Data_sources/", ctr, "/subregions_Cases",today(), ".csv")
+
+download.file(subregional_cases_url, data_source3.2, mode = "wb")
+
+
+subregional_cases_in     <- read_csv(data_source3.2)
+
 
 ##deaths
 regional_death_url <- "https://api.coronavirus.data.gov.uk/v2/data?areaType=region&metric=newDeaths28DaysByDeathDateAgeDemographics&format=csv"
