@@ -202,3 +202,7 @@ zipr(zipname,
 # clean up file chaff
 file.remove(data_source)
 
+
+# 
+# unique(db$Landkreis)
+# 120*411*3*21*2

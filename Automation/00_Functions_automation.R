@@ -196,9 +196,9 @@ sched <- function(
   # }
   
   if (tm.in.dec < st.in){
-    date.sched <- format((today() + 1), "%d/%m/%Y") 
+    date.sched <- format((today() + 1), "%m/%d/%Y") 
   } else {
-    date.sched <- format(today(), "%d/%m/%Y") 
+    date.sched <- format(today(), "%m/%d/%Y") 
   }
   
   taskscheduler_create(taskname = tskname, 

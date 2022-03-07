@@ -26,14 +26,14 @@ auto_update_wd <- here()
 if (grepl("riffe", auto_update_wd)){
    auto_update_email <- "tim.riffe@gmail.com"   
 }
-if (grepl("gits", auto_update_wd)){
-  auto_update_email <- "kikepaila@gmail.com"
-}
 if (grepl("Git04", auto_update_wd)){
   auto_update_email <- "jessica_d.1994@yahoo.de"
 }
 if (grepl("gits", auto_update_wd)){
   auto_update_email <- "maxi.s.kniffka@gmail.com"
+}
+if (grepl("gits", auto_update_wd)){
+  auto_update_email <- "kikepaila@gmail.com"
 }
 
 # sched() is a funtion that generates and schedules a trigger script 
@@ -70,7 +70,7 @@ tasks <- taskscheduler_ls()
 
 # list of all available scripts to schedule
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-scripts <- c('US_Virginia', 'USA_all_deaths', 'Netherlands', 'Estonia', 
+scripts <- c('US_Virginia', 'Netherlands', 'Estonia', 
              'Czechia', 'US_Michigan', 'Venezuela', 'US_Texas', 
              'USA_deaths_states', 'Sweden', 'Peru', 'Germany', 
              'US_Massachusetts', 'Colombia', 'US_NYC', 'Austria', 'Philippines', 
@@ -83,13 +83,19 @@ scripts <- c('US_Virginia', 'USA_all_deaths', 'Netherlands', 'Estonia',
              'CA_Alberta', 'Canada_vaccine', 'US_Texas_Vaccine', 
              'Hong_Kong_Vaccine','Argentina','Slovenia', 'US_Maine','US_NYC_vaccine',
              'US_Vermont_Vaccine', 'US_Indiana','Lithuania_vaccine','US_Michigan_vaccine',
-             'US_Minnesota_vaccine', 'Slovenia_vaccine', 'US_Oregon_Vaccine', 'Latvia_vaccine',
-             'Island_of_Jersey', 'Estonia_vaccine', 'Uruguay_vaccine', 'Chile','Finland_vaccine',
-             'ECDC_vaccine', 'Slovakia_vaccine', 'Germany_vaccine', 'US_Pennsylvania_vaccine', 'USA_vaccine',
-             'Australia_vaccine', 'US_Idaho', 'USA_all', 'Brazil', 'New_Zealand', 'Maldives', 'Japan', 
-             'Romania', 'Puerto_Rico', 'Scotland_Vaccine', 'Switzerland_Vaccine', 'Norway_Vaccine', 'France_Vaccine',
-             'England_Vaccine', 'England', 'England_and_Wales', 'Togo', 'Netherlands_Vaccine', 'Costa_Rica_Vaccine')
+             'US_Minnesota_vaccine', 'Slovenia_vaccine', 'US_Oregon_Vaccine', 
+             'Latvia_vaccine', 'Island_of_Jersey', 'Estonia_vaccine', 'Uruguay_vaccine', 
+             'Chile','Finland_vaccine', 'ECDC_vaccine', 'Slovakia_vaccine', 
+             'Germany_vaccine', 'US_Pennsylvania_vaccine', 'USA_vaccine',
+             'Australia_vaccine', 'US_Idaho', 'New_Zealand', 
+             'Maldives', 'Japan', 'Romania', 'Puerto_Rico', 'Scotland_Vaccine', 
+             'Switzerland_Vaccine', 'Norway_Vaccine', 'France_Vaccine',
+             'England_Vaccine', 'England', 'England_and_Wales', 'Togo', 
+             'Netherlands_Vaccine', 'Costa_Rica_Vaccine', 
+             'USA_cases_all', 'USA_cases_states', 'USA_deaths_all', 'USA_deaths_states')
 
+scripts <- c('USA_cases_all', 'USA_cases_states', 'USA_deaths_all', 'USA_deaths_states')
+scripts %>% sort
 # Scheduling all scripts at once
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -123,7 +129,8 @@ for(c in scripts){
 # for individual scheduling
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sched("CA_Ontario", tm = "12:30", email = auto_update_email, wd = auto_update_wd)
+sched("Brazil", tm = "05:00", email = auto_update_email, wd = auto_update_wd)
+sched("Netherlands", tm = "19:15", email = auto_update_email, wd = auto_update_wd)
 
 #sch = "WEEKLY"
 
@@ -143,6 +150,8 @@ delete_sched("England_and_Wales")
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # danger zone!!!! deleting all scheduled tasks
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+scripts <- c('USA_all', 'USA_all_deaths')
+
 for(c in scripts){
   delete_sched(c)
 }
