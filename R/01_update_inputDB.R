@@ -67,11 +67,12 @@ if (nrow(rubric) > 0){
   inputDB <- compile_inputDB(rubric, hours = Inf)
   
   data.table::fwrite(inputDB, file = here::here("Data","inputDBhold.csv"))
+  # inputDB <- data.table::fread(here::here("Data","inputDBhold.csv"))
   # saveRDS(inputDB, here::here("Data","inputDBhold.rds"))
   # what data combinations have we read in?
   
   # TR: templateID is temporary:
-  inputDB$templateID <- NULL
+  # inputDB$templateID <- NULL
   
   # remove non-standard Measure:
   Measures <- c("Cases","Deaths","Tests","ASCFR","Vaccinations",
@@ -224,7 +225,7 @@ if (nrow(rubric) > 0){
   # unlink( here::here("Data","inputDB_failures.csv"), force = TRUE)
   # View(inputDB_failures)
   data.table::fwrite(inputDB_failures, file = here::here("Data","inputDB_failures.csv"))
-  write_csv(inputDB_failures, file = here::here("Data","inputDB_failures.csv"))
+  # write_csv(inputDB_failures, file = here::here("Data","inputDB_failures.csv"))
   Sys.sleep(1)
   # public file, full precision.
   header_msg <- paste("COVerAGE-DB input database, filtered after some simple checks:",timestamp(prefix = "", suffix = ""))
@@ -235,6 +236,9 @@ if (nrow(rubric) > 0){
                      file = here::here("Data","inputDB.csv"), 
                      append = TRUE, col.names = TRUE)
   
+  rm(inputDB, inputDB_failures, inputDB_out)
+  
+  gc()
   # push logfile to github:
   library(usethis)
   library(git2r)
