@@ -7,7 +7,7 @@ A short guide to reading the data into `R` can be found [here](https://timriffe.
 ## Data availability
 You can get the most up-to-date data at the `OSF` site that we mirror to: [https://osf.io/mpwjq/](https://osf.io/mpwjq/). 
 
-Here's an overview of global coverage as of now. A country marked as *forthcoming* means we've identified a source, but that collection is pending for one reason or another. Are you from one of the countries not yet in the collection and want to pitch in? Are you interested in adopting collection for one of our time series that has fallen behind? We're in need of more support. Please reach out, if so by emailing us as `coverage-db < at > demogr.mpg.de`.
+Here's an overview of global coverage as of now. A country marked as *forthcoming* means we've identified a source, but that collection is pending for one reason or another. Are you from one of the countries not yet in the collection and want to pitch in? Are you interested in adopting collection for one of our time series that has fallen behind? We're in need of more support. Please reach out, if so by emailing us at `coverage-db < at > demogr.mpg.de`.
 ![coverage map](https://raw.githubusercontent.com/timriffe/covid_age/master/assets/coveragemap.svg)
 
 A detailed dashboard of data availability can be found [here](https://timriffe.github.io/covid_age/DataAvail.html).
