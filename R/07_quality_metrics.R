@@ -171,9 +171,9 @@ SubPopsOffsetsIndicator <-
 
 # metadata needs some cleaning before this can integrate
 #this may need an update?
-all_regions <- c("Mexico", "Peru", "Japan", "France", "Germany", "Colombia", 
-                 "Brazil", "Spain", "Czechia", "Belgium", "Netherlands", 
-                 "Paraguay")
+# all_regions <- c("Mexico", "Peru", "Japan", "France", "Germany", "Colombia", 
+#                  "Brazil", "Spain", "Czechia", "Belgium", "Netherlands", 
+#                  "Paraguay")
 
 rownames(Metadata)<- NULL
 Corrections <-
@@ -190,10 +190,10 @@ OWD <- read_csv("https://covid.ourworldindata.org/data/owid-covid-data.csv",
                 col_types= "cccDdddddddddddddddddddddddddddddcdddddddddddddddd") %>% 
   dplyr::filter(!is.na(iso_code)) %>% 
   dplyr::filter(! iso_code %in% c("OWID_KOS","OWID_WRL")) %>% 
-  mutate(Short = countrycode(iso_code, 
+  mutate(Code = countrycode(iso_code, 
                              origin = 'iso3c', 
                              destination = 'iso2c')) %>% 
-  dplyr::select(Short, 
+  dplyr::select(Code, 
          Date = date, 
          total_cases, 
          total_tests, 
@@ -208,10 +208,9 @@ cdbcountries <- inputDB %>%
   dplyr::filter(Region == "All") %>% 
   group_by(Country) %>% 
   slice(1) %>% 
-  dplyr::select(Country, Short)
+  dplyr::select(Country, Code)
 
-OWD <- left_join(OWD, cdbcountries) %>% 
-  dplyr::select(-Short)
+OWD <- left_join(OWD, cdbcountries, by = "Code") 
 
 # 1) read in OWD data,
 # 1.1) do we capture any tests that they don't have? If so, send them an email.

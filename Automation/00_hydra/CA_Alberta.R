@@ -81,7 +81,9 @@ df_cases2$Region = "Alberta"
 df_cases2$Metric = "Count"
 df_cases2$Measure = "Cases"
 df_cases2$Date <- ddmmyyyy(df_cases2$Date)
-names(df_cases2)[3] <- "Value"
+names(df_cases2)[3] <- "Date"
+names(df_cases2)[4] <- "Value"
+
 cases <- df_cases2 %>% 
   mutate(Code = paste0("CA-AB"))
 
@@ -172,8 +174,7 @@ death <- death %>%
     Age == "5" ~ 5L,
     Age == "80" ~ 25L,
     Age == "UNK" ~ NA_integer_,
-    TRUE ~ 10L))
-
+    TRUE ~ 10L)) 
 
 # death <- death[-1]
 

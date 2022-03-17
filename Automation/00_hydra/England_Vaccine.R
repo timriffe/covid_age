@@ -69,6 +69,9 @@ small_ages <- vacc_out %>%
 
 vacc_out <- rbind(vacc_out, small_ages) %>% 
   sort_input_data()
+
+##work on getting regional data
+#https://api.coronavirus.data.gov.uk/v2/data?areaType=region&metric=vaccinationsAgeDemographics&format=csv
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # uploading database to Google Drive and N
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

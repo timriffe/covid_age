@@ -16,9 +16,9 @@ gs4_auth(email = email)
 
 # get yesterday
 hoy <- Sys.Date()
-ayer <- paste0(year(hoy-1),
-               str_pad(month(hoy-1),2,"left",0) ,
-               str_pad(day(hoy-1),2,"left",0))
+ayer <- paste0(year(hoy-3),
+               str_pad(month(hoy-3),2,"left",0) ,
+               str_pad(day(hoy-3),2,"left",0))
 
 data_url <- paste0("https://covidstats.com.ar/archivos/coverage-db/",ayer,"-argentina.csv.zip")
 
