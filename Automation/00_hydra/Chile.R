@@ -1,5 +1,5 @@
 
-source(here::here("Automation/00_Functions_automation.R"))
+source("Automation/00_Functions_automation.R")
 #written by Rafael 
 # edited by Jessica
 # refactored by Tim (27 Nov, 2021)
@@ -56,15 +56,13 @@ c_input %>%
 #read in deaths in a way that is not affected by changes in the date in link
 #new data every thursday 
 
-library(lubridate)
-library(RCurl)
 guess_chile_url <- function(days = 20){
   dates <- today() - 0:days
   yr    <- year(dates)
   mth   <- sprintf("%02d",month(dates))
   dy    <- sprintf("%02d",day(dates))
                        # "https://repositoriodeis.minsal.cl/DatosAbiertos/VITALES/DEFUNCIONES_FUENTE_DEIS_2016_2021_20012022.zip"
-  maybe_urls <- paste0("https://repositoriodeis.minsal.cl/DatosAbiertos/VITALES/DEFUNCIONES_FUENTE_DEIS_2016_","2021","_",dy,mth,yr,".zip")
+  maybe_urls <- paste0("https://repositoriodeis.minsal.cl/DatosAbiertos/VITALES/DEFUNCIONES_FUENTE_DEIS_2016_","2022","_",dy,mth,yr,".zip")
   
   TF <- sapply(maybe_urls, RCurl::url.exists)
   
@@ -292,3 +290,4 @@ zip::zipr(zipname,
           include_directories = TRUE)
 
 file.remove(data_source)
+

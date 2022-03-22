@@ -44,9 +44,9 @@ dates <- seq.Date(dmy("16/03/2020"), current_day, by = "day")
 # curl into httr:
 # https://curl.trillworks.com/#r
 headers <- c(
-  `X-XSRF-TOKEN` = token,
+  # `X-XSRF-TOKEN` = token,
   # dont know if it is a private info
-  `User-Agent` = # your user-agent here
+  `User-Agent` = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36"
 )
 
 list_date <- list()
@@ -69,12 +69,19 @@ df_states <- tibble(uf = c("AC", "AL", "AM", "AP",
                               "Piauí", "Paraná", "Rio de Janeiro", "Rio Grande do Norte",
                               "Rondônia", "Roraima", "Rio Grande do Sul", "Santa Catarina",
                               "Sergipe", "São Paulo", "Tocantis"))
-
+install.packages("tictoc")
+library(tictoc)
 df <- tibble()
-
+# i <- 3
+# j <- 500
+# k <- 8
+# m <- 1
 start_time <- Sys.time()
-for(i in 1:length(df_states$uf)) {
-  for(j in 1:length(dates)) {
+tic()
+# for(i in 1:length(df_states$uf)) {
+#   for(j in 1:length(dates)) {
+for(i in 1:1) {
+  for(j in 1:100) {
     
     # curl into httr
     # https://curl.trillworks.com/#r
