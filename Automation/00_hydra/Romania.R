@@ -20,8 +20,8 @@ dir_n_source <- "N:/COVerAGE-DB/Automation/Romania"
 
 
 # Drive credentials
-drive_auth(email = email)
-gs4_auth(email = email)
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
 
 
 # Drive urls
@@ -102,6 +102,67 @@ Age_Out= Age_in %>%
   mutate(Value = as.character(Value))
 
 ###death data
+# all_paths2 <-
+#   list.files(path = dir_n_source,
+#              pattern = "Romania-death20",
+#              full.names = TRUE)
+# 
+# 
+# all_content_age_death2 <-
+#   all_paths2 %>%
+#   lapply(read.table, sep = ",")
+# 
+# all_filenames2 <- all_paths2 %>%
+#   basename() %>%
+#   as.list()
+# 
+# #include filename to get date from filename 
+# all_lists2 <- mapply(c, all_content_age_death2, all_filenames2, SIMPLIFY = FALSE) 
+# 
+# deaths_in <- rbindlist(all_lists2, fill = T)
+# names(deaths_in)[1] <- "Totals"
+# deaths_in <- melt(deaths_in, id=c("V1", "Totals"))
+# deaths_out <- deaths_in %>% 
+# separate(value, into = c("Value", "Age"), sep = "la categoria") %>% 
+#   mutate(Value = gsub("[^0-9]+", "", Value)) %>% 
+#   filter(!is.na(Age)) %>% 
+#   mutate(Age = gsub("[^0-9]+", "", Age)) %>% 
+#   mutate(Totals = gsub("[^0-9]+", "", Totals)) %>% 
+#   mutate (Date = substr(V1, 14,21),
+#           Date = as.Date(as.character(Date),format="%Y%m%d"),
+#           Age = substr(Age, 1,2),
+#           Age = case_when(
+#             Age == "09" ~ "0",
+#             TRUE ~ Age
+#           )) %>% 
+#   select(Date, Age, Value) %>% 
+#   ungroup() %>% 
+#   tidyr::complete(Date, nesting(Age), fill=list(Value=0)) %>% 
+#   arrange(Date, Age) %>% 
+#   group_by( Age) %>% 
+#   mutate(Value = cumsum(Value)) %>% 
+#   ungroup() %>% 
+#   mutate(Measure = "Deaths",
+#          Country = "Romania",
+#          Region = "All",
+#          Code = "RO",
+#          Sex = "b",
+#          AgeInt = case_when(
+#            Age == "70" ~ 35L,
+#            TRUE ~ 10L
+#          ),
+#          Metric = "Count",
+#          Value = as.character(Value)) %>% 
+#   mutate(
+#     Date = ymd(Date),
+#     Date = paste(sprintf("%02d",day(Date)),    
+#                  sprintf("%02d",month(Date)),  
+#                  year(Date),sep=".")) %>% 
+#   sort_input_data() 
+# 
+# 
+# 
+
 
 
 #put together
