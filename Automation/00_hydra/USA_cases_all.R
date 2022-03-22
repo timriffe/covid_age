@@ -31,10 +31,11 @@ df <- file.info(list.files(path= dir_n_source,
 most_recent_file_case_age= rownames(df)[which.max(df$mtime)]
 
 all_content_case_age <-
-most_recent_file_case_age %>%
-lapply(read_csv, skip=2)
+  most_recent_file_case_age %>%
+  lapply(read_csv, skip=2)
 
-all_filenames_case_age <- most_recent_file_case_age %>%
+all_filenames_case_age <- 
+  most_recent_file_case_age %>%
   basename() %>%
   as.list()
 

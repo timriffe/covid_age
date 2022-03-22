@@ -18,7 +18,7 @@ packages_CRAN <- c("tidyverse","lubridate","gargle","rvest","httr","readxl",
                    "remotes","here","googledrive","zip", "XML", "RCurl",
                    "taskscheduleR","countrycode", "xml2", "dplyr", "xml2",
                    "reticulate", "rjson", "readODS", "pdftools", "aweek", 
-                   "ISOweek")
+                   "ISOweek", "longurl", "ggpubr")
 
 # Install required CRAN packages if not available yet
 if(!sum(!p_isinstalled(packages_CRAN))==0) {
@@ -148,7 +148,7 @@ log_update <- function(pp, N){
 # @param wd repo base path.
 
 sched <- function(
-  pp = "Germany", 
+  pp = "USA_deaths_all", 
   tm = "21:18", 
   email = "kikepaila@gmail.com",
   sch = "DAILY",

@@ -63,7 +63,9 @@ if (grepl("gits", auto_update_wd)){
 
 # To see the list of scheduled tasks
 taskscheduler_ls() %>% view()
-tasks <- taskscheduler_ls()
+tasks <- 
+  taskscheduler_ls() %>% 
+  filter(str_sub(TaskName, 1, 8) == "coverage")
 # ~~~~~~~~~~~~~~~~
 # Scheduling tasks 
 # ~~~~~~~~~~~~~~~~
@@ -94,16 +96,17 @@ scripts <- c('US_Virginia', 'Netherlands', 'Estonia',
              'Netherlands_Vaccine', 'Costa_Rica_Vaccine', 
              'USA_cases_all', 'USA_cases_states', 'USA_deaths_all', 'USA_deaths_states')
 
-scripts <- c('USA_cases_all', 'USA_cases_states', 'USA_deaths_all', 'USA_deaths_states')
+# scripts <- c('USA_cases_all', 'USA_cases_states', 'USA_deaths_all', 'USA_deaths_states')
+# scripts <- c('USA_cases_all', 'USA_deaths_all')
 scripts %>% sort
 # Scheduling all scripts at once
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # starting time for first schedule in hour and minutes
-h_ini <- 08
-m_ini <- 40
+h_ini <- 10
+m_ini <- 20
 # delay between scripts in minutes
-delay_time <- 8
+delay_time <- 5
 
 i <- 0
 for(c in scripts){
@@ -130,7 +133,9 @@ for(c in scripts){
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 sched("Brazil", tm = "05:00", email = auto_update_email, wd = auto_update_wd)
-sched("Netherlands", tm = "19:15", email = auto_update_email, wd = auto_update_wd)
+sched('SouthKorea', tm = "18:23", email = auto_update_email, wd = auto_update_wd)
+sched('USA_deaths_all', tm = "17:01", email = auto_update_email, wd = auto_update_wd)
+sched('USA_cases_all', tm = "17:02", email = auto_update_email, wd = auto_update_wd)
 
 #sch = "WEEKLY"
 
@@ -143,7 +148,7 @@ sched("Netherlands", tm = "19:15", email = auto_update_email, wd = auto_update_w
 # taskscheduler_delete("COVerAGE-DB-automatic-daily-build")
 # taskscheduler_delete("COVerAGE-DB-every-8-hour-inputDB-updates")
 
-delete_sched("England_and_Wales")
+delete_sched("USA_cases_all")
 
 
 

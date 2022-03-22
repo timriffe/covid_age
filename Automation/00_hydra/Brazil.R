@@ -125,7 +125,7 @@ out <-
   mutate(Country = "Brazil",
          AgeInt = ifelse(Age == "100", 5, lead(as.numeric(Age)) - as.numeric(Age)),
          Measure = "Deaths",
-         Metric = "Counts",
+         Metric = "Count",
          Date = ddmmyyyy(Date)) %>% 
   sort_input_data()
 

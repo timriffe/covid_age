@@ -262,7 +262,7 @@ if(dim(links_new_vacc)[1] > 0){
                             ctr, "/", ctr, "_vaccines_", as.character(date_v), ".zip")
     download.file(as.character(links_new_vacc[i, 2]), destfile = data_source_v, mode = "wb")
     
-    try(db_v <- read_csv2(unz(data_source_v, "Vaccine_DB/Vaccinationer_region_aldgrp_koen.csv"), locale = locale(encoding = "ASCII")))
+    try(db_v <- read_csv(unz(data_source_v, "Vaccine_DB/Vaccinationer_region_aldgrp_koen.csv"), locale = locale(encoding = "ASCII")))
     #try(db_v <- read_csv(unz(data_source_v, "ArcGIS_dashboards_data/Vaccine_DB/Vaccinationer_region_aldgrp_koen.csv")))
     
     db_v2 <- db_v %>% 

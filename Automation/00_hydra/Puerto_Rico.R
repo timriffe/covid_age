@@ -20,9 +20,17 @@ dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 drive_auth(email = Sys.getenv("email"))
 gs4_auth(email = Sys.getenv("email"))
 
+data_source1 <- paste0(dir_n, "Data_sources/", ctr, "/death_age_",today(), ".csv")
+data_source2 <- paste0(dir_n, "Data_sources/", ctr, "/cases_age_",today(), ".csv")
+data_source3 <- paste0(dir_n, "Data_sources/", ctr, "/tests_age_",today(), ".csv")
+data_source4 <- paste0(dir_n, "Data_sources/", ctr, "/vaccine_age_",today(), ".csv")
+
 
 ###death
-death = read.csv("https://covid19datos.salud.gov.pr/estadisticas_v2/download/data/defunciones/completo")
+download.file("https://covid19datos.salud.gov.pr/estadisticas_v2/download/data/defunciones/completo",
+              data_source1)
+
+death = read.csv(data_source1)
 
 death2= death %>%
   #remove missing age information 
@@ -60,7 +68,12 @@ arrange(Date, Sex, Age) %>%
          Region = "All")
 
 ###cases
-cases = read.csv("https://covid19datos.salud.gov.pr/estadisticas_v2/download/data/casos/completo")
+download.file("https://covid19datos.salud.gov.pr/estadisticas_v2/download/data/casos/completo", 
+              data_source2)
+
+cases = read.csv(data_source2)
+
+
 
 cases2= cases %>%
   #remove missing age information 
@@ -94,7 +107,10 @@ cases3 <- cases2 %>%
 
 
 ###tests
-tests = read.csv("https://covid19datos.salud.gov.pr/estadisticas_v2/download/data/pruebas/completo")
+download.file("https://covid19datos.salud.gov.pr/estadisticas_v2/download/data/pruebas/completo",
+              data_source3)
+
+tests = read.csv(data_source3)
 
 tests2= tests %>%
   #remove missing age information 
@@ -135,7 +151,10 @@ tests3 <- tests2 %>%
          Region = "All")
 
 ###vaccine
-vacc = read.csv("https://covid19datos.salud.gov.pr/estadisticas_v2/download/data/vacunacion/completo")
+download.file("https://covid19datos.salud.gov.pr/estadisticas_v2/download/data/vacunacion/completo", 
+              data_source4)
+
+vacc = read.csv(data_source4)
 
 vaccine2= vacc %>%
   #remove missing age information 
@@ -234,15 +253,10 @@ log_update(pp = ctr, N = nrow(out))
 
 #archive input data 
 
-data_source1 <- paste0(dir_n, "Data_sources/", ctr, "/death_age_",today(), ".csv")
-data_source2 <- paste0(dir_n, "Data_sources/", ctr, "/cases_age_",today(), ".csv")
-data_source3 <- paste0(dir_n, "Data_sources/", ctr, "/tests_age_",today(), ".csv")
-data_source4 <- paste0(dir_n, "Data_sources/", ctr, "/vaccine_age_",today(), ".csv")
-
-write_csv(death, data_source1)
-write_csv(cases, data_source2)
-write_csv(tests, data_source3)
-write_csv(vacc, data_source4)
+# write_csv(death, data_source1)
+# write_csv(cases, data_source2)
+# write_csv(tests, data_source3)
+# write_csv(vacc, data_source4)
 
 data_source <- c(data_source1, data_source2, data_source3, data_source4)
 

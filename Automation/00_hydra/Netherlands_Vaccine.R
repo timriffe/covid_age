@@ -1,7 +1,6 @@
 ##Netherlands Vaccination 2022
 
 source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
-library(reshape2) 
 if (! "email" %in% ls()){
   email <- "maxi.s.kniffka@gmail.com"
 }

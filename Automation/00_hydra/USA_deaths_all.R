@@ -1,5 +1,4 @@
-library(here)
-source(here("Automation/00_Functions_automation.R"))
+source("Automation/00_Functions_automation.R")
 
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
@@ -87,3 +86,4 @@ zipr(zipname,
 
 # clean up file chaff
 file.remove(data_source)
+

@@ -5,7 +5,7 @@ library(ISOweek)
 
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
-  email <- "e.delfava@gmail.com"
+  email <- "kikepaila@gmail.com"
 }
 # info country and N drive address
 ctr <- "Netherlands"
