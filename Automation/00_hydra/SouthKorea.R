@@ -9,12 +9,6 @@ if (!"email" %in% ls()){
 drive_auth(email = email)
 gs4_auth(email = email)
 
-library(tidyverse)
-library(xml2)
-library(rvest)
-library(lubridate)
-library(googlesheets4)
-
 # info country and N drive address
 ctr    <- "SouthKorea"
 dir_n  <- "N:/COVerAGE-DB/Automation/Hydra/"
