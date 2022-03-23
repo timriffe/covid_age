@@ -24,13 +24,13 @@ ss_db    <- rubric_i %>% dplyr::pull(Source)
 
 # reading data from Montreal and last date entered 
 db_drive <- read_sheet(ss = ss_i, sheet = "database")
-db_drive <- db_drive %>% 
-  mutate(Sex = case_when(
-         Sex == "b" ~ "b",
-         Sex == "f" ~ "f",
-         Sex == "m" ~ "m",
-         Sex == "UNK" ~ "UNK",
-         TRUE ~ "b"))
+# db_drive <- db_drive %>% 
+#   mutate(Sex = case_when(
+#          Sex == "b" ~ "b",
+#          Sex == "f" ~ "f",
+#          Sex == "m" ~ "m",
+#          Sex == "UNK" ~ "UNK",
+#          TRUE ~ "b"))
 
 last_date_drive <- db_drive %>% 
   mutate(date_f = dmy(Date)) %>% 
@@ -58,89 +58,52 @@ date_f  <- str_sub(date_text, loc_date1, loc_date2) %>%
 if (date_f > last_date_drive){
 
   ####################################
-  # all cases from case-based database
+  # all cases from github #
   ####################################
 
-  root <- "https://www.health.govt.nz"
-  
-  # cases data
-  html <- read_html(m_url)
-#  url1 <- html_nodes(html, xpath = '/html/body/div[2]/div/div[1]/section/div[2]/section/div/div/div[2]/div[2]/div/article/div[2]/div/div/p[13]/a') %>%
-#    html_attr("href")
 
-  url1 <- paste0("https://www.health.govt.nz/system/files/documents/pages/covid_cases_",today(), ".csv")  
-  db_c <- read_csv(paste0(url1)) %>% 
-    as_tibble()
+  cases <- read.csv("https://raw.githubusercontent.com/minhealthnz/nz-covid-data/main/cases/covid-cases.csv")  
+
   
   db_c2 <- 
-    db_c %>% 
-    select(date = 1,
-           age_gr = 4,
+    cases %>% 
+    select(Date = Report.Date,
+           Age = Age.group,
            Sex) %>% 
-    mutate(date_f = ymd(date))
-
-  unique(db_c2$age_gr)
-  
-  db_c3 <- db_c2 %>% 
-    separate(age_gr, c("Age", "trash"), sep = " to ") %>% 
-    mutate(Age = case_when(Age == "90+" ~ "90",
-                           TRUE ~ Age))
-  unique(db_c3$Age)
-  
-  ages <-  suppressWarnings(as.integer(unique(db_c3$Age))) %>% sort() %>% as.character()
-  dates <- unique(db_c3$date_f) %>% sort()
-  
-  db_c4 <- db_c3 %>% 
-    group_by(date_f, Age, Sex) %>% 
+    mutate(Age = substr(Age, 1,2),
+           Age = case_when(
+             Age == "UN" ~ "UNK",
+             TRUE ~ Age
+           ),
+           Sex = case_when(
+             Sex == "Female" ~ "f",
+             Sex == "Male" ~ "m",
+             Sex == "Indeterminate" ~ "UNK",
+             Sex == "Unknown" ~ "UNK"
+           )) %>% 
+    group_by(Date, Age, Sex) %>% 
     summarise(new = n()) %>% 
     ungroup() %>% 
-    mutate(Sex = case_when(Sex == "Male" ~ "m", 
-                           Sex == "Female" ~ "f", 
-                           TRUE ~ "UNK")) %>% 
-    tidyr::complete(date_f = dates, Sex = c("f", "m", "UNK"), Age = ages, fill = list(new = 0)) %>% 
+    tidyr::complete(Date, Sex, Age, fill = list(new = 0)) %>% 
     group_by(Sex, Age) %>% 
     mutate(Value = cumsum(new)) %>% 
-    arrange(date_f, Sex, Age) %>% 
+    arrange(Date, Sex, Age) %>% 
     ungroup() %>% 
-    select(-new)
-
-  db_c_sex <- db_c4 %>% 
-    group_by(date_f, Age) %>% 
-    summarise(Value = sum(Value)) %>% 
-    ungroup() %>% 
-    mutate(Sex = "b") %>% 
-    filter(Age != "UNK")
-  
-  db_c_age <- db_c4 %>% 
-    group_by(date_f, Sex) %>% 
-    summarise(Value = sum(Value)) %>% 
-    ungroup() %>% 
-    mutate(Age = "TOT") %>% 
-    filter(Sex != "UNK")
-  
-  db_c5 <- db_c4 %>% 
-    filter(Age != "UNK" & Sex != "UNK") %>% 
-    bind_rows(db_c_sex, db_c_age) 
-  
-  unique(db_c5$Sex)
-  unique(db_c5$Age)
-  
-  db_c6 <- db_c5 %>% 
+    select(-new) %>% 
     mutate(Country = "New Zealand",
            Region = "All",
-           Date = paste(sprintf("%02d",day(date_f)),
-                        sprintf("%02d",month(date_f)),
-                        year(date_f),
+           Date = paste(sprintf("%02d",day(Date)),
+                        sprintf("%02d",month(Date)),
+                        year(Date),
                         sep="."),
            Code = "NZ",
            Metric = "Count",
            Measure = "Cases",
-           AgeInt = case_when(Age == "90" ~ 15,
-                              Age == "TOT" ~ NA_real_,
-                              TRUE ~ 10)) %>% 
-    arrange(date_f, Sex, Measure, suppressWarnings(as.integer(Age))) %>% 
-    select(Country,Region, Code,  Date, Sex, Age, AgeInt, Metric, Measure, Value)
-  
+           AgeInt = case_when(Age == "90" ~ 15L,
+                              Age == "UNK" ~ NA_integer_,
+                              TRUE ~ 10L)) %>% 
+  sort_input_data()
+
     
   # ~~~~~~~~~~~~~
   # vaccines data
@@ -214,7 +177,7 @@ db_v <-
   # deaths by age from html table
   ####################################
   
-  # cases and deaths by age for the last update
+  # deaths by age for the last update
 
 
 html <-read_html(m_url)
@@ -235,10 +198,8 @@ all_the_tables <- html %>%
   db_a2 <- db_a %>% 
     as_tibble() %>% 
     select(Age = 1,
-           Cases = 5,
            Deaths = 4) %>% 
-    mutate(Cases = as.numeric(as.character(Cases)),
-           Deaths = as.numeric(as.character(Deaths)),
+    mutate(Deaths = as.numeric(as.character(Deaths)),
            Deaths = replace_na(Deaths, 0)) %>% 
     separate(Age, c("Age", "trash"), sep = " to ") %>% 
     mutate(Age = case_when(Age == "90+" ~ "90",
@@ -246,20 +207,19 @@ all_the_tables <- html %>%
                            Age == "Unknown" ~ "UNK",
                            TRUE ~ Age),
            Sex = "b") %>% 
-    gather(Cases, Deaths, key = "Measure", value = "Value") %>% 
+    gather(Deaths, key = "Measure", value = "Value") %>% 
     select(-trash)
   
   db_s2 <- db_s %>% 
     as_tibble() %>% 
     select(Sex = 1,
-           Cases = 5,
            Deaths = 4) %>% 
     mutate(Sex = case_when(Sex == "Female" ~ "f",
                            Sex == "Male" ~ "m",
                            Sex == "Total" ~ "b",
                            TRUE ~ "UNK"),
            Age = "TOT") %>% 
-    gather(Cases, Deaths, key = "Measure", value = "Value") %>% 
+    gather(Deaths, key = "Measure", value = "Value") %>% 
     mutate(Value = as.numeric(Value)) %>% 
     filter(Sex != "UNK",
            Sex != "b")
@@ -447,7 +407,7 @@ all_the_tables <- html %>%
   # putting together cases database, last update, and deaths
   ########################################################
   
-  out <- bind_rows(db_c6, db_drive_out) %>% 
+  out <- bind_rows(db_c2, db_drive_out) %>% 
     mutate(date_f = dmy(Date)) %>% 
     arrange(date_f, Sex, Measure, suppressWarnings(as.integer(Age))) %>% 
     select(Country,Region, Code,  Date, Sex, Age, AgeInt, Metric, Measure, Value)
