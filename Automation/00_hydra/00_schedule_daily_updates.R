@@ -94,7 +94,7 @@ scripts <- c('US_Virginia', 'Netherlands', 'Estonia',
              'Switzerland_Vaccine', 'Norway_Vaccine', 'France_Vaccine',
              'England_Vaccine', 'England', 'England_and_Wales', 'Togo', 
              'Netherlands_Vaccine', 'Costa_Rica_Vaccine', 
-             'USA_cases_all', 'USA_cases_states', 'USA_deaths_all', 'USA_deaths_states')
+             'USA_cases_all', 'USA_cases_states', 'USA_deaths_all', 'USA_deaths_states', 'Somalia', 'Ireland')
 
 # scripts <- c('USA_cases_all', 'USA_cases_states', 'USA_deaths_all', 'USA_deaths_states')
 # scripts <- c('USA_cases_all', 'USA_deaths_all')
@@ -103,8 +103,8 @@ scripts %>% sort
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # starting time for first schedule in hour and minutes
-h_ini <- 10
-m_ini <- 20
+h_ini <- 08
+m_ini <- 00
 # delay between scripts in minutes
 delay_time <- 5
 
@@ -132,7 +132,7 @@ for(c in scripts){
 # for individual scheduling
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sched("Brazil", tm = "05:00", email = auto_update_email, wd = auto_update_wd)
+sched("Ireland", tm = "05:00", email = auto_update_email, wd = auto_update_wd)
 sched('SouthKorea', tm = "18:23", email = auto_update_email, wd = auto_update_wd)
 sched('USA_deaths_all', tm = "17:01", email = auto_update_email, wd = auto_update_wd)
 sched('USA_cases_all', tm = "17:02", email = auto_update_email, wd = auto_update_wd)

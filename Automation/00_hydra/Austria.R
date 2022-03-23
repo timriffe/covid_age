@@ -12,8 +12,8 @@ dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 print(today())
 
-googledrive::drive_auth(email = email)
-gs4_auth(email = email)
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
 
 # TR: pull urls from rubric instead 
 at_rubric <- get_input_rubric() %>% filter(Short == "AT")

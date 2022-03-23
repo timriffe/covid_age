@@ -12,8 +12,8 @@ dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 dir_n_source <- "N:/COVerAGE-DB/Automation/Denmark/"
 
 # Drive credentials
-drive_auth(email = email)
-gs4_auth(email = email)
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
 
 at_rubric <- get_input_rubric() %>% dplyr::filter(Short == "DK")
 ss_i   <- at_rubric %>% dplyr::pull(Sheet)
@@ -254,15 +254,15 @@ links_new_vacc <- links_v %>%
 # downloading new vaccine data and loading it
 dim(links_new_vacc)[1] > 0
 db_vcc <- tibble()
-if(dim(links_new_vacc)[1] > 0){
-  for(i in 1:dim(links_new_vacc)[1]){
+# if(dim(links_new_vacc)[1] > 0){
+#   for(i in 1:dim(links_new_vacc)[1]){
     
     date_v <- links_new_vacc[i, 1] %>% dplyr::pull()
     data_source_v <- paste0(dir_n, "Data_sources/", 
                             ctr, "/", ctr, "_vaccines_", as.character(date_v), ".zip")
     download.file(as.character(links_new_vacc[i, 2]), destfile = data_source_v, mode = "wb")
     
-    try(db_v <- read_csv(unz(data_source_v, "Vaccine_DB/Vaccinationer_region_aldgrp_koen.csv"), locale = locale(encoding = "ASCII")))
+    db_v <- read.table(unz(data_source_v, "Vaccine_DB/Vaccinationer_region_aldgrp_koen.csv"), sep=";", header=TRUE)
     #try(db_v <- read_csv(unz(data_source_v, "ArcGIS_dashboards_data/Vaccine_DB/Vaccinationer_region_aldgrp_koen.csv")))
     
     db_v2 <- db_v %>% 
@@ -295,8 +295,8 @@ if(dim(links_new_vacc)[1] > 0){
     db_vcc <- db_vcc %>% 
       bind_rows(db_v3)
     
-  }
-}
+#   }
+# }
 
 db_cases_vcc <- tibble()
 

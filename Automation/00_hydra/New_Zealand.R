@@ -7,8 +7,8 @@ if (!"email" %in% ls()){
 }
 
 # Drive credentials
-drive_auth(email = email)
-gs4_auth(email = email)
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
 
 # info country and N drive address
 ctr <- "New Zealand"
