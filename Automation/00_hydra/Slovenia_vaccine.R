@@ -58,13 +58,15 @@ Out_vaccine= In_vaccine%>%
   pivot_longer(!date, names_to = "x", values_to = "Value")%>%
   separate(x, c("1", "2", "3", "4", "5", "6"), "\\.") %>% 
   select(Date= date, Age=`3`, `4`, Measure= `5`, Value) %>% 
+  filter(Age != "delivered",
+         Age != "used") %>% 
   mutate(AgeInt = case_when(
     Age == "0" ~ 12L,
     Age == "12" ~ 7L,
     Age == "18" ~ 7L,
     Age == "90" ~ 15L,
     Age == "UNK" ~ NA_integer_,
-    TRUE ~ 5L))%>% 
+    TRUE ~ 5L)) %>% 
   mutate(Measure=recode(Measure, 
                     `1st`="Vaccination1",
                     `2nd`="Vaccination2",
