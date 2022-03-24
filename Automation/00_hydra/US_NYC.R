@@ -11,8 +11,8 @@ ctr <- "US_NYC"
 dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 # Drive credentials
-drive_auth(email = email)
-gs4_auth(email = email)
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
 # TR: pull urls from rubric instead 
 rubric_i <- get_input_rubric() %>% filter(Short == "US_NYC")
 ss_i     <- rubric_i %>% dplyr::pull(Sheet)
@@ -116,7 +116,7 @@ if (date_f > last_date_drive){
 
   out <- bind_rows(db_a2_c, db_a2_d, db_s2, db_t3) %>% 
     mutate(Country = "USA",
-           Region = "New York City",
+           Region = "NYC",
            Date = ddmmyyyy(date_f),
            Code = "US-NYC+",
            AgeInt = case_when(Age == "0" & Measure == "Deaths" ~ "18",
