@@ -1,4 +1,8 @@
-library(here)
+# TODO on next edit, make Age character from the start,
+# and detect NA as UNK rather than throwing out. Very
+# small numbers, but still..
+
+(here)
 source(here("Automation/00_Functions_automation.R"))
 
 library(tidyverse)
@@ -51,6 +55,11 @@ cases_url <- "https://onemocneni-aktualne.mzcr.cz/api/v2/covid-19/osoby.csv"
 
 
 cz_cases <- read_csv(cases_url) # note id col is now in front, and other
+
+# Only 4 unk age cases, for now just throw out rather than re-write code.
+# TODO: change Age to be character from the start, detect UNK, and use this code
+cz_cases <- cz_cases %>% 
+  dplyr::filter(!is.na(vek))
 # column order should be checked. read_csv() gives us these names:
  # "id","datum","vek","pohlavi","kraj_nuts_kod",
  # "okres_lau_kod","nakaza_v_zahranici" , "nakaza_zeme_csu_kod", "reportovano_khs"
@@ -64,7 +73,7 @@ cz_cases2 <-
 
 # cz_cases2 %>%  dplyr::pull("Age") %>%  unique()
 
-Ages_All <- c(0,1,seq(5,100,by=5))
+Ages_All <-  c(0,1,seq(5,100,by=5))
 DateRange <- range(cz_cases2$Date)
 Dates_All <- seq(DateRange[1],DateRange[2],by="days")
 
@@ -134,7 +143,9 @@ deaths_url <- "https://onemocneni-aktualne.mzcr.cz/api/v2/covid-19/umrti.csv"
 
 # TR: 7 Dec, 2021: this should be read in using read_csv() and colnames matched using select(),
 # as in the above for cases.
-cz_deaths_in <- read_csv(deaths_url)
+cz_deaths_in <- read_csv(deaths_url) %>% 
+  # TR: as of 25.3.2022 this deletes no rows, but just in case
+  dplyr::filter(!is.na(vek))
 
 cz_deaths2 <-
   cz_deaths_in %>% 
