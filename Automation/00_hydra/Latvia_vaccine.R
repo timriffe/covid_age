@@ -50,10 +50,11 @@ Out_vaccine= In_vaccine %>%
                        `2.pote`= "Vaccination2",
                        `3.pote`= "Vaccination3"))%>%
   mutate(Sex = case_when(
-  is.na(Sex)~ "UNK",
-  Sex == "V" ~ "m",
-  Sex == "S" ~ "f",
-  Sex== "N" ~ "UNK")) %>%
+                is.na(Sex)~ "UNK",
+                Sex == "V" ~ "m",
+                Sex == "S" ~ "f",
+                Sex== "N" ~ "UNK"),
+         Age = ifelse(Age > 105,105,Age)) %>%
   # aggregate to daily sum 
   group_by(Date, Age, Measure, Sex) %>% 
   summarize(Value = sum(Value), .groups="drop")%>%
