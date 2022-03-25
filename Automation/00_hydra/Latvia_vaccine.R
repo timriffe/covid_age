@@ -42,7 +42,7 @@ download.file(url, data_source, mode = "wb")
 In_vaccine= read_excel(data_source)
 
 #Process data
-
+All_ages <- seq(0,100,by=5)
 Out_vaccine= In_vaccine %>%
   select(Date= `Vakcinācijas datums`, Measure= `Vakcinācijas posms`, Age=`Vakcinētās personas vecums`, Sex= `Vakcinētās personas dzimums`, Value= `Vakcinēto personu skaits`) %>% 
   mutate(Measure= recode(Measure, 
@@ -54,28 +54,29 @@ Out_vaccine= In_vaccine %>%
                 Sex == "V" ~ "m",
                 Sex == "S" ~ "f",
                 Sex== "N" ~ "UNK"),
-         Age = ifelse(Age > 105,105,Age)) %>%
+         Age = ifelse(Age > 100,100,Age),
+         Age = Age - Age %% 5) %>%
   # aggregate to daily sum 
   group_by(Date, Age, Measure, Sex) %>% 
-  summarize(Value = sum(Value), .groups="drop")%>%
-  tidyr::complete(Date, Sex, Age, Measure, fill = list(Value = 0))%>%
+  summarize(Value = sum(Value), .groups="drop") %>%
+  tidyr::complete(Date, Sex, Age = All_ages, Measure, fill = list(Value = 0)) %>%
   #group_by(Date,Sex,Age,Measure)%>% 
-  arrange(Date,Sex,Age, Measure)%>% 
+  arrange(Sex,Age, Measure, Date)%>% 
   group_by(Sex, Age, Measure) %>%
   mutate(Value = cumsum(Value)) %>% 
   ungroup()%>%
-    mutate(AgeInt = "1",
+    mutate(AgeInt = 5L,
            Metric = "Count") %>%
   mutate(
     Date = ymd(Date),
-    Date = paste(sprintf("%02d",day(Date)),    
-                 sprintf("%02d",month(Date)),  
-                 year(Date),sep="."),
+    Date = ddmmyyyy(Date),
     Code = paste0("LV"),
     Country = "Latvia",
-    Region = "All",)%>% 
+    Region = "All",
+    Age = as.character(Age)) %>% 
   select(Country, Region, Code, Date, Sex, 
-         Age, AgeInt, Metric, Measure, Value)
+         Age, AgeInt, Metric, Measure, Value) %>% 
+  sort_input_data()
 
 
 #save output data
