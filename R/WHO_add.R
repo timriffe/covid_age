@@ -49,14 +49,14 @@ c19$name %>% unique()
 
 # destination folder:
 folder_ss <- "https://drive.google.com/drive/folders/1tsEx9xbRZhQOuegfGuWi-h1t_6_zzpJ1"
-c19 %>% 
-  group_by(name) %>% 
-  mutate(n = Cause %>% unique() %>% length()) %>% 
-  dplyr::filter(n == 2) %>% 
-  View()
-c19 %>% 
-  filter(name == "Serbia") %>% 
-  pivot_longer(contains("Deaths"), names_to = "Age", values_to = "Value") %>% View()
+# c19 %>% 
+#   group_by(name) %>% 
+#   mutate(n = Cause %>% unique() %>% length()) %>% 
+#   dplyr::filter(n == 2) %>% 
+#   View()
+# c19 %>% 
+#   filter(name == "Serbia") %>% 
+#   pivot_longer(contains("Deaths"), names_to = "Age", values_to = "Value") %>% View()
 
 
 out <- 
