@@ -14,8 +14,8 @@ ctr <- "Sweden"
 dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 # Drive credentials
-drive_auth(email = email)
-gs4_auth(email = email)
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
 
 # data from drive 
 # rubric_i <- get_input_rubric() %>% filter(Short == "SE")
@@ -176,9 +176,10 @@ if (date_f > last_date_drive){
   if (update_vaccines){
   print("New vaccination data available - updating..")  
     
-    vac_sex <- read_xlsx(data_source_vac, sheet = 6)
+    vac_sex <- read_xlsx(data_source_vac, sheet = 7)
     vac_age <- read_xlsx(data_source_vac, sheet = 4)
     vacc3_age <- read_xlsx(data_source_vac, sheet = 5)
+    vacc4_age <- read_xlsx(data_source_vac, sheet = 6)
     
     # Get data by sex
     
@@ -289,8 +290,43 @@ if (date_f > last_date_drive){
     vac_a3 <- rbind(vac_a3, small_ages)
     
     
+    #data by age for fourth vaccination
+    
+    vac_a4 <-
+      vacc4_age %>% 
+      filter(grepl("Sverige", Region)) %>% 
+      select(
+        Value = contains("antal")
+        # , Measure = Dosnummer
+        , Measure = Vaccinationsstatus
+        , Age = ends_with("ldersgrupp")
+      ) %>% 
+      # filter(!grepl("^Total", Age)) %>% 
+      mutate(
+        Measure = "Vaccination4", 
+        Age_low = as.numeric(str_extract(Age, "^[0-9]{2}"))
+        , Age_high = as.numeric(str_extract(Age, "[0-9]{2}$"))
+        , Age = as.character(Age_low)
+        , AgeInt = as.character(ifelse(!is.na(Age_high), Age_high-Age_low+1, 15))
+        , Sex = "b"
+        # Add empty row for UNK
+        , Age = ifelse(is.na(Age), "UNK", Age)
+        , AgeInt = ifelse(Age == "UNK", "", AgeInt)
+        , Value = ifelse(Age == "UNK", 0, Value)
+      ) %>%  
+      select(Sex, Age, AgeInt, Measure, Value)
+    
+    small_ages <- vac_a4 %>% 
+      filter(Age == "80") %>% 
+      mutate(Age = "0",
+             AgeInt = 80L,
+             Value = 0)
+    vac_a4 <- rbind(vac_a4, small_ages)
+    
+    
+    
     out_vac <-
-      bind_rows(vac_s2, vac_a2, vac_a3) %>% 
+      bind_rows(vac_s2, vac_a2, vac_a3, vac_a4) %>% 
       mutate(Country = "Sweden",
              Region = "All",
              Code = paste0("SE"),

@@ -192,13 +192,7 @@ if(dim(links_new_cases)[1] > 0){
     
     
     download.file(as.character(links_new_cases[i, 2]), destfile = data_source_c, mode = "wb")
-    db_t <- read_csv2(unz(data_source_c, "Cases_by_age.csv"))
     db_sex <- read_csv2(unz(data_source_c, "Cases_by_sex.csv"))
-    
-    db_t2 <- db_t %>% 
-      select(Age = Aldersgruppe, Value = Antal_testede) %>% 
-      mutate(Measure = "Tests",
-             Sex = "b")
     
     db_sex2 <- 
       db_sex %>% 
@@ -213,7 +207,7 @@ if(dim(links_new_cases)[1] > 0){
              Measure = "Cases") %>% 
       select(-trash)
     
-    db_c <- bind_rows(db_t2, db_sex2) %>% 
+    db_c <- bind_rows(db_sex2) %>% 
       separate(Age, c("Age", "trash"), sep = "-") %>% 
       mutate(Age = case_when(Age == "90+" ~ "90",
                              Age == "I alt" ~ "TOT",

@@ -10,6 +10,9 @@ if (!"email" %in% ls()){
 ctr <- "CA_Ontario"
 dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 
+# Drive credentials
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
 
 #--------- input files -------------------------------------#
 data_source_c <- paste0(dir_n, "Data_sources/", ctr, "/cases_and_deaths",today(), ".csv")
@@ -48,7 +51,7 @@ zipr(zipname,
      include_directories = TRUE)
 
 # clean up file chaff
-file.remove(data_source)
+#file.remove(data_source)
 
 
 #-------there are often date problems...checking...first case should be Jan 21, 2020
