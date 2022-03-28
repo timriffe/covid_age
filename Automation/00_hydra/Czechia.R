@@ -20,8 +20,8 @@ ctr <- "Czechia"
 dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 # Drive credentials
-drive_auth(email = email)
-gs4_auth(email = email)
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
 
 ###########################################
 ################ CASES ####################
@@ -81,6 +81,9 @@ cz_cases_region_ss <-
                          Age >= 100 ~ 100,
                          TRUE ~ Age - Age %% 5),
          Code = ifelse(is.na(Code),"UNK",Code)) %>% 
+  mutate(Age = as.character(Age),
+         Age = case_when(is.na(Age) ~ "UNK",
+                         TRUE ~ Age)) %>% 
   ### select
   select(Code, Date, Sex, Age) %>% 
   group_by(Code, Date, Age, Sex) %>% 
@@ -89,13 +92,13 @@ cz_cases_region_ss <-
   tidyr::complete(
     Code = CZNUTS3$Code, 
     Date = Dates_All, 
-    Age = Ages_All, 
+    Age, 
     Sex, 
     fill = list(Value = 0)) %>% 
   arrange(Sex, Age, Date) %>% 
   group_by(Sex, Age) %>% 
   mutate(Value = cumsum(Value)) %>%  # cumulative!
-  ungroup() %>% 
+  ungroup() %>%  
   arrange(Code, Date, Sex, Age) %>% 
   mutate(Country = "Czechia",
          AgeInt = case_when(Age == 0 ~ 1,
@@ -104,7 +107,6 @@ cz_cases_region_ss <-
          Metric = "Count", 
          Measure = "Cases",
          Date = ddmmyyyy(Date)) %>% 
-  mutate(Age= as.character(Age)) %>% 
   left_join(CZNUTS3, by = "Code") %>% 
   select(Country, 
          Region = `Natural Region Names`,

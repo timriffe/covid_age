@@ -7,13 +7,13 @@ if (!"email" %in% ls()){
 }
 
 # info country and N drive address
-ctr          <- "USA_all" # it's a placeholder
+ctr          <- "USA_All" # it's a placeholder
 dir_n_source <- "N:/COVerAGE-DB/Automation/CDC"
 dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 # Drive credentials
-drive_auth(email = email)
-gs4_auth(email = email)
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
 
 
 # read in archived data to append new 

@@ -152,8 +152,21 @@ case_url %>%
 IN3 <- read_csv("Data/PH_Cases3.csv",
                 col_types = "ccccDDDDDccccccccccDcc")
 
+# Drive info for Case file part 3
+case_url <-
+  drive_contents %>% 
+  filter(grepl(name, pattern="04 Case Information_batch_3.csv"))
 
-IN <- rbind(IN1, IN2, IN3)
+# Download Cases part 1
+case_url %>% 
+  drive_download(path = "Data/PH_Cases4.csv",
+                 overwrite = TRUE)
+
+IN4 <- read_csv("Data/PH_Cases4.csv",
+                col_types = "ccccDDDDDccccccccccDcc")
+
+
+IN <- rbind(IN1, IN2, IN3, IN4)
 
 # Drive info for Test file
 tests_url <-
