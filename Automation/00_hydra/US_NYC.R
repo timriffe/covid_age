@@ -1,3 +1,5 @@
+# TR: we collect NYC deaths both here and from the CDC file. Should choose. 
+
 library(here)
 source(here("Automation/00_Functions_automation.R"))
 
@@ -14,7 +16,7 @@ dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 drive_auth(email = email)
 gs4_auth(email = email)
 # TR: pull urls from rubric instead 
-rubric_i <- get_input_rubric() %>% filter(Short == "US_NYC")
+rubric_i <- get_input_rubric() %>% dplyr::filter(Short == "US_NYC")
 ss_i     <- rubric_i %>% dplyr::pull(Sheet)
 ss_db    <- rubric_i %>% dplyr::pull(Source)
 
@@ -119,14 +121,14 @@ if (date_f > last_date_drive){
            Region = "New York City",
            Date = ddmmyyyy(date_f),
            Code = "US-NYC+",
-           AgeInt = case_when(Age == "0" & Measure == "Deaths" ~ "18",
-                              Age == "0" & (Measure == "Cases" | Measure == "Tests") ~ "5",
-                              Age == "5" & (Measure == "Cases" | Measure == "Tests") ~ "8",
-                              Age == "13" & (Measure == "Cases" | Measure == "Tests") ~ "5",
-                              Age == "18" ~ "7",
-                              Age == "75" ~ "30",
-                              Age == "TOT" ~ "",
-                              TRUE ~ "10"),
+           AgeInt = case_when(Age == "0" & Measure == "Deaths" ~ 18L,
+                              Age == "0" & (Measure == "Cases" | Measure == "Tests") ~ 5L,
+                              Age == "5" & (Measure == "Cases" | Measure == "Tests") ~ 8L,
+                              Age == "13" & (Measure == "Cases" | Measure == "Tests") ~ 5L,
+                              Age == "18" ~ 7L,
+                              Age == "75" ~ 30L,
+                              Age == "TOT" ~ NA_integer_,
+                              TRUE ~ 10L),
            Metric = "Count") %>% 
     # bind_rows(db_drive2) %>% 
     arrange(Country,

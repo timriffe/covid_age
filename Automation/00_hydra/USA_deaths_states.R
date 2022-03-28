@@ -215,7 +215,7 @@ db5 <- db4 %>%
                            State == 'New Jersey' ~ 'US-NJ',
                            State == 'New Mexico' ~ 'US-NM',
                            State == 'New York' ~ 'US-NY',
-                           State == 'New York City' ~ 'US-NYC',
+                           State == 'New York City' ~ 'US-NYC+',
                            State == 'North Carolina' ~ 'US-NC',
                            State == 'North Dakota' ~ 'US-ND',
                            State == 'Ohio' ~ 'US-OH',
@@ -241,22 +241,24 @@ db5 <- db4 %>%
                            State == 'Puerto Rico' ~ 'US-PR',
                            State == 'United States Minor Outlying Islands' ~ 'US-UM',
                            State == 'U.S. Virgin Islands' ~ 'US-VI'),
-         AgeInt = case_when(Age == "0" ~ "1",
-                            Age == "1" ~ "4",
-                            Age == "85" ~ "20",
-                            Age == "TOT" ~ "",
-                            TRUE ~ "10"),
+         AgeInt = case_when(Age == "0" ~ 1L,
+                            Age == "1" ~ 4L,
+                            Age == "85" ~ 20L,
+                            Age == "TOT" ~ NA_integer_,
+                            TRUE ~ 10L),
          Metric = "Count",
          Measure = "Deaths") %>% 
   select(Country, Region, Code,  Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
   arrange(Region, Measure, Sex, suppressWarnings(as.integer(Age)))
   
 out <- db_drive %>% 
-  filter(Date != date_data) %>% 
-  mutate(AgeInt = as.character(AgeInt)) %>% 
+  dplyr::filter(Date != date_data) %>% 
+  mutate(AgeInt = as.integer(AgeInt)) %>% 
   #select(-Short) %>% 
   bind_rows(db5) %>% 
-  filter(Code != "US-MI") %>% ##deaths for michigan are collected from the national source
+  # TR: any other filters to add here. We have deaths coming in from other states too, 
+  # like CA, Ohio, NYC, and others.Just to avoid duplicates.
+  dplyr::filter(Code != "US-MI") %>% ##deaths for michigan are collected from the national source
   sort_input_data() %>% 
   unique()
 
