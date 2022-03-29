@@ -349,10 +349,9 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
     } else {
       
       # If data loaded get code
-      # X <- 
-      #   X %>% 
-      #   mutate(Short = add_Short(Code, Date),
-      #          templateID = id)
+       X <- 
+         X %>% 
+         mutate(templateID = id)
       
       # Add to result list
       input_list[[id]] <- X
@@ -381,10 +380,9 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
       if (class(X)[1] == "try-error"){
         cat(i, "on 3rd try still didn't load\n")
       } else {
-        # X <- 
-        #  X %>% 
-        #   mutate(Short = add_Short(Code, Date),
-        #          templateID = i)
+          X <- 
+           X %>% 
+            mutate(templateID = i)
         input_list[[i]] <- X
       }
     }
@@ -414,7 +412,7 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
        paste0(".rds")
      
      local_files <-  file.path(hydra_path,local_files)
-    
+    local_id <- rubric_hydra$Short
     
     
     # Breaking down the loading of data from N:/, so the process does not break down
@@ -422,15 +420,17 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
     
     hydra_data <- tibble()
     
-    for(lf in local_files){
+    for(j in 1:length(local_files)){
+      id <- local_id[j]
       try(
         temp <- 
-          read_rds(lf) %>% 
+          read_rds(local_files[j]) %>% 
           ungroup() %>% 
           mutate(Age = as.character(Age),
                  AgeInt = as.integer(AgeInt), 
-                 Value = as.double(Value)) %>% 
-          select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
+                 Value = as.double(Value),
+                 templateID = id) %>% 
+          select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value, templateID)
       )
         
       try(

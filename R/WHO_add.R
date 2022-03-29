@@ -44,19 +44,24 @@ c19 <- c19 %>%
                               "United Kingdom, Scotland", "Spain"  ,"Germany","Netherlands","Australia",
                               "Czech Republic","Costa Rica"))
 c19$Sex %>% unique()
-
+c19$name %>% unique()
 # googlesheets4::sheets_create(), then googledriv::drive_mv()
 
 # destination folder:
 folder_ss <- "https://drive.google.com/drive/folders/1tsEx9xbRZhQOuegfGuWi-h1t_6_zzpJ1"
-c19 %>% 
-  group_by(name) %>% 
-  mutate(n = Cause %>% unique() %>% length()) %>% 
-  dplyr::filter(n == 2) %>% 
-  View()
+# c19 %>% 
+#   group_by(name) %>% 
+#   mutate(n = Cause %>% unique() %>% length()) %>% 
+#   dplyr::filter(n == 2) %>% 
+#   View()
+# c19 %>% 
+#   filter(name == "Serbia") %>% 
+#   pivot_longer(contains("Deaths"), names_to = "Age", values_to = "Value") %>% View()
+
 
 out <- 
 c19 %>% 
+  select(-contains("IM")) %>% 
   pivot_longer(contains("Deaths"), names_to = "Age", values_to = "Value") %>% 
   mutate(Age = gsub(Age, pattern = "Deaths", replacement = ""),
          Age = case_when(Age == "1" ~ "TOT",
@@ -115,16 +120,27 @@ c19 %>%
                           Country == "Kazakhstan" ~ "KZ",
                           Country == "Guatemala" ~ "GT",
                           Country == "United Arab Emirates" ~ "AE",
-                          Country == "Lithuania" ~ "LT")) %>% 
+                          Country == "Lithuania" ~ "LT",
+                          Country == "Ecuador"  ~ "EC")) %>% 
   select(Country,	Region,	Code,	Date,	Sex,	Age,	AgeInt,	Metric,	Measure,	Value) %>% 
   sort_input_data() %>% 
   dplyr::filter(!(Age == "UNK" & Value == 0))
 
 
+
+email <- Sys.getenv("email")
+gs4_auth(email = email, 
+         scopes = c("https://www.googleapis.com/auth/spreadsheets",
+                    "https://www.googleapis.com/auth/drive"))
+drive_auth(email = email,
+           scopes = c("https://www.googleapis.com/auth/spreadsheets",
+                      "https://www.googleapis.com/auth/drive"))
+
 rubric <- get_input_rubric() %>% 
   dplyr::filter(grepl(Short, pattern = "WHO"))
 
-rubric
+
+
 
 countries <- out$Country %>% unique()
 countries %>% sort()
@@ -134,4 +150,11 @@ for (i in 1:length(countries)){
     dplyr::pull(Sheet)
   out_i <- out %>% dplyr::filter(Country == countries[i])
   write_sheet(out_i, ss= ss_i, sheet = "database")
+  
+  Sys.sleep(5)
 }   
+ss_i <- rubric %>% 
+  dplyr::filter(Country == "Ecuador") %>% 
+  dplyr::pull(Sheet)
+out_i <- out %>% dplyr::filter(Country == "Ecuador")
+write_sheet(out_i, ss= ss_i, sheet = "database")

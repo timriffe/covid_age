@@ -24,17 +24,24 @@ dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 DataArchive <- read_rds(paste0(dir_n, ctr, ".rds"))
 
+# Once-off fix:
+# DataArchive <-
+#   DataArchive %>% 
+#   mutate(AgeInt = as.integer(AgeInt))
 
 #automated process from github
 
-In= read.csv("https://raw.githubusercontent.com/nychealth/covid-vaccine-data/main/people/coverage-by-demo-allages.csv")
+In <- read.csv("https://raw.githubusercontent.com/nychealth/covid-vaccine-data/main/people/coverage-by-demo-allages.csv")
 
 #age data both sexes
 
-out_vaccine_age= In%>% 
-  subset(SUBGROUP== "0-17" | SUBGROUP== "18-24" | SUBGROUP== "25-34" |SUBGROUP== "35-44" |SUBGROUP== "45-54" |SUBGROUP== "55-64" |SUBGROUP== "65-74" |
-        SUBGROUP== "75-84" |SUBGROUP== "85+")%>%
-  select(Age= SUBGROUP,Date=DATE, Vaccination2= COUNT_FULLY_CUMULATIVE, Vaccination1= COUNT_1PLUS_CUMULATIVE)%>%
+out_vaccine_age <-
+  In %>% 
+  dplyr::filter(SUBGROUP %in% c( "0-17","18-24","25-34","35-44","45-54","55-64","65-74","75-84","85+")) %>%
+  select(Age = SUBGROUP,
+         Date = DATE,
+         Vaccination2 = COUNT_FULLY_CUMULATIVE, 
+         Vaccination1 = COUNT_1PLUS_CUMULATIVE)%>%
   pivot_longer(!Date & !Age, names_to= "Measure", values_to= "Value")%>%
   mutate(Age=recode(Age, 
                     `0-17`="0",
@@ -45,20 +52,17 @@ out_vaccine_age= In%>%
                     `55-64`="55",
                     `65-74`="65",
                     `75-84`="75",
-                    `85+`="85"))%>% 
-  mutate(AgeInt = case_when(
-    Age == "0" ~ 18L,
-    Age== "18" ~ 7L,
-    Age == "85" ~ 20L,
-    TRUE ~ 10L))%>% 
+                    `85+`="85")) %>% 
   mutate(
+    AgeInt = case_when(
+               Age == "0" ~ 18L,
+               Age== "18" ~ 7L,
+               Age == "85" ~ 20L,
+               TRUE ~ 10L),
     Sex = "b",
-    Metric = "Count") %>% 
-  mutate(
+    Metric = "Count",
     Date = ymd(Date),
-    Date = paste(sprintf("%02d",day(Date)),    
-                 sprintf("%02d",month(Date)),  
-                 year(Date),sep="."),
+    Date = ddmmyyyy(Date),
     Code = paste0("US-NYC+"),
     Country = "USA",
     Region = "New York City",)%>% 
@@ -70,23 +74,23 @@ out_vaccine_age= In%>%
 #totals by sex 
 
 
-Sex_out_vaccine= In %>%
-  subset(SUBGROUP== "Female" | SUBGROUP== "Male")%>%
-  select(Sex= SUBGROUP, Date=DATE, Vaccination2= COUNT_FULLY_CUMULATIVE, Vaccination1= COUNT_1PLUS_CUMULATIVE)%>%
-  pivot_longer(!Date & !Sex, names_to= "Measure", values_to= "Value")%>%
-  mutate(Sex=recode(Sex, 
+Sex_out_vaccine <-
+  In %>%
+  subset(SUBGROUP %in% c("Female","Male")) %>%
+  select(Sex = SUBGROUP, 
+         Date = DATE, 
+         Vaccination2 = COUNT_FULLY_CUMULATIVE, 
+         Vaccination1 = COUNT_1PLUS_CUMULATIVE)%>%
+  pivot_longer(!Date & !Sex, names_to = "Measure", values_to = "Value")%>%
+  mutate(Sex = recode(Sex, 
                     `Female`="f",
-                    `Male`="m"))%>% 
-  mutate(
-    AgeInt = "",
+                    `Male`="m"),
+    AgeInt = NA_integer_,
     Metric = "Count",
-    Age= "TOT") %>% 
-  mutate(
+    Age = "TOT",
     Date = ymd(Date),
-    Date = paste(sprintf("%02d",day(Date)),    
-                 sprintf("%02d",month(Date)),  
-                 year(Date),sep="."),
-    Code = paste0("US-NYC+"),
+    Date = ddmmyyyy(Date),
+    Code = "US-NYC+",
     Country = "USA",
     Region = "New York City",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -94,12 +98,13 @@ Sex_out_vaccine= In %>%
 
 
 
-#put togehter and appand prev data
-out= rbind(DataArchive,out_vaccine_age, Sex_out_vaccine) %>% 
-  mutate(Age = case_when(Age == "NYC" ~ "TOT",
-                         TRUE ~ Age)) %>% 
-  unique()
-
+#put together and append prev data
+out <-
+  bind_rows(DataArchive,
+            out_vaccine_age, 
+            Sex_out_vaccine) %>% 
+  distinct() %>% 
+  sort_input_data()
 #out= rbind(manual_data, out_vaccine_age, Sex_out_vaccine)
 
 #save output 

@@ -14,7 +14,7 @@ source(here::here("R","00_Functions.R"))
 
 log_section("New build log", append = FALSE)
 
-# source(here::here("R","01_update_inputDB.R"))
+source(here::here("R","01_update_inputDB.R"))
 
 # ---------------------- #
 

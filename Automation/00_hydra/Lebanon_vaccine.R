@@ -1,7 +1,7 @@
 #Lebanon vaccine 
 
 library(here)
-source('U:/GitHub/Covid/Automation/00_Functions_automation.R')
+source(here("Automation/00_Functions_automation.R"))
 library(lubridate)
 library(dplyr)
 library(tidyverse)
@@ -67,33 +67,46 @@ Age_in <- rbindlist(all_lists, fill = T)
 
 #Process age data 
 
-
-Age_Out= Age_in %>%
-  separate(V1, c("1","2","Date","3","4"), "_")%>%
-  select(Age= "Patient Date of Birth", Value= Count, Date)%>%
+all_ages <- seq(0,100,by = 5)
+Age_Out <-
+  Age_in %>%
+  separate(V1, c(NA,NA,"Date",NA,NA), "_")%>%
+  select(YOB = "Patient Date of Birth", Value = Count, Date) %>%
   #age lets assume we just take current year 
-  mutate(Age= 2021- Age)%>% 
+  mutate(
+    Date = lubridate::dmy(Date),
+    Age = lubridate::year(Date) - YOB,
+    Age = Age - Age %% 5,
+    Age = if_else(Age > 100,100,Age)) %>% 
+  tidyr::complete(Date, Age = all_ages, fill = list(Value = 0)) %>% 
   #separated if working in health care, sum together
   group_by(Date, Age)%>%
   summarise(Value = sum(Value), .groups="drop")%>%
   mutate(
     Measure = "Vaccinations",
     Metric = "Count",
-    AgeInt= "1",
-    Sex= "b")%>% 
+    AgeInt = 5L,
+    Sex = "b") %>% 
   mutate(
-    Date = dmy(Date),
-    Date = paste(sprintf("%02d",day(Date)),    
-                 sprintf("%02d",month(Date)),  
-                 year(Date),sep="."),
+    Date = ddmmyyyy(Date),
     Code = paste0("LB"),
     Country = "Lebanon",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)%>%
-  mutate(Age= as.character(Age))
+  mutate(Age = as.character(Age)) %>% 
+  dplyr::filter(Date != "24.08.2021")
 
-View(Age_Out)
+# Age_Out %>% 
+#   group_by(dmy(Date)) %>% 
+#   summarize(TOT = sum(Value)) %>% 
+#   View()
+# 
+# Age_Out %>% 
+#   mutate(Date = dmy(Date)) %>% 
+#   ggplot(aes(x=Date,y = Value)) +
+#   geom_line() +
+#   facet_wrap(~Age, scales = "free_y")
 
 #Read in sex data 
 all_paths <-
@@ -118,10 +131,11 @@ Sex_in <- rbindlist(all_lists, fill = T)
 
 #Process sex data 
 
-
-Sex_Out= Sex_in %>%
-  separate(V1, c("1","2","Date","3","4"), "_")%>%
-  select(Sex= Gender, Value= Count, Date, Sex2= `gender.keyword: Descending`)%>%
+# TR: Sex2 does not seem to get used, does it have a purpose?
+Sex_Out <-
+  Sex_in %>%
+  separate(V1, c(NA, NA, "Date", NA, NA), "_") %>%
+  select(Sex = Gender, Value = Count, Date, Sex2 = `gender.keyword: Descending`)%>%
   mutate(Sex = case_when(
     Sex == "MALE" ~ "m",
     Sex == "FEMALE" ~ "f",
@@ -133,7 +147,7 @@ Sex_Out= Sex_in %>%
   mutate(
     Measure = "Vaccinations",
     Metric = "Count",
-    AgeInt= "",
+    AgeInt= NA_integer_,
     Age= "TOT")%>% 
   mutate(
     Date = dmy(Date),
@@ -144,10 +158,13 @@ Sex_Out= Sex_in %>%
     Country = "Lebanon",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 
-         Age, AgeInt, Metric, Measure, Value)%>%
+         Age, AgeInt, Metric, Measure, Value) %>%
   mutate(Age= as.character(Age))
 
-
+# Sex_Out %>% 
+#   ggplot(aes(x = dmy(Date), y = Value)) +
+#   geom_line() +
+#   facet_wrap(~Sex)
 
 
 #Put dataframes together
