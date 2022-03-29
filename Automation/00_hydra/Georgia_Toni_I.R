@@ -1,5 +1,5 @@
 ### 1. try (Toni): Georgia source website
-## source("https://vaccines.ncdc.ge/statistics/")
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
 
 ## if (! "email" %in% ls()){
 ## email <- "maxi.s.kniffka@gmail.com"
@@ -182,9 +182,19 @@ georgia_vaccination3_out <- georgia_vaccination3_in %>%
           Metric = "Count") %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) 
 
+###drive
+rubric_i <- get_input_rubric() %>% filter(Short == "GE")
+ss_i     <- rubric_i %>% dplyr::pull(Sheet)
+ss_db    <- rubric_i %>% dplyr::pull(Source)
+db_drive <-  read_sheet(ss = ss_i, sheet = "database") %>% 
+  mutate(Date = dmy(Date)) 
 
 
-out <- rbind(previous, georgia_vaccination1_out, georgia_vaccination2_out, georgia_vaccination3_out) %>% 
+
+
+
+
+out <- rbind(previous, georgia_vaccination1_out, georgia_vaccination2_out, georgia_vaccination3_out) %>%
   mutate(Date = ymd(Date),
          Date = paste(sprintf("%02d",day(Date)),
                       sprintf("%02d",month(Date)),
