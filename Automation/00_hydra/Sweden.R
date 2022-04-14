@@ -176,10 +176,10 @@ if (date_f > last_date_drive){
   if (update_vaccines){
   print("New vaccination data available - updating..")  
     
-    vac_sex <- read_xlsx(data_source_vac, sheet = 7)
-    vac_age <- read_xlsx(data_source_vac, sheet = 4)
-    vacc3_age <- read_xlsx(data_source_vac, sheet = 5)
-    vacc4_age <- read_xlsx(data_source_vac, sheet = 6)
+    vac_sex <- read_xlsx(data_source_vac, sheet = 8)
+    vac_age <- read_xlsx(data_source_vac, sheet = 5)
+    vacc3_age <- read_xlsx(data_source_vac, sheet = 6)
+    vacc4_age <- read_xlsx(data_source_vac, sheet = 7)
     
     # Get data by sex
     

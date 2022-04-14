@@ -23,8 +23,9 @@ ss_db  <- at_rubric %>% dplyr::pull(Source)
 # reading data from Denmark stored in N drive
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 db_n <- read_rds(paste0(dir_n, ctr, ".rds")) %>% 
-  mutate(Date = dmy(Date)) %>% 
-  filter(Date != "2021-06-20" | Value != "258806") 
+  mutate(Date = dmy(Date))
+
+
   # mutate(Value = as.character(Value)) %>%
   # mutate(Value = case_when((Code == "DK03.06.2021" & Age == "TOT" & Measure == "Deaths") ~ "2517",
   #                           TRUE ~ Value)) %>% 
@@ -256,15 +257,16 @@ db_vcc <- tibble()
                             ctr, "/", ctr, "_vaccines_", as.character(date_v), ".zip")
     download.file(as.character(links_new_vacc[i, 2]), destfile = data_source_v, mode = "wb")
     
-    db_v <- read.table(unz(data_source_v, "Vaccine_DB/Vaccinationer_region_aldgrp_koen.csv"), sep=";", header=TRUE)
+    db_v <- read.table(unz(data_source_v, "Vaccine_DB/Vaccine_region_alder_koen_vaccage.csv"), sep=";", header=TRUE)
     #try(db_v <- read_csv(unz(data_source_v, "ArcGIS_dashboards_data/Vaccine_DB/Vaccinationer_region_aldgrp_koen.csv")))
     
     db_v2 <- db_v %>% 
       rename(Age = 2,
-             Sex = sex,
+             Sex = 3,
              Vaccination1 = 4,
-             Vaccination2 = 5) %>% 
-      gather(Vaccination1, Vaccination2, key = Measure, value = Value) %>% 
+             Vaccination2 = 5,
+             Vaccination3 = 6) %>% 
+      gather(Vaccination1, Vaccination2, Vaccination3, key = Measure, value = Value) %>% 
       group_by(Age, Sex, Measure) %>% 
       summarise(Value = sum(Value),.groups = "drop") %>% 
       mutate(Sex = recode(Sex,
