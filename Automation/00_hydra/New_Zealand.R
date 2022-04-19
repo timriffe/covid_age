@@ -72,7 +72,7 @@ if (date_f > last_date_drive){
            Sex) %>% 
     mutate(Age = substr(Age, 1,2),
            Age = case_when(
-             Age == "UN" ~ "UNK",
+             Age == "Un" ~ "UNK",
              TRUE ~ Age
            ),
            Sex = case_when(

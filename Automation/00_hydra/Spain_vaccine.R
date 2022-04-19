@@ -15,6 +15,9 @@ if (!"email" %in% ls()){
 ctr <- "Spain_vaccine"
 dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
+
 
 ####################################################################################
 #Read data in 
@@ -313,7 +316,28 @@ Out_final1 = bind_rows(DataArchive,Out)%>%
   ungroup() %>% 
   dplyr::filter(keep) %>% 
   select(-keep) %>% 
-  unique()
+  unique() %>% 
+  mutate(Code = case_when(Region,
+                        "Andalucía" = "ES-AN",
+                        "Aragón" = "ES-AR",
+                        "Asturias"= "ES-O", 
+                        "Baleares" ="ES-IB",
+                        "Canarias" ="ES-CN",
+                        "Cantabria"= "ES-S",
+                        "Castilla y Leon"= "ES-CL",
+                        "Castilla La Mancha"= "ES-CM",
+                        "Cataluña" ="ES-CT",
+                        "C. Valenciana" ="ES-VC",
+                        "Extremadura"= "ES-EX",
+                        "Galicia"= "ES-GA",
+                        "La Rioja" ="ES-LO",
+                        "Madrid"= "ES-M",
+                        "Murcia"= "ES-MU",
+                        "Navarra"= "ES-NA",
+                        "País Vasco" ="ES-PV",
+                        "Ceuta"= "ES-CE",
+                        "Melilla" ="ES-ML",
+                        "All"= "ES"))
 
 
 
