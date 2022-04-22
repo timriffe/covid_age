@@ -317,27 +317,27 @@ Out_final1 = bind_rows(DataArchive,Out)%>%
   dplyr::filter(keep) %>% 
   select(-keep) %>% 
   unique() %>% 
-  mutate(Code = case_when(Region,
-                        "Andalucía" = "ES-AN",
-                        "Aragón" = "ES-AR",
-                        "Asturias"= "ES-O", 
-                        "Baleares" ="ES-IB",
-                        "Canarias" ="ES-CN",
-                        "Cantabria"= "ES-S",
-                        "Castilla y Leon"= "ES-CL",
-                        "Castilla La Mancha"= "ES-CM",
-                        "Cataluña" ="ES-CT",
-                        "C. Valenciana" ="ES-VC",
-                        "Extremadura"= "ES-EX",
-                        "Galicia"= "ES-GA",
-                        "La Rioja" ="ES-LO",
-                        "Madrid"= "ES-M",
-                        "Murcia"= "ES-MU",
-                        "Navarra"= "ES-NA",
-                        "País Vasco" ="ES-PV",
-                        "Ceuta"= "ES-CE",
-                        "Melilla" ="ES-ML",
-                        "All"= "ES"))
+  mutate(Code = case_when(
+    Region =="Andalucía" ~ "ES-AN",
+    Region =="Aragón" ~ "ES-AR",
+    Region =="Asturias"~ "ES-O", 
+    Region =="Baleares" ~"ES-IB",
+    Region == "Canarias" ~"ES-CN",
+    Region =="Cantabria"~ "ES-S",
+    Region =="Castilla y Leon"~ "ES-CL",
+    Region =="Castilla La Mancha"~ "ES-CM",
+    Region =="Cataluña" ~"ES-CT",
+    Region =="C. Valenciana" ~"ES-VC",
+    Region =="Extremadura"~ "ES-EX",
+    Region =="Galicia"~ "ES-GA",
+    Region =="La Rioja" ~"ES-LO",
+    Region =="Madrid"~ "ES-M",
+    Region =="Murcia"~ "ES-MU",
+    Region =="Navarra"~ "ES-NA",
+    Region =="País Vasco" ~"ES-PV",
+    Region =="Ceuta"~ "ES-CE",
+    Region =="Melilla" ~"ES-ML",
+    Region =="All"~ "ES"))
 
 
 
