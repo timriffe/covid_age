@@ -38,15 +38,17 @@ html <- read_html(m_url)
 # m_url <- "https://web.archive.org/web/20200627034205/https://www.michigan.gov/coronavirus/0,9753,7-406-98163_98173---,00.html"
 # root <- "https://web.archive.org"
 
+#tryouts
+links <- scraplinks(m_url) %>% 
+  filter(str_detect(url, "xlsx"))
+
 # locating the links for Excel files
-url1 <- html_nodes(html, xpath = '//*[@id="comp_115341"]/ul/li/span/span/span[2]/p[2]/a') %>%
-  html_attr("href")
 
-url2 <- html_nodes(html, xpath = '//*[@id="comp_115341"]/ul/li/span/span/span[2]/p[4]/a') %>%
-  html_attr("href")
+url1 <- links[2,2]
 
-url3 <- html_nodes(html, xpath = '//*[@id="comp_115341"]/ul/li/span/span/span[2]/p[5]/a') %>%
-  html_attr("href")
+url2 <- links[3,2]
+
+url3 <- links[4,2]
 
 # importing data from the Excel files
 db_tot <- rio::import(paste0(root, url1)) %>% 
