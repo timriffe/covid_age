@@ -1,10 +1,6 @@
 library(here)
 source(here("Automation/00_Functions_automation.R"))
-library(reshape2)
 
-library(lubridate)
-library(dplyr)
-library(tidyverse)
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
   email <- "maxi.s.kniffka@gmail.com"

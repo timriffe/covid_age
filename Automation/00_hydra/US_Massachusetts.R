@@ -20,8 +20,8 @@ ctr <- "US_Massachusetts"
 dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 # Drive credentials
-drive_auth(email = email)
-gs4_auth(email = email)
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
 
 #print(paste0("Starting data retrieval for US-MA..."))
 
@@ -367,7 +367,7 @@ out_vac <-
     Country = "USA",
     Region = "Massachusetts",
     Date = paste(sprintf("%02d", day(date_f)),  sprintf("%02d", month(date_f)), year(date_f), sep = "."),
-    Code = paste0("US-MA"),
+    Code = "US-MA",
     Metric = "Count",
   ) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
@@ -388,7 +388,8 @@ out_vac <-
 
 out <- 
 db_drive %>% 
-  mutate(date_f = dmy(Date)) %>% 
+  mutate(date_f = dmy(Date),
+         Code = "US-MA") %>% 
   arrange(date_f, Sex, Measure, suppressWarnings(as.integer(Age))) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
 

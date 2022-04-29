@@ -34,6 +34,10 @@ dts <-
             sheet = "Covid-19 - Weekly occurrences", 
             skip = 5)
 
+ages <- c('<1', '1-4', '5-9', '10-14', '15-19', '20-24', '25-29', '30-34', 
+          '35-39', '40-44', '45-49', '50-54', '55-59', '60-64', '65-69', 
+          '70-74', '75-79', '80-84', '85-89', '90+')
+
 dts2 <- 
   dts %>% 
   select(-1) %>% 
@@ -55,12 +59,12 @@ dts2 <-
   group_by(Date, Sex) %>% 
   mutate(AgeInt = ifelse(Age == "90", 15, as.numeric(lead(Age)) - as.numeric(Age))) %>% 
   ungroup() %>% 
-  mutate(Country = "United Kingdom",
+  mutate(Country = "England and Wales",
          Date = ddmmyyyy(Date),
-         Code = "GB",
+         Code = "GB-EAW",
          Measure = "Deaths",
          Metric = "Count",
-         Region = "GB-EAW") %>% 
+         Region = "All") %>% 
   sort_input_data()
 
 

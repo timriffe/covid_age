@@ -12,8 +12,8 @@ dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 # dir_n <- "Data/Belgium/"
 
 # Drive credentials
-drive_auth(email = email)
-gs4_auth(email = email)
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
 
 # Loading data from the web
 ###########################
@@ -158,7 +158,7 @@ db_v2 <- db_v %>%
                              ),
          Age = case_when(Age == "85+" ~ "85",
                          Age == "00" ~ "0",
-                         Age == "05" ~ "5"
+                         Age == "05" ~ "5",
                          is.na(Age) ~ "UNK",
                          TRUE ~ Age),
          Sex = case_when(Sex == "M" ~ "m",
@@ -225,30 +225,44 @@ out <- bind_rows(db_nal,
                             Measure == "Vaccination1" & Age == "0" ~ 5L,
                             Measure == "Vaccination2" & Age == "0" ~ 5L,
                             Measure == "Vaccination3" & Age == "0" ~ 5L,
+                            Measure == "Vaccination4" & Age == "0" ~ 5L,
+                            
                             
                             Measure == "Vaccination1" & Age == "5" ~ 7L,
                             Measure == "Vaccination2" & Age == "5" ~ 7L,
                             Measure == "Vaccination3" & Age == "5" ~ 7L,
+                            Measure == "Vaccination4" & Age == "5" ~ 7L,
+                            
                             
                             Measure == "Vaccination1" & Age == "12" ~ 4L,
                             Measure == "Vaccination2" & Age == "12" ~ 4L,
                             Measure == "Vaccination3" & Age == "12" ~ 4L,
+                            Measure == "Vaccination4" & Age == "12" ~ 4L,
+                            
                             
                             Measure == "Vaccination1" & Age == "16" ~ 2L,
                             Measure == "Vaccination2" & Age == "16" ~ 2L,
                             Measure == "Vaccination3" & Age == "16" ~ 2L,
+                            Measure == "Vaccination4" & Age == "16" ~ 2L,
+                            
  
                             Measure == "Vaccination1" & Age == "18" ~ 7L,
                             Measure == "Vaccination2" & Age == "18" ~ 7L,
                             Measure == "Vaccination3" & Age == "18" ~ 7L,
+                            Measure == "Vaccination4" & Age == "18" ~ 7L,
+                            
 
                             Measure == "Vaccination1" & Age == "85" ~ 20L,
                             Measure == "Vaccination2" & Age == "85" ~ 20L,
                             Measure == "Vaccination3" & Age == "85" ~ 20L,
+                            Measure == "Vaccination4" & Age == "85" ~ 20L,
+                            
                             
                             Measure == "Vaccination1" & Age %in% c("25", "35", "45", "55","65","75") ~ 10L,
                             Measure == "Vaccination3" & Age %in% c("25", "35", "45", "55","65","75") ~ 10L,
-                            Measure == "Vaccination2" & Age %in% c("25", "35", "45", "55","65","75") ~ 10L),
+                            Measure == "Vaccination2" & Age %in% c("25", "35", "45", "55","65","75") ~ 10L,
+                            Measure == "Vaccination4" & Age %in% c("25", "35", "45", "55","65","75") ~ 10L),
+
          date_f = Date,
          Date = paste(sprintf("%02d",day(date_f)),
                       sprintf("%02d",month(date_f)),

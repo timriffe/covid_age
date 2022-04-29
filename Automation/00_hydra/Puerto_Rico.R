@@ -17,13 +17,20 @@ dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 
 # Drive credentials
-drive_auth(email = email)
-gs4_auth(email = email)
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
 
+data_source1 <- paste0(dir_n, "Data_sources/", ctr, "/death_age_",today(), ".csv")
+data_source2 <- paste0(dir_n, "Data_sources/", ctr, "/cases_age_",today(), ".csv")
+data_source3 <- paste0(dir_n, "Data_sources/", ctr, "/tests_age_",today(), ".csv")
+data_source4 <- paste0(dir_n, "Data_sources/", ctr, "/vaccine_age_",today(), ".csv")
 
 
 ###death
-death = read.csv("https://covid19datos.salud.gov.pr/estadisticas_v2/download/data/defunciones/completo")
+download.file("https://covid19datos.salud.gov.pr/estadisticas_v2/download/data/defunciones/completo",
+              data_source1)
+
+death = read.csv(data_source1)
 
 death2= death %>%
   #remove missing age information 
@@ -45,14 +52,14 @@ death3 <- death2 %>%
 arrange(Date, Sex, Age) %>% 
   mutate(Date= ddmmyyyy(Date),
          Code = paste0("PR"),
-         Age = case_when(Age == "0 a 9" ~ "0",
-                         Age == "10 a 19" ~ "10",
-                         Age == "20 a 29" ~ "20",
-                         Age == "30 a 39" ~ "30",
-                         Age == "40 a 49" ~ "40",
-                         Age == "50 a 59" ~ "50",
-                         Age == "60 a 69" ~ "60",
-                         Age == "70 a 79" ~ "70",
+         Age = case_when(Age == "0 - 9" ~ "0",
+                         Age == "10 - 19" ~ "10",
+                         Age == "20 - 29" ~ "20",
+                         Age == "30 - 39" ~ "30",
+                         Age == "40 - 49" ~ "40",
+                         Age == "50 - 59" ~ "50",
+                         Age == "60 - 69" ~ "60",
+                         Age == "70 - 79" ~ "70",
                          Age == "80 +" ~ "80"),
          AgeInt = case_when(Age == "80" ~ "25",
                             TRUE ~ "10")) %>% 
@@ -61,7 +68,12 @@ arrange(Date, Sex, Age) %>%
          Region = "All")
 
 ###cases
-cases = read.csv("https://covid19datos.salud.gov.pr/estadisticas_v2/download/data/casos/completo")
+download.file("https://covid19datos.salud.gov.pr/estadisticas_v2/download/data/casos/completo", 
+              data_source2)
+
+cases = read.csv(data_source2)
+
+
 
 cases2= cases %>%
   #remove missing age information 
@@ -95,7 +107,10 @@ cases3 <- cases2 %>%
 
 
 ###tests
-tests = read.csv("https://covid19datos.salud.gov.pr/estadisticas_v2/download/data/pruebas/completo")
+download.file("https://covid19datos.salud.gov.pr/estadisticas_v2/download/data/pruebas/completo",
+              data_source3)
+
+tests = read.csv(data_source3)
 
 tests2= tests %>%
   #remove missing age information 
@@ -119,14 +134,14 @@ tests3 <- tests2 %>%
   arrange(Date, Sex, Age) %>%  
   mutate(Date= ddmmyyyy(Date),
          Code = paste0("PR"),
-         Age = case_when(Age == "0 a 9" ~ "0",
-                         Age == "10 a 19" ~ "10",
-                         Age == "20 a 29" ~ "20",
-                         Age == "30 a 39" ~ "30",
-                         Age == "40 a 49" ~ "40",
-                         Age == "50 a 59" ~ "50",
-                         Age == "60 a 69" ~ "60",
-                         Age == "70 a 79" ~ "70",
+         Age = case_when(Age == "0 - 9" ~ "0",
+                         Age == "10 - 19" ~ "10",
+                         Age == "20 - 29" ~ "20",
+                         Age == "30 - 39" ~ "30",
+                         Age == "40 - 49" ~ "40",
+                         Age == "50 - 59" ~ "50",
+                         Age == "60 - 69" ~ "60",
+                         Age == "70 - 79" ~ "70",
                          Age == "80 +" ~ "80",
                          Age == "" ~ "UNK"),
          AgeInt = case_when(Age == "80" ~ "25",
@@ -136,7 +151,10 @@ tests3 <- tests2 %>%
          Region = "All")
 
 ###vaccine
-vacc = read.csv("https://covid19datos.salud.gov.pr/estadisticas_v2/download/data/vacunacion/completo")
+download.file("https://covid19datos.salud.gov.pr/estadisticas_v2/download/data/vacunacion/completo", 
+              data_source4)
+
+vacc = read.csv(data_source4)
 
 vaccine2= vacc %>%
   #remove missing age information 
@@ -235,15 +253,10 @@ log_update(pp = ctr, N = nrow(out))
 
 #archive input data 
 
-data_source1 <- paste0(dir_n, "Data_sources/", ctr, "/death_age_",today(), ".csv")
-data_source2 <- paste0(dir_n, "Data_sources/", ctr, "/cases_age_",today(), ".csv")
-data_source3 <- paste0(dir_n, "Data_sources/", ctr, "/tests_age_",today(), ".csv")
-data_source4 <- paste0(dir_n, "Data_sources/", ctr, "/vaccine_age_",today(), ".csv")
-
-write_csv(death, data_source1)
-write_csv(cases, data_source2)
-write_csv(tests, data_source3)
-write_csv(vacc, data_source4)
+# write_csv(death, data_source1)
+# write_csv(cases, data_source2)
+# write_csv(tests, data_source3)
+# write_csv(vacc, data_source4)
 
 data_source <- c(data_source1, data_source2, data_source3, data_source4)
 

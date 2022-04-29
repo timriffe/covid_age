@@ -11,8 +11,8 @@ if (!"email" %in% ls()){
   email <- "maxi.s.kniffka@gmail.com"
 }
 
-drive_auth(email = email)
-gs4_auth(email = email)
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
 
 
 # info country and N drive address
@@ -288,7 +288,8 @@ vaccsex3 <- vaccsex2 %>%
 
 
 out <- rbind(vacc3, vaccsex3) %>%   
- sort_input_data()
+ sort_input_data() %>% 
+  unique()
 write_rds(out, paste0(dir_n, ctr, ".rds"))
 
 # updating hydra dashboard

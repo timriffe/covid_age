@@ -12,8 +12,8 @@ library(tidyr)
 ctr          <- "Scotland_Vaccine" # it's a placeholder
 dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
-drive_auth(email = email)
-gs4_auth(email = email)
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
 
 
 ###get vaccine data for scotland
@@ -43,7 +43,8 @@ vacc2 <- vacc %>%
     Measure = case_when(
       Measure == "Dose 1" ~ "Vaccination1",
       Measure == "Dose 2" ~ "Vaccination2",
-      Measure == "Dose 3 and Booster" ~ "Vaccination3"
+      Measure == "Dose 3" ~ "Vaccination3",
+      Measure == "Dose 4" ~ "Vaccination4"
     ),
     Date = as.Date(ymd(Date)
     ),

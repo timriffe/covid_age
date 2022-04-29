@@ -11,8 +11,8 @@ ctr <- "Ukraine"
 dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 # Drive credentials
-drive_auth(email = email)
-gs4_auth(email = email)
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
 today()
 at_rubric <- get_input_rubric() %>% filter(Short == "UA")
 ss_i   <- at_rubric %>% dplyr::pull(Sheet)

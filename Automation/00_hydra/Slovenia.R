@@ -12,9 +12,8 @@ ctr <- "Slovenia"
 dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 # Drive credentials
-drive_auth(email = email)
-gs4_auth(email = email)
-
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
 ### reading data from the website 
 # detecting the link to the xlsx file in the website
 # this is a more stable method than using the xpath
@@ -171,4 +170,5 @@ zipr(zipname,
 
 # clean up file chaff
 file.remove(data_source)
+
 

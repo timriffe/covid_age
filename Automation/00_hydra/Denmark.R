@@ -12,8 +12,8 @@ dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 dir_n_source <- "N:/COVerAGE-DB/Automation/Denmark/"
 
 # Drive credentials
-drive_auth(email = email)
-gs4_auth(email = email)
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
 
 at_rubric <- get_input_rubric() %>% dplyr::filter(Short == "DK")
 ss_i   <- at_rubric %>% dplyr::pull(Sheet)
@@ -23,8 +23,9 @@ ss_db  <- at_rubric %>% dplyr::pull(Source)
 # reading data from Denmark stored in N drive
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 db_n <- read_rds(paste0(dir_n, ctr, ".rds")) %>% 
-  mutate(Date = dmy(Date)) %>% 
-  filter(Date != "2021-06-20" | Value != "258806") 
+  mutate(Date = dmy(Date))
+
+
   # mutate(Value = as.character(Value)) %>%
   # mutate(Value = case_when((Code == "DK03.06.2021" & Age == "TOT" & Measure == "Deaths") ~ "2517",
   #                           TRUE ~ Value)) %>% 
@@ -192,13 +193,7 @@ if(dim(links_new_cases)[1] > 0){
     
     
     download.file(as.character(links_new_cases[i, 2]), destfile = data_source_c, mode = "wb")
-    db_t <- read_csv2(unz(data_source_c, "Cases_by_age.csv"))
     db_sex <- read_csv2(unz(data_source_c, "Cases_by_sex.csv"))
-    
-    db_t2 <- db_t %>% 
-      select(Age = Aldersgruppe, Value = Antal_testede) %>% 
-      mutate(Measure = "Tests",
-             Sex = "b")
     
     db_sex2 <- 
       db_sex %>% 
@@ -213,7 +208,7 @@ if(dim(links_new_cases)[1] > 0){
              Measure = "Cases") %>% 
       select(-trash)
     
-    db_c <- bind_rows(db_t2, db_sex2) %>% 
+    db_c <- bind_rows(db_sex2) %>% 
       separate(Age, c("Age", "trash"), sep = "-") %>% 
       mutate(Age = case_when(Age == "90+" ~ "90",
                              Age == "I alt" ~ "TOT",
@@ -250,27 +245,28 @@ links_v <- scraplinks(m_url_v) %>%
 
 links_new_vacc <- links_v %>% 
   dplyr::filter(!Date %in% dates_vacc_n)
-# links_new_vacc <- links_v[1,]
+ links_new_vacc <- links_v[1,]
 # downloading new vaccine data and loading it
 dim(links_new_vacc)[1] > 0
 db_vcc <- tibble()
-if(dim(links_new_vacc)[1] > 0){
-  for(i in 1:dim(links_new_vacc)[1]){
+ if(dim(links_new_vacc)[1] > 0){
+   for(i in 1:dim(links_new_vacc)[1]){
     
     date_v <- links_new_vacc[i, 1] %>% dplyr::pull()
     data_source_v <- paste0(dir_n, "Data_sources/", 
                             ctr, "/", ctr, "_vaccines_", as.character(date_v), ".zip")
     download.file(as.character(links_new_vacc[i, 2]), destfile = data_source_v, mode = "wb")
     
-    try(db_v <- read_csv2(unz(data_source_v, "Vaccine_DB/Vaccinationer_region_aldgrp_koen.csv"), locale = locale(encoding = "ASCII")))
+    db_v <- read.table(unz(data_source_v, "Vaccine_DB/Vaccine_region_alder_koen_vaccage.csv"), sep=";", header=TRUE)
     #try(db_v <- read_csv(unz(data_source_v, "ArcGIS_dashboards_data/Vaccine_DB/Vaccinationer_region_aldgrp_koen.csv")))
     
     db_v2 <- db_v %>% 
       rename(Age = 2,
-             Sex = sex,
+             Sex = 3,
              Vaccination1 = 4,
-             Vaccination2 = 5) %>% 
-      gather(Vaccination1, Vaccination2, key = Measure, value = Value) %>% 
+             Vaccination2 = 5,
+             Vaccination3 = 6) %>% 
+      gather(Vaccination1, Vaccination2, Vaccination3, key = Measure, value = Value) %>% 
       group_by(Age, Sex, Measure) %>% 
       summarise(Value = sum(Value),.groups = "drop") %>% 
       mutate(Sex = recode(Sex,
@@ -296,7 +292,7 @@ if(dim(links_new_vacc)[1] > 0){
       bind_rows(db_v3)
     
   }
-}
+ }
 
 db_cases_vcc <- tibble()
 

@@ -11,6 +11,10 @@ ctr    <- "Togo"
 dir_n  <- "N:/COVerAGE-DB/Automation/Hydra/"
 dir_n_source <- paste0("N:/COVerAGE-DB/Automation/", ctr, "/")
 
+
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
+
 ###save previous data that has been collected mannual
 
 previous <- read_rds(paste0(dir_n, "Togo.rds")) %>% 

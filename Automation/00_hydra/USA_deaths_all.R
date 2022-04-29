@@ -1,5 +1,4 @@
-library(here)
-source(here("Automation/00_Functions_automation.R"))
+source("Automation/00_Functions_automation.R")
 
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
@@ -11,8 +10,8 @@ ctr <- "USA_all_deaths"
 dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 # Drive credentials
-drive_auth(email = email)
-gs4_auth(email = email)
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
 
 # info by age
 url <- "https://data.cdc.gov/api/views/vsak-wrfu/rows.csv?accessType=DOWNLOAD"
@@ -87,3 +86,4 @@ zipr(zipname,
 
 # clean up file chaff
 file.remove(data_source)
+

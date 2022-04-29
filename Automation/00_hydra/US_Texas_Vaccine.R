@@ -17,8 +17,9 @@ ctr          <- "US_Texas_Vaccine"
 dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 # Drive credentials
-drive_auth(email = email)
-gs4_auth(email = email)
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
+
 
 #get previous age data by sex and save it  
 #data by sex and dose is appended
@@ -71,7 +72,7 @@ download.file(url, data_source, mode = "wb")
 In_vaccine <- read_xlsx(data_source, sheet = 4)
 
 In_vaccine_age<- In_vaccine %>%
-  select(Age = `Age Group`, Date=`Vaccination Date`, Doses= `Doses Administered`)%>%
+  select(Age = `Agegrp`, Date=`Vaccination Date`, Doses= `Doses Administered`)%>%
   filter(!is.na(Date))
 
 #Date is transformed to time passed since 01.01.1900 when Excel file is read in
@@ -136,7 +137,7 @@ In_vaccine_dose <- read_xlsx(data_source, sheet = 3)
 
 
 Out_Vaccine_dose <- In_vaccine_dose %>% 
-  select(Race = `Race/Ethnicity` , Sex = Gender, Age = `Age Group`,  Vaccinations= `Doses Administered`, Vaccination1= `People Vaccinated with at least One Dose` , Vaccination2= `People Fully Vaccinated`)%>%
+  select(Race = `Race/Ethnicity` , Sex = Gender, Age = `Agegrp`,  Vaccinations= `Doses Administered`, Vaccination1= `People Vaccinated with at least One Dose` , Vaccination2= `People Fully Vaccinated`)%>%
   pivot_longer(!Age & !Sex & !Race, names_to= "Measure", values_to= "Value")%>%
    mutate(Age=recode(Age, 
                      `44692`="5",

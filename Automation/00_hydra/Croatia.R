@@ -21,27 +21,31 @@ ctr          <- "Croatia" # it's a placeholder
 dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 # Drive credentials
-drive_auth(email = email)
-gs4_auth(email = email)
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
 
 
 #N:\COVerAGE-DB\Automation\Hydra\Data_sources\Croatia
 jtext <- httr::content(GET("https://www.koronavirus.hr/json/?action=po_osobama"), 
                        as = "text", encoding = "UTF-8")
 IN_json <- rjson::fromJSON(jtext)
-IN <- bind_rows(IN_json) %>% 
-  mutate(Zupanija = trimws(Zupanija, "r"),
-         Zupanija = iconv(Zupanija, from = "UTF-8", to = "ASCII//TRANSLIT"))
-Regions <- tibble(Zupanija = c("Bjelovarsko-bilogorska", "Brodsko-posavska", "Dubrovacko-neretvanska", 
-                               "Grad Zagreb", "Istarska", "Karlovacka", "Koprivnicko-krizevacka", 
-                               "Krapinsko-zagorska", "Licko-senjska", "Medimurska", "Osjecko-baranjska", 
-                               "Pozesko-slavonska", "Primorsko-goranska", "Sibensko-kninska", 
-                               "Sisacko-moslavacka", "Splitsko-dalmatinska", "Varazdinska", 
-                               "Viroviticko-podravska", "Vukovarsko-srijemska", "Zadarska", 
-                               "Zagrebacka"),
-RegionCode = c("-07","-12","-19","-21","-18","-04","-06","-02",
-               "-09","-20","-14","-11","-08","-15","-03","-17",
-               "-05","-10","-16","-13","-01")) 
+IN <- bind_rows(IN_json) 
+# IN2 <- IN %>%   
+# mutate(Zupanija = trimws(Zupanija, "r"),
+#          Zupanija = iconv(Zupanija, from = "UTF-8", to = "ASCII//TRANSLIT"))
+# 
+# 
+# 
+# Regions <- tibble(Zupanija = c("Bjelovarsko-bilogorska", "Brodsko-posavska", "Dubrovacko-neretvanska", 
+#                                "Grad Zagreb", "Istarska", "Karlovacka", "Koprivnicko-krizevacka", 
+#                                "Krapinsko-zagorska", "Licko-senjska", "Medimurska", "Osjecko-baranjska", 
+#                                "Pozesko-slavonska", "Primorsko-goranska", "Sibensko-kninska", 
+#                                "Sisacko-moslavacka", "Splitsko-dalmatinska", "Varazdinska", 
+#                                "Viroviticko-podravska", "Vukovarsko-srijemska", "Zadarska", 
+#                                "Zagrebacka"),
+# RegionCode = c("-07","-12","-19","-21","-18","-04","-06","-02",
+#                "-09","-20","-14","-11","-08","-15","-03","-17",
+#                "-05","-10","-16","-13","-01")) 
 
 
 
@@ -58,14 +62,14 @@ RegionCode = c("-07","-12","-19","-21","-18","-04","-06","-02",
 
 IN2 <-
   IN %>% 
-  dplyr::filter(Zupanija != "") %>% 
-  left_join(Regions, by = "Zupanija") %>% 
-  select(Sex = spol, dob, Date = Datum, Region = Zupanija) %>%  # Regions = Counties
+  # dplyr::filter(Zupanija != "") %>% 
+  # left_join(Regions, by = "Zupanija") %>% 
+  select(Sex = spol, dob, Date = Datum) %>%  # Regions = Counties
   mutate( Date = lubridate::ymd(Date),
           Age = round(lubridate::decimal_date(Date) - (dob+.5)),
           Age = ifelse(Age > 100,100,Age),
           Age = as.integer(Age)) %>% 
-  group_by(Sex, dob, Date, Region, Age) %>% 
+  group_by(Sex, dob, Date, Age) %>% 
   summarize(new = n(),.groups = "drop") %>% 
   mutate(Sex = ifelse(Sex == "M", "m", "f"))
 
@@ -76,39 +80,21 @@ dates_all  <- seq(date_range[1], date_range[2], by = "days")
 
 ages_all <- 0:100 %>% as.integer()
 
-out1 <-
-  IN2 %>% 
-  tidyr::complete(Region, Date = dates_all, Sex, Age = ages_all, fill = list(new = 0))
-
-out_all <-
-  out1 %>% 
-  group_by(Date, Sex, Age) %>% 
-  summarize(new = sum(new),.groups = "drop") %>% 
-  mutate(Region = "All",
-         AgeInt = ifelse(Age == 100L, 5L, 1L))
-out_abr <-
-  out1 %>% 
-  mutate(Age = calcAgeAbr(Age)) %>% 
-  group_by(Region, Date, Sex, Age) %>% 
-  summarize(new = sum(new), .groups = "drop") %>% 
-  mutate(AgeInt = case_when(Age == 0 ~ 1L,
-                            Age == 1 ~ 4L,
-                            TRUE ~ 5L))
-RegionCodes <- Regions %>% select(Region = Zupanija, RegionCode)
-
 out <-
-  bind_rows(out_all, out_abr) %>% 
-  arrange(Region, Sex, Age, Date) %>% 
-  group_by(Region, Sex, Age) %>% 
+  IN2 %>% 
+  tidyr::complete(Date = dates_all, Sex, Age = ages_all, fill = list(new = 0)) %>% 
+  mutate(Region = "All",
+         AgeInt = ifelse(Age == 100L, 5L, 1L)) %>% 
+  arrange(Sex, Age, Date) %>% 
+  group_by(Sex, Age) %>% 
   mutate(Value = cumsum(new)) %>% 
   ungroup() %>% 
   mutate(Country = "Croatia",
          Measure = "Cases",
          Metric = "Count",
          Date = ddmmyyyy(Date)) %>% 
-  left_join(RegionCodes, by = "Region") %>% 
-  mutate(RegionCode = ifelse(is.na(RegionCode), "", RegionCode),
-         Code = paste0("HR", RegionCode)) %>% 
+  # left_join(RegionCodes, by = "Region") %>% 
+  mutate(Code = "HR") %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
   group_by(Region, Sex, Age, Date) %>% 
   mutate(n = sum(Value)) %>% 

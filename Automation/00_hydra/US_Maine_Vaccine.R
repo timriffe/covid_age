@@ -10,8 +10,11 @@ if (! "email" %in% ls()){
 ctr    <- "US_Maine_Vaccine"
 dir_n  <- "N:/COVerAGE-DB/Automation/Hydra/"
 
-###pull data from Drive and write rds###
+# Drive credentials
+drive_auth(email = email)
+gs4_auth(email = email)
 
+###pull data from Drive and write rds###
 rubric <- get_input_rubric() %>% filter(Short == "US_ME")
 ss_i <- rubric %>% 
   dplyr::pull(Sheet)
@@ -21,7 +24,7 @@ ss_db <- rubric %>%
 # reading data from Drive and last date entered 
 
 In_drive <-  read_sheet(ss = ss_i, sheet = "database_vaccine") %>% 
-  mutate(Code == "UN-ME")
+  mutate(Code = "US-ME")
 
 
 write_rds(In_drive, paste0(dir_n, ctr, ".rds"))
