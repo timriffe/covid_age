@@ -23,8 +23,8 @@ dir_n_source_up <- "N:/COVerAGE-DB/Automation/Idaho-Uptake"
 
 
 # Drive credentials
-drive_auth(email = email)
-gs4_auth(email = email)
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
 
 # Read in data from drive 
 at_rubric <- get_input_rubric() %>% filter(Short == "US_ID")
@@ -466,8 +466,7 @@ vaccine2_tot_out= tot_vaccine2_in%>%
 
 #put together
 
-Out=rbind(cases_age_out, death_out_sex, death_tot_out, death_out, 
-         vaccine1_tot_out, vaccine2_tot_out, vaccine_age_out)
+Out=rbind(vaccine1_tot_out, vaccine2_tot_out, vaccine_age_out)
 
 #append to drive 
 
@@ -477,25 +476,25 @@ sheet_append(Out,
 
 #archive 
 
-data_source_1 <- paste0(dir_n, "Data_sources/", ctr, "/cases_age_",today(), ".xlsx")
-data_source_2 <- paste0(dir_n, "Data_sources/", ctr, "/death_age_",today(), ".xlsx")
-data_source_3 <- paste0(dir_n, "Data_sources/", ctr, "/death_sex_",today(), ".xlsx")
-data_source_4 <- paste0(dir_n, "Data_sources/", ctr, "/death_TOT_",today(), ".xlsx")
+# data_source_1 <- paste0(dir_n, "Data_sources/", ctr, "/cases_age_",today(), ".xlsx")
+# data_source_2 <- paste0(dir_n, "Data_sources/", ctr, "/death_age_",today(), ".xlsx")
+# data_source_3 <- paste0(dir_n, "Data_sources/", ctr, "/death_sex_",today(), ".xlsx")
+# data_source_4 <- paste0(dir_n, "Data_sources/", ctr, "/death_TOT_",today(), ".xlsx")
 data_source_5 <- paste0(dir_n, "Data_sources/", ctr, "/vaccine_age_",today(), ".xlsx")
 data_source_6 <- paste0(dir_n, "Data_sources/", ctr, "/vaccine1_TOT_",today(), ".xlsx")
 data_source_7 <- paste0(dir_n, "Data_sources/", ctr, "/vaccine2_TOT_",today(), ".xlsx")
 
 
-write.xlsx(cases_in, data_source_1)
-write.xlsx(death_in, data_source_2)
-write.xlsx(death_in_sex, data_source_3)
-write.xlsx(death_in_tot, data_source_4)
+# write.xlsx(cases_in, data_source_1)
+# write.xlsx(death_in, data_source_2)
+# write.xlsx(death_in_sex, data_source_3)
+# write.xlsx(death_in_tot, data_source_4)
 write.xlsx(age_vaccine_in, data_source_5)
 write.xlsx(tot_vaccine1_in, data_source_6)
 write.xlsx(tot_vaccine2_in, data_source_7)
 
 
-data_source <- c(data_source_1, data_source_2, data_source_3,data_source_4,data_source_5,data_source_6, data_source_7)
+data_source <- c(data_source_5,data_source_6, data_source_7)
 
 zipname <- paste0(dir_n, 
                   "Data_sources/", 
