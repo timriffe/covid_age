@@ -118,3 +118,11 @@
 # Building dashboards 
  Tue May 10 12:17:49 2022 
 
+
+# remake coverage map 
+ Tue May 10 15:26:13 2022 
+
+
+# push outputs to OSF 
+ Tue May 10 22:04:24 2022 
+
