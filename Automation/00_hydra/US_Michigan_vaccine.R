@@ -34,7 +34,7 @@ links <- scraplinks(m_url) %>%
 
 
 links1 <- scraplinks(m_url) %>% 
-  filter(str_detect(url, "Vaccine-Doses-Administered-Till-05292021")) %>% 
+  filter(str_detect(url, "Till")) %>% 
   select(url) 
 
 url1 <- 
@@ -53,7 +53,7 @@ IN1= read_xlsx(data_source1, sheet = 3)
 
 # data between 30.05.2021 and 27.11.2021
 links2 <- scraplinks(m_url) %>% 
-  filter(str_detect(url, "Doses-Administered-Between-05302021-And-11272021")) %>% 
+  filter(str_detect(url, "20210530-20211127")) %>% 
   select(url) 
 
 
@@ -73,7 +73,7 @@ IN2= read_xlsx(data_source2, sheet = 3)
 
 # data since 28.11.2021
 links3 <- scraplinks(m_url) %>% 
-  filter(str_detect(url, "Vaccine-Doses-Administered-Since-11282021")) %>% 
+  filter(str_detect(url, "20211128")) %>% 
   select(url) 
 
 
