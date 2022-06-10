@@ -34,7 +34,7 @@ links <- scraplinks(m_url) %>%
 
 
 links1 <- scraplinks(m_url) %>% 
-  filter(str_detect(url, "Till")) %>% 
+  filter(str_detect(url, "20201215-20210529")) %>% 
   select(url) 
 
 url1 <- 

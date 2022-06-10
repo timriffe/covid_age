@@ -11,10 +11,6 @@ dir_n_source <- "N:/COVerAGE-DB/Automation/Costa Rica"
 drive_auth(email = Sys.getenv("email"))
 gs4_auth(email = Sys.getenv("email"))
 
-previous <- read_rds(paste0(dir_n, "Togo.rds")) %>% 
-  mutate(Date = dmy(Date)) %>% 
-  filter(Date <= "2022-01-19")
-
 ##get the new data that is automated
 
 all_paths <-
@@ -65,6 +61,7 @@ vacc_out <- vacc_in %>%
             Measure == "PRIMERA" ~ "Vaccination1",
             Measure == "SEGUNDA" ~ "Vaccination2",
             Measure == "TERCERA" ~ "Vaccination3",
+            Measure == "CUARTA" ~ "Vaccination4",
             Measure == "TOTAL" ~ "Vaccinations"
           ),
           Value = as.numeric(gsub("\\.", "", Value)),
