@@ -22,3 +22,6 @@ gitcreds::gitcreds_set()
 
 # In terminal, type:
 # git remote set-url origin https://github.com/YourAcct/covid_age.git
+
+
+
