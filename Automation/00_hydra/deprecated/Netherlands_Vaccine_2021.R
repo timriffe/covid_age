@@ -47,14 +47,14 @@ death_in <- rbindlist(all_lists, fill = T)
 vacc <- death_in %>% 
   select(`Target group`, V1, `First dose`, `Second dose`, Total4, Total, `Eerste dosis`, `Tweede dosis`, Totaal, Totaal4,
          `First dose3`, `Second dose7`, `Second dose3`, `Number of people who are fully vaccinated`, `Number of people who have started vaccination`,
-         `Age group`)
+         `Age group`, `Vaccinator`)
 names(vacc)[1] <- "group"
 
 string_in_vacc <- unique(vacc$group)
-string_in_vacc[c(1,2,4:8,12:16,22:24,26:27,31,32,42,43,45,85:92)]
+string_in_vacc[c(1,4:8,12:16,22:24,26:27,31,32,42,43,45,93:100)]
 
 vacc2 <- vacc %>% 
-  filter(!group %in% string_in_vacc[c(1,2,4:8,12:16,22:24,26:27,31,32,42,43,45,85:92)])
+  filter(!group %in% string_in_vacc[c(1,4:8,12:16,22:24,26:27,31,32,42,43,45,93:100)])
 
 names(vacc2)[3] <- "Vaccination1"
 names(vacc2)[4] <- "Vaccination2"
@@ -70,7 +70,7 @@ vacc3 <- vacc2 %>%
                                   TRUE ~ Vaccination2))%>% 
   mutate(Vaccination2 = case_when(is.na(Vaccination2) ~ `Number of people who are fully vaccinated`,
                                   TRUE ~ Vaccination2)) %>% 
-  select(Age = group, Vaccination1, Vaccination2, week = V1)
+  select(Age = group, Vaccination1, Vaccination2, week = V1, Vaccinator)
 
 vacc3$Vaccination1 <- gsub("\\.", "", vacc3$Vaccination1)
 vacc3$Vaccination1 <- gsub("\\.", "", vacc3$Vaccination1)
@@ -103,8 +103,8 @@ ungroup() %>%
   mutate(Day= "7")%>%
   unite('ISODate', YearWeekISO, Day, sep="-", remove=FALSE) %>% 
   mutate(Date= ISOweek::ISOweek2date(ISODate)) %>% 
-  select(Age, Vaccination1, Vaccination2, Date)
-vacc3$Age_p <- gsub("[^A-Z]+", "", vacc3$Age)
+  select(Age, Vaccination1, Vaccination2, Date, Vaccinator)
+#vacc3$Age_p <- gsub(1,8, vacc3$Age)
 
 vacc4 <- vacc3 %>% 
   mutate(Age2 = case_when(
@@ -167,10 +167,15 @@ vacc4 <- vacc3 %>%
     Age == "91+" ~ "91",
     Age == "Age unknown" ~ "UNK",
     Age == "People aged 90 and up" ~ "90",
-    Age_p == "P" ~ "90",
+    #Age_p == "P" ~ "90",
     Age == "Totaal" ~ "TOT",
     Age == "Total" ~ "TOT",
-    Age == "Unknown" ~ "UNK" )) %>% 
+    Age == "Unknown" ~ "UNK",
+    Vaccinator == "Total6" ~ "TOT",
+    Vaccinator == "Total7" ~ "TOT",
+    Vaccinator == "Total" ~ "TOT"
+    
+    )) %>% 
   mutate(AgeInt = case_when(
     Age == "\n<20 years\n" ~ 20L,
     Age == "\n​​45-49-years\n" ~ 5L,
@@ -227,8 +232,7 @@ vacc4 <- vacc3 %>%
     Age == "85-89 years" ~ 5L,
     Age == "86-90" ~ 5L,
     Age == "91+" ~ 14L,
-    Age == "People aged 90 and up" ~ 15L,
-    Age_p == "P" ~ 15L)) %>% 
+    Age == "People aged 90 and up" ~ 15L)) %>% 
   select(Vaccination1, Vaccination2, Age=Age2, AgeInt, Date)
 vacc5 <- melt(vacc4, id=c("Age", "Date", "AgeInt"))
 names(vacc5)[4] <- "Measure"
@@ -288,6 +292,7 @@ Date = paste(sprintf("%02d",day(Date)),
              sprintf("%02d",month(Date)),
              year(Date),
              sep=".")) %>% 
-  sort_input_data()
+  sort_input_data() %>% 
+  filter(!is.na(Age))
 
 write_rds(vacc_out, "N:/COVerAGE-DB/Automation/Hydra/Netherlands_Vaccine.rds")

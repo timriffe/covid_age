@@ -44,7 +44,8 @@ vacc2 <- vacc %>%
       Measure == "Dose 1" ~ "Vaccination1",
       Measure == "Dose 2" ~ "Vaccination2",
       Measure == "Dose 3" ~ "Vaccination3",
-      Measure == "Dose 4" ~ "Vaccination4"
+      Measure == "Dose 4" ~ "Vaccination4",
+      Measure == "Dose 5" ~ "Vaccination5"
     ),
     Date = as.Date(ymd(Date)
     ),

@@ -23,7 +23,7 @@ df <-list.files(path= dir_n_source,
 
 
 
-
+#(col_types = c("guess","guess","guess","numeric","numeric"))
 all_content_age_death <-
   df %>%
   lapply(read_xlsx)
@@ -36,10 +36,10 @@ all_filenames_age_death <- df %>%
 all_lists <- mapply(c, all_content_age_death, all_filenames_age_death, SIMPLIFY = FALSE)
 
 vacc_in <- rbindlist(all_lists, fill = T)
-
+vacc_in$vacc1 <- format(round(as.numeric(vacc_in$`First dose`),1), small.mark=  ",")
 
 vacc <- vacc_in %>% 
-  select(`Target group`, `First dose`, `Second dose3`, `Total`, Date = `V1`)
+  select(`Target group`, `First dose`, `Second dose3`, `Total`, Date = `V1`, `Vaccinator`)
 names(vacc)[1] <- "Age"
 
 # string_in_vacc <- unique(vacc$group)
@@ -53,9 +53,22 @@ names(vacc)[3] <- "Vaccination2"
 names(vacc)[4] <- "Vaccinations"
 
 
-vacc$Vaccination1 <- gsub(",", "", vacc$Vaccination1)
-vacc$Vaccination2 <- gsub(",", "", vacc$Vaccination2)
-vacc$Vaccinations <- gsub(",", "", vacc$Vaccinations)
+vacc$Vaccination1 <- gsub(",", ".", vacc$Vaccination1)
+vacc$vacc1 <- as.numeric(vacc$Vaccination1) * 1000
+vacc$Vaccination1 <- gsub("\\.", "", vacc$Vaccination1)
+vacc$vacc1 <- ifelse(is.na(vacc$vacc1), vacc$Vaccination1, vacc$vacc1)
+vacc$Vaccination1 <- as.numeric(vacc$vacc1)
+
+vacc$Vaccination2 <- gsub(",", ".", vacc$Vaccination2)
+vacc$vacc2 <- as.numeric(vacc$Vaccination2) * 1000
+vacc$Vaccination2 <- gsub("\\.", "", vacc$Vaccination2)
+vacc$vacc2 <- ifelse(is.na(vacc$vacc2), vacc$Vaccination2, vacc$vacc2)
+vacc$Vaccination2 <- as.numeric(vacc$vacc2)
+
+
+#vacc$Vaccinations <- gsub(",", ".", vacc$Vaccinations)
+#vacc$vacc1 <- as.numeric(vacc$Vaccination1) * 1000
+
 
 vacc$Date = substr(vacc$Date,1,nchar(vacc$Date)-5)
 vacc$Date <- sub("............", "", vacc$Date)
@@ -84,6 +97,7 @@ vacc2 <- vacc %>%
     Age == "91+" ~ "91",
     Age == "Unknown" ~ "UNK" )) %>% 
   mutate(AgeInt = case_when(
+    Age == "5" ~ 7L,
     Age == "12" ~ 5L,
     Age == "18" ~ 8L,
     Age == "26" ~ 5L,
@@ -144,11 +158,7 @@ vacc_2021 <- read_rds("N:/COVerAGE-DB/Automation/Netherlands/Vaccinations of 202
   mutate(Value = case_when(
     is.na(Value) ~ 0,
     TRUE ~ Value
-  )) %>% 
-  mutate(Age = case_when(
-    Value == "126414" ~ "55",
-    Value == "60175" ~ "55",
-    TRUE ~ Age))
+  )) 
 
 vacc_out <- rbind(vacc_2021, vacc_2022) %>% 
   sort_input_data()
