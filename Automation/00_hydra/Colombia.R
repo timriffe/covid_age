@@ -3,7 +3,8 @@ source(here("Automation/00_Functions_automation.R"))
 
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
-  email <- "kikepaila@gmail.com"
+  email <- "mumanal.k@gmail.com"
+  #originally: kikepaila@gmail.com
 }
 
 # info country and N drive address
@@ -206,7 +207,9 @@ db_all2 <- db_all %>%
 db_inc2 <- db_inc %>% dplyr::pull(Region)
 
 db_m_reg <- db_m %>% 
-  mutate(date_f = ymd(str_sub(Fecha, 1, 10))) %>% 
+  mutate(date_sub = if_else(str_detect(Fecha, "/"), str_sub(Fecha, -10, -1), str_sub(Fecha, 1, 10)),
+         date_sub = str_replace_all(date_sub, "/", "-")) %>% 
+  mutate(date_f = parse_date_time(date_sub, orders = c('ymd', 'dmy'))) %>% 
   drop_na(date_f) %>% 
   rename(All = Acumuladas,
          t1 = 'Positivas acumuladas',
