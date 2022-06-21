@@ -16,19 +16,28 @@ dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 # https://www.ons.gov.uk/peoplepopulationandcommunity/birthsdeathsandmarriages/deaths/datasets/weeklyprovisionalfiguresondeathsregisteredinenglandandwales
 
 #2020 data
-deaths_url <- "https://www.ons.gov.uk/file?uri=%2fpeoplepopulationandcommunity%2fbirthsdeathsandmarriages%2fdeaths%2fdatasets%2fweeklyprovisionalfiguresondeathsregisteredinenglandandwales%2f2020/publishedweek532020.xlsx"
+deaths_url1 <- "https://www.ons.gov.uk/file?uri=%2fpeoplepopulationandcommunity%2fbirthsdeathsandmarriages%2fdeaths%2fdatasets%2fweeklyprovisionalfiguresondeathsregisteredinenglandandwales%2f2020/publishedweek532020.xlsx"
 
-data_source1 <- paste0(dir_n, "Data_sources/", ctr, "/deaths2020",today(), ".csv")
+data_source1 <- paste0(dir_n, "Data_sources/", ctr, "/deaths2020",format(today(), "-%m-%d"), ".csv")
 
-download.file(deaths_url, data_source1, mode = "wb")
+download.file(deaths_url1, data_source1, mode = "wb")
 
 #2021 data
-# to be updated
-deaths_url <- "https://www.ons.gov.uk/file?uri=%2fpeoplepopulationandcommunity%2fbirthsdeathsandmarriages%2fdeaths%2fdatasets%2fweeklyprovisionalfiguresondeathsregisteredinenglandandwales%2f2021/publishedweek292021.xlsx"
+deaths_url2 <- "https://www.ons.gov.uk/file?uri=/peoplepopulationandcommunity/birthsdeathsandmarriages/deaths/datasets/weeklyprovisionalfiguresondeathsregisteredinenglandandwales/2021/publishedweek522021.xlsx"
 
-data_source2 <- paste0(dir_n, "Data_sources/", ctr, "/deaths2021",today(), ".csv")
+data_source2 <- paste0(dir_n, "Data_sources/", ctr, "/deaths2021",format(today(), "-%m-%d"), ".csv")
 
-download.file(deaths_url, data_source2, mode = "wb")
+download.file(deaths_url2, data_source2, mode = "wb")
+
+#2022 data
+# to be updated (monthly?) == this is till week 23, 2022
+deaths_url3 <- "https://www.ons.gov.uk/file?uri=/peoplepopulationandcommunity/birthsdeathsandmarriages/deaths/datasets/weeklyprovisionalfiguresondeathsregisteredinenglandandwales/2022/publicationfileweek232022.xlsx"
+
+data_source3 <- paste0(dir_n, "Data_sources/", ctr, "/deaths2022",format(today(), "-%m-%d"), ".csv")
+
+download.file(deaths_url3, data_source3, mode = "wb")
+
+## Cleaning & extract the relevant data ##
 
 X     <- read_xlsx(data_source1, 
                    sheet = "UK - Covid-19 - Weekly reg", 
