@@ -301,12 +301,15 @@ deaths_male_out <- deaths_male %>%
   separate(V1, c("Region", "Measure", "Sex"), sep = "_")
   
 out <- rbind(cases_female_out, cases_male_out, deaths_female_out, deaths_male_out) %>% 
-  arrange(Date, Measure, Sex, Age) %>% 
-  group_by(Measure,Sex, Age) %>% 
-  mutate(Value = cumsum(Value)) %>% 
+  arrange(Region, Date, Measure, Sex, Age) %>% 
+  group_by(Measure, Region, Sex, Age) %>% 
+  mutate(Value = cumsum(Value))
     mutate (Country = "Italy",
-          Age = case_when(
+          Age2 = case_when(
+            Age == "0_5" ~ "0",
             Age == "0_9" ~ "0",
+            Age == "6_12" ~ "6",
+            Age == "13_19" ~ "13",
             Age == "10_19" ~ "10",
             Age == "20_29" ~ "20",
             Age == "30_39" ~ "30",
@@ -319,6 +322,9 @@ out <- rbind(cases_female_out, cases_male_out, deaths_female_out, deaths_male_ou
           ),
           AgeInt = case_when(
             Age == "90" ~ 15L,
+            Age == "0_5" ~ 6L,
+            Age == "6_12" ~ 7L,
+            Age == "13_19" ~ 7L,
             TRUE ~ 10L
           ),
           Metric = "Count",
@@ -351,7 +357,7 @@ out <- rbind(cases_female_out, cases_male_out, deaths_female_out, deaths_male_ou
                       sprintf("%02d",month(Date)),
                       year(Date),
                       sep=".")) %>% 
-  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
+  select(Country, Region, Code, Date, Sex, Age=Age2, AgeInt, Metric, Measure, Value) %>% 
   sort_input_data()
 
 

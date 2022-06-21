@@ -15,8 +15,9 @@ dir_n_source <- "N:/COVerAGE-DB/Automation/CDC"
 dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 # handle authentications
-drive_auth(email = email)
-gs4_auth(email = email)
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
+
 
 # Get upload urls:
 ss_list <- get_input_rubric() %>% 
@@ -40,6 +41,64 @@ totals_url <- read_html('https://www.opendata.nhs.scot/dataset/b318bddf-a4dc-426
   html_nodes('#content > div.row.wrapper.no-nav > section > div > p > a') %>% 
   html_attr('href')
 
+deaths <- read.csv("https://pmd3-production-grafter-sg.publishmydata.com/v1/pipelines/download/job/548ae341-1e34-46c6-ada0-d09d4bcf3a6d")
+
+deaths2 <- deaths %>% 
+  select(Date = DateCode, 
+         Sex, 
+         Age, 
+         Value,
+         Cause.Of.Death) %>% 
+  filter(Cause.Of.Death == "COVID-19 related",
+         Date != "2020",
+         Date != "2021",
+         Date != "2022",
+         Age != "All") %>% 
+  mutate(Date = substr(Date, 5, 14),
+    Date = ymd(Date),
+    Age = recode(Age,
+                 '0 years' = "0",
+                 '1-14 years' = "1",
+                 '15-44 years' = "15",
+                 '45-64 years' = "45",
+                 '65-74 years' = "65",
+                 '75-84 years' = "75",
+                 '85 years and over' = "85"),
+    Sex = recode(Sex,'Female' = 'f',
+                 'Male' = 'm',
+                 'All' = 'b'),
+    AgeInt = case_when(
+      Age == "0" ~ 1,
+      Age == "1" ~ 14,
+      Age == "15" ~ 30,
+      Age == "45" ~ 20,
+      Age == "65" ~ 20,
+      Age == "75" ~ 20,
+      Age == "85" ~ 20),
+    ) %>% 
+  arrange(Date, Sex ,Age) %>% 
+  group_by(Sex, Age) %>% 
+  mutate(Value = cumsum(Value)) %>% 
+  ungroup() 
+
+#filter(Age != "60+") %>% 
+  #filter(Age != "0 to 59") %>% 
+  mutate(Country = "Scotland",
+         Region = "All",
+         Metric = "Count",
+         Measure = "Deaths",
+         Date = paste(sprintf("%02d",day(Date)),    
+                      sprintf("%02d",month(Date)),  
+                      year(Date), 
+                      sep = "."),
+         Code = paste0('GB-SCT')) %>% 
+  select(Country, Region, Code, Date, Sex, 
+         Age, AgeInt, Metric, Measure, Value) %>% 
+  sort_input_data()
+
+
+
+
 #content > div.row.wrapper.no-nav > section > div > p > a
 
 # -----------------------
@@ -60,8 +119,7 @@ sc <-
   select(Date, 
          Sex, 
          Age = AgeGroup, 
-         Cases = TotalPositive, 
-         Deaths = TotalDeaths) %>% 
+         Cases = TotalPositive) %>% 
   filter(Age != 'Total')%>%
   mutate(
     Date = ymd(Date),
@@ -87,7 +145,7 @@ sc <-
       Age == "85" ~ 20)) %>% 
   filter(Age != "60+") %>% 
   filter(Age != "0 to 59") %>% 
-  pivot_longer(Cases:Deaths, 
+  pivot_longer(Cases, 
                names_to = "Measure",
                values_to = "Value") %>% 
   mutate(Country = "Scotland",

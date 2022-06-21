@@ -44,18 +44,21 @@ In_vaccine= read_excel(data_source)
 #Process data
 All_ages <- seq(0,100,by=5)
 Out_vaccine= In_vaccine %>%
-  select(Date= `Vakcinācijas datums`, Measure= `Vakcinācijas posms`, Age=`Vakcinētās personas vecums`, Sex= `Vakcinētās personas dzimums`, Value= `Vakcinēto personu skaits`) %>% 
-  mutate(Measure= recode(Measure, 
-                       `1.pote` = "Vaccination1",
-                       `2.pote`= "Vaccination2",
-                       `3.pote`= "Vaccination3"))%>%
+  select(Date= `Vakcinācijas datums`, Measure= `Vakcinācijas posms`,
+         Age=`Vakcinētās personas vecums`, Sex= `Vakcinētās personas dzimums`, Value= `Vakcinēto personu skaits`) %>% 
+  mutate(Measure = substr(Measure,1,6)) %>% 
+  mutate(Measure= case_when(Measure == "1.pote" ~ "Vaccination1",
+                            Measure == "2.pote"~ "Vaccination2",
+                            Measure == "3.pote"~ "Vaccination3",
+                            Measure == "1.bals" ~ "Vaccination3",
+                            Measure == "2.bals" ~ "Vaccination4")) %>% 
   mutate(Sex = case_when(
                 is.na(Sex)~ "UNK",
                 Sex == "V" ~ "m",
                 Sex == "S" ~ "f",
                 Sex== "N" ~ "UNK"),
          Age = ifelse(Age > 100,100,Age),
-         Age = Age - Age %% 5) %>%
+         Age = Age - Age %% 5) %>% 
   # aggregate to daily sum 
   group_by(Date, Age, Measure, Sex) %>% 
   summarize(Value = sum(Value), .groups="drop") %>%
