@@ -10,14 +10,13 @@ require(lubridate)
 require(covidAgeData)
 require(here)
 
-data_source <- "input-data/COVerAGE-DB/Output_5.zip"
-link_old <- "https://osf.io/7tnfh/download?version=135&displayName=Output_5-2021-01-13T07%3A22%3A39.845954%2B00%3A00.zip"
-osf_retrieve_file("7tnfh") %>%
-  osf_download(path = "Data", conflicts = "overwrite")
+osf_ls_files(cdb_repo, path = "Data") %>%
+  dplyr::filter(name == "Output_10.zip") %>%
+  osf_download(conflicts = "overwrite")
 
-dat <-  read_csv("Data/Output_5.zip",
-                 skip = 3)
-
+dat <-  read_csv("Output_10.zip",
+                       skip = 3,
+                       col_types = "ccccciiddd")
 
 ########################Check1#######################################################
 #plots for sex=b and regions=All
@@ -270,7 +269,9 @@ for(i in 1:max(cts$gr)){
 ##################vaccines from input DB############################
 
 #input
-osf_retrieve_file("9dsfk") %>%
+cdb_repo <- osf_retrieve_node("mpwjq")
+osf_ls_files(cdb_repo, path = "Data") %>%
+  dplyr::filter(name == "inputDB.zip") %>%
   osf_download(conflicts = "overwrite")
 
 inputDB <-  read_csv("inputDB.zip",

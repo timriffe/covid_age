@@ -35,7 +35,7 @@ date_text <-
   html_text()
 
 
-date= substr(date_text, 92, 101)%>%
+date= substr(date_text, 93, 102) %>% 
   dmy()
 
 
@@ -76,7 +76,8 @@ Out_vaccine= In_vaccine%>%
          Measure=recode(Measure,
                         `First dose`="Vaccination1",
                         `Second dose`="Vaccination2",
-                        `Third dose`="Vaccination3"),
+                        `Third dose`="Vaccination3",
+                        `Fourth dose`="Vaccination4"),
          Metric = "Count",
          Sex= "b")%>%
   mutate(AgeInt = case_when(
@@ -100,7 +101,7 @@ Out_vaccine= In_vaccine%>%
 small_ages <- Out_vaccine %>% 
   filter(Age == "12") %>% 
   mutate(Age = 0,
-         AgeInt = 12L,
+         AgeInt = 5L,
          Value = 0)
 
 Out_vaccine <- rbind(Out_vaccine, small_ages) %>% 
