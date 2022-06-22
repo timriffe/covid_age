@@ -3,6 +3,7 @@
 source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
 if (! "email" %in% ls()){
   email <- "maxi.s.kniffka@gmail.com"
+  #originally:"maxi.s.kniffka@gmail.com"
 }
 
 # info country and N drive address
@@ -17,30 +18,32 @@ gs4_auth(email = email)
 
 
 
-df <-list.files(path= dir_n_source, 
+file.list <-list.files(path= dir_n_source, 
                 pattern = ".xlsx",
                 full.names = TRUE)
 
 
+##################################################################
+## Previously used for reading and merging all files ############# 
+##################################################################
 
-#(col_types = c("guess","guess","guess","numeric","numeric"))
-all_content_age_death <-
-  df %>%
-  lapply(read_xlsx)
-
-all_filenames_age_death <- df %>%
-  basename() %>%
-  as.list()
-
-#include filename to get date from filename 
-all_lists <- mapply(c, all_content_age_death, all_filenames_age_death, SIMPLIFY = FALSE)
-
-vacc_in <- rbindlist(all_lists, fill = T)
-vacc_in$vacc1 <- format(round(as.numeric(vacc_in$`First dose`),1), small.mark=  ",")
-
-vacc <- vacc_in %>% 
-  select(`Target group`, `First dose`, `Second dose3`, `Total`, Date = `V1`, `Vaccinator`)
-names(vacc)[1] <- "Age"
+##(col_types = c("guess","guess","guess","numeric","numeric"))
+#all_content_age_vaccine <-
+#  df %>%
+#  lapply(read_xlsx)
+#
+#all_filenames_age_vaccine <- df %>%
+#  basename() %>%
+#  as.list()
+#
+##include filename to get date from filename 
+#all_lists <- mapply(c, all_content_age_vaccine, all_filenames_age_vaccine, SIMPLIFY = FALSE)
+##vacc_in <- rbindlist(all_lists, fill = T)
+#vacc_in$vacc1 <- format(round(as.numeric(vacc_in$`First dose`),1), small.mark=  ",")
+#
+#vacc <- vacc_in %>% 
+#  select(`Target group`, `First dose`, `Second dose3`, `Total`, Date = `V1`, `Vaccinator`)
+#names(vacc)[1] <- "Age"
 
 # string_in_vacc <- unique(vacc$group)
 # string_in_vacc[c(1,2,4:8,12:16,22:24,26:27,31,32,42,43,45,85:92)]
@@ -48,32 +51,93 @@ names(vacc)[1] <- "Age"
 # vacc2 <- vacc %>% 
 #   filter(!group %in% string_in_vacc[c(1,2,4:8,12:16,22:24,26:27,31,32,42,43,45,85:92)])
 
-names(vacc)[2] <- "Vaccination1"
-names(vacc)[3] <- "Vaccination2"
-names(vacc)[4] <- "Vaccinations"
+#names(vacc)[2] <- "Vaccination1"
+#names(vacc)[3] <- "Vaccination2"
+#names(vacc)[4] <- "Vaccinations"
 
 
-vacc$Vaccination1 <- gsub(",", ".", vacc$Vaccination1)
-vacc$vacc1 <- as.numeric(vacc$Vaccination1) * 1000
-vacc$Vaccination1 <- gsub("\\.", "", vacc$Vaccination1)
-vacc$vacc1 <- ifelse(is.na(vacc$vacc1), vacc$Vaccination1, vacc$vacc1)
-vacc$Vaccination1 <- as.numeric(vacc$vacc1)
+df.list <- setNames(lapply(file.list, read_excel),  
+                    lubridate::ymd(stringr::str_extract_all(file.list, '\\d+')))
 
-vacc$Vaccination2 <- gsub(",", ".", vacc$Vaccination2)
-vacc$vacc2 <- as.numeric(vacc$Vaccination2) * 1000
-vacc$Vaccination2 <- gsub("\\.", "", vacc$Vaccination2)
-vacc$vacc2 <- ifelse(is.na(vacc$vacc2), vacc$Vaccination2, vacc$vacc2)
-vacc$Vaccination2 <- as.numeric(vacc$vacc2)
+
+## DIAGNOSTICS: for each 'list' get the variables names ##
+
+length(unique(lapply(df.list, function(x) sort(tolower(names(x)))))) == 1
+unique(lapply(df.list, function(x) sort(tolower(names(x)))))
+files.names <- lapply(df.list, function(x) sort(tolower(names(x)))) 
+
+### SINCE THESE ARE OF DIFFERENT LENGHT, WE MAXIMIZE LENGTH, ADD NAs AND COMBINE ###
+
+maxlen <- max(lengths(files.names))
+list_maximum <- lapply(files.names, function(lst){c(lst, rep(NA, maxlen - length(lst)))})
+columns_prep <- lapply(list_maximum, unlist)
+columnsnames_df <- as.data.frame(columns_prep) 
+
+### COLUMNS NAMES EDIT TO REMOVE 'X' ###
+
+colnames(columnsnames_df) <- gsub(pattern = "X", replacement = "", colnames(columnsnames_df))
+
+### COLUMNS DIAGNOSTICS if all has the same values/ length ###
+
+check <- columnsnames_df %>% 
+  rowwise %>%
+  mutate(same = n_distinct(unlist(cur_data())) == 1) %>%
+  ungroup()
+
+
+## BIND the list of tibbles, while keeping lists names as Date
+## coalesce the problematic columns
+## select the relevant
+
+vacc <- bind_rows(df.list, .id="Date") %>% 
+  mutate(`Start date` = coalesce(`Start date2`, `Start date`),
+         `Total` = coalesce(`Total4`, `Total`),
+         `Second dose` = coalesce(`Second dose3`, `Second dose`)) %>% 
+  select(Age = contains("Target"),
+        # `Start date`,
+        Vaccination1 = `First dose`,
+        Vaccination2 = `Second dose`,
+        Vaccinations = `Total`, 
+          Date,
+        Vaccinator)
+
+
+
+#vacc$Vaccination1 <- gsub(",", ".", vacc$Vaccination1)
+#vacc$vacc1 <- as.numeric(vacc$Vaccination1) 
+#vacc$Vaccination1 <- gsub("\\.", "", vacc$Vaccination1)
+#vacc$vacc1 <- ifelse(is.na(vacc$vacc1), vacc$Vaccination1, vacc$vacc1)
+#vacc$Vaccination1 <- as.numeric(vacc$vacc1)
+#
+#vacc$Vaccination2 <- gsub(",", ".", vacc$Vaccination2)
+#vacc$vacc2 <- as.numeric(vacc$Vaccination2) * 1000
+#vacc$Vaccination2 <- gsub("\\.", "", vacc$Vaccination2)
+#vacc$vacc2 <- ifelse(is.na(vacc$vacc2), vacc$Vaccination2, vacc$vacc2)
+#vacc$Vaccination2 <- as.numeric(vacc$vacc2)
+
+
+#####################################################################
+### RE-FORMATTING NUMBERS & DATE ###
+
+vacc <- vacc %>%
+  mutate(Vaccination1 = str_replace_all(Vaccination1, ",", ""),
+         Vaccination1 = as.numeric(Vaccination1),
+         Vaccination2 = str_replace_all(Vaccination2, ",", ""),
+         Vaccination2 = as.numeric(Vaccination2),
+         Vaccinations = str_replace_all(Vaccinations, ",", ""),
+         Vaccinations = as.numeric(Vaccinations),
+         Date = as.Date(Date, format="%Y-%m-%d"))
+  
 
 
 #vacc$Vaccinations <- gsub(",", ".", vacc$Vaccinations)
 #vacc$vacc1 <- as.numeric(vacc$Vaccination1) * 1000
 
 
-vacc$Date = substr(vacc$Date,1,nchar(vacc$Date)-5)
-vacc$Date <- sub("............", "", vacc$Date)
-
-vacc$Date <-  as.Date(as.character(vacc$Date),format="%Y%m%d")
+#vacc$Date = substr(vacc$Date,1,nchar(vacc$Date)-5)
+#vacc$Date <- sub("............", "", vacc$Date)
+#
+#vacc$Date <-  as.Date(as.character(vacc$Date),format="%Y%m%d")
 
 
 vacc2 <- vacc %>% 
@@ -116,9 +180,16 @@ vacc2 <- vacc %>%
     Age == "91" ~ 14L)) %>% 
   select(Vaccination1, Vaccination2, Age, AgeInt, Date) %>%  
   filter(!is.na(Age))
-vacc2 <- melt(vacc2, id=c("Age", "Date", "AgeInt")) 
-names(vacc2)[4] <- "Measure"
-names(vacc2)[5] <- "Value"
+
+## PIVOT_LONGER ##
+
+vacc2 <- vacc2 %>% 
+  pivot_longer(cols = starts_with("Vaccination"),
+               names_to = "Measure",
+               values_to = "Value") 
+
+#names(vacc2)[4] <- "Measure"
+#names(vacc2)[5] <- "Value"
 vacc2 <- vacc2 %>% 
   mutate(
     Country = "Netherlands",

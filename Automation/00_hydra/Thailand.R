@@ -3,7 +3,8 @@ source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/0
 library(tidyverse)
 library(lubridate)
 if (!"email" %in% ls()){
-  email <- "tim.riffe@gmail.com"
+  email <- "mumanal.k@gmail.com"
+  #originally: "tim.riffe@gmail.com"
 }
 # info country and N drive address
 ctr   <- "Thailand"
