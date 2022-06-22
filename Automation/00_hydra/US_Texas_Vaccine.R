@@ -90,6 +90,8 @@ In_vaccine_age<- In_vaccine %>%
 
 Out_Vaccine_Age = In_vaccine_age %>% 
   select(Age ,Date, Doses)%>%
+  mutate(Age = as.character(Age),
+         Date = as.character(Date)) %>% 
   arrange(Date) %>% 
   group_by(Age) %>% 
   mutate(Value= cumsum(Doses)) %>% 

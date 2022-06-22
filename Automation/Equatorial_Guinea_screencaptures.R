@@ -18,7 +18,8 @@ page <- read_html(cases_url)
 # Very ugly code to extract reference date of data.
 RefDateChar <- 
   page %>% 
-  html_nodes(css = "body > div.wrapper > div > div > div > div.full_width > div > div:nth-child(1) > div > div > div > div > div:nth-child(1) > div > div > div > div > div > div.wpb_text_column.wpb_content_element.vc_custom_1610323760513 > div > p:nth-child(2) > em") %>% 
+ # html_nodes(css = "body > div.wrapper > div > div > div > div.full_width > div > div:nth-child(1) > div > div > div > div > div:nth-child(1) > div > div > div > div > div > div.wpb_text_column.wpb_content_element.vc_custom_1610323760513 > div > p:nth-child(2) > em") %>% 
+  html_node(css = ".vc_custom_1655472501179 p+ p em") %>% 
   html_text()
 
 dMy <-
@@ -29,13 +30,19 @@ dMy <-
   '[['(1) %>% 
   '['(-1)
 
-yr <- dMy[2]
-dM <- str_split(dMy[1], pattern = "[:space:]") %>% 
+# extract year
+
+yr <- dMy[3]
+
+# extract month
+
+dM <- str_split(dMy[2], pattern = "[:space:]")  %>% 
   '[['(1)
-dy <- dM[1]
+
+dy <- dMy[1]
 
 ESmnths <- c("Enero", "Febrero", "Marzo","Abril","Mayo", "Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre") %>% tolower()
-mth <- which(ESmnths == dM[2] %>% tolower())
+mth <- which(ESmnths == dM %>% tolower())
 
 ref_date <- dmy(paste(dy,mth,yr,sep ="."))
 

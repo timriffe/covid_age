@@ -14,7 +14,9 @@ if (!"email" %in% ls()){
 ctr <- "US_Michigan_vaccine"
 dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 
-
+# Drive credentials
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
 
 DataArchive <- read_rds(paste0(dir_n, ctr, ".rds"))
 
@@ -23,13 +25,16 @@ library(readxl)
 
 #Read in data 
 
-m_url <- "https://www.michigan.gov/coronavirus/0,9753,7-406-98178_103214-547150--,00.html"
-
+#m_url <- "https://www.michigan.gov/coronavirus/0,9753,7-406-98178_103214-547150--,00.html"
+m_url <- "https://www.michigan.gov/coronavirus/resources/covid-19-vaccine/covid-19-dashboard"
 
 #data until 29.05.2021
+links <- scraplinks(m_url) %>% 
+  filter(str_detect(url, "xlsx"))
+
 
 links1 <- scraplinks(m_url) %>% 
-  filter(str_detect(url, "COVID_Vaccines_Administered-20210529")) %>% 
+  filter(str_detect(url, "20201215-20210529")) %>% 
   select(url) 
 
 url1 <- 
@@ -46,9 +51,9 @@ download.file(url_d1, data_source1, mode = "wb")
 IN1= read_xlsx(data_source1, sheet = 3)
 
 
-# data since 30.05.2021
+# data between 30.05.2021 and 27.11.2021
 links2 <- scraplinks(m_url) %>% 
-  filter(str_detect(url, "COVID_Vaccines_Administered_20210530")) %>% 
+  filter(str_detect(url, "20210530-20211127")) %>% 
   select(url) 
 
 
@@ -59,16 +64,36 @@ url2 <-
 
 url_d2 = paste0("https://www.michigan.gov",url1)
 
-data_source2 <- paste0(dir_n, "Data_sources/", ctr, "/vaccine_age_since_06_2021",today(), ".xlsx")
+data_source2 <- paste0(dir_n, "Data_sources/", ctr, "/vaccine_age_between_06_2021_and_11_2021",today(), ".xlsx")
 
 download.file(url_d2, data_source2, mode = "wb")
 
 IN2= read_xlsx(data_source2, sheet = 3)
 
 
+# data since 28.11.2021
+links3 <- scraplinks(m_url) %>% 
+  filter(str_detect(url, "20211128")) %>% 
+  select(url) 
+
+
+url3 <- 
+  links3 %>% 
+  select(url) %>% 
+  dplyr::pull()
+
+url_d3 = paste0("https://www.michigan.gov",url3)
+
+data_source3 <- paste0(dir_n, "Data_sources/", ctr, "/vaccine_age_since_11_2021",today(), ".xlsx")
+
+download.file(url_d3, data_source3, mode = "wb")
+
+IN3= read_xlsx(data_source3, sheet = 3)
+
+
 #put dataframes togehter 
 
-IN= rbind(IN1, IN2)
+IN= rbind(IN1, IN2, IN3)
 
 
 

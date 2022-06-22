@@ -17,8 +17,8 @@ dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 
 # Drive credentials
-drive_auth(email = email)
-gs4_auth(email = email)
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
 
 ######11.10.21 MK: code needs to be updated
 ######new source
@@ -223,6 +223,7 @@ sexes <- out %>%
   group_by(Country, Region, Code, Date, Age, AgeInt, Metric, Measure) %>% 
   summarise(Value = sum(Value)) %>% 
   mutate(Sex = "b")
+
 
 out <- rbind(out, sexes) %>% 
   sort_input_data() %>% 

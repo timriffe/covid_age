@@ -13,7 +13,8 @@ calcAgeAbr <- function(Age){
 
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
-  email <- "tim.riffe@gmail.com"
+  email <- "mumanal.k@gmail.com"
+  #originally: "tim.riffe@gmail.com"
 }
 
 
@@ -61,13 +62,16 @@ whichVT2= which(whichVT >= "2021-05-31")
 thisVT <- VTcaptured[whichVT2]
 
 file.list <- (file.path(capture_path, thisVT))
-df.list <- lapply(file.list, read_excel)
+dates <- stringr::str_extract_all(file.list, '\\d+') %>% 
+  lubridate::ymd()
+#df.list <- lapply(file.list, read_excel)
+df.list <- setNames(lapply(file.list, read_excel),  
+                    lubridate::ymd(stringr::str_extract_all(file.list, '\\d+')))
 
-
-IN <- bind_rows(df.list[1:19]) %>% 
+IN <- bind_rows(df.list[1:27], .id = "Date") %>% 
   distinct() %>% 
-  select(-1) %>% 
-  arrange(1)
+  select(-2) %>% 
+  arrange(3)
 
 
 ###################################################################################
@@ -86,7 +90,7 @@ IN <- bind_rows(df.list[1:19]) %>%
 #IN <- readxl::read_xlsx(file.path(capture_path, thisVT))
 #################################################################################
 
-colnames(IN) <- c("x","CaseID","Age","Place","Status","Nationality")
+colnames(IN) <- c("Date","CaseID","Age","Place","Status","Nationality")
 
 # Extract IDs from cases: 
 # problem = there's one duplicate, but the ID right before it is missing,
