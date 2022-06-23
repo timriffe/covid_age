@@ -36,6 +36,13 @@ if (grepl("gits", auto_update_wd)){
 if (grepl("gits", auto_update_wd)){
   auto_update_email <- "maxi.s.kniffka@gmail.com"
 }
+
+## Sys.setenv(email = "mumanal.k@gmail.com")
+
+if (grepl("Documents/GitHub", auto_update_wd)){
+  auto_update_email <- "mumanal.k@gmail.com"
+}
+
 # sched() is a funtion that generates and schedules a trigger script 
 # for each collection script. The trigger script has two purposes. 
 # First, it includes the information of the local path of the project and 
@@ -103,7 +110,7 @@ scripts %>% sort
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # starting time for first schedule in hour and minutes
-h_ini <- 08
+h_ini <- 06
 m_ini <- 00
 # delay between scripts in minutes
 delay_time <- 5
@@ -133,6 +140,7 @@ for(c in scripts){
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 sched("USA_cases_all", tm = "14:09", email = auto_update_email, wd = auto_update_wd)
+sched("Finland_vaccine", tm = "15:15", email = auto_update_email, wd = auto_update_wd)
 sched('SouthKorea', tm = "18:23", email = auto_update_email, wd = auto_update_wd)
 sched('USA_deaths_all', tm = "17:01", email = auto_update_email, wd = auto_update_wd)
 sched('USA_cases_all', tm = "17:02", email = auto_update_email, wd = auto_update_wd)

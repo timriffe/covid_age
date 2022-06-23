@@ -11,26 +11,27 @@ knitr::opts_chunk$set(echo = TRUE)
 
 COVerAGE-DB shares several files, ranging from untransformed inputs to fully harmonized outputs. Files have a similar structure, are all in `.csv` format, and ought to be staightforward to read in any common statistical package.
 
-The `inputDB` is quite diverse in terms of the measures, metrics, and age groups it includes. This file includes everythnig we collect except for subsets that we are unable to process for one reason or another. In other words this file contains all prima facie *valid* data that we've collected. This is a long structure, in that all data collected are in a single column `Value`. Aside from `Country`, `Region`, and `Date`, you can filter on `Metric` (`"Ratio"`, "`Count`", or `"Fraction"`) or `Measure` (`"Cases"`, `"Deaths"`, `"Tests"`,`"ASCFR"`). At some point we will incorporate `Rate` metrics, and we will find a way to differentiate between *probable* versus *confirmed* observations. The thing to note is that if you're interested in `Count` data, it may be included already as such, or you may need to calculate it from other data types. This is one of the things we take care of in the harmonization routines.
+The `inputDB` is quite diverse in terms of the measures, metrics, and age groups it includes. This file includes everything we collect except for subsets that we are unable to process for one reason or another. In other words this file contains all prima facie *valid* data that we've collected. This is a long structure, in that all data collected are in a single column `Value`. Aside from `Country`, `Region`, `Code`, and `Date`, you can filter on `Metric` (`"Ratio"`, "`Count`", or `"Fraction"`) or `Measure` (`"Cases"`, `"Deaths"`, `"Tests"`,`"ASCFR"`). At some point we will incorporate `Rate` metrics. The thing to note is that if you're interested in `Count` data, it may be included already as such, or you may need to calculate it from other data types. This is one of the things we take care of in the harmonization routines.
 
 The output files `Output_5` and `Output_10` are harmonized to `"Count"` metrics, and to 5 and 10-year age groups 0-100+. The columns are also different, as different Measures are, for the time being, in separate columns. These can be used as-is for many kinds of analyses, but you may also consider further smoothing, especially for the 5-year age group data, as it can contain stochastic 0s.
 
-We are considering moving toward measure-specific files, similar to what HMD does, so stay tuned.
+An interactive data downloading tool will soon be released, which will facilitate smaller data extracts for specific analyses.
 
-Details: commas are column separators, decimals are dots. When reading in, skip the first row. You can can typically read these in straight from the repository using the `raw` version. See examples.
+Details: commas are column separators, decimals are dots. When reading in, you may need to skip a row or more. You can can typically read these in straight from the repository using the `raw` version. See examples.
 
 ## Reading in COVerAGE-DB {.tabset}
 
-Each COVerAGE-DB file is given a random-looking `id` on OSF, which can be used to download the files from `R`. Here are the `id`s and other important file parameters for the main files, for easy copy-pasting:
+Each COVerAGE-DB file is given a random-looking `id` on OSF, which can be used to download the files from `R`. Here are the `id`s and other important file parameters for the main files, for easy copy-pasting (updated 10 May 2022):
 
-| File                 | `id`      | `col_types`            | `skip` |
-| -------------------- |:---------:|:----------------------:|:------:|
-| `inputDB.zip`        | `9dsfk`   | `"cccccciccdc"`        | 1      |
-| `Output_5.zip`       | `7tnfh`   | `"ccccciiddd"`         | 3      |
-| `Output_10.zip`      | `43ucn`   | `"ccccciiddd"`         | 3      |
-| `qualityMetrics.zip` | `qpfw5`   | `"ccDcdddcciiiiiildd"` | 1      |
+| File                 | `id`      | `col_types`                | `skip` |
+| -------------------- |:---------:|:--------------------------:|:------:|
+| `inputDB.zip`        | `9dsfk`   | `"cccccciccdc"`            | 1      |
+| `Output_5.zip`       | `7tnfh`   | `"ccccciiddd"`             | 3      |
+| `Output_10.zip`      | `43ucn`   | `"ccccciiddd"`             | 3      |
+| `qualityMetrics.zip` | `qpfw5`   | `"ccDcdddcciiiiiiiiiiildd"`| 1      |
+| `offsets.csv`        | `unf6v`   | `"idccc"`                  | 1      |
 
-`col_types` gives the columns classes, where `c` means character, `i` is integer, `d` is double, and `D` is a proper date format. The files have headers with timestamps, so some rows need to be skipped too (`skip`) when reading in.
+`col_types` gives the columns classes, where `c` means character, `i` is integer, `d` is double, `D` is a proper date format, and `l` is logical. The files have headers with timestamps, so some rows need to be skipped too (`skip`) when reading in.
 
 Here are the main packages you'll want to have installed to read the files directly into an `R` session with no need to manually download or unzip.
 
@@ -47,9 +48,10 @@ library(covidAgeData)
 
 ```{r}
 # This downloads the file, preserving the name inputDB.csv
-osf_retrieve_file("9dsfk") %>%
+cdb_repo <- osf_retrieve_node("mpwjq")
+osf_ls_files(cdb_repo, path = "Data") %>%
+  dplyr::filter(name == "inputDB.zip") %>%
   osf_download(conflicts = "overwrite")
-
 # This reads it in
 inputDB <-  read_csv("inputDB.zip",
                      skip = 1,
@@ -57,7 +59,7 @@ inputDB <-  read_csv("inputDB.zip",
 
 glimpse(inputDB)
 ```
-Notice, `Age` is character because it can contain `"TOT"` or `"UNK"` values. Therefore, if you sort, it will do so alphabetically, in which case `"10"` comes before `"5"`. This is the file from which we begin the harmonization routines. Maybe you have use for it?
+Notice, `Age` is character because it can contain `"TOT"` or `"UNK"` values. Therefore, if you sort, it will do so alphabetically, in which case `"10"` comes before `"5"`, etc. This is the file from which we begin the harmonization routines. There a lot in there that currently does not make it through processing for one reason or another. Maybe you have use for it?
 
 ### Output files
 
@@ -65,7 +67,8 @@ Output files are friendlier for several reasons. Since measures from like subset
 
 ```{r}
 
-osf_retrieve_file("43ucn") %>%
+osf_ls_files(cdb_repo, path = "Data") %>%
+  dplyr::filter(name == "Output_10.zip") %>%
   osf_download(conflicts = "overwrite")
 
 # This reads it in
@@ -88,14 +91,14 @@ Out <-
   filter(Country == "Spain", Region == "All")
 
 # save it out
-write_csv(Out, path = "Spain_Output_10.csv")
+write_csv(Out, file = "Spain_Output_10.csv")
 
 # or for the inputDB
 In <-
   inputDB %>%
   filter(Country == "Spain", Region == "All")
 
-write_csv(In, path = "Spain_InputDB.csv")
+write_csv(In, file = "Spain_InputDB.csv")
 ```
 
 ### `covidAgeData` package
@@ -166,7 +169,8 @@ library(colorspace)
             Date >= dmy("01.04.2020")) %>%
      mutate(Age20 = Age - Age %% 20) %>%
      group_by(Date, Age20) %>%
-     summarize(Cases = sum(Cases)) %>%
+     summarize(Cases = sum(Cases),
+               .groups = "drop") %>%
      group_by(Age20) %>%
      arrange(Date) %>%
      mutate(New = Cases - lead(Cases)) %>%
@@ -188,12 +192,12 @@ In general, taking ratios of variables is a good diagnostic tool. In the first r
 
 ```{r}
 Output_10 %>%
-  filter(Country == "Denmark",
+  dplyr::filter(Country == "Denmark",
          Region == "All",
          Sex == "b",
          Date >= dmy("01.05.2020")) %>%
   mutate(Postivity = Cases / Tests) %>%
-  filter(!is.na(Postivity)) %>%
+  dplyr::filter(!is.na(Postivity)) %>%
   ggplot(aes(x = Date, y = Postivity, group = Age, color = as.factor(Age))) +
   geom_line() +
   scale_color_discrete_sequential("Magenta")
@@ -213,7 +217,7 @@ data(popM)
 
 Pop <-
   popM %>%
-  filter(name == "South Africa") %>%
+  dplyr::filter(name == "South Africa") %>%
   select(Age = age, Population = `2020`) %>%
   mutate(Population = Population * 1000,
          Age = as.character(Age)) %>%
@@ -227,7 +231,7 @@ Pop <-
 
 ZA <-
 Output_10 %>%
-  filter(Country == "South Africa",
+  dplyr::filter(Country == "South Africa",
          Region == "All",
          Sex == "m") %>%
   left_join(Pop)
@@ -237,7 +241,7 @@ Let's see what we get, `Cases / Population` is not a rate per se, FYI, `Populati
 
 ```{r}
 ZA %>%
-  filter(Date >= dmy("10.07.2020")) %>%
+ dplyr:: filter(Date >= dmy("10.07.2020")) %>%
   mutate(CPop = Cases / Population) %>%
   ggplot(aes(x=Date,y=CPop,group=Age,color=as.factor(Age))) +
   geom_line() +
@@ -249,29 +253,6 @@ ZA %>%
 
 Out World in Data gives different kinds of testing aggregates and other interesting things  <https://github.com/owid/covid-19-data/tree/master/public/data>. COVerAGE-DB collects a lot of testing aggregates too. When not broken down by age, these are delivered in the `inputDB`. `Test` counts broken down by age pass through to the output files. Our collected testing measures could either be `Tests` or `Tested individuals`, and the only way to know is to check the metadata. OWID applies a consistent definition at this time.
 
-First, we'll need a helper function to chop the `ISO2` codes from the `Code` column. Sorry this has a hacky solution:
-```{r}
-add_Short <- function(Code, Date) {
-
-  # Apply elementwise
-  mapply(function(Code, Date){
-
-    # Remove date
-    Short <- gsub(pattern = Date, replacement = "", Code)
-
-    # Remove last character if not a letter
-    last_char <- str_sub(Short,-1)
-    if (last_char %in% c("\\.","_","-")){
-      Short <- substr(Short,1,nchar(Short)-1)
-    }
-
-    # Return short label
-    Short
-
-  }, Code, Date)
-
-}
-```
 
 There are different files on the OWD github repository. Here's one that contains the full available time series for each country.
 
@@ -279,8 +260,8 @@ There are different files on the OWD github repository. Here's one that contains
 library(countrycode)
 OWID <- read_csv("https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/testing/covid-testing-all-observations.csv",
                 col_types= "ccDcccdddddddd") %>%
-  filter(!is.na(`ISO code`)) %>%
-  filter(! `ISO code` %in% c("OWID_KOS","OWID_WRL")) %>%
+  dplyr::filter(!is.na(`ISO code`)) %>%
+  dplyr::filter(! `ISO code` %in% c("OWID_KOS","OWID_WRL")) %>%
   mutate(ISO2 = countrycode(`ISO code`,
                              origin = 'iso3c',
                              destination = 'iso2c')) %>%
@@ -291,8 +272,8 @@ OWID <- read_csv("https://raw.githubusercontent.com/owid/covid-19-data/master/pu
 
 # merge for coverage with positivity
 COVwPOS <- Output_10 %>%
-  filter(Region == "All") %>%
-  mutate(ISO2 = add_Short(Code, Date)) %>%
+  dplyr::filter(Region == "All") %>%
+  rename(ISO2 = Code) %>%
   group_by(Country) %>%
   left_join(OWID)
 
@@ -316,11 +297,11 @@ download.file("https://www.mortality.org/Public/STMF/Inputs/STMFinput.zip",
 
 STMF <-
   read_csv(utils::unzip("STMFinput.zip", "DNKstmf.csv")) %>%
-  filter(Year == 2020) %>%
+  dplyr::filter(Year == 2020) %>%
   group_by(Week, Sex) %>%
   # move total to column
   mutate(TOT = Deaths[Age == "TOT"]) %>%
-  filter(Age != "TOT") %>%
+  dplyr::filter(Age != "TOT") %>%
   mutate(dist = Deaths / sum(Deaths),
          Deaths = dist * TOT,
          Age = as.integer(Age),
@@ -335,9 +316,9 @@ Now prep COVerAGE-DB data to new events by week. Denmark has every Monday, which
 ```{r}
 COV <-
   Output_10 %>%
-  filter(Country == "Denmark",
+  dplyr::filter(Country == "Denmark",
          Region == "All") %>%
-  filter(weekdays(Date) == "Monday") %>%
+  dplyr::filter(weekdays(Date) == "Monday") %>%
   mutate(Week = week(Date)) %>%
   # sort just to be sure decumulation works right
   arrange(Sex, Age, Week) %>%
