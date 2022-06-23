@@ -29,13 +29,13 @@ if (grepl("riffe", auto_update_wd)){
 if (grepl("Git04", auto_update_wd)){
   auto_update_email <- "jessica_d.1994@yahoo.de"
 }
-if (grepl("gits", auto_update_wd)){
-  auto_update_email <- "maxi.s.kniffka@gmail.com"
-}
+
 if (grepl("gits", auto_update_wd)){
   auto_update_email <- "kikepaila@gmail.com"
 }
-
+if (grepl("gits", auto_update_wd)){
+  auto_update_email <- "maxi.s.kniffka@gmail.com"
+}
 # sched() is a funtion that generates and schedules a trigger script 
 # for each collection script. The trigger script has two purposes. 
 # First, it includes the information of the local path of the project and 
@@ -132,7 +132,7 @@ for(c in scripts){
 # for individual scheduling
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sched("Ireland", tm = "05:00", email = auto_update_email, wd = auto_update_wd)
+sched("USA_cases_all", tm = "14:09", email = auto_update_email, wd = auto_update_wd)
 sched('SouthKorea', tm = "18:23", email = auto_update_email, wd = auto_update_wd)
 sched('USA_deaths_all', tm = "17:01", email = auto_update_email, wd = auto_update_wd)
 sched('USA_cases_all', tm = "17:02", email = auto_update_email, wd = auto_update_wd)
