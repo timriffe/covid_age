@@ -39,7 +39,7 @@ if (grepl("gits", auto_update_wd)){
 
 ## Sys.setenv(email = "mumanal.k@gmail.com")
 
-if (grepl("Documents/GitHub", auto_update_wd)){
+if (grepl("gits", auto_update_wd)){
   auto_update_email <- "mumanal.k@gmail.com"
 }
 
@@ -111,8 +111,8 @@ scripts %>% sort
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # starting time for first schedule in hour and minutes
-h_ini <- 06
-m_ini <- 00
+h_ini <- 15
+m_ini <- 30
 # delay between scripts in minutes
 delay_time <- 5
 
@@ -141,8 +141,8 @@ for(c in scripts){
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 sched("USA_cases_all", tm = "14:09", email = auto_update_email, wd = auto_update_wd)
-sched("Finland_vaccine", tm = "15:15", email = auto_update_email, wd = auto_update_wd)
-sched('SouthKorea', tm = "18:23", email = auto_update_email, wd = auto_update_wd)
+sched("Finland_vaccine", tm = "10:35", email = auto_update_email, wd = auto_update_wd)
+sched('SouthKorea', tm = "10:45", email = auto_update_email, wd = auto_update_wd)
 sched('USA_deaths_all', tm = "17:01", email = auto_update_email, wd = auto_update_wd)
 sched('USA_cases_all', tm = "17:02", email = auto_update_email, wd = auto_update_wd)
 

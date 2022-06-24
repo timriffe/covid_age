@@ -74,7 +74,8 @@ columnsnames_df <- as.data.frame(columns_prep)
 
 ### COLUMNS NAMES EDIT TO REMOVE 'X' ###
 
-colnames(columnsnames_df) <- gsub(pattern = "X", replacement = "", colnames(columnsnames_df))
+colnames(columnsnames_df) <- gsub(pattern = "X", replacement = "", 
+                                  colnames(columnsnames_df))
 
 ### COLUMNS DIAGNOSTICS if all has the same values/ length ###
 
@@ -92,12 +93,12 @@ vacc <- bind_rows(df.list, .id="Date") %>%
   mutate(`Start date` = coalesce(`Start date2`, `Start date`),
          `Total` = coalesce(`Total4`, `Total`),
          `Second dose` = coalesce(`Second dose3`, `Second dose`)) %>% 
-  select(Age = contains("Target"),
+  select(Date,
+         Age = contains("Target"),
         # `Start date`,
         Vaccination1 = `First dose`,
         Vaccination2 = `Second dose`,
         Vaccinations = `Total`, 
-          Date,
         Vaccinator)
 
 
@@ -121,13 +122,116 @@ vacc <- bind_rows(df.list, .id="Date") %>%
 
 vacc <- vacc %>%
   mutate(Vaccination1 = str_replace_all(Vaccination1, c("," = "", "[.]" = "")),
-         Vaccination1 = as.numeric(Vaccination1),
          Vaccination2 = str_replace_all(Vaccination2, c("," = "", "[.]" = "")),
-         Vaccination2 = as.numeric(Vaccination2),
          Vaccinations = str_replace_all(Vaccinations, c("," = "", "[.]" = "")),
-         Vaccinations = as.numeric(Vaccinations),
-         Date = as.Date(Date, format="%Y-%m-%d"))
-  
+         Date = as.Date(Date, format="%Y-%m-%d")) %>% 
+  select(Date, Age, Vaccination1, Vaccination2) %>% 
+  filter(!is.na(Age)) %>% 
+  pivot_longer(cols = starts_with("Vaccination"),
+               names_to = "Measure",
+               values_to = "Value") 
+
+
+## some data are published incorrectly, because of the comma/ decimals,
+## it reads in hundred while it should be in thousands or millions, 
+## Padding the incorrect values of 'Vaccination1, Vaccination2' with zeros so that it adds to the total ##
+## this step is done after manually reviewing the Excel data files ##
+
+### a function for padding values ###
+pad_value <- function(tbl, date_selected, age_selected, 
+                      measure_selected, width_selected){
+  tbl %>% 
+    mutate(Value = case_when(Date == date_selected &
+                               Age == age_selected &
+                               Measure == measure_selected ~ str_pad(Value, 
+                                                                     width = width_selected,
+                                                                     side = "right",
+                                                                     pad = "0"),
+                             TRUE ~ Value))
+}
+
+## TODO: UPDATE THIS CODE EVERY MONTH FOR THE PRECEEDING 4 WEEKS ##
+
+vacc1 <- vacc %>%
+  # File: vaccinations20220121
+  pad_value("2022-01-21", "76-80", "Vaccination1", 6) %>% 
+  pad_value("2022-01-21", "66-70", "Vaccination1", 6) %>%
+  pad_value("2022-01-21", "61-65", "Vaccination1", 6) %>%
+  pad_value("2022-01-21", "36-40", "Vaccination1", 6) %>%
+  pad_value("2022-01-21", "36-40", "Vaccination2", 6) %>%
+  pad_value("2022-01-21", "Unknown", "Vaccination2", 4) %>%
+  # File: vaccinations20220216
+  pad_value("2022-02-16", "81-85", "Vaccination1", 6) %>% 
+  pad_value("2022-02-16", "51-55", "Vaccination2", 6) %>%
+  pad_value("2022-02-16", "41-45", "Vaccination2", 6) %>%
+  # File: vaccinations20220223
+  pad_value("2022-02-23", "26-30", "Vaccination2", 6) %>% 
+  pad_value("2022-02-23", "12-17", "Vaccination1", 6) %>%
+  # File: vaccinations20220302 
+  pad_value("2022-03-02", "66-70", "Vaccination1", 6) %>% 
+  pad_value("2022-03-02", "46-50", "Vaccination2", 6) %>%
+  # File: vaccinations20220316 
+  pad_value("2022-03-16", "36-40", "Vaccination2", 6) %>%
+  # File: vaccinations20220323 
+  pad_value("2022-03-23", "46-50", "Vaccination1", 6) %>% 
+  pad_value("2022-03-23", "26-30", "Vaccination2", 6) %>%
+  # File: vaccinations20220330 
+  pad_value("2022-03-30", "81-85", "Vaccination2", 6) %>% 
+  pad_value("2022-03-30", "76-80", "Vaccination2", 6) %>%
+  pad_value("2022-03-30", "61-65", "Vaccination1", 6) %>%
+  pad_value("2022-03-30", "61-65", "Vaccination2", 6) %>% 
+  pad_value("2022-03-30", "36-40", "Vaccination2", 6) %>%
+  # File: vaccinations20220406 
+  pad_value("2022-04-06", "61-65", "Vaccination2", 6) %>% 
+  pad_value("2022-04-06", "31-35", "Vaccination2", 6) %>%
+  # File: vaccinations20220413 
+  pad_value("2022-04-13", "61-65", "Vaccination2", 6) %>% 
+  pad_value("2022-04-13", "46-50", "Vaccination2", 6) %>%
+  pad_value("2022-04-13", "41-45", "Vaccination2", 6) %>% 
+  pad_value("2022-04-13", "31-35", "Vaccination1", 6) %>%
+  pad_value("2022-04-13", "31-35", "Vaccination2", 6) %>%
+  # File: vaccinations20220420 
+  pad_value("2022-04-20", "86-90", "Vaccination1", 6) %>% 
+  pad_value("2022-04-20", "36-40", "Vaccination1", 6) %>%
+  pad_value("2022-04-20", "12-17", "Vaccination1", 6) %>% 
+  # File: vaccinations20220427 
+  pad_value("2022-04-27", "76-80", "Vaccination1", 6) %>% 
+  pad_value("2022-04-27", "46-50", "Vaccination2", 6) %>%
+  pad_value("2022-04-27", "36-40", "Vaccination2", 6) %>% 
+  pad_value("2022-04-27", "31-35", "Vaccination1", 6) %>%
+  pad_value("2022-04-27", "18-25", "Vaccination2", 6) %>%
+  pad_value("2022-04-27", "5-113", "Vaccination2", 5) %>%
+  # File: vaccinations20220504 
+  pad_value("2022-05-04", "81-85", "Vaccination1", 6) %>% 
+  pad_value("2022-05-04", "61-65", "Vaccination1", 6) %>%
+  pad_value("2022-05-04", "18-25", "Vaccination2", 6) %>% 
+  pad_value("2022-05-04", "12-17", "Vaccination2", 6) %>%
+  pad_value("2022-05-04", "5-113", "Vaccination1", 5) %>%
+  # File: vaccinations20220511 
+  pad_value("2022-05-11", "81-85", "Vaccination1", 6) %>% 
+  pad_value("2022-05-11", "61-65", "Vaccination1", 6) %>%
+  pad_value("2022-05-11", "18-25", "Vaccination2", 6) %>% 
+  pad_value("2022-05-11", "12-17", "Vaccination2", 6) %>%
+  pad_value("2022-05-11", "5-113", "Vaccination1", 5) %>%
+  # File: vaccinations20220518 
+  pad_value("2022-05-18", "71-75", "Vaccination1", 6) %>% 
+  pad_value("2022-05-18", "26-30", "Vaccination1", 6) %>%
+  # File: vaccinations20220525 
+  pad_value("2022-05-25", "86-90", "Vaccination1", 6) %>%
+  # File: vaccinations20220601 
+  pad_value("2022-06-01", "76-80", "Vaccination1", 6) %>% 
+  pad_value("2022-06-01", "66-70", "Vaccination2", 6) %>%
+  pad_value("2022-06-01", "5-11", "Vaccination2", 5) %>% 
+  # File: vaccinations20220615 
+  pad_value("2022-06-15", "91+", "Vaccination2", 5) %>% 
+  pad_value("2022-06-15", "18-25", "Vaccination2", 6) %>%
+  # File: vaccinations20220622 
+  pad_value("2022-06-22", "91+", "Vaccination2", 5) %>% 
+  pad_value("2022-06-22", "61-65", "Vaccination1", 6) %>%
+  pad_value("2022-06-22", "36-40", "Vaccination1", 6) %>% 
+  pad_value("2022-06-22", "36-40", "Vaccination2", 6) %>%
+  pad_value("2022-06-22", "12-17", "Vaccination2", 6) %>%
+  mutate(Value = as.numeric(Value)) 
 
 
 #vacc$Vaccinations <- gsub(",", ".", vacc$Vaccinations)
@@ -140,9 +244,10 @@ vacc <- vacc %>%
 #vacc$Date <-  as.Date(as.character(vacc$Date),format="%Y%m%d")
 
 
-vacc2 <- vacc %>% 
+vacc2 <- vacc1 %>% 
   mutate(Age = case_when(
-    Age == "5-113" ~ "5",
+    ## Age 5-11 was published into 2 different characters, so all considered now ##
+    Age %in% c("5-113", "5-11") ~ "5",
     Age == "12-17" ~ "12",
     Age == "18-25" ~ "18",
     Age == "26-30" ~ "26",
@@ -178,15 +283,8 @@ vacc2 <- vacc %>%
     Age == "81" ~ 5L,
     Age == "86" ~ 5L,
     Age == "91" ~ 14L)) %>% 
-  select(Vaccination1, Vaccination2, Age, AgeInt, Date) %>%  
   filter(!is.na(Age))
 
-## PIVOT_LONGER ##
-
-vacc2 <- vacc2 %>% 
-  pivot_longer(cols = starts_with("Vaccination"),
-               names_to = "Measure",
-               values_to = "Value") 
 
 #names(vacc2)[4] <- "Measure"
 #names(vacc2)[5] <- "Value"
