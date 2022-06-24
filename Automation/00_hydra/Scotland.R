@@ -8,8 +8,7 @@ library(googledrive)
 source(here::here("Automation/00_Functions_automation.R"))
 
 if (! "email" %in% ls()){
-  email <- "mumanal.k@gmail.com"
-  #originally: "tim.riffe@gmail.com"
+  email <- "tim.riffe@gmail.com"
 }
 ctr          <- "Scotland" # it's a placeholder
 dir_n_source <- "N:/COVerAGE-DB/Automation/CDC"

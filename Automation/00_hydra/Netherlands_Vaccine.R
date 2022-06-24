@@ -3,7 +3,6 @@
 source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
 if (! "email" %in% ls()){
   email <- "maxi.s.kniffka@gmail.com"
-  #originally:"maxi.s.kniffka@gmail.com"
 }
 
 # info country and N drive address
@@ -13,8 +12,8 @@ dir_n_source <- "N:/COVerAGE-DB/Automation/Netherlands"
 
 
 # Drive credentials
-drive_auth(email = email)
-gs4_auth(email = email)
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
 
 
 

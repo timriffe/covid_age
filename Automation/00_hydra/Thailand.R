@@ -3,15 +3,15 @@ source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/0
 library(tidyverse)
 library(lubridate)
 if (!"email" %in% ls()){
-  email <- "mumanal.k@gmail.com"
-  #originally: "tim.riffe@gmail.com"
+  email <- "tim.riffe@gmail.com"
 }
 # info country and N drive address
 ctr   <- "Thailand"
 dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 
-drive_auth(email = email)
-gs4_auth(email = email)
+# Drive credentials
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
 
 # TR: pull urls from rubric instead 
 at_rubric <- get_input_rubric() %>% filter(Short == "TH")
