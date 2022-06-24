@@ -101,7 +101,8 @@ scripts <- c('US_Virginia', 'Netherlands', 'Estonia',
              'Switzerland_Vaccine', 'Norway_Vaccine', 'France_Vaccine',
              'England_Vaccine', 'England', 'England_and_Wales', 'Togo', 
              'Netherlands_Vaccine', 'Costa_Rica_Vaccine', 
-             'USA_cases_all', 'USA_cases_states', 'USA_deaths_all', 'USA_deaths_states', 'Somalia', 'Ireland')
+             'USA_cases_all', 'USA_cases_states', 'USA_deaths_all', 'USA_deaths_states', 'Somalia', 'Ireland',
+             'AU_New_South_Wales','Columbia', 'Italy_reg', 'SouthKorea', 'US_Maine_Vaccine')
 
 # scripts <- c('USA_cases_all', 'USA_cases_states', 'USA_deaths_all', 'USA_deaths_states')
 # scripts <- c('USA_cases_all', 'USA_deaths_all')
@@ -156,7 +157,7 @@ sched('USA_cases_all', tm = "17:02", email = auto_update_email, wd = auto_update
 # taskscheduler_delete("COVerAGE-DB-automatic-daily-build")
 # taskscheduler_delete("COVerAGE-DB-every-8-hour-inputDB-updates")
 
-delete_sched("USA_cases_all")
+delete_sched("US_Massachusets")
 
 
 
