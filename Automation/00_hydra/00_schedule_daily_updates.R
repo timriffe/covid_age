@@ -102,7 +102,7 @@ scripts <- c('US_Virginia', 'Netherlands', 'Estonia',
              'England_Vaccine', 'England', 'England_and_Wales', 'Togo', 
              'Netherlands_Vaccine', 'Costa_Rica_Vaccine', 
              'USA_cases_all', 'USA_cases_states', 'USA_deaths_all', 'USA_deaths_states', 'Somalia', 'Ireland',
-             'AU_New_South_Wales','Columbia', 'Italy_reg', 'SouthKorea', 'US_Maine_Vaccine')
+             'AU_New_South_Wales', 'Italy_reg', 'SouthKorea', 'US_Maine_Vaccine')
 
 # scripts <- c('USA_cases_all', 'USA_cases_states', 'USA_deaths_all', 'USA_deaths_states')
 # scripts <- c('USA_cases_all', 'USA_deaths_all')
