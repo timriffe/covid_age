@@ -3,7 +3,6 @@
 source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
 if (! "email" %in% ls()){
   email <- "maxi.s.kniffka@gmail.com"
-  #originally:"maxi.s.kniffka@gmail.com"
 }
 
 # info country and N drive address
@@ -13,8 +12,8 @@ dir_n_source <- "N:/COVerAGE-DB/Automation/Netherlands"
 
 
 # Drive credentials
-drive_auth(email = email)
-gs4_auth(email = email)
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
 
 
 
@@ -118,13 +117,14 @@ vacc <- bind_rows(df.list, .id="Date") %>%
 
 #####################################################################
 ### RE-FORMATTING NUMBERS & DATE ###
+### REPLACING . in one entry 'vaccinations 2' in 09.03.2022, SO THAT NO MISLEADING DECIMALS ###
 
 vacc <- vacc %>%
-  mutate(Vaccination1 = str_replace_all(Vaccination1, ",", ""),
+  mutate(Vaccination1 = str_replace_all(Vaccination1, c("," = "", "[.]" = "")),
          Vaccination1 = as.numeric(Vaccination1),
-         Vaccination2 = str_replace_all(Vaccination2, ",", ""),
+         Vaccination2 = str_replace_all(Vaccination2, c("," = "", "[.]" = "")),
          Vaccination2 = as.numeric(Vaccination2),
-         Vaccinations = str_replace_all(Vaccinations, ",", ""),
+         Vaccinations = str_replace_all(Vaccinations, c("," = "", "[.]" = "")),
          Vaccinations = as.numeric(Vaccinations),
          Date = as.Date(Date, format="%Y-%m-%d"))
   

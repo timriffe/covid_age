@@ -3,8 +3,7 @@ source(here("Automation/00_Functions_automation.R"))
 
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
-  email <- "mumanal.k@gmail.com"
-  #originally: kikepaila@gmail.com
+  email <- "kikepaila@gmail.com"
 }
 
 # info country and N drive address
@@ -12,8 +11,8 @@ ctr <- "Colombia"
 dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 # Drive credentials
-drive_auth(email = email)
-gs4_auth(email = email)
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
 
 # Downloading data from the web
 ###############################

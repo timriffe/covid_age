@@ -29,11 +29,12 @@ if (grepl("riffe", auto_update_wd)){
 if (grepl("Git04", auto_update_wd)){
   auto_update_email <- "jessica_d.1994@yahoo.de"
 }
-if (grepl("gits", auto_update_wd)){
-  auto_update_email <- "maxi.s.kniffka@gmail.com"
-}
+
 if (grepl("gits", auto_update_wd)){
   auto_update_email <- "kikepaila@gmail.com"
+}
+if (grepl("gits", auto_update_wd)){
+  auto_update_email <- "maxi.s.kniffka@gmail.com"
 }
 
 ## Sys.setenv(email = "mumanal.k@gmail.com")
@@ -100,7 +101,8 @@ scripts <- c('US_Virginia', 'Netherlands', 'Estonia',
              'Switzerland_Vaccine', 'Norway_Vaccine', 'France_Vaccine',
              'England_Vaccine', 'England', 'England_and_Wales', 'Togo', 
              'Netherlands_Vaccine', 'Costa_Rica_Vaccine', 
-             'USA_cases_all', 'USA_cases_states', 'USA_deaths_all', 'USA_deaths_states', 'Somalia', 'Ireland')
+             'USA_cases_all', 'USA_cases_states', 'USA_deaths_all', 'USA_deaths_states', 'Somalia', 'Ireland',
+             'AU_New_South_Wales', 'Italy_reg', 'SouthKorea', 'US_Maine_Vaccine')
 
 # scripts <- c('USA_cases_all', 'USA_cases_states', 'USA_deaths_all', 'USA_deaths_states')
 # scripts <- c('USA_cases_all', 'USA_deaths_all')
@@ -138,6 +140,7 @@ for(c in scripts){
 # for individual scheduling
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 
+sched("USA_cases_all", tm = "14:09", email = auto_update_email, wd = auto_update_wd)
 sched("Finland_vaccine", tm = "15:15", email = auto_update_email, wd = auto_update_wd)
 sched('SouthKorea', tm = "18:23", email = auto_update_email, wd = auto_update_wd)
 sched('USA_deaths_all', tm = "17:01", email = auto_update_email, wd = auto_update_wd)
@@ -154,7 +157,7 @@ sched('USA_cases_all', tm = "17:02", email = auto_update_email, wd = auto_update
 # taskscheduler_delete("COVerAGE-DB-automatic-daily-build")
 # taskscheduler_delete("COVerAGE-DB-every-8-hour-inputDB-updates")
 
-delete_sched("USA_cases_all")
+delete_sched("US_Massachusets")
 
 
 
