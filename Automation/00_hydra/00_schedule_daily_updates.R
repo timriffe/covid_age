@@ -39,7 +39,7 @@ if (grepl("gits", auto_update_wd)){
 
 ## Sys.setenv(email = "mumanal.k@gmail.com")
 
-if (grepl("Documents/GitHub", auto_update_wd)){
+if (grepl("gits", auto_update_wd)){
   auto_update_email <- "mumanal.k@gmail.com"
 }
 
@@ -141,8 +141,8 @@ for(c in scripts){
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 sched("USA_cases_all", tm = "14:09", email = auto_update_email, wd = auto_update_wd)
-sched("Finland_vaccine", tm = "15:15", email = auto_update_email, wd = auto_update_wd)
-sched('SouthKorea', tm = "18:23", email = auto_update_email, wd = auto_update_wd)
+sched("Germany", tm = "00:35", email = auto_update_email, wd = auto_update_wd)
+sched('SouthKorea', tm = "10:45", email = auto_update_email, wd = auto_update_wd)
 sched('USA_deaths_all', tm = "17:01", email = auto_update_email, wd = auto_update_wd)
 sched('USA_cases_all', tm = "17:02", email = auto_update_email, wd = auto_update_wd)
 

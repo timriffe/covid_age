@@ -3,8 +3,7 @@ source(here("Automation/00_Functions_automation.R"))
 
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
-  email <- "mumanal.k@gmail.com"
-  #originally: "kikepaila@gmail.com"
+  email <- "kikepaila@gmail.com"
 }
 
 # info country and N drive address

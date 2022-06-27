@@ -19,8 +19,8 @@ dir_n_source <- paste0("N:/COVerAGE-DB/Automation/", ctr, "/")
 
 
 # Drive credentials
-drive_auth(email = email)
-gs4_auth(email = email)
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
 
 
 #drive_auth(email = Sys.getenv("email"))
@@ -200,7 +200,7 @@ for(i in seq_along(url)){
 ##female cases
 all_paths <-
   list.files(path = paste0(dir_n, "Data_sources/Italy_reg"),
-             pattern = "Cases_f",
+             pattern = paste0("Cases_f_",today()),
              full.names = TRUE)
 
 all_content <-
@@ -227,7 +227,7 @@ cases_female_out <- cases_female %>%
 ##male cases
 all_paths <-
   list.files(path = paste0(dir_n, "Data_sources/Italy_reg"),
-             pattern = "Cases_m",
+             pattern = paste0("Cases_m_",today()),
              full.names = TRUE)
 
 all_content <-
@@ -254,7 +254,7 @@ cases_male_out <- cases_male %>%
 ##female death
 all_paths <-
   list.files(path = paste0(dir_n, "Data_sources/Italy_reg"),
-             pattern = "Deaths_f",
+             pattern = paste0("Deaths_f_",today()),
              full.names = TRUE)
 
 all_content <-
@@ -282,7 +282,7 @@ deaths_female_out <- deaths_female %>%
 ##male death
 all_paths <-
   list.files(path = paste0(dir_n, "Data_sources/Italy_reg"),
-             pattern = "Deaths_m",
+             pattern = paste0("Deaths_m_",today()),
              full.names = TRUE)
 
 all_content <-
@@ -309,7 +309,7 @@ deaths_male_out <- deaths_male %>%
 out <- rbind(cases_female_out, cases_male_out, deaths_female_out, deaths_male_out) %>% 
   arrange(Region, Date, Measure, Sex, Age) %>% 
   group_by(Measure, Region, Sex, Age) %>% 
-  mutate(Value = cumsum(Value))
+  mutate(Value = cumsum(Value)) %>% 
     mutate (Country = "Italy",
           Age2 = case_when(
             Age == "0_5" ~ "0",
