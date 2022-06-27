@@ -18,7 +18,7 @@ packages_CRAN <- c("tidyverse","lubridate","gargle","rvest","httr","readxl",
                    "remotes","here","googledrive","zip", "XML", "RCurl",
                    "taskscheduleR","countrycode", "xml2", "dplyr", "xml2",
                    "reticulate", "rjson", "readODS", "pdftools", "aweek", 
-                   "ISOweek", "longurl", "ggpubr")
+                   "ISOweek", "longurl", "ggpubr", "arrow")
 
 # Install required CRAN packages if not available yet
 if(!sum(!p_isinstalled(packages_CRAN))==0) {
