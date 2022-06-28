@@ -1,9 +1,9 @@
-source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
+#source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
+# setwd(wd_sched_detect())
+# here::i_am("covid_age.Rproj")
+# startup::startup()
 
-setwd(wd_sched_detect())
-here::i_am("covid_age.Rproj")
-startup::startup()
-
+source(here::here("Automation/00_Functions_automation.R"))
 library(readr)
 library(tidyverse)
 library(janitor)
@@ -24,8 +24,11 @@ if (email == "tim.riffe@gmail.com"){
              scopes = c("https://www.googleapis.com/auth/spreadsheets",
                         "https://www.googleapis.com/auth/drive"))
 } else {
-  gs4_auth(email)
-  drive_auth(email)
+  # gs4_auth(email)
+  # drive_auth(email)
+  # Drive credentials
+  drive_auth(email = Sys.getenv("email"))
+  gs4_auth(email = Sys.getenv("email"))
 }
 
 cases_url_fat <- "https://opendata.arcgis.com/api/v3/datasets/67b8175576fe44e9ab193c4a5dc2ff9a_0/downloads/data?format=csv&spatialRefId=4326"

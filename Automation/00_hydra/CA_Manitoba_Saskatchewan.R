@@ -10,6 +10,10 @@ if (!"email" %in% ls()){
 ctr <- "CA_Manitoba_Saskatchewan"
 dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 
+# Drive credentials
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
+
 # Canadian Deaths
 db_d2020 <- read_csv("https://raw.githubusercontent.com/ccodwg/Covid19Canada/master/individual_level/mortality_2020.csv")
 db_d2021 <- read_csv("https://raw.githubusercontent.com/ccodwg/Covid19Canada/master/individual_level/mortality_2021.csv")

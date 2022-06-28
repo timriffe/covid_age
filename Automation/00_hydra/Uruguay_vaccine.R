@@ -17,6 +17,9 @@ if (!"email" %in% ls()){
 ctr          <- "Uruguay_vaccine" # it's a placeholder
 dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
+# Drive credentials
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
 
 #read in data 
 

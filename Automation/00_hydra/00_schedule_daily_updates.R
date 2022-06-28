@@ -79,14 +79,15 @@ tasks <-
 
 # list of all available scripts to schedule
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-scripts <- c('US_Virginia', 'Netherlands', 'Estonia', 
+scripts <- c('US_Virginia', 'Netherlands', 'Estonia', 'Italy',
+             'Ireland', 'US_Idaho', 'Italy_reg', 
              'Czechia', 'US_Michigan', 'Venezuela', 'US_Texas', 
-             'USA_deaths_states', 'Sweden', 'Peru', 'Germany', 
+             'USA_deaths_states', 'Peru', 'Germany', 
              'US_Massachusetts', 'Colombia', 'US_NYC', 'Austria', 'Philippines', 
              'Scotland', 'Norway', 'US_California', 'Afghanistan', 'Finland', 
              'US_Wisconsin', 'Bulgaria', 'Denmark', 'Belgium', 'New_Zealand', 
              'Mexico', 'Thailand', 'Spain', 'US_Oregon', 'Slovakia', 'Cambodia', 
-             'Hungary', 'Vietnam', 'Italy', 'Croatia',  
+             'Hungary', 'Vietnam', 'Croatia',  
              'CA_Manitoba_Saskatchewan', 'CA_Ontario', 'CA_British_Columbia', 
              'Ukraine', 'Spain_vaccine', 'Chile_vaccine', 'Portugal_Vaccine', 
              'CA_Alberta', 'Canada_vaccine', 'US_Texas_Vaccine', 
@@ -96,13 +97,14 @@ scripts <- c('US_Virginia', 'Netherlands', 'Estonia',
              'Latvia_vaccine', 'Island_of_Jersey', 'Estonia_vaccine', 'Uruguay_vaccine', 
              'Chile','Finland_vaccine', 'ECDC_vaccine', 'Slovakia_vaccine', 
              'Germany_vaccine', 'US_Pennsylvania_vaccine', 'USA_vaccine',
-             'Australia_vaccine', 'US_Idaho', 'New_Zealand', 
+             'Australia_vaccine', 'New_Zealand', 
              'Maldives', 'Japan', 'Romania', 'Puerto_Rico', 'Scotland_Vaccine', 
              'Switzerland_Vaccine', 'Norway_Vaccine', 'France_Vaccine',
              'England_Vaccine', 'England', 'England_and_Wales', 'Togo', 
              'Netherlands_Vaccine', 'Costa_Rica_Vaccine', 
-             'USA_cases_all', 'USA_cases_states', 'USA_deaths_all', 'USA_deaths_states', 'Somalia', 'Ireland',
-             'AU_New_South_Wales', 'Italy_reg', 'SouthKorea', 'US_Maine_Vaccine')
+             'USA_cases_all', 'USA_cases_states', 'USA_deaths_all', 
+             'USA_deaths_states', 'Somalia', 'Sweden',
+             'AU_New_South_Wales', 'SouthKorea', 'US_Maine_Vaccine')
 
 # scripts <- c('USA_cases_all', 'USA_cases_states', 'USA_deaths_all', 'USA_deaths_states')
 # scripts <- c('USA_cases_all', 'USA_deaths_all')
@@ -111,8 +113,8 @@ scripts %>% sort
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # starting time for first schedule in hour and minutes
-h_ini <- 06
-m_ini <- 00
+h_ini <- 15
+m_ini <- 30
 # delay between scripts in minutes
 delay_time <- 5
 
@@ -141,7 +143,7 @@ for(c in scripts){
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 sched("USA_cases_all", tm = "14:09", email = auto_update_email, wd = auto_update_wd)
-sched("Germany", tm = "00:35", email = auto_update_email, wd = auto_update_wd)
+sched("Sweden", tm = "16:47", email = auto_update_email, wd = auto_update_wd)
 sched('SouthKorea', tm = "10:45", email = auto_update_email, wd = auto_update_wd)
 sched('USA_deaths_all', tm = "17:01", email = auto_update_email, wd = auto_update_wd)
 sched('USA_cases_all', tm = "17:02", email = auto_update_email, wd = auto_update_wd)

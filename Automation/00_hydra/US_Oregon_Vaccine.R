@@ -14,6 +14,11 @@ dir_n_source <- "N:/COVerAGE-DB/Automation/Oregan-Vaccine"#get Muhammads saved d
 dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 
+# Drive credentials
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
+
+
 #In= read.csv(file= 'N:/COVerAGE-DB/Automation/Oregan-Vaccine/Demographics_crosstab20210504.csv',
           #fileEncoding="UCS-2LE", header = FALSE, sep = "\t") 
 

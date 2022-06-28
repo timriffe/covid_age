@@ -12,8 +12,9 @@ if (!"email" %in% ls()){
 ctr          <- "England" # it's a placeholder
 dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
-drive_auth(email = email)
-gs4_auth(email = email)
+# Drive credentials
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
 
 ###deaths total country
 
