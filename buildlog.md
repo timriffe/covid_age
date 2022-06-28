@@ -66,3 +66,11 @@
 # remake coverage map 
  Thu Jun 23 16:37:43 2022 
 
+
+# push outputs to OSF 
+ Sun Jun 26 10:17:32 2022 
+
+
+# Commit dashboards and buildlog 
+ Tue Jun 28 16:27:55 2022 
+
