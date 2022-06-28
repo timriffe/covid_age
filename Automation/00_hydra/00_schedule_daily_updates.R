@@ -143,7 +143,7 @@ for(c in scripts){
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 sched("USA_cases_all", tm = "14:09", email = auto_update_email, wd = auto_update_wd)
-sched("Sweden", tm = "16:47", email = auto_update_email, wd = auto_update_wd)
+sched("Brazil", tm = "18:03", email = auto_update_email, wd = auto_update_wd)
 sched('SouthKorea', tm = "10:45", email = auto_update_email, wd = auto_update_wd)
 sched('USA_deaths_all', tm = "17:01", email = auto_update_email, wd = auto_update_wd)
 sched('USA_cases_all', tm = "17:02", email = auto_update_email, wd = auto_update_wd)
