@@ -217,14 +217,17 @@ db_m_reg <- db_m %>%
          t4 = "Indeterminadas",
          t5 = "Procedencia desconocida") %>% 
   select(-c(Fecha, t1, t2, t3, t4, t5)) %>% 
-  gather(-date_f, key = "Region", value = "Value") %>% 
+  pivot_longer(cols = -c("date_f", "date_sub"), 
+               names_to = "Region", 
+               values_to = "Value") %>% 
   mutate(Measure = "Tests",
          Age = "TOT",
          Sex = "b",
          Region = case_when(Region == "Norte de Santander" ~ "Norte Santander",
                             Region == "Valle del Cauca" ~ "Valle",
                             Region == "Norte de Santander" ~ "Norte Santander",
-                            TRUE ~ Region)) %>% 
+                            TRUE ~ Region),
+         Value = as.integer(Value)) %>% 
   filter(Region %in% db_inc2,
          date_f >= "2020-03-20") %>% 
   select(Region, date_f, Sex, Age, Measure, Value) %>% 
@@ -232,6 +235,7 @@ db_m_reg <- db_m %>%
 
 unique(db_m_reg$Region) %>% sort()
 unique(db_all2$Region) %>% sort()
+
 
 # all data together in COVerAGE-DB format -----------------------------------
 out <- db_all2 %>%
@@ -300,5 +304,5 @@ write_rds(out, paste0(dir_n, ctr, ".rds"))
 
 # updating hydra dashboard
 log_update(pp = ctr, N = nrow(out))
-out %>% 
-  pull(Region) %>% unique()
+#out %>% 
+#  pull(Region) %>% unique()

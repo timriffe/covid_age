@@ -83,8 +83,8 @@ scripts <- c('US_Virginia', 'Netherlands', 'Estonia', 'Italy',
              'Ireland', 'US_Idaho', 'Italy_reg', 
              'Czechia', 'US_Michigan', 'Venezuela', 'US_Texas', 
              'USA_deaths_states', 'Peru', 'Germany', 
-             'US_Massachusetts', 'Colombia', 'US_NYC', 'Austria', 'Philippines', 
-             'Scotland', 'Norway', 'US_California', 'Afghanistan', 'Finland', 
+             'US_Massachusetts', 'Colombia', 'US_NYC', 'Austria', 
+             'Norway', 'US_California', 'Afghanistan', 'Finland', 
              'US_Wisconsin', 'Bulgaria', 'Denmark', 'Belgium', 'New_Zealand', 
              'Mexico', 'Thailand', 'Spain', 'US_Oregon', 'Slovakia', 'Cambodia', 
              'Hungary', 'Vietnam', 'Croatia',  
@@ -104,7 +104,8 @@ scripts <- c('US_Virginia', 'Netherlands', 'Estonia', 'Italy',
              'Netherlands_Vaccine', 'Costa_Rica_Vaccine', 
              'USA_cases_all', 'USA_cases_states', 'USA_deaths_all', 
              'USA_deaths_states', 'Somalia', 'Sweden',
-             'AU_New_South_Wales', 'SouthKorea', 'US_Maine_Vaccine')
+             'AU_New_South_Wales', 'SouthKorea', 'US_Maine_Vaccine',
+             'Philippines', 'Scotland')
 
 # scripts <- c('USA_cases_all', 'USA_cases_states', 'USA_deaths_all', 'USA_deaths_states')
 # scripts <- c('USA_cases_all', 'USA_deaths_all')
@@ -113,7 +114,7 @@ scripts %>% sort
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # starting time for first schedule in hour and minutes
-h_ini <- 15
+h_ini <- 07
 m_ini <- 30
 # delay between scripts in minutes
 delay_time <- 5
@@ -143,7 +144,7 @@ for(c in scripts){
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 sched("USA_cases_all", tm = "14:09", email = auto_update_email, wd = auto_update_wd)
-sched("Brazil", tm = "18:03", email = auto_update_email, wd = auto_update_wd)
+sched("Brazil", tm = "07:32", email = auto_update_email, wd = auto_update_wd)
 sched('SouthKorea', tm = "10:45", email = auto_update_email, wd = auto_update_wd)
 sched('USA_deaths_all', tm = "17:01", email = auto_update_email, wd = auto_update_wd)
 sched('USA_cases_all', tm = "17:02", email = auto_update_email, wd = auto_update_wd)
