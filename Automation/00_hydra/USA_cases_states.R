@@ -30,7 +30,11 @@ library(arrow)
 if (!"email" %in% ls()){
   email <- "maxi.s.kniffka@gmail.com"
 }
-gs4_auth(email = email)
+
+# Drive credentials
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
+
 
 ctr          <- "US_CDC_cases_state" # it's a placeholder
 dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"

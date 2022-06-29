@@ -11,8 +11,10 @@ source(here("Automation/00_Functions_automation.R"))
 ctr <- "US_Wisconsin"
 dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 
-drive_auth(email = email)
-gs4_auth(email = email)
+# Drive credentials
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
+
 # TR: pull urls from rubric instead 
 rubric_i <- get_input_rubric() %>% filter(Short == "US_WI")
 ss_i     <- rubric_i %>% dplyr::pull(Sheet)

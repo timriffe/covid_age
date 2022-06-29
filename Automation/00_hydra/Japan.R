@@ -16,8 +16,9 @@ ctr <- "Japan"
 dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 # Drive credentials
-drive_auth(email = email)
-gs4_auth(email = email)
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
+
 
 
 ##previous data

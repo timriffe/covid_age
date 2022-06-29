@@ -11,8 +11,9 @@ ctr    <- "US_Maine_Vaccine"
 dir_n  <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 # Drive credentials
-drive_auth(email = email)
-gs4_auth(email = email)
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
+
 
 ###pull data from Drive and write rds###
 rubric <- get_input_rubric() %>% filter(Short == "US_ME")

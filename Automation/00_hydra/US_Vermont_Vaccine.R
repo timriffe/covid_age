@@ -19,8 +19,9 @@ ctr          <- "US_Vermont_Vaccine" # it's a placeholder
 dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 # Drive credentials
-drive_auth(email = email)
-gs4_auth(email = email)
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
+
 
 
 #input data 

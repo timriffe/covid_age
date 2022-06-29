@@ -9,8 +9,8 @@ ctr <- "Cambodia"
 dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 # Drive credentials
-drive_auth(email = email)
-gs4_auth(email = email)
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
 
 db <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vQkLytTn5lDnsOht865NZRmypUBQKZDN5Sf9RLVs11O9f1AbmF_ZhA53sErE2tG637HtOABPoaEX1Fn/pub?gid=0&single=true&output=csv")
 

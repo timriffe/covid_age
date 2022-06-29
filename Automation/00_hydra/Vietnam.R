@@ -23,12 +23,16 @@ dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 
 # Drive credentials
-gs4_auth(email = Sys.getenv("email"),
-         scopes = c("https://www.googleapis.com/auth/spreadsheets",
-                    "https://www.googleapis.com/auth/drive"))
-drive_auth(email = Sys.getenv("email"),
-           scopes = c("https://www.googleapis.com/auth/spreadsheets",
-                      "https://www.googleapis.com/auth/drive"))
+# gs4_auth(email = Sys.getenv("email"),
+#          scopes = c("https://www.googleapis.com/auth/spreadsheets",
+#                     "https://www.googleapis.com/auth/drive"))
+# drive_auth(email = Sys.getenv("email"),
+#            scopes = c("https://www.googleapis.com/auth/spreadsheets",
+#                       "https://www.googleapis.com/auth/drive"))
+
+# Drive credentials
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
 
 
 

@@ -1,6 +1,6 @@
 
-source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
-
+#source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
+source(here::here("Automation/00_Functions_automation.R"))
 
 
 # assigning Drive credentials in the case the script is verified manually  
@@ -14,8 +14,8 @@ dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 # dir_n <- "Data/Belgium/"
 
 # Drive credentials
-drive_auth(email = email)
-gs4_auth(email = email)
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
 
 cases_url <- "https://raw.githubusercontent.com/Institut-Zdravotnych-Analyz/covid19-data/main/PCR_Tests/OpenData_Slovakia_Covid_PositiveTests_AgeGroup_District.csv"
 

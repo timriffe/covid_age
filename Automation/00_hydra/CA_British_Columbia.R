@@ -11,8 +11,8 @@ ctr <- "CA_British_Columbia"
 dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 # Drive credentials
-drive_auth(email = email)
-gs4_auth(email = email)
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
 
 # TR: major change 7 Feb 2022: Drive sheet is read separately 
 # when the inputDB is compiled. If collection changes for 

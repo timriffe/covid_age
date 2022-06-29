@@ -8,8 +8,7 @@ library(httr)
 source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
 
 if (! "email" %in% ls()){
-  email <- "mumanal.k@gmail.com"
-  #originally: "maxi.s.kniffka@gmail.com"
+  email <- "maxi.s.kniffka@gmail.com"
 }
 
 # info country and N drive address
