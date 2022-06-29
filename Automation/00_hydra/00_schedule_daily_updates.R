@@ -79,33 +79,41 @@ tasks <-
 
 # list of all available scripts to schedule
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-scripts <- c('US_Virginia', 'Netherlands', 'Estonia', 'Italy',
-             'Ireland', 'US_Idaho', 'Italy_reg', 
-             'Czechia', 'US_Michigan', 'Venezuela', 'US_Texas', 
-             'USA_deaths_states', 'Peru', 'Germany', 
-             'US_Massachusetts', 'Colombia', 'US_NYC', 'Austria', 
-             'Norway', 'US_California', 'Afghanistan', 'Finland', 
-             'US_Wisconsin', 'Bulgaria', 'Denmark', 'Belgium', 'New_Zealand', 
-             'Mexico', 'Thailand', 'Spain', 'US_Oregon', 'Slovakia', 'Cambodia', 
-             'Hungary', 'Vietnam', 'Croatia',  
+scripts <- c('Afghanistan', 'Argentina', 'AU_New_South_Wales',
+             'Austria', 'Australia_vaccine',
+             'Bulgaria',  'Belgium',
+             'Czechia', 'Colombia', 'Cambodia', 'Croatia', 'Chile_vaccine',  
              'CA_Manitoba_Saskatchewan', 'CA_Ontario', 'CA_British_Columbia', 
-             'Ukraine', 'Spain_vaccine', 'Chile_vaccine', 'Portugal_Vaccine', 
-             'CA_Alberta', 'Canada_vaccine', 'US_Texas_Vaccine', 
-             'Hong_Kong_Vaccine','Argentina','Slovenia', 'US_Maine','US_NYC_vaccine',
-             'US_Vermont_Vaccine', 'US_Indiana','Lithuania_vaccine','US_Michigan_vaccine',
-             'US_Minnesota_vaccine', 'Slovenia_vaccine', 'US_Oregon_Vaccine', 
-             'Latvia_vaccine', 'Island_of_Jersey', 'Estonia_vaccine', 'Uruguay_vaccine', 
-             'Chile','Finland_vaccine', 'ECDC_vaccine', 'Slovakia_vaccine', 
-             'Germany_vaccine', 'US_Pennsylvania_vaccine', 'USA_vaccine',
-             'Australia_vaccine', 'New_Zealand', 
-             'Maldives', 'Japan', 'Romania', 'Puerto_Rico', 'Scotland_Vaccine', 
-             'Switzerland_Vaccine', 'Norway_Vaccine', 'France_Vaccine',
-             'England_Vaccine', 'England', 'England_and_Wales', 'Togo', 
-             'Netherlands_Vaccine', 'Costa_Rica_Vaccine', 
-             'USA_cases_all', 'USA_cases_states', 'USA_deaths_all', 
-             'USA_deaths_states', 'Somalia', 'Sweden',
-             'AU_New_South_Wales', 'SouthKorea', 'US_Maine_Vaccine',
-             'Philippines', 'Scotland')
+             'CA_Alberta', 'Canada_vaccine', 'Chile', 'Costa_Rica_Vaccine', 
+             'Denmark',
+             'Estonia', 'Estonia_vaccine', 'ECDC_vaccine',
+             'England_Vaccine', 'England', 'England_and_Wales',
+             'Finland', 'Finland_vaccine', 'France_Vaccine',
+             'Germany', 'Germany_vaccine',
+             'Hungary', 'Hong_Kong_Vaccine',
+             'Italy', 'Ireland', 'Italy_reg', 'Island_of_Jersey', 
+             'Japan',
+             'Lithuania_vaccine', 'Latvia_vaccine',
+             'Mexico', 'Maldives',
+             'Norway',  'Netherlands', 'New_Zealand',  
+             'Norway_Vaccine', 'Netherlands_Vaccine', 
+             'Peru', 'Philippines', 'Portugal_Vaccine', 'Puerto_Rico', 
+             'Romania', 
+             'Spain', 'Slovakia',  'Somalia', 'Sweden', 'SouthKorea', 'Scotland',
+             'Scotland_Vaccine', 'Switzerland_Vaccine',
+             'Spain_vaccine', 'Slovenia', 'Slovenia_vaccine', 'Slovakia_vaccine', 
+             'Thailand', 'Togo',
+             'Uruguay_vaccine', 
+             'Vietnam', 'Venezuela',
+             'Ukraine', 
+             'US_Indiana', 'US_Maine', 'US_Massachusetts',  'US_NYC',
+             'US_California', 'US_Wisconsin', 'US_Oregon',
+             'US_Virginia', 'US_Idaho', 'US_Michigan', 'US_Texas', 
+             'US_Michigan_vaccine','US_Minnesota_vaccine', 'US_Oregon_Vaccine',
+             'US_Pennsylvania_vaccine', 'USA_vaccine',
+             'US_NYC_vaccine', 'US_Vermont_Vaccine', 'US_Texas_Vaccine', 
+             'USA_deaths_states', 'US_Maine_Vaccine',
+             'USA_cases_all', 'USA_cases_states', 'USA_deaths_all')
 
 # scripts <- c('USA_cases_all', 'USA_cases_states', 'USA_deaths_all', 'USA_deaths_states')
 # scripts <- c('USA_cases_all', 'USA_deaths_all')
@@ -114,7 +122,7 @@ scripts %>% sort
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # starting time for first schedule in hour and minutes
-h_ini <- 07
+h_ini <- 06
 m_ini <- 30
 # delay between scripts in minutes
 delay_time <- 5

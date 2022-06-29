@@ -96,10 +96,18 @@ sc <-
 # However, this weekly series is only available for 2021, 2022 
 # Note: Scotland.rds for data till 02.06.2022 is deprecated in the folder. 
 
-deaths_url <- "https://www.nrscotland.gov.uk/files//statistics/covid19/covid-deaths-22-data-week-24.xlsx"
+#Source: https://www.nrscotland.gov.uk/covid19stats
 
 deaths_source <- paste0(dir_n, "Data_sources/", ctr, "/", ctr, "-deaths_",today(), ".xlsx")
 
+recent_file <- read_html("https://www.nrscotland.gov.uk/covid19stats/") %>% 
+  html_nodes(".rteright+ td > a") %>% 
+  html_attr('href') %>% 
+  stringr::str_replace("/files//statistics/covid19/", "")
+
+
+deaths_url <- paste0("https://www.nrscotland.gov.uk/files//statistics/covid19/",
+                     recent_file)
 
 ## DOWNLOAD CASES AND READ IN THE DATA ##
 

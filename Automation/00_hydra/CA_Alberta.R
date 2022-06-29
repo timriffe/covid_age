@@ -47,13 +47,15 @@ df2 <- arrange(df, Date)
 names(df2)[5] <- "Age"
 df_cases <- df2 %>% 
   group_by(Date, Gender, Age) %>% 
-  summarise(Value=n())
+  summarise(Value=n()) %>% 
+  ungroup()
 df_cases <- arrange(df_cases, Date, Gender, Age)
 
 
 ##completing the dataset with zeros
 
-dates_f <- seq(min(df_cases$Date), max(df_cases$Date), by = '1 day')
+dates_f <- seq(min(df_cases$Date), 
+               max(df_cases$Date), by = "day")
 
 df_cases2 <- df_cases %>% 
   tidyr::complete(Gender, Age, Date=dates_f, fill=list(Value=0)) %>% 
@@ -64,7 +66,8 @@ df_cases2 <- arrange(df_cases2, Date, Gender, Age)
 df_cases2 <- df_cases2 %>% 
   group_by(Gender, Age) %>% 
   summarise(Cases = cumsum(Value),
-            Date =Date)
+            Date =Date) %>% 
+  ungroup()
 
 df_cases2 <- arrange(df_cases2, Date, Gender, Age)
 df_cases2 <- df_cases2 %>% 
@@ -121,7 +124,8 @@ death <- subset(df2, Status == "Died" )
 
 df_death <- death %>% 
   group_by(Date, Gender, Age) %>% 
-  summarise(Value=n())
+  summarise(Value=n()) %>% 
+  ungroup()
 df_death <- arrange(df_death, Date, Gender, Age)
 
 

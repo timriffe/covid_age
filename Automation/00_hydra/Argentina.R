@@ -17,12 +17,20 @@ drive_auth(email = Sys.getenv("email"))
 gs4_auth(email = Sys.getenv("email"))
 
 # get yesterday
-hoy <- Sys.Date()
-ayer <- paste0(year(hoy-3),
-               str_pad(month(hoy-5),2,"left",0) ,
-               str_pad(day(hoy-5),2,"left",0))
+# hoy <- Sys.Date()
+# ayer <- paste0(year(hoy-3),
+#                str_pad(month(hoy-5),2,"left",0) ,
+#                str_pad(day(hoy-5),2,"left",0))
+#data_url <- paste0("https://covidstats.com.ar/archivos/coverage-db/",ayer,"-argentina.csv.zip")
 
-data_url <- paste0("https://covidstats.com.ar/archivos/coverage-db/",ayer,"-argentina.csv.zip")
+
+recent_file <- read_html("https://covidstats.com.ar/archivos/coverage-db/") %>% 
+  html_nodes("a+ a") %>% 
+  html_attr('href') %>% 
+  max() %>% 
+  stringr::str_replace(".zip", "")
+
+data_url <- paste0("https://covidstats.com.ar/archivos/coverage-db/", recent_file, ".zip")
 
 data_source <- paste0(dir_n, "Data_sources/", ctr, "/", ctr, "_data_",today(), ".zip")
 
@@ -35,7 +43,10 @@ download.file(data_url, destfile = data_source, mode = "wb")
 
 # read data
 
-db <- read_csv(unz(data_source, paste0(ayer,"-argentina.csv")), 
+db <- read_csv(unz(data_source, 
+                   # uncomment if they went back to publish daily 
+                   #paste0(ayer,"-argentina.csv")), 
+                   paste0(recent_file)),
                skip = 1,
                col_names = c("Country","Region","Code","Date","Sex","Age","AgeInt","Metric","Measure","Value")) %>% 
   mutate(Sex = ifelse(Sex == "x","UNK",Sex)) %>% 
