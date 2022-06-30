@@ -29,9 +29,7 @@ gs4_auth(email = Sys.getenv("email"))
 it <- read_rds(paste0(dir_n, ctr, ".rds"))
 
 it <- it %>% 
-  filter(Measure != "Vaccination1") %>% 
-  filter(Measure != "Vaccination2") %>% 
-  filter(Measure != "Vaccination3") 
+  filter(Measure == "Cases" | Measure == "Deaths")
   
   last_date_n <- it %>%
   mutate(date_f = dmy(Date)) %>%

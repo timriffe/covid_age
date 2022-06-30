@@ -37,6 +37,8 @@ db_drive <- read_sheet("https://docs.google.com/spreadsheets/d/1b-vhrc3ZAW-Mp5FU
 # Detect files to capture ####
 ##############################
 
+# Source: https://github.com/folkehelseinstituttet/surveillance_data
+
 # Cases and Tests only from recent days, because these contain
 # longer time series.
 check_dates <- seq(today()-7,today(),by="days")

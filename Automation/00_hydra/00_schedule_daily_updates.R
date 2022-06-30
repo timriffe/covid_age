@@ -82,12 +82,13 @@ tasks <-
 scripts <- c('Afghanistan', 'Argentina', 'AU_New_South_Wales',
              'Austria', 'Australia_vaccine',
              'Bulgaria',  'Belgium',
-             'Czechia', 'Colombia', 'Cambodia', 'Croatia', 'Chile_vaccine',  
+             'Czechia', 'Colombia', 'Cambodia', 'Croatia',  
              'CA_Manitoba_Saskatchewan', 'CA_Ontario', 'CA_British_Columbia', 
-             'CA_Alberta', 'Canada_vaccine', 'Chile', 'Costa_Rica_Vaccine', 
+             'CA_Alberta', 'Chile', 
+             'Chile_vaccine', 'Canada_vaccine', 'Costa_Rica_Vaccine', 
              'Denmark',
-             'Estonia', 'Estonia_vaccine', 'ECDC_vaccine',
-             'England_Vaccine', 'England', 'England_and_Wales',
+             'Estonia', 'England', 'England_and_Wales',
+             'Estonia_vaccine', 'ECDC_vaccine', 'England_Vaccine', 
              'Finland', 'Finland_vaccine', 'France_Vaccine',
              'Germany', 'Germany_vaccine',
              'Hungary', 'Hong_Kong_Vaccine',
@@ -97,11 +98,12 @@ scripts <- c('Afghanistan', 'Argentina', 'AU_New_South_Wales',
              'Mexico', 'Maldives',
              'Norway',  'Netherlands', 'New_Zealand',  
              'Norway_Vaccine', 'Netherlands_Vaccine', 
-             'Peru', 'Philippines', 'Portugal_Vaccine', 'Puerto_Rico', 
+             'Peru', 'Philippines', 'Puerto_Rico', 'Portugal_Vaccine',
              'Romania', 
-             'Spain', 'Slovakia',  'Somalia', 'Sweden', 'SouthKorea', 'Scotland',
+             'Spain', 'Slovakia',  'Somalia', 'Sweden', 
+             'SouthKorea', 'Scotland', 'Slovenia',
              'Scotland_Vaccine', 'Switzerland_Vaccine',
-             'Spain_vaccine', 'Slovenia', 'Slovenia_vaccine', 'Slovakia_vaccine', 
+             'Spain_vaccine', 'Slovenia_vaccine', 'Slovakia_vaccine', 
              'Thailand', 'Togo',
              'Uruguay_vaccine', 
              'Vietnam', 'Venezuela',
@@ -110,10 +112,10 @@ scripts <- c('Afghanistan', 'Argentina', 'AU_New_South_Wales',
              'US_California', 'US_Wisconsin', 'US_Oregon',
              'US_Virginia', 'US_Idaho', 'US_Michigan', 'US_Texas', 
              'US_Michigan_vaccine','US_Minnesota_vaccine', 'US_Oregon_Vaccine',
-             'US_Pennsylvania_vaccine', 'USA_vaccine',
-             'US_NYC_vaccine', 'US_Vermont_Vaccine', 'US_Texas_Vaccine', 
-             'USA_deaths_states', 'US_Maine_Vaccine',
-             'USA_cases_all', 'USA_cases_states', 'USA_deaths_all')
+             'US_Pennsylvania_vaccine', 'US_Maine_Vaccine',
+             'US_NYC_vaccine', 'US_Vermont_Vaccine', 'US_Texas_Vaccine',
+             'USA_cases_all', 'USA_cases_states',
+             'USA_deaths_states', 'USA_deaths_all', 'USA_vaccine')
 
 # scripts <- c('USA_cases_all', 'USA_cases_states', 'USA_deaths_all', 'USA_deaths_states')
 # scripts <- c('USA_cases_all', 'USA_deaths_all')
@@ -152,7 +154,7 @@ for(c in scripts){
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 sched("USA_cases_all", tm = "14:09", email = auto_update_email, wd = auto_update_wd)
-sched("Brazil", tm = "07:32", email = auto_update_email, wd = auto_update_wd)
+sched("US_Maine_Vaccine", tm = "14:52", email = auto_update_email, wd = auto_update_wd)
 sched('SouthKorea', tm = "10:45", email = auto_update_email, wd = auto_update_wd)
 sched('USA_deaths_all', tm = "17:01", email = auto_update_email, wd = auto_update_wd)
 sched('USA_cases_all', tm = "17:02", email = auto_update_email, wd = auto_update_wd)
