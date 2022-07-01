@@ -154,7 +154,7 @@ for(c in scripts){
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 sched("USA_cases_all", tm = "14:09", email = auto_update_email, wd = auto_update_wd)
-sched("US_Maine_Vaccine", tm = "14:52", email = auto_update_email, wd = auto_update_wd)
+sched("Malaysia", tm = "10:46", email = auto_update_email, wd = auto_update_wd)
 sched('SouthKorea', tm = "10:45", email = auto_update_email, wd = auto_update_wd)
 sched('USA_deaths_all', tm = "17:01", email = auto_update_email, wd = auto_update_wd)
 sched('USA_cases_all', tm = "17:02", email = auto_update_email, wd = auto_update_wd)

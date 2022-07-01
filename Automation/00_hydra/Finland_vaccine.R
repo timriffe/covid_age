@@ -18,6 +18,7 @@ gs4_auth(email = Sys.getenv("email"))
 DataArchive <- read_rds(paste0(dir_n, ctr, ".rds")) %>% 
   mutate(Measure = case_when(
     Measure == "Third dose" ~ "Vaccination3",
+    Measure == "Fourth dose" ~ "Vaccination4",
     TRUE ~ Measure
   ))
 
