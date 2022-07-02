@@ -95,7 +95,7 @@ scripts <- c('Afghanistan', 'Argentina', 'AU_New_South_Wales',
              'Italy', 'Ireland', 'Italy_reg', 'Island_of_Jersey', 
              'Japan',
              'Lithuania_vaccine', 'Latvia_vaccine',
-             'Mexico', 'Maldives',
+             'Mexico', 'Maldives', 'Malaysia',
              'Norway',  'Netherlands', 'New_Zealand',  
              'Norway_Vaccine', 'Netherlands_Vaccine', 
              'Peru', 'Philippines', 'Puerto_Rico', 'Portugal_Vaccine',
@@ -105,9 +105,7 @@ scripts <- c('Afghanistan', 'Argentina', 'AU_New_South_Wales',
              'Scotland_Vaccine', 'Switzerland_Vaccine',
              'Spain_vaccine', 'Slovenia_vaccine', 'Slovakia_vaccine', 
              'Thailand', 'Togo',
-             'Uruguay_vaccine', 
-             'Vietnam', 'Venezuela',
-             'Ukraine', 
+             'Uruguay_vaccine', 'Ukraine', 
              'US_Indiana', 'US_Maine', 'US_Massachusetts',  'US_NYC',
              'US_California', 'US_Wisconsin', 'US_Oregon',
              'US_Virginia', 'US_Idaho', 'US_Michigan', 'US_Texas', 
@@ -115,7 +113,8 @@ scripts <- c('Afghanistan', 'Argentina', 'AU_New_South_Wales',
              'US_Pennsylvania_vaccine', 'US_Maine_Vaccine',
              'US_NYC_vaccine', 'US_Vermont_Vaccine', 'US_Texas_Vaccine',
              'USA_cases_all', 'USA_cases_states',
-             'USA_deaths_states', 'USA_deaths_all', 'USA_vaccine')
+             'USA_deaths_states', 'USA_deaths_all', 'USA_vaccine',
+             'Vietnam', 'Venezuela')
 
 # scripts <- c('USA_cases_all', 'USA_cases_states', 'USA_deaths_all', 'USA_deaths_states')
 # scripts <- c('USA_cases_all', 'USA_deaths_all')
@@ -153,11 +152,20 @@ for(c in scripts){
 # for individual scheduling
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sched("USA_cases_all", tm = "14:09", email = auto_update_email, wd = auto_update_wd)
-sched("Malaysia", tm = "10:46", email = auto_update_email, wd = auto_update_wd)
-sched('SouthKorea', tm = "10:45", email = auto_update_email, wd = auto_update_wd)
-sched('USA_deaths_all', tm = "17:01", email = auto_update_email, wd = auto_update_wd)
-sched('USA_cases_all', tm = "17:02", email = auto_update_email, wd = auto_update_wd)
+sched("USA_deaths_all", tm = "22:35", email = auto_update_email, wd = auto_update_wd)
+sched("USA_deaths_states", tm = "22:40", email = auto_update_email, wd = auto_update_wd)
+sched('US_NYC_vaccine', tm = "22:45", email = auto_update_email, wd = auto_update_wd)
+sched('US_Vermont_Vaccine', tm = "22:50", email = auto_update_email, wd = auto_update_wd)
+sched('US_Minnesota_vaccine', tm = "22:55", email = auto_update_email, wd = auto_update_wd)
+sched("US_Michigan_vaccine", tm = "23:00", email = auto_update_email, wd = auto_update_wd)
+sched('US_Pennsylvania_vaccine', tm = "23:05", email = auto_update_email, wd = auto_update_wd)
+sched('US_Oregon_Vaccine', tm = "23:10", email = auto_update_email, wd = auto_update_wd)
+sched('USA_vaccine', tm = "23:30", email = auto_update_email, wd = auto_update_wd)
+sched('USA_cases_all', tm = "23:20", email = auto_update_email, wd = auto_update_wd)
+sched('US_Maine_Vaccine', tm = "23:25", email = auto_update_email, wd = auto_update_wd)
+
+
+
 
 #sch = "WEEKLY"
 

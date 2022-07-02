@@ -147,43 +147,45 @@ epiData_malaysia <- dplyr::bind_rows(cases, deaths)
 
 # Vaccination =======================================
 
-# Vaccination data are available by age and by sex, separately, and each has state (& district) level. 
+# Vaccination data are available by age and by sex, separately, 
+# and each has state (& district) level.
+# we will use the age-specific data only and identify sex as 'b' for both
 
 Vacc_age <- read.csv("https://github.com/MoH-Malaysia/covid19-public/raw/main/vaccination/vax_demog_age.csv") %>% 
   dplyr::select(-district)
 
-Vacc_sex <- read.csv("https://github.com/MoH-Malaysia/covid19-public/raw/main/vaccination/vax_demog_sex.csv") %>% 
-  dplyr::select(-district)
-
-
-Sex_vacc <- Vacc_sex %>% 
-  tidyr::pivot_longer(cols = -c("date", "state"),
-                      names_to = c("Measure", "Sex"),
-                      names_sep = "_",
-                      values_to = "Value") %>% 
-  dplyr::mutate(date = ymd(date),
-                Measure = case_when(Measure == "partial" ~ "Vaccination1",
-                                    Measure == "full" ~ "Vaccination2",
-                                    Measure == "booster" ~ "Vaccination3",
-                                    TRUE ~ Measure),
-                Sex = case_when(Sex == "female" ~ "f",
-                                Sex == "male" ~ "m",
-                                Sex == "missing" ~ "UNK",
-                                TRUE ~ Sex)) %>% 
-  dplyr::select(Date = date, Region = state,
-                  Sex, Measure, Value) %>% 
-  dplyr::group_by(Date, Region, Sex, Measure) %>% 
-  dplyr::summarise(Value = sum(Value)) %>% 
-  dplyr::left_join(state_dist, by = c("Region" = "state")) %>% 
-  dplyr::mutate(Country = "Malaysia",
-                Code = paste0("MY-", 
-                             str_pad(idxs, width=2, side="left", pad="0")),
-               Metric = "Count",
-               Age = NA_character_,
-               AgeInt = NA_integer_)  %>% 
-   dplyr::select(Country, Region, Code, 
-                Date, Sex, Age, AgeInt,
-                Metric, Measure, Value)
+# Vacc_sex <- read.csv("https://github.com/MoH-Malaysia/covid19-public/raw/main/vaccination/vax_demog_sex.csv") %>% 
+#   dplyr::select(-district)
+# 
+# 
+# Sex_vacc <- Vacc_sex %>% 
+#   tidyr::pivot_longer(cols = -c("date", "state"),
+#                       names_to = c("Measure", "Sex"),
+#                       names_sep = "_",
+#                       values_to = "Value") %>% 
+#   dplyr::mutate(date = ymd(date),
+#                 Measure = case_when(Measure == "partial" ~ "Vaccination1",
+#                                     Measure == "full" ~ "Vaccination2",
+#                                     Measure == "booster" ~ "Vaccination3",
+#                                     TRUE ~ Measure),
+#                 Sex = case_when(Sex == "female" ~ "f",
+#                                 Sex == "male" ~ "m",
+#                                 Sex == "missing" ~ "UNK",
+#                                 TRUE ~ Sex)) %>% 
+#   dplyr::select(Date = date, Region = state,
+#                   Sex, Measure, Value) %>% 
+#   dplyr::group_by(Date, Region, Sex, Measure) %>% 
+#   dplyr::summarise(Value = sum(Value)) %>% 
+#   dplyr::left_join(state_dist, by = c("Region" = "state")) %>% 
+#   dplyr::mutate(Country = "Malaysia",
+#                 Code = paste0("MY-", 
+#                              str_pad(idxs, width=2, side="left", pad="0")),
+#                Metric = "Count",
+#                Age = NA_character_,
+#                AgeInt = NA_integer_)  %>% 
+#    dplyr::select(Country, Region, Code, 
+#                 Date, Sex, Age, AgeInt,
+#                 Metric, Measure, Value)
 
 
 
@@ -231,14 +233,14 @@ Age_Vacc <- Vacc_age %>%
                 Date, Age, AgeInt, 
                 Sex, Metric, Measure, Value)
 
-## binding all vaccination data into one dataframe
-vacc_all <- Age_Vacc %>% 
-  dplyr::bind_rows(Sex_vacc)
+# ## binding all vaccination data into one dataframe
+# vacc_all <- Age_Vacc %>% 
+#   dplyr::bind_rows(Sex_vacc)
 
 ## binding epi-data & vaccination data into one df
 
 out <- epiData_malaysia %>% 
-  dplyr::bind_rows(vacc_all)
+  dplyr::bind_rows(Age_Vacc)
 
 
 ############################
