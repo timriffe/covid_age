@@ -20,7 +20,7 @@ gs4_auth(email = Sys.getenv("email"))
 
 
 ## Date: 04.07.2022
-## By: Manal
+## By: Manal Kamal
 ## Problem: Sweden download data each day, but the data are not appended to inputDB since 13.01.2022
 
 ## Investigating the data a bit, I found there are multiple gaps though file names say that data are downloaded each day
@@ -211,7 +211,7 @@ vax.list <- setNames(vax.list, vax.list) # only needed when you need an id-colum
 ## function to do so
 
 extract_date <- function(file_path){
-  date_f_vac_temp <- excel_sheets("N:/COVerAGE-DB/Automation/Hydra/Data_sources/Sweden/Vaccinations/vaccination_2022-07-04.xlsx")
+  date_f_vac_temp <- excel_sheets(file_path)
   date_f_vac_temp <- date_f_vac_temp[grepl("[0-9]{4}$", date_f_vac_temp)]
   date_f_vac_temp <- trimws(gsub("FOHM", "", date_f_vac_temp))
 }
@@ -248,16 +248,52 @@ to_retrieve_vax <- vax_lastdate %>%
 vax_files <- to_retrieve_vax %>% 
   dplyr::pull(file_name)
 
-### ======================
+
+
+## build a dataframe that has the corresponding sheets for sex and age #
+
+to_retrieve_vax <- to_retrieve_vax %>% 
+  mutate(sex_sheet = case_when(date < "2021-12-23" ~ "4",
+                               date > "2021-12-23" & date < "2022-01-27" ~ "5",
+                               date >= "2022-01-27" & date < "2022-03-24" ~ "6",
+                               date > "2022-03-24" & date < "2022-03-30" ~ "7",
+                               date > "2022-03-30" & date < "2022-06-23" ~ "8",
+                               date > "2022-06-23" ~ "7"),
+         sex_sheet = as.integer(sex_sheet)) 
+
+
+
+## Iterate from this dataframe to avoid multiple loops ##
+
+library(purrr)    
+out <- to_retrieve_vax %>% 
+  {map2(.$file_name, .$sex_sheet, ~ read_excel(path = .x, sheet = .y))}
+  
+
+
+### ====================== ANOTHER METHOD ## 
 
 ## functions to go over the missing data files and append first separately from the main dataset ##
 
-## After reviewing the sheets manually:
-## from 02-02-2021, sex was in sheet 4, age in sheet 3
+## After reviewing the sheets manually: 
+## from 02.02.2021, sex was in sheet 4, age in sheet 3
 
-before_25Mar <- to_retrieve_vax %>% 
-  filter(date < "2022-03-24") %>% 
+before_24Dec <- to_retrieve_vax %>% 
+  filter(date < "2021-12-23") %>% 
   dplyr::pull(file_name)
+
+## from 23.12.2021, sex was in sheet 5, age in sheet 3, 4 depending on the # of doses
+
+After_24Dec <- to_retrieve_vax %>% 
+  filter(date > "2021-12-23", date < "2022-01-27") %>% 
+  dplyr::pull(file_name)
+
+## from 27.01.2022, sex was in sheet 6, age in sheet 4, 5 depending on the # of doses
+
+After_27Jan <- to_retrieve_vax %>% 
+  filter(date >= "2022-01-27", date < "2022-03-24") %>% 
+  dplyr::pull(file_name)
+
 
 ## from 25.03.2022, sex was in sheet 7, age in sheet 4, 5, 6 depending on the # of doses
 
@@ -278,9 +314,10 @@ After_lateJune <- to_retrieve_vax %>%
   dplyr::pull(file_name)
 
 
-vax_sex_data <- data.frame()
+##### FUNCTION ##### ===============
 
-#file_path = "N:/COVerAGE-DB/Automation/Hydra/Data_sources/Sweden/Vaccinations/vaccination_2021-02-02.xlsx"
+
+vax_sex_data <- data.frame()
 
 fill_dates_sex <- function(file_path, sex_sheet) {
   
@@ -291,29 +328,24 @@ fill_dates_sex <- function(file_path, sex_sheet) {
   
   db_sex <- read_excel(file_path,
                        sheet = sex_sheet) %>% 
-    select(
-      Sex = starts_with("K")
-      , Value = contains("antal")
-      # Changed on 20210423 by Diego after codes changed
-       , Measure = Dosnummer
-      #, Measure = ends_with("status")
-    ) %>%
-    # filter(!grepl("^t", Sex, ignore.case = T)) %>%
-    mutate(
-      Sex = case_when(
-        grepl("^m", Sex, ignore.case = T) ~ "m",
-        grepl("^k", Sex, ignore.case = T) ~ "f"
-        # grepl("^t", Sex, ignore.case = T) ~ "UNK"
-      )
-      , Measure = case_when(
-        # Changed on 20210423 by Diego after codes changed
-      #  grepl("Minst 1 dos", Measure, ignore.case = T) ~ "Vaccination1"
-      #  , grepl("Minst 2 doser", Measure, ignore.case = T) ~ "Vaccination2"
-         grepl("1", Measure, ignore.case = T) ~ "Vaccination1"
-         , grepl("2", Measure, ignore.case = T) ~ "Vaccination2"
-      )
-      , Age = "TOT"
-      , AgeInt = ""
+    select(Sex = starts_with("K"),
+           Value = contains("antal"), 
+           Measure = contains(c("Dosnummer", "status"))) %>% 
+    mutate(Sex = case_when(str_detect(Sex, "M") ~ "m",
+                           str_detect(Sex, "Kv") ~ "f",
+                           str_detect(Sex, "Tot") ~ "TOT"),
+      Measure = case_when(Measure %in% c("1",
+                                         "Dos 1",
+                                         "Minst 1 dos") ~ "Vaccination1",
+                            Measure %in% c("2", 
+                                           "Minst 2 doser",
+                                           "2 doser",
+                                           "Dos 2",
+                                           "Färdigvaccinerade") ~ "Vaccination2",
+                          Measure %in% c("Minst 3 doser") ~ "Vaccination3",
+                          Measure %in% c("4 doser") ~ "Vaccination4"), 
+      Age = "TOT",
+      AgeInt = ""
       # Add empty row for UNK
       , Sex = ifelse(is.na(Sex), "UNK", Sex)
       , AgeInt = ifelse(Sex == "UNK", "", AgeInt)
@@ -327,7 +359,19 @@ fill_dates_sex <- function(file_path, sex_sheet) {
 }
 
 
-for (file in before_25Mar) {
+# for (file in 1:nrow(to_retrieve_vax)){
+#   print(paste("Adding lost Vax sex for:", file))
+#   fill_dates_sex(file_path = file, sex_sheet = to_retrieve_vax$sex_sheet)
+#   vax_sex_data <- rbind(vax_sex_data, db_sex)
+#   
+# }
+
+
+
+
+
+
+for (file in before_24Dec) {
   print(paste("Adding lost Vax sex for:", file))
   fill_dates_sex(file_path = file, sex_sheet = 4)
   vax_sex_data <- rbind(vax_sex_data, db_sex)
@@ -335,16 +379,61 @@ for (file in before_25Mar) {
 }
 
 
+for (file in After_24Dec) {
+  print(paste("Adding lost Vax sex for:", file))
+  fill_dates_sex(file_path = file, sex_sheet = 5)
+  vax_sex_data <- rbind(vax_sex_data, db_sex)
+  
+}
+
+
+for (file in After_27Jan) {
+  print(paste("Adding lost Vax sex for:", file))
+  fill_dates_sex(file_path = file, sex_sheet = 6)
+  vax_sex_data <- rbind(vax_sex_data, db_sex)
+  
+}
+
+
+for (file in After_25Mar) {
+  print(paste("Adding lost Vax sex for:", file))
+  fill_dates_sex(file_path = file, sex_sheet =7)
+  vax_sex_data <- rbind(vax_sex_data, db_sex)
+  
+}
+
+
+
+for (file in After_Apr) {
+  print(paste("Adding lost Vax sex for:", file))
+  fill_dates_sex(file_path = file, sex_sheet = 8)
+  vax_sex_data <- rbind(vax_sex_data, db_sex)
+  
+}
+
+
+for (file in After_lateJune) {
+  print(paste("Adding lost Vax sex for:", file))
+  fill_dates_sex(file_path = file, sex_sheet = 7)
+  vax_sex_data <- rbind(vax_sex_data, db_sex)
+  
+}
+
+
+## Check on this horrible loop! 
+## all data are added if this result in 0 obs. 
+vax_sex_data %>% 
+  distinct(Date) %>% 
+  anti_join(to_retrieve_vax, by = c("Date" = "date"))
 
 
 
 
 
+### =======================================================
 
 
-
-
-
+### AGE lost data ===========================================
 
 
 
