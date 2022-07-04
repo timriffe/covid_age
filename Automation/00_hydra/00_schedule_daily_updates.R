@@ -152,18 +152,10 @@ for(c in scripts){
 # for individual scheduling
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sched("USA_deaths_all", tm = "22:35", email = auto_update_email, wd = auto_update_wd)
-sched("USA_deaths_states", tm = "22:40", email = auto_update_email, wd = auto_update_wd)
-sched('US_NYC_vaccine', tm = "22:45", email = auto_update_email, wd = auto_update_wd)
-sched('US_Vermont_Vaccine', tm = "22:50", email = auto_update_email, wd = auto_update_wd)
-sched('US_Minnesota_vaccine', tm = "22:55", email = auto_update_email, wd = auto_update_wd)
-sched("US_Michigan_vaccine", tm = "23:00", email = auto_update_email, wd = auto_update_wd)
-sched('US_Pennsylvania_vaccine', tm = "23:05", email = auto_update_email, wd = auto_update_wd)
-sched('US_Oregon_Vaccine', tm = "23:10", email = auto_update_email, wd = auto_update_wd)
-sched('USA_vaccine', tm = "23:30", email = auto_update_email, wd = auto_update_wd)
-sched('USA_cases_all', tm = "23:20", email = auto_update_email, wd = auto_update_wd)
-sched('US_Maine_Vaccine', tm = "23:25", email = auto_update_email, wd = auto_update_wd)
-
+sched("US_Pennsylvania_vaccine", tm = "15:30", email = auto_update_email, wd = auto_update_wd)
+sched("US_Michigan", tm = "14:45", email = auto_update_email, wd = auto_update_wd)
+sched('Germany_vaccine', tm = "15:05", email = auto_update_email, wd = auto_update_wd)
+sched('Italy', tm = "15:32", email = auto_update_email, wd = auto_update_wd)
 
 
 
