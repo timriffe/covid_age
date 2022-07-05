@@ -51,7 +51,11 @@ vacc_age_sex <- vacc_total %>%
          Vaccination1_Femme = n_cum_dose1_f, 
          Vaccination2_Femme = n_cum_complet_f, 
          Vaccination3_Femme = n_cum_rappel_f,
-         Vaccination4_Femme = n_cum_2_rappel_f) %>% 
+         Vaccination4_Femme = n_cum_2_rappel_f,
+         Vaccination1_Total = n_cum_dose1_e, 
+         Vaccination2_Total = n_cum_complet_e, 
+         Vaccination3_Total = n_cum_rappel_e,
+         Vaccination4_Total = n_cum_2_rappel_e) %>% 
   pivot_longer(cols = -c("Date", "Age"),
                names_to = c("Measure", "Sex"),
                names_sep = "_",
@@ -109,7 +113,7 @@ vacc_tot_age_sex <- vacc_age_sex %>%
 
 
 ### Vaccination in France per region by sex and age ===============
-vacc_reg <- read.csv2("https://www.data.gouv.fr/fr/datasets/r/8e5e70fa-c082-45e3-a7b8-20862711b142")
+vacc_reg <- fread("https://www.data.gouv.fr/fr/datasets/r/8e5e70fa-c082-45e3-a7b8-20862711b142")
 
 ## Notes on code-book as published in the source ## 
 ## we are interested in cumulative data ## so:
@@ -131,7 +135,11 @@ vacc_reg_out <- vacc_reg %>%
          Vaccination1_Femme = n_cum_dose1_f, 
          Vaccination2_Femme = n_cum_complet_f, 
          Vaccination3_Femme = n_cum_rappel_f,
-         Vaccination4_Femme = n_cum_2_rappel_f) %>% 
+         Vaccination4_Femme = n_cum_2_rappel_f,
+         Vaccination1_Total = n_cum_dose1_e, 
+         Vaccination2_Total = n_cum_complet_e, 
+         Vaccination3_Total = n_cum_rappel_e,
+         Vaccination4_Total = n_cum_2_rappel_e) %>% 
   pivot_longer(cols = -c("Region", "Date", "Age"),
                names_to = c("Measure", "Sex"),
                names_sep = "_",
