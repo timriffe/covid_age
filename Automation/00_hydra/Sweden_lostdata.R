@@ -1,6 +1,7 @@
-
+## ======= read common lines first ======
 
 library(here)
+library(purrr)    
 source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
 
 # assigning Drive credentials in the case the script is verified manually  
@@ -16,7 +17,7 @@ dir_n <- "N:/COVerAGE-DB/Automation/Hydra/Data_sources/Sweden/"
 drive_auth(email = Sys.getenv("email"))
 gs4_auth(email = Sys.getenv("email"))
 
-## =====================================================
+## =========== This file ============================
 
 
 ## Date: 04.07.2022
@@ -47,14 +48,12 @@ Sweden %>%
   arrange(desc(Date)) ## last data date in .rds file is 13-01-2022 :O
 
 
-## ======================================
-
 ## Assumption is that if there is no epi-data for a specific date, 
 ## there is no vaccination data as well (starting 2021),
 ## however, better to separate this step, just in case. 
 
 
-## 1. Epi-data 
+## 1. Epi-data ==================
 
 ## load the xlsx files after unzipping and do some checks... 
 
@@ -102,17 +101,18 @@ unique_dates <- Sweden %>%
 
 
 
-to_retrieve <- source_lastdate %>% 
+to_retrieve_epi <- source_lastdate %>% 
   anti_join(unique_dates, by = c("max_date" = "Date")) %>% 
   distinct(max_date, .keep_all = TRUE) 
 
 
-epi_files <- to_retrieve %>% 
+epi_files <- to_retrieve_epi %>% 
   dplyr::pull(file_name)
 
-### ======================
 
-## function to go over the missing data files and append first separately from the main dataset ##
+## function to go over the missing data files ==========
+
+## and append first separately from the main dataset ##
 
 # create empty df to add rows to
 lost_epidates <- data.frame()
@@ -185,18 +185,9 @@ for (i in epi_files) {
 }
 
 
-## Append to main dataset (.rds file) ## ==========================
+## END - EPI-DATA =====================================
 
-
-Sweden <- lost_epidates %>% 
-  bind_rows(Sweden) #%>% 
- # arrange(desc(Date))
-
-
-
-## =====================================
-
-## 2. Vax-data 
+## 2. Vax-data ====================
 
 ## load the xlsx files after unzipping and do some checks... 
 
@@ -254,21 +245,132 @@ vax_files <- to_retrieve_vax %>%
 
 to_retrieve_vax <- to_retrieve_vax %>% 
   mutate(sex_sheet = case_when(date < "2021-12-23" ~ "4",
-                               date > "2021-12-23" & date < "2022-01-27" ~ "5",
+                               date >= "2021-12-23" & date < "2022-01-27" ~ "5",
                                date >= "2022-01-27" & date < "2022-03-24" ~ "6",
-                               date > "2022-03-24" & date < "2022-03-30" ~ "7",
+                               date >= "2022-03-24" & date < "2022-03-30" ~ "7",
                                date > "2022-03-30" & date < "2022-06-23" ~ "8",
                                date > "2022-06-23" ~ "7"),
-         sex_sheet = as.integer(sex_sheet)) 
+         sex_sheet = as.integer(sex_sheet),
+         age_sheet = case_when(date < "2021-12-23" ~ "3",
+                               date >= "2021-12-23" & date < "2022-01-27" ~ "3, 4",
+                               date >= "2022-01-27" & date < "2022-03-24" ~ "4, 5",
+                               date >= "2022-03-24" & date < "2022-03-30" ~ "4, 5, 6",
+                               date > "2022-03-30" & date < "2022-06-23" ~ "5, 6, 7",
+                               date >= "2022-06-23" ~ "5, 6")) 
 
 
 
-## Iterate from this dataframe to avoid multiple loops ##
+## TWO-OBJECTS iteration from this dataframe to avoid multiple loops ##
 
-library(purrr)    
-out <- to_retrieve_vax %>% 
-  {map2(.$file_name, .$sex_sheet, ~ read_excel(path = .x, sheet = .y))}
-  
+## 2.1. Vax by Sex =======
+
+out_sex <- to_retrieve_vax %>% 
+  {map2_df(.$file_name, .$sex_sheet, ~ read_excel(path = .x, sheet = .y) %>% 
+             mutate(id = .x))} %>% 
+  left_join(to_retrieve_vax, by = c("id" = "file_name"))
+
+## Transformation, management 
+
+
+db_sex <- out_sex %>% 
+  mutate(Vaccinationsstatus = coalesce(Dosnummer, Vaccinationsstatus)) %>% 
+  select(Date = date,
+         Sex = starts_with("K"),
+         Value = contains("antal"), 
+         Measure = contains("status")) %>% 
+  mutate(Sex = case_when(str_detect(Sex, "M") ~ "m",
+                         str_detect(Sex, "Kv") ~ "f",
+                         str_detect(Sex, "Tot") ~ "TOT"),
+         Measure = case_when(Measure %in% c("1",
+                                            "Dos 1",
+                                            "Minst 1 dos") ~ "Vaccination1",
+                             Measure %in% c("2", 
+                                            "Minst 2 doser",
+                                            "2 doser",
+                                            "Dos 2",
+                                            "Färdigvaccinerade") ~ "Vaccination2",
+                             Measure %in% c("Minst 3 doser") ~ "Vaccination3",
+                             Measure %in% c("4 doser") ~ "Vaccination4"), 
+         Age = "TOT",
+         AgeInt = ""
+         # Add empty row for UNK
+         , Sex = ifelse(is.na(Sex), "UNK", Sex)
+         , AgeInt = ifelse(Sex == "UNK", "", AgeInt)
+         , Value = ifelse(Sex == "UNK", 0, Value),
+         AgeInt = as.integer(AgeInt)
+  ) %>%
+  select(Sex, Date, Age, AgeInt, Measure, Value) %>%
+  arrange(Sex)
+
+
+
+## 2.2. Vax by Age =======
+
+vax_age <- to_retrieve_vax %>% 
+  tidyr::separate_rows(age_sheet, sep = ", ") %>% 
+  dplyr::mutate(age_sheet = as.integer(age_sheet))
+
+
+out_age <- vax_age %>% 
+  {map2_df(.$file_name, .$age_sheet, ~ read_excel(path = .x, sheet = .y) %>% 
+             mutate(id = .x))} %>% 
+  dplyr::left_join(to_retrieve_vax, by = c("id" = "file_name")) %>% 
+  dplyr::mutate(Vaccinationsstatus = coalesce(Dosnummer, Vaccinationsstatus))
+
+
+db_age <- out_age %>%
+  dplyr::filter(Region %in% "| Sverige |") %>% 
+  dplyr::select(Date = date,
+                Value = contains("antal"), 
+                Measure = ends_with("status"),
+                Age = ends_with("ldersgrupp")) %>% 
+  dplyr::mutate(Measure = case_when(Measure %in% c("1",
+                                                   "Dos 1",
+                                                   "1 dos",
+                                                   "Minst 1 dos") ~ "Vaccination1",
+                                    Measure %in% c("2", 
+                                                   "Minst 2 doser",
+                                                   "2 doser",
+                                                   "Dos 2",
+                                                   "Färdigvaccinerade") ~ "Vaccination2",
+                                    Measure %in% c("Minst 3 doser", "3 doser") ~ "Vaccination3",
+                                    Measure %in% c("4 doser") ~ "Vaccination4"),
+                Age = case_when(Age == "Totalt" ~ "TOT",
+                                TRUE ~ Age),
+                Age_low = as.numeric(str_extract(Age, "^[0-9]{2}")),
+                Age_high = as.numeric(str_extract(Age, "[0-9]{2}$")),
+                Age = as.character(Age_low),
+                Age = ifelse(is.na(Age), "UNK", Age),
+                ## would be good if one ot the team review this,
+                ## I am not sure this is correct :(
+                AgeInt = case_when(Age == "5" ~ 5L,
+                                   Age == "90" ~ 15L,
+                                   Age == "UNK" ~ NA_integer_,
+                                   TRUE ~ 10L),
+                Sex = "b",
+                Value = ifelse(Age == "UNK", 0, Value)) %>%
+  dplyr::select(Date, Sex, Age, AgeInt, Measure, Value)
+
+
+
+
+
+
+## Append to main dataset (.rds file) ## ==========================
+
+
+Sweden_appended <- bind_rows(Sweden, lost_epidates, db_sex, db_age) %>%
+  dplyr::mutate(Country = "Sweden",
+         Region = "All",
+         Code = paste0("SE"), 
+         Metric = "Count") %>% 
+  dplyr::select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
+# arrange(desc(Date))
+
+
+write_rds(Sweden_appended, paste0(dir_n, ctr, ".rds"))
+
+## ================== LENGHTY NON-SENSE LOOPS ================ ##
 
 
 ### ====================== ANOTHER METHOD ## 
@@ -278,249 +380,158 @@ out <- to_retrieve_vax %>%
 ## After reviewing the sheets manually: 
 ## from 02.02.2021, sex was in sheet 4, age in sheet 3
 
-before_24Dec <- to_retrieve_vax %>% 
-  filter(date < "2021-12-23") %>% 
-  dplyr::pull(file_name)
-
-## from 23.12.2021, sex was in sheet 5, age in sheet 3, 4 depending on the # of doses
-
-After_24Dec <- to_retrieve_vax %>% 
-  filter(date > "2021-12-23", date < "2022-01-27") %>% 
-  dplyr::pull(file_name)
-
-## from 27.01.2022, sex was in sheet 6, age in sheet 4, 5 depending on the # of doses
-
-After_27Jan <- to_retrieve_vax %>% 
-  filter(date >= "2022-01-27", date < "2022-03-24") %>% 
-  dplyr::pull(file_name)
-
-
-## from 25.03.2022, sex was in sheet 7, age in sheet 4, 5, 6 depending on the # of doses
-
-After_25Mar <- to_retrieve_vax %>% 
-  filter(date > "2022-03-24", date < "2022-03-30") %>% 
-  dplyr::pull(file_name)
-
-## from 01.04.2022, sex was in sheet 8, age in sheet 5,6,7 depending on the # of doses
-
-After_Apr <- to_retrieve_vax %>% 
-  filter(date > "2022-03-30", date < "2022-06-23") %>% 
-  dplyr::pull(file_name)
-
-## from 24.06.2022, sex was in sheet 7, age in sheet 5,6 depending on the # of doses
-
-After_lateJune <- to_retrieve_vax %>% 
-  filter(date > "2022-06-23") %>% 
-  dplyr::pull(file_name)
-
-
-##### FUNCTION ##### ===============
-
-
-vax_sex_data <- data.frame()
-
-fill_dates_sex <- function(file_path, sex_sheet) {
-  
-  date <- to_retrieve_vax %>% 
-    dplyr::filter(stringr::str_detect(file_name, pattern = file_path)) %>% 
-    dplyr::pull(date)
-  
-  
-  db_sex <- read_excel(file_path,
-                       sheet = sex_sheet) %>% 
-    select(Sex = starts_with("K"),
-           Value = contains("antal"), 
-           Measure = contains(c("Dosnummer", "status"))) %>% 
-    mutate(Sex = case_when(str_detect(Sex, "M") ~ "m",
-                           str_detect(Sex, "Kv") ~ "f",
-                           str_detect(Sex, "Tot") ~ "TOT"),
-      Measure = case_when(Measure %in% c("1",
-                                         "Dos 1",
-                                         "Minst 1 dos") ~ "Vaccination1",
-                            Measure %in% c("2", 
-                                           "Minst 2 doser",
-                                           "2 doser",
-                                           "Dos 2",
-                                           "Färdigvaccinerade") ~ "Vaccination2",
-                          Measure %in% c("Minst 3 doser") ~ "Vaccination3",
-                          Measure %in% c("4 doser") ~ "Vaccination4"), 
-      Age = "TOT",
-      AgeInt = ""
-      # Add empty row for UNK
-      , Sex = ifelse(is.na(Sex), "UNK", Sex)
-      , AgeInt = ifelse(Sex == "UNK", "", AgeInt)
-      , Value = ifelse(Sex == "UNK", 0, Value)
-      , Date = date
-    ) %>%
-    select(Sex, Date, Age, AgeInt, Measure, Value) %>%
-    arrange(Sex)
-  
-  .GlobalEnv$db_sex <- db_sex
-}
-
-
-# for (file in 1:nrow(to_retrieve_vax)){
+# before_24Dec <- to_retrieve_vax %>% 
+#   filter(date < "2021-12-23") %>% 
+#   dplyr::pull(file_name)
+# 
+# ## from 23.12.2021, sex was in sheet 5, age in sheet 3, 4 depending on the # of doses
+# 
+# After_24Dec <- to_retrieve_vax %>% 
+#   filter(date > "2021-12-23", date < "2022-01-27") %>% 
+#   dplyr::pull(file_name)
+# 
+# ## from 27.01.2022, sex was in sheet 6, age in sheet 4, 5 depending on the # of doses
+# 
+# After_27Jan <- to_retrieve_vax %>% 
+#   filter(date >= "2022-01-27", date < "2022-03-24") %>% 
+#   dplyr::pull(file_name)
+# 
+# 
+# ## from 25.03.2022, sex was in sheet 7, age in sheet 4, 5, 6 depending on the # of doses
+# 
+# After_25Mar <- to_retrieve_vax %>% 
+#   filter(date > "2022-03-24", date < "2022-03-30") %>% 
+#   dplyr::pull(file_name)
+# 
+# ## from 01.04.2022, sex was in sheet 8, age in sheet 5,6,7 depending on the # of doses
+# 
+# After_Apr <- to_retrieve_vax %>% 
+#   filter(date > "2022-03-30", date < "2022-06-23") %>% 
+#   dplyr::pull(file_name)
+# 
+# ## from 24.06.2022, sex was in sheet 7, age in sheet 5,6 depending on the # of doses
+# 
+# After_lateJune <- to_retrieve_vax %>% 
+#   filter(date > "2022-06-23") %>% 
+#   dplyr::pull(file_name)
+# 
+# 
+# ##### FUNCTION ##### ===============
+# 
+# 
+# vax_sex_data <- data.frame()
+# 
+# fill_dates_sex <- function(file_path, sex_sheet) {
+#   
+#   date <- to_retrieve_vax %>% 
+#     dplyr::filter(stringr::str_detect(file_name, pattern = file_path)) %>% 
+#     dplyr::pull(date)
+#   
+#   
+#   db_sex <- read_excel(file_path,
+#                        sheet = sex_sheet) %>% 
+#     select(Sex = starts_with("K"),
+#            Value = contains("antal"), 
+#            Measure = contains(c("Dosnummer", "status"))) %>% 
+#     mutate(Sex = case_when(str_detect(Sex, "M") ~ "m",
+#                            str_detect(Sex, "Kv") ~ "f",
+#                            str_detect(Sex, "Tot") ~ "TOT"),
+#            Measure = case_when(Measure %in% c("1",
+#                                               "Dos 1",
+#                                               "Minst 1 dos") ~ "Vaccination1",
+#                                Measure %in% c("2", 
+#                                               "Minst 2 doser",
+#                                               "2 doser",
+#                                               "Dos 2",
+#                                               "Färdigvaccinerade") ~ "Vaccination2",
+#                                Measure %in% c("Minst 3 doser") ~ "Vaccination3",
+#                                Measure %in% c("4 doser") ~ "Vaccination4"), 
+#            Age = "TOT",
+#            AgeInt = ""
+#            # Add empty row for UNK
+#            , Sex = ifelse(is.na(Sex), "UNK", Sex)
+#            , AgeInt = ifelse(Sex == "UNK", "", AgeInt)
+#            , Value = ifelse(Sex == "UNK", 0, Value)
+#            , Date = date
+#     ) %>%
+#     select(Sex, Date, Age, AgeInt, Measure, Value) %>%
+#     arrange(Sex)
+#   
+#   .GlobalEnv$db_sex <- db_sex
+# }
+# 
+# 
+# # for (file in 1:nrow(to_retrieve_vax)){
+# #   print(paste("Adding lost Vax sex for:", file))
+# #   fill_dates_sex(file_path = file, sex_sheet = to_retrieve_vax$sex_sheet)
+# #   vax_sex_data <- rbind(vax_sex_data, db_sex)
+# #   
+# # }
+# 
+# 
+# 
+# 
+# 
+# 
+# for (file in before_24Dec) {
 #   print(paste("Adding lost Vax sex for:", file))
-#   fill_dates_sex(file_path = file, sex_sheet = to_retrieve_vax$sex_sheet)
+#   fill_dates_sex(file_path = file, sex_sheet = 4)
 #   vax_sex_data <- rbind(vax_sex_data, db_sex)
 #   
 # }
+# 
+# 
+# for (file in After_24Dec) {
+#   print(paste("Adding lost Vax sex for:", file))
+#   fill_dates_sex(file_path = file, sex_sheet = 5)
+#   vax_sex_data <- rbind(vax_sex_data, db_sex)
+#   
+# }
+# 
+# 
+# for (file in After_27Jan) {
+#   print(paste("Adding lost Vax sex for:", file))
+#   fill_dates_sex(file_path = file, sex_sheet = 6)
+#   vax_sex_data <- rbind(vax_sex_data, db_sex)
+#   
+# }
+# 
+# 
+# for (file in After_25Mar) {
+#   print(paste("Adding lost Vax sex for:", file))
+#   fill_dates_sex(file_path = file, sex_sheet =7)
+#   vax_sex_data <- rbind(vax_sex_data, db_sex)
+#   
+# }
+# 
+# 
+# 
+# for (file in After_Apr) {
+#   print(paste("Adding lost Vax sex for:", file))
+#   fill_dates_sex(file_path = file, sex_sheet = 8)
+#   vax_sex_data <- rbind(vax_sex_data, db_sex)
+#   
+# }
+# 
+# 
+# for (file in After_lateJune) {
+#   print(paste("Adding lost Vax sex for:", file))
+#   fill_dates_sex(file_path = file, sex_sheet = 7)
+#   vax_sex_data <- rbind(vax_sex_data, db_sex)
+#   
+# }
+# 
+# 
+# ## Check on this horrible loop! 
+# ## all data are added if this result in 0 obs. 
+# vax_sex_data %>% 
+#   distinct(Date) %>% 
+#   anti_join(to_retrieve_vax, by = c("Date" = "date"))
+# 
 
 
 
 
-
-
-for (file in before_24Dec) {
-  print(paste("Adding lost Vax sex for:", file))
-  fill_dates_sex(file_path = file, sex_sheet = 4)
-  vax_sex_data <- rbind(vax_sex_data, db_sex)
-  
-}
-
-
-for (file in After_24Dec) {
-  print(paste("Adding lost Vax sex for:", file))
-  fill_dates_sex(file_path = file, sex_sheet = 5)
-  vax_sex_data <- rbind(vax_sex_data, db_sex)
-  
-}
-
-
-for (file in After_27Jan) {
-  print(paste("Adding lost Vax sex for:", file))
-  fill_dates_sex(file_path = file, sex_sheet = 6)
-  vax_sex_data <- rbind(vax_sex_data, db_sex)
-  
-}
-
-
-for (file in After_25Mar) {
-  print(paste("Adding lost Vax sex for:", file))
-  fill_dates_sex(file_path = file, sex_sheet =7)
-  vax_sex_data <- rbind(vax_sex_data, db_sex)
-  
-}
-
-
-
-for (file in After_Apr) {
-  print(paste("Adding lost Vax sex for:", file))
-  fill_dates_sex(file_path = file, sex_sheet = 8)
-  vax_sex_data <- rbind(vax_sex_data, db_sex)
-  
-}
-
-
-for (file in After_lateJune) {
-  print(paste("Adding lost Vax sex for:", file))
-  fill_dates_sex(file_path = file, sex_sheet = 7)
-  vax_sex_data <- rbind(vax_sex_data, db_sex)
-  
-}
-
-
-## Check on this horrible loop! 
-## all data are added if this result in 0 obs. 
-vax_sex_data %>% 
-  distinct(Date) %>% 
-  anti_join(to_retrieve_vax, by = c("Date" = "date"))
-
-
-
-
-
-### =======================================================
-
-
-### AGE lost data ===========================================
-
-
-
-
-
-
-
-
-
-
-# create empty df to add rows to
-lost_vaxdates <- data.frame()
-
-vax_gaps <- function(file_path){
-  
-  db_age <- read_excel(file_path,
-                       sheet = age_sheet) %>%
-    filter(grepl("| Sverige |", Region)) %>% 
-    select(
-      Value = contains("antal")
-      # , Measure = Dosnummer
-      , Measure = ends_with("status")
-      , Age = ends_with("ldersgrupp")
-    ) %>% 
-    # filter(!grepl("^Total", Age)) %>% 
-    mutate(
-      Measure = case_when(
-        # grepl("1", Measure, ignore.case = T) ~ "Vaccination1"
-        # , grepl("2", Measure, ignore.case = T) ~ "Vaccination2"
-        grepl("1 dos", Measure, ignore.case = T) ~ "Vaccination1"
-        , grepl("2 doser", Measure, ignore.case = T) ~ "Vaccination2"
-        , grepl("Minst 3 doser", Measure, ignore.case = T) ~ "Vaccination3"
-      )
-      , Age_low = as.numeric(str_extract(Age, "^[0-9]{2}"))
-      , Age_high = as.numeric(str_extract(Age, "[0-9]{2}$"))
-      , Age = as.character(Age_low)
-      , AgeInt = as.character(ifelse(!is.na(Age_high), Age_high-Age_low+1, 15))
-      , Sex = "b"
-      # Add empty row for UNK
-      , Age = ifelse(is.na(Age), "UNK", Age)
-      , AgeInt = ifelse(Age == "UNK", "", AgeInt)
-      , Value = ifelse(Age == "UNK", 0, Value)
-    ) %>%  
-    select(Sex, Age, AgeInt, Measure, Value)
-  
-  
-  small_ages <- vac_a2 %>% 
-    filter(Age == "12") %>% 
-    mutate(Age = "0",
-           AgeInt = 12L,
-           Value = 0)
-  vac_a2 <- rbind(vac_a2, small_ages)
-  
-  
-  out_cases <- bind_rows(db_sex, db_age) %>% 
-    gather(Cases, Deaths, key = Measure, value = Value) %>% 
-    mutate(Country = "Sweden",
-           Region = "All",
-           Code = paste0("SE"),
-           Date = date,
-           AgeInt = case_when(
-             Age == "TOT" | Age == "UNK" ~ NA_integer_
-             , Age == "90" ~ 15L
-             , TRUE ~ 10L
-           ), Metric = "Count"
-    ) %>% 
-    select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
-  
-  .GlobalEnv$out_cases <- out_cases
-  
-}
-
-
-for (i in epi_files) {
-  print(paste("Adding lost epi-data for:", i))
-  epi_gaps(file_path = i)
-  lost_vaxdates <- rbind(lost_vaxdates, out_cases)
-}
-
-
-## Append to main dataset (.rds file) ## ==========================
-
-
-Sweden <- lost_epidates %>% 
-  bind_rows(Sweden) #%>% 
-# arrange(desc(Date))
-
-
+### END FILE =========================================
 
 
