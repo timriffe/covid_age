@@ -307,7 +307,7 @@ if (date_f > last_date_drive){
       ) %>% 
       # filter(!grepl("^Total", Age)) %>% 
       mutate(
-        Measure = "Vaccination4", 
+        Measure = case_when(Measure == "4 doser" ~ "Vaccination4"), 
         Age_low = as.numeric(str_extract(Age, "^[0-9]{2}"))
         , Age_high = as.numeric(str_extract(Age, "[0-9]{2}$"))
         , Age = as.character(Age_low)

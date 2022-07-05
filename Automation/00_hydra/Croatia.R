@@ -28,10 +28,12 @@ gs4_auth(email = Sys.getenv("email"))
 #N:\COVerAGE-DB\Automation\Hydra\Data_sources\Croatia
 jtext <- httr::content(GET("https://www.koronavirus.hr/json/?action=po_osobama"), 
                        as = "text", encoding = "UTF-8")
-jtext <- httr::content(GET( "https://www.koronavirus.hr/po_danima_zupanijama"), 
-                       as = "text", encoding = "UTF-8")
+
+# MK: Seems since June 2022, the following link is not working, no data there. 
+# jtext <- httr::content(GET( "https://www.koronavirus.hr/po_danima_zupanijama"), 
+#                        as = "text", encoding = "UTF-8")
 IN_json <- rjson::fromJSON(jtext)
-IN <- bind_rows(IN_json) 
+IN <- dplyr::bind_rows(IN_json) 
 # IN2 <- IN %>%   
 # mutate(Zupanija = trimws(Zupanija, "r"),
 #          Zupanija = iconv(Zupanija, from = "UTF-8", to = "ASCII//TRANSLIT"))

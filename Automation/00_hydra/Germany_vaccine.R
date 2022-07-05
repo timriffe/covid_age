@@ -92,7 +92,7 @@ Vaccine_out_reg= Vaccine_in%>%
          Measure= case_when(Measure== "1"~ "Vaccination1",
                             Measure=="2"~"Vaccination2",
                             Measure=="3"~"Vaccination3",
-                            Measure=="1"~"Vaccination4"),
+                            Measure=="4"~"Vaccination4"),
          Age=recode(Age, 
                     "05-11"="5",
                     "12-17"="12",
