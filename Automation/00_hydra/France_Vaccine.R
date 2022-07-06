@@ -231,11 +231,15 @@ write_rds(vacc_tot_out, paste0(dir_n, ctr, ".rds"))
 log_update(pp = ctr, N = nrow(vacc_tot_out))
 
 
-#Archive 
+#Archive the original source files for the day
 
-data_source <- paste0(dir_n, "Data_sources/", ctr, "/vaccine_age_sex_",today(), ".csv")
+data_source <- paste0(dir_n, "Data_sources/", ctr, "/vaccine_age_sex_",today(), ".xlsx")
 
-write_csv(vacc, data_source)
+vacc <- list("vacc_total" = vacc_total,
+             "vacc_reg" = vacc_reg)
+
+writexl::write_xlsx(vacc, 
+                    path = data_source)
 
 zipname <- paste0(dir_n, 
                   "Data_sources/", 

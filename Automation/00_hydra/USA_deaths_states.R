@@ -28,8 +28,10 @@ db_drive <- read_rds(paste0(dir_n, ctr, ".rds"))
 # info by age for each state!!
 url <- "https://data.cdc.gov/api/views/9bhg-hcku/rows.csv?accessType=DOWNLOAD"
 data_source <- paste0(dir_n, "Data_sources/", ctr, "/deaths_",today(), ".csv")
-download.file(url, destfile = data_source)
-db <- read_csv(data_source)
+
+## MK: 06.07.2022: large file and give download error, so stopped this step and read directly instead
+#download.file(url, destfile = data_source)
+db <- read_csv(url)
 
 unique(db$`Age Group`)
 unique(db$`Group`)

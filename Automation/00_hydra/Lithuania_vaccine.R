@@ -25,7 +25,7 @@ gs4_auth(email = Sys.getenv("email"))
 ######noise for age, 10% have added, removed one year
 #Read in data
 
-In= read.csv("https://opendata.arcgis.com/api/v3/datasets/ffb0a5bfa58847f79bf2bc544980f4b6_0/downloads/data?format=csv&spatialRefId=4326", sep = ",")
+In= fread("https://opendata.arcgis.com/api/v3/datasets/ffb0a5bfa58847f79bf2bc544980f4b6_0/downloads/data?format=csv&spatialRefId=4326")
 
 #Process
 #Dose 1 

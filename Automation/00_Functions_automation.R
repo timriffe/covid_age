@@ -13,7 +13,7 @@ if(!require("pacman", character.only = TRUE)) {
 library(pacman)
 
 # Required CRAN packages
-packages_CRAN <- c("tidyverse","lubridate","gargle","rvest","httr","readxl",
+packages_CRAN <- c("tidyverse","archive", "lubridate","gargle","rvest","httr","readxl",
                    "tictoc","parallel","data.table","git2r","usethis", "rio",
                    "remotes","here","googledrive","zip", "XML", "RCurl",
                    "taskscheduleR","countrycode", "xml2", "dplyr", "xml2",

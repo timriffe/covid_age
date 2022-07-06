@@ -65,10 +65,15 @@ a2 <- httr::content(r2, "text", encoding = "ISO-8859-1")
 b2 <- fromJSON(a2)
 
 date_f <-
-  b2$Date %>%
-  max()
+  dplyr::bind_rows(b2) %>%
+  summarise(Date = max(Date)) %>% 
+  dplyr::pull()
 
 d <- paste(sprintf("%02d", day(date_f)), sprintf("%02d", month(date_f)), year(date_f), sep = ".")
+
+
+## MK, 06.07.2022: A data gap between 05.06.2021 and 04.07.2022, 
+## unfortunately is lost since the timeline does not provide the disaggregation by age and by sex ##
 
 if (date_f > last_date_drive) {
 

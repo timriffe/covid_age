@@ -124,7 +124,7 @@ scripts %>% sort
 
 # starting time for first schedule in hour and minutes
 h_ini <- 06
-m_ini <- 30
+m_ini <- 00
 # delay between scripts in minutes
 delay_time <- 5
 
@@ -152,12 +152,23 @@ for(c in scripts){
 # for individual scheduling
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sched("US_Pennsylvania_vaccine", tm = "15:30", email = auto_update_email, wd = auto_update_wd)
-sched("US_Michigan", tm = "14:45", email = auto_update_email, wd = auto_update_wd)
-sched('Germany_vaccine', tm = "15:05", email = auto_update_email, wd = auto_update_wd)
-sched('Italy', tm = "15:32", email = auto_update_email, wd = auto_update_wd)
-
-
+sched("Colombia", tm = "14:36", email = auto_update_email, wd = auto_update_wd)
+sched("Germany", tm = "15:40", email = auto_update_email, wd = auto_update_wd)
+sched('Germany_vaccine', tm = "14:45", email = auto_update_email, wd = auto_update_wd)
+sched('Peru', tm = "15:47", email = auto_update_email, wd = auto_update_wd)
+sched("USA_deaths_states", tm = "15:32", email = auto_update_email, wd = auto_update_wd)
+sched("US_Wisconsin", tm = "14:55", email = auto_update_email, wd = auto_update_wd)
+sched('Italy', tm = "14:57", email = auto_update_email, wd = auto_update_wd)
+sched('Canada_vaccine', tm = "15:00", email = auto_update_email, wd = auto_update_wd)
+sched("Lithuania_vaccine", tm = "15:03", email = auto_update_email, wd = auto_update_wd)
+sched("Latvia_vaccine", tm = "15:05", email = auto_update_email, wd = auto_update_wd)
+sched('USA_vaccine', tm = "15:07", email = auto_update_email, wd = auto_update_wd)
+sched('Japan', tm = "15:09", email = auto_update_email, wd = auto_update_wd)
+sched("Puerto_Rico", tm = "15:10", email = auto_update_email, wd = auto_update_wd)
+sched("England_Vaccine", tm = "15:12", email = auto_update_email, wd = auto_update_wd)
+sched('England', tm = "15:15", email = auto_update_email, wd = auto_update_wd)
+sched('Ireland', tm = "15:17", email = auto_update_email, wd = auto_update_wd)
+sched("Togo", tm = "15:20", email = auto_update_email, wd = auto_update_wd)
 
 #sch = "WEEKLY"
 
