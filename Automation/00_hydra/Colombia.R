@@ -26,14 +26,17 @@ tests_url <- "https://www.datos.gov.co/api/views/8835-5baf/rows.csv?accessType=D
 data_source_c <- paste0(dir_n, "Data_sources/", ctr, "/cases_",today(), ".csv")
 data_source_t <- paste0(dir_n, "Data_sources/", ctr, "/tests_",today(), ".csv")
 
-download.file(cases_url, destfile = data_source_c)
+
+## MK, 06.07.2022: THE CASES file is too large, so will skip the temp file download and read it first and then save in data_source,
+
+#download.file(cases_url, destfile = data_source_c)
 download.file(tests_url, destfile = data_source_t)
 
 
 # Loading data in the session
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # cases and deaths database
-db <- read_csv(data_source_c,
+db <- read_csv(cases_url,
                locale = locale(encoding = "UTF-8"))
 
 # tests database

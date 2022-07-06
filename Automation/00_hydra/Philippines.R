@@ -119,7 +119,7 @@ case_url <-
   drive_contents %>% 
   filter(grepl(name, pattern="04 Case Information_batch_0.csv"))
 
-# Download Cases part 1
+# Download Cases part 1 == from 30.01.2020 to 26.04.2021
 case_url %>% 
   drive_download(path = "Data/PH_Cases1.csv",
                  overwrite = TRUE)
@@ -127,7 +127,7 @@ case_url %>%
 IN1 <- read_csv("Data/PH_Cases1.csv",
                col_types = "ccccDDDDDccccccccccDcc")
 
-# Drive info for Case file part 2
+# Drive info for Case file part 2 == from 26.04.2021- 01.09.2021
 case_url <-
   drive_contents %>% 
   filter(grepl(name, pattern="04 Case Information_batch_1.csv"))
@@ -139,12 +139,13 @@ case_url %>%
 
 IN2 <- read_csv("Data/PH_Cases2.csv",
                 col_types = "ccccDDDDDccccccccccDcc")
-# Drive info for Case file part 3
+
+# Drive info for Case file part 3 == from 01.09.2021 to 11.01.2022
 case_url <-
   drive_contents %>% 
   filter(grepl(name, pattern="04 Case Information_batch_2.csv"))
 
-# Download Cases part 1
+# Download Cases part 3
 case_url %>% 
   drive_download(path = "Data/PH_Cases3.csv",
                  overwrite = TRUE)
@@ -152,12 +153,14 @@ case_url %>%
 IN3 <- read_csv("Data/PH_Cases3.csv",
                 col_types = "ccccDDDDDccccccccccDcc")
 
-# Drive info for Case file part 3
+# Drive info for Case file part 4 == from 11.01.2022 to (24.06.2022, should continue here or have a new file) ======
+## TODO: to monitor
+
 case_url <-
   drive_contents %>% 
   filter(grepl(name, pattern="04 Case Information_batch_3.csv"))
 
-# Download Cases part 1
+# Download Cases part 4
 case_url %>% 
   drive_download(path = "Data/PH_Cases4.csv",
                  overwrite = TRUE)
@@ -334,7 +337,7 @@ log_update(pp = "Philippines", N = N)
 ############################################
 ### save artifacts                       ###
 ############################################
-files <- c("Data/PH_Cases.csv","Data/PH_Tests.csv","Data/PH_README.pdf")
+sourcefile <- c("Data/PH_Cases.csv","Data/PH_Tests.csv","Data/PH_README.pdf")
 #ex_files <- c(paste0(PH_dir, files))
 
 zipname <- paste0(dir_n, 
@@ -347,7 +350,7 @@ zipname <- paste0(dir_n,
                   ".zip")
 
 zip::zipr(zipname,
-          files = files, 
+          sourcefile, 
           recurse = TRUE, 
           compression_level = 9,
           include_directories = TRUE)

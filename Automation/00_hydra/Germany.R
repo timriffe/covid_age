@@ -19,9 +19,11 @@ gs4_auth(email = Sys.getenv("email"))
 
 cases_url <- "https://www.arcgis.com/sharing/rest/content/items/f10774f1c63e40168479a1feb6c7ca74/data"
 data_source <- paste0(dir_n, "Data_sources/", ctr, "/cases&deaths_",today(), ".csv")
-download.file(cases_url, destfile = data_source, mode = "wb")
 
-db <- read_csv(data_source,
+## MK: 06.07.2022: large file and give download error, so stopped this step and read directly instead
+#download.file(cases_url, destfile = data_source, mode = "wb")
+
+db <- read_csv(cases_url,
                locale = locale(encoding = "UTF-8"))
 
 unique(db$Geschlecht)
