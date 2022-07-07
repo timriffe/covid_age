@@ -132,23 +132,26 @@ tests3 <- tests2 %>%
   mutate(Measure = "Tests",
          Metric = "Count") %>% 
   arrange(Date, Sex, Age) %>%  
-  mutate(Date= ddmmyyyy(Date),
-         Code = paste0("PR"),
-         Age = case_when(Age == "0 - 9" ~ "0",
-                         Age == "10 - 19" ~ "10",
-                         Age == "20 - 29" ~ "20",
-                         Age == "30 - 39" ~ "30",
-                         Age == "40 - 49" ~ "40",
-                         Age == "50 - 59" ~ "50",
-                         Age == "60 - 69" ~ "60",
-                         Age == "70 - 79" ~ "70",
+  mutate(Code = paste0("PR"),
+         Age = case_when(Age == "0 a 9" ~ "0",
+                         Age == "10 a 19" ~ "10",
+                         Age == "20 a 29" ~ "20",
+                         Age == "30 a 39" ~ "30",
+                         Age == "40 a 49" ~ "40",
+                         Age == "50 a 59" ~ "50",
+                         Age == "60 a 69" ~ "60",
+                         Age == "70 a 79" ~ "70",
                          Age == "80 +" ~ "80",
-                         Age == "" ~ "UNK"),
+                         Age == "" ~ "UNK",
+                         (is.na(Age) ~ "UNK")),
          AgeInt = case_when(Age == "80" ~ "25",
                             TRUE ~ "10")) %>% 
   mutate(Region = "All",
          Country = "Puerto Rico",
-         Region = "All")
+         Region = "All") %>% 
+  filter(Date != "",
+         Sex != "") %>% 
+  mutate(Date= ddmmyyyy(Date))
 
 ###vaccine
 download.file("https://covid19datos.salud.gov.pr/estadisticas_v2/download/data/vacunacion/completo", 
@@ -180,7 +183,8 @@ vaccine3 <- vaccine2 %>%
   arrange(Date, Sex, Age) %>%  
   mutate(Date= ddmmyyyy(Date),
          Code = paste0("PR"),
-         Age = case_when(Age == "12 a 15" ~ "12",
+         Age = case_when(Age == "5 a 11" ~ "5",
+                         Age == "12 a 15" ~ "12",
                          Age == "16 a 19" ~ "16",
                          Age == "20 a 29" ~ "20",
                          Age == "30 a 39" ~ "30",
@@ -193,6 +197,7 @@ vaccine3 <- vaccine2 %>%
          AgeInt = case_when(Age == "80" ~ "25",
                             Age == "12" ~ "4",
                             Age == "16" ~ "4",
+                            Age == "5" ~ "7",
                             TRUE ~ "10")) %>% 
   mutate(Region = "All",
          Country = "Puerto Rico",
@@ -222,7 +227,8 @@ vaccine5 <- vaccine4 %>%
   arrange(Date, Sex, Age) %>%  
   mutate(Date= ddmmyyyy(Date),
          Code = paste0("PR"),
-         Age = case_when(Age == "12 a 15" ~ "12",
+         Age = case_when(Age == "5 a 11" ~ "5",
+                         Age == "12 a 15" ~ "12",
                          Age == "16 a 19" ~ "16",
                          Age == "20 a 29" ~ "20",
                          Age == "30 a 39" ~ "30",
@@ -235,6 +241,7 @@ vaccine5 <- vaccine4 %>%
          AgeInt = case_when(Age == "80" ~ "25",
                             Age == "12" ~ "4",
                             Age == "16" ~ "4",
+                            Age == "5" ~ "7",
                             TRUE ~ "10")) %>% 
   mutate(Region = "All",
          Country = "Puerto Rico",
