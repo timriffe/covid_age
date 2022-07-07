@@ -5,20 +5,18 @@
 # library(httr)
 source("Automation/00_Functions_automation.R")
 if (!"email" %in% ls()){
-  email <- "mumanal.k@gmail.com"
-  #originally: "kikepaila@gmail.com"
+  email <- "kikepaila@gmail.com"
 }
 
 # info country and N drive address
 ctr <- "Brazil"
 dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 
-# Drive credentials
-drive_auth(email = email)
-gs4_auth(email = email)
 
-#drive_auth(email = Sys.getenv("email"))
-#gs4_auth(email = Sys.getenv("email"))
+# Drive credentials
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
+
 
 
 dates <- seq.Date(dmy("16/03/2020"), today(), by = "day")

@@ -23,9 +23,6 @@ if (!dir.exists(paste0(dir_n, "Data_sources/", ctr))){
   dir.create(paste0(dir_n, "Data_sources/", ctr))
 }
 
-
-
-
 # Drive credentials
 drive_auth(email = Sys.getenv("email"))
 gs4_auth(email = Sys.getenv("email"))

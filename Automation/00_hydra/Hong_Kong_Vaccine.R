@@ -9,6 +9,10 @@ if (!"email" %in% ls()){
   email <- "jessica_d.1994@yahoo.de"
 }
 
+# Drive credentials
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
+
 
 # info country and N drive address
 

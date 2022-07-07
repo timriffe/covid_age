@@ -175,30 +175,33 @@ if (date_f > last_date_drive){
   
   if (update_vaccines){
   print("New vaccination data available - updating..")  
-    
-    vac_sex <- read_xlsx(data_source_vac, sheet = 8)
+    # MK-Update: (27.06.2022)
+    # Since 2022.06.23, Sweden updated their way of publishing vaccination data: ##
+    # one sheet for 1:3 doses, 1 sheet for 4th dose #
+    # so for the 3 doses sheet: vac_age, and for the fourth: vacc4_age #
+    vac_sex <- read_xlsx(data_source_vac, sheet = 7)
     vac_age <- read_xlsx(data_source_vac, sheet = 5)
-    vacc3_age <- read_xlsx(data_source_vac, sheet = 6)
-    vacc4_age <- read_xlsx(data_source_vac, sheet = 7)
+ ##   vacc3_age <- read_xlsx(data_source_vac, sheet = 5)
+    vacc4_age <- read_xlsx(data_source_vac, sheet = 6)
     
     # Get data by sex
     
     vac_s2 <-
-      vac_sex %>% 
+      vac_sex %>%
       select(
         Sex = starts_with("K")
-        , Value = `Antal vaccinerade`
+        , Value = contains("antal")
         # Changed on 20210423 by Diego after codes changed
         # , Measure = Dosnummer
-        , Measure = Vaccinationsstatus
-      ) %>% 
-      # filter(!grepl("^t", Sex, ignore.case = T)) %>% 
+        , Measure = ends_with("status")
+      ) %>%
+      # filter(!grepl("^t", Sex, ignore.case = T)) %>%
       mutate(
         Sex = case_when(
           grepl("^m", Sex, ignore.case = T) ~ "m",
           grepl("^k", Sex, ignore.case = T) ~ "f"
           # grepl("^t", Sex, ignore.case = T) ~ "UNK"
-        ) 
+        )
         , Measure = case_when(
           # Changed on 20210423 by Diego after codes changed
           grepl("Minst 1 dos", Measure, ignore.case = T) ~ "Vaccination1"
@@ -212,19 +215,19 @@ if (date_f > last_date_drive){
         , Sex = ifelse(is.na(Sex), "UNK", Sex)
         , AgeInt = ifelse(Sex == "UNK", "", AgeInt)
         , Value = ifelse(Sex == "UNK", 0, Value)
-      ) %>% 
-      select(Sex, Age, AgeInt, Measure, Value) %>% 
+      ) %>%
+      select(Sex, Age, AgeInt, Measure, Value) %>%
       arrange(Sex)
-    
+
     # Get data by age
     
     vac_a2 <-
       vac_age %>% 
-      filter(grepl("Sverige", Region)) %>% 
+      filter(grepl("| Sverige |", Region)) %>% 
       select(
         Value = contains("antal")
         # , Measure = Dosnummer
-        , Measure = Vaccinationsstatus
+        , Measure = ends_with("status")
         , Age = ends_with("ldersgrupp")
       ) %>% 
       # filter(!grepl("^Total", Age)) %>% 
@@ -232,8 +235,9 @@ if (date_f > last_date_drive){
         Measure = case_when(
           # grepl("1", Measure, ignore.case = T) ~ "Vaccination1"
           # , grepl("2", Measure, ignore.case = T) ~ "Vaccination2"
-          grepl("Minst 1 dos", Measure, ignore.case = T) ~ "Vaccination1"
-          , grepl("Minst 2 doser", Measure, ignore.case = T) ~ "Vaccination2"
+          grepl("1 dos", Measure, ignore.case = T) ~ "Vaccination1"
+          , grepl("2 doser", Measure, ignore.case = T) ~ "Vaccination2"
+          , grepl("Minst 3 doser", Measure, ignore.case = T) ~ "Vaccination3"
         )
         , Age_low = as.numeric(str_extract(Age, "^[0-9]{2}"))
         , Age_high = as.numeric(str_extract(Age, "[0-9]{2}$"))
@@ -256,54 +260,54 @@ if (date_f > last_date_drive){
     vac_a2 <- rbind(vac_a2, small_ages)
     
     
-    #data by age for third vaccination
-    
-    vac_a3 <-
-      vacc3_age %>% 
-      filter(grepl("Sverige", Region)) %>% 
-      select(
-        Value = contains("antal")
-        # , Measure = Dosnummer
-        , Measure = Vaccinationsstatus
-        , Age = ends_with("ldersgrupp")
-      ) %>% 
-      # filter(!grepl("^Total", Age)) %>% 
-      mutate(
-        Measure = "Vaccination3", 
-        Age_low = as.numeric(str_extract(Age, "^[0-9]{2}"))
-        , Age_high = as.numeric(str_extract(Age, "[0-9]{2}$"))
-        , Age = as.character(Age_low)
-        , AgeInt = as.character(ifelse(!is.na(Age_high), Age_high-Age_low+1, 15))
-        , Sex = "b"
-        # Add empty row for UNK
-        , Age = ifelse(is.na(Age), "UNK", Age)
-        , AgeInt = ifelse(Age == "UNK", "", AgeInt)
-        , Value = ifelse(Age == "UNK", 0, Value)
-      ) %>%  
-      select(Sex, Age, AgeInt, Measure, Value)
-    
-    small_ages <- vac_a3 %>% 
-      filter(Age == "18") %>% 
-      mutate(Age = "0",
-             AgeInt = 18L,
-             Value = 0)
-    vac_a3 <- rbind(vac_a3, small_ages)
-    
+    # #data by age for third vaccination
+    # 
+    # vac_a3 <-
+    #   vacc3_age %>% 
+    #   filter(grepl("| Sverige |", Region)) %>% 
+    #   select(
+    #     Value = contains("antal")
+    #     # , Measure = Dosnummer
+    #     , Measure = ends_with("status")
+    #     , Age = ends_with("ldersgrupp")
+    #   ) %>% 
+    #   # filter(!grepl("^Total", Age)) %>% 
+    #   mutate(
+    #     Measure = "Vaccination3", 
+    #     Age_low = as.numeric(str_extract(Age, "^[0-9]{2}"))
+    #     , Age_high = as.numeric(str_extract(Age, "[0-9]{2}$"))
+    #     , Age = as.character(Age_low)
+    #     , AgeInt = as.character(ifelse(!is.na(Age_high), Age_high-Age_low+1, 15))
+    #     , Sex = "b"
+    #     # Add empty row for UNK
+    #     , Age = ifelse(is.na(Age), "UNK", Age)
+    #     , AgeInt = ifelse(Age == "UNK", "", AgeInt)
+    #     , Value = ifelse(Age == "UNK", 0, Value)
+    #   ) %>%  
+    #   select(Sex, Age, AgeInt, Measure, Value)
+    # 
+    # small_ages <- vac_a3 %>% 
+    #   filter(Age == "18") %>% 
+    #   mutate(Age = "0",
+    #          AgeInt = 18L,
+    #          Value = 0)
+    # vac_a3 <- rbind(vac_a3, small_ages)
+    # 
     
     #data by age for fourth vaccination
     
     vac_a4 <-
       vacc4_age %>% 
-      filter(grepl("Sverige", Region)) %>% 
+      filter(grepl("| Sverige |", Region)) %>% 
       select(
         Value = contains("antal")
         # , Measure = Dosnummer
-        , Measure = Vaccinationsstatus
+        , Measure = ends_with("status")
         , Age = ends_with("ldersgrupp")
       ) %>% 
       # filter(!grepl("^Total", Age)) %>% 
       mutate(
-        Measure = "Vaccination4", 
+        Measure = case_when(Measure == "4 doser" ~ "Vaccination4"), 
         Age_low = as.numeric(str_extract(Age, "^[0-9]{2}"))
         , Age_high = as.numeric(str_extract(Age, "[0-9]{2}$"))
         , Age = as.character(Age_low)
@@ -326,7 +330,7 @@ if (date_f > last_date_drive){
     
     
     out_vac <-
-      bind_rows(vac_s2, vac_a2, vac_a3, vac_a4) %>% 
+      bind_rows(vac_s2, vac_a2, vac_a4) %>% 
       mutate(Country = "Sweden",
              Region = "All",
              Code = paste0("SE"),

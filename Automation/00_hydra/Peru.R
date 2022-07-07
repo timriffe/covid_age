@@ -2,7 +2,7 @@
 source(here::here("Automation/00_Functions_automation.R"))
 #install.packages("archive")
 library(archive)
-#install.packages("archive")
+
 
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
@@ -14,8 +14,8 @@ ctr <- "Peru"
 dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 # Drive credentials
-drive_auth(email = email)
-gs4_auth(email = email)
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
 
 # load data
 m_url1 <- "https://www.datosabiertos.gob.pe/dataset/casos-positivos-por-covid-19-ministerio-de-salud-minsa"
@@ -45,9 +45,11 @@ data_source_v <- paste0(dir_n, "Data_sources/", ctr, "/vacc_",today(), ".7z")
 
 # EA: needed to add the index [1] because there is more than one link, while the first one is the 
 # full database that we need
-download.file(cases_url[1], destfile = data_source_c, mode = "wb")
-download.file(deaths_url[1], destfile = data_source_d, mode = "wb")
-download.file(vacc_url, destfile = data_source_v, mode = "wb")
+
+## MK: 06.07.2022: large file and give download error, so stopped this step and read directly instead
+#download.file(cases_url[1], destfile = data_source_c, mode = "wb")
+#download.file(deaths_url[1], destfile = data_source_d, mode = "wb")
+#download.file(vacc_url, destfile = data_source_v, mode = "wb")
 
 
 #JD: read in from Url was failing, I changed it to reading in the downloaded csv
@@ -60,10 +62,25 @@ download.file(vacc_url, destfile = data_source_v, mode = "wb")
 # Vaccines
 #db_v <- read_csv(data_source_v)
 
-db_c <- read.csv(data_source_c, sep = ";")
-db_d <- read.csv(data_source_d, sep = ";")
+#db_c <- read.csv(data_source_c, sep = ";")
+#db_d <- read.csv(data_source_d, sep = ";")
 #db_v <- read.csv(data_source_v, sep = ",")
-db_v=read_csv(archive_read(data_source_v), col_types = cols())
+#db_v=read_csv(archive_read(data_source_v), col_types = cols())
+#db_v <- read_csv(vacc_url)
+
+## MK: 07.07.2022: due to large file size (use fread to read first, and then write a copy), and 
+## .7z (vaccination file), we need to download it first then read.
+
+db_c <- data.table::fread(cases_url[1])
+readr::write_csv(db_c, file = data_source_c)
+
+db_d <- data.table::fread(deaths_url[1])
+readr::write_csv(db_d, file = data_source_d)
+
+vac_file <- download.file(vacc_url, destfile = data_source_v, mode = "wb")
+db_v <- read_csv(archive_read(data_source_v), col_types = cols())
+
+
 
 # deaths ----------------------------------------------
 

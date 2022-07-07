@@ -11,8 +11,10 @@ source(here("Automation/00_Functions_automation.R"))
 ctr <- "US_Wisconsin"
 dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 
-drive_auth(email = email)
-gs4_auth(email = email)
+# Drive credentials
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
+
 # TR: pull urls from rubric instead 
 rubric_i <- get_input_rubric() %>% filter(Short == "US_WI")
 ss_i     <- rubric_i %>% dplyr::pull(Sheet)
@@ -154,7 +156,10 @@ db <- db0 %>%
   select(RptDt, POS_CUM_CP, TESTS_CUM, POS_FEM_CP, POS_MALE_CP, POS_0_9_CP, POS_10_19_CP, POS_20_29_CP, 
          POS_30_39_CP, POS_40_49_CP, POS_50_59_CP, POS_60_69_CP, POS_70_79_CP, 
          POS_80_89_CP, POS_90_CP)
-db <- melt(db, id = "RptDt")
+db <- db %>% 
+  pivot_longer(cols = -c("RptDt"),
+               names_to = "variable",
+               values_to = "Value")
 db_out <- db %>% 
   mutate(Age = case_when(
     variable == "POS_CUM_CP" ~ "TOT",    

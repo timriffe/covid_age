@@ -16,8 +16,9 @@ dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 
 # Drive credentials
-drive_auth(email = email)
-gs4_auth(email = email)
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
+
 
 
 # reading in archive data  
@@ -189,3 +190,4 @@ file.remove(data_source)
 } else if (date_f == last_date_archive) {
   log_update(pp = ctr, N = 0)
 }
+

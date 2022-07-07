@@ -12,8 +12,9 @@ ctr <- "Netherlands"
 dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 # Drive credentials
-drive_auth(email = email)
-gs4_auth(email = email)
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
+
 
 # this is specifically for the way NL records isoweeks
 isoweek_to_date_hack <- function(ISOWEEK){

@@ -39,7 +39,7 @@ if (grepl("gits", auto_update_wd)){
 
 ## Sys.setenv(email = "mumanal.k@gmail.com")
 
-if (grepl("Documents/GitHub", auto_update_wd)){
+if (grepl("gits", auto_update_wd)){
   auto_update_email <- "mumanal.k@gmail.com"
 }
 
@@ -79,30 +79,42 @@ tasks <-
 
 # list of all available scripts to schedule
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-scripts <- c('US_Virginia', 'Netherlands', 'Estonia', 
-             'Czechia', 'US_Michigan', 'Venezuela', 'US_Texas', 
-             'USA_deaths_states', 'Sweden', 'Peru', 'Germany', 
-             'US_Massachusetts', 'Colombia', 'US_NYC', 'Austria', 'Philippines', 
-             'Scotland', 'Norway', 'US_California', 'Afghanistan', 'Finland', 
-             'US_Wisconsin', 'Bulgaria', 'Denmark', 'Belgium', 'New_Zealand', 
-             'Mexico', 'Thailand', 'Spain', 'US_Oregon', 'Slovakia', 'Cambodia', 
-             'Hungary', 'Vietnam', 'Italy', 'Croatia',  
+scripts <- c('Afghanistan', 'Argentina', 'AU_New_South_Wales',
+             'Austria', 'Australia_vaccine',
+             'Bulgaria',  'Belgium',
+             'Czechia', 'Colombia', 'Cambodia', 'Croatia',  
              'CA_Manitoba_Saskatchewan', 'CA_Ontario', 'CA_British_Columbia', 
-             'Ukraine', 'Spain_vaccine', 'Chile_vaccine', 'Portugal_Vaccine', 
-             'CA_Alberta', 'Canada_vaccine', 'US_Texas_Vaccine', 
-             'Hong_Kong_Vaccine','Argentina','Slovenia', 'US_Maine','US_NYC_vaccine',
-             'US_Vermont_Vaccine', 'US_Indiana','Lithuania_vaccine','US_Michigan_vaccine',
-             'US_Minnesota_vaccine', 'Slovenia_vaccine', 'US_Oregon_Vaccine', 
-             'Latvia_vaccine', 'Island_of_Jersey', 'Estonia_vaccine', 'Uruguay_vaccine', 
-             'Chile','Finland_vaccine', 'ECDC_vaccine', 'Slovakia_vaccine', 
-             'Germany_vaccine', 'US_Pennsylvania_vaccine', 'USA_vaccine',
-             'Australia_vaccine', 'US_Idaho', 'New_Zealand', 
-             'Maldives', 'Japan', 'Romania', 'Puerto_Rico', 'Scotland_Vaccine', 
-             'Switzerland_Vaccine', 'Norway_Vaccine', 'France_Vaccine',
-             'England_Vaccine', 'England', 'England_and_Wales', 'Togo', 
-             'Netherlands_Vaccine', 'Costa_Rica_Vaccine', 
-             'USA_cases_all', 'USA_cases_states', 'USA_deaths_all', 'USA_deaths_states', 'Somalia', 'Ireland',
-             'AU_New_South_Wales', 'Italy_reg', 'SouthKorea', 'US_Maine_Vaccine')
+             'CA_Alberta', 'Chile', 
+             'Chile_vaccine', 'Canada_vaccine', 'Costa_Rica_Vaccine', 
+             'Denmark',
+             'Estonia', 'England', 'England_and_Wales',
+             'Estonia_vaccine', 'ECDC_vaccine', 'England_Vaccine', 
+             'Finland', 'Finland_vaccine', 'France_Vaccine',
+             'Germany', 'Germany_vaccine',
+             'Hungary', 'Hong_Kong_Vaccine',
+             'Italy', 'Ireland', 'Italy_reg', 'Island_of_Jersey', 
+             'Japan',
+             'Lithuania_vaccine', 'Latvia_vaccine',
+             'Mexico', 'Maldives', 'Malaysia',
+             'Norway',  'Netherlands', 'New_Zealand',  
+             'Norway_Vaccine', 'Netherlands_Vaccine', 
+             'Peru', 'Philippines', 'Puerto_Rico', 'Portugal_Vaccine',
+             'Romania', 
+             'Spain', 'Slovakia',  'Somalia', 'Sweden', 
+             'SouthKorea', 'Scotland', 'Slovenia',
+             'Scotland_Vaccine', 'Switzerland_Vaccine',
+             'Spain_vaccine', 'Slovenia_vaccine', 'Slovakia_vaccine', 
+             'Thailand', 'Togo',
+             'Uruguay_vaccine', 'Ukraine', 
+             'US_Indiana', 'US_Maine', 'US_Massachusetts',  'US_NYC',
+             'US_California', 'US_Wisconsin', 'US_Oregon',
+             'US_Virginia', 'US_Idaho', 'US_Michigan', 'US_Texas', 
+             'US_Michigan_vaccine','US_Minnesota_vaccine', 'US_Oregon_Vaccine',
+             'US_Pennsylvania_vaccine', 'US_Maine_Vaccine',
+             'US_NYC_vaccine', 'US_Vermont_Vaccine', 'US_Texas_Vaccine',
+             'USA_cases_all', 'USA_cases_states',
+             'USA_deaths_states', 'USA_deaths_all', 'USA_vaccine',
+             'Vietnam', 'Venezuela')
 
 # scripts <- c('USA_cases_all', 'USA_cases_states', 'USA_deaths_all', 'USA_deaths_states')
 # scripts <- c('USA_cases_all', 'USA_deaths_all')
@@ -140,11 +152,23 @@ for(c in scripts){
 # for individual scheduling
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sched("USA_cases_all", tm = "14:09", email = auto_update_email, wd = auto_update_wd)
-sched("Finland_vaccine", tm = "15:15", email = auto_update_email, wd = auto_update_wd)
-sched('SouthKorea', tm = "18:23", email = auto_update_email, wd = auto_update_wd)
-sched('USA_deaths_all', tm = "17:01", email = auto_update_email, wd = auto_update_wd)
-sched('USA_cases_all', tm = "17:02", email = auto_update_email, wd = auto_update_wd)
+sched("Colombia", tm = "14:36", email = auto_update_email, wd = auto_update_wd)
+sched("Germany", tm = "15:40", email = auto_update_email, wd = auto_update_wd)
+sched('Germany_vaccine', tm = "14:45", email = auto_update_email, wd = auto_update_wd)
+sched('Peru', tm = "15:47", email = auto_update_email, wd = auto_update_wd)
+sched("USA_deaths_states", tm = "15:32", email = auto_update_email, wd = auto_update_wd)
+sched("US_Wisconsin", tm = "14:55", email = auto_update_email, wd = auto_update_wd)
+sched('Italy', tm = "14:57", email = auto_update_email, wd = auto_update_wd)
+sched('Canada_vaccine', tm = "15:00", email = auto_update_email, wd = auto_update_wd)
+sched("Lithuania_vaccine", tm = "15:03", email = auto_update_email, wd = auto_update_wd)
+sched("Latvia_vaccine", tm = "15:05", email = auto_update_email, wd = auto_update_wd)
+sched('USA_vaccine', tm = "15:07", email = auto_update_email, wd = auto_update_wd)
+sched('Japan', tm = "15:09", email = auto_update_email, wd = auto_update_wd)
+sched("Puerto_Rico", tm = "15:10", email = auto_update_email, wd = auto_update_wd)
+sched("England_Vaccine", tm = "15:12", email = auto_update_email, wd = auto_update_wd)
+sched('England', tm = "15:15", email = auto_update_email, wd = auto_update_wd)
+sched('Ireland', tm = "15:17", email = auto_update_email, wd = auto_update_wd)
+sched("Togo", tm = "15:20", email = auto_update_email, wd = auto_update_wd)
 
 #sch = "WEEKLY"
 
