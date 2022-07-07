@@ -15,7 +15,7 @@ library(pacman)
 # Required CRAN packages
 packages_CRAN <- c("tidyverse","archive", "lubridate","gargle","rvest","httr","readxl",
                    "tictoc","parallel","data.table","git2r","usethis", "rio",
-                   "remotes","here","googledrive","zip", "XML", "RCurl",
+                   "remotes","here","googledrive","zip", "XML", "RCurl", "reshape2",
                    "taskscheduleR","countrycode", "xml2", "dplyr", "xml2",
                    "reticulate", "rjson", "readODS", "pdftools", "aweek", 
                    "ISOweek", "longurl", "ggpubr", "arrow", "xlsx")

@@ -25,17 +25,19 @@ gs4_auth(email = Sys.getenv("email"))
 #data by sex and dose is appended
 #data for both sexes and doses combined is refreshed, need that time series to get date  
 
-DataArchive <- read_rds(paste0(dir_n, ctr, ".rds"))
+DataArchive <- read_rds(paste0(dir_n, ctr, ".rds")) 
 
 
 #save data by sex and totals  
 
 Append= DataArchive%>%
-  filter(Sex== "f"| Sex== "m"| Sex== "UNK"| Age == "TOT") %>% 
-  mutate(Sex = case_when(
-    Sex == "Texas" ~ "b",
-    TRUE ~ Sex)) %>% 
+  ## MK 07.07.2022: Not sure why these steps are here ##
+  # filter(Sex== "f"| Sex== "m"| Sex== "UNK"| Age == "TOT") %>% 
+  # mutate(Sex = case_when(
+  #   Sex == "Texas" ~ "b",
+  #   TRUE ~ Sex)) %>% 
   mutate(Age = case_when(
+    Age == "6mo-4yr" ~ "0",
     Age == "44327" ~ "5",
     Age == "44545" ~ "12",
     Age == "16-49" ~ "16",
@@ -49,6 +51,7 @@ Append= DataArchive%>%
     TRUE  ~ Age
   ),
   AgeInt = case_when(
+    Age == "0" ~ 5L,
     Age == "5" ~ 7L,
     Age == "12" ~ 5L,
     Age == "16" ~ 34L,
@@ -71,8 +74,10 @@ download.file(url, data_source, mode = "wb")
 
 In_vaccine <- read_xlsx(data_source, sheet = 4)
 
+##MK: Texas changed the age groups by adding "6mo-4yr", recoding and var name is adjusted 
+
 In_vaccine_age<- In_vaccine %>%
-  select(Age = `Agegrp`, Date=`Vaccination Date`, Doses= `Doses Administered`)%>%
+  select(Age = `Agegrp_v2`, Date=`Vaccination Date`, Doses= `Doses Administered`)%>%
   filter(!is.na(Date))
 
 #Date is transformed to time passed since 01.01.1900 when Excel file is read in
@@ -97,6 +102,7 @@ Out_Vaccine_Age = In_vaccine_age %>%
   mutate(Value= cumsum(Doses)) %>% 
   ungroup() %>%
   mutate(Age=recode(Age, 
+                    `6mo-4yr` = "0",
                     `16-49`="16",
                     `50-64`="50",
                     `65-79`="65",
@@ -105,6 +111,7 @@ Out_Vaccine_Age = In_vaccine_age %>%
                     `44910`="12",
                     `Unknown`="UNK"))%>% 
   mutate(AgeInt = case_when(
+    Age == "0" ~ 5L,
     Age == "5" ~ 7L,
     Age == "12" ~ 5L,
     Age == "16" ~ 34L,
@@ -139,9 +146,10 @@ In_vaccine_dose <- read_xlsx(data_source, sheet = 3)
 
 
 Out_Vaccine_dose <- In_vaccine_dose %>% 
-  select(Race = `Race/Ethnicity` , Sex = Gender, Age = `Agegrp`,  Vaccinations= `Doses Administered`, Vaccination1= `People Vaccinated with at least One Dose` , Vaccination2= `People Fully Vaccinated`)%>%
+  select(Race = `Race/Ethnicity` , Sex = Gender, Age = `Agegrp_v2`,  Vaccinations= `Doses Administered`, Vaccination1= `People Vaccinated with at least One Dose` , Vaccination2= `People Fully Vaccinated`)%>%
   pivot_longer(!Age & !Sex & !Race, names_to= "Measure", values_to= "Value")%>%
    mutate(Age=recode(Age, 
+                     `6mo-4yr`= "0",
                      `44692`="5",
                      `44910`="12",
                     `16-49`="16",
@@ -151,6 +159,7 @@ Out_Vaccine_dose <- In_vaccine_dose %>%
                     `Unknown`="UNK",
                     `Total`="TOT"), 
           AgeInt = case_when(
+            Age == "0" ~ 5L,
             Age == "5" ~ 7L,
             Age == "12" ~ 5L,
             Age == "16" ~ 34L,

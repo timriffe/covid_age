@@ -152,8 +152,8 @@ for(c in scripts){
 # for individual scheduling
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sched("Colombia", tm = "14:36", email = auto_update_email, wd = auto_update_wd)
-sched("Germany", tm = "15:40", email = auto_update_email, wd = auto_update_wd)
+sched("Colombia", tm = "15:51", email = auto_update_email, wd = auto_update_wd)
+sched("Italy", tm = "15:55", email = auto_update_email, wd = auto_update_wd)
 sched('Germany_vaccine', tm = "14:45", email = auto_update_email, wd = auto_update_wd)
 sched('Peru', tm = "15:47", email = auto_update_email, wd = auto_update_wd)
 sched("USA_deaths_states", tm = "15:32", email = auto_update_email, wd = auto_update_wd)
