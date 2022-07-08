@@ -187,12 +187,23 @@ J <- J[ , try_step(process_function = maybe_lower_closeout,
         by = list(Code, Date, Sex, Measure),
         .SDcols = icols][,..icols]
 
+### Adjusting starting age
+
+K <- J %>% 
+  group_by(Date, Code, Sex, Measure) %>% 
+  slice(which.min(Age)) %>% 
+  filter(Age != 0) %>% 
+  mutate(Age = 0,
+         Value = 0) 
+K <- rbind(J, K) %>% 
+  sort_input_data()
+
 
 ### Saving ##########################################################
 
 # Formatting 
 # TR: add_AgeInt might not be working!!
-inputCounts <- J[ , AgeInt := add_AgeInt(Age, omega = 105),
+inputCounts <- K[ , AgeInt := add_AgeInt(Age, omega = 105),
                   by = list(Country, Region, Date, Sex, Measure)][, ..icolsIN] %>% 
   arrange(Country, Region, Sex, Measure, Age) %>% 
   as.data.frame()
