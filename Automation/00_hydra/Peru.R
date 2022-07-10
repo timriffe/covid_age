@@ -62,13 +62,24 @@ data_source_v <- paste0(dir_n, "Data_sources/", ctr, "/vacc_",today(), ".7z")
 # Vaccines
 #db_v <- read_csv(data_source_v)
 
-db_c <- data.table::fread(cases_url[1])
 #db_c <- read.csv(data_source_c, sep = ";")
-db_d <- read_csv(deaths_url[1])
 #db_d <- read.csv(data_source_d, sep = ";")
 #db_v <- read.csv(data_source_v, sep = ",")
 #db_v=read_csv(archive_read(data_source_v), col_types = cols())
-db_v <- data.table::fread(vacc_url)
+#db_v <- read_csv(vacc_url)
+
+## MK: 07.07.2022: due to large file size (use fread to read first, and then write a copy), and 
+## .7z (vaccination file), we need to download it first then read.
+
+db_c <- data.table::fread(cases_url[1])
+readr::write_csv(db_c, file = data_source_c)
+
+db_d <- data.table::fread(deaths_url[1])
+readr::write_csv(db_d, file = data_source_d)
+
+vac_file <- download.file(vacc_url, destfile = data_source_v, mode = "wb")
+db_v <- read_csv(archive_read(data_source_v), col_types = cols())
+
 
 
 # deaths ----------------------------------------------

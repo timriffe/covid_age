@@ -41,9 +41,9 @@ last_date_archive <- DataArchive %>%
   max()
 
 
-vacc <- read.csv("https://data.cdc.gov/api/views/km4m-vcsb/rows.csv?accessType=DOWNLOAD")
+vacc <- data.table::fread("https://data.cdc.gov/api/views/km4m-vcsb/rows.csv?accessType=DOWNLOAD")
 
-vacc_out <- vacc %>% 
+vacc_out_1 <- vacc %>% 
   select(Date, Demographic_category, Administered_Dose1, Series_Complete_Yes) %>% 
   filter(Demographic_category != "Age_known") %>% 
   filter(Demographic_category != "Race_eth_Hispanic") %>% 
@@ -101,12 +101,21 @@ vacc_out <- vacc %>%
       Demographic_category == "Ages_50-64_yrs" ~ 15L,
       Demographic_category == "Ages_65-74_yrs" ~ 10L,
       Demographic_category == "Ages_75+_yrs" ~ 30L,
-    ))
-vacc_out <-vacc_out[-2]
-vacc_out <- melt(vacc_out, id = c("Date", "Age", "Sex", "AgeInt"))  
-names(vacc_out)[5] <- "Measure"
-names(vacc_out)[6] <- "Value"
-vacc_out <- vacc_out %>% 
+    )) %>% 
+  select(-2)
+
+#vacc_out <-vacc_out[-2]
+
+## melt is not working ##
+# vacc_out <- melt(vacc_out, id = c("Date", "Age", "Sex", "AgeInt"))  
+# names(vacc_out)[5] <- "Measure"
+# names(vacc_out)[6] <- "Value"
+
+
+vacc_out <- vacc_out_1 %>% 
+  pivot_longer(cols = -c("Date", "Age", "Sex", "AgeInt"),
+               names_to = "Measure",
+               values_to = "Value") %>% 
   mutate(Measure = case_when(
     Measure == "Administered_Dose1" ~ "Vaccination1",
     Measure == "Series_Complete_Yes" ~ "Vaccination2"
@@ -114,6 +123,7 @@ vacc_out <- vacc_out %>%
     Metric = "Count",
     Country = "USA",
     Region = "All")
+
 vacc_out2 <- vacc_out %>% 
   mutate(Date = mdy(Date),
          Date = paste(sprintf("%02d",day(Date)),    

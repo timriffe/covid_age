@@ -79,10 +79,24 @@ pivot_longer(!DATE_AS_AT, names_to= "Age", values_to= "Value")%>%
                  year(Date),sep="."),
     Code = paste0("AU"),
     Country = "Australia",
-    Region = "All")%>% 
+    Region = "All",
+    Value = case_when(
+      is.na(Value) ~ 0,
+      TRUE ~ Value))%>% 
   select(Country, Region, Code, Date, Sex, 
-         Age, AgeInt, Metric, Measure, Value)
+         Age, AgeInt, Metric, Measure, Value) %>% 
+  sort_input_data()
   
+#youngest ages
+young <- Out %>% 
+  group_by(Date, Sex, Measure) %>% 
+  slice(which.min(Age)) %>% 
+  mutate(AgeInt = Age,
+         Age = 0,
+         Value = 0) 
+Out <- rbind(Out, young) %>% 
+  sort_input_data()
+
   
 
 #save output 
