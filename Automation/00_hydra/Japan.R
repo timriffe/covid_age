@@ -43,7 +43,7 @@ death2 <- setDT(death)
 
 death2 <- melt(death2, id = c("Week"))
 
-headers <- read_csv("https://covid19.mhlw.go.jp/public/opendata/deaths_detail_cumulative_weekly.csv", header = FALSE)
+headers <- read.csv("https://covid19.mhlw.go.jp/public/opendata/deaths_detail_cumulative_weekly.csv", header = FALSE)
 headers <- headers[1,]
 headers <- reshape2::melt(headers, id = c("V1"))
 headers <- headers %>% 

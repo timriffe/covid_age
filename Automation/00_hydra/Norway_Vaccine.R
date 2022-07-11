@@ -8,13 +8,89 @@ if (! "email" %in% ls()){
 # info country and N drive address
 ctr    <- "Norway_Vaccine"
 dir_n  <- "N:/COVerAGE-DB/Automation/Hydra/"
-dir_n_source <- "N:/COVerAGE-DB/Automation/Norway"
+dir_n_source <- "N:/COVerAGE-DB/Automation/Norway/"
 
 
 # Drive credentials
 drive_auth(email = Sys.getenv("email"))
 gs4_auth(email = Sys.getenv("email"))
 
+
+
+
+## MK: 11.07.2022
+
+# load packages 
+library(tidyverse)
+library(RSelenium)
+library(netstat)
+library(jsonlite)
+library(rvest)
+library(xml2)
+
+## SCRAPPE THE DOWNLOAD LINK ##
+
+# driver <- rsDriver(
+#   browser = "firefox",
+#   # in case broswer = "chrome", get the chrome://version/ in the browser
+#   #then binman::list_versions("chromedriver") in the console
+#  # chromever = "103.0.5060.53",
+#   verbose = FALSE,
+#   port = free_port()
+# )
+# 
+# remDr <- driver$client
+# #remDr$open()
+# 
+# path <- "https://statistikk.fhi.no/sysvak/antall-vaksinerte?etter=diagnose&fordeltPaa=alder&diagnose=COVID_19&dose=01,02,03,04&kjonn=K,M"
+# 
+# #path <- "https://statisticsglobe.com/"
+# 
+# 
+# remDr$navigate(path)
+# Sys.sleep(5)
+# remDr$findElement(using = "class", "fhi-btn-fa-and-text__text")$clickElement()
+# 
+# last_ned <- remDr$findElement(using = "class", "fhi-btn-fa-and-text__text")
+# remDr$mouseMoveToLocation(webElement = last_ned)
+# remDr$findElement(using = "class", 
+#                   value = "dropdown-item fhi-dropdown-last-ned__option")$clickElement()
+# 
+# 
+# 
+# remDr$quit()
+
+
+
+# api <- "https://statistikk.fhi.no/api/sysvak/v0/vaccinations?columns=diagnose&rows=alder&diagnosisList=COVID_19&sexesList=K,M&dosesList=01,02,03,04"
+# 
+# data <- fromJSON(api)[['groupings']] %>% 
+#   tidyr::unnest_wider(column) %>% 
+#   select('Vaccination' = 2,
+#          'Sex' = 3,
+#          "Age" = 4,
+#          "Value" = 5)
+# 
+# 
+# 
+# write_csv(data, 
+#           file = paste0(dir_n_source, today(), ".csv"))
+# 
+
+## 12.07.2022 TO TRY WORKING ON THIS.
+# 
+# find_date <- remDr$findElement(using = 'xpath',
+#                                value = '//span[@class="highcharts-caption"]')
+# 
+# date_extract <- find_date$getElementText()[[1]] 
+# 
+# date_number <- date %>% parse_number()
+# 
+# date_update <- date %>% 
+#   str_extract_all("[0-9]+") %>% 
+#   unlist()
+# 
+# date <- date_update[1:3] %>% paste(collapse = '.')
 
 all_paths <-
   list.files(path = dir_n_source,

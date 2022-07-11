@@ -14,11 +14,11 @@ library(pacman)
 
 # Required CRAN packages
 packages_CRAN <- c("tidyverse","archive", "lubridate","gargle","rvest","httr","readxl",
-                   "tictoc","parallel","data.table","git2r","usethis", "rio",
+                   "tictoc","parallel","data.table","git2r","usethis", "rio", "janitor",
                    "remotes","here","googledrive","zip", "XML", "RCurl", "reshape2",
                    "taskscheduleR","countrycode", "xml2", "dplyr", "xml2",
-                   "reticulate", "rjson", "readODS", "pdftools", "aweek", 
-                   "ISOweek", "longurl", "ggpubr", "arrow", "xlsx")
+                   "reticulate", "rjson", "readODS", "pdftools", "aweek", "netstat",
+                   "ISOweek", "longurl", "ggpubr", "arrow", "xlsx", "RSelenium")
 
 # Install required CRAN packages if not available yet
 if(!sum(!p_isinstalled(packages_CRAN))==0) {

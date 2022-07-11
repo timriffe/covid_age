@@ -175,7 +175,7 @@ Boosters <-
          Date = ddmmyyyy(Date),
          # Date = dmy(paste(day, month, year, sep = "-")),
          # Date = ddmmyyyy(Date),
-         Measure = "Booster") %>% 
+         Measure = "VaccinationBooster") %>% 
   select(Date, Sex, Age, Measure, Value, AgeInt) 
 
 
