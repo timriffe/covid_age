@@ -134,7 +134,9 @@ deaths2 <- deaths %>%
                 "TOT" = `All ages`) %>% 
   dplyr::mutate(Week_start = as.numeric(Week_start),
                 Week_start = as.Date(Week_start, 
-                                     origin = "1899-12-30")) %>% 
+                                     origin = "1899-12-30",
+                                     format = "%Y-%m-%d"),
+                Week_start = format(Week_start, "%d.%m.%Y")) %>% 
   tidyr::pivot_longer(cols = -c("Year", "Week_number",
                                 "Week_start", "Sex"),
                       names_to = "Age",
@@ -282,8 +284,8 @@ sct <-
                       sprintf("%02d",month(Date)),  
                       year(Date), 
                       sep = "."),
-         Code = paste0('GB-SCT')) %>% 
-  select(all_of(colnames(sc)))
+         Code = paste0('GB-SCT')) # %>% 
+ # select(all_of(colnames(sc)))
 
 
 ## Totals data =======================

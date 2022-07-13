@@ -108,8 +108,12 @@ vacc_today <- data_today %>%
       Age == "75" ~ 5L,
       Age == "80" ~ 5L,
       Age == "85" ~ 20L),
-    Metric = "Count") %>% 
-  select(Date, Age, AgeInt, Sex, Measure, Metric, Value)
+    Metric = "Count",
+    Code = paste0("NO"),
+    Country = "Norway",
+    Region = "All") %>% 
+  select(Country, Region, Code, 
+         Date, Age, AgeInt, Sex, Measure, Metric, Value)
 
 
 ## IN CASE NEEDED: HISTORIC DATA reading; cleaning and merging;
@@ -201,17 +205,15 @@ vacc_today <- data_today %>%
 
 ## read historical saved data 
 
-vacc_historical <- readRDS(paste0(dir_n, "Norway_Vaccine.rds"))
+vacc_historical <- readRDS(paste0(dir_n, "Norway_Vaccine.rds")) %>% 
+  mutate(Date = dmy(Date))
 
 vacc_out <- rbind(vacc_today, vacc_historical) %>% 
   mutate(
      Date = ymd(Date),
      Date = paste(sprintf("%02d",day(Date)),    
                   sprintf("%02d",month(Date)),  
-                  year(Date),sep="."),
-    Code = paste0("NO"),
-     Country = "Norway",
-    Region = "All",)%>% 
+                  year(Date),sep="."))%>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)%>% 
   mutate(Value = as.character(Value)) %>% 
