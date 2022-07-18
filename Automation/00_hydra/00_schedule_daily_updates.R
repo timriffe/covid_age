@@ -79,7 +79,7 @@ tasks <-
 
 # list of all available scripts to schedule
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-scripts <- c('Afghanistan', 'Argentina', 'AU_New_South_Wales',
+scripts <- c('Peru', 'Afghanistan', 'Argentina', 'AU_New_South_Wales',
              'Austria', 'Australia_vaccine',
              'Bulgaria',  'Belgium',
              'Czechia', 'Colombia', 'Cambodia', 'Croatia',  
@@ -98,7 +98,7 @@ scripts <- c('Afghanistan', 'Argentina', 'AU_New_South_Wales',
              'Mexico', 'Maldives', 'Malaysia',
              'Norway',  'Netherlands', 'New_Zealand',  
              'Norway_Vaccine', 'Netherlands_Vaccine', 
-             'Peru', 'Philippines', 'Puerto_Rico', 'Portugal_Vaccine',
+             'Philippines', 'Puerto_Rico', 'Portugal_Vaccine',
              'Romania', 
              'Spain', 'Slovakia',  'Somalia', 'Sweden', 
              'SouthKorea', 'Scotland', 'Slovenia',
@@ -113,7 +113,8 @@ scripts <- c('Afghanistan', 'Argentina', 'AU_New_South_Wales',
              'US_Pennsylvania_vaccine', 'US_Maine_Vaccine',
              'US_NYC_vaccine', 'US_Vermont_Vaccine', 'US_Texas_Vaccine',
              'USA_cases_all', 'USA_cases_states',
-             'USA_deaths_states', 'USA_deaths_all', 'USA_vaccine',
+             'USA_deaths_states', 'USA_deaths_all', 
+             'USA_vaccine', 'USA_vaccine_states',
              'Vietnam', 'Venezuela')
 
 # scripts <- c('USA_cases_all', 'USA_cases_states', 'USA_deaths_all', 'USA_deaths_states')
@@ -152,7 +153,7 @@ for(c in scripts){
 # for individual scheduling
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sched("Colombia", tm = "15:51", email = auto_update_email, wd = auto_update_wd)
+sched("Peru", tm = "15:07", email = auto_update_email, wd = auto_update_wd)
 sched("Italy", tm = "15:55", email = auto_update_email, wd = auto_update_wd)
 sched('Germany_vaccine', tm = "14:45", email = auto_update_email, wd = auto_update_wd)
 sched('Peru', tm = "15:47", email = auto_update_email, wd = auto_update_wd)

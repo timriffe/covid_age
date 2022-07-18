@@ -44,7 +44,9 @@ last_date_archive <- DataArchive %>%
 vacc <- data.table::fread("https://data.cdc.gov/api/views/km4m-vcsb/rows.csv?accessType=DOWNLOAD")
 
 vacc_out_1 <- vacc %>% 
-  select(Date, Demographic_category, Administered_Dose1, Series_Complete_Yes) %>% 
+  select(Date, Demographic_category, 
+         Administered_Dose1, Series_Complete_Yes,
+         Booster_Doses_Yes) %>% 
   filter(Demographic_category != "Age_known") %>% 
   filter(Demographic_category != "Race_eth_Hispanic") %>% 
   filter(Demographic_category != "Race_eth_known") %>% 
@@ -100,7 +102,7 @@ vacc_out_1 <- vacc %>%
       Demographic_category == "Ages_5-11_yrs" ~ 7L,
       Demographic_category == "Ages_50-64_yrs" ~ 15L,
       Demographic_category == "Ages_65-74_yrs" ~ 10L,
-      Demographic_category == "Ages_75+_yrs" ~ 30L,
+      Demographic_category == "Ages_75+_yrs" ~ 30L
     )) %>% 
   select(-2)
 
@@ -118,7 +120,8 @@ vacc_out <- vacc_out_1 %>%
                values_to = "Value") %>% 
   mutate(Measure = case_when(
     Measure == "Administered_Dose1" ~ "Vaccination1",
-    Measure == "Series_Complete_Yes" ~ "Vaccination2"
+    Measure == "Series_Complete_Yes" ~ "Vaccination2",
+    Measure == "Booster_Doses_Yes" ~ "Vaccination3"
       ),
     Metric = "Count",
     Country = "USA",

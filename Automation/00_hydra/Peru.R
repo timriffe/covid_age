@@ -71,7 +71,7 @@ data_source_v <- paste0(dir_n, "Data_sources/", ctr, "/vacc_",today(), ".7z")
 ## MK: 07.07.2022: due to large file size (use fread to read first, and then write a copy), and 
 ## .7z (vaccination file), we need to download it first then read.
 
-db_c <- data.table::fread(cases_url[1])
+db_c <- bigreadr::fread2(cases_url[1])
 readr::write_csv(db_c, file = data_source_c)
 
 db_d <- data.table::fread(deaths_url[1])

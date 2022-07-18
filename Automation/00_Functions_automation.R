@@ -17,6 +17,8 @@ packages_CRAN <- c("tidyverse","archive", "lubridate","gargle","rvest","httr","r
                    "tictoc","parallel","data.table","git2r","usethis", "rio", "janitor",
                    "remotes","here","googledrive","zip", "XML", "RCurl", "reshape2",
                    "taskscheduleR","countrycode", "xml2", "dplyr", "xml2",
+                   ## for large data file 
+                   "bigreadr",
                    "reticulate", "rjson", "readODS", "pdftools", "aweek", "netstat",
                    "ISOweek", "longurl", "ggpubr", "arrow", "xlsx", "RSelenium")
 
