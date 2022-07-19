@@ -44,27 +44,6 @@ db_m <- read_csv(data_source_t,
                  locale = locale(encoding = "UTF-8"))
 
 
-# compressing source files and cleaning stuff
-data_source <- c(data_source_c, data_source_t)
-
-zipname <- paste0(dir_n, 
-                  "Data_sources/", 
-                  ctr,
-                  "/", 
-                  ctr,
-                  "_data_",
-                  today(), 
-                  ".zip")
-
-zipr(zipname, 
-     data_source, 
-     recurse = TRUE, 
-     compression_level = 9,
-     include_directories = TRUE)
-
-# clean up file chaff
-file.remove(data_source)
-
 # data transformation for COVerAGE-DB
 #####################################
 
@@ -211,8 +190,8 @@ db_inc2 <- db_inc %>% dplyr::pull(Region)
 db_m_reg <- db_m %>% 
   mutate(date_sub = if_else(str_detect(Fecha, "/"), str_sub(Fecha, -10, -1), str_sub(Fecha, 1, 10)),
          date_sub = str_replace_all(date_sub, "/", "-")) %>% 
-  mutate(date_f = parse_date_time(date_sub, orders = c('ymd', 'dmy'))) %>% 
-  drop_na(date_f) %>% 
+  mutate(date_f = lubridate::parse_date_time(date_sub, orders = c('ymd', 'dmy'))) %>% 
+ # drop_na(date_f) %>% 
   rename(All = Acumuladas,
          t1 = 'Positivas acumuladas',
          t2 = "Negativas acumuladas",
@@ -309,3 +288,30 @@ write_rds(out, paste0(dir_n, ctr, ".rds"))
 log_update(pp = ctr, N = nrow(out))
 #out %>% 
 #  pull(Region) %>% unique()
+
+
+####====================####
+
+# compressing source files and cleaning stuff
+
+write_csv(db, file = data_source_c)
+
+data_source <- c(data_source_c, data_source_t)
+
+zipname <- paste0(dir_n, 
+                  "Data_sources/", 
+                  ctr,
+                  "/", 
+                  ctr,
+                  "_data_",
+                  today(), 
+                  ".zip")
+
+zipr(zipname, 
+     data_source, 
+     recurse = TRUE, 
+     compression_level = 9,
+     include_directories = TRUE)
+
+# clean up file chaff
+file.remove(data_source)

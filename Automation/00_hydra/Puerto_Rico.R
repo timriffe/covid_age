@@ -71,14 +71,14 @@ arrange(Date, Sex, Age) %>%
 download.file("https://covid19datos.salud.gov.pr/estadisticas_v2/download/data/casos/completo", 
               data_source2)
 
-cases = read.csv(data_source2)
+cases = read_csv(data_source2)
 
 
 
 cases2= cases %>%
   #remove missing age information 
-  select(Sex=Sex, Age= Age, Date= Sample.Date)
-cases2$Date = substr(cases2$Date,1,nchar(cases2$Date)-9)
+  select(Sex=Sex, Age= Age, Date= "Sample Date")
+#cases2$Date = substr(cases2$Date,1,nchar(cases2$Date)-9)
 cases3 <- cases2 %>% 
   mutate(Sex= recode(Sex, 
                      `M`= "m",
@@ -107,17 +107,21 @@ cases3 <- cases2 %>%
 
 
 ###tests
-download.file("https://covid19datos.salud.gov.pr/estadisticas_v2/download/data/pruebas/completo",
-              data_source3)
+# download.file("https://covid19datos.salud.gov.pr/estadisticas_v2/download/data/pruebas/completo",
+#               data_source3)
 
-tests = read.csv(data_source3)
+tests = read_csv("https://covid19datos.salud.gov.pr/estadisticas_v2/download/data/pruebas/completo")
+
+write_csv(tests, file = data_source3)
+
 
 tests2= tests %>%
   #remove missing age information 
   select(Sex=CO_SEXO, Age= TX_GRUPO_EDAD, Date= FE_PRUEBA)
-tests2$Date = substr(tests2$Date,1,nchar(tests2$Date)-9)
+# tests2$Date = substr(tests2$Date,1,nchar(tests2$Date)-9)
 tests3 <- tests2 %>% 
-  mutate(Sex= recode(Sex, 
+  mutate(Date= ddmmyyyy(Date),
+         Sex= recode(Sex, 
                      `M`= "m",
                      `F`= "f",
                      `O` = "UNK",
@@ -150,19 +154,22 @@ tests3 <- tests2 %>%
          Country = "Puerto Rico",
          Region = "All") %>% 
   filter(Date != "",
-         Sex != "") %>% 
-  mutate(Date= ddmmyyyy(Date))
+         Sex != "") 
 
 ###vaccine
-download.file("https://covid19datos.salud.gov.pr/estadisticas_v2/download/data/vacunacion/completo", 
-              data_source4)
+# download.file("https://covid19datos.salud.gov.pr/estadisticas_v2/download/data/vacunacion/completo", 
+#               data_source4)
 
-vacc = read.csv(data_source4)
+vacc = read_csv("https://covid19datos.salud.gov.pr/estadisticas_v2/download/data/vacunacion/completo")
+
+write_csv(vacc, file = data_source4)
 
 vaccine2= vacc %>%
   #remove missing age information 
   select(Sex=CO_SEXO, Age= TX_GRUPO_EDAD, Date= FE_VACUNA, Dosis = NU_DOSIS, Drug = CO_MANUFACTURERO)
-vaccine2$Date = substr(vaccine2$Date,1,nchar(vaccine2$Date)-9)
+
+#vaccine2$Date = substr(vaccine2$Date,1,nchar(vaccine2$Date)-9)
+
 vaccine3 <- vaccine2 %>% 
  # filter(Drug != "JSN") %>% 
   filter(Dosis != 2) %>% 
@@ -207,7 +214,7 @@ vaccine3 <- vaccine2 %>%
 vaccine4= vacc %>%
   #remove missing age information 
   select(Sex=CO_SEXO, Age= TX_GRUPO_EDAD, Date= FE_VACUNA, Dosis = NU_DOSIS, Drug = CO_MANUFACTURERO)
-vaccine4$Date = substr(vaccine4$Date,1,nchar(vaccine4$Date)-9)
+#vaccine4$Date = substr(vaccine4$Date,1,nchar(vaccine4$Date)-9)
 vaccine5 <- vaccine4 %>% 
   filter(Drug == "JSN" | Dosis == 2) %>% 
   mutate(Sex= case_when(Sex == "M" ~ "m",

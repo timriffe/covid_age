@@ -18,6 +18,14 @@ gs4_auth(email = Sys.getenv("email"))
 
 
 
+## MK: 08.07.2022 a TRIAL to download the scrape the web through R script. 
+
+# 
+# read_html("https://www.rivm.nl/en/covid-19-vaccination/figures-vaccination-programme") %>% 
+#   html_nodes("a+ a") %>% 
+#   html_attr('href')
+# 
+
 file.list <-list.files(path= dir_n_source, 
                 pattern = ".xlsx",
                 full.names = TRUE)
