@@ -71,15 +71,48 @@ data_source_v <- paste0(dir_n, "Data_sources/", ctr, "/vacc_",today(), ".7z")
 ## MK: 07.07.2022: due to large file size (use fread to read first, and then write a copy), and 
 ## .7z (vaccination file), we need to download it first then read.
 
-db_c <- bigreadr::fread2(cases_url[1])
-readr::write_csv(db_c, file = data_source_c)
+db_c <- bigreadr::fread2(cases_url[1], 
+                          select = c("FECHA_RESULTADO", "SEXO", "EDAD", "DEPARTAMENTO"))
 
-db_d <- data.table::fread(deaths_url[1])
-readr::write_csv(db_d, file = data_source_d)
+db_d <- data.table::fread(deaths_url[1],
+                          select = c("FECHA_FALLECIMIENTO", "SEXO", "EDAD_DECLARADA", "DEPARTAMENTO"))
 
 vac_file <- download.file(vacc_url, destfile = data_source_v, mode = "wb")
-db_v <- read_csv(archive_read(data_source_v), col_types = cols())
 
+db_v <- readr::read_csv(archive_read(data_source_v), 
+                col_select = c("EDAD", "SEXO", "FECHA_VACUNACION", "DOSIS", "DEPARTAMENTO"))
+
+
+# cases ----------------------------------------------
+
+db_c2 <- db_c %>% 
+  rename(date_f = FECHA_RESULTADO,
+         Sex = SEXO,
+         Age = EDAD,
+         Region = DEPARTAMENTO) %>% 
+  select(date_f, Sex, Age, Region) %>% 
+  mutate(date_f = ymd(date_f),
+         Sex = case_when(Sex == "MASCULINO" ~ "m",
+                         Sex == "FEMENINO" ~ "f",
+                         TRUE ~ "UNK"),
+         Age = ifelse(Age > 100, 100, Age),
+         Region = str_to_title(Region)) %>% 
+  group_by(date_f, Sex, Age, Region) %>% 
+  summarise(new = n()) %>% 
+  ungroup()
+
+dates <- db_c2 %>% drop_na(date_f) %>% select(date_f) %>% unique()
+
+dates_f <- seq(min(dates$date_f),max(dates$date_f), by = '1 day')
+ages <- 0:100
+
+db_c3 <- db_c2 %>% 
+  tidyr::complete(Region, Sex, Age = ages, date_f = dates_f, fill = list(new = 0)) %>% 
+  group_by(Region, Sex, Age) %>% 
+  mutate(Value = cumsum(new),
+         Measure = "Cases") %>% 
+  ungroup() %>% 
+  select(-new)
 
 
 # deaths ----------------------------------------------
@@ -111,35 +144,6 @@ db_d3 <- db_d2 %>%
   ungroup() %>% 
   select(-new)
 
-# cases ----------------------------------------------
-
-db_c2 <- db_c %>% 
-  rename(date_f = FECHA_RESULTADO,
-         Sex = SEXO,
-         Age = EDAD,
-         Region = DEPARTAMENTO) %>% 
-  select(date_f, Sex, Age, Region) %>% 
-  mutate(date_f = ymd(date_f),
-         Sex = case_when(Sex == "MASCULINO" ~ "m",
-                         Sex == "FEMENINO" ~ "f",
-                         TRUE ~ "UNK"),
-         Age = ifelse(Age > 100, 100, Age),
-         Region = str_to_title(Region)) %>% 
-  group_by(date_f, Sex, Age, Region) %>% 
-  summarise(new = n()) %>% 
-  ungroup()
-
-dates <- db_c2 %>% drop_na(date_f) %>% select(date_f) %>% unique()
-
-dates_f <- seq(min(dates$date_f),max(dates$date_f), by = '1 day')
-
-db_c3 <- db_c2 %>% 
-  tidyr::complete(Region, Sex, Age = ages, date_f = dates_f, fill = list(new = 0)) %>% 
-  group_by(Region, Sex, Age) %>% 
-  mutate(Value = cumsum(new),
-         Measure = "Cases") %>% 
-  ungroup() %>% 
-  select(-new)
 
 # vaccines ---------------------------------------------------
 db_v2 <- db_v %>% 
@@ -274,16 +278,24 @@ out <- db_all2 %>%
 #          Age == "TOT")
 
 #########################
-# save data in N: -------------------------------------------------
+# save processed data in N: -------------------------------------------------
 #########################
 
-write_rds(out, paste0(dir_n, ctr, ".rds"))
-
 log_update(pp = ctr, N = nrow(out))
+
+write_rds(out, paste0(dir_n, ctr, ".rds"))
 
 #########################
 # Push zip file to Drive -------------------------------------------------
 #########################
+
+
+# Saving original Cases & Deaths datafiles to N
+
+readr::write_csv(db_c, file = data_source_c)
+
+readr::write_csv(db_d, file = data_source_d)
+
 
 # saving compressed data to N: drive
 
