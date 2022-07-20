@@ -33,7 +33,8 @@ gs4_auth(email = Sys.getenv("email"))
 dates <- data.frame(date = seq(from = ymd('2022-03-13'), to = ymd(today() - 11), by='days')) %>% 
   mutate(week = epiweek(date),
          year = epiyear(date)) %>% 
-  distinct(week, year) 
+  group_by(year, week, .drop = TRUE) %>% 
+  filter(date == max(date)) 
 
 
 ## Loop over this dataframe to get the data
@@ -41,14 +42,17 @@ dates <- data.frame(date = seq(from = ymd('2022-03-13'), to = ymd(today() - 11),
 IN <- dates %>% 
   {map2_df(.$year, .$week, ~ read.csv(paste0("https://www.gov.mb.ca/health/publichealth/surveillance/covid-19/", 
                                              .x, "/week_", .y, "/downloads/age_sex_distribution_week_", .y, ".csv")) %>% 
-             mutate(id = paste0(.x, "-", .y)))} 
+             mutate(year = .x,
+                    week = .y))} %>% 
+  left_join(dates, by = c("year" = "year",
+                          "week" = "week"))
 
 
 
 ## Processing
 
 out <- IN %>% 
-  dplyr::select(epi_week = id,
+  dplyr::select(Date = date,
                 Age = Age.Group,
                 Sex = gender,
                 Value = allcases) %>% 
@@ -69,9 +73,15 @@ out <- IN %>%
                                 Age == "80+" ~ "80",
                                 Age == "missing" ~ "UNK",
                                 TRUE ~ Age),
+                Date = ddmmyyyy(Date),
                 Country = "Canada",
+                Region = "Manitoba",
+                Code = "CA-MA",
                 Metric = "Count",
-                Measure = "Cases") 
+                Measure = "Cases") %>% 
+  dplyr::select(Country, Region, Code,
+                Date, Age, AgeInt, 
+                Sex, Measure, Metric, Value)
 
 
 
@@ -81,6 +91,7 @@ write_rds(out, paste0(dir_n, ctr, ".rds"))
 # updating hydra dashboard
 log_update(pp = ctr, N = nrow(out))
 
+## END
 
 
 

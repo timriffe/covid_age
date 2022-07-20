@@ -150,7 +150,8 @@ data_source3 <- paste0(dir_n, "Data_sources/", ctr, "/regions_Cases",today(), ".
 download.file(regional_cases_url, data_source3, mode = "wb")
 
 
-regional_cases_in     <- read_csv(data_source3)
+regional_cases_in <- read_csv(data_source3, 
+                              col_select = c("areaName", "date", "age", "cases"))
 
 Regional_Cases <- regional_cases_in %>% 
   select(Region =areaName, Date = date, Age = age, Value = cases) %>% 
@@ -228,10 +229,11 @@ data_source4 <- paste0(dir_n, "Data_sources/", ctr, "/regions_Deaths",today(), "
 download.file(regional_death_url, data_source4, mode = "wb")
 
 
-regional_deaths_in     <- read_csv(data_source4)
+regional_deaths_in  <- read_csv(data_source4, 
+                                col_select = c("areaName", "date", "age", "deaths"))
 
 Regional_Deaths <- regional_deaths_in %>% 
-  select(Region =areaName, Date = date, Age = age, Value = deaths) %>% 
+  select(Region = areaName, Date = date, Age = age, Value = deaths) %>% 
   filter(Age != "00_59",
          Age != "60+") %>% 
   arrange(Date) %>% 
