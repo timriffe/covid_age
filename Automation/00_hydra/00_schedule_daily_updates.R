@@ -82,9 +82,9 @@ tasks <-
 scripts <- c('Peru', 'Afghanistan', 'Argentina', 'AU_New_South_Wales',
              'Austria', 'Australia_vaccine',
              'Bulgaria',  'Belgium',
-             'Czechia', 'Colombia', 'Cambodia', 'Croatia',  
+             'Czechia', 'Colombia', 'Cambodia', 'Croatia', 
              'CA_Manitoba_Saskatchewan', 'CA_Ontario', 'CA_British_Columbia', 
-             'CA_Alberta', 'Chile', 
+             'CA_Alberta', 'Chile', 'CA_Manitoba', 
              'Chile_vaccine', 'Canada_vaccine', 'Costa_Rica_Vaccine', 
              'Denmark',
              'Estonia', 'England', 'England_and_Wales',
@@ -153,7 +153,7 @@ for(c in scripts){
 # for individual scheduling
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sched("Peru", tm = "15:07", email = auto_update_email, wd = auto_update_wd)
+sched("Peru", tm = "16:13", email = auto_update_email, wd = auto_update_wd)
 sched("Italy", tm = "15:55", email = auto_update_email, wd = auto_update_wd)
 sched('Germany_vaccine', tm = "14:45", email = auto_update_email, wd = auto_update_wd)
 sched('Peru', tm = "15:47", email = auto_update_email, wd = auto_update_wd)
