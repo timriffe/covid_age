@@ -1,5 +1,5 @@
 #USA CDC vaccination data by Age and Sex, National and Jurisdictional 
-
+# Data are cumulative and since 13.Dec.2020
 library(here)
 source(here("Automation/00_Functions_automation.R"))
 
@@ -173,7 +173,6 @@ vacc_processed <- us_vacc %>%
 vacc_out <- vacc_processed %>% 
   mutate(Metric = "Count",
          Country = "USA",
-         Region = "All",
          Date = as_date(Date),
          #Date = mdy(Date),
          Date = paste(sprintf("%02d",day(Date)),    
