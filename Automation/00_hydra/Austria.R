@@ -68,6 +68,8 @@ db_age2= db_age%>%
 
 ### vaccination data ###
 ########################
+
+## Source: https://info.gesundheitsministerium.at/opendata#COVID19_vaccination_doses_agegroups
 vacc <- read_delim("https://info.gesundheitsministerium.gv.at/data/timeline-eimpfpass.csv", delim = ";")
 
 vacc2 <- vacc %>% 
