@@ -40,7 +40,7 @@ source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/0
 
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
-  email <- "gatemonte@gmail.com"
+  email <- "mumanal.k@gmail.com"
 }
 
 
@@ -52,14 +52,19 @@ gs4_auth(email = Sys.getenv("email"))
 
 
 
-## Sweden
+# Sweden
 
-Date: 04.07.2022
+##├ Date: 04.07.2022
 Problem: Sweden download data each day, but the data are not appended to inputDB since 13.01.2022
 Investigating the data a bit, I found there are multiple gaps though file names say that data are downloaded each day
 to check on this whole country data: 
 
 == Assumption is that if there is no epi-data for a specific date, there is no vaccination data as well (starting 2021), however, better to separate this step, just in case. 
+
+
+##├ Date: from 29.06.2022 till 20.07.2022, data were not added - my bad: I forgot to append in the code. 
+
+Mitigation: data are downloaded each day, I added 'manually' to the .rds file. 
 
 
 ```{r eval=FALSE, include=FALSE}
@@ -71,7 +76,7 @@ dir_n <- "N:/COVerAGE-DB/Automation/Hydra/Data_sources/Sweden/"
 
 ## read in the latest .rds file 
 
-Sweden <- readRDS("N:/COVerAGE-DB/Automation/Hydra/Sweden.rds")
+Sweden_drive <- readRDS("N:/COVerAGE-DB/Automation/Hydra/Sweden.rds")
 
 ## some check ups on this dataset
 
@@ -82,8 +87,10 @@ Sweden %>%
   facet_wrap(facets = "Measure")
 
 
-Sweden <- Sweden %>% 
-  mutate(Date = as.Date(Date, format = "%d.%m.%Y"))
+Sweden <- Sweden_drive %>% 
+  mutate(Date = as.Date(Date, format = "%d.%m.%Y"),
+         AgeInt = as.integer(AgeInt)) %>% 
+  filter(Date != "2020-02-11") 
 
 Sweden %>% 
   arrange(desc(Date)) ## last data date in .rds file is 13-01-2022 :O
@@ -93,7 +100,9 @@ Sweden %>%
 
 ## load the xlsx files after unzipping and do some checks... 
 
-epi.list <-list.files(path= paste0(dir_n, "Epi-data/"), 
+epi.list <-list.files(
+  #path= paste0(dir_n, "Epi-data/"),
+                      path= paste0(dir_n, "29-06-25-07/Epi-data/"),
                        pattern = ".xlsx",
                        full.names = TRUE)
 
@@ -227,7 +236,7 @@ for (i in epi_files) {
 
 ## load the xlsx files after unzipping and do some checks... 
 
-vax.list <-list.files(path= paste0(dir_n, "Vaccinations/"), 
+vax.list <-list.files(path= paste0(dir_n, "29-06-25-07/Vaccinations/"), 
                       pattern = ".xlsx",
                       full.names = TRUE)
 
@@ -392,13 +401,18 @@ db_age <- out_age %>%
 ## Append to main dataset (.rds file) ## ==========================
 
 
-Sweden_appended <- bind_rows(Sweden, lost_epidates, db_sex, db_age) %>%
-  dplyr::mutate(Country = "Sweden",
+Sweden_appended <- bind_rows(Sweden, 
+                             lost_epidates
+                             #,db_sex, db_age
+                             ) %>%
+  dplyr::mutate(
+        Country = "Sweden",
          Region = "All",
+         Date = ddmmyyyy(Date),
          Code = paste0("SE"), 
          Metric = "Count") %>% 
-  dplyr::select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
-# arrange(desc(Date))
+  dplyr::select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
+  sort_input_data()
 
 
 write_rds(Sweden_appended, paste0(dir_n, ctr, ".rds"))

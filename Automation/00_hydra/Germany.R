@@ -187,6 +187,8 @@ log_update(pp = ctr, N = nrow(out))
 #### uploading metadata to Google Drive ####
 ############################################
 
+write_csv(db, data_source)
+
 zipname <- paste0(dir_n, 
                   "Data_sources/", 
                   ctr,
