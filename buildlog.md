@@ -142,3 +142,63 @@
 # remake coverage map 
  Tue Jul 19 19:59:36 2022 
 
+
+# begin resolution of multiple sources per population 
+ Tue Jul 26 00:25:14 2022 
+
+
+# Resolve USA CDC overlaps 
+ Tue Jul 26 00:26:20 2022 
+
+
+# prep (resolve_UNKUNK) 
+ Tue Jul 26 00:26:40 2022 
+
+
+# A (convert_fractions_sexes) 
+ Tue Jul 26 01:13:42 2022 
+
+
+# B (redistribute_unknown_age) 
+ Tue Jul 26 01:21:13 2022 
+
+
+# C (rescale_to_total) 
+ Tue Jul 26 02:04:15 2022 
+
+
+# D (infer_cases_from_deaths_and_ascfr) 
+ Tue Jul 26 02:48:33 2022 
+
+
+# E (infer_deaths_from_cases_and_ascfr) 
+ Tue Jul 26 03:00:03 2022 
+
+
+# G (redistribute_unknown_sex) 
+ Tue Jul 26 03:53:49 2022 
+
+
+# H (rescale_sexes) 
+ Tue Jul 26 04:10:01 2022 
+
+
+# I (infer_both_sex) 
+ Tue Jul 26 04:15:25 2022 
+
+
+# J (maybe_lower_closeout) 
+ Tue Jul 26 04:27:46 2022 
+
+
+# Age harmonization 
+ Tue Jul 26 04:59:48 2022 
+
+
+# Compile metadata 
+ Tue Jul 26 04:59:48 2022 
+
+
+# remake coverage map 
+ Tue Jul 26 05:16:18 2022 
+
