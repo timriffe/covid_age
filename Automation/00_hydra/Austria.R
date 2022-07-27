@@ -140,6 +140,13 @@ vacc3 <- vacc2 %>%
 ## As a result, we have a gap from 15.12.2021 till 25.07.2022- however, they mentioned that the archive data will be uploaded shortly
 ## TODO: needs revisiting. In order to lessen lose the data, the following is to download the recent data and append daily. 
 ## Noting that we have a missing data gap. 
+## the vaccine data are updated each day so: we filter the archived data for after/= 25.07.2022 and append to the historical & recent data
+
+vacc_archive_2022 <- readRDS(paste0(dir_n, ctr,".rds")) %>% 
+  mutate(Date = dmy(Date)) %>% 
+  filter(str_detect(Measure, "Vaccin"),
+         Date >= "2022-07-25") %>% 
+  mutate(Date = ddmmyyyy(Date))
 
 
 vacc_today <- read.csv2("https://info.gesundheitsministerium.at/data/COVID19_vaccination_doses_agegroups_v202206.csv") 
@@ -194,20 +201,20 @@ vacc_recent <- vacc_today %>%
 
 
 
-vacc_out <- bind_rows(vacc3, vacc_recent)
+vacc_out <- bind_rows(vacc3, vacc_archive_2022, vacc_recent)
 
 
 
-#Archive vaccine data (the historical and the recent ones)
+#Archive vaccine data (the historical raw and all processed)
 
 
 data_source_vacc <- paste0(dir_n, "Data_sources/", ctr, "/vaccine_age_historical", ".csv")
 write_csv(vacc, data_source_vacc)
 
-data_source_vacc_recent <- paste0(dir_n, "Data_sources/", ctr, "/vaccine_age_",today(), ".csv")
-write_csv(vacc_today, data_source_vacc_recent)
+data_source_vacc_all <- paste0(dir_n, "Data_sources/", ctr, "/vaccine_age_sex_all_",today(), ".csv")
+write_csv(vacc_out, data_source_vacc_all)
 
-data_source_zip <-  c(data_source_vacc, data_source_vacc_recent)
+data_source_zip <-  c(data_source_vacc, data_source_vacc_all)
 
 
 zipname <- paste0(dir_n, 

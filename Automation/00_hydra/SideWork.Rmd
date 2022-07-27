@@ -71,7 +71,7 @@ Mitigation: data are downloaded each day, I added 'manually' to the .rds file.
 
 # info country and N drive address
 ctr <- "Sweden"
-dir_n <- "N:/COVerAGE-DB/Automation/Hydra/Data_sources/Sweden/"
+dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 
 ## read in the latest .rds file 
