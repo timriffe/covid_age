@@ -140,7 +140,7 @@ vacc3 <- vacc2 %>%
 ## As a result, we have a gap from 15.12.2021 till 25.07.2022- however, they mentioned that the archive data will be uploaded shortly
 ## TODO: needs revisiting. In order to lessen lose the data, the following is to download the recent data and append daily. 
 ## Noting that we have a missing data gap. 
-## the vaccine data are updated each day so: we filter the archived data for after/= 25.07.2022 and append to the historical & recent data
+## the vaccine data are updated each day so: we filter the archived data for >= 25.07.2022 and append to the historical & recent data
 
 vacc_archive_2022 <- readRDS(paste0(dir_n, ctr,".rds")) %>% 
   mutate(Date = dmy(Date)) %>% 
@@ -246,8 +246,7 @@ out <-
 write_rds(out, paste0(dir_n, ctr, ".rds"))
 
 # updating hydra dashboard
-log_update(pp = ctr, N = nrow(bind_rows(db_age2,
-                                        vacc_out)))
+log_update(pp = ctr, N = nrow(out))
 
 
 
