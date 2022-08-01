@@ -38,8 +38,8 @@ api <- paste0("https://data.gov.il/api/3/action/datastore_search?resource_id=89f
               "limit=", limits)
 
 
-raw_data <- fromJSON(api)[["result"]][["records"]] %>% 
-  dplyr::select(
+raw_data <- jsonlite::fromJSON(api)[["result"]][["records"]] %>% 
+    dplyr::select(
     Date = first_week_day,
     Age = age_group,
     Sex = gender,
@@ -65,9 +65,11 @@ processed_data <- raw_data %>%
     Date = ymd(Date),
     Cases = str_remove_all(Cases, pattern = "<|.0"),
     Deaths = str_remove_all(Deaths, pattern = "<|.0"),
-    Tests = str_remove_all(Tests, pattern = "<|.0")
-    # across(.cols = contains("Vaccination"),
-    #        .fns = ~ replace_na(., 0))
+    Tests = str_remove_all(Tests, pattern = "<|.0"),
+    Vaccination1 = str_remove_all(Vaccination1, pattern = "<|.0"),
+    Vaccination2 = str_remove_all(Vaccination2, pattern = "<|.0"),
+    Vaccination3 = str_remove_all(Vaccination3, pattern = "<|.0"),
+    Vaccination4 = str_remove_all(Vaccination4, pattern = "<|.0")
     # across(.cols = Tests:Vaccination4, 
     #        .fns = as.numeric)
   )  %>% 
@@ -76,7 +78,8 @@ processed_data <- raw_data %>%
     names_to = "Measure",
     values_to = "Value"
   ) %>%
-  dplyr::mutate(Value = as.numeric(Value)) %>% 
+  dplyr::mutate(Value = as.numeric(Value),
+                Value = replace_na(Value, 0)) %>% 
   dplyr::group_by(Age, Sex, Measure, .drop = TRUE) %>% 
   dplyr::mutate(Value = cumsum(Value)) %>% 
   dplyr::ungroup() %>% 
@@ -159,3 +162,9 @@ file.remove(data_source)
 
 #END
 
+## Quality checks ##
+
+# processed_data %>% 
+#   ggplot(aes(x = Date, y = Value)) +
+#   geom_point() +
+#   facet_wrap(~ Measure, scales = "free_y")

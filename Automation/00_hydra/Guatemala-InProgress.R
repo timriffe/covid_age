@@ -31,8 +31,8 @@ extract_data <- function(directory){
   list.files(path = directory,
              pattern = ".csv",
              full.names = TRUE) %>% 
-    purrr:set_names() %>% 
-    purrr::map_dfr(read.csv, .id = "file_name") %>%
+    set_names() %>% 
+    map_dfr(read.csv, .id = "file_name") %>%
     mutate(file_name = basename(file_name))
 }
 
@@ -137,7 +137,8 @@ VaccSex_processed <- vaxSex_raw %>%
 ## MERGE ALL DATA AND PREPARE THE FINAL OUTPUT ## ======
 
 
-out <- bind_rows(epi_data,
+out <- bind_rows(
+  #epi_data,
                  VaccAge_processed,
                  VaccSex_processed) %>% 
   dplyr::mutate(

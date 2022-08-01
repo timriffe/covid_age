@@ -76,7 +76,7 @@ library(xml2)
 
 api <- "https://statistikk.fhi.no/api/sysvak/v0/vaccinations?columns=diagnose&rows=alder&diagnosisList=COVID_19&sexesList=K,M&dosesList=01,02,03,04"
 
-data_today <- fromJSON(api)[['groupings']] %>%
+data_today <- jsonlite::fromJSON(api)[['groupings']] %>%
   tidyr::unnest_wider(column) %>%
   select('Measure' = 2,
          'Sex' = 3,

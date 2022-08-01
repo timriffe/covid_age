@@ -16,7 +16,7 @@ library(pacman)
 packages_CRAN <- c("tidyverse","archive", "lubridate","gargle","rvest","httr","readxl",
                    "tictoc","parallel","data.table","git2r","usethis", "rio", "janitor",
                    "remotes","here","googledrive","zip", "XML", "RCurl", "reshape2",
-                   "taskscheduleR","countrycode", "xml2", "dplyr", "jsonlite",
+                   "taskscheduleR","countrycode", "xml2", "dplyr", "jsonlite", "rjson",
                    ## for large data file 
                    "bigreadr", "purrr",
                    "reticulate", "rjson", "readODS", "pdftools", "aweek", "netstat",

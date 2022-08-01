@@ -75,7 +75,7 @@ select(Sex=sex, birth= birth_year_noisy, Date= vaccination_date, ID = pseudo_id,
   group_by(Date, Sex, Age) %>%   
   summarize(Value = n()) %>% 
   ungroup() %>% 
- tidyr::complete(Date, nesting(Sex, Age), fill=list(Value=0)) %>% 
+  tidyr::complete(Date, nesting(Sex, Age), fill=list(Value=0)) %>% 
   arrange(Date,Sex, Age) %>% 
   group_by(Sex, Age) %>% 
   mutate(Value = cumsum(Value)) %>% 
