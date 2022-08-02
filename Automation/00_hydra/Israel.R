@@ -50,17 +50,23 @@ raw_data <- jsonlite::fromJSON(api)[["result"]][["records"]] %>%
     Vaccination2 = weekly_second_dose,
     Vaccination3 = weekly_third_dose,
     Vaccination4 = weekly_fourth_dose
-  ) %>% 
-  dplyr::mutate(
-    Sex = case_when(Sex == "זכר" ~ "m",
-                    Sex == "נקבה" ~ "f",
-                    TRUE ~ "UNK")
-  )
+  ) 
+
+## TO avoid writing the hebrew characters in R since it does not read in automation, 
+## we extract unique values and inner join
+
+sex_hebrew <- unique(raw_data$Sex)
+
+sex <- c("m", "UNK", "f")
+sex_df <- data.frame(hebrew = sex_hebrew,
+                     english = sex)
 
 
 # Since these are newly weekly data, we will sum up to cumulative
 
 processed_data <- raw_data %>% 
+  dplyr::inner_join(sex_df, by = c("Sex" = "hebrew")) %>% 
+  dplyr::select(-Sex, Sex = english) %>% 
   dplyr::mutate(
     Date = ymd(Date),
     Cases = str_remove_all(Cases, pattern = "<|.0"),
