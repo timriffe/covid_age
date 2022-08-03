@@ -54,7 +54,8 @@ raw_data <- jsonlite::fromJSON(api)[["result"]][["records"]] %>%
 
 ## TO avoid writing the hebrew characters in R since it does not read in automation, 
 ## we extract unique values and inner join
-
+## to check on the work, review the data after inner_join; 
+## 1st case is male, 2nd is unknown, 3rd is female.
 sex_hebrew <- unique(raw_data$Sex)
 
 sex <- c("m", "UNK", "f")
