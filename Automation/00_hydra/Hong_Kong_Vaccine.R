@@ -41,7 +41,11 @@ sex= read.csv("https://static.data.gov.hk/covid-vaccine/pie_gender.csv")
 #total 
 
 out_total= total %>%
-  select(Vaccination1= firstDoseTotal, Vaccination2= secondDoseTotal, Vaccinations= totalDosesAdministered)%>%
+  select(Vaccination1= firstDoseTotal, 
+         Vaccination2= secondDoseTotal, 
+         Vaccination3 = thirdDoseTotal,
+         Vaccination4 = fourthDoseTotal,
+         Vaccinations= totalDosesAdministered)%>%
   mutate(Metric = "Count",
          Age= "TOT", 
          AgeInt= "")%>%

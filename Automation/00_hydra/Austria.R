@@ -146,7 +146,9 @@ vacc_archive_2022 <- readRDS(paste0(dir_n, ctr,".rds")) %>%
   mutate(Date = dmy(Date)) %>% 
   filter(str_detect(Measure, "Vaccin"),
          Date >= "2022-07-25") %>% 
-  mutate(Date = ddmmyyyy(Date))
+  mutate(Date = ddmmyyyy(Date),
+         AgeInt = case_when(Age == "UNK" ~ NA_integer_,
+                            TRUE ~ AgeInt))
 
 
 vacc_today <- read.csv2("https://info.gesundheitsministerium.at/data/COVID19_vaccination_doses_agegroups_v202206.csv") 
@@ -192,6 +194,7 @@ vacc_recent <- vacc_today %>%
                             Age == "12" ~ "3",
                             Age == "85" ~ "20",
                             Age == "TOT" ~ "",
+                            Age == "UNK" ~ NA_integer_,
                             TRUE ~ "10"),
          AgeInt = as.integer(AgeInt),
          Code = case_when(Region == "UNK" ~ "AT-UNK+",

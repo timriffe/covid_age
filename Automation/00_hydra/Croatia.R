@@ -69,13 +69,14 @@ IN2 <-
   # dplyr::filter(Zupanija != "") %>% 
   # left_join(Regions, by = "Zupanija") %>% 
   select(Sex = spol, dob, Date = Datum) %>%  # Regions = Counties
-  mutate( Date = lubridate::ymd(Date),
+  mutate(Date = lubridate::ymd(Date),
           Age = round(lubridate::decimal_date(Date) - (dob+.5)),
           Age = ifelse(Age > 100,100,Age),
           Age = as.integer(Age)) %>% 
   group_by(Sex, dob, Date, Age) %>% 
   summarize(new = n(),.groups = "drop") %>% 
-  mutate(Sex = ifelse(Sex == "M", "m", "f"))
+  mutate(Sex = case_when(Sex == "M" ~ "m", 
+                         TRUE ~ "f"))
 
 
 

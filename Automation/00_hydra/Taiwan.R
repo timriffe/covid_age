@@ -66,8 +66,8 @@ processed_data <- raw_data %>%
   dplyr::group_by(Date, Age, Sex) %>% 
   dplyr::summarise(Value = sum(Value), .groups = "drop") %>% 
   ## complete the 0-weeks data
-  tidyr::complete(Age, Sex, Date = seq(min(processed_data$Date), 
-                                       max(processed_data$Date), by = "7 days"), 
+  tidyr::complete(Age, Sex, Date = seq(min(.$Date), 
+                                       max(.$Date), by = "7 days"), 
                   fill = list(Value = 0)) %>% 
   dplyr::group_by(Date, Age, Sex) %>% 
   dplyr::summarise(Value = sum(Value)) %>% 
