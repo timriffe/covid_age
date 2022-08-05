@@ -86,8 +86,10 @@ Out_vaccine= In_vaccine %>%
   mutate(Measure= case_when(Measure == "1.pote" ~ "Vaccination1",
                             Measure == "2.pote"~ "Vaccination2",
                             Measure == "3.pote"~ "Vaccination3",
+                            Measure == "4.pote" ~ "Vaccination4",
                             Measure == "1.bals" ~ "Vaccination3",
-                            Measure == "2.bals" ~ "Vaccination4")) %>% 
+                            Measure == "2.bals" ~ "Vaccination4",
+                            Measure == "3.bals" ~ "Vaccination5")) %>% 
   mutate(Sex = case_when(
                 is.na(Sex)~ "UNK",
                 Sex == "V" ~ "m",

@@ -31,6 +31,8 @@ if (email == "tim.riffe@gmail.com"){
   gs4_auth(email = Sys.getenv("email"))
 }
 
+## Source website <- "https://covid-19.geohive.ie/pages/helpfaqs#collapse25"
+
 cases_url_fat <- "https://opendata.arcgis.com/api/v3/datasets/67b8175576fe44e9ab193c4a5dc2ff9a_0/downloads/data?format=csv&spatialRefId=4326"
 cases_url  <- "https://opendata.arcgis.com/api/v3/datasets/d8eb52d56273413b84b0187a4e9117be_0/downloads/data?format=csv&spatialRefId=4326"
 vac_url    <- "https://opendata.arcgis.com/api/v3/datasets/0101ed10351e42968535bb002f94c8c6_0/downloads/data?format=csv&spatialRefId=4326"

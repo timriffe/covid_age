@@ -83,66 +83,112 @@ Deaths_out= Deaths_out%>%
          Age, AgeInt, Metric, Measure, Value)
   
 
-#vaccine 
+#Vaccine DATA; THESE ARE WEEKLY CUMULATIVE DATA 
+## MK: In 05.08.2022 I added 3rd and 4th doses columns, and lower ages as published for all doses
+## also, changed a bit the wrangling 
 
 Vaccine_out= vaccine%>% 
-  select(VaccinationsTotalNumberDoses,                                       
-         VaccinationsTotalNumberFirstDoseVaccinations,                       
-         VaccinationsTotalNumberSecondDoseVaccinations,                      
-         VaccinationsTotalVaccinationDosesFirstDose80yearsandover,          
-         VaccinationsTotalVaccinationDosesFirstDose75to79years,              
-         VaccinationsTotalVaccinationDosesFirstDose70to74years,             
-         VaccinationsTotalVaccinationDosesFirstDose65to69years,             
-         VaccinationsTotalVaccinationDosesFirstDose60to64years,              
-         VaccinationsTotalVaccinationDosesFirstDose55to59years,             
-         VaccinationsTotalVaccinationDosesFirstDose50to54years,             
-         VaccinationsTotalVaccinationDosesFirstDose40to49years,              
-         VaccinationsTotalVaccinationDosesFirstDose30to39years,             
-         VaccinationsTotalVaccinationDosesFirstDose18to29years,              
-         VaccinationsTotalVaccinationDosesFirstDose17yearsandunder,
-         VaccinationsTotalVaccinationDosesSecondDose80yearsandover,          
-        VaccinationsTotalVaccinationDosesSecondDose75to79years,            
-VaccinationsTotalVaccinationDosesSecondDose70to74years,             
-VaccinationsTotalVaccinationDosesSecondDose65to69years,            
-VaccinationsTotalVaccinationDosesSecondDose60to64years,        
-VaccinationsTotalVaccinationDosesSecondDose55to59years,          
-VaccinationsTotalVaccinationDosesSecondDose50to54years,            
-VaccinationsTotalVaccinationDosesSecondDose40to49years,           
-VaccinationsTotalVaccinationDosesSecondDose30to39years,            
-VaccinationsTotalVaccinationDosesSecondDose18to29years,           
-VaccinationsTotalVaccinationDosesSecondDose17yearsandunder,
-Date)%>% 
-  pivot_longer(!Date, names_to= "Des", values_to= "Value")%>%
-  separate(Des, c("Des", "Measure", "Age"), "Dose")%>%
-  mutate(Age=recode(Age, 
-                    `80yearsandover`="80",
-                    `75to79years`="75",
-                    `70to74years`="70",
-                    `65to69years`="65",
-                    `60to64years`="60",
-                    `55to59years`="55",
-                    `50to54years`="50",
-                    `40to49years`="40",
-                    `30to39years`="30",
-                    `18to29years`="18",
-                    `17yearsandunder`="0"))%>%
-  mutate(Age = case_when(is.na(Age) ~ "TOT",
-                         TRUE~ as.character(Age)))%>%
+  select(Vaccinations_TOT = VaccinationsTotalNumberDoses,                                       
+         Vaccination1_TOT = VaccinationsTotalNumberFirstDoseVaccinations,                       
+         Vaccination2_TOT = VaccinationsTotalNumberSecondDoseVaccinations,
+         Vaccination3_TOT = VaccinationsTotalNumberThirdDoseVaccinations,
+         Vaccination4_TOT = VaccinationsTotalNumberFourthDoseVaccinations,
+         ## FIRST DOSE BY AGE
+         Vaccination1_80 = VaccinationsTotalVaccinationDosesFirstDose80yearsandover,          
+         Vaccination1_75 = VaccinationsTotalVaccinationDosesFirstDose75to79years,              
+         Vaccination1_70 = VaccinationsTotalVaccinationDosesFirstDose70to74years,             
+         Vaccination1_65 = VaccinationsTotalVaccinationDosesFirstDose65to69years,             
+         Vaccination1_60 = VaccinationsTotalVaccinationDosesFirstDose60to64years,              
+         Vaccination1_55 = VaccinationsTotalVaccinationDosesFirstDose55to59years,             
+         Vaccination1_50 = VaccinationsTotalVaccinationDosesFirstDose50to54years,             
+         Vaccination1_40 = VaccinationsTotalVaccinationDosesFirstDose40to49years,              
+         Vaccination1_30 = VaccinationsTotalVaccinationDosesFirstDose30to39years,             
+         Vaccination1_18 = VaccinationsTotalVaccinationDosesFirstDose18to29years,              
+         Vaccination1_17 = VaccinationsTotalVaccinationDosesFirstDose17yearsandunder,
+         Vaccination1_16 = VaccinationsTotalVaccinationDosesFirstDose16to17years,
+         Vaccination1_12 = VaccinationsTotalVaccinationDosesFirstDose12to15years,
+         Vaccination1_5 = VaccinationsTotalVaccinationDosesFirstDose5to11years,
+         # SECOND DOSE BY AGE
+         Vaccination2_80 = VaccinationsTotalVaccinationDosesSecondDose80yearsandover,          
+         Vaccination2_75 = VaccinationsTotalVaccinationDosesSecondDose75to79years,            
+         Vaccination2_70 = VaccinationsTotalVaccinationDosesSecondDose70to74years,             
+         Vaccination2_65 = VaccinationsTotalVaccinationDosesSecondDose65to69years,            
+         Vaccination2_60 = VaccinationsTotalVaccinationDosesSecondDose60to64years,        
+         Vaccination2_55 = VaccinationsTotalVaccinationDosesSecondDose55to59years,          
+         Vaccination2_50 = VaccinationsTotalVaccinationDosesSecondDose50to54years,            
+         Vaccination2_40 = VaccinationsTotalVaccinationDosesSecondDose40to49years,           
+         Vaccination2_30 = VaccinationsTotalVaccinationDosesSecondDose30to39years,            
+         Vaccination2_18 = VaccinationsTotalVaccinationDosesSecondDose18to29years,           
+         Vaccination2_17 = VaccinationsTotalVaccinationDosesSecondDose17yearsandunder,
+         Vaccination2_16 = VaccinationsTotalVaccinationDosesSecondDose16to17years,
+         Vaccination2_12 = VaccinationsTotalVaccinationDosesSecondDose12to15years,
+         Vaccination2_5 =  VaccinationsTotalVaccinationDosesSecondDose5to11years,
+        # THIRD DOSE BY AGE
+          Vaccination3_80 = VaccinationsTotalVaccinationDosesThirdDose80yearsandover, 
+          Vaccination3_75 = VaccinationsTotalVaccinationDosesThirdDose75to79years,
+          Vaccination3_70 =VaccinationsTotalVaccinationDosesThirdDose70to74years,
+          Vaccination3_65 =VaccinationsTotalVaccinationDosesThirdDose65to69years,
+          Vaccination3_60 =VaccinationsTotalVaccinationDosesThirdDose60to64years,
+          Vaccination3_55 =VaccinationsTotalVaccinationDosesThirdDose55to59years,
+          Vaccination3_50 =VaccinationsTotalVaccinationDosesThirdDose50to54years,
+          Vaccination3_40 =VaccinationsTotalVaccinationDosesThirdDose40to49years,
+          Vaccination3_30 =VaccinationsTotalVaccinationDosesThirdDose30to39years,
+          Vaccination3_18 =VaccinationsTotalVaccinationDosesThirdDose18to29years,
+          Vaccination3_16 =VaccinationsTotalVaccinationDosesThirdDose16to17years,
+          Vaccination3_12 =VaccinationsTotalVaccinationDosesThirdDose12to15years,
+          Vaccination3_5 = VaccinationsTotalVaccinationDosesThirdDose5to11years,           
+       # FORTH DOSE BY AGE
+         Vaccination4_80 = VaccinationsTotalVaccinationDosesFourthDose80yearsandover,          
+         Vaccination4_75 = VaccinationsTotalVaccinationDosesFourthDose75to79years,             
+         Vaccination4_70 = VaccinationsTotalVaccinationDosesFourthDose70to74years,             
+         Vaccination4_65 = VaccinationsTotalVaccinationDosesFourthDose65to69years,             
+         Vaccination4_60 = VaccinationsTotalVaccinationDosesFourthDose60to64years,             
+         Vaccination4_55 = VaccinationsTotalVaccinationDosesFourthDose55to59years,             
+         Vaccination4_50 = VaccinationsTotalVaccinationDosesFourthDose50to54years,             
+         Vaccination4_40 = VaccinationsTotalVaccinationDosesFourthDose40to49years,             
+         Vaccination4_30 = VaccinationsTotalVaccinationDosesFourthDose30to39years,             
+         Vaccination4_18 = VaccinationsTotalVaccinationDosesFourthDose18to29years,             
+         Vaccination4_16 = VaccinationsTotalVaccinationDosesFourthDose16to17years,             
+         Vaccination4_12 = VaccinationsTotalVaccinationDosesFourthDose12to15years,             
+         Vaccination4_5 = VaccinationsTotalVaccinationDosesFourthDose5to11years, 
+        Date) %>% 
+  pivot_longer(!Date, names_to= "Des", values_to= "Value") %>%
+  separate(Des, c("Measure", "Age"), sep = "_") %>%
+ # mutate(Age=recode(Age, 
+ #                   `80yearsandover`="80",
+ #                   `75to79years`="75",
+ #                   `70to74years`="70",
+ #                   `65to69years`="65",
+ #                   `60to64years`="60",
+ #                   `55to59years`="55",
+ #                   `50to54years`="50",
+ #                   `40to49years`="40",
+ #                   `30to39years`="30",
+ #                   `18to29years`="18",
+ #                   `17yearsandunder`="17",
+ #                   `16to17years` = "16",
+ #                   `12to15years` = "12",
+ #                   `5to11years` = "5")) #%>%
+ # mutate(Age = case_when(is.na(Age) ~ "TOT",
+ #                        TRUE~ as.character(Age)))%>%
   mutate(AgeInt = case_when(
-    Age == "0" ~ 18L,
+    Age == "5" ~ 7L,
+    Age == "12" ~ 4L,
+    Age == "16" ~ 1L,
+    Age == "17" ~ 1L,
     Age == "80" ~ 25L,
     Age == "30" ~ 10L,
     Age == "40" ~ 10L,
     Age == "TOT" ~ NA_integer_,
     TRUE ~ 5L))%>% 
-  mutate(Measure=recode(Measure, 
-                    `s`="Vaccinations",
-                    `sFirst`="Vaccination1",
-                    `sSecond`="Vaccination2"))%>%
-  mutate(Measure = case_when(
-    Des == "VaccinationsTotalNumberFirst" ~ "Vaccination1",
-    Des == "VaccinationsTotalNumberSecond" ~ "Vaccination2",
-    TRUE ~ as.character(Measure)))%>% 
+#  mutate(Measure=recode(Measure, 
+#                    `s`="Vaccinations",
+#                    `sFirst`="Vaccination1",
+#                    `sSecond`="Vaccination2"))%>%
+#  mutate(Measure = case_when(
+#    Des == "VaccinationsTotalNumberFirst" ~ "Vaccination1",
+#    Des == "VaccinationsTotalNumberSecond" ~ "Vaccination2",
+#    TRUE ~ as.character(Measure)))%>% 
   mutate(
     Sex = "b",
     Metric = "Count") %>% 
@@ -160,13 +206,15 @@ Date)%>%
   subset(Value!= is.na(Value))
   
 
-Vaccine_out <- Vaccine_out %>% ##there is an issue in the data
-  mutate(Value = as.numeric(Value)) %>%  
-  mutate(Value = case_when(
-    Value == 52725 ~ 5725,
-    (Value == 8749 & Age == 0)~ 70,
-    TRUE ~ Value
-  ))
+# MK: I don't think this issue is still there. 
+
+#Vaccine_out <- Vaccine_out %>% ##there is an issue in the data
+#  mutate(Value = as.numeric(Value)) %>%  
+#  mutate(Value = case_when(
+#    Value == 52725 ~ 5725,
+#    (Value == 8749 & Age == 0) ~ 70,
+#    TRUE ~ Value
+#  ))
   
 #put togehter 
 
@@ -211,20 +259,6 @@ zip::zipr(zipname,
 
 file.remove(data_source)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#END#
 
 

@@ -143,11 +143,21 @@ if (date_f > last_date_drive){
     dmy()
   
   
+## MK 05.08.2022: ADDED BOOSTER DOSE DATA, UPDATED AGE GROUPS AND INTERVALS   
+  
 db_v <- 
     read_xlsx(data_source6,
     sheet = "DHBofResidence by ethnicity")%>%
-  select(Age= `Age group`, Sex= Gender, Vaccination1= `At least partially vaccinated`, Vaccination2= `Fully vaccinated`)%>%
-  pivot_longer(!Age & !Sex, names_to= "Measure", values_to= "Value")%>%
+  select(Age= `Age group`, Sex= Gender, 
+         Vaccination1= `At least partially vaccinated`, 
+         Vaccination2= `Fully vaccinated`,
+         Vaccination3 = `Booster Received`) %>%
+  ## MK: Vaccination3 has '<' & ',' signs, so remove it
+  mutate(Vaccination3 = str_remove(Vaccination3, '<'),
+         Vaccination3 = str_remove(Vaccination3, ','),
+         Vaccination3 = as.numeric(Vaccination3)) %>% 
+  pivot_longer(!Age & !Sex, 
+               names_to= "Measure", values_to= "Value")%>%
   #sum up numbers that were separated by race 
   group_by(Age, Sex, Measure) %>% 
   mutate(Value = sum(Value)) %>% 
@@ -158,8 +168,9 @@ db_v <-
                     `90+`= "90"))%>%
   filter(Age != "Various")%>% 
   mutate(AgeInt = case_when(
-    Age == "12" ~ 4L,
-    Age == "16" ~ 4L,
+    Age == "5" ~ 7L,
+    Age == "12" ~ 6L,
+    Age == "18" ~ 7L,
     Age == "90" ~ 15L,
     TRUE ~ 5L))%>% 
   mutate(Sex = case_when(

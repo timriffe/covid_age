@@ -190,13 +190,12 @@ vacc_recent <- vacc_today %>%
          Metric = "Count",
          Date = ddmmyyyy(Date),
          Code = paste0(ifelse(state_id < 10, paste0("AT-", state_id), "AT")),
-         AgeInt = case_when(Age == "0" ~ "12",
-                            Age == "12" ~ "3",
-                            Age == "85" ~ "20",
-                            Age == "TOT" ~ "",
+         AgeInt = case_when(Age == "0" ~  12L,
+                            Age == "12" ~ 3L,
+                            Age == "85" ~ 20L,
+                            #Age == "TOT" ~ "",
                             Age == "UNK" ~ NA_integer_,
-                            TRUE ~ "10"),
-         AgeInt = as.integer(AgeInt),
+                            TRUE ~ 10L),
          Code = case_when(Region == "UNK" ~ "AT-UNK+",
                           TRUE ~ Code)) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
@@ -252,6 +251,7 @@ write_rds(out, paste0(dir_n, ctr, ".rds"))
 log_update(pp = ctr, N = nrow(out))
 
 
+# END #
 
 #############Outdated Append code################################
 # # reading data from Austria and last date entered 

@@ -25,6 +25,8 @@ gs4_auth(email = Sys.getenv("email"))
 ######noise for age, 10% have added, removed one year
 #Read in data
 
+## Source website: https://hub.arcgis.com/datasets/ffb0a5bfa58847f79bf2bc544980f4b6_0/about
+
 In= data.table::fread("https://opendata.arcgis.com/api/v3/datasets/ffb0a5bfa58847f79bf2bc544980f4b6_0/downloads/data?format=csv&spatialRefId=4326")
 
 #Process
@@ -61,7 +63,8 @@ In= data.table::fread("https://opendata.arcgis.com/api/v3/datasets/ffb0a5bfa5884
 Out_vaccine1= In %>%
   #remove missing age information 
   filter(!is.na(birth_year_noisy)) %>% 
-select(Sex=sex, birth= birth_year_noisy, Date= vaccination_date, ID = pseudo_id, Drug = drug_manufacturer)%>%
+select(Sex=sex, birth= birth_year_noisy, 
+       Date= vaccination_date, ID = pseudo_id, Drug = drug_manufacturer)%>%
   separate(Date, c("Date", "Time"), " ")%>%
   mutate(Sex= recode(Sex, 
                      `M`= "m",

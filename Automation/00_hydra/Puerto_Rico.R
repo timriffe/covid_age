@@ -157,6 +157,9 @@ tests3 <- tests2 %>%
          Sex != "") 
 
 ###vaccine
+
+## Website Source: https://covid19datos.salud.gov.pr/estadisticas_v2#vacunacion
+
 # download.file("https://covid19datos.salud.gov.pr/estadisticas_v2/download/data/vacunacion/completo", 
 #               data_source4)
 
