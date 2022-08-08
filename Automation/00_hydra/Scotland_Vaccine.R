@@ -18,12 +18,18 @@ gs4_auth(email = Sys.getenv("email"))
 
 ###get vaccine data for scotland
 
+## Source Website: https://www.opendata.nhs.scot/dataset/covid-19-vaccination-in-scotland
+
 vacc <- read.csv("https://www.opendata.nhs.scot/dataset/6dbdd466-45e3-4348-9ee3-1eac72b5a592/resource/9b99e278-b8d8-47df-8d7a-a8cf98519ac1/download/daily_vacc_age_sex_20211103.csv")
 vacc2 <- vacc %>% 
-  select(Date = Date, Sex = Sex, Age = AgeGroup, Measure = Dose, Value = CumulativeNumberVaccinated) %>% 
-  filter(Age != "40 years and over",
-         Age != "18 years and over",
-         Age != "12 years and over") %>% 
+  select(Date = Date, Sex = Sex, 
+         Age = AgeGroup, 
+         Measure = Dose, 
+         Value = CumulativeNumberVaccinated) %>% 
+  ## MK : I may need to ask Maxi why she filtered out here? these does not seem to be duplicates!
+  # filter(Age != "40 years and over",
+  #        Age != "18 years and over",
+  #        Age != "12 years and over") %>% 
   mutate(Sex = case_when(
     Sex == "Female" ~ "f",
     Sex == "Male" ~ "m",
@@ -32,13 +38,13 @@ vacc2 <- vacc %>%
 ## MK: 05.08.2022: added small age and vaccination5 as published      
       Age == "5 to 11" ~ "5",
       Age == "12 to 15" ~ "12",
-    #  Age == "12 years and over" ~ "12",
+      Age == "12 years and over" ~ "12",
       Age == "16 to 17" ~ "16",   
       Age == "18 to 29" ~ "18",  
-    #  Age == "18 years and over" ~ "18",
+      Age == "18 years and over" ~ "18",
       Age == "30 to 39" ~ "30",   
       Age == "40 to 49" ~ "40",   
-    #  Age == "40 years and over" ~ "40",
+      Age == "40 years and over" ~ "40",
       Age == "50 to 54" ~ "50",            
       Age == "55 to 59" ~ "55",            
       Age == "60 to 64" ~ "60",            
@@ -57,35 +63,40 @@ vacc2 <- vacc %>%
       Measure == "Dose 5" ~ "Vaccination5"
     ),
     Date = as.Date(ymd(Date)
-    ),
-    AgeInt = case_when(
-      Age == "5" ~ 7,
-      Age == "12" ~ 4,
-      Age == "16" ~ 2,
-      Age == "18" ~ 12,
-      Age == "30" ~ 10,
-      Age == "40" ~ 10,
-      Age == "80" ~ 25,
-      Age == "TOT" ~ NA_real_,
-      TRUE ~ 5 
     )
     ) %>% 
   arrange(Date, Sex, Measure, Age) %>% 
-  mutate(Date = ddmmyyyy(Date)) %>% 
+  group_by(Date, Sex, Measure, Age) %>% 
+  summarise(Value = sum(Value)) %>% 
+  mutate(Date = ddmmyyyy(Date),
+         AgeInt = case_when(
+           Age == "5" ~ 7,
+           Age == "12" ~ 4,
+           Age == "16" ~ 2,
+           Age == "18" ~ 12,
+           Age == "30" ~ 10,
+           Age == "40" ~ 10,
+           Age == "80" ~ 25,
+           Age == "TOT" ~ NA_real_,
+           TRUE ~ 5 
+         )) %>% 
   mutate(Country = "Scotland",
          Region = "All",
          Metric = "Count",
          Code = paste0("GB-SCT")) %>% 
   sort_input_data()
 
-small_ages <- vacc2 %>% 
-  filter(Age == "12") %>% 
-  mutate(Age = 0,
-         AgeInt = 12L,
-         Value = 0)
 
-vacc2 <- rbind(vacc2, small_ages) %>% 
-  sort_input_data()
+## MK: No need for this anymore, since all Age groups are defined in the code
+
+# small_ages <- vacc2 %>% 
+#   filter(Age == "12") %>% 
+#   mutate(Age = 0,
+#          AgeInt = 12L,
+#          Value = 0)
+
+# vacc2 <- rbind(vacc2, small_ages) %>% 
+#   sort_input_data()
 #save output data
 
 write_rds(vacc2, paste0(dir_n, ctr, ".rds"))

@@ -98,24 +98,30 @@ scripts <- c('Peru', 'Afghanistan', 'Argentina', 'AU_New_South_Wales',
              'Mexico', 'Maldives', 'Malaysia',
              'Norway',  'Netherlands', 'New_Zealand',  
              'Norway_Vaccine', 'Netherlands_Vaccine', 
-             'Philippines', 'Puerto_Rico', 'Portugal_Vaccine',
+             'Philippines', 'Puerto_Rico', 
+             'Portugal_Vaccine', # does not work
              'Romania', 
-             'Spain', 'Slovakia',  'Somalia', 'Sweden', 
-             'SouthKorea', 'Scotland', 'Slovenia',
-             'Scotland_Vaccine', 'Switzerland_Vaccine',
-             'Spain_vaccine', 'Slovenia_vaccine', 'Slovakia_vaccine', 
-             'Thailand', 'Togo', 'Taiwan',
+             'Spain', 'Spain_vaccine',
+             'Scotland', 'Scotland_Vaccine', 
+             'Slovakia',  'Slovenia', 
+             'Slovenia_vaccine', 'Slovakia_vaccine', 
+             'Somalia', 'SouthKorea', 'Sweden', 
+             'Switzerland_Vaccine',
+             'Togo', 'Taiwan', 
+             'Thailand', # does not work
              'Uruguay_vaccine', 'Ukraine', 
              'US_Indiana', 'US_Maine', 'US_Massachusetts',  'US_NYC',
-             'US_California', 'US_Wisconsin', 'US_Oregon',
-             'US_Virginia', 'US_Idaho', 'US_Michigan', 'US_Texas', 
+             'US_California', 'US_Wisconsin', 'US_Oregon', 'US_Michigan', 
+             'US_Virginia', 'US_Idaho', 'US_Texas', 
              'US_Michigan_vaccine','US_Minnesota_vaccine', 'US_Oregon_Vaccine',
              'US_Pennsylvania_vaccine', 'US_Maine_Vaccine',
              'US_NYC_vaccine', 'US_Vermont_Vaccine', 'US_Texas_Vaccine',
-             'USA_cases_all', 'USA_cases_states',
-             'USA_deaths_states', 'USA_deaths_all', 
+             'USA_cases_all', 
+             'USA_cases_states', # CDC linelist data (monthly; whenever run)
+             'USA_deaths_all', 'USA_deaths_states',
              'USA_vaccine', 'USA_vaccine_states',
-             'Vietnam', 'Venezuela')
+             'Vietnam', # does not work
+             'Venezuela')
 
 # scripts <- c('USA_cases_all', 'USA_cases_states', 'USA_deaths_all', 'USA_deaths_states')
 # scripts <- c('USA_cases_all', 'USA_deaths_all')
