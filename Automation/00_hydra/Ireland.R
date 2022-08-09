@@ -31,7 +31,11 @@ if (email == "tim.riffe@gmail.com"){
   gs4_auth(email = Sys.getenv("email"))
 }
 
-## Source website <- "https://covid-19.geohive.ie/pages/helpfaqs#collapse25"
+## Source website for all Data <- "https://covid-19.geohive.ie/pages/helpfaqs#collapse25"
+
+## Source website for vaccinations: https://covid-19.geohive.ie/datasets/0101ed10351e42968535bb002f94c8c6_0/about
+
+## Source website for Booster vaccinations: https://covid-19.geohive.ie/datasets/2a4814b66d0d459cbb80dea30f61fbfe_0/about
 
 cases_url_fat <- "https://opendata.arcgis.com/api/v3/datasets/67b8175576fe44e9ab193c4a5dc2ff9a_0/downloads/data?format=csv&spatialRefId=4326"
 cases_url  <- "https://opendata.arcgis.com/api/v3/datasets/d8eb52d56273413b84b0187a4e9117be_0/downloads/data?format=csv&spatialRefId=4326"
@@ -103,6 +107,12 @@ Cases <-
   select(-date) 
 
 # Vaccines 1 (partial) and 2 (fully)
+
+## MK 09.08.2022: 
+## Short description: these data are weekly data by Age and by Sex
+## the data have cumulative and weekly data; so we extract the cumulative
+## added 80 + as AgeInt
+
 vIN <- read_csv(vac_url)
 
 Vaccinations1and2 <-
@@ -133,7 +143,8 @@ Vaccinations1and2 <-
                          TRUE ~ Age),
          Sex = "b",
          AgeInt = case_when(Age == "UNK" ~ NA_integer_,
-                            Age == "70" ~ 35L,
+                         #   Age == "70" ~ 35L,
+                            Age == "80" ~ 25L,
                             TRUE ~ 10L)) %>% 
   select(-week)
 
@@ -170,14 +181,15 @@ Boosters <-
                     Age == "70to79" ~ "70",
                     TRUE ~ Age),
     AgeInt = case_when(Age == "UNK" ~ NA_integer_,
-                       Age == "70" ~ 35L,
+                       #   Age == "70" ~ 35L,
+                       Age == "80" ~ 25L,
                        TRUE ~ 10L),
     week = substr(epi_week,1,8),
          Date = ISOweek::ISOweek2date(paste(week, "7", sep = "-")),
          Date = ddmmyyyy(Date),
          # Date = dmy(paste(day, month, year, sep = "-")),
          # Date = ddmmyyyy(Date),
-         Measure = "VaccinationBooster") %>% 
+         Measure = "Vaccination3") %>% 
   select(Date, Sex, Age, Measure, Value, AgeInt) 
 
 
