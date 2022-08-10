@@ -77,7 +77,7 @@ In_vaccine <- read_xlsx(data_source, sheet = 4)
 ##MK: Texas changed the age groups by adding "6mo-4yr", recoded 
 
 In_vaccine_age<- In_vaccine %>%
-  select(Age = `Agegrp_v2`, Date=`Vaccination Date`, Doses= `Doses Administered`)%>%
+  select(Age = `Agegrp`, Date=`Vaccination Date`, Doses= `Doses Administered`)%>%
   filter(!is.na(Date))
 
 #Date is transformed to time passed since 01.01.1900 when Excel file is read in
@@ -146,7 +146,7 @@ In_vaccine_dose <- read_xlsx(data_source, sheet = 3)
 
 
 Out_Vaccine_dose <- In_vaccine_dose %>% 
-  select(Race = `Race/Ethnicity` , Sex = Gender, Age = `Agegrp_v2`,  
+  select(Race = `Race/Ethnicity` , Sex = Gender, Age = `Agegrp`,  
          Vaccinations= `Doses Administered`, 
          Vaccination1= `People Vaccinated with at least One Dose` , 
          Vaccination2= `People Fully Vaccinated`)%>%
