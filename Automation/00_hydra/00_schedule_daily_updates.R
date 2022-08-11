@@ -91,31 +91,39 @@ scripts <- c('Peru', 'Afghanistan', 'Argentina', 'AU_New_South_Wales',
              'Estonia_vaccine', 'ECDC_vaccine', 'England_Vaccine', 
              'Finland', 'Finland_vaccine', 'France_Vaccine',
              'Germany', 'Germany_vaccine',
-             'Hungary', 'Hong_Kong_Vaccine',
-             'Italy', 'Ireland', 'Italy_reg', 'Island_of_Jersey', 
+             'Haiti', 'Hungary', 'Hong_Kong_Vaccine',
+             'IndiaVax',
+             'Italy', 'Ireland', 'Italy_reg', 'Island_of_Jersey', 'Israel',
              'Japan',
              'Lithuania_vaccine', 'Latvia_vaccine',
-             'Mexico', 'Maldives', 'Malaysia',
+             'Mexico', 'Maldives', 'Malaysia', 'Mozambique',
+             'Nepal', 'Nigeria',
              'Norway',  'Netherlands', 'New_Zealand',  
              'Norway_Vaccine', 'Netherlands_Vaccine', 
-             'Philippines', 'Puerto_Rico', 'Portugal_Vaccine',
+             'Philippines', 'Puerto_Rico', 
+             'Portugal_Vaccine', # does not work
              'Romania', 
-             'Spain', 'Slovakia',  'Somalia', 'Sweden', 
-             'SouthKorea', 'Scotland', 'Slovenia',
-             'Scotland_Vaccine', 'Switzerland_Vaccine',
-             'Spain_vaccine', 'Slovenia_vaccine', 'Slovakia_vaccine', 
-             'Thailand', 'Togo',
+             'Spain', 'Spain_vaccine',
+             'Scotland', 'Scotland_Vaccine', 
+             'Slovakia',  'Slovenia', 
+             'Slovenia_vaccine', 'Slovakia_vaccine', 
+             'Somalia', 'SouthAfrica', 'SouthKorea', 'Sweden', 
+             'Switzerland_Vaccine',
+             'Togo', 'Taiwan', 
+             'Thailand', # does not work
              'Uruguay_vaccine', 'Ukraine', 
              'US_Indiana', 'US_Maine', 'US_Massachusetts',  'US_NYC',
-             'US_California', 'US_Wisconsin', 'US_Oregon',
-             'US_Virginia', 'US_Idaho', 'US_Michigan', 'US_Texas', 
+             'US_California', 'US_Wisconsin', 'US_Oregon', 'US_Michigan', 
+             'US_Virginia', 'US_Idaho', 'US_Texas', 
              'US_Michigan_vaccine','US_Minnesota_vaccine', 'US_Oregon_Vaccine',
              'US_Pennsylvania_vaccine', 'US_Maine_Vaccine',
              'US_NYC_vaccine', 'US_Vermont_Vaccine', 'US_Texas_Vaccine',
-             'USA_cases_all', 'USA_cases_states',
-             'USA_deaths_states', 'USA_deaths_all', 
+             'USA_cases_all', 
+            # 'USA_cases_states', # CDC linelist data (monthly; whenever run)
+             'USA_deaths_all', 'USA_deaths_states',
              'USA_vaccine', 'USA_vaccine_states',
-             'Vietnam', 'Venezuela')
+             'Vietnam', # does not work
+             'Venezuela')
 
 # scripts <- c('USA_cases_all', 'USA_cases_states', 'USA_deaths_all', 'USA_deaths_states')
 # scripts <- c('USA_cases_all', 'USA_deaths_all')
@@ -153,7 +161,7 @@ for(c in scripts){
 # for individual scheduling
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sched("Peru", tm = "16:13", email = auto_update_email, wd = auto_update_wd)
+sched("Israel", tm = "14:57", email = auto_update_email, wd = auto_update_wd)
 sched("Italy", tm = "15:55", email = auto_update_email, wd = auto_update_wd)
 sched('Germany_vaccine', tm = "14:45", email = auto_update_email, wd = auto_update_wd)
 sched('Peru', tm = "15:47", email = auto_update_email, wd = auto_update_wd)

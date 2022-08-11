@@ -44,7 +44,9 @@ date_f <- read_xlsx(data_source, sheet = 1) %>%
 
 # reading data from Drive and last date entered 
 db_drive <-  read_rds(paste0(dir_n, ctr, ".rds")) %>% 
-  mutate(Code = "SE")
+  mutate(Code = "SE",
+      #   Date = ddmmyyyy(Date),
+         AgeInt = as.character(AgeInt))
 
 last_date_drive <- db_drive %>% 
   filter(Measure %in% c("Cases","Deaths")) %>% 
@@ -340,19 +342,21 @@ if (date_f > last_date_drive){
       select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
       arrange(Measure)
   
-    out <- bind_rows(out_cases, out_vac)  
+    out <- bind_rows(db_drive, out_cases, out_vac) %>% 
+      sort_input_data()
     
     data_source_zip <-  c(data_source_zip, data_source_vac)
-    
-  } else if(!update_vaccines){
-    out <- out_cases
-  }
+ }
   
-
+ else if(!update_vaccines){
+   out <- bind_rows(db_drive, out_cases)
+ }
+ 
+  
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # uploading database to Google Drive 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  write_rds(db_drive, paste0(dir_n, ctr, ".rds"))
+  write_rds(out, paste0(dir_n, ctr, ".rds"))
   
   log_update(pp = "Sweden", N = nrow(out))
   

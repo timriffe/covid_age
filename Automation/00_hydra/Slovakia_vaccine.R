@@ -44,14 +44,18 @@ Out= In %>%
                           "X"="UNK",
                           "U"="UNK")) %>%
   separate(AgeGroup, c("Age", "Age2"), "-")%>%
+  ## MK: 05.08.2022: seems there are duplicates data with fully versus dose = 2, 
+  ## since fully is the largest count, i think Jessica filtered out dose = 2 for this
+  ## I added 4th dose. 
   filter(dose != "2") %>% 
   mutate(Age= case_when(Age =="80+" ~ "80",
                      is.na(Age) ~ "UNK",
                      TRUE ~ Age),
          Measure= case_when(
-           dose=="1"~ "Vaccination1",
-           dose=="fully" ~ "Vaccination2",
-           dose=="3"~ "Vaccination3")) %>% 
+           dose =="1"~ "Vaccination1",
+           dose =="fully" ~ "Vaccination2",
+           dose =="3"~ "Vaccination3",
+           dose == "4" ~ "Vaccination4")) %>% 
         # mutate( Measure = case_when(
         #    (vaccine == "JANSSEN" & dose == "fully") ~ "Vaccination2",
         #    TRUE ~ Measure)) 

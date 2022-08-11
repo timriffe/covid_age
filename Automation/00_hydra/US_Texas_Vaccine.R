@@ -146,7 +146,10 @@ In_vaccine_dose <- read_xlsx(data_source, sheet = 3)
 
 
 Out_Vaccine_dose <- In_vaccine_dose %>% 
-  select(Race = `Race/Ethnicity` , Sex = Gender, Age = `Agegrp`,  Vaccinations= `Doses Administered`, Vaccination1= `People Vaccinated with at least One Dose` , Vaccination2= `People Fully Vaccinated`)%>%
+  select(Race = `Race/Ethnicity` , Sex = Gender, Age = `Agegrp`,  
+         Vaccinations= `Doses Administered`, 
+         Vaccination1= `People Vaccinated with at least One Dose` , 
+         Vaccination2= `People Fully Vaccinated`)%>%
   pivot_longer(!Age & !Sex & !Race, names_to= "Measure", values_to= "Value")%>%
    mutate(Age=recode(Age, 
                      `6mo-4yr`= "0",

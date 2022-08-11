@@ -93,34 +93,78 @@ sc <-
 # National Records of Scotland (NRS) weekly publication on Deaths involving 
 # coronavirus (COVID-19) in Scotland provides data on: 
 # deaths where COVID-19 was mentioned on the death certificate.
-# However, this weekly series is only available for 2021, 2022 
+# this weekly series is available for 2020, 2021, and 2022 
+# However, we use the trend data as always in the input_dataset
 # Note: Scotland.rds for data till 02.06.2022 is deprecated in the folder. 
 
 #Source: https://www.nrscotland.gov.uk/covid19stats
 
+## 2020 WEEKLY DEATHS DATA ##
+
+deaths_source2020 <- paste0(dir_n, "Data_sources/", ctr, "/", ctr, "-deaths_2020", ".xlsx")
+
+deaths_url_2020 <- "https://www.nrscotland.gov.uk/files//statistics/covid19/covid-deaths-20-data-final.xlsx"
+
+download.file(deaths_url_2020,
+              destfile = deaths_source2020,
+              mode = "wb")
+
+wk_data_2020 <- read_excel(deaths_source2020,
+                           sheet = 4, skip = 5)
+
+
+
+## 2021 WEEKLY DEATHS DATA ##
+
+deaths_source2021 <- paste0(dir_n, "Data_sources/", ctr, "/", ctr, "-deaths_2021", ".xlsx")
+
+deaths_url_2021 <- "https://www.nrscotland.gov.uk/files//statistics/covid19/covid-deaths-21-data-final.xlsx"
+
+download.file(deaths_url_2021,
+              destfile = deaths_source2021,
+              mode = "wb")
+
+wk_data_2021 <- read_excel(deaths_source2021,
+                           sheet = 4, skip = 5)
+
+
+## 2022/ MOST RECENT FILE ## 
+
+
 deaths_source <- paste0(dir_n, "Data_sources/", ctr, "/", ctr, "-deaths_",today(), ".xlsx")
 
-recent_file <- read_html("https://www.nrscotland.gov.uk/covid19stats/") %>% 
+recent_file_2022 <- read_html("https://www.nrscotland.gov.uk/covid19stats/") %>% 
   html_nodes(".rteright+ td > a") %>% 
   html_attr('href') %>% 
   stringr::str_replace("/files//statistics/covid19/", "")
 
 
 deaths_url <- paste0("https://www.nrscotland.gov.uk/files//statistics/covid19/",
-                     recent_file)
+                     recent_file_2022)
 
-## DOWNLOAD CASES AND READ IN THE DATA ##
+## DOWNLOAD DEATHS recent file AND READ IN THE DATA ##
 
 download.file(deaths_url,
               destfile = deaths_source,
               mode = "wb")
 
 
-deaths <- read_excel(deaths_source, sheet = 4, skip = 5)
+deaths_recent <- read_excel(deaths_source, sheet = 4, skip = 5)
 
 
-deaths2 <- deaths %>% 
-  dplyr::filter(!is.na(`Registration year`)) %>% 
+## MERGE ALL DATASETS: 2020, 2021, 2022 (MOST RECENT)
+
+deaths <- bind_rows(wk_data_2020,
+                    wk_data_2021,
+                    deaths_recent)
+
+
+
+## CLEANING AND WRANGLING 
+
+deaths_cleaned <- deaths %>% 
+  dplyr::filter(!is.na(`Registration year`),
+                `Registration year` != "Total") %>% 
   dplyr::mutate(Sex = case_when(str_detect(`Registration year`, "females") ~ "f",
                                 str_detect(`Registration year`, "males") ~ "m",
                                 TRUE ~ NA_character_)) %>% 
@@ -130,17 +174,29 @@ deaths2 <- deaths %>%
   dplyr::mutate(Sex = replace_na(Sex, "b")) %>% 
   dplyr::rename("Year" = `Registration year`,
                 "Week_number" = `Week number`,
-                "Week_start" = `Week beginning`,
+                "Date" = `Week beginning`,
                 "TOT" = `All ages`) %>% 
-  dplyr::mutate(Week_start = as.numeric(Week_start),
-                Week_start = as.Date(Week_start, 
-                                     origin = "1899-12-30",
-                                     format = "%Y-%m-%d"),
-                Week_start = format(Week_start, "%d.%m.%Y")) %>% 
-  tidyr::pivot_longer(cols = -c("Year", "Week_number",
-                                "Week_start", "Sex"),
+  dplyr::mutate(Date = as.numeric(Date),
+                Date = as.Date(Date, 
+                               origin = "1899-12-30",
+                               format = "%Y-%m-%d"),
+                Date = format(Date, "%d.%m.%Y"),
+                Date = dmy(Date)) %>% 
+  dplyr::select(-c("Year", "Week_number")) %>% 
+  tidyr::pivot_longer(cols = -c("Date", "Sex"),
                       names_to = "Age",
                       values_to = "Value") %>% 
+  dplyr::filter(!is.na(Value)) %>% 
+  dplyr::mutate(Value = as.numeric(Value))
+
+## CONVERT THE NEWLY WEEKLY TO CUMULATIVE WEEKLY
+
+deaths_out <- deaths_cleaned %>% 
+  dplyr::arrange(Date, Sex, Age) %>% 
+  dplyr::group_by(Sex, Age) %>% 
+  dplyr::summarise(Value = cumsum(Value),
+                   Date = Date) %>% 
+  dplyr::ungroup() %>% 
   dplyr::mutate(Age = recode(Age,
                              '<1' = "0",
                              '1-14' = "1",
@@ -154,22 +210,26 @@ deaths2 <- deaths %>%
                   Age == "1" ~ 14,
                   Age == "15" ~ 30,
                   Age == "45" ~ 20,
-                  Age == "65" ~ 20,
-                  Age == "75" ~ 20,
+                  Age == "65" ~ 10,
+                  Age == "75" ~ 10,
                   Age == "85" ~ 20),
                 Country = "Scotland",
                 Region = "All",
                 Code = "GB-SCT",
                 Metric = "Count",
+                Date = paste(sprintf("%02d",day(Date)), 
+                             sprintf("%02d",month(Date)),
+                             year(Date), 
+                             sep = "."),
                 Measure = "Deaths") %>% 
-  select(Country, Region, Code, Year,
-         Week_number, Week_start, Sex, 
-         Age, AgeInt, Metric, Measure, Value) 
+  select(Country, Region, Code, Date, Sex, 
+         Age, AgeInt, Metric, Measure, Value) %>% 
+  sort_input_data()
 
-# TODO: ## save a copy daily till we figure out how to integrate these data ## 
+## save a copy of deaths_out data on daily basis ## 
 
-write_rds(deaths2, 
-          paste0(dir_n, "/Scotland_DeathsWeekly/", ctr, "_DeathsWeekly", Sys.Date(), ".rds"))
+write_rds(deaths_out, 
+          paste0(dir_n, "Data_sources/Scotland/", ctr, "_DeathsWeekly", Sys.Date(), ".rds"))
 
 # deaths2 <- deaths %>% 
 #   select(Date = DateCode, 
