@@ -25,6 +25,9 @@ files_data_zipped <- paste0(files_data, ".zip")
 
 # Get directory on OSF
 
+manual_osf <- TRUE
+if (!manual_osf){
+
 target_dir <- osf_retrieve_node("mpwjq") %>% 
   osf_ls_files(pattern = "Data") 
 
@@ -37,7 +40,7 @@ for (i in 1:length(files)){
              conflicts = "overwrite")  
   Sys.sleep(2)
 }
-
+}
 # for (i in 1:length(files)){
 #   osf_upload(target_dir,
 #              path = files[i],
