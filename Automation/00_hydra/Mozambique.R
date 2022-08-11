@@ -1,5 +1,5 @@
 ## Mozambique EPI-DATA PDFs.
-## created by: Manal Kamal
+## written by: Manal Kamal
 
 source(here::here("Automation/00_Functions_automation.R"))
 
@@ -40,11 +40,23 @@ all_files <- data.frame(pdf_url = files) %>%
   mutate(pdf_extension = str_remove_all(pdf_url, "https://covid19.ins.gov.mz/wp-content/uploads/"),
          pdf_extension = str_replace_all(pdf_extension, "/", "-"),
          destinations = paste0(files_source, pdf_extension)) %>% 
-  distinct(pdf_url, destinations)
+  separate(pdf_extension, c("base", "bulletin_number"), sep = "_") %>% 
+  mutate(bulletin_number = str_remove_all(bulletin_number, ".pdf"),
+         bulletin_number = str_remove_all(bulletin_number, "-\\d+.\\d+")) %>% 
+  filter(!is.na(bulletin_number),
+         str_detect(bulletin_number, "\\d+")) %>% 
+  distinct(pdf_url, bulletin_number, destinations)
 
 
 all_files %>% 
+  mutate(bulletin_number = as.integer(bulletin_number)) %>% 
+  filter(!is.na(bulletin_number)) %>% 
+  filter(bulletin_number == max(bulletin_number)) %>% 
   {map2(.$pdf_url, .$destinations, ~ download.file(url = .x, destfile = .y, mode="wb"))}
 
+#save output data
 
+#write_rds(out, paste0(dir_n, ctr, ".rds"))
+
+log_update(pp = ctr, N = "Downloaded") 
 

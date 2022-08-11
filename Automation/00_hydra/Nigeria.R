@@ -1,5 +1,5 @@
 ## Nigeria EPI-DATA
-## created by: Manal Kamal
+## written by: Manal Kamal
 
 source(here::here("Automation/00_Functions_automation.R"))
 
@@ -65,6 +65,10 @@ not_available <- c("https://ncdc.gov.ng/themes/common/files/sitreps/d01b0130f5e1
 
 epi_urls <- all_files %>% 
   mutate(destinations = paste0(epifiles_source, pdf_extension)) %>% 
+  ## to extract the most recent file ## 
+  separate(pdf_extension, c("base_pdf", "date", "number"), sep = "_") %>% 
+  mutate(date = dmy(date)) %>% 
+  slice(which.max(date)) %>% 
   distinct(url_pdf, pdf_url, destinations) %>% 
   filter(!url_pdf %in% not_available)
 
@@ -73,6 +77,12 @@ epi_urls <- all_files %>%
 epi_urls %>% 
   {map2(.$url_pdf, .$destinations, ~ download.file(url = .x, destfile = .y, mode="wb"))}
 
+
+#save output data
+
+#write_rds(out, paste0(dir_n, ctr, ".rds"))
+
+log_update(pp = ctr, N = "Downloaded")
 
 
 

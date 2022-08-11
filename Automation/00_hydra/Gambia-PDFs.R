@@ -1,5 +1,5 @@
 ## Gambia EPI-DATA PDFs.
-## created by: Manal Kamal
+## written by: Manal Kamal
 
 source(here::here("Automation/00_Functions_automation.R"))
 
@@ -25,6 +25,7 @@ dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 files_source <- paste0(dir_n, "Data_sources/", ctr, "/")
 
+## THESE ARE ALMOST WEEKLY REPORTS, SO BETTER TO CHECK MANUALLY ##
 
 
 files <- read_html("https://www.moh.gov.gm/covid-19-report/") %>% 

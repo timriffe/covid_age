@@ -35,35 +35,44 @@ ss_db <- rubric %>%
   dplyr::pull(Source)
 
 
+## Source Website <- "https://www.gov.je/Health/Coronavirus/Pages/CoronavirusCases.aspx#tab_mortalityReporting"
+
 #read in data 
 
 vaccine= read.csv("https://www.gov.je/Datasets/ListOpenData?ListName=COVID19Weekly&clean=true")
 
-death= read.csv("https://www.gov.je/datasets/listopendata?listname=COVID19DeathsAge")[-216,]
+#deaths= read.csv("https://www.gov.je/datasets/listopendata?listname=COVID19DeathsAge")[-216,] 
 
+## MK: As announced on the website: 
+## reporting of COVID data will move from a daily to a weekly reporting cycle from 1 May 2022
+## Also, I would prefer to use this dataset rather than the previous one. 
+
+deaths <- read.csv("https://www.gov.je/Datasets/ListOpenData?ListName=COVID19") 
 
 #process deaths 
-
-Deaths_out= death %>%
-  select(!DateTime)%>% 
-  pivot_longer(!Date, names_to= "Age", values_to= "Value")
-                    
-Deaths_out[Deaths_out == ""] <- NA
+#Deaths_out[Deaths_out == ""] <- NA
 
 
-Deaths_out= Deaths_out%>%
-  filter(!is.na(Date))%>%
-  mutate(Age=recode(Age, 
-                    `X_0to9`="0",
-                    `X_10to19`="10",
-                    `X_20to29`="20",
-                    `X_30to39`="30",
-                    `X_40to49`="40",
-                    `X_50to59`="50",
-                    `X_60to69`="60",
-                    `X_70to79`="70",
-                    `X_80to89`="80",
-                    `X_90andover`="90"))%>%
+Deaths_out <- deaths %>% 
+  dplyr:: select(Date, starts_with("MortalityDeathsAge")) %>% 
+  tidyr::pivot_longer(cols = -c("Date"),
+                      names_to = "Age",
+                      values_to = "Value") %>% 
+  mutate(Value = replace_na(Value, 0),
+         Age = str_remove_all(Age, "MortalityDeathsAge")) %>% 
+  separate(Age, into = c("Age", "Nothing"), sep = "to") %>% 
+  mutate(Age = str_remove_all(Age, "andover")) %>% 
+  # mutate(Age=recode(Age, 
+  #                   `X_0to9`="0",
+  #                   `X_10to19`="10",
+  #                   `X_20to29`="20",
+  #                   `X_30to39`="30",
+  #                   `X_40to49`="40",
+  #                   `X_50to59`="50",
+  #                   `X_60to69`="60",
+  #                   `X_70to79`="70",
+  #                   `X_80to89`="80",
+  #                   `X_90andover`="90"))%>%
   mutate(AgeInt = case_when(
     Age == "90" ~ 15L,
     TRUE ~ 10L))%>% 
@@ -72,7 +81,7 @@ Deaths_out= Deaths_out%>%
     Metric = "Count",
     Sex= "b") %>% 
   mutate(
-    Date = ymd(Date),
+    Date = lubridate::ymd(Date),
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
@@ -237,7 +246,7 @@ log_update("Island of Jersey", N = nrow(Out))
 data_source_1 <- paste0(dir_n, "Data_sources/", ctr, "/death_age_",today(), ".csv")
 data_source_2 <- paste0(dir_n, "Data_sources/", ctr, "/vaccine_age_",today(), ".csv")
 
-write_csv(death, data_source_1)
+write_csv(deaths, data_source_1)
 write_csv(vaccine, data_source_2)
 
 data_source <- c(data_source_1, data_source_2)

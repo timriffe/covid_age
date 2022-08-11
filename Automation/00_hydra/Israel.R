@@ -1,5 +1,5 @@
 ## ISRAEL EPI-DATA AND VACCINATION DATA
-## created by: Manal Kamal
+## written by: Manal Kamal
 
 source(here::here("Automation/00_Functions_automation.R"))
 

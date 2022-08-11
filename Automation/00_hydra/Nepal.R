@@ -1,5 +1,5 @@
 ## Nepal EPI-DATA PDFs.
-## created by: Manal Kamal
+## written by: Manal Kamal
 
 source(here::here("Automation/00_Functions_automation.R"))
 library(googledrive)
@@ -66,13 +66,14 @@ jp_folder = "https://drive.google.com/drive/folders/1OcGKoZxTqdTWw6h0MfrEeXwg0PX
 folder_id = drive_get(as_id(jp_folder))
 
 #find files in folder
-files = drive_ls(folder_id) 
+files_drive = drive_ls(folder_id) 
 
-files <- files %>% 
+files <- files_drive %>% 
   mutate(date = str_remove_all(name, paste0("SitRep#", "\\d+", "_")),
          date = as.Date(date, format = "%d-%m-%Y")) %>% 
+  slice(which.max(date))
   ## we can filter for the PDFs after specific date now, to avoid downloading everything again
-  filter(date > "2022-08-09")
+ # filter(date > "2022-08-09")
 
 #loop dirs and download files inside them
 for (i in seq_along(files$name)) {
@@ -80,7 +81,8 @@ for (i in seq_along(files$name)) {
   i_dir = drive_ls(files[i, ])
   
   #mkdir
-  dir.create(files$name[i])
+  dir.create(path = files_source,
+             files$name[i])
   
   #download files
   for (file_i in seq_along(i_dir$name)) {
@@ -97,6 +99,11 @@ for (i in seq_along(files$name)) {
 }
 
 
+#save output data
+
+#write_rds(out, paste0(dir_n, ctr, ".rds"))
+
+log_update(pp = ctr, N = "Downloaded")
 
 
 

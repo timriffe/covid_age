@@ -1,5 +1,5 @@
 ## Haiti PDFs EPI-DATA AND VACCINATION DATA
-## created by: Manal Kamal
+## written by: Manal Kamal
 
 source(here::here("Automation/00_Functions_automation.R"))
 
@@ -58,29 +58,25 @@ dates_df <- data.frame(base = rep("https://mspp.gouv.ht/site/downloads/Sitrep%20
          date = dmy(date),
          destinations = paste0(files_source, date, ".pdf"))
 
+## Since the PDFs are not published for a while, the following will update Hydra with 
+## FALSE, if no PDFs, with Downloaded if PDF is downloaded
 
 
-dates_df %>% 
+if(class(try(
+  dates_df %>%
+  slice(which.max(date)) %>% 
   # last published report was 17 July 2022 - to Monitor this
-  filter(date <= "2022-07-17") %>% 
-  {map2(.$url, .$destinations, ~ download.file(url = .x, destfile = .y, mode="wb"))}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  #  filter(date <= "2022-07-17") %>% 
+  {map2(.$url, .$destinations, ~ download.file(url = .x, destfile = .y, mode="wb"))}, 
+  silent = TRUE)) == "try-error"){
+  log_update(pp = ctr, N = "NoUpdate")
+} else {
+  log_update(pp = ctr, N = "Downloaded")
+}
+  
+         
+ 
+## END ##
 
 
 
