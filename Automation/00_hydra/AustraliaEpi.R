@@ -44,7 +44,9 @@ gs4_auth(email = Sys.getenv("email"))
 # reading data from Australia stored in N drive
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 db_n <- read_rds(paste0(dir_n, ctr, ".rds")) %>% 
-  mutate(Date = dmy(Date))
+  mutate(Date = dmy(Date),
+         AgeInt = case_when(Age == "90" ~ 15L,
+                            TRUE ~ 10L))
 
 
 ## Data from 14.04.2022 from Python automated .xlsx files 
@@ -99,7 +101,7 @@ epi_data <- dplyr::bind_rows("Cases" = cases_df,
                   into = c("Age", "UpperLimit"),
   ## separate column based on two seprators; here: - +
                   sep = "[+-]") %>% 
-  dplyr::mutate(AgeInt = case_when(Age == "90" ~ 25L,
+  dplyr::mutate(AgeInt = case_when(Age == "90" ~ 15L,
                                    TRUE ~ 10L),
                 Sex = case_when(Sex == "Male" ~ "m",
                                 Sex == "Female" ~ "f"),

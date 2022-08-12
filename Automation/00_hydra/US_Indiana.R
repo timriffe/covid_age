@@ -2,7 +2,6 @@
 
 library(here)
 source(here("Automation/00_Functions_automation.R"))
-
 library(lubridate)
 library(dplyr)
 library(tidyverse)
@@ -26,7 +25,7 @@ gs4_auth(email = Sys.getenv("email"))
 
 #Save append vaccine data 
 
-vaccine_archive <- read_rds(paste0(dir_n, ctr, ".rds"))%>% 
+vaccine_archive <- read_rds(paste0(dir_n, ctr, ".rds")) %>% 
 filter(Measure== "Vaccination1"| Measure== "Vaccination2"| Measure== "Vaccinations")
 
 #Read in files 

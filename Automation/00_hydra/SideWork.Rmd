@@ -36,7 +36,7 @@ knitr::opts_chunk$set(
 
 library(here)
 library(purrr)    
-source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
+source(here("Automation/00_Functions_automation.R"))
 
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
@@ -50,6 +50,91 @@ gs4_auth(email = Sys.getenv("email"))
 
 ```
 
+
+# Denmark
+
+##├ Date: 12.08.2022
+Problem: Missing vaccination dose 4 data between 22.06.2022 and 03.08.2022 (inclusive)
+
+
+```{r}
+
+
+# info country and N drive address
+ctr <- "Denmark"
+dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
+dir_n_missing <- "N:/COVerAGE-DB/Automation/Hydra/Data_sources/"
+dir_n_source <- "N:/COVerAGE-DB/Automation/Denmark/"
+
+
+
+
+
+files_to_read = list.files(
+  path = paste0(dir_n_missing, ctr, "/MissingFourthDose"),        # directory to search within
+  pattern = "Vaccine_region_alder_koen_vaccage.csv", # regex pattern, some explanation below
+  recursive = TRUE,          # search subdirectories
+  full.names = TRUE          # return the full path
+)
+
+files_in_dataframe <- data.frame(path = files_to_read) %>% 
+  mutate(Date = str_extract(path, "\\d+-\\d+-\\d+")) %>% 
+  {map2_dfr(.$path, .$Date, function(x,y) read.csv2(x) %>% mutate(Date=y))}
+
+
+db_v2 <- files_in_dataframe %>% 
+      select(Date, 
+             Age = 2,
+             Sex = 3,
+             Value = 7) %>% 
+  ## THESE DATA ARE BY REGION, SO WE SUM THE VALUES ## 
+      group_by(Date, Age, Sex) %>% 
+      summarise(Value = sum(Value),.groups = "drop") %>% 
+      mutate(Measure = "Vaccination4",
+             Sex = recode(Sex,
+                          "K" = "f",
+                          "M" = "m"),
+             Age = str_sub(Age, 1, 2),
+             Age = case_when(Age == "0-" ~ "0",
+                             is.na(Age) ~ "UNK",
+                             TRUE ~ Age))
+    
+    db_v3 <- 
+      db_v2 %>% 
+      bind_rows(
+        db_v2 %>% 
+          group_by(Sex, Measure, Date) %>% 
+          summarise(Value = sum(Value), .groups = "drop") %>% 
+          mutate(Age = "TOT")
+      ) %>% 
+      dplyr::filter(Age != "UNK") %>% 
+      mutate(Date = ddmmyyyy(Date),
+           Country = "Denmark",
+           Code = "DK",
+           Region = "All",
+           AgeInt = case_when(Age == "90" ~ 15L, 
+                              Age == "TOT" ~ NA_integer_,
+                              Age == "UNK" ~ NA_integer_,
+                              TRUE ~ 10L),
+           Metric = "Count") 
+    
+
+  ## MERGE WITH THE .RDS FILE 
+    
+Denmark <- readRDS("N:/COVerAGE-DB/Automation/Hydra/Denmark.rds")
+
+out <- Denmark %>% 
+  bind_rows(db_v3) %>% 
+  sort_input_data()
+
+write_rds(out, paste0(dir_n, ctr, ".rds"))
+
+```
+
+
+
+
+# Romania
 
 
 # Sweden
