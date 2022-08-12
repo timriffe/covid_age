@@ -220,7 +220,7 @@ Out <- Out1 %>%
 write_rds(Out, paste0(dir_n, ctr, ".rds"))
 
 #manual updates 
-log_update(pp = ctr, N = nrow(Out)) 
+#log_update(pp = ctr, N = nrow(Out)) 
 
 
 # input data is saved on K 
