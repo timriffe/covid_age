@@ -27,14 +27,14 @@ gs4_auth(email = Sys.getenv("email"))
 
 ## Data until 12.04.2022 from Google Drive:
 # 
-# at_rubric <- get_input_rubric() %>% 
+# at_rubric <- get_input_rubric() %>%
 #   dplyr::filter(Short == "AU")
 # ss_i   <- at_rubric %>% dplyr::pull(Sheet)
 # ss_db  <- at_rubric %>% dplyr::pull(Source)
 # 
 # 
 # db_drive <- read_sheet(ss = ss_i, sheet = "database")
-
+# 
 
 ## Since I don't want to repeat this whole process, we will append the data on daily basis,
 ## Also, to make sure that the python automated script is working ##
@@ -43,10 +43,7 @@ gs4_auth(email = Sys.getenv("email"))
 
 # reading data from Australia stored in N drive
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-db_n <- read_rds(paste0(dir_n, ctr, ".rds")) %>% 
-  mutate(Date = dmy(Date),
-         AgeInt = case_when(Age == "90" ~ 15L,
-                            TRUE ~ 10L))
+db_n <- read_rds(paste0(dir_n, ctr, ".rds")) 
 
 
 ## Data from 14.04.2022 from Python automated .xlsx files 
@@ -124,10 +121,12 @@ python_data <- epi_data %>%
 
 ## Append to data in N "db_n" 
 
-out <- bind_rows(db_n, python_data)
-
-## Previously, append to "db_drive"
+## When using historical data on drive, append to "db_drive"
 #out <- bind_rows(db_drive, python_data)
+
+out <- bind_rows(db_n, 
+                 python_data) 
+
 
 #save output data
 

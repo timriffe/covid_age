@@ -146,6 +146,7 @@ ss_db    <- rubric_i %>% dplyr::pull(Source)
 # "collector")), skip = 1), class = "col_spec")
 # reading directly from the web
 # https://data.dhsgis.wi.gov/datasets/covid-19-historical-data-table/data
+
 db0 <- read_csv("https://opendata.arcgis.com/api/v3/datasets/531828fa923c490c8f1895db13d0040e_11/downloads/data?format=csv&spatialRefId=3857")
 
 # db <- db0 %>% 
