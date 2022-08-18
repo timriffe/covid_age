@@ -27,7 +27,7 @@ download.file(deaths_url, data_source1, mode = "wb")
 
 # download.file(deaths_url, destfile = ("../data/ENdeaths.xlsx"))
 
-deaths_in     <- read_csv(data_source1)
+deaths_in <- read_csv(data_source1)
 
 
 Deaths <- deaths_in %>% 
@@ -89,7 +89,7 @@ download.file(cases_url, data_source2, mode = "wb")
 
 # download.file(deaths_url, destfile = ("../data/ENdeaths.xlsx"))
 
-cases_in     <- read_csv(data_source2)
+cases_in <- read_csv(data_source2)
 
 Cases <- cases_in %>% 
   select(Country =areaName, Date = date, Age = age, Value = cases) %>% 

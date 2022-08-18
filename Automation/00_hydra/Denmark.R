@@ -268,6 +268,7 @@ db_vcc <- tibble()
              Vaccination3 = 6,
              Vaccination4 = 7) %>% 
       gather(Vaccination1, Vaccination2, Vaccination3, Vaccination4, key = Measure, value = Value) %>% 
+      ## THESE DATA ARE BY REGION, SO WE SUM THE VALUES ## 
       group_by(Age, Sex, Measure) %>% 
       summarise(Value = sum(Value),.groups = "drop") %>% 
       mutate(Sex = recode(Sex,

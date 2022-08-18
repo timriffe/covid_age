@@ -54,6 +54,8 @@ deaths <- read.csv("https://www.gov.je/Datasets/ListOpenData?ListName=COVID19")
 
 
 Deaths_out <- deaths %>% 
+  mutate(Date = ymd(Date)) %>% 
+  filter(!is.na(Date)) %>%
   dplyr:: select(Date, starts_with("MortalityDeathsAge")) %>% 
   tidyr::pivot_longer(cols = -c("Date"),
                       names_to = "Age",
@@ -81,10 +83,8 @@ Deaths_out <- deaths %>%
     Metric = "Count",
     Sex= "b") %>% 
   mutate(
-    Date = lubridate::ymd(Date),
-    Date = paste(sprintf("%02d",day(Date)),    
-                 sprintf("%02d",month(Date)),  
-                 year(Date),sep="."),
+  #  Date = lubridate::ymd(Date),
+  #  Date = ddmmyyyy(Date),
     Code = paste0("JE"),
     Country = "Island of Jersey",
     Region = "All",)%>% 
@@ -96,8 +96,10 @@ Deaths_out <- deaths %>%
 ## MK: In 05.08.2022 I added 3rd and 4th doses columns, and lower ages as published for all doses
 ## also, changed a bit the wrangling 
 
-Vaccine_out= vaccine%>% 
-  select(Vaccinations_TOT = VaccinationsTotalNumberDoses,                                       
+Vaccine_out <- vaccine %>% 
+  mutate(Date = ymd(Date)) %>% 
+  filter(!is.na(Date)) %>% 
+ select(Vaccinations_TOT = VaccinationsTotalNumberDoses,                                       
          Vaccination1_TOT = VaccinationsTotalNumberFirstDoseVaccinations,                       
          Vaccination2_TOT = VaccinationsTotalNumberSecondDoseVaccinations,
          Vaccination3_TOT = VaccinationsTotalNumberThirdDoseVaccinations,
@@ -200,12 +202,10 @@ Vaccine_out= vaccine%>%
 #    TRUE ~ as.character(Measure)))%>% 
   mutate(
     Sex = "b",
-    Metric = "Count") %>% 
-  mutate(
-    Date = ymd(Date),
-    Date = paste(sprintf("%02d",day(Date)),    
-                 sprintf("%02d",month(Date)),  
-                 year(Date),sep="."),
+    Metric = "Count",
+    # Date = paste(sprintf("%02d",day(Date)),    
+    #              sprintf("%02d",month(Date)),  
+    #              year(Date),sep="."),
     Code = paste0("JE"),
     Country = "Island of Jersey",
     Region = "All",)%>% 
@@ -227,7 +227,9 @@ Vaccine_out= vaccine%>%
   
 #put togehter 
 
-Out= rbind(Deaths_out, Vaccine_out)
+Out <- rbind(Deaths_out, Vaccine_out) %>% 
+  mutate(Date = ddmmyyyy(Date)) %>% 
+  sort_input_data()
 
 # save on N 
 
