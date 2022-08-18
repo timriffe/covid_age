@@ -72,6 +72,7 @@ Cases <- cases_raw %>%
 Deaths <- deaths_raw %>% 
   process_epi()
 
+#%>% arrange(Date) %>% distinct(Date)
 
 
 ## MERGE CASES AND DEATHS DATASETS 
@@ -138,7 +139,7 @@ VaccSex_processed <- vaxSex_raw %>%
 
 
 out <- bind_rows(
-  #epi_data,
+  epi_data,
                  VaccAge_processed,
                  VaccSex_processed) %>% 
   dplyr::mutate(
@@ -191,24 +192,24 @@ log_update(pp = ctr, N = nrow(out))
 
 ## some quality check for reference ##
 
-# epi_data %>% 
-#   filter(Sex != "TOT") %>% 
-#  # group_by(Date, Measure) %>% 
-#  # summarise(Value = sum(Value)) %>% 
+# epi_data %>%
+#   filter(Sex != "TOT") %>%
+#  # group_by(Date, Measure) %>%
+#  # summarise(Value = sum(Value)) %>%
 #   ggplot(aes(x = Date, y = Value)) +
 #   geom_point() +
 #   facet_wrap(~ Measure)
 # 
 # 
 # 
-# VaccAge_processed %>% 
-#   filter(Age != "Total") %>% 
-# #  group_by(Date, Measure) %>% 
-#  # summarise(Value = sum(Value)) %>% 
+# VaccAge_processed %>%
+#   filter(Age != "Total") %>%
+# #  group_by(Date, Measure) %>%
+#  # summarise(Value = sum(Value)) %>%
 #   ggplot(aes(x = Date, y = Value)) +
 #   geom_point() +
 #   facet_wrap(~ Measure)
-
+# 
 
 
 

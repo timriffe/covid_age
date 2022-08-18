@@ -23,11 +23,13 @@ gs4_auth(email = Sys.getenv("email"))
 
 ## Description of the following:
 ## Data from France have been collected manually per day for a while in Google Drive input templates (National & Regional),
-## Then stopped. Data are available in different formats; daily, rolling weeks, calender weeks by different age groups:
+## Then stopped. SFP has collected data from all Laboratories in France from week 20, 2020. Despite losing the early epidemic data, 
+## These data are systematically colelcted and updated. 
+## Data are available in different formats; daily, rolling weeks, calender weeks by different age groups:
 ## ex. 1. school age groups (for lower ages; less than 18 yrs old and 18 and more -as one category)
 ## 2. more than 65 and less than 65 in 10-yrs interval
 ## 3. more than 90 and less than 90 in 10-yrs interval (which we will use here)
-## since the data are available daily (by higher age groups), and weekly (by ag egroup intervals), I prefer using weekly data since the start of the epidmeic
+## since the data are available daily (by higher age groups), and weekly (by age group intervals), I prefer using weekly data since the start of the epidemic
 ## though mentioned in the website that data by sex is available, I could not find it in the datasets :(
 
 ## CASES AND TESTS DATA
@@ -57,7 +59,8 @@ process_dataset <- function(tbl){
                   Cases  = `P`,
                   Tests = `T`) %>% 
     dplyr::mutate(YearWeek = str_replace_all(semaine, "-S", "-W"),
-                  YearWeek = paste0(YearWeek, "-1"),
+## will take the last day (Friday) of the week 
+                  YearWeek = paste0(YearWeek, "-5"),
                   Date = ISOweek::ISOweek2date(YearWeek),
                   Age = str_extract(Age, "\\d+"),
                   Age = case_when(Age == "00" ~ "0",
@@ -115,16 +118,60 @@ subnational <- region %>%
 
 
 
-## DEATHS DATASET == In Progress ## 
+## DEATHS DATASET ##
+## Source Website: https://opendata.idf.inserm.fr/cepidc/covid-19/telechargements
 
-deaths <- read.csv2("https://opendata.idf.inserm.fr/cepidc/covid-19/data/deces_hebdomadaires_avec_mention_de_covid_par_sexe_et_age.csv")
+## As per the data files in INED- France
+
+## https://dc-covid.site.ined.fr/fr/donnees/France/
+
+## The following dataset is CepiDC data which covers Cumulative deaths occurred in hospital and elsewhere (social institutions) in France, 
+## for which the death certificate mentions an infection with the SARS-CoV-2 virus.
+
+## Brief: deaths data are available till 22 April 2020, per week, per age & sex. 
+## There is no data available by Region and data stopped publishing since late April 2022. 
+
+deaths <- read.csv2("https://opendata.idf.inserm.fr/cepidc/covid-19/data/deces_hebdomadaires_avec_mention_de_covid_par_sexe_et_age.csv") 
+
+
+deaths_processed <- deaths %>% 
+  dplyr::select(semaine = semaine_de_deces,
+                Age = classe_d_age,
+                Sex = sexe,
+                Deaths  = deces_covid) %>% 
+  dplyr::mutate(YearWeek = str_replace_all(semaine, "-S", "-W"),
+  ## will take the last day (Friday) of the week 
+                YearWeek = paste0(YearWeek, "-5"),
+                Date = ISOweek::ISOweek2date(YearWeek),
+                Age = str_extract(Age, "\\d+"),
+                Age = case_when(Age == "00" ~ "0",
+                                TRUE ~ Age),
+  ## Based on different files and datasets, 1 is for males, 2 for females ## 
+                Sex = case_when(Sex == "1" ~ "m",
+                                Sex == "2" ~ "f")) %>% 
+  ## Since these are NEW weekly data, we will cumsum ACROSS columns before pivoting    
+  dplyr::arrange(Date) %>% 
+  dplyr::group_by(Age, Sex) %>% 
+  dplyr::mutate(across(.cols = c("Deaths"), ~ cumsum(.x))) %>% 
+  tidyr::pivot_longer(cols = c("Deaths"),
+                      names_to = "Measure",
+                      values_to = "Value") %>% 
+  dplyr::mutate(AgeInt = case_when(Age == "0" ~ 25L,
+                                   TRUE ~ 10L),
+                Country = "France",
+                Metric = "Count",
+                ## we don't have the data by Region, so add the variable as 'All' ##
+                Region = "All",
+                Code = paste0("FR")) %>% 
+  dplyr::select(Country, Region, Code, Date, 
+                Age, AgeInt, Sex,
+                Measure, Metric, Value)
 
 
 ## OUTPUTs ##
 
-out <- national %>% 
-  dplyr::bind_rows(subnational) %>% 
-  mutate(
+out <- dplyr::bind_rows(national, subnational, deaths_processed) %>% 
+  dplyr::mutate(
     Date = ymd(Date),
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
@@ -144,7 +191,8 @@ log_update(pp = ctr, N = nrow(out))
 data_source <- paste0(dir_n, "Data_sources/", ctr, "/National_SubNational_Data_",today(), ".xlsx")
 
 datasets <- list("NationalData" = france,
-             "SubNationalData" = region)
+             "SubNationalData" = region,
+             "Deaths" = deaths)
 
 writexl::write_xlsx(datasets, 
                     path = data_source)

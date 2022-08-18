@@ -30,6 +30,8 @@ gs4_auth(email = Sys.getenv("email"))
 
 # 2. Is there new cases/deaths data? =================
 
+## Source Website <- "https://www.folkhalsomyndigheten.se/smittskydd-beredskap/utbrott/aktuella-utbrott/covid-19/statistik-och-analyser/bekraftade-fall-i-sverige/
+
 data_source <- paste0(dir_n, "Data_sources/", ctr, "/cases&deaths_",today(), ".xlsx")
 
 url <- "https://www.arcgis.com/sharing/rest/content/items/b5e7488e117749c19881cce45db13f7e/data"

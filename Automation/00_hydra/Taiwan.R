@@ -41,7 +41,7 @@ processed_data <- raw_data %>%
                 Sex, Age = Age_Group, 
                 Value = Number_of_confirmed_cases) %>% 
   dplyr::mutate(Week_Onset = str_pad(Week_Onset, 2, "left", 0),
-                YearWeek = paste0(Year_Onset,"-W" , Week_Onset, "-1"),
+                YearWeek = paste0(Year_Onset,"-W" , Week_Onset, "-5"),
                 Date = ISOweek::ISOweek2date(YearWeek),
                 Sex = case_when(Sex == "F" ~ "f",
                                 Sex == "M" ~ "m",
