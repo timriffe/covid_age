@@ -23,7 +23,11 @@ dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 #read previous data 
 
-DataArchive <- read_rds(paste0(dir_n, ctr, ".rds"))
+DataArchive <- read_rds(paste0(dir_n, ctr, ".rds")) %>% 
+  dplyr::mutate(Age = case_when(Age == "Aged 0-2" ~ "0",
+                                Age == "Aged 5-11" ~ "5",
+                                Age == "Aged 3-11" ~ "3",
+                                TRUE ~ Age))
 
 
 #total vaccines 
@@ -68,8 +72,9 @@ out_total= total %>%
 out_age= age %>%
   select(Age= age_group, Value= count)%>%
   mutate(Age=recode(Age, 
+                    `Aged 0-2` = "2",
                     `Aged 3-11`="3",
-                    `Aged 5-11`="5",
+                    `Aged 5-11` = "5",
                     `Aged 12-19`="12",
                     `Aged 20-29`="20",
                     `Aged 30-39`="30",
@@ -79,6 +84,7 @@ out_age= age %>%
                     `Aged 70-79`="70",
                     `Aged 80 and above`="80"))%>% 
   mutate(AgeInt = case_when(
+    Age == "0" ~ 3L,
     Age == "3" ~ 9L,
     Age == "5" ~ 7L,
     Age == "12" ~ 8L,
