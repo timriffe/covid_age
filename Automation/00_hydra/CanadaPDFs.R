@@ -40,7 +40,7 @@ files_source <- paste0(dir_n, "Data_sources/", ctr, "/")
 
 ## FOR THE DAILY SCRIPT RUN ON HYDRA 
 
-seq_dates <- format(today(), "%Y-%m-%d")
+seq_dates <- format(seq(from = as.Date("2020/01/01"), to = today(), by = "1 days"), "%Y-%m-%d")
 
 # link sample: https://health-infobase.canada.ca/covid-19/archive/2022-06-10/
 
@@ -48,7 +48,8 @@ weeks_df <- data.frame(base = rep("https://health-infobase.canada.ca/covid-19/ar
                                   times = length(seq_dates)),
                        date = seq_dates) %>% 
   mutate(url = paste0(base, date, "/"),
-         destinations = paste0(files_source, "Report-", date, ".pdf"))
+         destinations = paste0(files_source, "Report-", date, ".pdf")) %>% 
+  filter(date >= "2022-06-10")
 
 # EXAMPLE TO WRITE THE BELOW FUNCTION
 # files <- read_html("https://health-infobase.canada.ca/covid-19/archive/2022-06-10/") %>% 
@@ -81,7 +82,6 @@ for(i in seq_along(weeks_df$url)){
   if(class(try(find_pdf(weeks_df$url[i]),
                silent = TRUE)) == "try-error"){
     print(paste("No Pdf link for:", i))
-    log_update(pp = ctr, N = "NoPDF")
   } else{
     print(paste("Extracting Pdf link for:", i))
     pdf_urls <- rbind(pdf_urls, files_urls)
@@ -90,7 +90,10 @@ for(i in seq_along(weeks_df$url)){
 
 filesdownload <- pdf_urls %>% 
   inner_join(weeks_df, by = c("baselink" = "url")) %>% 
-  select(pdf_url, destinations)
+  select(pdf_url, destinations) %>% 
+  mutate(date = str_extract(destinations, "\\d+-\\d+-\\d+"),
+         date = ymd(date)) %>% 
+  filter(date == max(date))
 
 
 

@@ -23,11 +23,7 @@ dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 #read previous data 
 
-DataArchive <- read_rds(paste0(dir_n, ctr, ".rds")) %>% 
-  dplyr::mutate(Age = case_when(Age == "Aged 0-2" ~ "0",
-                                Age == "Aged 5-11" ~ "5",
-                                Age == "Aged 3-11" ~ "3",
-                                TRUE ~ Age))
+DataArchive <- read_rds(paste0(dir_n, ctr, ".rds")) 
 
 
 #total vaccines 

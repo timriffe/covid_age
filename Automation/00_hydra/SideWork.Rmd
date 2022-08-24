@@ -507,9 +507,60 @@ write_rds(Sweden_appended, paste0(dir_n, ctr, ".rds"))
 ```
 
 
+## South Africa PDFs into dataframe! 
+## FAILED :( ##
+
+```{r}
+
+# info country and N drive address
+ctr          <- "SouthAfrica" # it's a placeholder
+dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
+
+## The purpose of this script is to download the PDFs from the GAMBIA website.
+## Not for automation though. 
+## and so we may run this script once a month to download the PDFs. 
+
+
+files_source <- paste0(dir_n, "Data_sources/", ctr, "/")
+
+text_table <- function(pdf_file){
+  
+  pdf_text(pdf_file) %>% 
+    read_lines() %>% 
+    .[338:356] %>% 
+    str_trim() %>% 
+    str_replace_all("\\s{2,}", "|") %>% 
+    str_remove_all(",") %>% 
+    as_tibble() %>% 
+    tidyr::separate(col = value, into = c("Age", "Cases", "X1", "X2", "X3", "X4"), sep = "\\|")
+  
+}
+
+pdf_table <- list.files(path = files_source,
+           pattern = ".pdf",
+           full.names = TRUE) %>% data.frame(x = .)
+
+pdf <- pdf_table %>% 
+  filter(str_detect(x, "-2022.pdf")) %>% 
+  mutate(week = str_extract(x, "\\d+-2022"),
+         weeknumber = str_extract(week, "\\d+"),
+         weeknumber = as.numeric(weeknumber)) %>% 
+  filter(weeknumber > 7) %>% 
+  select(x) %>% 
+  dplyr::pull()
+
+pdf %>% 
+  purrr::map_dfr(text_table, .id = "file_name") %>%
+  mutate(file_name = basename(file_name)) %>% # ADD BASENAME TO DF 
+  View()
 
 
 
+
+
+
+
+```
 
 
 
