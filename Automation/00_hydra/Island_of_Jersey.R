@@ -229,7 +229,8 @@ Vaccine_out <- vaccine %>%
 
 Out <- rbind(Deaths_out, Vaccine_out) %>% 
   mutate(Date = ddmmyyyy(Date)) %>% 
-  sort_input_data()
+  sort_input_data() %>% 
+  unique()
 
 # save on N 
 

@@ -73,7 +73,7 @@ IN2 <-
           Age = round(lubridate::decimal_date(Date) - (dob+.5)),
           Age = ifelse(Age > 100,100,Age),
           Age = as.integer(Age)) %>% 
-  group_by(Sex, dob, Date, Age) %>% 
+  group_by(Sex, Date, Age) %>% 
   summarize(new = n(),.groups = "drop") %>% 
   mutate(Sex = case_when(Sex == "M" ~ "m", 
                          TRUE ~ "f"))

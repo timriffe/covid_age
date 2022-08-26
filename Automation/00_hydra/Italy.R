@@ -186,6 +186,9 @@ out <-
 
 out <- bind_rows(out, totals) %>% 
   unique() %>% 
+  # group_by(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure) %>% #this was a one time fix 
+  # summarise(Value = sum(Value)) %>% 
+  # ungroup() %>% 
   sort_input_data()
 nrow(out_drive)
 nrow(vacc3)

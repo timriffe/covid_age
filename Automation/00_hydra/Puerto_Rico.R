@@ -82,7 +82,17 @@ cases3 <- cases2 %>%
   mutate(Sex= recode(Sex, 
                      `M`= "m",
                      `F`= "f",
-                    `O` = "UNK")) %>% 
+                    `O` = "UNK"),
+         Age = case_when(
+           Age == 106 ~ 105,
+           Age == 107 ~ 105,
+           Age == 108 ~ 105,
+           Age == 109 ~ 105,
+           Age == 111 ~ 105,
+           Age == 115 ~ 105,
+           Age == 118 ~ 105,
+            TRUE ~ Age
+            )) %>% 
   group_by(Date,Sex, Age) %>% 
   summarise(Value = n()) %>% 
   ungroup() %>% 
@@ -180,7 +190,7 @@ vaccine3 <- vaccine2 %>%
  # filter(Dosis != 2) %>% 
   mutate(Sex= case_when(Sex == "M" ~ "m",
                         Sex == "F" ~ "f",
-                        Sex == "O" ~ "UNK",
+                        is.na(Sex) ~ "UNK",
                         Sex == "U" ~ "UNK",
                         Sex == "" ~ "UNK"),
          Measure = case_when(Dosis == "1" ~ "Vaccination1",

@@ -75,7 +75,7 @@ cases <- IN %>%
                 Date = ddmmyyyy(Date),
                 Country = "Canada",
                 Region = "Manitoba",
-                Code = "CA-MA",
+                Code = "CA-MB",
                 Metric = "Count",
                 Measure = "Cases") %>% 
   dplyr::select(Country, Region, Code,
@@ -135,8 +135,9 @@ deaths <- IN_deaths %>%
                 Date = ddmmyyyy(Date),
                 Country = "Canada",
                 Region = "Manitoba",
-                Code = "CA-MA",
+                Code = "CA-MB",
                 Metric = "Count") %>% 
+  filter(!is.na(Age)) %>% 
   dplyr::select(Country, Region, Code,
                 Date, Age, AgeInt, 
                 Sex, Measure, Metric, Value)

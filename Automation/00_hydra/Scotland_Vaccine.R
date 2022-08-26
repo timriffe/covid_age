@@ -34,7 +34,7 @@ vacc2 <- vacc %>%
     Sex == "Female" ~ "f",
     Sex == "Male" ~ "m",
     Sex == "Total" ~ "b"),
-    Age = case_when(
+    Age2 = case_when(
 ## MK: 05.08.2022: added small age and vaccination5 as published      
       Age == "5 to 11" ~ "5",
       Age == "12 to 15" ~ "12",
@@ -53,7 +53,8 @@ vacc2 <- vacc %>%
       Age == "75 to 79" ~ "75",   
       Age == "80 years and over" ~ "80",   
       Age == "All vaccinations" ~ "TOT",
-      Age == "Total" ~ "TOT"
+      Age == "Total" ~ "TOT",
+      Age == "" ~ "UNK"
     ),
     Measure = case_when(
       Measure == "Dose 1" ~ "Vaccination1",
@@ -64,7 +65,7 @@ vacc2 <- vacc %>%
     ),
     Date = as.Date(ymd(Date)
     )
-    ) %>% 
+    )
   arrange(Date, Sex, Measure, Age) %>% 
   group_by(Date, Sex, Measure, Age) %>% 
   summarise(Value = sum(Value)) %>% 
@@ -83,21 +84,9 @@ vacc2 <- vacc %>%
   mutate(Country = "Scotland",
          Region = "All",
          Metric = "Count",
-         Code = paste0("GB-SCT")) %>% 
+         Code = paste0("GB-SCT")) 
   sort_input_data()
 
-
-## MK: No need for this anymore, since all Age groups are defined in the code
-
-# small_ages <- vacc2 %>% 
-#   filter(Age == "12") %>% 
-#   mutate(Age = 0,
-#          AgeInt = 12L,
-#          Value = 0)
-
-# vacc2 <- rbind(vacc2, small_ages) %>% 
-#   sort_input_data()
-#save output data
 
 write_rds(vacc2, paste0(dir_n, ctr, ".rds"))
 

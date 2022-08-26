@@ -79,7 +79,11 @@ MV_cases= Maldives%>%
       is.na(Age) ~ "UNK",
       TRUE~ as.character(Age)),
     Date = dmy(Date)) %>% 
-  na.omit()
+  na.omit() %>% 
+  mutate(Age = case_when(
+    Age == "106" ~ "105",
+    TRUE ~ Age
+  )) 
 
 
 # TR:

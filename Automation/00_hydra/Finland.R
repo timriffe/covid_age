@@ -209,7 +209,8 @@ FI_out <-
   mutate(isMax = Value == max(Value)) %>% 
   ungroup() %>% 
   dplyr::filter(isMax) %>% 
-  sort_input_data() 
+  sort_input_data() %>% 
+  unique()
 
 
 # # 

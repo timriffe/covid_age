@@ -217,7 +217,8 @@ vacc_out <- rbind(vacc_today, vacc_historical) %>%
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)%>% 
   mutate(Value = as.character(Value)) %>% 
-  sort_input_data()
+  sort_input_data() %>% 
+  unique()
 
 #upload 
 
