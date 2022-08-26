@@ -51,6 +51,287 @@ gs4_auth(email = Sys.getenv("email"))
 ```
 
 
+
+# Spain
+
+##├ Date: 25.08.2022
+Problem: Missing vaccination data .ods files between 03.01.2022 and 31.01.2022 (inclusive)
+
+
+```{r}
+# info country and N drive address
+ctr <- "Spain_vaccine"
+dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
+files_source <- paste0(dir_n, "Data_sources/", ctr, "/Missing_03012022-31012022/")
+
+earlier_source <- "C:/Users/elzalabany/Downloads/Data/"
+
+## 1. DOWNLOAD THE MISSING .ods FILES 
+# creating a sequence of missing data files 
+
+## example <- https://www.sanidad.gob.es/profesionales/saludPublica/ccayes/alertasActual/nCov/documentos/Informe_Comunicacion_20220103.ods
+
+seq_dates <- format(seq(from = as.Date("2020/07/20"), to = as.Date("2021/05/20"), by = "1 days"), "%Y%m%d")
+
+#seq_dates <- format(seq(from = as.Date("2021/01/03"), to = as.Date("2022/01/31"), by = "1 days"), "%Y%m%d")
+
+base_url <- "https://www.sanidad.gob.es/profesionales/saludPublica/ccayes/alertasActual/nCov/documentos/Informe_Comunicacion_"
+
+days_df <- data.frame(base = rep(base_url, 
+                                  times = length(seq_dates)),
+                       date = seq_dates) %>% 
+  mutate(url = paste0(base, date, ".ods"),
+         destinations = paste0(earlier_source, "Spain_vaccine", date, ".ods"))
+
+
+for(i in seq_along(days_df$url)){
+  if(class(try(download.file(days_df$url[i],
+                             destfile = days_df$destinations[i],
+                             mode="wb"),
+               silent = TRUE)) == "try-error"){
+    print(paste("No file for:", i))
+  next 
+    print(paste("downnloading:", i))
+  }
+}
+
+
+## GET IN THE DATA ## ===================
+
+source(here::here("Automation/00_Functions_automation.R"))
+library(readODS)
+# assigning Drive credentials in the case the script is verified manually  
+if (!"email" %in% ls()){
+  email <- "mumanal.k@gmail.com"
+}
+
+# info country and N drive address
+ctr          <- "Spain_vaccine" # it's a placeholder
+dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
+
+files_source <- paste0(dir_n, "Data_sources/", ctr, "/Missing_03012022-31012022/")
+
+trial_path <- paste0("U:/", ctr, "/")
+
+files <- list.files(path = trial_path,
+                    pattern = ".ods",
+                    full.names = TRUE) 
+
+files_df <- data.frame(file_path = files)
+
+#####################
+
+total_pre2022 <- "Hoja3" ## total sheet from 04.01.2021 till 
+total_sheet <- "Comunicación"
+dose_1 <- "Etarios_con_al_menos_1_dosis"
+dose_2 <- "Etarios_con_pauta_completa"
+dose_3 <- "Dosis_refuerzo"
+young <- c("Pediatrica", "5-11_años", "Pediátrica")
+
+
+
+## FUNCTIONS ## 
+
+df_paths_sheets <- function(tbl, number_sheet){
+
+  tbl %>% 
+    mutate(sheet_number = number_sheet) %>% 
+    {map2_df(.$file_path, .$sheet_number, ~read.ods(file = .x, sheet = .y) %>% 
+               mutate(id = .x))} %>% 
+    left_join(tbl, by = c("id" = "file_path"))
+}
+
+## TOTALS: SHEET 1 ##
+
+out_totals <- df_paths_sheets(files_df, total_sheet)
+
+## VAX1: SHEET 3 ##
+
+out_VAX1 <- df_paths_sheets(files_df, dose_1)
+
+## VAX2: SHEET 4 ##
+
+out_VAX2 <- df_paths_sheets(files_df, dose_2)
+
+
+## VAX3: SHEET 5 ##
+
+## Data for third dose (booster dose) are added since 15.12.2021
+
+out_VAX3 <- files_df %>% 
+  mutate(date = ymd(str_extract(file_path, "\\d+-\\d+-\\d+"))) %>% 
+  filter(date > "2021-12-14") %>% 
+  df_paths_sheets(dose_3)
+
+
+## VAX Pediatrics (less than 11 yrs old): SHEET 6 ##
+
+## Data for young age are added after 20.12.2021
+
+out_VAXPed1 <- files_df %>% 
+  mutate(date = ymd(str_extract(file_path, "\\d+-\\d+-\\d+"))) %>% 
+  filter(date > "2021-12-20", date <= "2022-03-11") %>% 
+  df_paths_sheets("5-11_años")
+
+out_VAXPed2 <- files_df %>% 
+  mutate(date = ymd(str_extract(file_path, "\\d+-\\d+-\\d+"))) %>% 
+  filter(date > "2022-03-11", date < "2022-07-30") %>% 
+  df_paths_sheets("Pediatrica")
+
+out_VAXPed3 <- files_df %>% 
+  mutate(date = ymd(str_extract(file_path, "\\d+-\\d+-\\d+"))) %>% 
+  filter(date >= "2022-07-30") %>% 
+  df_paths_sheets("Pediátrica")
+
+
+## PROCESSING THE DATA as per the usual code =========================
+
+### TOTALS 
+
+processed_total <- out_totals %>% 
+  select(Date = id, 
+         Region = A, 
+         Vaccinations= H, 
+         Vaccination1 = J, 
+         Vaccination2 = K,
+         Vaccination3 = L) %>% 
+   mutate(Date = str_extract(Date, "\\d+.ods"),
+         Date = str_remove(Date, ".ods"),
+         Date = ymd(Date),
+          across(.cols = -c("Region", "Date"), ~str_extract(.x, "\\d+"))) %>% 
+  filter(!is.na(Vaccination2)) %>% 
+  pivot_longer(c(Vaccinations,Vaccination1, Vaccination2,Vaccination3), names_to= "Measure", values_to= "Value")  %>% 
+  dplyr::filter(!Region %in% c("Fuerzas Armadas","Sanidad Exterior" )) %>%# delete armed forces from region  
+  mutate(Short = recode(Region,
+                        "Andalucía" = "AN",
+                        "Aragón" = "AR",
+                        "Asturias"= "AS", 
+                        "Baleares" ="IB",
+                        "Canarias" ="CN",
+                        "Cantabria"= "CB",
+                        "Castilla y Leon"= "CL",
+                        "Castilla La Mancha"= "CM",
+                        "Cataluña" ="CT",
+                        "C. Valenciana" ="VC",
+                        "Extremadura"= "EX",
+                        "Galicia"= "GA",
+                        "La Rioja" ="RI",
+                        "Madrid"= "M",
+                        "Murcia"= "MU",
+                        "Navarra"= "NA",
+                        "País Vasco" ="PV",
+                        "Ceuta"= "CE",
+                        "Melilla" ="ML",
+                        "Totales"= "All"), 
+         Region = case_when(
+           Region == "Totales" ~ "All",
+           TRUE ~ Region
+         ),
+         Metric= "Count",
+         Sex = "b",
+         Age = "TOT", 
+         AgeInt = NA_integer_, 
+         Date = ddmmyyyy(Date),
+         Country = "Spain")
+
+
+## FUNCTIONS TO PROCESS VAX DOSES DATA ==========================
+
+vax_process <- function(tbl, vax_number){
+  
+  tbl %>% 
+  pivot_longer(-c("Region", "Date"), names_to= "Age", values_to= "Value") %>%
+  mutate(AgeInt= case_when(
+    Age == "80" ~ 25L,
+    Age == "12" ~ 8L,
+    TRUE ~ 10L)) %>%
+  dplyr::filter(!Region %in% c("Fuerzas Armadas","Sanidad Exterior" )) %>%# delete armed forces from region  
+  mutate(Region = recode(Region,
+                         "Totales" = "All",
+                         "Total España"= "All",
+                         "Castilla - La Mancha"= "Castilla La Mancha"),
+         Short = recode(Region,
+                        "Andalucía" = "AN",
+                        "Aragón" = "AR",
+                        "Asturias"= "AS", 
+                        "Baleares" ="IB",
+                        "Canarias" ="CN",
+                        "Cantabria"= "CB",
+                        "Castilla y Leon"= "CL",
+                        "Castilla La Mancha"= "CM",
+                        "Cataluña" ="CT",
+                        "C. Valenciana" ="VC",
+                        "Extremadura"= "EX",
+                        "Galicia"= "GA",
+                        "La Rioja" ="RI",
+                        "Madrid"= "M",
+                        "Murcia"= "MU",
+                        "Navarra"= "NA",
+                        "País Vasco" ="PV",
+                        "Ceuta"= "CE",
+                        "Melilla" ="ML",
+                        "All"= "All"),
+         Measure = vax_number,
+         Metric = "Count",
+         Sex = "b",
+         Country = "Spain") 
+}
+
+
+### Vaxx 1
+processed_vax1 <- out_VAX1 %>% 
+  select(Region = A,
+         Date = id,
+         `80`= B ,
+         `70`= D, 
+         `60`= `F`,
+         `50`= H, 
+         `40`= J, 
+         `30`= L,
+         `20`= N,
+         `12`= P) %>% 
+  mutate(Date = str_extract(Date, "\\d+.ods"),
+         Date = str_remove(Date, ".ods"),
+         Date = ymd(Date),
+         across(.cols = -c("Region", "Date"), ~str_extract(.x, "\\d+"))) %>% 
+  filter(!is.na(Date),
+         `80` != "1") %>% 
+  vax_process("Vaccination1")
+
+
+### Vaxx 2
+
+processed_vax2 <- out_VAX2 %>% 
+  select(Region = A,
+         Date = id,
+         `80`= B ,
+         `70`= D, 
+         `60`= `F`,
+         `50`= H, 
+         `40`= J, 
+         `30`= L,
+         `20`= N,
+         `12`= P) %>% 
+  mutate(Date = str_extract(Date, "\\d+.ods"),
+         Date = str_remove(Date, ".ods"),
+         Date = ymd(Date),
+         across(.cols = -c("Region", "Date"), ~str_extract(.x, "\\d+"))) %>% 
+  filter(!is.na(Date),
+         `80` != "80") %>% 
+  vax_process("Vaccination2")
+
+
+
+
+
+
+```
+
+
+
+
+
+
 # Denmark
 
 ##├ Date: 12.08.2022
