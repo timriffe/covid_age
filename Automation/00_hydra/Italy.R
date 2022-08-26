@@ -49,10 +49,10 @@ date_f <- db_age %>% dplyr::pull(iss_date) %>% unique() %>% dmy
 if (date_f > last_date_n){
   
   db_age2 <- db_age %>% 
-    rename(Sex = 2,
-           Age = 3,
-           Deaths = 4, 
-           Cases = 5) %>% 
+    rename(Sex = SESSO,
+           Age = AGE_GROUP,
+           Deaths = DECEDUTI, 
+           Cases = CASI_CUMULATIVI) %>% 
     mutate(Sex = recode(Sex,
                         "M" = "m",
                         "F" = "f",
@@ -114,18 +114,22 @@ if (date_f > last_date_n){
 
 # Vaccination data
 
+## Source Website: https://github.com/italia/covid19-opendata-vaccini/
+
 vacc <- read_csv("https://raw.githubusercontent.com/italia/covid19-opendata-vaccini/master/dati/somministrazioni-vaccini-latest.csv")
 # write_rds(vacc, "")
 
 vacc2 <- vacc %>% 
-  rename(Date = 1,
-         Age = 4, 
+  rename(Date = data,
+         Age = eta, 
          Vaccination1 = d1,
          Vaccination2 = d2,
          Vaccination3 = db1,
          Vaccination4 = db2) %>% 
-  select(Date, Age, Vaccination1, Vaccination2, Vaccination3, Vaccination4) %>% 
-  gather(Vaccination1, Vaccination2, Vaccination3, Vaccination4, key = "Measure", value = new) %>% 
+  select(Date, Age, Vaccination1, Vaccination2, 
+         Vaccination3, Vaccination4) %>% 
+  gather(Vaccination1, Vaccination2, Vaccination3, 
+         Vaccination4, key = "Measure", value = new) %>% 
   mutate(Age = as.integer(str_sub(Age, 1, 2))) %>% 
   group_by(Date, Measure, Age) %>% 
   summarise(new = sum(new)) %>% 

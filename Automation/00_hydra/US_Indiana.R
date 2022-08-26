@@ -2,7 +2,6 @@
 
 library(here)
 source(here("Automation/00_Functions_automation.R"))
-
 library(lubridate)
 library(dplyr)
 library(tidyverse)
@@ -26,7 +25,7 @@ gs4_auth(email = Sys.getenv("email"))
 
 #Save append vaccine data 
 
-vaccine_archive <- read_rds(paste0(dir_n, ctr, ".rds"))%>% 
+vaccine_archive <- read_rds(paste0(dir_n, ctr, ".rds")) %>% 
 filter(Measure== "Vaccination1"| Measure== "Vaccination2"| Measure== "Vaccinations")
 
 #Read in files 
@@ -173,7 +172,10 @@ IN_vaccine_age<- read_excel(data_source_3, sheet = 4)
 
 
 Out_vaccine_age = IN_vaccine_age%>%
-  select(Age= age_group, fully_vaccinated, first_dose_administered, Date= current_as_of)%>%
+  select(Age= age_group, fully_vaccinated, single_dose_administered,
+         booster_dose_administered,
+        # first_dose_administered, 
+         Date= current_as_of)%>%
   pivot_longer(!Date & !Age, names_to= "Measure", values_to= "Value")%>%
   subset(Value != "Suppressed")%>%
   mutate(Value = as.numeric(Value))%>%
@@ -194,7 +196,8 @@ Out_vaccine_age = IN_vaccine_age%>%
     TRUE ~ 5L)) %>% 
   mutate(Measure=recode(Measure, 
                     `fully_vaccinated`="Vaccination2",
-                    `first_dose_administered`="Vaccination1"),
+                    `single_dose_administered`="Vaccination1",
+                    `booster_dose_administered` = "Vaccination3"),
     Metric = "Count",
     Sex= "b") %>% 
   mutate(
@@ -217,7 +220,10 @@ Out_vaccine_age = IN_vaccine_age%>%
 IN_vaccine_sex<- read_excel(data_source_3, sheet = 3)
 
 Out_vaccine_sex= IN_vaccine_sex%>%
-select(Sex= gender, fully_vaccinated, first_dose_administered, Date= current_as_of)%>%
+select(Sex= gender, fully_vaccinated, single_dose_administered,
+       booster_dose_administered,
+       # first_dose_administered, 
+       Date= current_as_of)%>%
   pivot_longer(!Date & !Sex, names_to= "Measure", values_to= "Value")%>%
   subset(Value != "Suppressed")%>%
   mutate(Value = as.numeric(Value))%>%
@@ -229,7 +235,8 @@ select(Sex= gender, fully_vaccinated, first_dose_administered, Date= current_as_
   separate(Date, c("Date", "Time"), " ")%>%
   mutate(Measure=recode(Measure, 
                         `fully_vaccinated`="Vaccination2",
-                        `first_dose_administered`="Vaccination1"),
+                        `first_dose_administered`="Vaccination1",
+                        `booster_dose_administered` = "Vaccination3"),
          Sex= recode(Sex, 
                      `Female`="f",
                      `Male`="m",

@@ -17,11 +17,19 @@ packages_CRAN <- c("tidyverse","lubridate","gargle","ungroup","HMDHFDplus",
                    "countrycode","wpp2019","memuse","shiny","DT")
 # install.packages("tidyverse")
 # Install required CRAN packages if not available yet
-if(!sum(!p_isinstalled(packages_CRAN))==0) {
-  p_install(
-    package = packages_CRAN[!p_isinstalled(packages_CRAN)], 
-    character.only = TRUE
-  )
+if(sum(!p_isinstalled(packages_CRAN))>0) {
+  install_these <-  packages_CRAN[!p_isinstalled(packages_CRAN)]
+  for (i in 1:length(install_these)){
+    install.packages(install_these[i],
+                     dependencies = "Depends")
+  }
+
+  # TR: 12 Aug 2022 p_install() was giving error from its internals... replaced
+  # with the loop above
+  # p_install(
+  #   package = packages_CRAN[!p_isinstalled(packages_CRAN)], 
+  #   character.only = TRUE
+  # )
 }
 
 # Reuired github packages

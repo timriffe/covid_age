@@ -35,7 +35,11 @@ Out <- IN %>%
          Age = age, 
          Vaccination1 = numtotal_partially, 
          Vaccination2 = numtotal_fully, 
-         Vaccinations = numtotal_atleast1dose) %>%
+         Vaccinations = numtotal_atleast1dose,
+         Vaccination3 = numtotal_additional,
+         Vaccination4 = numtotal_2nd_additional) %>%
+  mutate(Vaccination3 = as.character(Vaccination3),
+         Vaccination4 = as.character(Vaccination4)) %>% 
   pivot_longer(!Age & !Sex & !Date & !Region, names_to= "Measure", values_to= "Value")%>%
   mutate(Sex = recode(Sex,
                       `Unknown`= "UNK",

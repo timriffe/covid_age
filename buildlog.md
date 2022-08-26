@@ -1,80 +1,80 @@
 
 # New build log 
- Mon May 23 17:38:59 2022 
+ Thu Aug 11 19:08:06 2022 
 
 
 # begin resolution of multiple sources per population 
- Mon May 23 20:45:16 2022 
+ Thu Aug 11 23:05:55 2022 
 
 
 # Resolve USA CDC overlaps 
- Mon May 23 20:46:17 2022 
+ Thu Aug 11 23:07:41 2022 
 
 
 # prep (resolve_UNKUNK) 
- Mon May 23 20:46:29 2022 
+ Thu Aug 11 23:08:22 2022 
 
 
 # A (convert_fractions_sexes) 
- Mon May 23 21:11:55 2022 
+ Fri Aug 12 00:49:05 2022 
 
 
 # B (redistribute_unknown_age) 
- Mon May 23 21:17:59 2022 
+ Fri Aug 12 01:02:55 2022 
 
 
 # C (rescale_to_total) 
- Mon May 23 21:51:50 2022 
+ Fri Aug 12 02:21:32 2022 
 
 
 # D (infer_cases_from_deaths_and_ascfr) 
- Mon May 23 22:29:28 2022 
+ Fri Aug 12 03:20:40 2022 
 
 
 # E (infer_deaths_from_cases_and_ascfr) 
- Mon May 23 22:38:50 2022 
+ Fri Aug 12 03:34:01 2022 
 
 
 # G (redistribute_unknown_sex) 
- Mon May 23 23:22:00 2022 
+ Fri Aug 12 05:07:11 2022 
 
 
 # H (rescale_sexes) 
- Mon May 23 23:34:28 2022 
+ Fri Aug 12 05:28:15 2022 
 
 
 # I (infer_both_sex) 
- Mon May 23 23:39:21 2022 
+ Fri Aug 12 05:35:07 2022 
 
 
 # J (maybe_lower_closeout) 
- Mon May 23 23:49:01 2022 
+ Fri Aug 12 05:53:33 2022 
 
 
 # Age harmonization 
- Tue May 24 00:12:01 2022 
+ Fri Aug 12 06:45:31 2022 
 
 
 # Compile metadata 
- Tue May 24 02:52:27 2022 
+ Fri Aug 12 11:42:17 2022 
 
 
 # Building dashboards 
- Tue May 24 03:09:07 2022 
+ Fri Aug 12 11:58:16 2022 
 
 
 # remake coverage map 
- Tue May 24 03:20:23 2022 
+ Fri Aug 12 12:17:37 2022 
 
 
 # push outputs to OSF 
- Tue May 24 03:24:46 2022 
+ Fri Aug 12 12:22:09 2022 
 
 
 # Commit dashboards and buildlog 
- Tue May 24 12:50:31 2022 
+ Fri Aug 12 12:29:47 2022 
 
 
 # update build series log 
- Tue May 24 12:50:39 2022 
+ Fri Aug 12 12:30:32 2022 
 

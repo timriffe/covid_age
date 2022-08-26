@@ -211,7 +211,8 @@ Age_Vacc <- Vacc_age %>%
                                 Age == "70-79" ~ "70",
                                 Age == "80" ~ "80"),
                 AgeInt = case_when(
-                  Age == "5" ~ 5L,
+                  Age == "5" ~ 6L,
+                  Age == "12" ~ 5L,
                   Age == "80" ~ 25L,
                   Age == "UNK" ~ NA_integer_,
                   TRUE ~ 10L),
