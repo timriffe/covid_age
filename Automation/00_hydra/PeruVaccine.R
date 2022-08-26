@@ -1,4 +1,3 @@
-
 source(here::here("Automation/00_Functions_automation.R"))
 #install.packages("archive")
 library(archive)
@@ -18,26 +17,12 @@ drive_auth(email = Sys.getenv("email"))
 gs4_auth(email = Sys.getenv("email"))
 
 # load data
-m_url1 <- "https://www.datosabiertos.gob.pe/dataset/casos-positivos-por-covid-19-ministerio-de-salud-minsa"
-m_url2 <- "https://www.datosabiertos.gob.pe/dataset/fallecidos-por-covid-19-ministerio-de-salud-minsa"
-
-html1 <- read_html(m_url1)
-html2 <- read_html(m_url2)
-
-# locating the links for Excel files
-cases_url <- html_nodes(html1, xpath = '//*[@id="data-and-resources"]/div/div/ul/li/div/span/a') %>%
-  html_attr("href")
-
-deaths_url <- html_nodes(html2, xpath = '//*[@id="data-and-resources"]/div/div/ul/li/div/span/a') %>%
-  html_attr("href")
 
 #JD: updating the vaccine link
 
 #vacc_url <- "https://cloud.minsa.gob.pe/s/ZgXoXqK2KLjRLxD/download"
 vacc_url <- "https://cloud.minsa.gob.pe/s/To2QtqoNjKqobfw/download"
 
-data_source_c <- paste0(dir_n, "Data_sources/", ctr, "/cases_",today(), ".csv")
-data_source_d <- paste0(dir_n, "Data_sources/", ctr, "/deaths_",today(), ".csv")
 #source changed to provide data in 7z file
 data_source_v <- paste0(dir_n, "Data_sources/", ctr, "/vacc_",today(), ".7z")
 #data_source_v <- paste0(dir_n, "Data_sources/", ctr, "/vacc_",today(), ".csv")
@@ -71,98 +56,53 @@ data_source_v <- paste0(dir_n, "Data_sources/", ctr, "/vacc_",today(), ".7z")
 ## MK: 07.07.2022: due to large file size (use fread to read first, and then write a copy), and 
 ## .7z (vaccination file), we need to download it first then read.
 
-db_c <- bigreadr::fread2(cases_url[1], 
-                          select = c("FECHA_RESULTADO", "SEXO", "EDAD", "DEPARTAMENTO"))
+vac_file <- download.file(vacc_url, destfile = data_source_v, mode = "wb")
 
-db_d <- data.table::fread(deaths_url[1],
-                          select = c("FECHA_FALLECIMIENTO", "SEXO", "EDAD_DECLARADA", "DEPARTAMENTO"))
+db_v <- data.table::fread(archive_read(data_source_v), 
+                select = c("EDAD", "SEXO", "FECHA_VACUNACION", "DOSIS", "DEPARTAMENTO"))
 
 
-# cases ----------------------------------------------
-
-db_c2 <- db_c %>% 
-  rename(date_f = FECHA_RESULTADO,
+# vaccines ---------------------------------------------------
+db_v2 <- db_v %>% 
+  select(Age = EDAD,
          Sex = SEXO,
-         Age = EDAD,
+         date_f = FECHA_VACUNACION,
+         Dosis = DOSIS,
          Region = DEPARTAMENTO) %>% 
-  select(date_f, Sex, Age, Region) %>% 
   mutate(date_f = ymd(date_f),
          Sex = case_when(Sex == "MASCULINO" ~ "m",
                          Sex == "FEMENINO" ~ "f",
                          TRUE ~ "UNK"),
          Age = ifelse(Age > 100, 100, Age),
-         Region = str_to_title(Region)) %>% 
-  group_by(date_f, Sex, Age, Region) %>% 
+         Region = str_to_title(Region),
+         Measure = case_when(Dosis == 1 ~ "Vaccination1", 
+                             Dosis == 2 ~ "Vaccination2", 
+                             Dosis == 3 ~ "Vaccination3",
+                             TRUE ~ "UNK")) %>% 
+  group_by(date_f, Sex, Age, Region, Measure) %>% 
   summarise(new = n()) %>% 
-  ungroup()
+  ungroup() %>% 
+  filter(Measure != "UNK")
 
-dates <- db_c2 %>% drop_na(date_f) %>% select(date_f) %>% unique()
-
-dates_f <- seq(min(dates$date_f),max(dates$date_f), by = '1 day')
+dates_f <- seq(min(db_v2$date_f), max(db_v2$date_f), by = '1 day')
 ages <- 0:100
 
-db_c3 <- db_c2 %>% 
-  tidyr::complete(Region, Sex, Age = ages, date_f = dates_f, fill = list(new = 0)) %>% 
-  group_by(Region, Sex, Age) %>% 
-  mutate(Value = cumsum(new),
-         Measure = "Cases") %>% 
+db_v3 <- db_v2 %>% 
+  tidyr::complete(Measure, Region, Sex, Age = ages, date_f = dates_f, fill = list(new = 0)) %>% 
+  group_by(Region, Measure, Sex, Age) %>% 
+  mutate(Value = cumsum(new)) %>% 
   ungroup() %>% 
   select(-new)
-
-
-# deaths ----------------------------------------------
-
-db_d2 <- db_d %>% 
-  rename(date_f = FECHA_FALLECIMIENTO,
-         Sex = SEXO,
-         Age = EDAD_DECLARADA,
-         Region = DEPARTAMENTO) %>% 
-  select(date_f, Sex, Age, Region) %>% 
-  mutate(date_f = ymd(date_f),
-         Sex = case_when(Sex == "MASCULINO" ~ "m",
-                         Sex == "FEMENINO" ~ "f",
-                         TRUE ~ "UNK"),
-         Age = ifelse(Age > 100, 100, Age),
-         Region = str_to_title(Region)) %>% 
-  group_by(date_f, Sex, Age, Region) %>% 
-  summarise(new = n()) %>% 
-  ungroup()
-
-dates_f <- seq(min(db_d2$date_f),max(db_d2$date_f), by = '1 day')
-ages <- 0:100
-
-db_d3 <- db_d2 %>% 
-  tidyr::complete(Region, Sex, Age = ages, date_f = dates_f, fill = list(new = 0)) %>% 
-  group_by(Region, Sex, Age) %>% 
-  mutate(Value = cumsum(new),
-         Measure = "Deaths") %>% 
-  ungroup() %>% 
-  select(-new)
-
-
 
 # template for database ------------------------------------------------------------
-db_dc <- bind_rows(db_d3, db_c3)
 
-db_pe <- db_dc %>% 
+db_pe_comp <- db_v3 %>% 
   group_by(date_f, Sex, Age, Measure) %>% 
   summarise(Value = sum(Value)) %>% 
   ungroup() %>% 
-  mutate(Region = "All")
+  mutate(Region = "All",
+         Age = as.character(Age))
 
-# 5-year age intervals for regional data -------------------------------
-
-db_dc2 <- db_dc %>% 
-  mutate(Age = ifelse(Age <= 4, Age, floor(Age/5) * 5)) %>% 
-  group_by(date_f, Region, Sex, Age, Measure) %>% 
-  summarise(Value = sum(Value)) %>% 
-  ungroup() %>% 
-  arrange(date_f, Region, Measure, Sex, Age)
-
-# ----------------------------------------------------------------------
-
-db_pe_comp <- bind_rows(db_dc2, db_pe) %>% 
-  mutate(Age = as.character(Age))
 
 db_tot_age <- db_pe_comp %>% 
   group_by(Region, date_f, Sex, Measure) %>% 
@@ -183,18 +123,8 @@ db_tot <- db_pe_comp %>%
   mutate(Sex = "b",
          Age = "TOT")
 
-db_inc <- db_tot %>% 
-  filter(Measure == "Deaths",
-         Value >= 100) %>% 
-  group_by(Region) %>% 
-  summarise(date_start = ymd(min(date_f)))
 
 db_all <- bind_rows(db_pe_comp, db_tot_age, db_tot_sex, db_tot)
-
-db_all2 <- db_all %>% 
-  left_join(db_inc) %>% 
-  drop_na() %>% 
-  filter((Region == "All" & date_f >= "2020-03-01") | date_f >= date_start)
 
 out <- db_all2 %>% 
   mutate(Country = "Peru",
@@ -245,41 +175,6 @@ out <- db_all2 %>%
 # save processed data in N: -------------------------------------------------
 #########################
 
-log_update(pp = ctr, N = nrow(out))
+log_update(pp = "PeruVaccine", N = nrow(out))
 
-write_rds(out, paste0(dir_n, ctr, ".rds"))
-
-#########################
-# Push zip file to Drive -------------------------------------------------
-#########################
-
-
-# Saving original Cases & Deaths datafiles to N
-
-readr::write_csv(db_c, file = data_source_c)
-
-readr::write_csv(db_d, file = data_source_d)
-
-
-# saving compressed data to N: drive
-
-
-data_source <- c(data_source_c, data_source_d)
-
-zipname <- paste0(dir_n, 
-                  "Data_sources/", 
-                  ctr,
-                  "/", 
-                  ctr,
-                  "_data_",
-                  today(), 
-                  ".zip")
-
-zipr(zipname, 
-     data_source, 
-     recurse = TRUE, 
-     compression_level = 9,
-     include_directories = TRUE)
-
-# clean up file chaff
-file.remove(data_source)
+write_rds(out, paste0(dir_n, "PeruVaccine", ".rds"))

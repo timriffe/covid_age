@@ -1,5 +1,5 @@
 ### 1. try (Toni): Georgia source website
-source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
+source(here::here("Automation/00_Functions_automation.R"))
 
 ## if (! "email" %in% ls()){
 ## email <- "maxi.s.kniffka@gmail.com"

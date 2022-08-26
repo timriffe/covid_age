@@ -69,7 +69,7 @@ if (grepl("gits", auto_update_wd)){
 
 
 # To see the list of scheduled tasks
-taskscheduler_ls() %>% view()
+#taskscheduler_ls() %>% view()
 tasks <- 
   taskscheduler_ls() %>% 
   filter(str_sub(TaskName, 1, 8) == "coverage")
@@ -79,9 +79,10 @@ tasks <-
 
 # list of all available scripts to schedule
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-scripts <- c('Peru', 'Afghanistan', 'Argentina', 'AU_New_South_Wales',
+scripts <- c('Peru', 'PeruVaccine' , 'Afghanistan', 
+             'Argentina', 'AU_New_South_Wales',
              'AustraliaEpi', 'Australia_vaccine', 'Austria', 
-             'Bulgaria',  'Belgium',
+             'Bulgaria',  'Belgium', 'CanadaPDFs',
              'Czechia', 'Colombia', 'Cambodia', 'Croatia', 
              'CA_Manitoba_Saskatchewan', 'CA_Ontario', 'CA_British_Columbia', 
              'CA_Alberta', 'Chile', 'CA_Manitoba', 
@@ -90,7 +91,8 @@ scripts <- c('Peru', 'Afghanistan', 'Argentina', 'AU_New_South_Wales',
              'Estonia', 'England', 'England_and_Wales',
              'Estonia_vaccine', 'ECDC_vaccine', 'England_Vaccine', 
              'Finland', 'Finland_vaccine', 'FranceEpi', 'France_Vaccine',
-             'Germany', 'Germany_vaccine',
+             'GeorgiaVaccine',
+             'Germany', 'Germany_vaccine', 'GreecePDFs',
              'Haiti', 'Hungary', 'Hong_Kong_Vaccine',
              'IndiaVax',
              'Italy', 'Ireland', 'Italy_reg', 'Island_of_Jersey', 'Israel',
@@ -107,7 +109,8 @@ scripts <- c('Peru', 'Afghanistan', 'Argentina', 'AU_New_South_Wales',
              'Scotland', 'Scotland_Vaccine', 
              'Slovakia',  'Slovenia', 
              'Slovenia_vaccine', 'Slovakia_vaccine', 
-             'Somalia', 'SouthAfrica', 'SouthKorea', 'Sweden', 
+             'Somalia', 'SouthAfrica', 'SouthKorea', 'SriLankaPDFs',
+             'Sweden', 
              'Switzerland_Vaccine',
              'Togo', 'Taiwan', 
              'Thailand', # does not work
@@ -117,7 +120,8 @@ scripts <- c('Peru', 'Afghanistan', 'Argentina', 'AU_New_South_Wales',
              'US_Virginia', 'US_Idaho', 'US_Texas', 
              'US_Michigan_vaccine','US_Minnesota_vaccine', 'US_Oregon_Vaccine',
              'US_Pennsylvania_vaccine', 'US_Maine_Vaccine',
-             'US_NYC_vaccine', 'US_Vermont_Vaccine', 'US_Texas_Vaccine',
+             'US_NYC_vaccine', 'US_Vermont_Cases', 
+             'US_Vermont_Vaccine', 'US_Texas_Vaccine',
              'USA_cases_all', 
             # 'USA_cases_states', # CDC linelist data (monthly; whenever run)
              'USA_deaths_all', 'USA_deaths_states',
