@@ -326,7 +326,7 @@ vacc2 <- vacc1 %>%
                             Age == "86-90" ~ "86",
                             Age == "90+" ~ "90",
                             Age == "91+" ~ "90",
-                            Age == "Unknown" ~ "Unknown",
+                            Age == "Unknown" ~ "UNK",
                             TRUE ~ "TOT"
                             )) %>% 
   filter(Age != "TOT")
