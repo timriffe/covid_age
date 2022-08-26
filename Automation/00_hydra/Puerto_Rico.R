@@ -1,5 +1,4 @@
-
-
+## PUERTO RICO data 
 library(here)
 #source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
 source(here("Automation/00_Functions_automation.R"))
@@ -71,14 +70,14 @@ arrange(Date, Sex, Age) %>%
 download.file("https://covid19datos.salud.gov.pr/estadisticas_v2/download/data/casos/completo", 
               data_source2)
 
-cases = read.csv(data_source2)
+cases = read_csv(data_source2)
 
 
 
 cases2= cases %>%
   #remove missing age information 
-  select(Sex=Sex, Age= Age, Date= Sample.Date)
-cases2$Date = substr(cases2$Date,1,nchar(cases2$Date)-9)
+  select(Sex=Sex, Age= Age, Date= "Sample Date")
+#cases2$Date = substr(cases2$Date,1,nchar(cases2$Date)-9)
 cases3 <- cases2 %>% 
   mutate(Sex= recode(Sex, 
                      `M`= "m",
@@ -107,17 +106,21 @@ cases3 <- cases2 %>%
 
 
 ###tests
-download.file("https://covid19datos.salud.gov.pr/estadisticas_v2/download/data/pruebas/completo",
-              data_source3)
+# download.file("https://covid19datos.salud.gov.pr/estadisticas_v2/download/data/pruebas/completo",
+#               data_source3)
 
-tests = read.csv(data_source3)
+tests = read_csv("https://covid19datos.salud.gov.pr/estadisticas_v2/download/data/pruebas/completo")
+
+write_csv(tests, file = data_source3)
+
 
 tests2= tests %>%
   #remove missing age information 
   select(Sex=CO_SEXO, Age= TX_GRUPO_EDAD, Date= FE_PRUEBA)
-tests2$Date = substr(tests2$Date,1,nchar(tests2$Date)-9)
+# tests2$Date = substr(tests2$Date,1,nchar(tests2$Date)-9)
 tests3 <- tests2 %>% 
-  mutate(Sex= recode(Sex, 
+  mutate(Date= ddmmyyyy(Date),
+         Sex= recode(Sex, 
                      `M`= "m",
                      `F`= "f",
                      `O` = "UNK",
@@ -150,36 +153,48 @@ tests3 <- tests2 %>%
          Country = "Puerto Rico",
          Region = "All") %>% 
   filter(Date != "",
-         Sex != "") %>% 
-  mutate(Date= ddmmyyyy(Date))
+         Sex != "") 
 
 ###vaccine
-download.file("https://covid19datos.salud.gov.pr/estadisticas_v2/download/data/vacunacion/completo", 
-              data_source4)
 
-vacc = read.csv(data_source4)
+## Website Source: https://covid19datos.salud.gov.pr/estadisticas_v2#vacunacion
+
+# download.file("https://covid19datos.salud.gov.pr/estadisticas_v2/download/data/vacunacion/completo", 
+#               data_source4)
+
+vacc = read_csv("https://covid19datos.salud.gov.pr/estadisticas_v2/download/data/vacunacion/completo")
+
+write_csv(vacc, file = data_source4)
 
 vaccine2= vacc %>%
   #remove missing age information 
   select(Sex=CO_SEXO, Age= TX_GRUPO_EDAD, Date= FE_VACUNA, Dosis = NU_DOSIS, Drug = CO_MANUFACTURERO)
-vaccine2$Date = substr(vaccine2$Date,1,nchar(vaccine2$Date)-9)
+
+#vaccine2$Date = substr(vaccine2$Date,1,nchar(vaccine2$Date)-9)
+
+## MK: 09.08.2022: seems that JSN and number of doses is not an issue anymore so code is adjusted accordingly. 
+## Also, added vaccination3, vaccination4
+
 vaccine3 <- vaccine2 %>% 
  # filter(Drug != "JSN") %>% 
-  filter(Dosis != 2) %>% 
+ # filter(Dosis != 2) %>% 
   mutate(Sex= case_when(Sex == "M" ~ "m",
                         Sex == "F" ~ "f",
                         Sex == "O" ~ "UNK",
                         Sex == "U" ~ "UNK",
-                        Sex == "" ~ "UNK")) %>% 
-  group_by(Date,Sex, Age) %>% 
+                        Sex == "" ~ "UNK"),
+         Measure = case_when(Dosis == "1" ~ "Vaccination1",
+                          Dosis == "2" ~ "Vaccination2",
+                          Dosis == "3" ~ "Vaccination3",
+                          Dosis == "4" ~ "Vaccination4")) %>% 
+  group_by(Date,Sex, Age, Measure) %>% 
   summarise(Value = n()) %>% 
   ungroup() %>% 
-  tidyr::complete(Date, nesting(Sex, Age), fill=list(Value=0)) %>% 
-  group_by(Sex, Age) %>% 
+  tidyr::complete(Date, nesting(Sex, Age, Measure), fill=list(Value=0)) %>% 
+  group_by(Sex, Age, Measure) %>% 
   mutate(Value = cumsum(Value)) %>% 
   ungroup() %>% 
-  mutate(Measure = "Vaccination1",
-         Metric = "Count") %>% 
+#  mutate(Measure = "Vaccination1") %>% 
   arrange(Date, Sex, Age) %>%  
   mutate(Date= ddmmyyyy(Date),
          Code = paste0("PR"),
@@ -194,61 +209,64 @@ vaccine3 <- vaccine2 %>%
                          Age == "70 a 79" ~ "70",
                          Age == "80 +" ~ "80",
                          Age == "No Definido" ~ "UNK"),
-         AgeInt = case_when(Age == "80" ~ "25",
-                            Age == "12" ~ "4",
-                            Age == "16" ~ "4",
-                            Age == "5" ~ "7",
-                            TRUE ~ "10")) %>% 
+         AgeInt = case_when(Age == "80" ~ 25L,
+                            Age == "12" ~ 4L,
+                            Age == "16" ~ 4L,
+                            Age == "5" ~ 7L,
+                            TRUE ~ 10L)) %>% 
   mutate(Region = "All",
          Country = "Puerto Rico",
+         Metric = "Count",
          Region = "All")
 
 
-vaccine4= vacc %>%
-  #remove missing age information 
-  select(Sex=CO_SEXO, Age= TX_GRUPO_EDAD, Date= FE_VACUNA, Dosis = NU_DOSIS, Drug = CO_MANUFACTURERO)
-vaccine4$Date = substr(vaccine4$Date,1,nchar(vaccine4$Date)-9)
-vaccine5 <- vaccine4 %>% 
-  filter(Drug == "JSN" | Dosis == 2) %>% 
-  mutate(Sex= case_when(Sex == "M" ~ "m",
-                        Sex == "F" ~ "f",
-                        Sex == "O" ~ "UNK",
-                        Sex == "U" ~ "UNK",
-                        Sex == "" ~ "UNK")) %>% 
-  group_by(Date,Sex, Age) %>% 
-  summarise(Value = n()) %>% 
-  ungroup() %>% 
-  tidyr::complete(Date, nesting(Sex, Age), fill=list(Value=0)) %>% 
-  group_by(Sex, Age) %>% 
-  mutate(Value = cumsum(Value)) %>% 
-  ungroup() %>% 
-  mutate(Measure = "Vaccination2",
-         Metric = "Count") %>% 
-  arrange(Date, Sex, Age) %>%  
-  mutate(Date= ddmmyyyy(Date),
-         Code = paste0("PR"),
-         Age = case_when(Age == "5 a 11" ~ "5",
-                         Age == "12 a 15" ~ "12",
-                         Age == "16 a 19" ~ "16",
-                         Age == "20 a 29" ~ "20",
-                         Age == "30 a 39" ~ "30",
-                         Age == "40 a 49" ~ "40",
-                         Age == "50 a 59" ~ "50",
-                         Age == "60 a 69" ~ "60",
-                         Age == "70 a 79" ~ "70",
-                         Age == "80 +" ~ "80",
-                         Age == "No Definido" ~ "UNK"),
-         AgeInt = case_when(Age == "80" ~ "25",
-                            Age == "12" ~ "4",
-                            Age == "16" ~ "4",
-                            Age == "5" ~ "7",
-                            TRUE ~ "10")) %>% 
-  mutate(Region = "All",
-         Country = "Puerto Rico",
-         Region = "All")
+# vaccine4= vacc %>%
+#   #remove missing age information 
+#   select(Sex=CO_SEXO, Age= TX_GRUPO_EDAD, Date= FE_VACUNA, Dosis = NU_DOSIS, Drug = CO_MANUFACTURERO)
+# #vaccine4$Date = substr(vaccine4$Date,1,nchar(vaccine4$Date)-9)
+# vaccine5 <- vaccine4 %>% 
+#   filter(Drug == "JSN" | Dosis == 2) %>% 
+#   mutate(Sex= case_when(Sex == "M" ~ "m",
+#                         Sex == "F" ~ "f",
+#                         Sex == "O" ~ "UNK",
+#                         Sex == "U" ~ "UNK",
+#                         Sex == "" ~ "UNK")) %>% 
+#   group_by(Date,Sex, Age) %>% 
+#   summarise(Value = n()) %>% 
+#   ungroup() %>% 
+#   tidyr::complete(Date, nesting(Sex, Age), fill=list(Value=0)) %>% 
+#   group_by(Sex, Age) %>% 
+#   mutate(Value = cumsum(Value)) %>% 
+#   ungroup() %>% 
+#   mutate(Measure = "Vaccination2",
+#          Metric = "Count") %>% 
+#   arrange(Date, Sex, Age) %>%  
+#   mutate(Date= ddmmyyyy(Date),
+#          Code = paste0("PR"),
+#          Age = case_when(Age == "5 a 11" ~ "5",
+#                          Age == "12 a 15" ~ "12",
+#                          Age == "16 a 19" ~ "16",
+#                          Age == "20 a 29" ~ "20",
+#                          Age == "30 a 39" ~ "30",
+#                          Age == "40 a 49" ~ "40",
+#                          Age == "50 a 59" ~ "50",
+#                          Age == "60 a 69" ~ "60",
+#                          Age == "70 a 79" ~ "70",
+#                          Age == "80 +" ~ "80",
+#                          Age == "No Definido" ~ "UNK"),
+#          AgeInt = case_when(Age == "80" ~ "25",
+#                             Age == "12" ~ "4",
+#                             Age == "16" ~ "4",
+#                             Age == "5" ~ "7",
+#                             TRUE ~ "10")) %>% 
+#   mutate(Region = "All",
+#          Country = "Puerto Rico",
+#          Region = "All")
 
 
-out <- rbind(death3, cases3, tests3, vaccine3, vaccine5)
+out <- rbind(death3, cases3, tests3, vaccine3 
+             #,vaccine5
+             )
 out <- out %>% 
   sort_input_data()
 

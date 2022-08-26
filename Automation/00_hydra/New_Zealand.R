@@ -143,23 +143,40 @@ if (date_f > last_date_drive){
     dmy()
   
   
+## MK 05.08.2022: ADDED BOOSTER DOSE DATA, UPDATED AGE GROUPS AND INTERVALS   
+  
 db_v <- 
     read_xlsx(data_source6,
-    sheet = "DHBofResidence by ethnicity")%>%
-  select(Age= `Age group`, Sex= Gender, Vaccination1= `At least partially vaccinated`, Vaccination2= `Fully vaccinated`)%>%
-  pivot_longer(!Age & !Sex, names_to= "Measure", values_to= "Value")%>%
+    sheet = "DHBofResidence by ethnicity") %>% 
+  select(Age= `Age group`, Sex= Gender, 
+         Vaccination1= `At least partially vaccinated`,
+         ## MK: 10.08.2022: changed 'Fully Vaccination' to 'Completed primary course'
+         ## added Booster 2; Vaccination 4
+         Vaccination2= `Completed primary course`,
+         Vaccination3 = `Booster 1 Received`,
+         Vaccination4 = `Booster 2 Received`) %>%
+  ## MK: Vaccination3 has '<' & ',' signs, so remove it
+  mutate(Vaccination3 = str_remove(Vaccination3, '<'),
+         Vaccination3 = str_remove(Vaccination3, ','),
+         Vaccination3 = as.numeric(Vaccination3),
+         Vaccination4 = str_remove(Vaccination4, '<'),
+         Vaccination4 = str_remove(Vaccination4, ','),
+         Vaccination4 = as.numeric(Vaccination4)) %>% 
+  pivot_longer(!Age & !Sex, 
+               names_to= "Measure", values_to= "Value")%>%
   #sum up numbers that were separated by race 
   group_by(Age, Sex, Measure) %>% 
   mutate(Value = sum(Value)) %>% 
   ungroup() %>% 
   distinct()%>%
-  separate(Age, c("Age", "trash"), "-")%>%
+  separate(Age, c("Age", "trash"), "-") %>%
   mutate(Age=recode(Age, 
-                    `90+`= "90"))%>%
-  filter(Age != "Various")%>% 
+                    `90+`= "90")) %>%
+  filter(Age != "Various") %>% 
   mutate(AgeInt = case_when(
-    Age == "12" ~ 4L,
-    Age == "16" ~ 4L,
+    Age == "5" ~ 7L,
+    Age == "12" ~ 6L,
+    Age == "18" ~ 7L,
     Age == "90" ~ 15L,
     TRUE ~ 5L))%>% 
   mutate(Sex = case_when(

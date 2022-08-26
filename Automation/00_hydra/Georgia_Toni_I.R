@@ -1,5 +1,5 @@
 ### 1. try (Toni): Georgia source website
-source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
+source(here::here("Automation/00_Functions_automation.R"))
 
 ## if (! "email" %in% ls()){
 ## email <- "maxi.s.kniffka@gmail.com"
@@ -45,6 +45,7 @@ names(georgia_in)[4] <- "Vaccination3"
 
 
 georgia_vaccination1_in <- melt(georgia_in, id=c("Age", "V1"))
+## MK: No sex column anymore
 names(georgia_vaccination1_in)[3] <- "Sex"
 names(georgia_vaccination1_in)[4] <- "Value"
 georgia_vaccination1_out <- georgia_vaccination1_in %>% 
@@ -54,11 +55,11 @@ georgia_vaccination1_out <- georgia_vaccination1_in %>%
           Country = "Georgia",
           Region = "All",
           Code = "GE",
-          Sex = vaccination1_when(
+          Sex = case_when(
             Sex == "Homme" ~ "m",
             Sex == "Femme" ~ "f"
           ),
-          Age = vaccination1_when(
+          Age = case_when(
             Age == "0-11" ~ "0",
             Age == "12-15" ~ "12",
             Age == "16-17" ~ "16",
@@ -69,7 +70,7 @@ georgia_vaccination1_out <- georgia_vaccination1_in %>%
             Age == "70-74" ~ "75",
             Age == "75 et plus" ~ "75" 
           ),
-          AgeInt = vaccination1_when(
+          AgeInt = case_when(
             Age == "0" ~ 5L,
             Age == "85" ~ 20L,
             TRUE ~ 10L

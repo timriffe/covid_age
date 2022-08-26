@@ -18,7 +18,9 @@ gs4_auth(email = Sys.getenv("email"))
 
 vacc <- read.csv("https://api.coronavirus.data.gov.uk/v2/data?areaType=nation&areaCode=E92000001&metric=vaccinationsAgeDemographics&format=csv")
 vacc <- vacc %>% 
-  select(Date = date, Age = age, Vaccination1 = cumPeopleVaccinatedFirstDoseByVaccinationDate, Vaccination2 = cumPeopleVaccinatedCompleteByVaccinationDate,
+  select(Date = date, Age = age, 
+         Vaccination1 = cumPeopleVaccinatedFirstDoseByVaccinationDate, 
+         Vaccination2 = cumPeopleVaccinatedCompleteByVaccinationDate,
          Vaccination3 = cumPeopleVaccinatedThirdInjectionByVaccinationDate)
 vacc_out <- melt(vacc, id = c("Date", "Age"))
 names(vacc_out)[3] <- "Measure"

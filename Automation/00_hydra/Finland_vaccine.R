@@ -82,8 +82,9 @@ Out_vaccine= In_vaccine%>%
          Metric = "Count",
          Sex= "b")%>%
   mutate(AgeInt = case_when(
-    Age == "12" ~ 4L,
-    Age == "18" ~ 4L,
+    Age == "5" ~ 7L,
+    Age == "12" ~ 6L,
+    Age == "18" ~ 7L,
     Age == "80" ~ 25L,
     Age == "UNK" ~ NA_integer_,
     TRUE ~ 5L))%>% 

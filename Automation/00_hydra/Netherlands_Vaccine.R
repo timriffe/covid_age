@@ -18,6 +18,14 @@ gs4_auth(email = Sys.getenv("email"))
 
 
 
+## MK: 08.07.2022 a TRIAL to download the scrape the web through R script. 
+
+# 
+# read_html("https://www.rivm.nl/en/covid-19-vaccination/figures-vaccination-programme") %>% 
+#   html_nodes("a+ a") %>% 
+#   html_attr('href')
+# 
+
 file.list <-list.files(path= dir_n_source, 
                 pattern = ".xlsx",
                 full.names = TRUE)
@@ -246,45 +254,82 @@ vacc1 <- vacc %>%
 
 
 vacc2 <- vacc1 %>% 
-  mutate(Age = case_when(
+  # mutate(Age = case_when(!str_detect(Age, "Unknown") ~ str_extract(Age, '\\d+'),
+  #                        TRUE ~ Age)) %>% 
+ # filter(!str_detect(Age, "\\d-\\d | Unknown")) %>% 
     ## Age 5-11 was published into 2 different characters, so all considered now ##
-    Age %in% c("5-113", "5-11") ~ "5",
-    Age == "12-17" ~ "12",
-    Age == "18-25" ~ "18",
-    Age == "26-30" ~ "26",
-    Age == "31-35" ~ "31",
-    Age == "36-40" ~ "36",
-    Age == "41-45" ~ "41",
-    Age == "46-50" ~ "46",
-    Age == "51-55" ~ "51",
-    Age == "56-60" ~ "56",
-    Age == "61-65" ~ "61",
-    Age == "66-70" ~ "66",
-    Age == "71-75" ~ "71",
-    Age == "76-80" ~ "76",
-    Age == "81-85" ~ "81",
-    Age == "86-90" ~ "86",
-    Age == "91+" ~ "91",
-    Age == "Unknown" ~ "UNK" )) %>% 
-  mutate(AgeInt = case_when(
-    Age == "5" ~ 7L,
-    Age == "12" ~ 5L,
-    Age == "18" ~ 8L,
-    Age == "26" ~ 5L,
-    Age == "31" ~ 5L,
-    Age == "36" ~ 5L,
-    Age == "41" ~ 5L,
-    Age == "46" ~ 5L,
-    Age == "51" ~ 5L,
-    Age == "56" ~ 5L,
-    Age == "61" ~ 5L,
-    Age == "66" ~ 5L,
-    Age == "71" ~ 5L,
-    Age == "76" ~ 5L,
-    Age == "81" ~ 5L,
-    Age == "86" ~ 5L,
-    Age == "91" ~ 14L)) %>% 
-  filter(!is.na(Age))
+  mutate(AgeInt = case_when(Age %in% c("5-113", "5-11") ~ 7L,
+                            Age == "12-17" ~ 5L,
+                            Age == "18-25" ~ 7L,
+                            Age == "18-24" ~ 6L,
+                            Age == "25-29" ~ 4L,
+                            Age == "26-30" ~ 4L,
+                            Age == "30-34" ~ 4L,
+                            Age == "31-35" ~ 4L,
+                            Age == "35-39" ~ 4L,
+                            Age == "36-40" ~ 4L,
+                            Age == "40-44" ~ 4L,
+                            Age == "41-45" ~ 4L,
+                            Age == "44-49" ~ 4L,
+                            Age == "45-49" ~ 4L,
+                            Age == "46-50" ~ 4L,
+                            Age == "50-54" ~ 4L,
+                            Age == "51-55" ~ 4L,
+                            Age == "55-59" ~ 4L,
+                            Age == "56-60" ~ 4L,
+                            Age == "60-64" ~ 4L,
+                            Age == "61-65" ~ 4L,
+                            Age == "65-69" ~ 4L,
+                            Age == "66-70" ~ 4L,
+                            Age == "70-74" ~ 4L,
+                            Age == "71-75" ~ 4L,
+                            Age == "75-79" ~ 4L,
+                            Age == "76-80" ~ 4L,
+                            Age == "80-84" ~ 4L,
+                            Age == "81-85" ~ 4L,
+                            Age == "85-89" ~ 4L,
+                            Age == "86-90" ~ 3L,
+                            Age == "90+" ~ 15L,
+                            Age == "91+" ~ 15L,
+                            Age == "Unknown" ~ NA_integer_,
+                            TRUE ~ NA_integer_),
+         Age = case_when(Age %in% c("5-113", "5-11") ~ "5",
+                            Age == "12-17" ~ "12",
+                            Age == "18-25" ~ "18",
+                            Age == "18-24" ~ "18",
+                            Age == "25-29" ~ "25",
+                            Age == "26-30" ~ "26",
+                            Age == "30-34" ~ "30",
+                            Age == "31-35" ~ "31",
+                            Age == "35-39" ~ "35",
+                            Age == "36-40" ~ "36",
+                            Age == "40-44" ~ "40",
+                            Age == "41-45" ~ "41",
+                            Age == "44-49" ~ "44",
+                            Age == "45-49" ~ "45",
+                            Age == "46-50" ~ "46",
+                            Age == "50-54" ~ "50",
+                            Age == "51-55" ~ "51",
+                            Age == "55-59" ~ "55",
+                            Age == "56-60" ~ "56",
+                            Age == "60-64" ~ "60",
+                            Age == "61-65" ~ "61",
+                            Age == "65-69" ~ "65",
+                            Age == "66-70" ~ "66",
+                            Age == "70-74" ~ "70",
+                            Age == "71-75" ~ "71",
+                            Age == "75-79" ~ "75",
+                            Age == "76-80" ~ "76",
+                            Age == "80-84" ~ "80",
+                            Age == "81-85" ~ "81",
+                            Age == "85-89" ~ "85",
+                            Age == "86-90" ~ "86",
+                            Age == "90+" ~ "90",
+                            Age == "91+" ~ "90",
+                            Age == "Unknown" ~ "Unknown",
+                            TRUE ~ "TOT"
+                            )) %>% 
+  filter(Age != "TOT")
 
 
 #names(vacc2)[4] <- "Measure"
@@ -298,24 +343,28 @@ vacc2 <- vacc2 %>%
     Sex = "b"
   ) 
 
+## MK: 05.08.2022: no need for small ages data since these are already published in details & it makes errors in the data if used
 
-small_ages1 <- vacc2 %>% 
-  filter(Date == "2022-01-21",
-          Age == "12") %>% 
-  mutate(Age = "0",
-         AgeInt = 12L,
-         Value = 0)
+#small_ages1 <- vacc2 %>% 
+#  filter(Date == "2022-01-21",
+#          Age == "12") %>% 
+#  mutate(Age = "0",
+#         AgeInt = 12L,
+#         Value = 0)
+#
+#small_ages2 <- vacc2 %>% 
+#  filter(Date > "2022-01-21",
+#         Age == "5") %>% 
+#  mutate(Age = "0",
+#         AgeInt = 5L,
+#         Value = 0)
 
-small_ages2 <- vacc2 %>% 
-  filter(Date > "2022-01-21",
-         Age == "5") %>% 
-  mutate(Age = "0",
-         AgeInt = 5L,
-         Value = 0)
 
 
-
-vacc_2022 <- rbind(vacc2, small_ages1, small_ages2) %>% 
+ vacc_2022 <- vacc2 %>% 
+#                 rbind(vacc2, 
+#                    #small_ages1, small_ages2
+#                    ) %>% 
   mutate(Date = ymd(Date),
          Date = paste(sprintf("%02d",day(Date)),
                       sprintf("%02d",month(Date)),

@@ -21,6 +21,8 @@ gs4_auth(email = Sys.getenv("email"))
 
 #read in data 
 
+## Source: https://github.com/Institut-Zdravotnych-Analyz/covid19-data
+
 In=read.csv("https://raw.githubusercontent.com/Institut-Zdravotnych-Analyz/covid19-data/main/Vaccination/OpenData_Slovakia_Vaccination_AgeGroup_District.csv", sep = ";")
 
 regions= read.csv("https://raw.githubusercontent.com/Institut-Zdravotnych-Analyz/covid19-data/main/Vaccination/OpenData_Slovakia_Vaccination_Regions.csv", sep=";")
@@ -28,7 +30,7 @@ regions= read.csv("https://raw.githubusercontent.com/Institut-Zdravotnych-Analyz
 
 Out= In %>%
   #transform week number to last day of the week
-  mutate(Date= lubridate::ymd( "2021-01-03" ) + lubridate::weeks(week))%>%
+  mutate(Date = lubridate::ymd( "2021-01-03" ) + lubridate::weeks(week)) %>%
   mutate(Region= recode(region,"TrenÄ\u008diansky" = "Trencin",
                           "Å½ilinskÃ½"="Zilina",
                           "BratislavskÃ½"="Bratislava",
@@ -42,14 +44,18 @@ Out= In %>%
                           "X"="UNK",
                           "U"="UNK")) %>%
   separate(AgeGroup, c("Age", "Age2"), "-")%>%
+  ## MK: 05.08.2022: seems there are duplicates data with fully versus dose = 2, 
+  ## since fully is the largest count, i think Jessica filtered out dose = 2 for this
+  ## I added 4th dose. 
   filter(dose != "2") %>% 
   mutate(Age= case_when(Age =="80+" ~ "80",
                      is.na(Age) ~ "UNK",
                      TRUE ~ Age),
          Measure= case_when(
-           dose=="1"~ "Vaccination1",
-           dose=="fully" ~ "Vaccination2",
-           dose=="3"~ "Vaccination3")) %>% 
+           dose =="1"~ "Vaccination1",
+           dose =="fully" ~ "Vaccination2",
+           dose =="3"~ "Vaccination3",
+           dose == "4" ~ "Vaccination4")) %>% 
         # mutate( Measure = case_when(
         #    (vaccine == "JANSSEN" & dose == "fully") ~ "Vaccination2",
         #    TRUE ~ Measure)) 

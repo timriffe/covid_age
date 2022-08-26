@@ -58,7 +58,7 @@ Cases <-
          AgeInt = case_when(Age == "UNK" ~ NA_integer_,
                             Age == "100" ~ 5L,
                             TRUE ~ 1L),
-         Code = paste0("TH",Date)) %>% 
+         Code = "TH") %>% 
   sort_input_data() %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
   filter(!(Sex == "UNK" & Value == 0),

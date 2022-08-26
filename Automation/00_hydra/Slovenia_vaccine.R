@@ -70,7 +70,7 @@ Out_vaccine= In_vaccine%>%
   mutate(Measure=recode(Measure, 
                     `1st`="Vaccination1",
                     `2nd`="Vaccination2",
-                    `3rd`="Vaccination3"))%>%
+                    `3rd`="Vaccination3")) %>%
   mutate(
     Metric = "Count",
     Sex="b") %>% 
