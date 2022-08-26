@@ -43,6 +43,10 @@ In= data.table::fread("https://opendata.arcgis.com/api/v3/datasets/ffb0a5bfa5884
 ## then cumsum the values. 
 ## add the usual stuff: country ISO code, region, etc.
 
+
+## MSK 26.08.2020
+## I am adapting the code so that 105 is the oldest age group
+
 out <- In %>%
   #remove missing age information if any 
   filter(!is.na(birth_year_noisy)) %>% 
@@ -67,6 +71,12 @@ out <- In %>%
                           `4` = "Vaccination4")) %>% 
   group_by(ID, Measure) %>% 
   mutate(n = row_number()) %>% 
+  ungroup() %>%  
+         mutate(Age = case_when(
+           Age == 106 ~ 105,
+           Age == 107 ~ 105,
+           TRUE ~ Age
+           )) %>% 
   group_by(Date, Sex, Age, Measure) %>%   
   summarize(Value = n()) %>% 
   ungroup() %>% 
