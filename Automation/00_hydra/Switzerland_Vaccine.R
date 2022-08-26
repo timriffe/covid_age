@@ -96,7 +96,8 @@ vacc3 <- vacc2 %>%
   mutate(Measure = case_when(
     Measure == "COVID19AtLeastOneDosePersons" ~ "Vaccination1",
     Measure == "COVID19FullyVaccPersons" ~ "Vaccination2",
-    Measure == "COVID19FirstBoosterPersons" ~ "Vaccination3"
+    Measure == "COVID19FirstBoosterPersons" ~ "Vaccination3",
+    Measure == "COVID19SecondBoosterPersons" ~ "Vaccination4"
   )) %>% 
 mutate(Sex = "b",
   Metric = "Count") %>% 
@@ -153,7 +154,8 @@ vaccsex3 <- vaccsex2 %>%
   mutate(Measure = case_when(
     Measure == "COVID19AtLeastOneDosePersons" ~ "Vaccination1",
     Measure == "COVID19FullyVaccPersons" ~ "Vaccination2",
-    Measure == "COVID19FirstBoosterPersons" ~ "Vaccination3"
+    Measure == "COVID19FirstBoosterPersons" ~ "Vaccination3",
+    Measure == "COVID19SecondBoosterPersons" ~ "Vaccination4"
   )) %>% 
   mutate(Metric = "Count",
          Age = "TOT")%>% 
