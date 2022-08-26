@@ -136,7 +136,7 @@ vacc3 <- vacc2 %>%
 ####################### ========
 
 ## MK in 26.07.2022
-## IN 29.06.2022, Austria changed the published data to update daily. Also, changes on number of daoses and the way they report.
+## IN 29.06.2022, Austria changed the published data to update daily. Also, changes on number of doses and the way they report.
 ## As a result, we have a gap from 15.12.2021 till 25.07.2022- however, they mentioned that the archive data will be uploaded shortly
 ## TODO: needs revisiting. In order to lessen lose the data, the following is to download the recent data and append daily. 
 ## Noting that we have a missing data gap. 
@@ -148,7 +148,16 @@ vacc_archive_2022 <- readRDS(paste0(dir_n, ctr,".rds")) %>%
          Date >= "2022-07-25") %>% 
   mutate(Date = ddmmyyyy(Date),
          AgeInt = case_when(Age == "UNK" ~ NA_integer_,
-                            TRUE ~ AgeInt))
+                            TRUE ~ AgeInt)) %>% 
+  mutate(Region = case_when(
+    Region == "Ã–sterreich" ~ "All",
+    Region == "KÃ¤rnten" ~ "Kärnten",
+    Region == "NiederÃ¶sterreich" ~ "Niederöstereich",
+    Region == "OberÃ¶sterreich" ~ "Oberösterreich",
+    TRUE ~ Region),
+    Measure = case_when(
+      Measure == "Vaccination5+" ~ "Vaccination5",
+      TRUE ~ Measure))
 
 
 vacc_today <- read.csv2("https://info.gesundheitsministerium.at/data/COVID19_vaccination_doses_agegroups_v202206.csv") 
@@ -198,6 +207,15 @@ vacc_recent <- vacc_today %>%
                             TRUE ~ 10L),
          Code = case_when(Region == "UNK" ~ "AT-UNK+",
                           TRUE ~ Code)) %>% 
+  mutate(Region = case_when(
+    Region == "Ã–sterreich" ~ "All",
+    Region == "KÃ¤rnten" ~ "Kärnten",
+    Region == "NiederÃ¶sterreich" ~ "Niederöstereich",
+    Region == "OberÃ¶sterreich" ~ "Oberösterreich",
+    TRUE ~ Region),
+  Measure = case_when(
+    Measure == "Vaccination5+" ~ "Vaccination5",
+    TRUE ~ Measure)) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
   sort_input_data()
 
