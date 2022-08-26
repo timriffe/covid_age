@@ -153,6 +153,7 @@ out <- bind_rows(db_c2, db_d2) %>%
          Date = ddmmyyyy(Date),
          Code = paste0("KH"),
          Metric = "Count") %>% 
+  filter(!is.na(Age)) %>% 
   sort_input_data()
 
 #### saving database in N Drive ####
