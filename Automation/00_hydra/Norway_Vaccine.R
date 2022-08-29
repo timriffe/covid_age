@@ -97,9 +97,9 @@ vacc_today <- data_today %>%
                         Measure == "Dose 4" ~ "Vaccination4"),
     Age = str_extract(Age, pattern = "\\d+"),
     AgeInt=case_when(
-      Age == "12" ~ 3L,
-      Age == "16" ~ 1L,
-      Age == "18" ~ 6L,
+      Age == "12" ~ 4L,
+      Age == "16" ~ 2L,
+      Age == "18" ~ 7L,
       Age == "25" ~ 15L,
       Age == "40" ~ 5L,
       Age == "45" ~ 10L,

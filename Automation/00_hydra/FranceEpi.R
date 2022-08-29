@@ -97,14 +97,14 @@ subnational <- region %>%
                 Region = case_when(Region == "1" ~ "Guadeloupe",
                                    Region == "2" ~ "Martinique",
                                    Region == "3" ~ "Guyane",
-                                   Region == "4" ~ "La Réunion",
+                                   Region == "4" ~ "La Reunion",
                                    Region == "5" ~ "Saint-Pierre-et-Miquelon",
                                    Region == "6" ~ "Mayotte",
-                                   Region == "7" ~ "Saint-Barthélemy",
+                                   Region == "7" ~ "Saint Barthelemy",
                                    Region == "8" ~ "Saint-Martin",
                                    Region == "11" ~ "Ile-de-France",
                                    Region == "24" ~ "Centre-Val de Loire",
-                                   Region == "27" ~ "Bourgogne-Franche-Comté",
+                                   Region == "27" ~ "Bourgogne-Franche-Comte",
                                    Region == "28" ~ "Normandie", 
                                    Region == "32" ~ "Hauts-de-France", 
                                    Region == "44" ~ "Grand Est",
@@ -112,8 +112,8 @@ subnational <- region %>%
                                    Region == "53" ~ "Bretagne",
                                    Region == "75" ~ "Nouvelle-Aquitaine",
                                    Region == "76" ~ "Occitanie",
-                                   Region == "84" ~ "Auvergne-Rhône-Alpes",
-                                   Region == "93" ~ "Provence-Alpes-Côte d’Azur",
+                                   Region == "84" ~ "Auvergne-Rhone-Alpes",
+                                   Region == "93" ~ "Provence-Alpes-Cote d'Azur",
                                    Region == "94" ~ "Corse")) 
 
 
