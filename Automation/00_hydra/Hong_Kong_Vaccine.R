@@ -26,6 +26,55 @@ dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 DataArchive <- read_rds(paste0(dir_n, ctr, ".rds")) 
 
 
+## MK, 30.08.2022: removing duplicates ### ===========
+# 
+# archive_processed <- DataArchive %>%  
+#   mutate(Date = dmy(Date)) %>% 
+#   filter(Date != "2022-08-30", Date != "2022-08-23", Date != "2022-06-28") %>% 
+#   mutate(Date = ddmmyyyy(Date),
+#          AgeInt = as.integer(AgeInt))
+# 
+# duplicates <- paste0(dir_n, "Data_sources/", ctr, "/duplicates")
+# 
+# files <- list.files(path = duplicates,
+#                     pattern = ".csv",
+#                     all.files = TRUE,
+#                     recursive = TRUE,
+#                     full.names = TRUE) 
+# 
+# files_df <- data.frame(paths = files) %>% 
+#   mutate(date_string = str_extract(paths, "\\d+-\\d+-\\d+.csv"),
+#          date_string = str_remove(date_string, ".csv"),
+#          Date = as.Date(date_string))
+# 
+# 
+# totals_df <- files_df %>% 
+#   filter(str_detect(paths, "_total_")) 
+# 
+# total <- totals_df %>% 
+#   {map2_dfr(.$paths, .$Date, function(x,y) read.csv(x) %>% mutate(Date=y))}
+#   
+# 
+# 
+# 
+# sex_df <- files_df %>% 
+#   filter(str_detect(paths, "_sex_")) 
+# 
+# sex <- sex_df %>% 
+#   {map2_dfr(.$paths, .$Date, function(x,y) read.csv(x) %>% mutate(Date=y))}
+# 
+# 
+# 
+# 
+# age_df <- files_df %>% 
+#   filter(str_detect(paths, "_age_")) 
+# 
+# age <- age_df %>% 
+#   {map2_dfr(.$paths, .$Date, function(x,y) read.csv(x) %>% mutate(Date=y))}
+# 
+
+
+
 #total vaccines 
 total= read.csv("https://static.data.gov.hk/covid-vaccine/summary.csv")
 
@@ -45,12 +94,12 @@ out_total= total %>%
          Vaccination2= secondDoseTotal, 
          Vaccination3 = thirdDoseTotal,
          Vaccination4 = fourthDoseTotal,
-         Vaccinations= totalDosesAdministered)%>%
+         Vaccinations = totalDosesAdministered)%>%
+  pivot_longer(cols = everything(), names_to = "Measure", values_to= "Value") %>%
   mutate(Metric = "Count",
          Age= "TOT", 
-         AgeInt= "")%>%
-  pivot_longer(!Metric & !Age & !AgeInt, names_to = "Measure", values_to= "Value")%>%
-  mutate(Date =today(),
+         AgeInt= NA_integer_,
+         Date =today(),
          Sex= "b")%>%
   mutate(
     Date = ymd(Date),
@@ -68,7 +117,7 @@ out_total= total %>%
 out_age= age %>%
   select(Age= age_group, Value= count)%>%
   mutate(Age=recode(Age, 
-                    `Aged 0-2` = "2",
+                    `Aged 0-2` = "0",
                     `Aged 3-11`="3",
                     `Aged 5-11` = "5",
                     `Aged 12-19`="12",
@@ -109,7 +158,7 @@ out_sex= sex %>%
                     `Male`="m",), 
     Metric = "Count",
     Age= "TOT", 
-    AgeInt= "",
+    AgeInt= NA_integer_,
     Date =today(),
     Measure= "Vaccinations",
     Date = ymd(Date),
@@ -126,7 +175,9 @@ out_sex= sex %>%
 
 #put togehter and appand prev data 
 
-out= rbind(DataArchive,out_total, out_age, out_sex)
+out_today <- bind_rows(out_total, out_age, out_sex)
+
+out= rbind(DataArchive,out_today)
 
 #save output 
 
