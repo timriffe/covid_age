@@ -35,6 +35,8 @@ Cases <-
          Sex = sex) %>% 
   mutate(Date = dmy(Date),
          Age = ifelse(sign(Age) == -1, -Age,Age), # one case of -34 must mean 34, right?
+         Age = if_else(Age >= 105, 105, Age),
+         Age = as.integer(Age),
          Age = ifelse(is.na(Age),"UNK",as.character(Age)),
          Sex = ifelse(is.na(Sex),"UNK",as.character(Sex)),
          Sex = case_when(

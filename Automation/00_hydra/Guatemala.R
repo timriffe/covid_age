@@ -11,7 +11,7 @@ if (!"email" %in% ls()){
 # info country and N drive address
 ctr          <- "Guatemala" # it's a placeholder
 dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
-dir_n_source <- "N:/COVerAGE-DB/Automation/Hydra/Data_sources/"
+dir_n_source <- "N:/COVerAGE-DB/Automation/"
 
 # Drive credentials
 drive_auth(email = Sys.getenv("email"))
@@ -19,31 +19,63 @@ gs4_auth(email = Sys.getenv("email"))
 
 ## Web source: https://tablerocovid.mspas.gob.gt/
 
-# LIST THE DIRECTORIES IN THE GUATEMALA FOLDER #
- 
-dir_main <- list.dirs(path = paste0(dir_n_source, ctr),
-                      full.names = TRUE, recursive = FALSE)
+# # Historical DATA LIST THE DIRECTORIES IN THE GUATEMALA FOLDER #
 
-
-# FUNCTION TO EXTRACT THE DATA OF ALL THERE CSV IN A FOLDER
-
-extract_data <- function(directory){
-  list.files(path = directory,
-             pattern = ".csv",
-             full.names = TRUE) %>% 
-    set_names() %>% 
-    map_dfr(read.csv, .id = "file_name") %>%
-    mutate(file_name = basename(file_name))
-}
+# dir_main <- list.dirs(path = paste0(dir_n_source, ctr, "/GuatemalaHistoricalData/"),
+#                       full.names = TRUE, recursive = FALSE)
 
 # DATAFRAMES CASES, DEATHS reading & processing #=============
 
-cases_raw <- extract_data(dir_main[1]) %>% 
-  dplyr::select(Date = file_name, Age = Edad,
+# cases_raw <- extract_data(dir_main[1]) %>% 
+#   dplyr::select(Date = file_name, Age = Edad,
+#                 Sex = Sexo, Value = n)
+# 
+# deaths_raw <- extract_data(dir_main[2]) %>% 
+#   dplyr::select(Date = file_name, Age = edad,
+#                 Sex = sexo, Value = n)
+
+# FUNCTION TO EXTRACT THE DATA OF ALL THERE CSV IN A FOLDER
+
+# extract_data <- function(directory){
+#   list.files(path = directory,
+#              pattern = ".csv",
+#              full.names = TRUE) %>% 
+#     set_names() %>% 
+#     map_dfr(read.csv, .id = "file_name") %>%
+#     mutate(file_name = basename(file_name))
+# }
+
+
+DataArchived <- read_rds(paste0(dir_n, ctr, ".rds"))
+
+directory <- paste0(dir_n_source, ctr)
+
+files_all <- list.files(path = directory,
+           pattern = ".csv",
+           full.names = TRUE) 
+files_csv <- data.frame(files_name = files_all)
+
+
+## FUNCTION TO READ DATA FROM CSV FILES
+
+read_csv_files <- function(tbl, string_selection){
+  
+  tbl %>% 
+    filter(str_detect(files_name, string_selection)) %>% 
+    mutate(Date = str_extract(files_name, "\\d+"),
+           Date = ymd(Date)) %>% 
+    {map2_dfr(.$files_name, .$Date, function(x,y) read.csv(x) %>% mutate(Date=y))}
+}
+
+
+cases_raw <- files_csv %>% 
+  read_csv_files("confirmedcases_") %>% 
+  dplyr::select(Date, Age = Edad,
                 Sex = Sexo, Value = n)
 
-deaths_raw <- extract_data(dir_main[2]) %>% 
-  dplyr::select(Date = file_name, Age = edad,
+deaths_raw <- files_csv %>% 
+  read_csv_files("deceasedcases_") %>% 
+  dplyr::select(Date, Age = edad,
                 Sex = sexo, Value = n)
 
 ## FUNCTION TO PROCESS CASES AND DEATHS DATA ## 
@@ -52,16 +84,15 @@ process_epi <- function(tbl){
   
   tbl %>% 
     dplyr::mutate(
-      Date = str_extract(Date, pattern = "\\d+"),
-      Date = dmy(Date),
       Sex = case_when(Sex == "Femenino" ~ "f",
                       Sex == "Masculino" ~ "m",
                       Sex == "Sin Dato" ~ "UNK",
-                      TRUE ~ "TOT"),
+                      TRUE ~ "b"),
       Age = case_when(Age == "SIN DATO" ~ "UNK",
+                      Age == "Total" ~ "TOT",
                       TRUE ~ Age),
       AgeInt = case_when(Age == "UNK" ~ NA_integer_,
-                         Age == "Total" ~ NA_integer_,
+                         Age == "TOT" ~ NA_integer_,
                          TRUE ~ 1L))
   
 }
@@ -83,21 +114,26 @@ epi_data <- bind_rows("Cases" = Cases,
 
 # VACCINATION DATA- reading & processing # =====================
 
-vaxAge_raw <- extract_data(dir_main[3])
+# vaxAge_raw <- extract_data(dir_main[3])
+# 
+# vaxSex_raw <- extract_data(dir_main[4])
 
-vaxSex_raw <- extract_data(dir_main[4])
+
+vaxAge_raw <- files_csv %>% 
+  read_csv_files("vaccination_age_")
+
+vaxSex_raw <- files_csv %>% 
+  read_csv_files("vaccination_gender_")
 
 VaccAge_processed <- vaxAge_raw %>% 
-  select(Date = file_name,
+  select(Date,
          Age = contains("Grupo"), 
          Vaccination1 = Dosis.administradas..primera.dosis.,
          Vaccination2 = Dosis.administradas..esquema.completo.,
          Vaccination3 = Dosis.administradas..dosis.de.refuerzo.,
          Vaccination4 = Dosis.administradas..segunda.dosis.de.refuerzo.) %>% 
   dplyr::mutate(
-    Date = str_extract(Date, pattern = "\\d+"),
-    Date = dmy(Date),
-    Age = case_when(Age == "Total" ~ "Total",
+    Age = case_when(Age == "Total" ~ "TOT",
                     str_detect(Age, "06") ~ "6",
                     TRUE ~ str_extract(Age, "\\d+")),
     AgeInt = case_when(Age == "Total" ~ NA_integer_,
@@ -114,20 +150,18 @@ VaccAge_processed <- vaxAge_raw %>%
 
 
 VaccSex_processed <- vaxSex_raw %>% 
-  select(Date = file_name,
+  select(Date,
          Sex = sexo, 
          Vaccination1 = Dosis.administradas..primera.dosis.,
          Vaccination2 = Dosis.administradas..esquema.completo.,
          Vaccination3 = Dosis.administradas..dosis.de.refuerzo.,
          Vaccination4 = Dosis.administradas..segunda.dosis.de.refuerzo.) %>% 
   dplyr::mutate(
-    Date = str_extract(Date, pattern = "\\d+"),
-    Date = dmy(Date),
     Sex = case_when(Sex == "Femenino" ~ "f",
                     Sex == "Masculino" ~ "m",
                     Sex == "Sin Dato" ~ "UNK",
-                    TRUE ~ "TOT"),
-    Age = "Unknown",
+                    TRUE ~ "b"),
+    Age = "UNK",
     AgeInt = NA_integer_) %>% 
   tidyr::pivot_longer(cols = contains("Vaccin"),
                       names_to = "Measure",
@@ -138,8 +172,7 @@ VaccSex_processed <- vaxSex_raw %>%
 ## MERGE ALL DATA AND PREPARE THE FINAL OUTPUT ## ======
 
 
-out <- bind_rows(
-  epi_data,
+out_week <- bind_rows(epi_data,
                  VaccAge_processed,
                  VaccSex_processed) %>% 
   dplyr::mutate(
@@ -153,6 +186,9 @@ out <- bind_rows(
                 Age, AgeInt, Metric, Measure, Value) %>% 
   sort_input_data()
   
+## MERGE WITH HISTORICAL ARCHIVED DATA 
+
+out <- bind_rows(out_week, DataArchived)
 
 
 #save output data
@@ -161,7 +197,7 @@ write_rds(out, paste0(dir_n, ctr, ".rds"))
 
 log_update(pp = ctr, N = nrow(out)) 
 
-
+## NO NEED for this as the csv files are already downloaded and stored. 
 # #zip input data file 
 # 
 # data_source <- paste0(dir_n, "Data_sources/", ctr, "/data_", today(), ".csv")

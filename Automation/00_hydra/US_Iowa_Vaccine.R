@@ -28,7 +28,7 @@ url <- read_excel("https://excel.officeapps.live.com/x/_layouts/XlFileHandler.as
 setwd("U:/Backup/Iowa")
 vacc <- read_excel("COVID-19 Vaccination Report.xlsx", sheet = 5)
 Out_vaccine= vacc%>%
-  select(Date= Date, Age=Group, Vaccination="# of Doses", "Vaccination1"= "# of Series Initiated", "Vaccination2"= "# of Series Completed") %>% 
+  select(Date= Date, Age=Group, Vaccinations ="# of Doses", Vaccination1= "# of Series Initiated", Vaccination2= "# of Series Completed") %>% 
   filter(Age != "American Indian or Alaska Native") %>% 
   filter(Age != "Asian") %>% 
   filter(Age != "Black") %>% 

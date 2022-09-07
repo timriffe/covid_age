@@ -36,7 +36,7 @@ date_text <-
   html_text()
 
 
-date= substr(date_text, 93, 102) %>% 
+date= substr(date_text, 92, 102) %>% 
   dmy()
 
 

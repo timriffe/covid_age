@@ -51,6 +51,15 @@ gs4_auth(email = Sys.getenv("email"))
 ```
 
 
+# Isle of Man
+
+```{r}
+ctr          <- "Isle_of_Man" # it's a placeholder
+dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
+
+```
+
+
 
 # Spain
 
@@ -1003,6 +1012,39 @@ out <- Denmark %>%
 write_rds(out, paste0(dir_n, ctr, ".rds"))
 
 ```
+
+
+##├ Date: 29.08.2022
+Problem: Failures: Measure: Deaths, bad age and duplicates between 17.02.2022 and 22.05.2022 (inclusive). 
+Solution: turns out that these dates are missing data (ie. we don't have the original files and these data are not in google input template- except 17.05.2022), plus the Value is not consistent with the preceeding or the following dates, so I decided to keep this error for now or we can remove these dates from the dataset. 
+
+Dates with issues: 
+1: 2022-02-17
+2: 2022-03-16
+3: 2022-03-17
+4: 2022-05-17
+5: 2022-05-18
+6: 2022-05-19
+7: 2022-05-20
+8: 2022-05-21
+9: 2022-05-22
+
+```{r}
+
+
+# info country and N drive address
+ctr <- "Denmark"
+dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
+dir_n_missing <- "N:/COVerAGE-DB/Automation/Hydra/Data_sources/"
+dir_n_source <- "N:/COVerAGE-DB/Automation/Denmark/"
+
+
+db_n <- read_rds(paste0(dir_n, ctr, ".rds")) %>% 
+  mutate(Date = dmy(Date))
+
+
+```
+
 
 
 

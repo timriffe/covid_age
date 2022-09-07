@@ -4,13 +4,12 @@
 ## since these data are collected manually, i will keep this script just in case we moved to automated collection. 
 
 ## 12.08.2022: I extract the data before 13.05.2021 and append manually to Google Drive input template
+## tip from Maxi: to copy the data to the drive:
+## sheet_write(data, ss = ss_i, sheet = "database")
 
 library(here)
 source(here("Automation/00_Functions_automation.R"))
 
-library(lubridate)
-library(dplyr)
-library(tidyverse)
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
   email <- "mumanal.k@gmail.com"
@@ -46,6 +45,7 @@ historicaldata <- data %>%
   tidyr::pivot_longer(cols = -("Date"),
                       names_to = "Measure",
                       values_to = "Value") %>% 
+  dplyr::filter(Measure != "ApstiprinatiVecGr_70GadiUnVairak") %>% # remove 70+ to avoid duplicates
   dplyr::mutate(Age = str_extract(Measure, "\\d+"),
                 Measure = case_when(str_detect(Measure, "\\d+") ~ "Cases",
                                      TRUE ~ Measure),
@@ -69,7 +69,5 @@ historicaldata <- data %>%
 ## save the output to csv file and add manually to google drive input Template
 
 write.csv(historicaldata, file = paste0(dir_n, ctr, "/HistoricalData.csv"))
-
-
 
 ## END ## 

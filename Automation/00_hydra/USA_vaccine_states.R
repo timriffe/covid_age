@@ -50,6 +50,7 @@ vacc_processed <- us_vacc %>%
   dplyr::mutate(
     Demographic_Category = str_remove_all(Demographic_Category, pattern = "Ages_"),
     Demographic_Category = str_remove_all(Demographic_Category, pattern = "_yrs"),
+    Demographic_Category = str_remove_all(Demographic_Category, pattern = "yrs"),
     Administered_Dose1 = str_replace_all(Administered_Dose1, ",", ""),
     Series_Complete_Yes = str_replace_all(Series_Complete_Yes, ",", ""),
     Booster_Doses = str_replace_all(Booster_Doses, ",", ""),
@@ -64,7 +65,9 @@ vacc_processed <- us_vacc %>%
                     Sex == "Female" ~ "f",
                     TRUE ~ Sex),
     AgeInt = case_when(
-      Age == "<5yrs" ~ 5L,
+      Age == "<2" ~ 2L,
+      Age == "2-4" ~ 3L,
+      Age == "<5" ~ 5L,
       Age == "5-11"  ~ 7L,
       Age == "12-17" ~ 6L,
       Age == "18-24" ~ 7L,
@@ -78,7 +81,9 @@ vacc_processed <- us_vacc %>%
     ),
     Age = case_when(
       #  Age == "unknown" ~ "UNK",
-      Age == "<5yrs" ~ "0",
+      Age == "<2" ~ "0",
+      Age == "2-4" ~ "2",
+      Age == "<5" ~ "0",
       Age == "5-11" ~ "5",
       Age == "12-17" ~ "12",
       Age == "18-24" ~ "18",

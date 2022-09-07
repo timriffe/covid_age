@@ -2,12 +2,6 @@
 
 library(here)
 source(here("Automation/00_Functions_automation.R"))
-library(lubridate)
-library(dplyr)
-library(tidyverse)
-library(readxl)
-library(googledrive)
-library(purrr)
 
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){

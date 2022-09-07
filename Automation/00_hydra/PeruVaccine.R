@@ -24,7 +24,7 @@ gs4_auth(email = Sys.getenv("email"))
 vacc_url <- "https://cloud.minsa.gob.pe/s/To2QtqoNjKqobfw/download"
 
 #source changed to provide data in 7z file
-data_source_v <- paste0(dir_n, "Data_sources/", ctr, "/vacc_",today(), ".7z")
+data_source_v <- paste0(dir_n, "Data_sources/", ctr, "/vacc_", lubridate::today(), ".7z")
 #data_source_v <- paste0(dir_n, "Data_sources/", ctr, "/vacc_",today(), ".csv")
 
 
@@ -58,8 +58,8 @@ data_source_v <- paste0(dir_n, "Data_sources/", ctr, "/vacc_",today(), ".7z")
 
 vac_file <- download.file(vacc_url, destfile = data_source_v, mode = "wb")
 
-db_v <- data.table::fread(archive_read(data_source_v), 
-                select = c("EDAD", "SEXO", "FECHA_VACUNACION", "DOSIS", "DEPARTAMENTO"))
+db_v <- readr::read_csv(archive_read(data_source_v), 
+                        col_select = c("EDAD", "SEXO", "FECHA_VACUNACION", "DOSIS", "DEPARTAMENTO"))
 
 
 # vaccines ---------------------------------------------------
@@ -126,7 +126,7 @@ db_tot <- db_pe_comp %>%
 
 db_all <- bind_rows(db_pe_comp, db_tot_age, db_tot_sex, db_tot)
 
-out <- db_all2 %>% 
+out <- db_all %>% 
   mutate(Country = "Peru",
          AgeInt = case_when(Region == "All" & !(Age %in% c("TOT", "100")) ~ 1,
                             Region != "All" & !(Age %in% c("0", "1", "TOT")) ~ 5,
