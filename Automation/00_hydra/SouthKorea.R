@@ -42,14 +42,17 @@ total_cases_i <- all_the_tables %>%
   unlist()
 
 # process age table
+
+age_original <- all_the_tables[age_table_i][[1]]
+
 data_age <- 
   all_the_tables[age_table_i][[1]] %>% 
   mutate(`Confirmed(%)` = str_replace(`Confirmed(%)`, "\\s", "|")) %>% 
   separate(`Confirmed(%)`, into = c("Cases", NA), sep = "\\|") %>% 
   mutate(`Deaths(%)` = str_replace(`Deaths(%)`, "\\s", "|")) %>% 
   separate(`Deaths(%)`, into = c("Deaths", NA), sep = "\\|") %>% 
-  mutate(Cases = str_replace(Cases, pattern = ",", replacement = ""),
-         Deaths = str_replace(Deaths, pattern = ",", replacement = "") ) %>% 
+  mutate(Cases = str_replace_all(Cases, pattern = ",", replacement = ""),
+         Deaths = str_replace_all(Deaths, pattern = ",", replacement = "")) %>% 
   select(-`Fatality rate(%)`) %>% 
   rename(Age = Category) %>% 
   pivot_longer(Cases:Deaths, names_to = "Measure", values_to = "Value") %>% 
@@ -77,6 +80,9 @@ data_age <-
 # gender totals:
 # TR: for parsing Cases and Deaths I tried n ways to split on the space, and
 # wasn't able to get the regex to work, so I ended up using character positions...
+
+sex_original <- all_the_tables[gender_table_i][[1]]
+
 sex_table <- 
 all_the_tables[gender_table_i][[1]] %>% 
   rename(Sex = Category, 
@@ -98,7 +104,9 @@ all_the_tables[gender_table_i][[1]] %>%
         Country = "South Korea",
         Region = "All",
         Code = paste("KR"))
-  
+
+total_original <- all_the_tables[total_cases_i][[1]]
+
 cases_total <-
 all_the_tables[total_cases_i][[1]] %>% 
   select(-`Daily New Cases`) %>% 
@@ -159,7 +167,13 @@ log_update("SouthKorea", N = nrow(new_data))
 
 data_source <- paste0(dir_n, "Data_sources/", ctr,today(), ".csv")
 
-write_csv(new_data, data_source)
+data_today <- list("Age" = age_original, 
+                   "Sex" = sex_original,
+                   "Total" = total_original) 
+
+
+
+writexl::write_xlsx(data_today, data_source)
 
 
 zipname <- paste0(dir_n, 

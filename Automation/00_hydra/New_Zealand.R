@@ -75,6 +75,7 @@ if (date_f > last_date_drive){
     mutate(Age = substr(Age, 1,2),
            Age = case_when(
              Age == "Un" ~ "UNK",
+             Age == "0 " ~ "0",
              TRUE ~ Age
            ),
            Sex = case_when(

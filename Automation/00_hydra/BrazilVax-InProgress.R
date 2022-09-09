@@ -41,17 +41,55 @@ vax.list <-list.files(
 
 vax_files <- data.frame(paths = vax.list) 
 
+
+## EXAMPLE ##
+
+data <- data.table::fread("N:/COVerAGE-DB/Automation/Hydra/Data_sources/Brazil/part-00000-7dd36c4d-562b-4f07-9ada-356ce3d5b157-c000.csv",
+                          select = c("vacina_dataAplicacao", 
+                                     "paciente_idade", 
+                                     "paciente_enumSexoBiologico", 
+                                     "paciente_endereco_nmMunicipio", 
+                                     "vacina_descricao_dose"))
+
+
+write_rds(data, paste0(dir_n, ctr, ".rds"))
+
+
+## TIME OF FUNCTION ##
+
+read_save <- function(file_name){
+  data <- data.table::fread(file_name,
+                    select = c("vacina_dataAplicacao", 
+                               "paciente_idade", 
+                               "paciente_enumSexoBiologico", 
+                               "paciente_endereco_nmMunicipio", 
+                               "vacina_descricao_dose"))
+  
+  
+  write_rds(data, paste0(dir_n, ctr, file_name, ".rds"))
+}
+
+
+
+
+
+
 ## read into dataframe with adding Date of each file
 
 vax_df <- vax.list %>% 
-  map_df(~fread(.))
+  map_df(~fread(., select = c("vacina_dataAplicacao", 
+                              "paciente_idade", 
+                              "paciente_enumSexoBiologico", 
+                              "paciente_endereco_nmMunicipio", 
+                              "vacina_descricao_dose")))
 
 
 
+write_rds(vax_df, paste0(dir_n, ctr, vax_df, ".rds"))
 
 
 
-
+# pwalk(~write_csv(x = .y, path = paste0(.x, ".csv") ) )
 
 
 
