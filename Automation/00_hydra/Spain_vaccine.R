@@ -45,7 +45,11 @@ download.file(url_d, data_source, mode = "wb")
 ###########################################################################################
 DataArchive <- read_rds(paste0(dir_n, ctr, ".rds")) %>% 
   mutate(AgeInt = as.integer(AgeInt),
-         Value = as.numeric(Value)) 
+         Value = as.numeric(Value)) %>% 
+  ## MK: sounds like there were some duplicates data, distinct to remove always
+  distinct(Country, Region, Code, Date,
+           Sex, Age, AgeInt, Metric, 
+           Measure, Value)
  
 
 #Read in sheets 

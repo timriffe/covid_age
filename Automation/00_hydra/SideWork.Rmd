@@ -51,6 +51,68 @@ gs4_auth(email = Sys.getenv("email"))
 ```
 
 
+# South Korea
+
+BRIEF: error in the coding, we missed the cases data for the period: 21.03.2022- 06.09.2022, inclusive. 
+Solution: got the webarchive data, 6 files and added the cases data manually into Excel file, remove the missed up part from the dataset and merge the manually collected. 
+
+
+```{r}
+
+# info country and N drive address
+ctr    <- "SouthKorea"
+dir_n  <- "N:/COVerAGE-DB/Automation/Hydra/"
+dir_n_source <- "N:/COVerAGE-DB/Automation/SouthKorea"
+
+current_db <- read_rds(paste0(dir_n, ctr, ".rds")) %>% 
+  mutate(Date = dmy(Date))
+
+
+data_toremove <- current_db %>% 
+  filter(Date >= "2022-03-21", Date <= "2022-09-06",
+         Measure == "Cases", Age != "TOT")
+
+data_cleaned <- current_db %>% 
+  anti_join(data_toremove) %>% 
+  mutate(Date = ddmmyyyy(Date))
+
+#SK-MissingData
+
+missingcases <- read_excel(paste0(dir_n, "/Data_sources/", ctr, "/SK-MissingData/SouthKorea.xlsx")) 
+  
+out <- data_cleaned %>% 
+  bind_rows(missingcases) %>% 
+  sort_input_data()
+
+write_rds(out,  paste0(dir_n, ctr, ".rds"))
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Isle of Man
 
 ```{r}
