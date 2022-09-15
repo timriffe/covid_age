@@ -21,40 +21,19 @@ gs4_auth(email = Sys.getenv("email"))
 
 # # Historical DATA LIST THE DIRECTORIES IN THE GUATEMALA FOLDER #
 
-# dir_main <- list.dirs(path = paste0(dir_n_source, ctr, "/GuatemalaHistoricalData/"),
-#                       full.names = TRUE, recursive = FALSE)
-
-# DATAFRAMES CASES, DEATHS reading & processing #=============
-
-# cases_raw <- extract_data(dir_main[1]) %>% 
-#   dplyr::select(Date = file_name, Age = Edad,
-#                 Sex = Sexo, Value = n)
-# 
-# deaths_raw <- extract_data(dir_main[2]) %>% 
-#   dplyr::select(Date = file_name, Age = edad,
-#                 Sex = sexo, Value = n)
+dir_main <- list.dirs(path = paste0(dir_n_source, ctr, "/GuatemalaHistoricalData/"),
+                      full.names = TRUE, recursive = FALSE)
 
 # FUNCTION TO EXTRACT THE DATA OF ALL THERE CSV IN A FOLDER
 
-# extract_data <- function(directory){
-#   list.files(path = directory,
-#              pattern = ".csv",
-#              full.names = TRUE) %>% 
-#     set_names() %>% 
-#     map_dfr(read.csv, .id = "file_name") %>%
-#     mutate(file_name = basename(file_name))
-# }
-
-
-DataArchived <- read_rds(paste0(dir_n, ctr, ".rds"))
-
-directory <- paste0(dir_n_source, ctr)
-
-files_all <- list.files(path = directory,
-           pattern = ".csv",
-           full.names = TRUE) 
-files_csv <- data.frame(files_name = files_all)
-
+extract_data <- function(directory){
+  list.files(path = directory,
+             pattern = ".csv",
+             full.names = TRUE) %>%
+    set_names() %>%
+    map_dfr(read.csv, .id = "file_name") %>%
+    mutate(file_name = basename(file_name))
+}
 
 ## FUNCTION TO READ DATA FROM CSV FILES
 
@@ -67,65 +46,121 @@ read_csv_files <- function(tbl, string_selection){
     {map2_dfr(.$files_name, .$Date, function(x,y) read.csv(x) %>% mutate(Date=y))}
 }
 
+# DATAFRAMES CASES, DEATHS reading & processing #=============
 
-cases_raw <- files_csv %>% 
+cases_history <- extract_data(dir_main[1]) %>%
+  dplyr::select(file_name, Age = Edad,
+                Sex = Sexo, Value = n) %>% 
+  mutate(Date = str_extract(file_name, "\\d+"),
+         Date = dmy(Date))
+
+deaths_history <- extract_data(dir_main[2]) %>%
+  dplyr::select(file_name, Age = edad,
+                Sex = sexo, Value = n) %>% 
+  mutate(Date = str_extract(file_name, "\\d+"),
+         Date = dmy(Date))
+
+
+# DataArchived <- read_rds(paste0(dir_n, ctr, ".rds")) %>% 
+#   mutate(Age = if_else(Age > 105, "105", Age))
+
+directory <- paste0(dir_n_source, ctr)
+
+files_all <- list.files(path = directory,
+           pattern = ".csv",
+           full.names = TRUE) 
+files_csv <- data.frame(files_name = files_all)
+
+
+cases_python <- files_csv %>% 
   read_csv_files("confirmedcases_") %>% 
   dplyr::select(Date, Age = Edad,
                 Sex = Sexo, Value = n)
 
-deaths_raw <- files_csv %>% 
+deaths_python <- files_csv %>% 
   read_csv_files("deceasedcases_") %>% 
   dplyr::select(Date, Age = edad,
                 Sex = sexo, Value = n)
 
+## BIND HISTORICAL AND PYTHON_DATA INTO ONE DATAFRAME 
+
+epi_data <- bind_rows("Cases" = cases_python,
+                     "Cases" = cases_history,
+                     "Deaths" = deaths_history, 
+                     "Deaths" = deaths_python, 
+                     .id = "Measure") %>% 
+  dplyr::mutate(
+    Sex = case_when(Sex == "Femenino" ~ "f",
+                    Sex == "Masculino" ~ "m",
+                    Sex == "Sin Dato" ~ "UNK",
+                    TRUE ~ "b"),
+    Age = case_when(Age == "SIN DATO" ~ "UNK",
+                    Age == "Total" ~ "TOT",
+                    TRUE ~ Age),
+    AgeInt = case_when(Age == "UNK" ~ NA_integer_,
+                       Age == "TOT" ~ NA_integer_,
+                       TRUE ~ 1L))
+
+
 ## FUNCTION TO PROCESS CASES AND DEATHS DATA ## 
 
-process_epi <- function(tbl){
-  
-  tbl %>% 
-    dplyr::mutate(
-      Sex = case_when(Sex == "Femenino" ~ "f",
-                      Sex == "Masculino" ~ "m",
-                      Sex == "Sin Dato" ~ "UNK",
-                      TRUE ~ "b"),
-      Age = case_when(Age == "SIN DATO" ~ "UNK",
-                      Age == "Total" ~ "TOT",
-                      TRUE ~ Age),
-      AgeInt = case_when(Age == "UNK" ~ NA_integer_,
-                         Age == "TOT" ~ NA_integer_,
-                         TRUE ~ 1L))
-  
-}
-
-Cases <- cases_raw %>% 
-  process_epi()
-
-Deaths <- deaths_raw %>% 
-  process_epi()
-
-#%>% arrange(Date) %>% distinct(Date)
-
-
-## MERGE CASES AND DEATHS DATASETS 
-
-epi_data <- bind_rows("Cases" = Cases, 
-                      "Deaths" = Deaths, .id = "Measure")
+# process_epi <- function(tbl){
+#   
+#   tbl %>% 
+#     dplyr::mutate(
+#       Sex = case_when(Sex == "Femenino" ~ "f",
+#                       Sex == "Masculino" ~ "m",
+#                       Sex == "Sin Dato" ~ "UNK",
+#                       TRUE ~ "b"),
+#       Age = case_when(Age == "SIN DATO" ~ "UNK",
+#                       Age == "Total" ~ "TOT",
+#                       TRUE ~ Age),
+#       AgeInt = case_when(Age == "UNK" ~ NA_integer_,
+#                          Age == "TOT" ~ NA_integer_,
+#                          TRUE ~ 1L))
+#   
+# }
+# 
+# Cases <- cases_python %>% 
+#   process_epi()
+# 
+# Deaths <- deaths_python %>% 
+#   process_epi()
+# 
+# #%>% arrange(Date) %>% distinct(Date)
+# 
+# 
+# ## MERGE CASES AND DEATHS DATASETS 
+# 
+# epi_data <- bind_rows("Cases" = Cases, 
+#                       "Deaths" = Deaths, .id = "Measure")
 
 
 # VACCINATION DATA- reading & processing # =====================
 
-# vaxAge_raw <- extract_data(dir_main[3])
-# 
-# vaxSex_raw <- extract_data(dir_main[4])
+vaxAge_history <- extract_data(dir_main[3]) %>% 
+  mutate(Date = str_extract(file_name, "\\d+"),
+         Date = dmy(Date))
+
+vaxSex_history <- extract_data(dir_main[4]) %>% 
+  mutate(Date = str_extract(file_name, "\\d+"),
+         Date = dmy(Date))
 
 
-vaxAge_raw <- files_csv %>% 
+vaxAge_python <- files_csv %>% 
   read_csv_files("vaccination_age_")
 
-vaxSex_raw <- files_csv %>% 
+vaxSex_python <- files_csv %>% 
   read_csv_files("vaccination_gender_")
 
-VaccAge_processed <- vaxAge_raw %>% 
+## MERGE datasets & process
+
+vaxAge_raw <- bind_rows(vaxAge_history, vaxAge_python)
+
+vaxSex_raw <- bind_rows(vaxSex_history, vaxSex_python)
+
+
+VaccAge_processed <- vaxAge_python %>% 
   select(Date,
          Age = contains("Grupo"), 
          Vaccination1 = Dosis.administradas..primera.dosis.,
@@ -149,7 +184,7 @@ VaccAge_processed <- vaxAge_raw %>%
   
 
 
-VaccSex_processed <- vaxSex_raw %>% 
+VaccSex_processed <- vaxSex_python %>% 
   select(Date,
          Sex = sexo, 
          Vaccination1 = Dosis.administradas..primera.dosis.,
@@ -172,7 +207,7 @@ VaccSex_processed <- vaxSex_raw %>%
 ## MERGE ALL DATA AND PREPARE THE FINAL OUTPUT ## ======
 
 
-out_week <- bind_rows(epi_data,
+out <- bind_rows(epi_data,
                  VaccAge_processed,
                  VaccSex_processed) %>% 
   dplyr::mutate(
@@ -186,9 +221,9 @@ out_week <- bind_rows(epi_data,
                 Age, AgeInt, Metric, Measure, Value) %>% 
   sort_input_data()
   
-## MERGE WITH HISTORICAL ARCHIVED DATA 
+## MERGE WITH HISTORICAL ARCHIVED DATA (if required) 
 
-out <- bind_rows(out_week, DataArchived)
+#out <- bind_rows(out_week, DataArchived)
 
 
 #save output data

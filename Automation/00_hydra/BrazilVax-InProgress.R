@@ -32,14 +32,14 @@ vax_files <- data.frame(path = vax.list) %>%
 
 ## EXAMPLE ##
 
-data <- data.table::fread("N:/COVerAGE-DB/Automation/Hydra/Data_sources/Brazil/part-00000-7dd36c4d-562b-4f07-9ada-356ce3d5b157-c000.csv",
-                          select = c("vacina_dataAplicacao",
-                                     "paciente_idade",
-                                     "paciente_enumSexoBiologico",
-                                     "paciente_endereco_nmMunicipio",
-                                     "vacina_descricao_dose"))
-
-data %>% distinct(vacina_descricao_dose)
+# data <- data.table::fread("N:/COVerAGE-DB/Automation/Hydra/Data_sources/Brazil/part-00000-7dd36c4d-562b-4f07-9ada-356ce3d5b157-c000.csv",
+#                           select = c("vacina_dataAplicacao",
+#                                      "paciente_idade",
+#                                      "paciente_enumSexoBiologico",
+#                                      "paciente_endereco_nmMunicipio",
+#                                      "vacina_descricao_dose"))
+# 
+# data %>% count(vacina_descricao_dose)
 
 
 
@@ -54,38 +54,41 @@ vax_files %>%
                                           "vacina_descricao_dose")) %>% 
                               write_rds(paste0(dir_n, ctr, "/", y, ".rds")))}
 
-
+## read the .rds files and bind in one dataset 
 
 rds_files <- list.files(
   path= paste0(dir_n, ctr),
   pattern = ".rds",
   full.names = TRUE)
 
-raw_data <- xfun::cache_rds({rds_files %>% 
-  map_dfr(read_rds)})
+raw_data <- rds_files %>% 
+  map_dfr(read_rds)
 
+
+## also read the coding for doses == this file I made by translating the unique values using Google
+
+vax_code <- read_excel(paste0(dir_n, ctr,"/BrazilVaxCoding.xlsx"), sheet = "Coding")
+
+## process the data 
 
 processed_data <- raw_data %>% 
   dplyr::rename(Date = vacina_dataAplicacao,
                 Age = paciente_idade,
                 Sex = paciente_enumSexoBiologico,
                 Region = paciente_endereco_nmMunicipio,
-                Dose = vacina_descricao_dose) %>% 
+                Original_dose = vacina_descricao_dose) %>% 
+  dplyr::left_join(vax_code, by = c("Original_dose" = "Original")) %>% 
+  dplyr::select(-Original_dose) %>% 
   dplyr::mutate(Sex = case_when(Sex == "M" ~ "m",
                                 Sex == "F" ~ "f",
                                 TRUE ~ "UNK"),
-                Age = case_when(Age < 0 ~ "UNK",
-                                Age == "NA" ~ "UNK",
-                                is.na(Age) ~ "UNK",
-                                TRUE ~ Age),
-                Dose = case_when(Dose %in% c("1Âª Dose",
-                                             "1Âª Dose RevacinaÃ§Ã£o") ~ "Vaccination1",
-                                 Dose %in% c("2Âª Dose",
-                                             "2Âª Dose RevacinaÃ§Ã£o") ~ "Vaccination2",
-                                 Dose %in% c("1Âº ReforÃ§o", 
-                                             "ReforÃ§o") ~ "Vaccination3",
-                                 Dose %in% c("2Âº ReforÃ§o",
-                                             "2Âº ReforÃ§o") ~ "Vaccination4"),
+                Age = as.integer(Age),
+                Age = if_else(Age > 105, "105", Age),
+                Age = if_else(Age = NA, "UNK", Age),
+                # Age = case_when(str_detect(Age, "-") ~ "UNK",
+                #                 Age == "NA" ~ "UNK",
+                #                 is.na(Age) ~ "UNK",
+                #                 TRUE ~ Age),
                 Date = ymd(Date)) %>% 
   dplyr::group_by(Date, Age, Region, Sex, Dose) %>% 
   summarize(Value = n(), .groups = "drop")%>%
@@ -95,8 +98,7 @@ processed_data <- raw_data %>%
   mutate(Value = cumsum(Value)) %>% 
   ungroup()
                 
-processed_data %>% count(Dose)
-
+raw_data %>% count(paciente_idade) %>% View()
 
 
 

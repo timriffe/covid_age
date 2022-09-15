@@ -220,10 +220,11 @@ vacc_recent <- vacc_today %>%
   sort_input_data()
 
 
+# MK:15.09.2022: when the archive is published for the data (29.06.2022- 31.07.2022), I downloaded these and processed it; 
+# check (SideWork.Rmd) and so here we bind the processed_data once. 
+#vacc_out <- bind_rows(vacc3, processed_data, vacc_archive_2022, vacc_recent)
 
 vacc_out <- bind_rows(vacc3, vacc_archive_2022, vacc_recent)
-
-
 
 #Archive vaccine data (the historical raw and all processed)
 

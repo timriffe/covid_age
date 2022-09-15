@@ -92,8 +92,8 @@ national <- france %>%
 
 subnational <- region %>% 
   process_dataset() %>% 
-  dplyr::mutate(Code = paste0("FR-", 
-                              str_pad(Region, width = 2, side = "left", pad = "0")),
+  dplyr::mutate(
+                #Code = paste0("FR-",str_pad(Region, width = 2, side = "left", pad = "0")),
                 Region = case_when(Region == "1" ~ "Guadeloupe",
                                    Region == "2" ~ "Martinique",
                                    Region == "3" ~ "Guyane",
@@ -114,7 +114,28 @@ subnational <- region %>%
                                    Region == "76" ~ "Occitanie",
                                    Region == "84" ~ "Auvergne-Rhone-Alpes",
                                    Region == "93" ~ "Provence-Alpes-Cote d'Azur",
-                                   Region == "94" ~ "Corse")) 
+                                   Region == "94" ~ "Corse"),
+                Code = case_when(Region == "Auvergne-Rhone-Alpes" ~	"FR-ARA",
+                                 Region == "Bourgogne-Franche-Comte" ~	"FR-BFC",
+                                 Region == "Bretagne" ~	"FR-BRE",
+                                 Region == "Centre-Val de Loire" ~	"FR-CVL",
+                                 Region == "Corse" ~	"FR-20R",
+                                 Region == "Grand Est" ~	"FR-GES",
+                                 Region == "Guadeloupe" ~ "FR-971",
+                                 Region == "Guyane" ~	"FR-973",
+                                 Region == "Hauts-de-France" ~	"FR-HDF",
+                                 Region == "Ile-de-France" ~	"FR-IDF",
+                                 Region == "La Reunion" ~	"FR-974",
+                                 Region == "Martinique" ~	"FR-972",
+                                 Region == "Mayotte" ~	"FR-976",
+                                 Region == "Normandie" ~	"FR-NOR",
+                                 Region == "Nouvelle-Aquitaine" ~"FR-NAQ",
+                                 Region == "Occitanie" ~	"FR-OCC",
+                                 Region == "Pays de la Loire" ~	"FR-PDL",
+                                 Region == "Provence-Alpes-Cote d'Azur" ~	"FR-PAC",
+                                 Region == "Saint Barthelemy" ~	"FR-BL",
+                                 Region == "Saint Pierre et Miquelon" ~	"FR-PM",
+                                 Region == "Saint Martin" ~	"FR-MF"))
 
 
 

@@ -51,6 +51,134 @@ gs4_auth(email = Sys.getenv("email"))
 ```
 
 
+# Austria
+
+
+```{r}
+
+# info country and N drive address
+ctr <- "Austria"
+dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
+files_source <- paste0(dir_n, "Data_sources/", ctr, "/MissingData-15122021-25072022/")
+
+# https://info.gesundheitsministerium.at/data/archiv/COVID19_vaccination_doses_agegroups_v202206_20220629.csv
+
+base_url <- "https://info.gesundheitsministerium.at/data/archiv/COVID19_vaccination_doses_agegroups_v202206_"
+
+seq_dates <- format(seq(from = as.Date("2021/12/15"), to = as.Date("2022/07/24"), by = "1 days"), "%Y%m%d")
+
+missing_files <- data.frame(base = rep(base_url, 
+                                  times = length(seq_dates)),
+                       date = seq_dates) %>% 
+  mutate(url = paste0(base, date, ".csv"),
+         date = ymd(date),
+         destinations = paste0(files_source, "Austria_vaccine", date, ".csv"))
+
+
+
+missing_files %>% 
+  {map2(.$url, .$destinations, ~ download.file(url = .x, destfile = .y, mode="wb"))}
+
+
+
+for(i in seq_along(missing_files$url)){
+  if(class(try(download.file(missing_files$url[i],
+                             destfile = missing_files$destinations[i],
+                             mode="wb"),
+               silent = TRUE)) == "try-error"){
+    print(paste("No file for:", i))
+  next 
+    print(paste("downnloading:", i))
+  }
+}
+
+
+vax.list <-list.files(
+  path= files_source,
+  pattern = ".csv",
+  full.names = TRUE)
+
+raw_data <- vax.list %>% 
+  map_dfr(read.csv2)
+
+
+# files_in_dataframe <- data.frame(path = vax.list) %>% 
+#   mutate(Date = str_extract(path, "\\d+-\\d+-\\d+")) %>% 
+#   {map2_dfr(.$path, .$Date, function(x,y) read.csv2(x) %>% mutate(Date=y))}
+
+
+
+processed_data <- raw_data %>% 
+  select(Date = 1, 
+         state_id, 
+         Region = state_name, 
+         Age = age_group, 
+         Sex = gender, 
+         Measure = dose_number,
+         Value = doses_administered_cumulative) %>% 
+  mutate(Date = ymd(str_sub(Date, 1, 10)),
+         Age = recode(Age,
+                      "00-11" = "0",
+                      "12-14" = "12",
+                      "15-24"= "15",
+                      "25-34" = "25",
+                      "35-44" = "35",
+                      "45-54" = "45",
+                      "55-64" = "55",
+                      "65-74" = "65",
+                      "75-84" = "75",
+                      "85+" = "85",
+                      "NotAssigned" = "UNK"),
+         Sex = recode(Sex,
+                      "Male" = "m",
+                      "Female" = "f",
+                      "NonBinary" = "NonBinary",
+                      "NotAssigned" = "UNK"),
+         Measure = paste0("Vaccination", Measure),
+         Region= recode(Region,
+                        "NoState"= "UNK")) %>% 
+  group_by(Date, Age, Sex, state_id, Region, Measure) %>% 
+  summarize(Value = sum(Value)) %>% 
+  ungroup() %>% 
+  distinct(Date, Age, Sex, Region, state_id,
+           Measure, Value) %>% 
+  mutate(Country = "Austria",
+         Metric = "Count",
+         Date = ddmmyyyy(Date),
+         Code = paste0(ifelse(state_id < 10, paste0("AT-", state_id), "AT")),
+         AgeInt = case_when(Age == "0" ~  12L,
+                            Age == "12" ~ 3L,
+                            Age == "85" ~ 20L,
+                            #Age == "TOT" ~ "",
+                            Age == "UNK" ~ NA_integer_,
+                            TRUE ~ 10L),
+         Code = case_when(Region == "UNK" ~ "AT-UNK+",
+                          TRUE ~ Code)) %>% 
+  mutate(Region = case_when(
+    Region == "Ã–sterreich" ~ "All",
+    Region == "KÃ¤rnten" ~ "Kärnten",
+    Region == "NiederÃ¶sterreich" ~ "Niederöstereich",
+    Region == "OberÃ¶sterreich" ~ "Oberösterreich",
+    TRUE ~ Region),
+  Measure = case_when(
+    Measure == "Vaccination5+" ~ "Vaccination5",
+    TRUE ~ Measure)) %>% 
+  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
+  sort_input_data()
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
 # South Korea
 
 BRIEF: error in the coding, we missed the cases data for the period: 21.03.2022- 06.09.2022, inclusive. 
