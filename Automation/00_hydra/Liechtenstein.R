@@ -39,7 +39,7 @@ ss_db <- rubric %>%
 
 
 #data download 
-
+#https://www.statistikportal.li/de/uebersichten-indikatoren/schwerpunkt-corona
 
 url <- "https://www.llv.li/files/as/grafik_covid19_alter_geschlecht_wohnort.xlsx"
 

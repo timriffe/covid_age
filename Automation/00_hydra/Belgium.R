@@ -154,8 +154,8 @@ db_v2 <- db_v %>%
                              Measure == "B" ~ "Vaccination2",
                              Measure == "C" ~ "Vaccination2",
                              Measure == "E" ~ "Vaccination3",
-                             Measure == "E2" ~ "Vaccination4"
-                             ),
+                             Measure == "E2" ~ "Vaccination4",
+                             Measure == "E3" ~ "Vaccination5"),
          Age = case_when(Age == "85+" ~ "85",
                          Age == "00" ~ "0",
                          Age == "05" ~ "5",
@@ -226,42 +226,43 @@ out <- bind_rows(db_nal,
                             Measure == "Vaccination2" & Age == "0" ~ 5L,
                             Measure == "Vaccination3" & Age == "0" ~ 5L,
                             Measure == "Vaccination4" & Age == "0" ~ 5L,
-                            
+                            Measure == "Vaccination5" & Age == "0" ~ 5L,
                             
                             Measure == "Vaccination1" & Age == "5" ~ 7L,
                             Measure == "Vaccination2" & Age == "5" ~ 7L,
                             Measure == "Vaccination3" & Age == "5" ~ 7L,
                             Measure == "Vaccination4" & Age == "5" ~ 7L,
-                            
+                            Measure == "Vaccination5" & Age == "5" ~ 7L,
                             
                             Measure == "Vaccination1" & Age == "12" ~ 4L,
                             Measure == "Vaccination2" & Age == "12" ~ 4L,
                             Measure == "Vaccination3" & Age == "12" ~ 4L,
                             Measure == "Vaccination4" & Age == "12" ~ 4L,
-                            
+                            Measure == "Vaccination5" & Age == "12" ~ 4L,
                             
                             Measure == "Vaccination1" & Age == "16" ~ 2L,
                             Measure == "Vaccination2" & Age == "16" ~ 2L,
                             Measure == "Vaccination3" & Age == "16" ~ 2L,
                             Measure == "Vaccination4" & Age == "16" ~ 2L,
-                            
+                            Measure == "Vaccination5" & Age == "16" ~ 2L,
  
                             Measure == "Vaccination1" & Age == "18" ~ 7L,
                             Measure == "Vaccination2" & Age == "18" ~ 7L,
                             Measure == "Vaccination3" & Age == "18" ~ 7L,
                             Measure == "Vaccination4" & Age == "18" ~ 7L,
-                            
+                            Measure == "Vaccination5" & Age == "18" ~ 7L,
 
                             Measure == "Vaccination1" & Age == "85" ~ 20L,
                             Measure == "Vaccination2" & Age == "85" ~ 20L,
                             Measure == "Vaccination3" & Age == "85" ~ 20L,
                             Measure == "Vaccination4" & Age == "85" ~ 20L,
-                            
+                            Measure == "Vaccination5" & Age == "85" ~ 20L,
                             
                             Measure == "Vaccination1" & Age %in% c("25", "35", "45", "55","65","75") ~ 10L,
                             Measure == "Vaccination3" & Age %in% c("25", "35", "45", "55","65","75") ~ 10L,
                             Measure == "Vaccination2" & Age %in% c("25", "35", "45", "55","65","75") ~ 10L,
-                            Measure == "Vaccination4" & Age %in% c("25", "35", "45", "55","65","75") ~ 10L),
+                            Measure == "Vaccination4" & Age %in% c("25", "35", "45", "55","65","75") ~ 10L,
+                            Measure == "Vaccination5" & Age %in% c("25", "35", "45", "55","65","75") ~ 10L),
 
          date_f = Date,
          Date = paste(sprintf("%02d",day(date_f)),
@@ -311,7 +312,7 @@ unique(out$Region)
 unique(out$Age)
 unique(out$Sex)
 unique(out$Date)
-
+unique(out$Measure)
 ############################################
 #### saving database in N Drive ####
 ############################################

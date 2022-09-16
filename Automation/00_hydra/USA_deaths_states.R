@@ -40,9 +40,11 @@ ages_all <- c("All Ages", "Under 1 year", "0-17 years", "1-4 years",
               "5-14 years", "15-24 years", "18-29 years", "25-34 years", 
               "30-49 years", "35-44 years", "45-54 years", "50-64 years", 
               "55-64 years", "65-74 years", "75-84 years", "85 years and over")
+
 ages1 <- c("All Ages", "Under 1 year", "1-4 years", "5-14 years", 
            "15-24 years", "25-34 years", "35-44 years", "45-54 years", 
            "55-64 years", "65-74 years", "75-84 years", "85 years and over")
+
 ages2 <- c("All Ages", "0-17 years", "18-29 years", "30-49 years", 
            "50-64 years", "65-74 years", "75-84 years", "85 years and over")
 
@@ -82,7 +84,8 @@ all <- db3 %>%
 vs <- all %>% 
   left_join(no_nas) %>% 
   mutate(difs = all - no_na,
-         prop = no_na / all)
+         prop = no_na / all) %>% 
+  arrange(prop)
 
 # All states above 90% of ages identified when using wide age groups, 
 
@@ -270,9 +273,9 @@ unique(out$Date)
 ############################################
 #### uploading database to Google Drive ####
 ############################################
-write_sheet(out,
-             ss = ss_i,
-             sheet = "database")
+# write_sheet(out,
+#              ss = ss_i,
+#              sheet = "database")
 
 write_rds(out, paste0(dir_n, ctr, ".rds"))
 log_update(pp = ctr, N = nrow(out))

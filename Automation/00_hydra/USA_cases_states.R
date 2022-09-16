@@ -35,50 +35,43 @@ drive_auth(email = Sys.getenv("email"))
 gs4_auth(email = Sys.getenv("email"))
 
 
-ctr          <- "US_CDC_cases_state" # it's a placeholder
-dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
+ctr <- "US_CDC_cases_state" # it's a placeholder
+dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
+dir_k <- "K:/CDC_Covid/"
 
-# Read in data 
+# folder name, this changes 
 
-
-# data1 <- read.csv(file= 'K:/CDC_Covid/covid_case_restricted_detailed-master_06_2021/data/2021-06-21/COVID_Cases_Restricted_Detailed_06212021_Part_1.csv', 
-#                   fileEncoding="UTF-8-BOM", na.strings=c('NA','','Missing'))
-# str(data1)
-# 
-# data2 <- read.csv(file= 'K:/CDC_Covid/covid_case_restricted_detailed-master_06_2021/data/2021-06-21/COVID_Cases_Restricted_Detailed_06212021_Part_2.csv',
-#                   fileEncoding="UTF-8-BOM",  na.strings=c('NA','','Missing')) 
-# 
-# str(data2)
-# 
-# data3 <- read.csv(file= 'K:/CDC_Covid/covid_case_restricted_detailed-master_06_2021/data/2021-06-21/COVID_Cases_Restricted_Detailed_06212021_Part_3.csv',
-#                   fileEncoding="UTF-8-BOM",  na.strings=c('NA','','Missing')) 
-# 
-# str(data3)
-# 
-# data4 <- read.csv(file= 'K:/CDC_Covid/covid_case_restricted_detailed-master_06_2021/data/2021-06-21/COVID_Cases_Restricted_Detailed_06212021_Part_4.csv',
-#                   fileEncoding="UTF-8-BOM",  na.strings=c('NA','','Missing')) 
+folder <- "covid_case_restricted_detailed-master_06_09_2022" ## to change every update/ download of the data
 
 
-#read in data faster 
+# Read in files names 
 
-data1 <- read_parquet("K:/CDC_Covid/covid_case_restricted_detailed-master_06_06_2022/COVID_Cases_Restricted_Detailed_06062022_Part_1.parquet",
-                      col_select = c("cdc_case_earliest_dt", "sex", "age_group", "res_state"))
-data2 <- read_parquet("K:/CDC_Covid/covid_case_restricted_detailed-master_06_06_2022/COVID_Cases_Restricted_Detailed_06062022_Part_2.parquet",
-                      col_select = c("cdc_case_earliest_dt", "sex", "age_group", "res_state"))
-data3 <- read_parquet("K:/CDC_Covid/covid_case_restricted_detailed-master_06_06_2022/COVID_Cases_Restricted_Detailed_06062022_Part_3.parquet",
-                      col_select = c("cdc_case_earliest_dt", "sex", "age_group", "res_state"))
-data4 <- read_parquet("K:/CDC_Covid/covid_case_restricted_detailed-master_06_06_2022/COVID_Cases_Restricted_Detailed_06062022_Part_4.parquet",
-                      col_select = c("cdc_case_earliest_dt", "sex", "age_group", "res_state"))
+files_list <- list.files(
+  path= paste0(dir_k, folder),
+  pattern = ".parquet",
+  full.names = TRUE)
+
+
+read_par <- function(file_name){
+  read_parquet(file_name,
+               col_select = c("cdc_case_earliest_dt", "sex", "age_group", "res_state"))
+}
+
+## After reading, validate the number of rows as per mentione din GitHub repo
+  
+raw_data <- files_list %>% 
+  map_dfr(read_par)
+
+
 
 # Add datasets vertically
-IN <- rbind(data1, data2, data3, data4)
 
-rm(data1,data2,data3, data4);gc()
-glimpse(IN)
+#rm(data1,data2,data3, data4);gc()
+glimpse(raw_data)
 states <- c("AZ","AR", "DE","GU","ID","KS","ME","MA","MN","MT","NV","NJ","NC","OK","OR","PA","SC","TN","VA", "IL")
 
 Out1 <-
-  IN %>%
+  raw_data %>%
   filter(res_state %in% states) %>%
   select(Date = cdc_case_earliest_dt, 
          Sex = sex, 
