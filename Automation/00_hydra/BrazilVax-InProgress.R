@@ -82,14 +82,16 @@ processed_data <- raw_data %>%
   dplyr::mutate(Sex = case_when(Sex == "M" ~ "m",
                                 Sex == "F" ~ "f",
                                 TRUE ~ "UNK"),
-                Age = as.integer(Age),
-                Age = if_else(Age > 105, "105", Age),
-                Age = if_else(Age = NA, "UNK", Age),
-                # Age = case_when(str_detect(Age, "-") ~ "UNK",
-                #                 Age == "NA" ~ "UNK",
+                Age = as.double(Age),
+                Age = if_else(Age > 105, 105, Age),
+               # Age = if_else(Age = NA, "UNK", Age),
+                # Age = case_when(Age > 105 ~ 105,
+                #                 Age < 0 ~ "UNK",
                 #                 is.na(Age) ~ "UNK",
                 #                 TRUE ~ Age),
-                Date = ymd(Date)) %>% 
+                Date = ymd(Date))
+
+x%>% 
   dplyr::group_by(Date, Age, Region, Sex, Dose) %>% 
   summarize(Value = n(), .groups = "drop")%>%
   tidyr::complete(Date, Sex, Age, Region, fill = list(Value = 0)) %>% 

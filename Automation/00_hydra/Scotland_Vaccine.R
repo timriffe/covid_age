@@ -65,8 +65,8 @@ vacc2 <- vacc %>%
       Measure == "Dose 5" ~ "Vaccination5"),
     Date = as.Date(ymd(Date))) %>% 
   arrange(Date, Sex, Measure, Age) %>% 
-  # group_by(Date, Sex, Measure, Age) %>% 
-  # summarise(Value = sum(Value)) %>% 
+  group_by(Date, Sex, Measure, Age) %>% 
+  summarise(Value = sum(Value)) %>% 
   mutate(Date = ddmmyyyy(Date),
          AgeInt = case_when(
            Age == "5" ~ 7L,

@@ -71,13 +71,14 @@ db_v2 <- db_v %>%
          Region = DEPARTAMENTO) %>% 
   mutate(date_f = ymd(date_f),
          Sex = case_when(Sex == "MASCULINO" ~ "m",
-                         Sex == "FEMENINO" ~ "f",
-                         TRUE ~ "UNK"),
+                         Sex == "FEMENINO" ~ "f"),
          Age = ifelse(Age > 100, 100, Age),
          Region = str_to_title(Region),
          Measure = case_when(Dosis == 1 ~ "Vaccination1", 
                              Dosis == 2 ~ "Vaccination2", 
                              Dosis == 3 ~ "Vaccination3",
+                             Dosis == 4 ~ "Vaccination4",
+                             Dosis == 5 ~ "Vaccination5",
                              TRUE ~ "UNK")) %>% 
   group_by(date_f, Sex, Age, Region, Measure) %>% 
   summarise(new = n()) %>% 
