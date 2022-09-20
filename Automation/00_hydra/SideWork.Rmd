@@ -51,6 +51,44 @@ gs4_auth(email = Sys.getenv("email"))
 ```
 
 
+
+# Gambia 
+
+
+
+* to read from input files in Google Drive
+
+```{r}
+
+
+at_rubric <- get_input_rubric() %>% 
+  dplyr::filter(Short == "GM")
+ss_i   <- at_rubric %>% dplyr::pull(Sheet)
+ss_db  <- at_rubric %>% dplyr::pull(Source)
+
+
+db_drive <- read_sheet(ss = ss_i, sheet = "database")
+
+data <- db_drive %>% 
+ sort_input_data()
+
+data %>% 
+  mutate(Date = dmy(Date)) %>% 
+  arrange(Date) %>% 
+  filter(Date >= "2021-02-21") %>% 
+  ggplot(aes(x = Date, y = Value, color = Age)) +
+  geom_point() +
+  facet_wrap(~Sex)
+  
+
+
+sheet_write(data, ss = ss_i, sheet = "database")
+
+
+```
+
+
+
 # Austria
 
 
