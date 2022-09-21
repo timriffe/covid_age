@@ -123,7 +123,6 @@ scripts <- c('Peru', 'PeruVaccine' , 'Afghanistan',
              'US_NYC_vaccine', 'US_Vermont_Cases', 
              'US_Vermont_Vaccine', 'US_Texas_Vaccine',
              'USA_cases_all', 
-            # 'USA_cases_states', # CDC linelist data (monthly; whenever run)
              'USA_deaths_all', 'USA_deaths_states',
              'USA_vaccine', 'USA_vaccine_states',
              'Vietnam', # does not work

@@ -20,7 +20,7 @@ packages_CRAN <- c("tidyverse","archive", "lubridate","gargle","rvest","httr","r
                    ## for large data file 
                    "bigreadr", "purrr",
                    "reticulate", "rjson", "readODS", "pdftools", "aweek", "netstat",
-                   "ISOweek", "longurl", "ggpubr", "arrow", "xlsx", "RSelenium")
+                   "ISOweek", "longurl", "ggpubr", "arrow", "xlsx", "RSelenium", "vroom")
 
 # Install required CRAN packages if not available yet
 if(!sum(!p_isinstalled(packages_CRAN))==0) {

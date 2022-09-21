@@ -261,8 +261,8 @@ all_the_tables <- html %>%
     html_table(fill = TRUE, 
                header=TRUE, 
                convert = FALSE)
-  db_ta <- all_the_tables[[12]] 
-  db_ts <- all_the_tables[[13]] 
+  db_ta <- all_the_tables[[10]] 
+  db_ts <- all_the_tables[[11]] 
   
   
   db_ta2 <- db_ta %>% 

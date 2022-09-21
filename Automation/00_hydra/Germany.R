@@ -23,6 +23,8 @@ data_source <- paste0(dir_n, "Data_sources/", ctr, "/cases&deaths_",today(), ".c
 ## MK: 06.07.2022: large file and give download error, so stopped this step and read directly instead
 #download.file(cases_url, destfile = data_source, mode = "wb")
 
+db <- vroom::vroom(cases_url)
+
 db <- read_csv(cases_url,
                locale = locale(encoding = "UTF-8"))
 

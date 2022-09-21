@@ -55,7 +55,6 @@ log_update(pp = ctr, N = "Downloaded")
 # 
 # dates <- format(seq(from = as.Date("2022/05/01"), to = today(), by = "1 days"), "%Y-%m-%d")
 # 
-# 
 # dates_df <- data.frame(base = rep("http://mohfw.gov.in/pdf/CummulativeCovidVaccinationReport",
 #                                   times = length(dates)),
 #                        date = dates) %>%
@@ -67,11 +66,29 @@ log_update(pp = ctr, N = "Downloaded")
 #          pdf_url = paste0(base, date_url, ".pdf"),
 #          pdf_extension = str_remove_all(pdf_url, "http://mohfw.gov.in/pdf/"),
 #          destinations = paste0(files_source, pdf_extension)) #%>%
-#   # filtering out the dates that have no reports as they show error
-#  # filter(date != "2020-01-28")
-# 
+  # filtering out the dates that have no reports as they show error
+ # filter(date != "2020-01-28")
+
 # 
 # dates_df %>%
 #   {map2(.$pdf_url, .$destinations, ~ download.file(url = .x, destfile = .y, mode="wb"))}
 # 
+
+# 
+# for(i in seq_along(dates_df$pdf_url)){
+#   if(class(try(download.file(dates_df$pdf_url[i],
+#                              destfile = dates_df$destinations[i],
+#                              mode="wb"),
+#                silent = TRUE)) == "try-error"){
+#     print(paste("No file for:", i))
+#     next 
+#     print(paste("downnloading:", i))
+#   }
+# }
+
+
+
+
+
+
 
