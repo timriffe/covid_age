@@ -144,12 +144,14 @@ tab1_out <- tab1_all %>%
          Sex = "b",
          Code = "IN",
          Metric = "Count",
+         Age = case_when(Measure == "Vaccinations" ~ "TOT",
+                         TRUE ~ Age),
          AgeInt = case_when(Age == "12" ~ 3L,
                             Age == "15" ~ 3L,
                             Age == "18" & Measure == "Vaccination3" ~ 42L,
                             Age == "18" & Measure %in% c("Vaccination1", "Vaccination2") ~ 87L,
                             Age == "60" ~ 45L,
-                            TRUE ~ NA_integer_)) %>% 
+                            Age == "TOT" ~ NA_integer_)) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
 
 # REGIONAL TABLE ========================
@@ -205,6 +207,8 @@ regional_files_processing <- regional_files %>%
          Country = "India",
          Sex = "b",
          Metric = "Count",
+         Age = case_when(Measure == "Vaccinations" ~ "TOT",
+                         TRUE ~ Age),
          Code = case_when(
            Region == "A & N Islands" ~ "IN-AN",
            Region == "Andhra Pradesh" ~ "IN-AP",
@@ -250,7 +254,7 @@ regional_files_processing <- regional_files %>%
                             Age == "18" & Measure == "Vaccination3" ~ 42L,
                             Age == "18" & Measure %in% c("Vaccination1", "Vaccination2") ~ 87L,
                             Age == "60" ~ 45L,
-                            TRUE ~ NA_integer_)) %>% 
+                            Age == "TOT" ~ NA_integer_)) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
 
 pdf_tables_out <- bind_rows(tab1_out, regional_files_processing) %>% 
@@ -287,6 +291,8 @@ manual_data <- read_excel(paste0(data_source, "IndiaRegional-Table2.xlsx")) %>%
          Country = "India",
          Sex = "b",
          Metric = "Count",
+         Age = case_when(Measure == "Vaccinations" ~ "TOT",
+                         TRUE ~ Age),
          Code = case_when(
            Region == "A & N Islands" ~ "IN-AN",
            Region == "Andhra Pradesh" ~ "IN-AP",
@@ -332,7 +338,7 @@ manual_data <- read_excel(paste0(data_source, "IndiaRegional-Table2.xlsx")) %>%
                             Age == "18" & Measure == "Vaccination3" ~ 42L,
                             Age == "18" & Measure %in% c("Vaccination1", "Vaccination2") ~ 87L,
                             Age == "60" ~ 45L,
-                            TRUE ~ NA_integer_)) %>% 
+                            Age == "TOT" ~ NA_integer_)) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
 
 

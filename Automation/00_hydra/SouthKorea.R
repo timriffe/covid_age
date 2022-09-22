@@ -15,6 +15,24 @@ ctr    <- "SouthKorea"
 dir_n  <- "N:/COVerAGE-DB/Automation/Hydra/"
 dir_n_source <- "N:/COVerAGE-DB/Automation/SouthKorea"
 
+## MK: 22.09.2022: Downloading the excel CASES data file (from Korean version of website) for reference
+
+data_source <- paste0(dir_n, "Data_sources/", ctr, "/ExcelReferenceData/cases_",today(), ".xlsx")
+
+korea_url <- "http://ncov.mohw.go.kr/"
+
+url_scrape <- read_html(korea_url) %>% 
+  html_nodes("a ") %>% 
+  html_attr('href')
+  
+cases_url <- data.frame(links = url_scrape) %>% 
+  filter(str_detect(links, ".xlsx")) %>% 
+  mutate(links = paste0(korea_url, links)) %>% 
+  dplyr::pull()
+
+
+download.file(cases_url, destfile = data_source, mode = "wb")
+
 
 # Data preparation --------------------------------------------------------
 sk_url <-"http://ncov.mohw.go.kr/en/bdBoardList.do?brdId=16&brdGubun=161&dataGubun=&ncvContSeq=&contSeq=&board_id="
