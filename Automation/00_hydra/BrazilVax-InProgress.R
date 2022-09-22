@@ -31,7 +31,7 @@ vax_files <- data.frame(path = vax.list) %>%
 
 
 ## EXAMPLE ##
-
+# 
 # data <- data.table::fread("N:/COVerAGE-DB/Automation/Hydra/Data_sources/Brazil/part-00000-7dd36c4d-562b-4f07-9ada-356ce3d5b157-c000.csv",
 #                           select = c("vacina_dataAplicacao",
 #                                      "paciente_idade",
@@ -39,7 +39,17 @@ vax_files <- data.frame(path = vax.list) %>%
 #                                      "paciente_endereco_nmMunicipio",
 #                                      "vacina_descricao_dose"))
 # 
-# data %>% count(vacina_descricao_dose)
+# data_age <- data %>% 
+#   dplyr::rename(Date = vacina_dataAplicacao,
+#                 Age = paciente_idade,
+#                 Sex = paciente_enumSexoBiologico,
+#                 Region = paciente_endereco_nmMunicipio,
+#                 Original_dose = vacina_descricao_dose) %>% 
+#   mutate(Age = as.character(Age),
+#          Age = case_when(Age > 105 ~ "105",
+#                          Age < 0 ~ "0",
+#                          TRUE ~ Age))
+#          #Age = if_else(Age > 105, 105, Age))
 
 
 
@@ -82,16 +92,11 @@ processed_data <- raw_data %>%
   dplyr::mutate(Sex = case_when(Sex == "M" ~ "m",
                                 Sex == "F" ~ "f",
                                 TRUE ~ "UNK"),
-                Age = as.double(Age),
-                Age = if_else(Age > 105, 105, Age),
-               # Age = if_else(Age = NA, "UNK", Age),
-                # Age = case_when(Age > 105 ~ 105,
-                #                 Age < 0 ~ "UNK",
-                #                 is.na(Age) ~ "UNK",
-                #                 TRUE ~ Age),
-                Date = ymd(Date))
-
-x%>% 
+                Age = as.character(Age),
+                Age = case_when(Age > 105 ~ "105",
+                                Age < 0 ~ "0",
+                                TRUE ~ Age),
+                Date = ymd(Date)) %>%  
   dplyr::group_by(Date, Age, Region, Sex, Dose) %>% 
   summarize(Value = n(), .groups = "drop")%>%
   tidyr::complete(Date, Sex, Age, Region, fill = list(Value = 0)) %>% 
