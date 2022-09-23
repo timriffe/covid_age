@@ -26,7 +26,7 @@ cols_in <- cols(
   AnalysisInsertTime = col_datetime(format = "")
 )
 
-db <- read_csv("https://opendata.digilugu.ee/opendata_covid19_test_results.csv", 
+db <- vroom::vroom("https://opendata.digilugu.ee/opendata_covid19_test_results.csv", 
                col_types = cols_in)
 
 RegionCode <- matrix(c(

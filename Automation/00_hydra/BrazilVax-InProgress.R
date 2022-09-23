@@ -20,49 +20,49 @@ gs4_auth(email = Sys.getenv("email"))
 
 ## List the downloaded files 
 
-vax.list <-list.files(
-  path= paste0(dir_n, ctr),
-  pattern = ".csv",
-  full.names = TRUE)
-
-vax_files <- data.frame(path = vax.list) %>% 
-  mutate(number = row_number(),
-         file_rds = paste0("BrazilVAX-Part", number))
-
-
-## EXAMPLE ##
+# vax.list <-list.files(
+#   path= paste0(dir_n, ctr),
+#   pattern = ".csv",
+#   full.names = TRUE)
 # 
-# data <- data.table::fread("N:/COVerAGE-DB/Automation/Hydra/Data_sources/Brazil/part-00000-7dd36c4d-562b-4f07-9ada-356ce3d5b157-c000.csv",
-#                           select = c("vacina_dataAplicacao",
-#                                      "paciente_idade",
-#                                      "paciente_enumSexoBiologico",
-#                                      "paciente_endereco_nmMunicipio",
-#                                      "vacina_descricao_dose"))
+# vax_files <- data.frame(path = vax.list) %>% 
+#   mutate(number = row_number(),
+#          file_rds = paste0("BrazilVAX-Part", number))
 # 
-# data_age <- data %>% 
-#   dplyr::rename(Date = vacina_dataAplicacao,
-#                 Age = paciente_idade,
-#                 Sex = paciente_enumSexoBiologico,
-#                 Region = paciente_endereco_nmMunicipio,
-#                 Original_dose = vacina_descricao_dose) %>% 
-#   mutate(Age = as.character(Age),
-#          Age = case_when(Age > 105 ~ "105",
-#                          Age < 0 ~ "0",
-#                          TRUE ~ Age))
-#          #Age = if_else(Age > 105, 105, Age))
-
-
-
-## Loop to read each file from the path column in dataframe and write rds file for each,
-
-vax_files %>% 
-  {map2(.$path, .$file_rds, 
-        function(x,y) fread(x, select = c("vacina_dataAplicacao",
-                                          "paciente_idade",
-                                          "paciente_enumSexoBiologico", 
-                                          "paciente_endereco_nmMunicipio", 
-                                          "vacina_descricao_dose")) %>% 
-                              write_rds(paste0(dir_n, ctr, "/", y, ".rds")))}
+# 
+# ## EXAMPLE ##
+# # 
+# # data <- data.table::fread("N:/COVerAGE-DB/Automation/Hydra/Data_sources/Brazil/part-00000-7dd36c4d-562b-4f07-9ada-356ce3d5b157-c000.csv",
+# #                           select = c("vacina_dataAplicacao",
+# #                                      "paciente_idade",
+# #                                      "paciente_enumSexoBiologico",
+# #                                      "paciente_endereco_nmMunicipio",
+# #                                      "vacina_descricao_dose"))
+# # 
+# # data_age <- data %>% 
+# #   dplyr::rename(Date = vacina_dataAplicacao,
+# #                 Age = paciente_idade,
+# #                 Sex = paciente_enumSexoBiologico,
+# #                 Region = paciente_endereco_nmMunicipio,
+# #                 Original_dose = vacina_descricao_dose) %>% 
+# #   mutate(Age = as.character(Age),
+# #          Age = case_when(Age > 105 ~ "105",
+# #                          Age < 0 ~ "0",
+# #                          TRUE ~ Age))
+# #          #Age = if_else(Age > 105, 105, Age))
+# 
+# 
+# 
+# ## Loop to read each file from the path column in dataframe and write rds file for each,
+# 
+# vax_files %>% 
+#   {map2(.$path, .$file_rds, 
+#         function(x,y) fread(x, select = c("vacina_dataAplicacao",
+#                                           "paciente_idade",
+#                                           "paciente_enumSexoBiologico", 
+#                                           "paciente_endereco_nmMunicipio", 
+#                                           "vacina_descricao_dose")) %>% 
+#                               write_rds(paste0(dir_n, ctr, "/", y, ".rds")))}
 
 ## read the .rds files and bind in one dataset 
 
@@ -105,7 +105,7 @@ processed_data <- raw_data %>%
   mutate(Value = cumsum(Value)) %>% 
   ungroup()
                 
-raw_data %>% count(paciente_idade) %>% View()
+#raw_data %>% count(paciente_idade) %>% View()
 
 
 
