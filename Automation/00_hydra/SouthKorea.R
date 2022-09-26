@@ -26,8 +26,9 @@ url_scrape <- read_html(korea_url) %>%
   html_attr('href')
   
 cases_url <- data.frame(link = url_scrape) %>% 
-  filter(str_detect(link, ".xlsx")) %>% 
-  mutate(link = paste0(korea_url, link)) %>% 
+  filter(str_detect(link, "download")) %>% 
+  mutate(link = paste0(link)) %>%
+#  mutate(link = paste0(korea_url, link)) %>% 
   dplyr::pull()
 
 
@@ -130,8 +131,9 @@ cases_all <- bind_rows(Cases_Ageprocessed, Cases_Sexprocessed)
 
 
 # Deaths Data preparation --------------------------------------------------------
-sk_url <-"http://ncov.mohw.go.kr/en/bdBoardList.do?brdId=16&brdGubun=161&dataGubun=&ncvContSeq=&contSeq=&board_id="
+#sk_url <-"http://ncov.mohw.go.kr/en/bdBoardList.do?brdId=16&brdGubun=161&dataGubun=&ncvContSeq=&contSeq=&board_id="
 
+sk_url <- "http://ncov.kdca.go.kr/en/bdBoardList.do?brdId=16&brdGubun=161&dataGubun=&ncvContSeq=&contSeq=&board_id="
 html <-read_html(sk_url)
 
 all_the_tables <- html %>% 

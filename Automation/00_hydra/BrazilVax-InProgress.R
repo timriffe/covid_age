@@ -71,7 +71,7 @@ rds_files <- list.files(
   pattern = ".rds",
   full.names = TRUE)
 
-raw_data <- rds_files %>% 
+raw_data <- rds_files %>%
   map_dfr(read_rds)
 
 
@@ -81,7 +81,8 @@ vax_code <- read_excel(paste0(dir_n, ctr,"/BrazilVaxCoding.xlsx"), sheet = "Codi
 
 ## process the data 
 
-processed_data <- raw_data %>% 
+
+df_1 <- raw_data %>% 
   dplyr::rename(Date = vacina_dataAplicacao,
                 Age = paciente_idade,
                 Sex = paciente_enumSexoBiologico,
@@ -96,16 +97,16 @@ processed_data <- raw_data %>%
                 Age = case_when(Age > 105 ~ "105",
                                 Age < 0 ~ "0",
                                 TRUE ~ Age),
-                Date = ymd(Date)) %>%  
+                Date = ymd(Date)) 
+
+processed_data <- df_1 %>%  
   dplyr::group_by(Date, Age, Region, Sex, Dose) %>% 
   summarize(Value = n(), .groups = "drop")%>%
-  tidyr::complete(Date, Sex, Age, Region, fill = list(Value = 0)) %>% 
+  tidyr::complete(Date = seq(min(df_1$Date), max(df_1$Date), by = "1 day"), 
+                  Sex, Age = 0:105, Region, fill = list(Value = 0)) %>% 
   arrange(Sex, Age, Region, Date) %>% 
   group_by(Sex, Age, Region, Dose) %>% 
   mutate(Value = cumsum(Value)) %>% 
   ungroup()
-                
-#raw_data %>% count(paciente_idade) %>% View()
-
 
 
