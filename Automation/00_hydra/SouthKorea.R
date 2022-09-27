@@ -15,8 +15,121 @@ ctr    <- "SouthKorea"
 dir_n  <- "N:/COVerAGE-DB/Automation/Hydra/"
 dir_n_source <- "N:/COVerAGE-DB/Automation/SouthKorea"
 
+## MK: 22.09.2022: Downloading the excel CASES data file (from Korean version of website) for reference
 
-# Data preparation --------------------------------------------------------
+data_source <- paste0(dir_n, "Data_sources/", ctr, "/ExcelReferenceData/cases_",today(), ".xlsx")
+
+korea_url <- "http://ncov.mohw.go.kr/"
+
+url_scrape <- read_html(korea_url) %>% 
+  html_nodes("a ") %>% 
+  html_attr('href')
+  
+cases_url <- data.frame(link = url_scrape) %>% 
+  filter(str_detect(link, ".xlsx")) %>% 
+  mutate(link = paste0(korea_url, link)) %>% 
+  dplyr::pull()
+
+
+download.file(cases_url, destfile = data_source, mode = "wb")
+
+## Cases by Age == sheet 2
+
+Cases_Age <- read_excel(data_source, sheet = 2) %>% 
+  slice(-1)
+
+Age_names <- c("Date", "Cases_TOT", "Cases_0",
+               "Cases_10", "Cases_20", "Cases_30",
+               "Cases_40", "Cases_50", "Cases_60",
+               "Cases_70", "Cases_80")
+
+names(Cases_Age) <- Age_names
+
+Cases_Age2 <- Cases_Age %>% 
+  mutate(Date = as.numeric(Date),
+         Date = as.Date(Date, origin = "1899-12-30"),
+         across(.cols = -c("Date"), as.integer),
+         across(.cols = -c("Date"), ~replace_na(., 0)))
+
+
+Cases_Ageprocessed <-  Cases_Age2 %>% 
+  arrange(Date) %>% 
+  pivot_longer(cols = -c(Date),
+               names_to = c("Measure", "Age"),
+               names_sep = "_",
+               values_to = "Value") %>% 
+  tidyr::complete(Age, Measure,
+                  Date = seq(min(Cases_Age2$Date), max(Cases_Age2$Date), by = "day"),
+                  fill = list(Value = 0)) %>% 
+  pivot_wider(names_from = "Age", values_from = "Value") %>% 
+  mutate(across(.cols = -c("Date", "Measure"), ~ cumsum(.x))) %>% 
+  pivot_longer(cols = -c("Date", "Measure"),
+               names_to = c("Age"),
+               values_to = "Value") %>% 
+  mutate(Metric = "Count") %>% 
+  mutate(Country = "South Korea",
+         Region = "All",
+         Date = ddmmyyyy(Date),
+         Code = paste("KR"),
+         Sex = "b",
+         AgeInt = case_when(Age %in% c("0", "10", "20", "30", "40", "50", "60", "70") ~ 10L,
+                            Age == "80" ~ 25L),
+         Value = as.numeric(Value)) %>% 
+  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>%
+  sort_input_data()
+
+
+## Cases by Sex (totals) == sheet 3
+
+
+Cases_Sex <- read_excel(data_source, sheet = 3) %>% 
+  slice(-1)
+
+
+Sex_names <- c("Date", "Cases_TOT", "Cases_m",
+               "Cases_f")
+
+names(Cases_Sex) <- Sex_names
+
+Cases_Sex2 <- Cases_Sex %>% 
+  mutate(Date = as.numeric(Date),
+         Date = as.Date(Date, origin = "1899-12-30"),
+         across(.cols = -c("Date"), as.integer),
+         across(.cols = -c("Date"), ~replace_na(., 0)))
+
+
+Cases_Sexprocessed <-  Cases_Sex2 %>% 
+  arrange(Date) %>% 
+  select(-Cases_TOT) %>% 
+  pivot_longer(cols = -c(Date),
+               names_to = c("Measure", "Sex"),
+               names_sep = "_",
+               values_to = "Value") %>% 
+  tidyr::complete(Sex, Measure,
+                  Date = seq(min(Cases_Sex2$Date), max(Cases_Sex2$Date), by = "day"),
+                  fill = list(Value = 0)) %>% 
+  pivot_wider(names_from = "Sex", values_from = "Value") %>% 
+  mutate(across(.cols = -c("Date", "Measure"), ~ cumsum(.x))) %>% 
+  pivot_longer(cols = -c("Date", "Measure"),
+               names_to = c("Sex"),
+               values_to = "Value") %>% 
+  mutate(Metric = "Count") %>% 
+  mutate(Country = "South Korea",
+         Region = "All",
+         Date = ddmmyyyy(Date),
+         Code = paste("KR"),
+         Age = "TOT",
+         AgeInt = NA_integer_,
+         Value = as.numeric(Value)) %>% 
+  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>%
+  sort_input_data()
+
+
+cases_all <- bind_rows(Cases_Ageprocessed, Cases_Sexprocessed)
+
+
+
+# Deaths Data preparation --------------------------------------------------------
 sk_url <-"http://ncov.mohw.go.kr/en/bdBoardList.do?brdId=16&brdGubun=161&dataGubun=&ncvContSeq=&contSeq=&board_id="
 
 html <-read_html(sk_url)
@@ -56,6 +169,8 @@ data_age <-
   select(-`Fatality rate(%)`) %>% 
   rename(Age = Category) %>% 
   pivot_longer(Cases:Deaths, names_to = "Measure", values_to = "Value") %>% 
+  ## MK 22.09.2022: since we collect the cases data from Excel, I filtered out Cases from here ## 
+  filter(Measure != "Cases") %>% 
   mutate(Age = case_when(Age == "0-9" ~ "0",
                          Age == "10-19" ~ "10",
                          Age == "20-29" ~ "20",
@@ -88,14 +203,18 @@ all_the_tables[gender_table_i][[1]] %>%
   rename(Sex = Category, 
          Cases = `Confirmed(%)`,
          Deaths = `Deaths(%)`) %>%
-  mutate(Cases = substr(Cases, 1, nchar(Cases) - 8),    # risky
-         Deaths = substr(Deaths, 1, nchar(Deaths) - 8), # risky
-         Cases = gsub(",", "", Cases) %>% as.numeric(),
-         Deaths = gsub(",", "", Deaths) %>% as.numeric()) %>% 
+  mutate(Cases = parse_number(Cases), 
+         Deaths = parse_number(Deaths)) %>% 
+  # mutate(Cases = substr(Cases, 1, nchar(Cases) - 8),    # risky
+  #        Deaths = substr(Deaths, 1, nchar(Deaths) - 8), # risky
+  #        Cases = gsub(",", "", Cases) %>% as.numeric(),
+  #        Deaths = gsub(",", "", Deaths) %>% as.numeric()) %>% 
  select(Sex, Cases, Deaths) %>% 
  pivot_longer(Cases:Deaths, 
               names_to = "Measure", 
               values_to = "Value") %>% 
+  ## MK 22.09.2022: since we collect the cases data from Excel, I filtered out Cases from here ## 
+ filter(Measure != "Cases") %>% 
  mutate(Sex = substr(Sex,1,1) %>% tolower(),
         Age = "TOT",
         AgeInt = NA_integer_,
@@ -105,27 +224,28 @@ all_the_tables[gender_table_i][[1]] %>%
         Region = "All",
         Code = paste("KR"))
 
-total_original <- all_the_tables[total_cases_i][[1]]
-
-cases_total <-
-all_the_tables[total_cases_i][[1]] %>% 
-  select(-`Daily New Cases`) %>% 
-  mutate(Date = ymd(Date) %>% ddmmyyyy()) %>% 
-  rename(Value = `Cumulative Number of Confirmed Cases`) %>% 
-  mutate(Age = "TOT",Sex = "b",
-         Country = "South Korea",
-         Region = "All",
-         Measure = "Cases",
-         Metric = "Count",
-         Code = paste0("KR"),
-         AgeInt = NA_integer_,
-         Value = as.numeric(Value))
+# total_original <- all_the_tables[total_cases_i][[1]]
+# 
+# cases_total <-
+# all_the_tables[total_cases_i][[1]] %>% 
+#   select(-`Daily New Cases`) %>% 
+#   mutate(Date = ymd(Date) %>% ddmmyyyy()) %>% 
+#   rename(Value = `Cumulative Number of Confirmed Cases`) %>% 
+#   mutate(Age = "TOT",Sex = "b",
+#          Country = "South Korea",
+#          Region = "All",
+#          Measure = "Cases",
+#          Metric = "Count",
+#          Code = paste0("KR"),
+#          AgeInt = NA_integer_,
+#          Value = as.numeric(Value))
 
 
 new_data <- bind_rows(
   data_age,
   sex_table,
-  cases_total
+  cases_all
+ # cases_total
 )
 
 new_combos <- new_data %>% 
@@ -133,7 +253,8 @@ new_combos <- new_data %>%
   distinct()
 
 # this now pulls from N, rubric redirected
-current_db <- read_rds(paste0(dir_n, ctr, ".rds"))
+current_db <- read_rds(paste0(dir_n, ctr, ".rds")) %>% 
+  filter(Measure != "Cases") 
 
 current_combos <- current_db %>% 
   select(Date, Sex, Age, Measure) %>% 
@@ -165,11 +286,11 @@ log_update("SouthKorea", N = nrow(new_data))
 
 #archive input data 
 
-data_source <- paste0(dir_n, "Data_sources/", ctr,today(), ".csv")
+data_source <- paste0(dir_n, "Data_sources/", "SouthKorea/",today(), ".xlsx")
 
 data_today <- list("Age" = age_original, 
                    "Sex" = sex_original,
-                   "Total" = total_original) 
+                   "Cases" = cases_all) 
 
 
 
