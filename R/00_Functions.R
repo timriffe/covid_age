@@ -281,7 +281,8 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
       filter(Loc == "n")
     
     rubric <- rubric %>% 
-      filter(Loc != "n")
+      # TR: was Loc != "n" before, causing duplication of CH_vcc
+      filter(Loc == "d")
   }
   
   # Empty list for results
