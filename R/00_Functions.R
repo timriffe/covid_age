@@ -281,7 +281,8 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
       filter(Loc == "n")
     
     rubric <- rubric %>% 
-      filter(Loc != "n")
+      # TR: was Loc != "n" before, causing duplication of CH_vcc
+      filter(Loc == "d")
   }
   
   # Empty list for results
@@ -379,7 +380,7 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
     for (i in failures){
       Sys.sleep(200)
       # Get spreadsheet address
-      ss_i <- rubric %>% filter(Short == i) %>% '$'(Sheet)
+      ss_i <- rubric %>% dplyr::filter(Short == i) %>% '$'(Sheet)
       X <- try(read_sheet(ss_i, 
                           sheet = "database", 
                           na = "NA", 
@@ -437,7 +438,8 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
           mutate(Age = as.character(Age),
                  AgeInt = as.integer(AgeInt), 
                  Value = as.double(Value),
-                 templateID = id) %>% 
+                 templateID = id,
+                 Date = case_when(is_date(Date), ddmmyyyy(Date), Date)) %>% 
           select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value, templateID)
       )
         
