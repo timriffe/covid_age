@@ -37,7 +37,7 @@ historicaldata <- data %>%
                 Cases = 'ApstiprinataCOVID19InfekcijaSkaits',
                 Deaths = "MirusoPersonuSkaits") %>% 
   dplyr::mutate(Date = ymd(Date)) %>% 
-  dplyr::filter(Date < "2021-05-13") %>% 
+#  dplyr::filter(Date < "2021-05-13") %>% 
   dplyr::mutate(across(.cols = -c("Date"), ~ as.double(.x)),
                 across(.cols = -c("Date"), ~ replace_na(.x, 0)),
   ## conversion to cumsum value; since these are daily new values ## 
@@ -46,6 +46,7 @@ historicaldata <- data %>%
                       names_to = "Measure",
                       values_to = "Value") %>% 
   dplyr::filter(Measure != "ApstiprinatiVecGr_70GadiUnVairak") %>% # remove 70+ to avoid duplicates
+  dplyr::filter(Date > "2022-09-09", Date < "2022-10-01") %>% 
   dplyr::mutate(Age = str_extract(Measure, "\\d+"),
                 Measure = case_when(str_detect(Measure, "\\d+") ~ "Cases",
                                      TRUE ~ Measure),
@@ -68,6 +69,6 @@ historicaldata <- data %>%
 
 ## save the output to csv file and add manually to google drive input Template
 
-write.csv(historicaldata, file = paste0(dir_n, ctr, "/HistoricalData.csv"))
+write.csv(historicaldata, file = paste0(dir_n, ctr, "/HistoricalDataSept2022.csv"))
 
 ## END ## 

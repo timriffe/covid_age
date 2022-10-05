@@ -161,6 +161,48 @@ vaccsex3 <- vaccsex2 %>%
          Age = "TOT")%>% 
   filter(Region != "neighboring_chfl")
 
+## Binding and write the .rds file
+
+
+out <- rbind(vacc3, vaccsex3) %>%   
+ sort_input_data() %>% 
+  unique()
+write_rds(out, paste0(dir_n, ctr, ".rds"))
+
+# updating hydra dashboard
+log_update(pp = ctr, N = nrow(out))
+
+#zip input data
+cases_url1 <- url_age
+data_source1 <- paste0(dir_n, "Data_sources/", ctr, "/vaccination_age",today(), ".csv")
+cases_url2 <- url_sex
+data_source2 <- paste0(dir_n, "Data_sources/", ctr, "/vaccination_sex",today(), ".csv")
+download.file(cases_url1, destfile = data_source1, mode = "wb")
+download.file(cases_url2, destfile = data_source2, mode = "wb")
+
+
+data_source <- c(data_source1, data_source2)
+
+zipname <- paste0(dir_n,
+                  "Data_sources/", 
+                  ctr,
+                  "/", 
+                  ctr,
+                  "_data_",
+                  today(), 
+                  ".zip")
+
+zip::zipr(zipname, 
+          data_source, 
+          recurse = TRUE, 
+          compression_level = 9,
+          include_directories = TRUE)
+
+file.remove(data_source)
+
+
+## Historical code
+
 
 # ##death by sex
 # 
@@ -287,40 +329,3 @@ vaccsex3 <- vaccsex2 %>%
 # 
 
 
-
-
-out <- rbind(vacc3, vaccsex3) %>%   
- sort_input_data() %>% 
-  unique()
-write_rds(out, paste0(dir_n, ctr, ".rds"))
-
-# updating hydra dashboard
-log_update(pp = ctr, N = nrow(out))
-
-#zip input data
-cases_url1 <- url_age
-data_source1 <- paste0(dir_n, "Data_sources/", ctr, "/vaccination_age",today(), ".csv")
-cases_url2 <- url_sex
-data_source2 <- paste0(dir_n, "Data_sources/", ctr, "/vaccination_sex",today(), ".csv")
-download.file(cases_url1, destfile = data_source1, mode = "wb")
-download.file(cases_url2, destfile = data_source2, mode = "wb")
-
-
-data_source <- c(data_source1, data_source2)
-
-zipname <- paste0(dir_n,
-                  "Data_sources/", 
-                  ctr,
-                  "/", 
-                  ctr,
-                  "_data_",
-                  today(), 
-                  ".zip")
-
-zip::zipr(zipname, 
-          data_source, 
-          recurse = TRUE, 
-          compression_level = 9,
-          include_directories = TRUE)
-
-file.remove(data_source)

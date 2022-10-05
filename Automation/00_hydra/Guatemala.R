@@ -160,7 +160,7 @@ vaxAge_raw <- bind_rows(vaxAge_history, vaxAge_python)
 vaxSex_raw <- bind_rows(vaxSex_history, vaxSex_python)
 
 
-VaccAge_processed <- vaxAge_python %>% 
+VaccAge_processed <- vaxAge_raw %>% 
   select(Date,
          Age = contains("Grupo"), 
          Vaccination1 = Dosis.administradas..primera.dosis.,
@@ -184,7 +184,7 @@ VaccAge_processed <- vaxAge_python %>%
   
 
 
-VaccSex_processed <- vaxSex_python %>% 
+VaccSex_processed <- vaxSex_raw %>% 
   select(Date,
          Sex = sexo, 
          Vaccination1 = Dosis.administradas..primera.dosis.,

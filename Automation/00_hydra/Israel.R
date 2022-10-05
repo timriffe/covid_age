@@ -128,7 +128,7 @@ out <- processed_data %>%
     Metric = "Count",
     Date = ddmmyyyy(Date),
     Code = paste0("IL"),
-    Country = "Isreal",
+    Country = "Israel",
     Region = "All",
     Age = as.character(Age)) %>% 
   dplyr::select(Country, Region, Code, Date, Sex, 
