@@ -18,17 +18,43 @@ drive_auth(email = Sys.getenv("email"))
 gs4_auth(email = Sys.getenv("email"))
 
 
+## Source website: https://opendatasus.saude.gov.br/dataset/covid-19-vacinacao/resource/301983f2-aa50-4977-8fec-cfab0806cb0b
+
+
 ## List the downloaded files 
 
-# vax.list <-list.files(
-#   path= paste0(dir_n, ctr),
-#   pattern = ".csv",
-#   full.names = TRUE)
+vax.list <-list.files(
+  path= paste0(dir_n, ctr),
+  pattern = ".csv",
+  full.names = TRUE)
+
+vax_files <- data.frame(path = vax.list) %>%
+  mutate(number = row_number(),
+         file_rds = paste0("BrazilVAX-Part", number))
+
+
+# ## Loop to read each file from the path column in dataframe and write rds file for each,
 # 
-# vax_files <- data.frame(path = vax.list) %>% 
-#   mutate(number = row_number(),
-#          file_rds = paste0("BrazilVAX-Part", number))
+# vax_files %>%
+#   {map2(.$path, .$file_rds,
+#         function(x,y) fread(x, select = c("vacina_dataAplicacao",
+#                                           "paciente_idade",
+#                                           "paciente_enumSexoBiologico",
+#                                           "paciente_endereco_nmMunicipio",
+#                                           "vacina_descricao_dose")) %>%
+#           write_rds(paste0(dir_n, ctr, "/", y, ".rds")))}
+#           
+## read the .rds files and bind in one dataset 
 # 
+rds_files <- list.files(
+  path= paste0(dir_n, ctr),
+  pattern = ".rds",
+  full.names = TRUE)
+
+raw_data <- rds_files %>%
+  map_dfr(read_rds)
+
+
 # 
 # ## EXAMPLE ##
 # # 
@@ -53,26 +79,7 @@ gs4_auth(email = Sys.getenv("email"))
 # 
 # 
 # 
-# ## Loop to read each file from the path column in dataframe and write rds file for each,
-# 
-# vax_files %>% 
-#   {map2(.$path, .$file_rds, 
-#         function(x,y) fread(x, select = c("vacina_dataAplicacao",
-#                                           "paciente_idade",
-#                                           "paciente_enumSexoBiologico", 
-#                                           "paciente_endereco_nmMunicipio", 
-#                                           "vacina_descricao_dose")) %>% 
-#                               write_rds(paste0(dir_n, ctr, "/", y, ".rds")))}
 
-## read the .rds files and bind in one dataset 
-
-rds_files <- list.files(
-  path= paste0(dir_n, ctr),
-  pattern = ".rds",
-  full.names = TRUE)
-
-raw_data <- rds_files %>%
-  map_dfr(read_rds)
 
 
 ## also read the coding for doses == this file I made by translating the unique values using Google

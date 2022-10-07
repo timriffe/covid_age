@@ -21,6 +21,9 @@ ctr          <- "Switzerland_Vaccine" # it's a placeholder
 dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 
+
+## DOCUMENTATION: https://www.covid19.admin.ch/api/data/documentation/models/sources-definitions-vaccpersonsincomingdata.md
+
 m_url <- "https://opendata.swiss/en/dataset/covid-19-schweiz"
 links_age <- scraplinks(m_url) %>% 
   filter(str_detect(url, "COVID19VaccPersons_AKL10_w_v2.csv")) %>% 
@@ -44,7 +47,7 @@ url_sex <-
 #####vaccination by age
 vacc <- read.csv(url_age)
 vacc2 <- vacc %>% 
-  dplyr::filter(type != "COVID19PartiallyVaccPersons") %>% 
+  dplyr::filter(!type %in% c("COVID19PartiallyVaccPersons", "COVID19VaccSixMonthsPersons")) %>% 
   dplyr::filter(age_group_type == "age_group_AKL10") %>% 
   select(YearWeekISO = date, Region = geoRegion, Age = altersklasse_covid19, Measure = type, Value = sumTotal)
 vacc2$YearWeekISO <- gsub("^(.{4})(.*)$",         # Apply gsub
@@ -111,7 +114,7 @@ mutate(Sex = "b",
 ###vaccinations by sex
 vaccsex <- read.csv(url_sex)
 vaccsex2 <- vaccsex %>% 
-  filter(type != "COVID19PartiallyVaccPersons") %>% 
+  filter(!type %in% c("COVID19PartiallyVaccPersons", "COVID19VaccSixMonthsPersons")) %>% 
   select(YearWeekISO = date, Region = geoRegion, Sex = sex, Measure = type, Value = sumTotal)
 vaccsex2$YearWeekISO <- gsub("^(.{4})(.*)$",         # Apply gsub
                           "\\1-W\\2",
@@ -173,12 +176,12 @@ write_rds(out, paste0(dir_n, ctr, ".rds"))
 log_update(pp = ctr, N = nrow(out))
 
 #zip input data
-cases_url1 <- url_age
+vax_age_url1 <- url_age
 data_source1 <- paste0(dir_n, "Data_sources/", ctr, "/vaccination_age",today(), ".csv")
-cases_url2 <- url_sex
+vax_sex_url2 <- url_sex
 data_source2 <- paste0(dir_n, "Data_sources/", ctr, "/vaccination_sex",today(), ".csv")
-download.file(cases_url1, destfile = data_source1, mode = "wb")
-download.file(cases_url2, destfile = data_source2, mode = "wb")
+download.file(vax_age_url1, destfile = data_source1, mode = "wb")
+download.file(vax_sex_url2, destfile = data_source2, mode = "wb")
 
 
 data_source <- c(data_source1, data_source2)

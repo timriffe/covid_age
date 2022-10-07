@@ -110,7 +110,7 @@ scripts <- c('Peru', 'PeruVaccine' , 'Afghanistan',
              'Slovakia',  'Slovenia', 
              'Slovenia_vaccine', 'Slovakia_vaccine', 
              'Somalia', 'SouthAfrica', 'SouthKorea', 'SriLankaPDFs',
-             'Sweden', 
+             'Sweden', 'SwitzerlandEpi',
              'Switzerland_Vaccine',
              'Togo', 'Taiwan', 
              'Thailand', # does not work
@@ -133,6 +133,8 @@ scripts <- c('Peru', 'PeruVaccine' , 'Afghanistan',
 scripts %>% sort
 # Scheduling all scripts at once
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+## When adding a new script, run the following two times. 
 
 # starting time for first schedule in hour and minutes
 h_ini <- 06

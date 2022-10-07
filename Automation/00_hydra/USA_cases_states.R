@@ -28,6 +28,7 @@ library(arrow)
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
   email <- "maxi.s.kniffka@gmail.com"
+  email <- "mumanal.k@gmail.com"
 }
 
 # Drive credentials
@@ -41,7 +42,7 @@ dir_k <- "K:/CDC_Covid/"
 
 # folder name, this changes 
 
-folder <- "covid_case_restricted_detailed-master_06_09_2022" ## to change every update/ download of the data
+folder <- "covid_case_restricted_detailed-master_03_10_2022" ## to change every update/ download of the data
 
 
 # Read in files names 
