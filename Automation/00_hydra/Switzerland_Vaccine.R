@@ -75,9 +75,7 @@ vacc2 <- vacc2 %>%
       TRUE ~ 10L))
 vacc3 <- vacc2 %>% 
   mutate(Date = ymd(Date),
-         Date = paste(sprintf("%02d",day(Date)),    
-                      sprintf("%02d",month(Date)),  
-                      year(Date),sep=".")) %>% 
+         Date = ddmmyyyy(Date)) %>% 
   mutate(Code = case_when(
     Region == "CH" ~ paste0("CH"),
     Region == "FL" ~ paste0("LI"),
@@ -133,9 +131,7 @@ vaccsex2 <- vaccsex2 %>%
   mutate(AgeInt = NA)
 vaccsex3 <- vaccsex2 %>% 
   mutate(Date = ymd(Date),
-         Date = paste(sprintf("%02d",day(Date)),    
-                      sprintf("%02d",month(Date)),  
-                      year(Date),sep=".")) %>% 
+         Date = ddmmyyyy(Date)) %>% 
   mutate(Code = case_when(
     Region == "CH" ~ paste0("CH"),
     Region == "FL" ~ paste0("LI"),

@@ -40,7 +40,7 @@ api <- paste0("https://data.gov.il/api/3/action/datastore_search?resource_id=89f
 
 raw_data <- jsonlite::fromJSON(api)[["result"]][["records"]] %>% 
     dplyr::select(
-    Date = first_week_day,
+    Date = last_week_day,
     Age = age_group,
     Sex = gender,
     Tests = weekly_tests_num,

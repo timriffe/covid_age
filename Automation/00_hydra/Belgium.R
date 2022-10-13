@@ -269,6 +269,7 @@ out <- bind_rows(db_nal,
                       sprintf("%02d",month(date_f)),
                       year(date_f),
                       sep="."),
+         Date = ddmmyyyy(Date),
          Code = case_when(
            Region == "All" ~ paste0("BE"),
            Region == "Flanders" ~ paste0("BE-VLG"),
