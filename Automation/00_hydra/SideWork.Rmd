@@ -2160,3 +2160,47 @@ vax_sex_data %>%
 
 ```
 
+
+
+# Romania
+
+##├ 11.10.2022
+
+downlaoding html pages links for deaths data 
+
+```{r}
+# load packages 
+library(tidyverse)
+library(rvest)
+
+
+url_main <- "https://covid19.stirioficiale.ro/informatii"
+
+
+data.frame(links = read_html(url_text) %>% 
+             html_nodes("a ") %>% 
+             html_attr('href')) 
+
+## extract links in multiple pages 
+
+url_loop <- "https://covid19.stirioficiale.ro/informatii?page="
+
+pages <- seq(1:179)
+
+all_links <- data.frame()
+
+for (i in pages) {
+  df_links <- data.frame(links = read_html(paste0(url_loop, i)) %>% 
+               html_nodes("a ") %>% 
+               html_attr('href'))
+  all_links <- rbind(all_links, df_links)
+}
+
+
+covid_links <- all_links %>% 
+  filter(str_detect(links, "buletin-de-presa")) %>% 
+  distinct()
+
+covid_links %>% write.csv("links.csv")
+```
+
