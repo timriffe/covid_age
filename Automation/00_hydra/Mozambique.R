@@ -18,7 +18,7 @@ gs4_auth(email = Sys.getenv("email"))
 ctr          <- "Mozambique" # it's a placeholder
 dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
-## The purpose of this script is to download the PDFs from the GAMBIA website.
+## The purpose of this script is to download the PDFs from the website.
 ## Not for automation though. 
 ## and so we may run this script once a month to download the PDFs. 
 

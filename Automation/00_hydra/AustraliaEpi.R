@@ -27,14 +27,15 @@ gs4_auth(email = Sys.getenv("email"))
 
 ## Data until 12.04.2022 from Google Drive:
 # 
-# at_rubric <- get_input_rubric() %>%
-#   dplyr::filter(Short == "AU")
-# ss_i   <- at_rubric %>% dplyr::pull(Sheet)
-# ss_db  <- at_rubric %>% dplyr::pull(Source)
-# 
-# 
-# db_drive <- read_sheet(ss = ss_i, sheet = "database")
-# 
+
+at_rubric <- get_input_rubric() %>%
+  dplyr::filter(Short == "AU")
+ss_i   <- at_rubric %>% dplyr::pull(Sheet)
+ss_db  <- at_rubric %>% dplyr::pull(Source)
+
+
+db_drive <- read_sheet(ss = ss_i, sheet = "database")
+
 
 ## Since I don't want to repeat this whole process, we will append the data on daily basis,
 ## Also, to make sure that the python automated script is working ##
@@ -43,7 +44,7 @@ gs4_auth(email = Sys.getenv("email"))
 
 # reading data from Australia stored in N drive
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-db_n <- read_rds(paste0(dir_n, ctr, ".rds")) 
+#db_n <- read_rds(paste0(dir_n, ctr, ".rds")) 
 
 
 ## Data from 14.04.2022 from Python automated .xlsx files 
@@ -66,7 +67,7 @@ cases_files <- data.frame(cases_paths = epi.list) %>%
 
 cases_df <- cases_files %>% 
   # filter for the maximum file (possibly the same day as of today) # 
-  dplyr::filter(Date == max(Date)) %>% 
+ # dplyr::filter(Date == max(Date)) %>% 
   {map2_dfr(.$cases_paths, .$Date, function(x,y) read_excel(x) %>% mutate(Date=y))}
 
 
@@ -81,7 +82,7 @@ deaths_files <- data.frame(deaths_paths = epi.list) %>%
 
 deaths_df <- deaths_files %>% 
   # filter for the maximum file (possibly the same day as of today) # 
-  dplyr::filter(Date == max(Date)) %>% 
+ # dplyr::filter(Date == max(Date)) %>% 
   {map2_dfr(.$deaths_paths, .$Date, function(x,y) read_excel(x) %>% mutate(Date=y))}
 
 
@@ -119,13 +120,12 @@ python_data <- epi_data %>%
   sort_input_data()
 
 
-## Append to data in N "db_n" 
+## Append to historical data on drive, append to "db_drive" 
 
 ## When using historical data on drive, append to "db_drive"
-#out <- bind_rows(db_drive, python_data)
+out <- bind_rows(db_drive, python_data)
 
-out <- bind_rows(db_n, 
-                 python_data) 
+#out <- bind_rows(db_n, python_data) 
 
 
 #save output data

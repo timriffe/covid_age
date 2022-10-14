@@ -30,6 +30,7 @@ gs4_auth(email = Sys.getenv("email"))
 
 # read in data 
 
+#Source website: https://github.com/jxeeno/aust-govt-covid19-vaccine-pdf
 
 IN= read.csv("https://vaccinedata.covid19nearme.com.au/data/air.csv")
 

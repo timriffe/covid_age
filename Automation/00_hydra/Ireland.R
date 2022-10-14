@@ -40,7 +40,7 @@ if (email == "tim.riffe@gmail.com"){
 cases_url_fat <- "https://opendata.arcgis.com/api/v3/datasets/67b8175576fe44e9ab193c4a5dc2ff9a_0/downloads/data?format=csv&spatialRefId=4326"
 cases_url  <- "https://opendata.arcgis.com/api/v3/datasets/d8eb52d56273413b84b0187a4e9117be_0/downloads/data?format=csv&spatialRefId=4326"
 vac_url    <- "https://opendata.arcgis.com/api/v3/datasets/0101ed10351e42968535bb002f94c8c6_0/downloads/data?format=csv&spatialRefId=4326"
-boost_url  <- "https://opendata.arcgis.com/api/v3/datasets/2a4814b66d0d459cbb80dea30f61fbfe_0/downloads/data?format=csv&spatialRefId=4326"
+boost_url  <- "https://opendata.arcgis.com/api/v3/datasets/edcdb71467244bae90190d54fd665c74_0/downloads/data?format=csv&spatialRefId=4326"
 
 # Deaths by age from web in a single chain
 deaths_append <-
@@ -151,45 +151,48 @@ Vaccinations1and2 <-
 
 bIN <- read_csv(boost_url)
 
-Boosters <-
+weekly_Boosters <-
   bIN %>% 
   clean_names() %>% 
-  select(epi_week, 
+  select(week, 
          m_TOT_bla = male, 
          f_TOT_bla = female, 
-         UNK_TOT_bla = na, 
+         UNK_TOT_bla = na,
          ends_with("cum")) %>% 
   pivot_longer(m_TOT_bla:ncol(.),
                names_to = c("Sex","Age",NA), 
                names_sep = "_",
                values_to = "Value") %>% 
-  mutate(Sex = case_when(Sex == "na" ~ "UNK",
-                         Sex %in% c("im","ad") ~ "b",
-                         TRUE ~ Sex)) %>% 
-  group_by(epi_week, Sex, Age) %>% 
-  summarize(Value = sum(Value), .groups = "drop") %>% 
-  mutate(
-    Age = gsub(Age, pattern = "age", replacement = ""),
-    Age = case_when(Age == "na" ~ "UNK",
-                    Age == "0to9" ~ "0",
-                    Age == "10to19" ~ "10",
-                    Age == "20to29" ~ "20",
-                    Age == "30to39" ~ "30",
-                    Age == "40to49" ~ "40",
-                    Age == "50to59" ~ "50",
-                    Age == "60to69" ~ "60",
-                    Age == "70to79" ~ "70",
-                    TRUE ~ Age),
+  filter(Sex != "id")  %>%  # filter out immunocompromised doses ## 
+  mutate(Measure = case_when(Sex == "ad2" ~ "Vaccination4",
+                             TRUE ~ "Vaccination3"),
+         Sex = case_when(Sex == "na" ~ "UNK",
+                         Sex %in% c("ad", "ad2") ~ "b",
+                         TRUE ~ Sex),
+         Age = gsub(Age, pattern = "age", replacement = ""),
+         Age = case_when(Age == "na" ~ "UNK",
+                         Age == "0to9" ~ "0",
+                         Age == "05to11" ~ "5",
+                         Age == "10to19" ~ "10",
+                         Age == "12to19" ~ "12",
+                         Age == "20to29" ~ "20",
+                         Age == "30to39" ~ "30",
+                         Age == "40to49" ~ "40",
+                         Age == "50to59" ~ "50",
+                         Age == "60to69" ~ "60",
+                         Age == "70to79" ~ "70",
+                         TRUE ~ Age),
     AgeInt = case_when(Age == "UNK" ~ NA_integer_,
                        #   Age == "70" ~ 35L,
                        Age == "80" ~ 25L,
+                       Age == "5" ~ 7L,
+                       Age == "12" ~ 8L,
                        TRUE ~ 10L),
-    week = substr(epi_week,1,8),
-         Date = ISOweek::ISOweek2date(paste(week, "7", sep = "-")),
+    Date = ISOweek::ISOweek2date(paste(week, "7", sep = "-")),
          Date = ddmmyyyy(Date),
          # Date = dmy(paste(day, month, year, sep = "-")),
          # Date = ddmmyyyy(Date),
-         Measure = "Vaccination3") %>% 
+         ) %>% 
   select(Date, Sex, Age, Measure, Value, AgeInt) 
 
 
@@ -198,7 +201,7 @@ Everything <-
   bind_rows(deaths_append,
             Cases,
             Vaccinations1and2,
-            Boosters) %>% 
+            weekly_Boosters) %>% 
 
   ungroup() %>% 
   mutate(Country = "Ireland",

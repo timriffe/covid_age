@@ -247,7 +247,7 @@ regional_files_processing <- regional_files %>%
            Region == "Uttar Pradesh" ~ "IN-UP",
            Region == "Uttarakhand" ~ "IN-UT",
            Region == "West Bengal" ~ "IN-WB",
-           TRUE ~ NA_character_
+           Region == "Miscellaneous" ~ "IN-UNK"
          ),
          AgeInt = case_when(Age == "12" ~ 3L,
                             Age == "15" ~ 3L,
@@ -279,7 +279,7 @@ write_rds(pdf_tables_out, "IndiaVax.rds")
 ## Yet, for other files {tabulizer} does not read the second table, so I copied and pasted these 'manually' after opening the PDFs as word documents 
 
 
-dataarchived <- read_rds(paste0(dir_n, ctr, ".rds"))
+dataarchived <- read_rds(paste0(dir_n, ctr, ".rds")) 
 
 manual_data <- read_excel(paste0(data_source, "IndiaRegional-Table2.xlsx")) %>% 
   filter(!is.na(Region)) %>% 
@@ -331,7 +331,7 @@ manual_data <- read_excel(paste0(data_source, "IndiaRegional-Table2.xlsx")) %>%
            Region == "Uttar Pradesh" ~ "IN-UP",
            Region == "Uttarakhand" ~ "IN-UT",
            Region == "West Bengal" ~ "IN-WB",
-           TRUE ~ NA_character_
+           Region == "Miscellaneous" ~ "IN-UNK"
          ),
          AgeInt = case_when(Age == "12" ~ 3L,
                             Age == "15" ~ 3L,

@@ -269,7 +269,9 @@ log_update(pp = ctr, N = nrow(out))
 
 data_source <- paste0(dir_n, "Data_sources/", ctr, "/cases&deaths_",today(), ".csv")
 
-download.file(cases_url, destfile = data_source)
+#download.file(cases_url, destfile = data_source)
+
+write.csv(NL, file = data_source)
 
 zipname <- paste0(dir_n, 
                   "Data_sources/", 

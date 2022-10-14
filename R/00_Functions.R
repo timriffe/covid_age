@@ -439,9 +439,8 @@ compile_inputDB <- function(rubric = NULL, hours = Inf) {
                  AgeInt = as.integer(AgeInt), 
                  Value = as.double(Value),
                  templateID = id,
-                 Date = ifelse(is.character(Date), 
-                                Date,
-                               ddmmyyyy(Date))) %>% 
+                 Date = as.Date(Date, format = "%d.%m.%Y"), 
+                 Date = ddmmyyyy(Date)) %>% 
           select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value, templateID)
       )
         
