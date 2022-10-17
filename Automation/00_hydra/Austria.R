@@ -157,7 +157,8 @@ vacc_archive_2022 <- readRDS(paste0(dir_n, ctr,".rds")) %>%
     TRUE ~ Region),
     Measure = case_when(
       Measure == "Vaccination5+" ~ "Vaccination5",
-      TRUE ~ Measure))
+      TRUE ~ Measure)) %>% 
+  distinct()
 
 
 vacc_today <- read.csv2("https://info.gesundheitsministerium.at/data/COVID19_vaccination_doses_agegroups_v202206.csv") 
@@ -226,6 +227,23 @@ vacc_recent <- vacc_today %>%
 
 vacc_out <- bind_rows(vacc3, vacc_archive_2022, vacc_recent)
 
+
+### combine case/death and vaccine data ####
+####################################################################################
+out <- 
+  bind_rows(db_age2,
+            vacc_out) %>% 
+  sort_input_data()
+
+# saving data in N drive
+########################
+write_rds(out, paste0(dir_n, ctr, ".rds"))
+
+# updating hydra dashboard
+log_update(pp = ctr, N = nrow(out))
+
+
+
 #Archive vaccine data (the historical raw and all processed)
 
 
@@ -254,20 +272,6 @@ zip::zipr(zipname,
 
 file.remove(data_source_zip)
 
-
-### combine case/death and vaccine data ####
-####################################################################################
-out <- 
-  bind_rows(db_age2,
-            vacc_out) %>% 
-  sort_input_data()
-
-# saving data in N drive
-########################
-write_rds(out, paste0(dir_n, ctr, ".rds"))
-
-# updating hydra dashboard
-log_update(pp = ctr, N = nrow(out))
 
 
 # END #

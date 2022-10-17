@@ -84,11 +84,13 @@ deaths_python <- files_csv %>%
 
 ## BIND HISTORICAL AND PYTHON_DATA INTO ONE DATAFRAME 
 
-epi_data <- bind_rows("Cases" = cases_python,
+epi_data_all <- bind_rows("Cases" = cases_python,
                      "Cases" = cases_history,
                      "Deaths" = deaths_history, 
                      "Deaths" = deaths_python, 
-                     .id = "Measure") %>% 
+                     .id = "Measure") 
+
+epi_data <- epi_data_all %>% 
   dplyr::mutate(
     Sex = case_when(Sex == "Femenino" ~ "f",
                     Sex == "Masculino" ~ "m",
@@ -96,10 +98,15 @@ epi_data <- bind_rows("Cases" = cases_python,
                     TRUE ~ "b"),
     Age = case_when(Age == "SIN DATO" ~ "UNK",
                     Age == "Total" ~ "TOT",
-                    TRUE ~ Age),
-    AgeInt = case_when(Age == "UNK" ~ NA_integer_,
-                       Age == "TOT" ~ NA_integer_,
-                       TRUE ~ 1L))
+                    Age %in% c("106", "107", "108", "109") ~ "105",
+                    TRUE ~ Age)) %>% 
+  #  Age = if_else(Age > 105, "105", Age)) %>% 
+  dplyr::group_by(Date, Age, Sex, Measure) %>% 
+  dplyr::summarise(Value = sum(Value)) %>% 
+  dplyr::ungroup() %>% 
+  dplyr::mutate(AgeInt = case_when(Age == "UNK" ~ NA_integer_,
+                                   Age == "TOT" ~ NA_integer_,
+                                   TRUE ~ 1L)) 
 
 
 ## FUNCTION TO PROCESS CASES AND DEATHS DATA ## 

@@ -162,7 +162,6 @@ BG_cases_out <-
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep="."),
-    Date = ddmmyyyy(Date),
     Code = paste0("BG"),
     Country = "Bulgaria",
     Region = "All",
@@ -213,7 +212,6 @@ mutate(Sex = case_when(Sex =="3" ~ "m",
           Date = paste(sprintf("%02d",day(Date)),    
                        sprintf("%02d",month(Date)),  
                        year(Date),sep="."),
-         Date = ddmmyyyy(Date),
           Code = paste0("BG"),
           Country = "Bulgaria",
           Region = "All")%>% 
@@ -238,7 +236,6 @@ BG_TOT_out <-
          Date = paste(sprintf("%02d",day(Date)),    
                       sprintf("%02d",month(Date)),  
                       year(Date),sep="."),
-         Date = ddmmyyyy(Date),
          Code = paste0("BG"),
          Metric = "Count"
          )

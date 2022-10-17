@@ -136,6 +136,7 @@ deaths_source <- paste0(dir_n, "Data_sources/", ctr, "/", ctr, "-deaths_",today(
 recent_file_2022 <- read_html("https://www.nrscotland.gov.uk/covid19stats/") %>% 
   html_nodes(".rteright+ td > a") %>% 
   html_attr('href') %>% 
+  .[2] %>% 
   stringr::str_replace("/files//statistics/covid19/", "")
 
 
@@ -174,15 +175,16 @@ deaths_cleaned <- deaths %>%
   dplyr::mutate(Sex = replace_na(Sex, "b")) %>% 
   dplyr::rename("Year" = `Registration year`,
                 "Week_number" = `Week number`,
-                "Date" = `Week beginning`,
+               # "Date" = `Week beginning`,
                 "TOT" = `All ages`) %>% 
-  dplyr::mutate(Date = as.numeric(Date),
-                Date = as.Date(Date, 
-                               origin = "1899-12-30",
-                               format = "%Y-%m-%d"),
-                Date = format(Date, "%d.%m.%Y"),
-                Date = dmy(Date)) %>% 
-  dplyr::select(-c("Year", "Week_number")) %>% 
+  dplyr::mutate(week = str_pad(Week_number,  2, "left", 0),
+                ISO_WEEK = paste0(Year, "-W", 
+                                  week, "-5"),
+                Date = ISOweek::ISOweek2date(ISO_WEEK)) %>% 
+  dplyr::select(-c("Year", "Week_number", "ISO_WEEK", `Week beginning`, "week")) %>% 
+  dplyr::group_by(Sex) %>% 
+  dplyr::arrange(Date) %>% 
+  dplyr::mutate(across(.cols = -c("Date"), ~ cumsum(.x))) %>% 
   tidyr::pivot_longer(cols = -c("Date", "Sex"),
                       names_to = "Age",
                       values_to = "Value") %>% 
@@ -192,11 +194,6 @@ deaths_cleaned <- deaths %>%
 ## CONVERT THE NEWLY WEEKLY TO CUMULATIVE WEEKLY
 
 deaths_out <- deaths_cleaned %>% 
-  dplyr::arrange(Date, Sex, Age) %>% 
-  dplyr::group_by(Sex, Age) %>% 
-  dplyr::summarise(Value = cumsum(Value),
-                   Date = Date) %>% 
-  dplyr::ungroup() %>% 
   dplyr::mutate(Age = recode(Age,
                              '<1' = "0",
                              '1-14' = "1",
@@ -302,8 +299,7 @@ sct <-
   select(Date, 
          Sex, 
          Age = AgeGroup, 
-         Cases = CumulativePositive, 
-         Deaths = CumulativeDeaths) %>%  
+         Value = CumulativePositive) %>%  
   mutate(
     Date = ymd(Date),
     Age = recode(Age,
@@ -328,12 +324,10 @@ sct <-
       Age == "45" ~ 20,
       Age == "65" ~ 10,
       Age == "75" ~ 10,
-      Age == "85" ~ 20)) %>% 
+      Age == "85" ~ 20),
+    Measure = "Cases") %>% 
   filter(Age != "60+") %>% 
   filter(Age != "0 to 59") %>% 
-  pivot_longer(Cases:Deaths,
-               names_to = "Measure",
-               values_to = "Value") %>% 
   filter(Date >= ymd("2020-03-09")) %>% 
   arrange(Date, Sex, Measure, Age) %>% 
   ungroup() %>%  
@@ -344,7 +338,9 @@ sct <-
                       sprintf("%02d",month(Date)),  
                       year(Date), 
                       sep = "."),
-         Code = paste0('GB-SCT')) # %>% 
+         Code = paste0('GB-SCT')) %>% 
+  ## MK: bind weekly deaths since the daily are not published/ updated
+  bind_rows(deaths_out) # %>% 
  # select(all_of(colnames(sc)))
 
 
@@ -364,21 +360,20 @@ TOT <-
   sctot %>% 
   mutate(Date = ymd(Date)) %>% 
   select(Date,
-         Cases = CumulativeCases,
-         Deaths = Deaths) %>% 
+         Value = CumulativeCases) %>% 
+  ## MK: no need for total deaths again, we have it in the weekly data 
+     #    Deaths = Deaths) %>% 
   mutate(Country = "Scotland",
          Region = "All",
          Sex = "b",
          Metric = "Count",
          AgeInt = NA_integer_,
          Age = "TOT") %>% 
-  pivot_longer(Cases:Deaths, 
-               names_to = "Measure", 
-               values_to = "Value") %>% 
   mutate(Date = paste(sprintf("%02d",day(Date)),    
                       sprintf("%02d",month(Date)),  
                       year(Date), 
                       sep = "."),
+         Measure = "Cases",
          Code = paste0("GB-SCT")) %>% 
   select(all_of(colnames(sc)))
 
