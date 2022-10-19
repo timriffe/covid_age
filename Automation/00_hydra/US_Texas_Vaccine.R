@@ -78,7 +78,7 @@ In_vaccine <- read_xlsx(data_source, sheet = 4)
 
 In_vaccine_age<- In_vaccine %>%
   select(Age = `Agegrp`, Date=`Vaccination Date`, Doses= `Doses Administered`)%>%
-  filter(!is.na(Date))
+  filter(!is.na(Date)) 
 
 #Date is transformed to time passed since 01.01.1900 when Excel file is read in
 # Reshape to date format 
@@ -149,7 +149,8 @@ Out_Vaccine_dose <- In_vaccine_dose %>%
   select(Race = `Race/Ethnicity` , Sex = Gender, Age = `Agegrp`,  
          Vaccinations= `Doses Administered`, 
          Vaccination1= `People Vaccinated with at least One Dose` , 
-         Vaccination2= `People Fully Vaccinated`)%>%
+         Vaccination2= `People Fully Vaccinated`,
+         Vaccination3 = `People with at least One Booster Doses`)%>%
   pivot_longer(!Age & !Sex & !Race, names_to= "Measure", values_to= "Value")%>%
    mutate(Age=recode(Age, 
                      `6mo-4yr`= "0",
@@ -198,7 +199,8 @@ Out_Vaccine_dose <- In_vaccine_dose %>%
 
 out <- bind_rows(Out_Vaccine_Age,
                  Out_Vaccine_dose,
-                 Append)
+                 Append) %>% 
+  sort_input_data()
 
 #save output data 
 write_rds(out, paste0(dir_n, ctr, ".rds"))

@@ -24,6 +24,9 @@ gs4_auth(email = Sys.getenv("email"))
 
 
 
+## Website source: https://hub.arcgis.com/datasets/998b24e2475b4d1999c8c9fd80513ea8/explore
+
+
 #input data 
 In= read.csv("https://opendata.arcgis.com/datasets/998b24e2475b4d1999c8c9fd80513ea8_0.csv",  fileEncoding="UTF-8-BOM")
 
@@ -121,7 +124,8 @@ arrange(Sex, Date,Measure) %>%
 #########put dataframes together#####
 
 out <- bind_rows(Out_age,
-                 Out_sex)
+                 Out_sex) %>% 
+  sort_input_data()
 
 #save output data
 

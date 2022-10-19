@@ -33,20 +33,28 @@ ss_db <- rubric %>%
 
 # reading data from Drive and last date entered 
 
-In_drive <-  read_sheet(ss = ss_i, sheet = "database")
+In_drive <-  read_sheet(ss = ss_i, sheet = "database") %>% 
+  sort_input_data()
 
 
 #read in new data 
+## NO update since 1st Dec 2021
+##IN_vaccine=read.csv("https://raw.githubusercontent.com/coolbaby0208/MN-COVID19/master/People%20Vaccinated%2C%20By%20Age_tcm1148-467653.csv")
 
-IN_vaccine=read.csv("https://raw.githubusercontent.com/coolbaby0208/MN-COVID19/master/People%20Vaccinated%2C%20By%20Age_tcm1148-467653.csv")
+## daily update 
+
+IN_vaccine <- read.csv("https://www.health.state.mn.us/diseases/coronavirus/stats/vaxdemopplage.csv")
 
 #process
 
 Out= IN_vaccine%>%
-  select(Age= Age.group, Date= reportedDate, Vaccination1= People.with.at.least.one.vaccine.dose,
+  select(Age= contains("Age.group"), 
+         Date= reportedDate, 
+         Vaccination1= People.with.at.least.one.vaccine.dose,
          Vaccination2= People.with.completed.vaccine.series) %>%
   pivot_longer(!Date & !Age, names_to= "Measure", values_to= "Value")%>%
   mutate(Age=recode(Age, 
+                    `0.5-4` = "0",
                     `5-11`="5",
                     `12-15`="12",
                     `16-17`="16",
@@ -55,6 +63,7 @@ Out= IN_vaccine%>%
                     `65+`="65",
                     `Unknown/missing`="UNK"))%>% 
   mutate(AgeInt = case_when(
+    Age == "0" ~ 5L,
     Age == "5" ~ 7L,
     Age == "12" ~ 4L,
     Age == "16" ~ 2L,

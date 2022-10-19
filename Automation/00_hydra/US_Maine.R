@@ -24,13 +24,16 @@ ss_db    <- rubric_i %>% dplyr::pull(Source)
 # read in current 
 ME_in <-  read_sheet(ss = ss_i, sheet = "database") %>% 
   #select(-Short) %>% 
-  mutate(Code = "US-ME")
+  mutate(Code = "US-ME") %>% 
+  distinct()
 
 date_max <-
   ME_in %>% 
   dplyr::pull(Date) %>% 
   dmy() %>% 
   max()
+
+## SOURCE WEBSITE <- https://www.maine.gov/dhhs/mecdc/infectious-disease/epi/airborne/coronavirus/data.shtml
 
 #JD 22.02.2021: Changed reporting. Sheets are now separate Excel files
 

@@ -101,13 +101,23 @@ dates_ined <- deaths_ined$Date %>% unique()
 
 # loading data from Drive
 # ~~~~~~~~~~~~~~~~~~~~~~~
-db_drive <- get_country_inputDB("UA") %>% 
-  mutate(Code = "UA")
+
+
+at_rubric <- get_input_rubric() %>% 
+  dplyr::filter(Short == "UA")
+ss_i   <- at_rubric %>% dplyr::pull(Sheet)
+ss_db  <- at_rubric %>% dplyr::pull(Source)
+
+
+db_drive <- read_sheet(ss = ss_i, sheet = "database") %>% 
+  mutate(Age = as.character(Age))
+
 
 deaths_drive <- 
   db_drive %>% 
   filter(Measure == "Deaths",
-    !Date %in% dates_ined)# %>% 
+    !Date %in% dates_ined) %>% 
+  mutate(Age = as.character(Age)) # %>% 
   #select(-Short)
 
 # all data together

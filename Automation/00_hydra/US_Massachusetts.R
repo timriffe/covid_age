@@ -307,7 +307,9 @@ v_age2 <-
   select(
     Age = `Age Group`
     , Vaccination1 = `Individuals with at least one dose`
-    , Vaccination2 = `Fully vaccinated individuals`
+    , Vaccination2 = `Fully vaccinated individuals`,
+    Vaccination3 = `Individuals with first booster doses`,
+    Vaccination4 = `Individuals with second booster doses`
     ) %>% 
   # The data is given at the town level, so aggregate to State
   pivot_longer(-Age, names_to = "Measure", values_to = "Value") %>% 
@@ -316,14 +318,19 @@ v_age2 <-
   summarise(Value = sum(as.numeric(Value), na.rm = T)) %>% 
   ungroup() %>% 
   mutate(
-    Sex = "b"
-    , date_f = ymd(v_date)
-    , Age = gsub(" Years", "", Age)
-    , Age_low = as.numeric(gsub("-","",  str_extract(Age, "^[0-9]+\\-")))
-    , Age_high = as.numeric(str_extract(Age, "[0-9]{2}$"))
-    , Age = ifelse(grepl("\\+", Age), str_extract(Age, "^[0-9]{2}"), Age_low)
-    , AgeInt = ifelse(!is.na(Age_high), Age_high-Age_low+1, 105-as.numeric(Age))
-    ) %>% 
+    Sex = "b",
+    date_f = ymd(v_date),
+    Age = gsub(" Years", "", Age)) %>% 
+  tidyr::separate(Age, into = c("Age", "trash"), sep = "[+-]") %>% 
+  mutate(AgeInt = case_when(Age == "0" ~ 5L,
+                            Age == "5" ~ 7L,
+                            Age == "12" ~ 4L,
+                            Age == "16" ~ 4L,
+                            Age == "20" ~ 10L,
+                            Age == "30" ~ 20L,
+                            Age == "50" ~ 15L,
+                            Age == "65" ~ 10L,
+                            Age == "75" ~ 30L)) %>% 
   arrange(Measure, Age) %>% 
   select(date_f, Sex, Age, AgeInt, Measure, Value) 
 
@@ -340,7 +347,9 @@ v_sex2 <-
   select(
     Sex
     , Vaccination1 = `Individuals with at least one dose`
-    , Vaccination2 = `Fully vaccinated individuals`
+    , Vaccination2 = `Fully vaccinated individuals`,
+    Vaccination3 = `Individuals with first booster doses`,
+    Vaccination4 = `Individuals with second booster doses`
   ) %>% 
   # The data is given at the town level, so aggregate to State
   pivot_longer(-Sex, names_to = "Measure", values_to = "Value") %>% 
@@ -366,7 +375,7 @@ out_vac <-
   mutate(
     Country = "USA",
     Region = "Massachusetts",
-    Date = paste(sprintf("%02d", day(date_f)),  sprintf("%02d", month(date_f)), year(date_f), sep = "."),
+    Date = ddmmyyyy(date_f),
     Code = "US-MA",
     Metric = "Count",
   ) %>% 

@@ -172,7 +172,8 @@ IN_vaccine_age<- read_excel(data_source_3, sheet = 4)
 
 
 Out_vaccine_age = IN_vaccine_age%>%
-  select(Age= age_group, fully_vaccinated, single_dose_administered,
+  select(Age= age_group, fully_vaccinated, 
+         single_dose_administered,
          booster_dose_administered,
         # first_dose_administered, 
          Date= current_as_of)%>%
@@ -235,7 +236,7 @@ select(Sex= gender, fully_vaccinated, single_dose_administered,
   separate(Date, c("Date", "Time"), " ")%>%
   mutate(Measure=recode(Measure, 
                         `fully_vaccinated`="Vaccination2",
-                        `first_dose_administered`="Vaccination1",
+                        `single_dose_administered`="Vaccination1",
                         `booster_dose_administered` = "Vaccination3"),
          Sex= recode(Sex, 
                      `Female`="f",
