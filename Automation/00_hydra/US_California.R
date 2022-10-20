@@ -87,7 +87,7 @@ CAage <-
          AgeInt = case_when(Age == "0" ~ 18L,
                             Age == "18" ~ 32L,
                             Age == "50" ~ 15L,
-                            Age == "65" ~ 30L,
+                            Age == "65" ~ 40L,
                             Age == "UNK" ~ NA_integer_,
                             Age == "TOT" ~ NA_integer_)) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
@@ -153,8 +153,8 @@ vaccine=CAvaccine_in %>%
                             Age == "12" ~ 6L,
                             Age == "18" ~ 32L,
                             Age == "50" ~ 15L,
-                            Age == "UNK" ~ NA_integer_,
-                            Age == "65+" ~ 30L),
+                            Age == "65" ~ 40L,
+                            Age == "UNK" ~ NA_integer_),
          Sex = "b",
          Country = "USA",
          Region = "California",

@@ -266,7 +266,8 @@ out <- bind_rows(Out_cases,
                 Out_vaccine_age,
                 Out_vaccine_sex,
                 vaccine_archive)%>%
-  distinct()
+  distinct() %>% 
+  sort_input_data()
 
 
 # save on N 
