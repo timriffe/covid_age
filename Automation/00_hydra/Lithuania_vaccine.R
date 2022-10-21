@@ -47,7 +47,7 @@ In= data.table::fread("https://opendata.arcgis.com/api/v3/datasets/ffb0a5bfa5884
 ## MSK 26.08.2020
 ## I am adapting the code so that 105 is the oldest age group
 
-out <- In %>%
+processed_data <- In %>%
   #remove missing age information if any 
   filter(!is.na(birth_year_noisy)) %>% 
   select(Date = vaccination_date,
@@ -81,23 +81,25 @@ out <- In %>%
   summarize(Value = n()) %>% 
   ungroup() %>% 
   tidyr::complete(Date, nesting(Sex, Age, Measure), fill=list(Value=0)) %>% 
-  arrange(Date,Sex, Age, Measure) %>% 
+  arrange(Date, Sex, Age, Measure) %>% 
   group_by(Sex, Age, Measure) %>% 
   mutate(Value = cumsum(Value)) %>% 
-  ungroup() %>% 
+  ungroup() 
+
+
+out <- processed_data %>% 
   mutate(
     Metric = "Count", 
     AgeInt = 1L)%>% 
   mutate(
     Date = ymd(Date),
-    Date = paste(sprintf("%02d",day(Date)),    
-                 sprintf("%02d",month(Date)),  
-                 year(Date),sep="."),
+    Date = ddmmyyyy(Date),
     Code = paste0("LT"),
     Country = "Lithuania",
-    Region = "All",)%>% 
+    Region = "All") %>% 
   select(Country, Region, Code, Date, Sex, 
-         Age, AgeInt, Metric, Measure, Value)
+         Age, AgeInt, Metric, Measure, Value) %>% 
+  sort_input_data()
 
 
 

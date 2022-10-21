@@ -166,9 +166,9 @@ Out <- bind_rows(DataArchive,
 #   sort_input_data()
 #save output 
 
-write_rds(Out, paste0(dir_n, ctr, ".rds"))
+#write_rds(Out, paste0(dir_n, ctr, ".rds"))
 
-log_update("US_Pennsylvania_Vaccine", N = nrow(Out))
+#log_update("US_Pennsylvania_Vaccine", N = nrow(Out))
 
 
 # ------------------------------------------

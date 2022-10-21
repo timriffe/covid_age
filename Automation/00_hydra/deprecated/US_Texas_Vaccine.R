@@ -203,8 +203,8 @@ out <- bind_rows(Out_Vaccine_Age,
   sort_input_data()
 
 #save output data 
-write_rds(out, paste0(dir_n, ctr, ".rds"))
-log_update(pp = ctr, N = nrow(out))
+#write_rds(out, paste0(dir_n, ctr, ".rds"))
+#log_update(pp = ctr, N = nrow(out))
 
 #zip input data
 zipname <- paste0(dir_n, 

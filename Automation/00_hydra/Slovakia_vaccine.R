@@ -85,11 +85,9 @@ Out= In %>%
     Metric = "Count") %>% 
   mutate(
     Date = ymd(Date),
-    Date = paste(sprintf("%02d",day(Date)),    
-                 sprintf("%02d",month(Date)),  
-                 year(Date),sep="."),
+    Date = ddmmyyyy(Date),
     Code = paste0("SK-",Short),
-    Country = "Slovakia")%>% 
+    Country = "Slovakia") %>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value) %>% 
   sort_input_data()
@@ -100,6 +98,7 @@ small_ages <- Out %>%
   mutate(Age = "0",
          AgeInt = 5L,
          Value = "0")
+
 Out <- rbind(Out, small_ages) %>% 
   sort_input_data()
 

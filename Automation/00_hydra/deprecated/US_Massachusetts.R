@@ -431,6 +431,6 @@ out <- bind_rows(out, vac_data)
 #### uploading database to Google Drive 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-write_rds(out, "N:/COVerAGE-DB/Automation/Hydra/US_Massachusetts.rds")
+#write_rds(out, "N:/COVerAGE-DB/Automation/Hydra/US_Massachusetts.rds")
 
-log_update(pp = "US_Massachusetts", N = nrow(out))
+#log_update(pp = "US_Massachusetts", N = nrow(out))

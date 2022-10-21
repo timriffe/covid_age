@@ -100,7 +100,7 @@ write_sheet(Out1,
             sheet = "database") 
   
 
-log_update("US_Minnesota_vaccine", N = nrow(Out))
+#log_update("US_Minnesota_vaccine", N = nrow(Out))
 
 # now archive
 

@@ -136,7 +136,7 @@ deaths_source <- paste0(dir_n, "Data_sources/", ctr, "/", ctr, "-deaths_",today(
 recent_file_2022 <- read_html("https://www.nrscotland.gov.uk/covid19stats/") %>% 
   html_nodes(".rteright+ td > a") %>% 
   html_attr('href') %>% 
-  .[2] %>% 
+ # .[2] %>% 
   stringr::str_replace("/files//statistics/covid19/", "")
 
 
@@ -214,10 +214,7 @@ deaths_out <- deaths_cleaned %>%
                 Region = "All",
                 Code = "GB-SCT",
                 Metric = "Count",
-                Date = paste(sprintf("%02d",day(Date)), 
-                             sprintf("%02d",month(Date)),
-                             year(Date), 
-                             sep = "."),
+                Date = ddmmyyyy(Date),
                 Measure = "Deaths") %>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value) %>% 
@@ -334,10 +331,7 @@ sct <-
   mutate(Country = "Scotland",
          Region = "All",
          Metric = "Count",
-         Date = paste(sprintf("%02d",day(Date)),    
-                      sprintf("%02d",month(Date)),  
-                      year(Date), 
-                      sep = "."),
+         Date = ddmmyyyy(Date),
          Code = paste0('GB-SCT')) %>% 
   ## MK: bind weekly deaths since the daily are not published/ updated
   bind_rows(deaths_out) # %>% 
@@ -369,10 +363,7 @@ TOT <-
          Metric = "Count",
          AgeInt = NA_integer_,
          Age = "TOT") %>% 
-  mutate(Date = paste(sprintf("%02d",day(Date)),    
-                      sprintf("%02d",month(Date)),  
-                      year(Date), 
-                      sep = "."),
+  mutate(Date = ddmmyyyy(Date),
          Measure = "Cases",
          Code = paste0("GB-SCT")) %>% 
   select(all_of(colnames(sc)))

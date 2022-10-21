@@ -192,7 +192,7 @@ CAout <- CAout %>%
 write_rds(CAout, paste0(dir_n, ctr, ".rds"))
 
 N <- nrow(CAage) + nrow(CAsex)
-log_update(pp = ctr, N = N)
+#log_update(pp = ctr, N = N)
 
 # store
 

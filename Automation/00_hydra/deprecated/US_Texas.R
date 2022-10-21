@@ -225,7 +225,7 @@ out2 <- out %>%
   filter(Measure != "Cases")
 write_rds(out2, paste0(dir_n,"deprecated/", ctr, ".rds"))
 
-  log_update(pp = ctr, N = nrow(out2))
+ # log_update(pp = ctr, N = nrow(out2))
   ############################################
   #### uploading metadata to Google Drive ####
   ############################################

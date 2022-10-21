@@ -271,9 +271,9 @@ out <- bind_rows(Out_cases,
 
 
 # save on N 
-write_rds(out, paste0(dir_n, ctr, ".rds"))
-
-log_update("US_Indiana", N = nrow(out))
+# write_rds(out, paste0(dir_n, ctr, ".rds"))
+# 
+# log_update("US_Indiana", N = nrow(out))
 
 
 # ------------------------------------------

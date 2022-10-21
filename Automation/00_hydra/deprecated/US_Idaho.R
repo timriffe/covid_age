@@ -514,7 +514,7 @@ zip::zipr(zipname,
 file.remove(data_source)
 
 # updating hydra dashboard
-log_update(pp = ctr, N = nrow(Out))
+#log_update(pp = ctr, N = nrow(Out))
 
 
 

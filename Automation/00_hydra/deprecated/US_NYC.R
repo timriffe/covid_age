@@ -149,7 +149,7 @@ if (date_f > last_date_drive){
   sheet_append(out,
               ss = ss_i,
               sheet = "database")
-  log_update(pp = ctr, N = nrow(out))
+  #log_update(pp = ctr, N = nrow(out))
   
   ############################################
   #### uploading metadata to N Drive ####

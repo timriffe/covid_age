@@ -107,7 +107,7 @@ if (date_new > date_max){
   # send to Drive
   sheet_append(MEout, ss = ss_i, sheet = "database")
   
-  log_update("US_Maine", N = nrow(MEout))
+  #log_update("US_Maine", N = nrow(MEout))
   
   # archive on N
   data_source_1 <- paste0(dir_n, "Data_sources/", ctr, "/age_",today(), ".csv")
