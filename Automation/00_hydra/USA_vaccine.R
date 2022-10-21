@@ -43,27 +43,38 @@ last_date_archive <- DataArchive %>%
 
 vacc <- data.table::fread("https://data.cdc.gov/api/views/km4m-vcsb/rows.csv?accessType=DOWNLOAD")
 
-vacc_out_1 <- vacc %>% 
+
+cat_to_select <- c("Age_unknown", 
+                   "Age_known", 
+                   "Ages_<2yrs", "Ages_2-4_yrs",
+                  # "Ages_<5yrs", # probably total?
+                   "Ages_5-11_yrs", 
+                  # "Ages_<12yrs", # probably total?
+                   "Ages_12-15_yrs",
+                  # "Ages_12-17_yrs", # may be duplicate?
+                   "Ages_16-17_yrs", "Ages_18-24_yrs", 
+                   "Ages_25-39_yrs", 
+                  # "Ages_25-49_yrs", # may be duplicate?
+                   "Ages_40-49_yrs", "Ages_50-64_yrs",
+                   "Ages_65-74_yrs", 
+                  # "Ages_65+_yrs", # may be duplicate?
+                   "Ages_75+_yrs", 
+                   "Sex_Female", "Sex_Male", 
+                   "Sex_unknown")
+
+
+vacc_out <- vacc %>% 
   select(Date, Demographic_category, 
-         Administered_Dose1, Series_Complete_Yes,
-         Booster_Doses_Yes) %>% 
-  filter(Demographic_category != "Age_known") %>% 
-  filter(Demographic_category != "Race_eth_Hispanic") %>% 
-  filter(Demographic_category != "Race_eth_known") %>% 
-  filter(Demographic_category != "Race_eth_NHAIAN") %>% 
-  filter(Demographic_category != "Race_eth_NHAsian") %>% 
-  filter(Demographic_category != "Race_eth_NHBlack") %>% 
-  filter(Demographic_category != "Race_eth_NHMult_Oth") %>% 
-  filter(Demographic_category != "Race_eth_NHNHOPI") %>% 
-  filter(Demographic_category != "Race_eth_NHWhite") %>% 
-  filter(Demographic_category != "Race_eth_unknown") %>% 
-  filter(Demographic_category != "Sex_known") %>% 
-  filter(Demographic_category != "US") %>% 
-  filter(Demographic_category != "Ages_<12yrs") %>% 
-  filter(Demographic_category != "Ages_12-17_yrs") %>% 
-    mutate(Age = case_when(
+         Administered_Dose1, 
+         Series_Complete_Yes,
+         Booster_Doses_Yes,
+         Second_Booster) %>% 
+  filter(Demographic_category %in% cat_to_select) %>% 
+  mutate(Age = case_when(
     Demographic_category == "Age_unknown" ~ "UNK",
-    Demographic_category == "Ages_<5yrs" ~ "0",
+    Demographic_category == "Age_known" ~ "TOT",
+    Demographic_category == "Ages_<2yrs" ~ "0",
+    Demographic_category == "Ages_2-4_yrs" ~ "2",
     Demographic_category == "Ages_5-11_yrs" ~ "5",
     Demographic_category == "Ages_12-15_yrs" ~ "12",
     Demographic_category == "Ages_16-17_yrs" ~ "16",
@@ -77,34 +88,96 @@ vacc_out_1 <- vacc %>%
     Demographic_category == "Sex_Male" ~ "TOT",
     Demographic_category == "Sex_unknown" ~ "TOT"),
     Sex = case_when(
-      Demographic_category == "Age_unknown" ~ "b",
-      Demographic_category == "Ages_<5yrs" ~ "b",
-      Demographic_category == "Ages_12-15_yrs" ~ "b",
-      Demographic_category == "Ages_12-17_yrs" ~ "b",
-      Demographic_category == "Ages_16-17_yrs" ~ "b",
-      Demographic_category == "Ages_18-24_yrs" ~ "b",
-      Demographic_category == "Ages_25-39_yrs" ~ "b",
-      Demographic_category == "Ages_40-49_yrs" ~ "b",
-      Demographic_category == "Ages_5-11_yrs" ~ "b",
-      Demographic_category == "Ages_50-64_yrs" ~ "b",
-      Demographic_category == "Ages_65-74_yrs" ~ "b",
-      Demographic_category == "Ages_75+_yrs" ~ "b",
       Demographic_category == "Sex_Female" ~ "f",
       Demographic_category == "Sex_Male" ~ "m",
-      Demographic_category == "Sex_unknown" ~ "UNK"),
+      Demographic_category == "Sex_unknown" ~ "UNK",
+      TRUE ~ "b"),
     AgeInt = case_when(
-      Demographic_category == "Ages_<5yrs" ~ 5L,
-      Demographic_category == "Ages_12-15_yrs" ~ 4L,
-      Demographic_category == "Ages_16-17_yrs" ~ 2L,
-      Demographic_category == "Ages_18-24_yrs" ~ 7L,
-      Demographic_category == "Ages_25-39_yrs" ~ 15L,
-      Demographic_category == "Ages_40-49_yrs" ~ 10L,
-      Demographic_category == "Ages_5-11_yrs" ~ 7L,
-      Demographic_category == "Ages_50-64_yrs" ~ 15L,
-      Demographic_category == "Ages_65-74_yrs" ~ 10L,
-      Demographic_category == "Ages_75+_yrs" ~ 30L
+      Age == "0" ~ 2L,
+      Age == "2" ~ 3L,
+      Age == "5" ~ 7L,
+      Age == "12" ~ 4L,
+      Age == "16" ~ 2L,
+      Age == "18" ~ 7L,
+      Age == "25" ~ 15L,
+      Age == "40" ~ 10L,
+      Age == "50" ~ 15L,
+      Age == "65" ~ 10L,
+      Age == "75" ~ 30L,
+      TRUE ~ NA_integer_
     )) %>% 
-  select(-2)
+  select(-Demographic_category) %>% 
+  pivot_longer(cols = -c("Date", "Age", "Sex", "AgeInt"),
+               names_to = "Measure",
+               values_to = "Value") %>% 
+  mutate(Measure = case_when(
+    Measure == "Administered_Dose1" ~ "Vaccination1",
+    Measure == "Series_Complete_Yes" ~ "Vaccination2",
+    Measure == "Booster_Doses_Yes" ~ "Vaccination3",
+    Measure == "Second_Booster" ~ "Vaccination4"
+      ),
+    Metric = "Count",
+    Country = "USA",
+    Region = "All",
+    Code = paste0("US"),
+    Date = mdy(Date),
+    Date = ddmmyyyy(Date)) %>% 
+  sort_input_data()
+
+
+
+#save output file on N 
+
+write_rds(vacc_out, paste0(dir_n, ctr, ".rds"))
+
+log_update(pp = ctr, N = nrow(vacc_out))
+
+# now archive new data 
+
+data_source <- paste0(dir_n, "Data_sources/", ctr, "/vaccine_age_",today(), ".csv")
+
+write_csv(vacc, data_source)
+
+
+
+zipname <- paste0(dir_n, 
+                  "Data_sources/", 
+                  ctr,
+                  "/", 
+                  ctr,
+                  "vaccine_data_",
+                  today(), 
+                  ".zip")
+
+zip::zipr(zipname, 
+          data_source, 
+          recurse = TRUE, 
+          compression_level = 9,
+          include_directories = TRUE)
+
+file.remove(data_source)
+
+#END# 
+
+## Historical Code ==========================
+
+#read in age data fully vaccinated 
+
+# filter(Demographic_category != "Age_known") %>% 
+#   filter(Demographic_category != "Race_eth_Hispanic") %>% 
+#   filter(Demographic_category != "Race_eth_known") %>% 
+#   filter(Demographic_category != "Race_eth_NHAIAN") %>% 
+#   filter(Demographic_category != "Race_eth_NHAsian") %>% 
+#   filter(Demographic_category != "Race_eth_NHBlack") %>% 
+#   filter(Demographic_category != "Race_eth_NHMult_Oth") %>% 
+#   filter(Demographic_category != "Race_eth_NHNHOPI") %>% 
+#   filter(Demographic_category != "Race_eth_NHWhite") %>% 
+#   filter(Demographic_category != "Race_eth_unknown") %>% 
+#   filter(Demographic_category != "Sex_known") %>% 
+#   filter(Demographic_category != "US") %>% 
+#   filter(Demographic_category != "Ages_<12yrs") %>% 
+#   filter(Demographic_category != "Ages_12-17_yrs") %>% 
+
 
 #vacc_out <-vacc_out[-2]
 
@@ -114,27 +187,6 @@ vacc_out_1 <- vacc %>%
 # names(vacc_out)[6] <- "Value"
 
 
-vacc_out <- vacc_out_1 %>% 
-  pivot_longer(cols = -c("Date", "Age", "Sex", "AgeInt"),
-               names_to = "Measure",
-               values_to = "Value") %>% 
-  mutate(Measure = case_when(
-    Measure == "Administered_Dose1" ~ "Vaccination1",
-    Measure == "Series_Complete_Yes" ~ "Vaccination2",
-    Measure == "Booster_Doses_Yes" ~ "Vaccination3"
-      ),
-    Metric = "Count",
-    Country = "USA",
-    Region = "All")
-
-vacc_out2 <- vacc_out %>% 
-  mutate(Date = mdy(Date),
-         Date = paste(sprintf("%02d",day(Date)),    
-                      sprintf("%02d",month(Date)),  
-                      year(Date),sep="."),
-         Code = paste0("US"))%>% 
-  sort_input_data()
-#read in age data fully vaccinated 
 
 #find most recent file 
 
@@ -414,36 +466,7 @@ vacc_out2 <- vacc_out %>%
 # #append when there is new data 
 # Out= rbind(DataArchive, new_data)
 
-#save output file on N 
 
-write_rds(vacc_out2, paste0(dir_n, ctr, ".rds"))
-
-log_update(pp = ctr, N = nrow(vacc_out2))
-
-# now archive new data 
-
-data_source <- paste0(dir_n, "Data_sources/", ctr, "/vaccine_age_",today(), ".csv")
-
-write_csv(vacc_out2, data_source)
-
-
-
-zipname <- paste0(dir_n, 
-                  "Data_sources/", 
-                  ctr,
-                  "/", 
-                  ctr,
-                  "vaccine_data_",
-                  today(), 
-                  ".zip")
-
-zip::zipr(zipname, 
-          data_source, 
-          recurse = TRUE, 
-          compression_level = 9,
-          include_directories = TRUE)
-
-file.remove(data_source)
 
 # } else if (date_f == last_date_archive) {
 #   log_update(pp = ctr, N = 0)

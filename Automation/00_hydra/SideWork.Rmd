@@ -52,6 +52,27 @@ gs4_auth(email = Sys.getenv("email"))
 
 
 
+# Vietnam- 
+
+minor issue:
+
+NA character (seems) in Age-
+
+```{r}
+
+out <- Vietnam %>% 
+  mutate(Age = as.integer(Age),
+         Age = case_when(is.na(Age) ~ "UNK",
+                         TRUE ~ as.character(Age)),
+         AgeInt = case_when(Age == "UNK" ~ NA_integer_,
+                            TRUE ~ AgeInt)) 
+
+write_rds(out, paste0(dir_n, ctr, ".rds"))
+
+
+```
+
+
 # South Korea
 
 ```{r}
@@ -528,7 +549,7 @@ if (!"email" %in% ls()){
 ctr          <- "Spain_vaccine" # it's a placeholder
 dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
-files_source <- paste0(dir_n, "Data_sources/", ctr, "/Data-till-2022-08-25/")
+files_source <- paste0(dir_n, "Data_sources/", ctr, "/Data-till-2022August25/")
 
 trial_path <- paste0("U:/", ctr, "/")
 
@@ -570,7 +591,7 @@ df_paths_sheets <- function(tbl, number_sheet){
 total_final_edit <- function(tbl){
   tbl %>% 
   pivot_longer(-c("Region", "Date"), names_to= "Measure", values_to= "Value") %>% 
-  dplyr::filter(!Region %in% c("Fuerzas Armadas","Sanidad Exterior" )) %>% # delete armed forces from region  
+  dplyr::filter(!Region %in% c("Fuerzas Armadas","Sanidad Exterior" )) %>% # delete armed forces from region
   mutate(Short = recode(Region,
                         "Andalucía" = "AN",
                         "Aragón" = "AR",
@@ -608,13 +629,13 @@ total_final_edit <- function(tbl){
 }
 
 
-## The structure of the sheet is frequently changing over time, so the following code is to read the files where the cut of date based on changing structure of the data 
+## The structure of the sheet is frequently changing over time, so the following code is to read the files where the cut-off date based on changing structure of the data 
 
 ## TOTALS: SHEET 1 ##
 
 out_totals1_1 <- files_df %>% 
   mutate(date = ymd(str_extract(file_path, "\\d+-\\d+-\\d+"))) %>% 
-  filter(date > "2021-02-01", date < "2021-02-09") %>%
+  filter(date > "2021-02-01", date < "2021-02-09") %>% 
   df_paths_sheets(total_2021)
 
 
@@ -771,19 +792,21 @@ out_total <- bind_rows(processed_totals1_1,
                        processed_totals2_2,
                        processed_totals2_3,
                        processed_totals2_4,
-                       processed_totals2_5) 
-
-
-
-dates_tomerge <- out_total %>% 
-  distinct(id, Date)
+                       processed_totals2_5)
 
 
 total_final <- out_total %>% 
+  distinct(Date, Region, Vaccination1, Vaccination2, Vaccination3, .keep_all = TRUE) 
+
+
+dates_tomerge <- total_final %>% 
+  distinct(Date, id) 
+
+
+out_total_date <- total_final %>% 
   select(-id) %>% 
   total_final_edit() %>% 
   filter(!is.na(Value))
-
 
 ## PROCESSING THE DATA as per the usual code =========================
 
@@ -1016,7 +1039,7 @@ out_VAX2_2 <- files_df %>%
 
 
 
-out_VAX2_2 %>% check_consistency()
+#out_VAX2_2 %>% check_consistency()
 
 processed_vax2_2 <- out_VAX2_2 %>% 
   select(Region = A,
@@ -1059,7 +1082,7 @@ out_VAX2_3 <- files_df %>%
 
 
 
-out_VAX2_3 %>% check_consistency()
+#out_VAX2_3 %>% check_consistency()
 
 processed_vax2_3 <- out_VAX2_3 %>% 
   select(Region = A,
@@ -1106,7 +1129,7 @@ out_VAX3_1 <- files_df %>%
 
 
 
-out_VAX3_1 %>% check_consistency()
+#out_VAX3_1 %>% check_consistency()
 
 
 processed_vax3_1 <- out_VAX3_1 %>% 
@@ -1138,7 +1161,7 @@ out_VAX3_2 <- files_df %>%
 
 
 
-out_VAX3_2 %>% check_consistency()
+#out_VAX3_2 %>% check_consistency()
 
 
 processed_vax3_2 <- out_VAX3_2 %>% 
@@ -1175,7 +1198,7 @@ out_VAX3_3 <- files_df %>%
 
 
 
-out_VAX3_3 %>% check_consistency()
+#out_VAX3_3 %>% check_consistency()
 
 
 processed_vax3_3 <- out_VAX3_3 %>% 
@@ -1210,7 +1233,7 @@ out_VAX3_4 <- files_df %>%
 
 
 
-out_VAX3_4 %>% check_consistency()
+#out_VAX3_4 %>% check_consistency()
 
 
 processed_vax3_4 <- out_VAX3_4 %>% 
@@ -1315,7 +1338,7 @@ out_VAXPed <- bind_rows(out_VAXPed1, out_VAXPed2, out_VAXPed3) %>%
 
 ## endlish, merging all files ! 
 
-out <- bind_rows(total_final,
+out <- bind_rows(out_total_date,
                  processed_vax1_1,
                  processed_vax1_2,
                  processed_vax1_3,
@@ -1326,14 +1349,47 @@ out <- bind_rows(total_final,
                  processed_vax3_2,
                  processed_vax3_3,
                  processed_vax3_4,
-                 out_VAXPed) %>% 
+                 out_VAXPed) %>%
   sort_input_data()
 
 
-write_rds(out, paste0(dir_n, ctr, ".rds"))
+
+## reviewing the data quality 
+## should be 20 rows per Region (20 regions), Age (9-10 Age groups), Measure
+
+out %>% group_by(Date, Age, Measure) %>% 
+  count() %>% 
+ # distinct() %>% 
+  filter(n > 20) %>% 
+  View()
+
+write_rds(out, paste0(files_source, ctr, "Data17Aug2022.rds"))
+
+edited_data <- read_rds(paste0(files_source, ctr, "Data17Aug2022.rds"))
 
 
+dataafter17Aug <- read_rds(paste0(dir_n, ctr, ".rds")) %>% 
+  mutate(AgeInt = as.integer(AgeInt),
+         Value = as.numeric(Value),
+         Date = dmy(Date)) %>% 
+  filter(Date > "2022-08-17")
 
+
+dedplicates_errorsremoved <- dataafter17Aug %>% 
+  group_by(Date, Region, Age, Measure) %>% 
+  mutate(Value = max(Value)) %>% 
+  distinct() %>% 
+  mutate(Date = ddmmyyyy(Date),
+         Value = as.character(Value))
+
+
+final_out <- bind_rows(edited_data, dedplicates_errorsremoved) %>% 
+  mutate(Region = case_when(Region == "Totales" ~ "All",
+                            TRUE ~ Region),
+         Code = case_when(Code == "ES-All" ~ "ES",
+                          TRUE ~ Code))
+
+write_rds(final_out, paste0(dir_n, ctr, ".rds"))
 
 ```
 
@@ -2158,5 +2214,49 @@ vax_sex_data %>%
   anti_join(to_retrieve_vax, by = c("Date" = "date"))
 
 
+```
+
+
+
+# Romania
+
+##├ 11.10.2022
+
+downlaoding html pages links for deaths data 
+
+```{r}
+# load packages 
+library(tidyverse)
+library(rvest)
+
+
+url_main <- "https://covid19.stirioficiale.ro/informatii"
+
+
+data.frame(links = read_html(url_text) %>% 
+             html_nodes("a ") %>% 
+             html_attr('href')) 
+
+## extract links in multiple pages 
+
+url_loop <- "https://covid19.stirioficiale.ro/informatii?page="
+
+pages <- seq(1:179)
+
+all_links <- data.frame()
+
+for (i in pages) {
+  df_links <- data.frame(links = read_html(paste0(url_loop, i)) %>% 
+               html_nodes("a ") %>% 
+               html_attr('href'))
+  all_links <- rbind(all_links, df_links)
+}
+
+
+covid_links <- all_links %>% 
+  filter(str_detect(links, "buletin-de-presa")) %>% 
+  distinct()
+
+covid_links %>% write.csv("links.csv")
 ```
 

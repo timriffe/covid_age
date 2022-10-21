@@ -1,22 +1,4 @@
-# CDC state data: Arizona	AZ
-#Arkansas	AR
-#Delaware	DE
-#Guam 	GU
-#Idaho	ID
-#Kansas	KS
-#Maine	ME
-#Massachusetts	MA
-#Minnesota	MN
-#Montana	MT
-#Nevada	NV
-#New Jersey	NJ
-#North Carolina	NC
-#Oklahoma	OK
-#Oregon	OR
-#Pennsylvania	PA
-#South Carolina	SC
-#Tennessee	TN
-#Virginia	VA
+# CDC state data: 
 
 source(here::here("Automation/00_Functions_automation.R"))
 
@@ -58,22 +40,22 @@ read_par <- function(file_name){
                col_select = c("cdc_case_earliest_dt", "sex", "age_group", "res_state"))
 }
 
-## After reading, validate the number of rows as per mentione din GitHub repo
+## After reading, validate the number of rows as per mentioneD in GitHub repo
   
 raw_data <- files_list %>% 
   map_dfr(read_par)
 
-
-
-# Add datasets vertically
-
-#rm(data1,data2,data3, data4);gc()
+## REVIEW THE DATA BEFORE PROCESSING 
 glimpse(raw_data)
-states <- c("AZ","AR", "DE","GU","ID","KS","ME","MA","MN","MT","NV","NJ","NC","OK","OR","PA","SC","TN","VA", "IL")
+raw_data %>% count(res_state)
+raw_data %>% count(age_group)
+raw_data %>% count(sex)
 
-Out1 <-
+
+## PROCESSING 
+
+processed_data <-
   raw_data %>%
-  filter(res_state %in% states) %>%
   select(Date = cdc_case_earliest_dt, 
          Sex = sex, 
          Age = age_group, 
@@ -109,9 +91,18 @@ Out1 <-
                   `Missing`="UNK",
                   `NA`="UNK")) %>% 
   group_by(Date, Age, Sex, State) %>% 
-  summarise(Value = sum(Value))
+  summarise(Value = sum(Value)) %>% 
+  ungroup()
 
-Out <- Out1 %>% 
+
+## REVIEW THE DATA AFTER PROCESSING 
+
+processed_data %>% count(State) %>% View()
+processed_data %>% count(Age) %>% View()
+processed_data %>% count(Sex) %>% View()
+
+
+Out <- processed_data %>% 
   mutate(AgeInt = case_when(
          Age == "80" ~ 25L,
          Age == "UNK" ~ NA_integer_,
@@ -120,92 +111,71 @@ Out <- Out1 %>%
     Metric = "Count",
     Country = "USA",
     Date = ymd(Date),
-    Date = paste(sprintf("%02d",day(Date)),    
-                 sprintf("%02d",month(Date)),  
-                 year(Date),sep="."),
+    Date = ddmmyyyy(Date),
     Region= case_when( 
-              State == "AZ" ~ "Arizona",
-              State == "AR" ~ "Arkansas",
-              State == "DE" ~ "Delaware",
-              State == "GU" ~  "Guam",
-              State == "ID" ~ "Idaho",
-              State == "KS" ~ "Kansas",
-              State == "ME" ~  "Maine",
-              State == "MA" ~  "Massachusetts",
-              State == "MN" ~  "Minnesota",
-              State == "MT" ~  "Montana",
-              State == "NV" ~  "Nevada",
-              State == "NJ" ~  "New Jersey",
-              State == "NC" ~  "North Carolina",
-              State == "OK" ~  "Oklahoma",
-              State == "OR" ~  "Oregon",
-              State == "PA" ~  "Pennsylvania",
-              State == "SC" ~ "South Carolina",
-              State == "TN" ~ "Tennessee",
-              State == "VA" ~  "Virginia",
-              State == "IL" ~ "Illinois"),
-                   ## states abbs
-             #    State == "AK" ~ "Alaska",
-             #    State == "AL" ~ "Alabama",
-             #    State == "AR" ~ "Arkansas",
-             #    State == "AZ" ~ "Arizona",
-             #    State == "BP2"~ "Bureau of Prisons",
-             #    State == "CA" ~ "California",
-             # #   State == "CA."~ "California",
-             #    State == "CO" ~ "Colorado",
-             #    State == "CT" ~ "Connecticut",
-             #    State == "DC" ~ "District of Columbia",
-             #    State == "DE" ~ "Delaware",
-             #    State == "FL" ~ "Florida",
-             #    State == "GA" ~ "Georgia",
-             #    State == "GU" ~ "Guam",
-             #    State == "HI" ~ "Hawaii",
-             #    State == "IA" ~ "Iowa",
-             #    State == "ID" ~ "Idaho",
-             #    State == "IL" ~ "Illinois",
-             #    State == "IN" ~ "Indiana",
-             #    State == "KS" ~ "Kansas",
-             #    State == "KY" ~ "Kentucky",
-             #    State == "LA" ~ "Louisiana",
-             #    State == "MA" ~ "Massachusetts",
-             #    State == "MD" ~ "Maryland",
-             #    State == "ME" ~ "Maine",
-             #    State == "MI" ~ "Michigan",
-             #    State == "MN" ~ "Minnesota",
-             #    State == "MO" ~ "Missouri",
-             #    State == "MP" ~ "Northern Mariana Islands",
-             #    State == "MS" ~ "Mississippi",
-             #    State == "MT" ~ "Montana",
-             #    State == "NC" ~ "North Carolina",
-             #    State == "ND" ~ "North Dakota",
-             #    State == "NE" ~ "Nebraska",
-             #    State == "NH" ~ "New Hampshire",
-             #    State == "NJ" ~ "New Jersey",
-             #    State == "NM" ~ "New Mexico",
-             #    State == "NV" ~ "Nevada",
-             #    State == "NY" ~ "New York State",
-             #    State == "OH" ~ "Ohio",
-             #    State == "OK" ~ "Oklahoma",
-             #    State == "OR" ~ "Oregon",
-             #    State == "PA" ~ "Pennsylvania",
-             #    State == "PR" ~ "Puerto Rico",
-             #    State == "RI" ~ "Rhode Island",
-             #    State == "SC" ~ "South Carolina",
-             #    State == "SD" ~ "South Dakota",
-             #    State == "TN" ~ "Tennessee",
-             #    State == "TX" ~ "Texas",
-             #    State == "UT" ~ "Utah",
-             #    State == "VA" ~ "Virginia",
-             #    State == "VI" ~ "Virgin Islands",
-             #    State == "VT" ~ "Vermont",
-             #    State == "WA" ~ "Washington",
-             #    State == "WI" ~ "Wisconsin",
-             #    State == "WV" ~ "West Virginia",
-             #    State == "WY" ~ "Wyoming",
-             #    State == "NA" ~ "Unknown"),
-    Code= paste0 ("US-", State)) %>% 
+              ## states abbs
+                State == "AK" ~ "Alaska",
+                State == "AL" ~ "Alabama",
+                State == "AR" ~ "Arkansas",
+                State == "AZ" ~ "Arizona",
+             #   State == "BP2"~ "Bureau of Prisons",
+                State == "CA" ~ "California",
+                State == "CO" ~ "Colorado",
+                State == "CT" ~ "Connecticut",
+                State == "DC" ~ "District of Columbia",
+                State == "DE" ~ "Delaware",
+                State == "FL" ~ "Florida",
+                State == "GA" ~ "Georgia",
+                State == "GU" ~ "Guam",
+                State == "HI" ~ "Hawaii",
+                State == "IA" ~ "Iowa",
+                State == "ID" ~ "Idaho",
+                State == "IL" ~ "Illinois",
+                State == "IN" ~ "Indiana",
+                State == "KS" ~ "Kansas",
+                State == "KY" ~ "Kentucky",
+                State == "LA" ~ "Louisiana",
+                State == "MA" ~ "Massachusetts",
+                State == "MD" ~ "Maryland",
+                State == "ME" ~ "Maine",
+                State == "MI" ~ "Michigan",
+                State == "MN" ~ "Minnesota",
+                State == "MO" ~ "Missouri",
+                State == "MP" ~ "Northern Mariana Islands",
+                State == "MS" ~ "Mississippi",
+                State == "MT" ~ "Montana",
+                State == "NC" ~ "North Carolina",
+                State == "ND" ~ "North Dakota",
+                State == "NE" ~ "Nebraska",
+                State == "NH" ~ "New Hampshire",
+                State == "NJ" ~ "New Jersey",
+                State == "NM" ~ "New Mexico",
+                State == "NV" ~ "Nevada",
+                State == "NY" ~ "New York",
+                State == "OH" ~ "Ohio",
+                State == "OK" ~ "Oklahoma",
+                State == "OR" ~ "Oregon",
+                State == "PA" ~ "Pennsylvania",
+                State == "PR" ~ "Puerto Rico",
+                State == "RI" ~ "Rhode Island",
+                State == "SC" ~ "South Carolina",
+                State == "SD" ~ "South Dakota",
+                State == "TN" ~ "Tennessee",
+                State == "TX" ~ "Texas",
+                State == "UT" ~ "Utah",
+                State == "VA" ~ "Virginia",
+                State == "VI" ~ "Virgin Islands",
+                State == "VT" ~ "Vermont",
+                State == "WA" ~ "Washington",
+                State == "WI" ~ "Wisconsin",
+                State == "WV" ~ "West Virginia",
+                State == "WY" ~ "Wyoming",
+                State == "NA" ~ "Unknown"),
+    Code= case_when(State == "NA" ~ "US-UNK+",
+                    TRUE ~ paste0 ("US-", State))) %>% 
   select(Country, Region, Code, Date, Sex, 
-         Age, AgeInt, Metric, Measure, Value)
+         Age, AgeInt, Metric, Measure, Value) %>% 
+  sort_input_data()
 
 
 #save output data
@@ -217,4 +187,54 @@ write_rds(Out, paste0(dir_n, ctr, ".rds"))
 
 
 # input data is saved on K 
+## Previous selected states ================
 
+#Arizona	AZ
+#Arkansas	AR
+#Delaware	DE
+#Guam 	GU
+#Idaho	ID
+#Kansas	KS
+#Maine	ME
+#Massachusetts	MA
+#Minnesota	MN
+#Montana	MT
+#Nevada	NV
+#New Jersey	NJ
+#North Carolina	NC
+#Oklahoma	OK
+#Oregon	OR
+#Pennsylvania	PA
+#South Carolina	SC
+#Tennessee	TN
+#Virginia	VA
+
+
+# Add datasets vertically
+
+#rm(data1,data2,data3, data4);gc()
+
+
+#states <- c("AZ","AR", "DE","GU","ID","KS","ME","MA","MN","MT","NV","NJ","NC","OK","OR","PA","SC","TN","VA", "IL")
+#  filter(res_state %in% states) %>%
+# 
+# State == "AZ" ~ "Arizona",
+# State == "AR" ~ "Arkansas",
+# State == "DE" ~ "Delaware",
+# State == "GU" ~  "Guam",
+# State == "ID" ~ "Idaho",
+# State == "KS" ~ "Kansas",
+# State == "ME" ~  "Maine",
+# State == "MA" ~  "Massachusetts",
+# State == "MN" ~  "Minnesota",
+# State == "MT" ~  "Montana",
+# State == "NV" ~  "Nevada",
+# State == "NJ" ~  "New Jersey",
+# State == "NC" ~  "North Carolina",
+# State == "OK" ~  "Oklahoma",
+# State == "OR" ~  "Oregon",
+# State == "PA" ~  "Pennsylvania",
+# State == "SC" ~ "South Carolina",
+# State == "TN" ~ "Tennessee",
+# State == "VA" ~  "Virginia",
+# State == "IL" ~ "Illinois"),

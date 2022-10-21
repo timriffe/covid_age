@@ -100,5 +100,5 @@ Out_vaccine <- Out_vaccine %>%
     Measure == "Vaccination" ~ "Vaccinations",
     TRUE ~ Measure)) %>% 
   sort_input_data()
-write_rds(Out_vaccine, paste0(dir_n, ctr, ".rds"))
+#write_rds(Out_vaccine, paste0(dir_n, ctr, ".rds"))
   

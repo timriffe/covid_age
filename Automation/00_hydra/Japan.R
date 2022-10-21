@@ -29,6 +29,7 @@ mutate(
                sprintf("%02d",month(Date)),  
                year(Date),sep="."))
 
+## Source website <- "https://covid19.mhlw.go.jp/en/
 
 #new death 
 
@@ -412,7 +413,17 @@ totdeath5 <- totdeath4 %>%
 names(totdeath5)[1] <- "Value"
 totdeath5 <- totdeath5[,-11]
 
-out <- rbind(db_drive, totdeath5, totcases5, death5, cases5) %>%
+pre_out <- rbind(db_drive, totdeath5, totcases5, death5, cases5) 
+
+## MK: there was duplication of values in 20.09.2022, so I filtered these out separtely and append to the dataset again
+
+sep_22 <- pre_out %>% 
+  filter(str_detect(Date, "20.09.2022")) %>% 
+  filter(Value != 0)
+
+out <- pre_out %>% 
+  filter(!str_detect(Date, "20.09.2022")) %>% 
+  bind_rows(sep_22) %>% 
   unique() %>% 
   sort_input_data()
 

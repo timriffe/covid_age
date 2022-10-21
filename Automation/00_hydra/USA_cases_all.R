@@ -224,7 +224,8 @@ case_sex_out= cases_sex_in%>%
 #put togehter 
 
 out= rbind(DataArchive, case_age_out, case_sex_out)%>%
-  unique()
+  unique() %>% 
+  sort_input_data()
 
 
 #save 

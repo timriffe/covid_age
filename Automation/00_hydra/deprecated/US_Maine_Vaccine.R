@@ -28,5 +28,5 @@ In_drive <-  read_sheet(ss = ss_i, sheet = "database_vaccine") %>%
   mutate(Code = "US-ME")
 
 
-write_rds(In_drive, paste0(dir_n, ctr, ".rds"))
-log_update(pp = ctr, N = nrow(In_drive))
+# write_rds(In_drive, paste0(dir_n, ctr, ".rds"))
+# log_update(pp = ctr, N = nrow(In_drive))

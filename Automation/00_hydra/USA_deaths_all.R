@@ -52,7 +52,8 @@ out <- db3 %>%
          Date = ddmmyyyy(date_f),
          Code = paste0("US")) %>%
   arrange(date_f, Sex, Measure, suppressWarnings(as.integer(Age))) %>%
-  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
+  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
+  sort_input_data()
 
 ############################################
 #### uploading database to Google Drive ####

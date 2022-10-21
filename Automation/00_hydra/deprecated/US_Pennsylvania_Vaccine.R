@@ -24,7 +24,7 @@ gs4_auth(email = Sys.getenv("email"))
 # reading in archive data  
 
 DataArchive <- read_rds(paste0(dir_n, ctr, ".rds")) %>% 
-  mutate(Value = as.numeric(Value))
+  mutate(Value = as.numeric(Value)) 
 
 last_date_archive <- DataArchive %>% 
   mutate(date_max = dmy(Date)) %>% 
@@ -64,12 +64,20 @@ Vaccine_sex=read.csv("https://data.pa.gov/api/views/id8t-dnk6/rows.csv?accessTyp
 
 
 Out_vaccine_age= Vaccine_age %>%
-  select(Age= Age.Group, Partially.Covered,Fully.Covered )%>%
+  select(Age= Age.Group, Partially.Covered,Fully.Covered,
+         #First Booster Doses (Administered Since August 13, 2021)
+         # Second Booster Doses (Administered Since March 29, 2022)
+         Additional.Dose.1, Additional.Dose.2, Bivalent.Booster.1)%>%
   pivot_longer(!Age, names_to= "Measure", values_to= "Value")%>%
   mutate(Measure= recode(Measure, 
                          `Partially.Covered` = "Vaccination1",
-                         `Fully.Covered`= "Vaccination2"))%>%
+                         `Fully.Covered`= "Vaccination2",
+                         `Additional.Dose.1` = "Vaccination3", 
+                         `Additional.Dose.2` = "Vaccination4", 
+                         `Bivalent.Booster.1` = "Vaccination5"))%>%
   mutate(Age=recode(Age, 
+                    `0-4` = "0",
+                    `5-9` = "5",
                     `10-14`="10",
                     `15-19`="15",
                     `20-24`="20",
@@ -113,18 +121,21 @@ Out_vaccine_age= Vaccine_age %>%
 #Sex
 
 Out_vaccine_sex = Vaccine_sex %>%
-  select(Sex= Gender, Partially.Covered,Fully.Covered )%>%
+  select(Sex= Gender, Partially.Covered,Fully.Covered,
+         Additional.Dose.1, Additional.Dose.2, Bivalent.Booster.1)%>%
   pivot_longer(!Sex, names_to= "Measure", values_to= "Value")%>%
   mutate(Measure= recode(Measure, 
                          `Partially.Covered` = "Vaccination1",
-                         `Fully.Covered`= "Vaccination2"),
+                         `Fully.Covered`= "Vaccination2",
+                         `Additional.Dose.1` = "Vaccination3", 
+                         `Additional.Dose.2` = "Vaccination4", 
+                         `Bivalent.Booster.1` = "Vaccination5"),
          Sex= recode(Sex, 
-                     `female`= "f",
-                     `male`= "m",
+                     `Female`= "f",
+                     `Male`= "m",
                      `Unknown`= "UNK"), 
          Metric = "Count",
          Age="TOT",
-         AgeInt="",
          Date= date_f,
          Date = ymd(Date),
          Date = paste(sprintf("%02d",day(Date)),    
@@ -133,7 +144,7 @@ Out_vaccine_sex = Vaccine_sex %>%
          Code = paste0("US-PA"),
          Country = "USA",
          Region = "Pennsylvania",
-         AgeInt= as.character(AgeInt))%>% 
+         AgeInt= NA_character_)%>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)
 
@@ -141,22 +152,23 @@ Out_vaccine_sex = Vaccine_sex %>%
 
 Out <- bind_rows(DataArchive,
                 Out_vaccine_age,
-                Out_vaccine_sex)
-
-##adding age group 0 to 9
-small_ages <- Out %>% 
-  filter(Age == "10") %>% 
-  mutate(Age = "0",
-         AgeInt = 10L,
-         Value = 0)
-
-Out <- rbind(Out, small_ages) %>% 
+                Out_vaccine_sex) %>% 
   sort_input_data()
+
+# ##adding age group 0 to 9
+# small_ages <- Out %>% 
+#   filter(Age == "10") %>% 
+#   mutate(Age = "0",
+#          AgeInt = 10L,
+#          Value = 0)
+
+# Out <- rbind(Out, small_ages) %>% 
+#   sort_input_data()
 #save output 
 
-write_rds(Out, paste0(dir_n, ctr, ".rds"))
+#write_rds(Out, paste0(dir_n, ctr, ".rds"))
 
-log_update("US_Pennsylvania_Vaccine", N = nrow(Out))
+#log_update("US_Pennsylvania_Vaccine", N = nrow(Out))
 
 
 # ------------------------------------------

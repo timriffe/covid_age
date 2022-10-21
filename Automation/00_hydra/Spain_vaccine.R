@@ -383,7 +383,7 @@ Out <-
             Out_vaccine3_age,
             Out_vaccine_youngage) %>%
   mutate(Code = paste("ES",Short, sep="-"),
-         Code = case_when(Region == "All"~"ES",
+         Code = case_when(Short == "All"~"ES",
                           TRUE ~ Code)) %>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value) %>% 

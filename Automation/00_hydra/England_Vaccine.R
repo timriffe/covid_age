@@ -26,7 +26,7 @@ vacc_out <- melt(vacc, id = c("Date", "Age"))
 names(vacc_out)[3] <- "Measure"
 names(vacc_out)[4] <- "Value"
 vacc_out <- vacc_out %>% 
-  filter(Age != "75+") %>% 
+  filter(!Age %in% c("75+", "50+")) %>% 
   mutate(Age = case_when(
     Age == "05_11" ~ "5",
     Age == "12_15" ~ "12",

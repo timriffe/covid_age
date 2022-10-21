@@ -47,7 +47,9 @@ Prior_data <- read_rds(paste0(dir_n, ctr, ".rds")) %>%
     Date = ymd(Date),
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
-                 year(Date),sep="."))
+                 year(Date),sep="."),
+    Sex = case_when(Sex == "TOT" ~ "b",
+                    TRUE ~ Sex))
 
 ### data processing
 
@@ -85,7 +87,7 @@ CAage <-
          AgeInt = case_when(Age == "0" ~ 18L,
                             Age == "18" ~ 32L,
                             Age == "50" ~ 15L,
-                            Age == "65" ~ 30L,
+                            Age == "65" ~ 40L,
                             Age == "UNK" ~ NA_integer_,
                             Age == "TOT" ~ NA_integer_)) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
@@ -130,22 +132,29 @@ CAvaccine_in <-
 vaccine=CAvaccine_in %>% 
   mutate(Date = as_date(administered_date)) %>%
   filter(demographic_category== "Age Group")%>%
-  select(Date, Age=demographic_value, Vaccinations= cumulative_total_doses, Vaccination1=cumulative_at_least_one_dose, Vaccination2=cumulative_fully_vaccinated) %>% 
+  select(Date, 
+         Age=demographic_value, 
+         Vaccinations= cumulative_total_doses, 
+         Vaccination1=cumulative_at_least_one_dose, 
+         Vaccination2=cumulative_fully_vaccinated,
+         Vaccination3 = cumulative_booster_recip_count) %>% 
   pivot_longer(!Date &!Age, names_to = "Measure", values_to = "Value") %>% 
   filter(!is.na(Value)) %>% 
   mutate(Age = recode(Age,
+                      "Under 5" = "0",
                       "5-11" = "5",
                       "12-17" = "12",
                       "18-49" = "18",
                       "50-64" = "50",
                       "65+" = "65",
                       "Unknown Agegroup" = "UNK"),
-         AgeInt = case_when(Age == "5" ~ 7L,
+         AgeInt = case_when(Age == "0" ~ 5L,
+                            Age == "5" ~ 7L,
                             Age == "12" ~ 6L,
                             Age == "18" ~ 32L,
                             Age == "50" ~ 15L,
-                            Age == "UNK" ~ NA_integer_,
-                            Age == "65+" ~ 30L),
+                            Age == "65" ~ 40L,
+                            Age == "UNK" ~ NA_integer_),
          Sex = "b",
          Country = "USA",
          Region = "California",
@@ -183,7 +192,7 @@ CAout <- CAout %>%
 write_rds(CAout, paste0(dir_n, ctr, ".rds"))
 
 N <- nrow(CAage) + nrow(CAsex)
-log_update(pp = ctr, N = N)
+#log_update(pp = ctr, N = N)
 
 # store
 

@@ -20,7 +20,7 @@ rubric_i <- get_input_rubric() %>% filter(Short == "US_WI")
 ss_i     <- rubric_i %>% dplyr::pull(Sheet)
 ss_db    <- rubric_i %>% dplyr::pull(Source)
 
-
+## Old code ==============
 #db0 <- read_csv("https://opendata.arcgis.com/datasets/859602b5d427456f821de3830f89301c_11.csv?outSR=%7B%22latestWkid%22%3A3857%2C%22wkid%22%3A102100%7D")
 # 
 # 														POS_CUM_CONF	POS_NEW_CONF	POS_7DAYAVG_CONF	POS_CUM_PROB	POS_NEW_PROB	POS_7DAYAVG_PROB	DTH_CUM_CONF	DTH_NEW_CONF	DTH_7DAYAVG_CONF	DTH_CONF_Daily	DTH_CUM_PROB	DTH_NEW_PROB	DTH_7DAYAVG_PROB	DTH_PROB_Daily	POS_MALE_CP	POS_FEM_CP	POS_OTH_CP	Expr1	POS_0_9_CP	POS_10_19_CP	POS_20_29_CP	POS_30_39_CP	POS_40_49_CP	POS_50_59_CP	POS_60_69_CP	POS_70_79_CP	POS_80_89_CP	POS_90_CP	DTHS_FEM_CP	DTHS_MALE_CP	DTHS_OTH_CP	DTHS_0_9_CP	DTHS_10_19_CP	DTHS_20_29_CP	DTHS_30_39_CP	DTHS_40_49_CP	DTHS_50_59_CP	DTHS_60_69_CP	DTHS_70_79_CP	DTHS_80_89_CP	DTHS_90_CP	POS_AIAN_CP	POS_ASN_CP	POS_BLK_CP	POS_WHT_CP	POS_MLTOTH_CP	POS_UNK_CP	POS_E_HSP_CP	POS_E_NHSP_CP	POS_E_UNK_CP	DTH_AIAN_CP	DTH_ASN_CP	DTH_BLK_CP	DTH_WHT_CP	DTH_MLTOTH_CP	DTH_UNK_CP	DTH_E_HSP_CP	DTH_E_NHSP_CP	DTH_E_UNK_CP	POS_HC_Y_CP	POS_HC_N_CP	POS_HC_UNK_CP	HOSP_YES_CP	HOSP_NO_CP	HOSP_UNK_CP	IP_Y_0_9_CP	IP_Y_10_19_CP	IP_Y_20_29_CP	IP_Y_30_39_CP	IP_Y_40_49_CP	IP_Y_50_59_CP	IP_Y_60_69_CP	IP_Y_70_79_CP	IP_Y_80_89_CP	IP_Y_90_CP	IP_N_0_9_CP	IP_N_10_19_CP	IP_N_20_29_CP	IP_N_30_39_CP	IP_N_40_49_CP	IP_N_50_59_CP	IP_N_60_69_CP	IP_N_70_79_CP	IP_N_80_89_CP	IP_N_90_CP	IP_U_0_9_CP	IP_U_10_19_CP	IP_U_20_29_CP	IP_U_30_39_CP	IP_U_40_49_CP	IP_U_50_59_CP	IP_U_60_69_CP	IP_U_70_79_CP	IP_U_80_89_CP	IP_U_90_CP	IC_YES_CP	IC_Y_0_9_CP	IC_Y_10_19_CP	IC_Y_20_29_CP	IC_Y_30_39_CP	IC_Y_40_49_CP	IC_Y_50_59_CP	IC_Y_60_69_CP	IC_Y_70_79_CP	IC_Y_80_89_CP	IC_Y_90_CP	Date	GEO
@@ -147,6 +147,9 @@ ss_db    <- rubric_i %>% dplyr::pull(Source)
 # reading directly from the web
 # https://data.dhsgis.wi.gov/datasets/covid-19-historical-data-table/data
 
+
+## Reading the data ===========
+
 db0 <- read_csv("https://opendata.arcgis.com/api/v3/datasets/531828fa923c490c8f1895db13d0040e_11/downloads/data?format=csv&spatialRefId=3857")
 
 # db <- db0 %>% 
@@ -222,7 +225,8 @@ db_out <- db %>%
     Metric = "Count",
     Country = "USA",
     Region = "Wisconsin"
-    )
+    ) %>% 
+  filter(Measure == "Tests")
 db_out$Date <- substr(db_out$RptDt, 1, nchar(db_out$RptDt)-12)
 db_out <- db_out[-c(1, 2)]
 names(db_out)[1] <- "Value"
@@ -234,7 +238,7 @@ Date = paste(sprintf("%02d",day(Date)),
 Code = paste0("US-WI"))%>% 
   sort_input_data()
 
-
+## Old code ===============
 
 # impossible to parse the original date, which starts at 15.03.2020
 # date1 <- as_date("2020-03-15")

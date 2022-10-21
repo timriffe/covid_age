@@ -65,10 +65,12 @@ dates_f <- seq(min(cases_linelist$date),
 
 
 cases_linelist2 <- cases_linelist %>% 
-  dplyr::mutate(age = as.character(age),
+  dplyr::mutate(age = as.integer(age),
                 male = as.character(male)) %>% 
   dplyr::mutate(Date = ymd(date),
-                Age = if_else(age < 0, "UNK", age),
+                Age = case_when(age < 0 ~ "UNK",
+                                age > 105 ~ "105",
+                                TRUE ~ as.character(age)),
                 Sex = if_else(male == "1", "m", "f")) %>% 
   dplyr::select(Date, Age, 
                 Sex, state) %>% 
@@ -78,8 +80,9 @@ cases_linelist2 <- cases_linelist %>%
   dplyr::count(name = "Value") %>% 
   dplyr::ungroup()  %>% 
   tidyr::complete(Sex, Age, state, Date=dates_f, fill=list(Value=0)) %>% 
-  dplyr::group_by(Date, Age, Sex, state) %>% 
-  dplyr::mutate(Value = cumsum(Value))
+  dplyr::group_by(state, Age, Sex) %>% 
+  dplyr::mutate(Value = cumsum(Value)) %>% 
+  dplyr::ungroup()
   
   
 cases <- cases_linelist2 %>% 
@@ -115,17 +118,20 @@ deaths_linelist <- arrow::read_parquet(deaths_source)
 ## WRNAGLING, ETC ##
 
 deaths_linelist2 <- deaths_linelist %>% 
-  dplyr::mutate(age = as.character(age),
-         male = as.character(male)) %>%  
+  dplyr::mutate(age = as.integer(age),
+                male = as.character(male)) %>% 
   dplyr::mutate(Date = ymd(date),
-         Age = if_else(age < 0, "UNK", age),
-         Sex = if_else(male == "1", "m", "f")) %>% 
+                Age = case_when(age < 0 ~ "UNK",
+                                age > 105 ~ "105",
+                                TRUE ~ as.character(age)),
+                Sex = if_else(male == "1", "m", "f")) %>%  
   dplyr::group_by(Date, Age, Sex, Region = state) %>%
   dplyr::count(name = "Value") %>% 
   dplyr::ungroup() %>% 
   tidyr::complete(Sex, Age, Region, Date=dates_f, fill=list(Value=0)) %>% 
-  dplyr::group_by(Date, Age, Sex, Region) %>% 
-  dplyr::mutate(Value = cumsum(Value))
+  dplyr::group_by(Age, Sex, Region) %>% 
+  dplyr::mutate(Value = cumsum(Value)) %>% 
+  dplyr::ungroup()
 
 
 deaths <- deaths_linelist2 %>% 
@@ -190,6 +196,14 @@ Vacc_age <- read.csv("https://github.com/MoH-Malaysia/covid19-public/raw/main/va
 
 
 Age_Vacc <- Vacc_age %>% 
+  ## These data were by district, we have to sum value then at the level of States,
+  dplyr::group_by(date, state) %>% 
+  dplyr::summarise(across(.cols = everything(), ~ sum(.x))) %>% 
+  dplyr::ungroup() %>% 
+  # then: mutate & cumsum at the state level
+  dplyr::group_by(state) %>% 
+  dplyr::arrange(date) %>% 
+  dplyr::mutate(across(.cols = -c("date"), ~ cumsum(.x))) %>% 
   tidyr::pivot_longer(cols = -c("date", "state"),
                       names_to = c("Measure"),
                       values_to = "Value")  %>% 
@@ -211,19 +225,19 @@ Age_Vacc <- Vacc_age %>%
                                 Age == "70-79" ~ "70",
                                 Age == "80" ~ "80"),
                 AgeInt = case_when(
-                  Age == "5" ~ 6L,
-                  Age == "12" ~ 5L,
+                  Age == "5" ~ 7L,
+                  Age == "12" ~ 6L,
+                  Age == "18" ~ 12L,
                   Age == "80" ~ 25L,
                   Age == "UNK" ~ NA_integer_,
                   TRUE ~ 10L),
                 Measure = case_when(Measure == "partial" ~ "Vaccination1",
                                     Measure == "full" ~ "Vaccination2",
                                     Measure == "booster" ~ "Vaccination3",
+                                    Measure == "booster2" ~ "Vaccination4",
                                     TRUE ~ Measure)) %>% 
   dplyr::select(Date = date, Region = state,
                Age, AgeInt, Measure, Value) %>% 
-  dplyr::group_by(Date, Region, Age, AgeInt, Measure) %>% 
-  dplyr::summarise(Value = sum(Value)) %>% 
   dplyr::left_join(state_dist, by = c("Region" = "state")) %>% 
   dplyr::mutate(Country = "Malaysia",
                 Code = paste0("MY-", 
@@ -241,7 +255,9 @@ Age_Vacc <- Vacc_age %>%
 ## binding epi-data & vaccination data into one df
 
 out <- epiData_malaysia %>% 
-  dplyr::bind_rows(Age_Vacc)
+  dplyr::bind_rows(Age_Vacc) %>% 
+  dplyr::mutate(Date = ddmmyyyy(Date)) %>% 
+  sort_input_data()
 
 
 ############################

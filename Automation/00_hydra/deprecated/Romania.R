@@ -182,7 +182,7 @@ write_sheet(RO_out,
             sheet = "database")
 
 
-log_update("Romania", N = nrow(RO_out))
+#log_update("Romania", N = nrow(RO_out))
 
 
 # ------------------------------------------
