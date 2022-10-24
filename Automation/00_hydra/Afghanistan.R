@@ -201,7 +201,7 @@ if (length(files_Deaths) > 0){
   
   # update log
   N <- nrow(AutoCollected)
-  log_update("Afghanistan", N)
+ # log_update("Afghanistan", N)
   
   # save source data to archive
   
@@ -228,7 +228,7 @@ if (length(files_Deaths) > 0){
   
   
 } else {
-  log_update("Afghanistan", N=0)
+ # log_update("Afghanistan", N=0)
 }
 
 do_this <- FALSE

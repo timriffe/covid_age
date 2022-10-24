@@ -79,7 +79,7 @@ tasks <-
 
 # list of all available scripts to schedule
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-scripts <- c('Peru', 'PeruVaccine' , 'Afghanistan', 
+scripts <- c('Peru', 'PeruVaccine' , 
              'Argentina', 'AU_New_South_Wales',
              'AustraliaEpi', 'Australia_vaccine', 'Austria', 
              'Bulgaria',  'Belgium', 'CanadaPDFs',
@@ -109,8 +109,8 @@ scripts <- c('Peru', 'PeruVaccine' , 'Afghanistan',
              'Slovakia',  'Slovenia', 
              'Slovenia_vaccine', 'Slovakia_vaccine', 
              'Somalia', 'SouthAfrica', 'SouthKorea', 'SriLankaPDFs',
-             'Sweden', 'SwitzerlandEpi',
-             'Switzerland_Vaccine',
+             'SwedenEpi', 'SwedenVax', 
+             'SwitzerlandEpi', 'Switzerland_Vaccine',
              'Togo', 'Taiwan', 
              'Thailand', # does not work
              'Uruguay_vaccine', 'Ukraine', 

@@ -34,12 +34,12 @@ deaths_url <- html_nodes(html2, xpath = '//*[@id="data-and-resources"]/div/div/u
 #JD: updating the vaccine link
 
 #vacc_url <- "https://cloud.minsa.gob.pe/s/ZgXoXqK2KLjRLxD/download"
-vacc_url <- "https://cloud.minsa.gob.pe/s/To2QtqoNjKqobfw/download"
+#vacc_url <- "https://cloud.minsa.gob.pe/s/To2QtqoNjKqobfw/download"
 
 data_source_c <- paste0(dir_n, "Data_sources/", ctr, "/cases_",today(), ".csv")
 data_source_d <- paste0(dir_n, "Data_sources/", ctr, "/deaths_",today(), ".csv")
 #source changed to provide data in 7z file
-data_source_v <- paste0(dir_n, "Data_sources/", ctr, "/vacc_",today(), ".7z")
+#data_source_v <- paste0(dir_n, "Data_sources/", ctr, "/vacc_",today(), ".7z")
 #data_source_v <- paste0(dir_n, "Data_sources/", ctr, "/vacc_",today(), ".csv")
 
 
@@ -90,7 +90,10 @@ db_c2 <- db_c %>%
          Sex = case_when(Sex == "MASCULINO" ~ "m",
                          Sex == "FEMENINO" ~ "f",
                          TRUE ~ "UNK"),
-         Age = ifelse(Age > 100, 100, Age),
+         Age = case_when(Age < 0 ~ NA_integer_,
+                         Age > 100 ~ 100L,
+                         is.na(Age) ~ NA_integer_,
+                         TRUE ~ as.integer(Age)),
          Region = str_to_title(Region)) %>% 
   group_by(date_f, Sex, Age, Region) %>% 
   summarise(new = n()) %>% 
@@ -105,7 +108,9 @@ db_c3 <- db_c2 %>%
   tidyr::complete(Region, Sex, Age = ages, date_f = dates_f, fill = list(new = 0)) %>% 
   group_by(Region, Sex, Age) %>% 
   mutate(Value = cumsum(new),
-         Measure = "Cases") %>% 
+         Measure = "Cases",
+         Age = case_when(is.na(Age) ~ "UNK",
+                         TRUE ~ as.character(Age))) %>% 
   ungroup() %>% 
   select(-new)
 
@@ -122,7 +127,10 @@ db_d2 <- db_d %>%
          Sex = case_when(Sex == "MASCULINO" ~ "m",
                          Sex == "FEMENINO" ~ "f",
                          TRUE ~ "UNK"),
-         Age = ifelse(Age > 100, 100, Age),
+         Age = case_when(Age < 0 ~ NA_integer_,
+                         Age > 100 ~ 100L,
+                         is.na(Age) ~ NA_integer_,
+                         TRUE ~ as.integer(Age)),
          Region = str_to_title(Region)) %>% 
   group_by(date_f, Sex, Age, Region) %>% 
   summarise(new = n()) %>% 
@@ -135,7 +143,9 @@ db_d3 <- db_d2 %>%
   tidyr::complete(Region, Sex, Age = ages, date_f = dates_f, fill = list(new = 0)) %>% 
   group_by(Region, Sex, Age) %>% 
   mutate(Value = cumsum(new),
-         Measure = "Deaths") %>% 
+         Measure = "Deaths",
+         Age = case_when(is.na(Age) ~ "UNK",
+                         TRUE ~ as.character(Age))) %>% 
   ungroup() %>% 
   select(-new)
 
@@ -153,7 +163,7 @@ db_pe <- db_dc %>%
 # 5-year age intervals for regional data -------------------------------
 
 db_dc2 <- db_dc %>% 
-  mutate(Age = ifelse(Age <= 4, Age, floor(Age/5) * 5)) %>% 
+ # mutate(Age = ifelse(Age <= 4, Age, floor(Age/5) * 5)) %>% 
   group_by(date_f, Region, Sex, Age, Measure) %>% 
   summarise(Value = sum(Value)) %>% 
   ungroup() %>% 
@@ -213,8 +223,8 @@ out <- db_all2 %>%
            Region == "Arequipa" ~ paste0("PE-ARE"),
            Region == "Ayacucho" ~ paste0("PE-AYA"),
            Region == "Cajamarca" ~ paste0("PE-CAJ"),
-           Region == "Callao" ~ paste0("PE-CUS"),
-           Region == "Cusco" ~ paste0("PE-CAL"),
+           Region == "Callao" ~ paste0("PE-CAL"),
+           Region == "Cusco" ~ paste0("PE-CUS"),
            Region == "Huancavelica" ~ paste0("PE-HUV"),
            Region == "Huanuco" ~ paste0("PE-HUC"),
            Region == "Ica" ~ paste0("PE-ICA"),
