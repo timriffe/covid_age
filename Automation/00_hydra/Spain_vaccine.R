@@ -49,40 +49,44 @@ DataArchive <- read_rds(paste0(dir_n, ctr, ".rds")) %>%
   ## MK: sounds like there were some duplicates data, distinct to remove always
   distinct(Country, Region, Code, Date,
            Sex, Age, AgeInt, Metric, 
-           Measure, Value)  
-  # dplyr::filter(!Region %in% c("Fuerzas Armadas", "Min. Defensa","Sanidad Exterior" )) %>% # delete armed forces from region  
-  # mutate(Short = recode(Region,
-  #                       "Andalucía" = "AN",
-  #                       "Aragón" = "AR",
-  #                       "Asturias"= "O", 
-  #                       "Baleares" ="IB",
-  #                       "Canarias" ="CN",
-  #                       "Cantabria"= "S",
-  #                       "Castilla y Leon"= "CL",
-  #                       "Castilla y León" = "CL",
-  #                       "Castilla La Mancha"= "CM",
-  #                       "Cataluña" ="CT",
-  #                       "C. Valenciana" ="VC",
-  #                       "C. Valenciana*" = "VC",
-  #                       "Extremadura"= "EX",
-  #                       "Galicia"= "GA",
-  #                       "La Rioja" ="LO",
-  #                       "Madrid"= "M",
-  #                       "Murcia"= "MU",
-  #                       "Navarra"= "NA",
-  #                       "País Vasco" ="PV",
-  #                       "Ceuta"= "CE",
-  #                       "Melilla" ="ML",
-  #                       "Totales"= "All")) %>% 
-  # mutate(Code = paste("ES",Short, sep="-"),
-  #        Code = case_when(Region == "All"~"ES",
-  #                         TRUE ~ Code)) %>% 
-  # select(-Short)
+           Measure, Value) %>% 
+  dplyr::filter(!Region %in% c("Fuerzas Armadas", "Min. Defensa","Sanidad Exterior")) %>% # delete armed forces from region
+  mutate(Region = case_when(Region == "Castilla y León" ~ "Castilla y Leon",
+                            Region == "Totales" ~ "All",
+                            TRUE ~ Region),
+         Code = case_when(Region == "Andalucía" ~ "ES-AN",
+                          Region == "Aragón" ~ "ES-AR",
+                          Region == "Asturias" ~ "ES-O",
+                          Region == "Baleares" ~ "ES-IB",
+                          Region == "Canarias" ~ "ES-CN",
+                          Region == "Cantabria"~ "ES-S",
+                          Region == "Castilla y Leon"~ "ES-CL",
+                          Region == "Castilla La Mancha" ~ "ES-CM",
+                          Region == "Cataluña" ~ "ES-CT",
+                          Region == "C. Valenciana" ~ "ES-VC",
+                          Region == "C. Valenciana*" ~ "ES-VC",
+                          Region == "Extremadura" ~ "ES-EX",
+                          Region == "Galicia" ~ "ES-GA",
+                          Region == "La Rioja" ~ "ES-LO",
+                          Region == "Madrid" ~ "ES-M",
+                          Region == "Murcia" ~ "ES-MU",
+                          Region == "Navarra"~ "ES-NA",
+                          Region == "País Vasco" ~ "ES-PV",
+                          Region == "Ceuta" ~ "ES-CE",
+                          Region == "Melilla" ~ "ES-ML",
+                          Region == "All"~ "ES"))  %>% 
+  ## MK 24.10.2022: Since we take below the (max) date of total vaccinations in regions and assign it to all dataset,
+  ## we eventually end up with duplicates 
+  ## so to avoid this: I here group be all the columns and take the maximum Value
+  dplyr::group_by(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure) %>% 
+  dplyr::summarise(Value = max(Value))
  
 
 #Read in sheets 
 
-total_sheet <- "Comunicación"
+total_sheet <- "Comunicacion_1"
+
+total_sheet_date <- "Comunicacion_2"
 
 ## dose 1 and dose 2 sheets from 31.03.2021
 
@@ -91,7 +95,8 @@ dose_2 <- "Etarios_con_pauta_completa"
 dose_3 <- "Dosis_refuerzo"
 young <- c("Pediatrica", "5-11_años", "Pediátrica")
 
-In_vaccine_total = read_ods(data_source, sheet = total_sheet)
+In_vaccine_total_raw = read_ods(data_source, sheet = total_sheet_date)
+In_vaccine_total_s = read_ods(data_source, sheet = total_sheet)
 In_vaccine1_age = read_ods(data_source, sheet = dose_1)
 In_vaccine2_age = read_ods(data_source, sheet = dose_2)
 In_vaccine3_age = read_ods(data_source, sheet = dose_3)
@@ -101,27 +106,40 @@ In_vaccine_youngage = read_ods(data_source, sheet = "Pediátrica")
 ################################
 #Process 
 #Total 
+# 
+# colnames(In_vaccine_total)[1] <- "Region" 
+# names(In_vaccine_total)[10] <- "one" 
+# names(In_vaccine_total)[11] <- "two" 
+# names(In_vaccine_total)[12] <- "three" 
 
-colnames(In_vaccine_total)[1] <- "Region" 
-names(In_vaccine_total)[10] <- "one" 
-names(In_vaccine_total)[11] <- "two" 
-names(In_vaccine_total)[12] <- "three" 
+In_vaccine_total <- In_vaccine_total_raw %>% 
+  select(Region = "",
+         Vaccination1 = contains("Personas con al menos 1 dosis"),
+         Vaccination2 = contains("Personas con pauta completa"),
+         Vaccination3 = contains("dosis de recuerdo(2)"),
+         Date = `Fecha de la última vacuna registrada(1)`)
+
+In_vax_totals <- In_vaccine_total_s %>% 
+  select(Region = "",
+         Vaccinations = `Dosis administradas(2)*`)
+
+In_vax_total <- In_vaccine_total %>% 
+  inner_join(In_vax_totals, by = "Region")
+
 
 total <-
-  In_vaccine_total %>%
-  select(Vaccinations= `Dosis administradas (2)`, 
-         Date= `Fecha de la última vacuna registrada (2)`, 
-         Region, 
-         Vaccination1 = `one`, 
-         Vaccination2 = `two`,
-         Vaccination3 = `three`) %>%
+  In_vax_total %>%
   pivot_longer(c(Vaccinations,Vaccination1, Vaccination2,Vaccination3), names_to= "Measure", values_to= "Value") %>% 
-  mutate(Date = suppressWarnings(dmy(Date)),
+  mutate(Date = dmy(Date),
          MD = max(Date, na.rm = TRUE),
          Date = coalesce(Date, MD)) %>% 
   select(-MD) %>%
   dplyr::filter(!Region %in% c("Fuerzas Armadas", "Min. Defensa","Sanidad Exterior" )) %>% # delete armed forces from region  
-  mutate(Short = recode(Region,
+  mutate(Region = case_when(Region == "Castilla - La Mancha" ~ "Castilla La Mancha",
+                            Region == "Totales" ~ "All",
+                            Region == "Total España" ~ "All",
+                            TRUE ~ Region),
+         Short = recode(Region,
                         "Andalucía" = "AN",
                         "Aragón" = "AR",
                         "Asturias"= "O", 
@@ -382,9 +400,8 @@ Out <-
             Out_vaccine2_age,
             Out_vaccine3_age,
             Out_vaccine_youngage) %>%
-  mutate(Code = paste("ES",Short, sep="-"),
-         Code = case_when(Short == "All"~"ES",
-                          TRUE ~ Code)) %>% 
+  mutate(Code = case_when(Short == "All"~"ES",
+                          TRUE ~ paste("ES",Short, sep="-"))) %>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value) %>% 
   sort_input_data()

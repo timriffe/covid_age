@@ -1887,6 +1887,252 @@ write_rds(Sweden_appended, paste0(dir_n, ctr, ".rds"))
 ```
 
 
+##├ Date: 24.10.2022
+Problem: Sweden Vaccination data have issue in dates; that usually result in duplicates! 
+for the period between 10.08.2022 and 21.09.2022, inclusive 
+
+```{r eval=FALSE, include=FALSE}
+
+# info country and N drive address
+ctr <- "Sweden"
+dir_n <- "N:/COVerAGE-DB/Automation/Hydra/Data_sources/Sweden/Vaccination-10082022-21092022/"
+
+
+## read in the latest .rds file 
+
+Sweden_drive <- readRDS("N:/COVerAGE-DB/Automation/Hydra/Sweden.rds") %>% 
+  filter(str_detect(Measure, "Vaccin"))
+
+
+
+
+vax.list <-list.files(path= dir_n, 
+                      pattern = ".xlsx",
+                      full.names = TRUE)
+
+
+vax.list <- setNames(vax.list, vax.list) # only needed when you need an id-column with the file-names
+
+## read the excel sheet that has the date, to extract the date of the data:
+## function to do so
+
+extract_date <- function(file_path){
+  date_f_vac_temp <- excel_sheets(file_path)
+  date_f_vac_temp <- date_f_vac_temp[grepl("[0-9]{4}$", date_f_vac_temp)]
+  date_f_vac_temp <- trimws(gsub("FOHM", "", date_f_vac_temp))
+}
+
+
+
+vax_Sourcedates <- map_dfr(vax.list, extract_date) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "file_name",
+               values_to = "date") 
+  
+
+
+
+
+vax_lastdate <- vax_Sourcedates %>% 
+  mutate(date = str_replace_all(date, "MAJ", "May"),
+         date = str_replace_all(date, "OKT", "Oct"),
+         date = str_replace_all(date, "211028", "28 Oct 2021"),
+         date = parse_date_time(date,
+                                orders = "d m y"),
+         sex_sheet = "Vaccinerade kön",
+         vacc_1_3 = "Dos 1 till 3 per åldersgrupp",
+         vacc_4 = "Dos 4 per åldersgrupp",
+         vacc_5 = "Dos 5 per åldersgrupp") 
+
+
+dates <- vax_lastdate %>% 
+  select(file_name, date)
+
+
+
+## TWO-OBJECTS iteration from this dataframe to avoid multiple loops ##
+
+## 2.1. Vax by Sex =======
+
+db_sex <- vax_lastdate %>% 
+  {map2_df(.$file_name, .$sex_sheet, ~ read_excel(path = .x, sheet = .y) %>% 
+             mutate(id = .x))} %>% 
+  left_join(dates, by = c("id" = "file_name"))
+
+
+
+
+out_sex <- db_sex %>% 
+  select(Date = date,
+         Sex = starts_with("K"),
+         Value = contains("antal"), 
+         Measure = contains("status")) %>% 
+  mutate(Sex = case_when(str_detect(Sex, "M") ~ "m",
+                         str_detect(Sex, "Kv") ~ "f",
+                         str_detect(Sex, "Tot") ~ "b"),
+         Measure = case_when(Measure %in% c("1",
+                                            "Dos 1",
+                                            "Minst 1 dos") ~ "Vaccination1",
+                             Measure %in% c("2", 
+                                            "Minst 2 doser",
+                                            "2 doser",
+                                            "Dos 2",
+                                            "Färdigvaccinerade") ~ "Vaccination2",
+                             Measure %in% c("Minst 3 doser") ~ "Vaccination3",
+                             Measure %in% c("4 doser") ~ "Vaccination4"), 
+         Age = "TOT",
+         AgeInt = ""
+         # Add empty row for UNK
+         , Sex = ifelse(is.na(Sex), "UNK", Sex)
+         , AgeInt = ifelse(Sex == "UNK", "", AgeInt)
+         , Value = ifelse(Sex == "UNK", 0, Value),
+         AgeInt = as.integer(AgeInt)
+  ) %>%
+  select(Sex, Date, Age, AgeInt, Measure, Value) %>%
+  arrange(Sex)
+
+
+
+## 2.2. Vax by Age =======
+
+
+vaccage_1 <- vax_lastdate %>% 
+  {map2_df(.$file_name, .$vacc_1_3, ~ read_excel(path = .x, sheet = .y) %>% 
+             mutate(id = .x))} %>% 
+  dplyr::left_join(dates, by = c("id" = "file_name")) 
+
+
+vaccage_4 <- vax_lastdate %>% 
+  {map2_df(.$file_name, .$vacc_4, ~ read_excel(path = .x, sheet = .y) %>% 
+             mutate(id = .x))} %>% 
+  dplyr::left_join(dates, by = c("id" = "file_name")) 
+
+
+
+vaccage_5 <- vax_lastdate %>% 
+  filter(!str_detect(date, "2022-09-15")) %>% 
+  {map2_df(.$file_name, .$vacc_5, ~ read_excel(path = .x, sheet = .y) %>% 
+             mutate(id = .x))} %>% 
+  dplyr::left_join(dates, by = c("id" = "file_name")) 
+
+
+
+
+db_age <- bind_rows(vaccage_1, vaccage_4, vaccage_5)
+
+
+
+out_age <- db_age %>%
+  dplyr::filter(Region %in% "| Sverige |") %>% 
+  dplyr::select(Date = date,
+                Value = contains("antal"), 
+                Measure = ends_with("status"),
+                Age = ends_with("ldersgrupp")) %>% 
+  dplyr::filter(!str_detect(Age, "Totalt 18+")) %>% 
+  dplyr::mutate(Measure = case_when(Measure %in% c("1",
+                                                   "Dos 1",
+                                                   "1 dos",
+                                                   "Minst 1 dos") ~ "Vaccination1",
+                                    Measure %in% c("2", 
+                                                   "Minst 2 doser",
+                                                   "2 doser",
+                                                   "Dos 2",
+                                                   "Färdigvaccinerade") ~ "Vaccination2",
+                                    Measure %in% c("Minst 3 doser", "3 doser") ~ "Vaccination3",
+                                    Measure %in% c("4 doser") ~ "Vaccination4",
+                                    Measure %in% c("5 doser") ~ "Vaccination5"),
+                Age = case_when(Age == "Totalt" ~ "TOT",
+                                TRUE ~ str_extract(Age, "^[0-9]{2}")),
+                # Age_low = as.numeric(str_extract(Age, "^[0-9]{2}")),
+                # Age_high = as.numeric(str_extract(Age, "[0-9]{2}$")),
+                Age = as.character(Age),
+              #  Age = ifelse(is.na(Age), "UNK", Age),
+                AgeInt = case_when(Age == "12" ~ 4L,
+                                   Age == "16" ~ 2L,
+                                   Age == "18" ~ 12L,
+                                   Age == "90" ~ 15L,
+                               #    Age == "UNK" ~ NA_integer_,
+                                   TRUE ~ 10L),
+                Sex = "b"
+               # Value = ifelse(Age == "UNK", 0, Value)
+                ) %>%
+  dplyr::select(Date, Sex, Age, AgeInt, Measure, Value)
+
+
+
+all_vax <- bind_rows(out_age, out_sex) %>% 
+  dplyr::mutate(
+        Country = "Sweden",
+         Region = "All",
+        Date = ddmmyyyy(Date),
+         Code = paste0("SE"),
+        AgeInt = as.character(AgeInt),
+         Metric = "Count")
+
+
+## Append to main dataset (.rds file) ## ==========================
+
+df_tofilter <- Sweden_drive %>% 
+  mutate(Date = dmy(Date)) %>% 
+  filter(Date >= "2022-08-10", 
+         Date <= "2022-09-21") %>% 
+  distinct(Date)
+
+df_filtered <- Sweden_drive %>% 
+  mutate(Date = dmy(Date)) %>% 
+  anti_join(df_tofilter, by = c("Date" = "Date")) %>% 
+  mutate(Date = ddmmyyyy(Date))
+
+
+
+Sweden_appended <- bind_rows(df_filtered, 
+                             all_vax) %>%
+  dplyr::select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
+  sort_input_data()
+
+
+write_rds(Sweden_appended, paste0(dir_n, "SwedenVax", ".rds"))
+
+
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## South Africa PDFs into dataframe! 
 ## FAILED :( ##
 

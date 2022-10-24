@@ -28,27 +28,17 @@ data_source_v <- paste0(dir_n, "Data_sources/", ctr, "/vacc_", lubridate::today(
 #data_source_v <- paste0(dir_n, "Data_sources/", ctr, "/vacc_",today(), ".csv")
 
 
-# EA: needed to add the index [1] because there is more than one link, while the first one is the 
-# full database that we need
 
 ## MK: 06.07.2022: large file and give download error, so stopped this step and read directly instead
-#download.file(cases_url[1], destfile = data_source_c, mode = "wb")
-#download.file(deaths_url[1], destfile = data_source_d, mode = "wb")
+
 #download.file(vacc_url, destfile = data_source_v, mode = "wb")
 
 
 #JD: read in from Url was failing, I changed it to reading in the downloaded csv
-# cases
-#db_c <- read_delim(cases_url, delim = ";") %>% 
-# as_tibble()
-# deaths
-#db_d <- read_delim(deaths_url, delim = ";") %>% 
-#as_tibble()
 # Vaccines
 #db_v <- read_csv(data_source_v)
 
-#db_c <- read.csv(data_source_c, sep = ";")
-#db_d <- read.csv(data_source_d, sep = ";")
+
 #db_v <- read.csv(data_source_v, sep = ",")
 #db_v=read_csv(archive_read(data_source_v), col_types = cols())
 #db_v <- read_csv(vacc_url)
@@ -72,22 +62,20 @@ db_v2 <- db_v %>%
   mutate(date_f = ymd(date_f),
          Sex = case_when(Sex == "MASCULINO" ~ "m",
                          Sex == "FEMENINO" ~ "f"),
-         Age = as.integer(Age),
-         Age = case_when(Age < 0 ~ "UNK",
-                         Age > 100 ~ "100",
-                         is.na(Age) ~ "UNK",
-                         TRUE ~ as.character(Age)),
+         Age = case_when(Age < 0 ~ NA_integer_,
+                         Age > 100 ~ 100L,
+                         is.na(Age) ~ NA_integer_,
+                         TRUE ~ as.integer(Age)),
          Region = str_to_title(Region),
          Measure = case_when(Dosis == 1 ~ "Vaccination1", 
                              Dosis == 2 ~ "Vaccination2", 
                              Dosis == 3 ~ "Vaccination3",
                              Dosis == 4 ~ "Vaccination4",
                              Dosis == 5 ~ "Vaccination5",
-                             TRUE ~ "UNK")) %>% 
+                             Dosis == 6 ~ "Vaccination6")) %>% 
   group_by(date_f, Sex, Age, Region, Measure) %>% 
   summarise(new = n()) %>% 
-  ungroup() %>% 
-  filter(Measure != "UNK")
+  ungroup() 
 
 dates_f <- seq(min(db_v2$date_f), max(db_v2$date_f), by = '1 day')
 ages <- 0:100
@@ -95,7 +83,9 @@ ages <- 0:100
 db_v3 <- db_v2 %>% 
   tidyr::complete(Measure, Region, Sex, Age = ages, date_f = dates_f, fill = list(new = 0)) %>% 
   group_by(Region, Measure, Sex, Age) %>% 
-  mutate(Value = cumsum(new)) %>% 
+  mutate(Value = cumsum(new),
+         Age = case_when(is.na(Age) ~ "UNK",
+                         TRUE ~ as.character(Age))) %>% 
   ungroup() %>% 
   select(-new)
 
@@ -148,8 +138,8 @@ out <- db_all %>%
            Region == "Arequipa" ~ paste0("PE-ARE"),
            Region == "Ayacucho" ~ paste0("PE-AYA"),
            Region == "Cajamarca" ~ paste0("PE-CAJ"),
-           Region == "Callao" ~ paste0("PE-CUS"),
-           Region == "Cusco" ~ paste0("PE-CAL"),
+           Region == "Callao" ~ paste0("PE-CAL"),
+           Region == "Cusco" ~ paste0("PE-CUS"),
            Region == "Huancavelica" ~ paste0("PE-HUV"),
            Region == "Huanuco" ~ paste0("PE-HUC"),
            Region == "Ica" ~ paste0("PE-ICA"),
@@ -167,7 +157,7 @@ out <- db_all %>%
            Region == "Tacna" ~ paste0("PE-TAC"),
            Region == "Tumbes" ~ paste0("PE-TUM"),
            Region == "Ucayali" ~ paste0("PE-UCA"),
-           TRUE ~ "Other"
+           TRUE ~ Region
          ),
          Metric = "Count") %>% 
   sort_input_data()
