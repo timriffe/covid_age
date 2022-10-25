@@ -51,6 +51,29 @@ gs4_auth(email = Sys.getenv("email"))
 ```
 
 
+## CDC USA nationwide data 
+
+issue: lost python downloaded files from >09.06.2022 until <21.10.2022 
+
+Why I use these data to fill in the gaps? because as per CDC website, this is the data used for the graphs we are automating data from. 
+
+## these data are updated monthly; in case we may shift to it completely instead of python. 
+
+
+
+```{r}
+
+cdc_monthly <- data.table::fread("https://data.cdc.gov/api/views/n8mc-b4w4/rows.csv?accessType=DOWNLOAD&bom=true&format=true&delimiter=%3B")
+
+
+
+
+
+```
+
+
+
+
 
 # Vietnam- 
 
