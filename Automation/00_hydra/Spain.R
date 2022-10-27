@@ -21,6 +21,9 @@ dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 drive_auth(email = Sys.getenv("email"))
 gs4_auth(email = Sys.getenv("email"))
 
+
+## SOURCE <- "https://cnecovid.isciii.es/covid19/"
+
 url <- "https://cnecovid.isciii.es/covid19/resources/casos_hosp_uci_def_sexo_edad_provres.csv"
 
 data_source <- paste0(dir_n, "Data_sources/", ctr, "/all_",today(), ".xlsx")

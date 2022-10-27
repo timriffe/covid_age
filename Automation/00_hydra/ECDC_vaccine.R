@@ -56,7 +56,7 @@ Out= In %>%
   group_by(Short,TargetGroup, Measure) %>% 
   mutate(Value = cumsum(Value)) %>% 
   ungroup() %>%
-  mutate(Day= "7")%>%
+  mutate(Day= "5")%>%
   unite('ISODate', YearWeekISO, Day, sep="-", remove=FALSE)%>%
   mutate(Date= ISOweek::ISOweek2date(ISODate))%>%
   mutate(Age= recode(TargetGroup, 

@@ -27,12 +27,15 @@ knitr::opts_chunk$set(
 #{.unnumbered}
 ```
 
+*Brief*: This file is intended to do the side work that is not necessarily required to add in the automated scripts; for example: adding missing data for a certain period, download excel/ pdf files from website, etc. 
+
+Since this work is related to the already existing datasets and in order to keep things documented, I preferred to keep this work on the side of the existing 'automated' scripts. 
+
 
 ## ======= read common lines first ======
 
 
 ```{r}
-
 
 library(here)
 library(purrr)    
@@ -53,18 +56,39 @@ gs4_auth(email = Sys.getenv("email"))
 
 ## CDC USA nationwide data 
 
+##├ Date: 27.10.2022
+
 issue: lost python downloaded files from >09.06.2022 until <21.10.2022 
 
 Why I use these data to fill in the gaps? because as per CDC website, this is the data used for the graphs we are automating data from. 
 
-## these data are updated monthly; in case we may shift to it completely instead of python. 
+## these data are updated; in case we may shift to it completely instead of python. 
 
+I use this data for this purpose:
 
+https://data.cdc.gov/Case-Surveillance/United-States-COVID-19-Cases-and-Deaths-by-State-o/9mfq-cb36/data 
+
+Since we collect the 'confirmed' cases and deaths counts as published here, I will stick to this for consistency 
+
+https://covid.cdc.gov/covid-data-tracker/#demographics 
+
+## UNFORTUNATELY ALL THESE LINKS DOES NOT HAVE AGE GROUPS :( stopped for now. 
 
 ```{r}
 
-cdc_monthly <- data.table::fread("https://data.cdc.gov/api/views/n8mc-b4w4/rows.csv?accessType=DOWNLOAD&bom=true&format=true&delimiter=%3B")
+# info country and N drive address
+ctr          <- "USA_All" # it's a placeholder
+dir_n_source <- "N:/COVerAGE-DB/Automation/CDC"
+dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
+# Drive credentials
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
+
+cdc_archived <- data.table::fread(paste0(dir_n_source, "/Historical/", "United_States_COVID-19_Cases_and_Deaths_by_State_over_Time_-_ARCHIVED.csv"))
+
+raw_data <- cdc_archived %>% 
+  select(submission_date, conf_cases, conf_death)
 
 
 

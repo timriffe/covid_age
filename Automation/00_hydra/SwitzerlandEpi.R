@@ -64,7 +64,7 @@ process_age <- function(tbl, measure_name){
                   YearWeek = datum,
                   Value = sumTotal) %>% 
     dplyr::filter(!Region %in% c("CH01", "CH02", "CH03", "CH04", "CH05", "CH06", "CH07", "CHFL")) %>% 
-    dplyr::mutate(ISO_WEEK = str_replace(YearWeek,"^(\\d{4})(\\d{2})$", "\\1-W\\2-7"),
+    dplyr::mutate(ISO_WEEK = str_replace(YearWeek,"^(\\d{4})(\\d{2})$", "\\1-W\\2-5"),
                   Date = ISOweek::ISOweek2date(ISO_WEEK),
                   Age = str_extract(Age, "\\d+"),
                   Age = case_when(is.na(Age) ~ "UNK",
@@ -106,7 +106,7 @@ process_sex <- function(tbl, measure_name){
                   YearWeek = datum,
                   Value = sumTotal) %>% 
     dplyr::filter(!Region %in% c("CH01", "CH02", "CH03", "CH04", "CH05", "CH06", "CH07", "CHFL")) %>% 
-    dplyr::mutate(ISO_WEEK = str_replace(YearWeek,"^(\\d{4})(\\d{2})$", "\\1-W\\2-7"),
+    dplyr::mutate(ISO_WEEK = str_replace(YearWeek,"^(\\d{4})(\\d{2})$", "\\1-W\\2-5"),
                   Date = ISOweek::ISOweek2date(ISO_WEEK),
                   Sex = case_when(Sex == "male" ~ "m",
                                   Sex == "female" ~ "f",
