@@ -57,8 +57,6 @@ rdsData_date <- rdsData %>%
 ## Part II. Download the Excel files since 05.09.2021 or the most recent ===================
 ## Note: (data as of 04.09.2021, as in Usage note)
 
-
-
 urls <- read_html("https://www.health.gov.au/resources/collections/covid-19-vaccination-vaccination-data#") %>% 
   html_nodes("a ") %>% 
   html_attr('href') 

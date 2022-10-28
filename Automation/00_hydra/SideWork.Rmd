@@ -2556,12 +2556,14 @@ covid_links %>% write.csv("links.csv")
 
 ##├ 26.10.2022
 
+## The data collected manually have missing new cases & new deaths for the days: 04.07.2021 & 21.10.2021, respectively. IN order not to lose the series, and since we had the cumulative for both days, I calculated the new cases in these missing dates as a fraction from the preceeding respective dates. Though it is limitation (given it is one day fraction not a week, for example), I think it is reasonable to consider the calulcation as such. 
+
 ```{r}
 
 
 # info country and N drive address
 ctr     <- "Romania" # it's a placeholder
-ctr_deaths <- "Romania/DEATHS-JUNE2022"
+ctr_deaths <- "Romania/MissingData_June2022"
 dir_n   <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 
@@ -2570,16 +2572,24 @@ drive_auth(email = Sys.getenv("email"))
 gs4_auth(email = Sys.getenv("email"))
 
 
-deaths_path <- list.files(
+files_path <- list.files(
   path= paste0(dir_n, "Data_sources/", ctr_deaths),
   pattern = ".xlsx",
-  full.names = TRUE)
+  full.names = TRUE) %>% 
+  data.frame(files = .)
 
 
+deaths_path <- files_path %>% 
+  filter(str_detect(files, "deaths")) %>% 
+  dplyr::pull(files)
+
+cases_path <- files_path %>% 
+  filter(str_detect(files, "Cases")) %>% 
+  dplyr::pull(files)
+  
 deaths_df <- read_excel(deaths_path, sheet = "Deaths")
 
-
-epi_total <- deaths_df %>% 
+deaths_total <- deaths_df %>% 
   filter(Age == "TOT",
          !Sex %in% c("f", "m")) %>% 
   pivot_longer(cols = -c("Sex", "Age", "Measure"),
@@ -2616,9 +2626,62 @@ deaths_new <- bind_rows(deaths_age, deaths_sex) %>%
 #   filter(date_prep %in% c("10-06-2020", "11-06-2020")) %>% View()
 
 
-deaths_out <- bind_rows(deaths_new, epi_total)
+deaths_out <- bind_rows(deaths_new, deaths_total) %>% 
+  select(Age, Sex, Date = date_prep, Value = value, Measure) %>% 
+  mutate(Age = as.character(Age),
+         Date = ddmmyyyy(Date))
 
-## to continue when Larbi share the data 
+## to continue when Larbi share the data == Cases
+
+cases_df <- read_excel(cases_path, sheet = "database")
+
+prep_out <- function(tbl){
+  tbl %>% 
+  arrange(Date) %>% 
+  group_by(Sex, Age) %>% 
+  mutate(value = cumsum(Value),
+         Measure == "Cases") %>% 
+  ungroup() %>% 
+  select(Age, Sex, Date, value, Measure) 
+}
+
+
+cases_df_out <- cases_df %>% 
+  prep_out() %>% 
+  mutate(Age = as.character(Age),
+         Date = ddmmyyyy(Date)) %>% 
+  select(Age, Sex, Date, Value = value, Measure)
+  
+
+romania_out <- bind_rows(cases_df_out, deaths_out) %>% 
+  mutate(Metric = "Count",
+         Country = "Romania",
+         Region = "All",
+         Code = "RO",
+         AgeInt = case_when(Age == "80" ~ 25L,
+                            TRUE ~ 10L)) %>% 
+  sort_input_data()
+
+
+## read pre 10.06.2020 from the drive 
+
+
+
+at_rubric <- get_input_rubric() %>% 
+  dplyr::filter(Short == "RO")
+ss_i   <- at_rubric %>% dplyr::pull(Sheet)
+ss_db  <- at_rubric %>% dplyr::pull(Source)
+
+
+db_drive <- read_sheet(ss = ss_i, sheet = "pre-June-2020") %>% 
+  mutate(Value = as.numeric(Value))
+
+
+Out <- bind_rows(db_drive, romania_out) %>% 
+  sort_input_data()
+
+sheet_write(Out, ss = ss_i, sheet = "database")
+
 
 ```
 
