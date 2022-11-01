@@ -54,6 +54,29 @@ gs4_auth(email = Sys.getenv("email"))
 ```
 
 
+## NEPAL 
+
+
+```{r}
+
+
+at_rubric <- get_input_rubric() %>% 
+  dplyr::filter(Short == "NP")
+ss_i   <- at_rubric %>% dplyr::pull(Sheet)
+ss_db  <- at_rubric %>% dplyr::pull(Source)
+
+
+db_drive <- read_sheet(ss = ss_i, sheet = "database") %>% 
+  sort_input_data()
+
+sheet_write(db_drive, ss = ss_i, sheet = "database")
+
+
+```
+
+
+
+
 ## CDC USA nationwide data 
 
 ##├ Date: 27.10.2022

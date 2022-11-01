@@ -140,7 +140,7 @@ cz_cases_region_ss <-
 ################ DEATHS ###################
 ###########################################
 
-# Getting the data from the Health Ministery website
+# Getting the data from the Health Ministry website
 deaths_url <- "https://onemocneni-aktualne.mzcr.cz/api/v2/covid-19/umrti.csv"
 
 # TR: 7 Dec, 2021: this should be read in using read_csv() and colnames matched using select(),
@@ -152,7 +152,6 @@ cz_deaths_in <- read_csv(deaths_url) %>%
 cz_deaths2 <-
   cz_deaths_in %>% 
   select(Date = datum, Age = vek, Sex = pohlavi, code = kraj_nuts_kod, LAU1 = okres_lau_kod) %>% 
-
   mutate(Sex = case_when(Sex == "M" ~ "m",
                          TRUE ~ "f"), 
          code = ifelse(code == "", str_sub(LAU1, 1, 5), code)) %>% 
@@ -413,7 +412,8 @@ cz_spreadsheet_all <-
   mutate(Age = as.character(Age))
 
 out <- bind_rows(cz_spreadsheet_all, cz_spreadsheet_region) %>% 
-  dplyr::filter(Region != "UNK")
+  dplyr::filter(Region != "UNK") %>% 
+  sort_input_data()
 
 
 

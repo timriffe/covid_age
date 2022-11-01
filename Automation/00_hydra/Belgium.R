@@ -265,10 +265,7 @@ out <- bind_rows(db_nal,
                             Measure == "Vaccination5" & Age %in% c("25", "35", "45", "55","65","75") ~ 10L),
 
          date_f = Date,
-         Date = paste(sprintf("%02d",day(date_f)),
-                      sprintf("%02d",month(date_f)),
-                      year(date_f),
-                      sep="."),
+         Date = ddmmyyyy(date_f),
          Code = case_when(
            Region == "All" ~ paste0("BE"),
            Region == "Flanders" ~ paste0("BE-VLG"),
@@ -276,9 +273,25 @@ out <- bind_rows(db_nal,
            Region == "Brussels" ~ paste0("BE-BRU")),
          Metric = "Count") %>% 
   arrange(Region, date_f, Measure, Sex, suppressWarnings(as.integer(Age))) %>% 
-  select(Country, Region, Code,  Date, Sex, Age, AgeInt, Metric, Measure, Value)
+  select(Country, Region, Code,  Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
+  sort_input_data()
 
-#original final processing
+unique(out$Region)
+unique(out$Age)
+unique(out$Sex)
+unique(out$Date)
+unique(out$Measure)
+############################################
+#### saving database in N Drive ####
+############################################
+write_rds(out, paste0(dir_n, ctr, ".rds"))
+
+# updating hydra dashboard
+log_update(pp = ctr, N = nrow(out))
+
+# END #
+
+#original final processing ###############
 # out <- bind_rows(db_nal,
 #                  db_cd2 %>% 
 #                    filter(Region != "UNK"),
@@ -308,16 +321,5 @@ out <- bind_rows(db_nal,
 #   arrange(Region, date_f, Measure, Sex, suppressWarnings(as.integer(Age))) %>% 
 #   select(Country, Region, Code,  Date, Sex, Age, AgeInt, Metric, Measure, Value)
 
-unique(out$Region)
-unique(out$Age)
-unique(out$Sex)
-unique(out$Date)
-unique(out$Measure)
-############################################
-#### saving database in N Drive ####
-############################################
-write_rds(out, paste0(dir_n, ctr, ".rds"))
 
-# updating hydra dashboard
-log_update(pp = ctr, N = nrow(out))
 
