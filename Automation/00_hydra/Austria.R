@@ -225,7 +225,8 @@ vacc_recent <- vacc_today %>%
 # check (SideWork.Rmd) and so here we bind the processed_data once. 
 #vacc_out <- bind_rows(vacc3, processed_data, vacc_archive_2022, vacc_recent)
 
-vacc_out <- bind_rows(vacc3, vacc_archive_2022, vacc_recent)
+vacc_out <- bind_rows(vacc3, vacc_archive_2022, vacc_recent) %>% 
+  sort_input_data()
 
 
 ### combine case/death and vaccine data ####

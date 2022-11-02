@@ -366,10 +366,7 @@ vacc2 <- vacc2 %>%
 #                    #small_ages1, small_ages2
 #                    ) %>% 
   mutate(Date = ymd(Date),
-         Date = paste(sprintf("%02d",day(Date)),
-                      sprintf("%02d",month(Date)),
-                      year(Date),
-                      sep=".")) %>% 
+         Date = ddmmyyyy(Date)) %>% 
   sort_input_data()
 
 
@@ -387,5 +384,5 @@ vacc_out <- rbind(vacc_2021, vacc_2022) %>%
 
 write_rds(vacc_out, paste0(dir_n, ctr, ".rds"))
 
-log_update(pp = ctr, N = nrow(vacc_out))
+#log_update(pp = ctr, N = nrow(vacc_out))
 

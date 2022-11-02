@@ -81,6 +81,7 @@ dates_vacc_n <- db_n %>%
   sort()
 
 # reading new deaths from Drive
+## SA collects deaths data on weekly basis by age and sex, so it is preferable to keep. 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 db_drive <- read_sheet(ss = ss_i, sheet = "database")
 

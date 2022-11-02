@@ -29,12 +29,13 @@ Out= In %>%
   #select countries we need 
   subset(Region== "BG"| Region== "CY" | Region== "HR"| Region== "HU"|  Region== "IE"| 
           Region== "LU" | Region== "MT" | Region== "RO"| Region== "PL" | Region == "EL" | 
-           Region == "PT" | Region == "NO")%>%
+           Region == "PT" | Region == "NO" | Region == "NL")%>%
   select(YearWeekISO, 
          Vaccination1= FirstDose, 
          Vaccination2= SecondDose, 
          Vaccination3= DoseAdditional1, 
          Vaccination4 = DoseAdditional2, 
+         Vaccination5 = DoseAdditional3,
          Vaccinations = UnknownDose,
          Short=Region,TargetGroup)%>%
   #remove category medical personnel and long term care residents 
@@ -55,7 +56,7 @@ Out= In %>%
   group_by(Short,TargetGroup, Measure) %>% 
   mutate(Value = cumsum(Value)) %>% 
   ungroup() %>%
-  mutate(Day= "7")%>%
+  mutate(Day= "5")%>%
   unite('ISODate', YearWeekISO, Day, sep="-", remove=FALSE)%>%
   mutate(Date= ISOweek::ISOweek2date(ISODate))%>%
   mutate(Age= recode(TargetGroup, 
@@ -83,7 +84,8 @@ Out= In %>%
                      `RO`="Romania",
                      `EL`="Greece",
                      `PT`="Portugal",
-                     `NO`="Norway")) %>% 
+                     `NO`="Norway",
+                     `NL` = "Netherlands")) %>% 
   mutate(
     Metric = "Count",
     Sex= "b",
@@ -91,27 +93,25 @@ Out= In %>%
   tidyr::complete(Age, nesting(Date, Measure, Country, Metric, Sex, Region), fill=list(Value=0)) %>%  
   mutate(
     Date = ymd(Date),
-    Date = paste(sprintf("%02d",day(Date)),    
-                 sprintf("%02d",month(Date)),  
-                 year(Date),sep="."),
+    Date = ddmmyyyy(Date),
     Code = case_when( 
-      Country == "Bulgaria" ~  paste0("BG"),
-      Country == "Croatia" ~  paste0("HR"),
-      Country == "Cyprus" ~  paste0("CY"),
-      Country == "Hungary" ~  paste0("HU"),
-      Country == "Ireland" ~  paste0("IE"),
-      Country == "Luxembourg" ~  paste0("LU"),
-      Country == "Malta" ~  paste0("MT"),
-      Country == "Poland" ~  paste0("PL"),
-      Country == "Romania" ~  paste0("RO"),
+      Country == "Bulgaria" ~  "BG",
+      Country == "Croatia" ~  "HR",
+      Country == "Cyprus" ~  "CY",
+      Country == "Hungary" ~  "HU",
+      Country == "Ireland" ~  "IE",
+      Country == "Luxembourg" ~  "LU",
+      Country == "Malta" ~  "MT",
+      Country == "Poland" ~  "PL",
+      Country == "Romania" ~  "RO",
       Country == "Greece" ~ "GR",
       Country == "Portugal" ~ "PT",
+      Country == "Netherlands" ~ "NL",
       Country == "Norway" ~ "NO"))%>% 
   mutate(AgeInt = case_when(
     Age == "15" ~ 3L,
     Age == "18" ~ 7L,
     Age == "25" ~ 25L,
-    Age == "15" ~ 3L,
     Age == "50" ~ 10L,
     Age == "60" ~ 10L,
     Age == "70" ~ 10L,

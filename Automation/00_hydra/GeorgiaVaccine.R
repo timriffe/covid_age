@@ -78,7 +78,7 @@ processed_data <- vax_df %>%
                       names_to = "Measure",
                       values_to = "Value") %>% 
   tidyr::separate(Age, into = c("Age", "nothing"), sep = "[-+]") %>% 
-  dplyr::mutate(AgeInt = case_when(Age == "75" ~ 35L,
+  dplyr::mutate(AgeInt = case_when(Age == "75" ~ 30L,
                                    Age == "12" ~ 4L,
                                    Age == "16" ~ 2L,
                                    Age == "18" ~ 32L,

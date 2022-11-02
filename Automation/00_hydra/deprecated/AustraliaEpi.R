@@ -132,7 +132,7 @@ out <- bind_rows(db_drive, python_data)
 
 write_rds(out, paste0(dir_n, ctr, ".rds"))
 
-log_update(pp = ctr, N = nrow(out)) 
+#log_update(pp = ctr, N = nrow(out)) 
 
 
 ## END ## 
