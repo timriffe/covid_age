@@ -79,7 +79,16 @@ DataArchive <- read_rds(paste0(dir_n, ctr, ".rds")) %>%
   ## we eventually end up with duplicates 
   ## so to avoid this: I here group be all the columns and take the maximum Value
   dplyr::group_by(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure) %>% 
-  dplyr::summarise(Value = max(Value))
+  dplyr::summarise(Value = max(Value)) %>% 
+  dplyr::ungroup() 
+
+
+date_archive <- DataArchive %>% 
+ # sort_input_data() %>% 
+  dplyr::mutate(Date = dmy(Date)) %>%
+  dplyr::distinct(Date) %>% 
+  dplyr::filter(Date == max(Date)) %>%
+  dplyr::pull(Date) 
  
 
 #Read in sheets 
@@ -118,6 +127,14 @@ In_vaccine_total <- In_vaccine_total_raw %>%
          Vaccination2 = contains("Personas con pauta completa"),
          Vaccination3 = contains("dosis de recuerdo(2)"),
          Date = `Fecha de la última vacuna registrada(1)`)
+
+source_date <- In_vaccine_total %>% 
+  dplyr::mutate(Date = dmy(Date)) %>% 
+  dplyr::distinct(Date) %>% 
+  dplyr::filter(Date == max(Date, na.rm = TRUE)) %>% 
+  dplyr::pull(Date)
+
+if(source_date > date_archive) {
 
 In_vax_totals <- In_vaccine_total_s %>% 
   select(Region = "",
@@ -431,6 +448,14 @@ zip::zipr(zipname,
           include_directories = TRUE)
 
 file.remove(data_source)
+
+
+} else{
+  
+  log_update(pp = ctr, N = 0)
+}
+
+
 
 ## END ## 
 ####################################################

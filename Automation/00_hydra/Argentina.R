@@ -102,8 +102,9 @@ write_rds(out, paste0(dir_n, ctr, ".rds"))
 # updating hydra dashboard
 log_update(pp = ctr, N = nrow(out))
 
+## END ##
 
-# Previous version provided by Ivan
+# Previous version provided by Ivan ========================
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # download zip from covidstat server and unzip

@@ -54,7 +54,7 @@ vacc2$YearWeekISO <- gsub("^(.{4})(.*)$",         # Apply gsub
                   "\\1-W\\2",
                   vacc2$YearWeekISO)
 vacc2 <- vacc2 %>% 
-  mutate(Day= "7")%>%
+  mutate(Day= "5")%>%
   unite('ISODate', YearWeekISO, Day, sep="-", remove=FALSE)%>%
   mutate(Date= ISOweek::ISOweek2date(ISODate))
 vacc2 <- vacc2[-c(1,2,7)]
@@ -118,7 +118,7 @@ vaccsex2$YearWeekISO <- gsub("^(.{4})(.*)$",         # Apply gsub
                           "\\1-W\\2",
                           vaccsex2$YearWeekISO)
 vaccsex2 <- vaccsex2 %>% 
-  mutate(Day= "7")%>%
+  mutate(Day= "5")%>%
   unite('ISODate', YearWeekISO, Day, sep="-", remove=FALSE)%>%
   mutate(Date= ISOweek::ISOweek2date(ISODate))
 vaccsex2 <- vaccsex2[-c(1,2,7)]
@@ -199,8 +199,9 @@ zip::zipr(zipname,
 
 file.remove(data_source)
 
+## END 
 
-## Historical code
+## Historical code ===================
 
 
 # ##death by sex

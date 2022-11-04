@@ -8,7 +8,7 @@ if (! "email" %in% ls()){
 # info country and N drive address
 ctr    <- "Norway_Vaccine"
 dir_n  <- "N:/COVerAGE-DB/Automation/Hydra/"
-dir_n_source <- "N:/COVerAGE-DB/Automation/Norway/"
+dir_n_source <- "N:/COVerAGE-DB/Automation/Hydra/Data_sources/"
 
 
 # Drive credentials
@@ -116,6 +116,43 @@ vacc_today <- data_today %>%
          Date, Age, AgeInt, Sex, Measure, Metric, Value)
 
 
+## HERE SHOULD START THE DAILY PROCESSES ## 
+
+## read historical saved data 
+
+vacc_historical <- readRDS(paste0(dir_n, "Norway_Vaccine.rds")) %>% 
+  mutate(Date = dmy(Date))
+
+vacc_out <- rbind(vacc_today, vacc_historical) %>% 
+  mutate(
+     Date = ymd(Date),
+     Date = paste(sprintf("%02d",day(Date)),    
+                  sprintf("%02d",month(Date)),  
+                  year(Date),sep="."))%>% 
+  select(Country, Region, Code, Date, Sex, 
+         Age, AgeInt, Metric, Measure, Value)%>% 
+  mutate(Value = as.character(Value)) %>% 
+  sort_input_data() %>% 
+  unique()
+
+#upload 
+
+write_rds(vacc_out, paste0(dir_n, ctr, ".rds"))
+
+
+log_update("Norway_Vaccine", N = nrow(vacc_out))
+
+
+## Keep a copy of today's data 
+
+write_csv(data_today,
+           file = paste0(dir_n_source, ctr, "/", today(), ".csv"))
+
+
+## ================== historical coding trials ##===============
+
+
+
 ## IN CASE NEEDED: HISTORIC DATA reading; cleaning and merging;
 ## from 13.03.2021 till 11.07.2022
 ## these historical data is by day, so we have to cumsum. 
@@ -201,40 +238,6 @@ vacc_today <- data_today %>%
 #  write_rds(vacc_out_cum, paste0(dir_n, ctr, ".rds"))
 #
 
-## HERE SHOULD START THE DAILY PROCESSES ## 
-
-## read historical saved data 
-
-vacc_historical <- readRDS(paste0(dir_n, "Norway_Vaccine.rds")) %>% 
-  mutate(Date = dmy(Date))
-
-vacc_out <- rbind(vacc_today, vacc_historical) %>% 
-  mutate(
-     Date = ymd(Date),
-     Date = paste(sprintf("%02d",day(Date)),    
-                  sprintf("%02d",month(Date)),  
-                  year(Date),sep="."))%>% 
-  select(Country, Region, Code, Date, Sex, 
-         Age, AgeInt, Metric, Measure, Value)%>% 
-  mutate(Value = as.character(Value)) %>% 
-  sort_input_data() %>% 
-  unique()
-
-#upload 
-
-write_rds(vacc_out, paste0(dir_n, ctr, ".rds"))
-
-
-log_update("Norway_Vaccine", N = nrow(vacc_out))
-
-
-## Keep a copy of today's data 
-
-write_csv(vacc_today,
-           file = paste0(dir_n_source, today(), ".csv"))
-
-
-## ================== historical coding trials ##===============
 
 # all_paths <-
 #   list.files(path = dir_n_source,

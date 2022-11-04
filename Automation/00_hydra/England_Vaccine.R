@@ -16,6 +16,9 @@ dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 drive_auth(email = Sys.getenv("email"))
 gs4_auth(email = Sys.getenv("email"))
 
+#Website <- https://coronavirus.data.gov.uk/details/vaccinations?areaType=nation&areaName=England
+#api-page <- https://coronavirus.data.gov.uk/details/download
+
 vacc <- read.csv("https://api.coronavirus.data.gov.uk/v2/data?areaType=nation&areaCode=E92000001&metric=vaccinationsAgeDemographics&format=csv")
 vacc <- vacc %>% 
   select(Date = date, Age = age, 

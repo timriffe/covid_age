@@ -128,7 +128,7 @@ Vaccinations1and2 <-
             names_sep = "_") %>% 
   mutate(Measure = case_when(Measure == "par" ~ "Vaccination1",
                              Measure == "fully" ~ "Vaccination2"),
-         Date = ISOweek::ISOweek2date(paste(week, "7", sep = "-")),
+         Date = ISOweek::ISOweek2date(paste(week, "5", sep = "-")),
          Date = ddmmyyyy(Date),
          Age = gsub(Age, pattern = "age",replacement = ""),
          Age = case_when(Age == "0to9" ~ "0",
@@ -188,7 +188,7 @@ weekly_Boosters <-
                        Age == "5" ~ 7L,
                        Age == "12" ~ 8L,
                        TRUE ~ 10L),
-    Date = ISOweek::ISOweek2date(paste(week, "7", sep = "-")),
+    Date = ISOweek::ISOweek2date(paste(week, "5", sep = "-")),
          Date = ddmmyyyy(Date),
          # Date = dmy(paste(day, month, year, sep = "-")),
          # Date = ddmmyyyy(Date),

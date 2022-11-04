@@ -27,12 +27,15 @@ knitr::opts_chunk$set(
 #{.unnumbered}
 ```
 
+*Brief*: This file is intended to do the side work that is not necessarily required to add in the automated scripts; for example: adding missing data for a certain period, download excel/ pdf files from website, etc. 
+
+Since this work is related to the already existing datasets and in order to keep things documented, I preferred to keep this work on the side of the existing 'automated' scripts. 
+
 
 ## ======= read common lines first ======
 
 
 ```{r}
-
 
 library(here)
 library(purrr)    
@@ -49,6 +52,50 @@ drive_auth(email = Sys.getenv("email"))
 gs4_auth(email = Sys.getenv("email"))
 
 ```
+
+
+## CDC USA nationwide data 
+
+##├ Date: 27.10.2022
+
+issue: lost python downloaded files from >09.06.2022 until <21.10.2022 
+
+Why I use these data to fill in the gaps? because as per CDC website, this is the data used for the graphs we are automating data from. 
+
+## these data are updated; in case we may shift to it completely instead of python. 
+
+I use this data for this purpose:
+
+https://data.cdc.gov/Case-Surveillance/United-States-COVID-19-Cases-and-Deaths-by-State-o/9mfq-cb36/data 
+
+Since we collect the 'confirmed' cases and deaths counts as published here, I will stick to this for consistency 
+
+https://covid.cdc.gov/covid-data-tracker/#demographics 
+
+## UNFORTUNATELY ALL THESE LINKS DOES NOT HAVE AGE GROUPS :( stopped for now. 
+
+```{r}
+
+# info country and N drive address
+ctr          <- "USA_All" # it's a placeholder
+dir_n_source <- "N:/COVerAGE-DB/Automation/CDC"
+dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
+
+# Drive credentials
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
+
+cdc_archived <- data.table::fread(paste0(dir_n_source, "/Historical/", "United_States_COVID-19_Cases_and_Deaths_by_State_over_Time_-_ARCHIVED.csv"))
+
+raw_data <- cdc_archived %>% 
+  select(submission_date, conf_cases, conf_death)
+
+
+
+
+```
+
+
 
 
 
@@ -2505,4 +2552,157 @@ covid_links <- all_links %>%
 
 covid_links %>% write.csv("links.csv")
 ```
+
+
+##├ 26.10.2022
+
+## The data collected manually have missing new cases & new deaths for the days: 04.07.2021 & 21.10.2021, respectively. IN order not to lose the series, and since we had the cumulative for both days, I calculated the new cases in these missing dates as a fraction from the preceeding respective dates. Though it is limitation (given it is one day fraction not a week, for example), I think it is reasonable to consider the calulcation as such. 
+
+```{r}
+
+
+# info country and N drive address
+ctr     <- "Romania" # it's a placeholder
+ctr_deaths <- "Romania/MissingData_June2022"
+dir_n   <- "N:/COVerAGE-DB/Automation/Hydra/"
+
+
+# Drive credentials
+drive_auth(email = Sys.getenv("email"))
+gs4_auth(email = Sys.getenv("email"))
+
+
+files_path <- list.files(
+  path= paste0(dir_n, "Data_sources/", ctr_deaths),
+  pattern = ".xlsx",
+  full.names = TRUE) %>% 
+  data.frame(files = .)
+
+
+deaths_path <- files_path %>% 
+  filter(str_detect(files, "deaths")) %>% 
+  dplyr::pull(files)
+
+cases_path <- files_path %>% 
+  filter(str_detect(files, "Cases")) %>% 
+  dplyr::pull(files)
+  
+deaths_df <- read_excel(deaths_path, sheet = "Deaths")
+
+deaths_total <- deaths_df %>% 
+  filter(Age == "TOT",
+         !Sex %in% c("f", "m")) %>% 
+  pivot_longer(cols = -c("Sex", "Age", "Measure"),
+               names_to = "date_prep",
+               values_to = "value") %>% 
+  mutate(date_prep = format(as.Date(as.numeric(date_prep), origin = "1899-12-30"), "%Y-%m-%d"))
+
+
+deaths_age <- deaths_df %>% 
+  filter(Measure == "Deaths" & Age != "TOT")
+
+
+deaths_sex <- deaths_df %>% 
+  filter(Measure == "Deaths" & Sex %in% c("f", "m"))
+
+deaths_new <- bind_rows(deaths_age, deaths_sex) %>% 
+  mutate(across(.cols = -c("Sex", "Age", "Measure"),
+                .fns = ~ replace_na(.x, 0))) %>% 
+  pivot_longer(cols = -c("Sex", "Age", "Measure"),
+               names_to = "date_prep",
+               values_to = "Value") %>% 
+  mutate(date_prep = format(as.Date(as.numeric(date_prep), origin = "1899-12-30"), "%Y-%m-%d")) %>%
+  arrange(date_prep) %>% 
+  group_by(Sex, Age) %>% 
+  mutate(value = cumsum(Value),
+         Measure == "Deaths") %>% 
+  ungroup() %>% 
+  select(Age, Sex, date_prep, value, Measure) 
+#  pivot_wider(names_from = date_prep, values_from = value)
+  # mutate(across(.cols = -c("Sex", "Age", "Measure"),
+  #               .fns = ~ cumsum(.x)))
+
+# deaths_new %>% 
+#   filter(date_prep %in% c("10-06-2020", "11-06-2020")) %>% View()
+
+
+deaths_out <- bind_rows(deaths_new, deaths_total) %>% 
+  select(Age, Sex, Date = date_prep, Value = value, Measure) %>% 
+  mutate(Age = as.character(Age),
+         Date = ddmmyyyy(Date))
+
+## to continue when Larbi share the data == Cases
+
+cases_df <- read_excel(cases_path, sheet = "database")
+
+prep_out <- function(tbl){
+  tbl %>% 
+  arrange(Date) %>% 
+  group_by(Sex, Age) %>% 
+  mutate(value = cumsum(Value),
+         Measure == "Cases") %>% 
+  ungroup() %>% 
+  select(Age, Sex, Date, value, Measure) 
+}
+
+
+cases_df_out <- cases_df %>% 
+  prep_out() %>% 
+  mutate(Age = as.character(Age),
+         Date = ddmmyyyy(Date)) %>% 
+  select(Age, Sex, Date, Value = value, Measure)
+  
+
+romania_out <- bind_rows(cases_df_out, deaths_out) %>% 
+  mutate(Metric = "Count",
+         Country = "Romania",
+         Region = "All",
+         Code = "RO",
+         AgeInt = case_when(Age == "80" ~ 25L,
+                            TRUE ~ 10L)) %>% 
+  sort_input_data()
+
+
+## read pre 10.06.2020 from the drive 
+
+
+
+at_rubric <- get_input_rubric() %>% 
+  dplyr::filter(Short == "RO")
+ss_i   <- at_rubric %>% dplyr::pull(Sheet)
+ss_db  <- at_rubric %>% dplyr::pull(Source)
+
+
+db_drive <- read_sheet(ss = ss_i, sheet = "pre-June-2020") %>% 
+  mutate(Value = as.numeric(Value))
+
+
+Out <- bind_rows(db_drive, romania_out) %>% 
+  sort_input_data()
+
+sheet_write(Out, ss = ss_i, sheet = "database")
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
