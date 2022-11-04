@@ -143,4 +143,4 @@ out <- rbind(previous, togo_cases_out, togo_deaths_out) %>%
 
 
 write_rds(out, paste0(dir_n, "Togo.rds"))
-log_update(pp = ctr, N = nrow(out))
+#log_update(pp = ctr, N = nrow(out))

@@ -16,6 +16,39 @@ drive_auth(email = Sys.getenv("email"))
 gs4_auth(email = Sys.getenv("email"))
 
 
+
+## Webiste_source <- "https://data.rivm.nl/covid-19/"
+
+## Functions ## ===========================
+
+## MK 04.11.2022: I noticed the values are changing to decimals after using this function, 
+## and since we have only 223 cases that are <50 age, I suggest not using this function anymore, so I stopped its working.
+
+
+
+# Just for cases, we need to redistribute the Age
+# '<50'. This can happen after cumulative sums
+# redistribute_under50 <- function(chunk){
+#   u50   <- chunk %>% filter(Age == "<50")
+#   
+#   chunk <- chunk %>% filter(Age != "<50")
+#   if (nrow(u50)>0){
+#     chunk <-
+#       chunk %>% 
+#       mutate(au50 = Age %in% c("0","10","20","30","40"),
+#              au50PDF = Value / sum(Value[au50]),
+#              au50PDF = ifelse(is.nan(au50PDF), 0, au50PDF),
+#              au50PDF = ifelse(au50, au50PDF, 0),
+#              Value = Value + au50PDF * u50$Value) %>% 
+#       select(-one_of(c("au50","au50PDF")))
+#   }
+#   chunk
+# }
+
+# this is convoluted. To redistribute the N cases that died
+# under age 50, we need to cumulate all the other ages over
+# time to get the distribution at each time point.
+
 # this is specifically for the way NL records isoweeks
 isoweek_to_date_hack <- function(ISOWEEK){
   WK <- ISOWEEK %% 100
@@ -28,34 +61,27 @@ isoweek_to_date_hack <- function(ISOWEEK){
   out
 }
 
+
+## DATA ## ==========================
+
+## This data file starts from 01.01.2020 till 03.10.2021 
+
+cases_2020 <- read.csv2("https://data.rivm.nl/covid-19/COVID-19_casus_landelijk_tm_03102021.csv") %>% 
+  mutate(Date_file = as.Date(Date_file),
+         Date_statistics = ymd(Date_statistics))
+
+## This data file starts from 04.10.2021 till now 
+
 cases_url <- "https://data.rivm.nl/covid-19/COVID-19_casus_landelijk.csv"
 
-NL <- read_delim(cases_url, delim = ";")
+cases_2021 <- read_delim(cases_url, delim = ";")
 
-dates_all <- seq(dmy("01.03.2020"), today(), by = "days")
+## binding to work on the manipulation 
 
-# Just for cases, we need to redistribute the Age
-# '<50'. This can happen after cumulative sums
-redistribute_under50 <- function(chunk){
-  u50   <- chunk %>% filter(Age == "<50")
-  
-  chunk <- chunk %>% filter(Age != "<50")
-  if (nrow(u50)>0){
-    chunk <-
-      chunk %>% 
-      mutate(au50 = Age %in% c("0","10","20","30","40"),
-             au50PDF = Value / sum(Value[au50]),
-             au50PDF = ifelse(is.nan(au50PDF), 0, au50PDF),
-             au50PDF = ifelse(au50, au50PDF, 0),
-             Value = Value + au50PDF * u50$Value) %>% 
-      select(-one_of(c("au50","au50PDF")))
-  }
-  chunk
-}
+NL <- bind_rows(cases_2020, cases_2021)
 
-# this is convoluted. To redistribute the N cases that died
-# under age 50, we need to cumulate all the other ages over
-# time to get the distribution at each time point.
+dates_all <- seq(dmy("01.01.2020"), today(), by = "days")
+
 Cases1 <-
   NL %>%
   mutate(Sex = case_when(
@@ -72,7 +98,7 @@ Cases1 <-
                          Agegroup == "70-79" ~ "70",
                          Agegroup == "80-89" ~ "80",
                          Agegroup == "90+" ~ "90",
-                         Agegroup == "<50" ~ "<50",  # can correct later.
+                         Agegroup == "<50" ~ "UNK",  # can correct later; 223 cases, moved to UNK to avoid decimals in Value.
                          Agegroup == "Unknown" ~ "UNK")
          ) %>% 
   group_by(Date_statistics, Sex, Age, Province) %>% 
@@ -96,7 +122,7 @@ Cases_total <-
                     Agegroup == "70-79" ~ "70",
                     Agegroup == "80-89" ~ "80",
                     Agegroup == "90+" ~ "90",
-                    Agegroup == "<50" ~ "<50",  # can correct later.
+                    Agegroup == "<50" ~ "UNK",  # can correct later.
                     Agegroup == "Unknown" ~ "UNK")
   ) %>% 
   group_by(Date_statistics, Sex, Age) %>% 
@@ -125,18 +151,16 @@ Cases2 <-
   arrange(Province, Date_statistics, Sex, Age) %>% 
   select(date = Date_statistics,Region = Province, Sex, Age, Value) %>% 
   group_by(date, Sex) %>% 
-  do(redistribute_under50(chunk = .data)) %>% 
+ # do(redistribute_under50(chunk = .data)) %>% # stop this as result in decimals Value
   ungroup() %>% 
   mutate(Country = "Netherlands",
          #Region = Province,
-         Date = paste(sprintf("%02d", day(date)),
-                      sprintf("%02d", month(date)),
-                      year(date), sep = "."),
+         Date = ddmmyyyy(date),
          Code = case_when(
            Region == "All" ~ "NL",
            Region == "Drenthe" ~ "NL-DR",
            Region == "Flevoland" ~ "NL-FL",
-           Region == "Fryslân" ~ "NL-FR",
+           Region %in% c("Fryslân", "FryslÃ¢n") ~ "NL-FR",
            Region == "Gelderland" ~ "NL-GE",
            Region == "Groningen" ~ "NL-GR",
            Region == "Limburg" ~ "NL-LI",
@@ -177,7 +201,7 @@ Deaths <- NL %>%
     # assign date to end of respective week,
     # implies week sampling of deaths.
     date = isoweek_to_date_hack(Week_of_death),
-    Age = case_when(Agegroup == "<50" ~ "0",
+    Age = case_when(Agegroup == "<50" ~ "UNK",
                     Agegroup == "50-59" ~ "50",
                     Agegroup == "60-69" ~ "60",
                     Agegroup == "70-79" ~ "70",
@@ -216,9 +240,7 @@ Deaths2 <-
     ungroup() %>% 
     mutate(Country = "Netherlands",
            #Region = "All",
-           Date = paste(sprintf("%02d", day(date)),
-                        sprintf("%02d", month(date)),
-                        year(date), sep = "."),
+           Date = ddmmyyyy(date),
            AgeInt = case_when(
              Age == "0" ~ 50,
              Age == "90" ~ 15,
@@ -231,7 +253,7 @@ Deaths2 <-
              Region == "All" ~ "NL",
              Region == "Drenthe" ~ "NL-DR",
              Region == "Flevoland" ~ "NL-FL",
-             Region == "Fryslân" ~ "NL-FR",
+             Region %in% c("Fryslân", "FryslÃ¢n") ~ "NL-FR",
              Region == "Gelderland" ~ "NL-GE",
              Region == "Groningen" ~ "NL-GR",
              Region == "Limburg" ~ "NL-LI",
@@ -252,9 +274,10 @@ Deaths2 <-
 out <- 
   bind_rows(Cases2, Deaths2) %>%
   mutate(date_f = dmy(Date)) %>% 
-  filter(date_f >= dmy("01.03.2020")) %>% 
+  # filter(date_f >= dmy("01.03.2020")) %>% 
   arrange(date_f, Sex, Measure, suppressWarnings(as.integer(Age))) %>% 
-  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
+  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
+  sort_input_data()
 
 ############################################
 #### uploading database to Google Drive ####
@@ -293,7 +316,7 @@ file.remove(data_source)
 
 
 
-# end!
+# end! =================
 
 
 

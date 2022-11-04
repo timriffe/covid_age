@@ -89,7 +89,8 @@ select(Date= date,total_fully_12_17,total_fully_18_24,
 
 #put together 
 
-Out= rbind(Out_vaccine1, Out_vaccine2)
+Out= rbind(Out_vaccine1, Out_vaccine2) %>% 
+  sort_input_data()
 
 
 #save output data

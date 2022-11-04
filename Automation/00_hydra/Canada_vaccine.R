@@ -28,7 +28,7 @@ IN<- read_csv("https://health-infobase.canada.ca/src/data/covidLive/vaccination-
 
 
 #Process data 
-Out <- IN %>%
+raw_data <- IN %>%
   select(Region = prename, 
          Date = week_end, 
          Sex = sex, 
@@ -44,9 +44,10 @@ Out <- IN %>%
   mutate(Sex = recode(Sex,
                       `Unknown`= "UNK",
                       `Not reported` = "UNK",
-                      `Other` = "UNK"))
-Out$Value <- as.numeric(Out$Value)
-Out <- Out %>% 
+                      `Other` = "UNK"),
+         Value = as.numeric(Value))
+
+processed_data <- raw_data %>% 
   mutate(AgeInt = case_when(
     Age == "0-4" ~ 5L,
     Age == "05-11" ~ 7L,
@@ -61,7 +62,9 @@ Out <- Out %>%
     Age == "40-49" ~ 10L,
     Age == "50-59" ~ 10L,
     Age == "60-69" ~ 10L,
+    Age == "70-74" ~ 5L,
     Age == "70-79" ~ 10L,
+    Age == "75-79" ~ 5L,
     Age == "80+" ~ 25L,
     Age == "UNK" ~ NA_integer_,
     Age == "All ages" ~ NA_integer_,
@@ -91,56 +94,38 @@ Out <- Out %>%
   summarise(Value = sum(Value)) %>% 
   # mutate(Value=recode(Value, 
   #                   `<5`="2"))%>%
-  subset(!is.na(Value)) %>%  #Mostly in Quebec Vaccination2 had na. decided to remove them, because according to vaccine brands 
-                              #and time they started to vaccinate there should be a Vaccine2, so replacing with 0 seems like the wrong information
-  mutate(Code = recode(Region,
-                      "Newfoundland and Labrador" = "CA-NL",
-                      "Nova Scotia" = "CA-NS",
-                      "Quebec"= "CA-QC", 
-                      "Manitoba" ="CA-MB",
-                      "Saskatchewan" ="CA-SK",
-                      "Yukon"= "CA-YT",
-                      "Northwest Territories"= "CA-NT",
-                      "Nunavut"= "CA-NU",
-                      "Prince Edward Island" ="CA-PE",
-                      "New Brunswick" ="CA-NB",
-                      "Alberta"= "CA-AB",
-                      "British Columbia"= "CA-BC",
-                      "Ontario" ="CA-ON",
-                      "Canada"= "CA"), 
+  subset(!is.na(Value)) #Mostly in Quebec Vaccination2 had na. decided to remove them, because according to vaccine brands 
+#and time they started to vaccinate there should be a Vaccine2, so replacing with 0 seems like the wrong information
+
+
+
+Out <- processed_data %>%  
+  mutate(Code = case_when(Region == "Newfoundland and Labrador" ~ "CA-NL",
+                          Region == "Nova Scotia" ~ "CA-NS",
+                          Region == "Quebec" ~ "CA-QC", 
+                          Region == "Manitoba" ~ "CA-MB",
+                          Region == "Saskatchewan" ~ "CA-SK",
+                          Region == "Yukon" ~ "CA-YT",
+                          Region == "Northwest Territories" ~ "CA-NT",
+                          Region == "Nunavut" ~ "CA-NU",
+                          Region == "Prince Edward Island" ~ "CA-PE",
+                          Region == "New Brunswick" ~ "CA-NB",
+                          Region == "Alberta" ~ "CA-AB",
+                          Region == "British Columbia" ~ "CA-BC",
+                          Region == "Ontario" ~ "CA-ON",
+                          Region == "Canada" ~ "CA"), 
        Region = recode(Region, 
-                       `Canada`="All"))%>% 
-  mutate(
-    Date = ymd(Date),
-    Date = paste(sprintf("%02d",day(Date)),    
-                 sprintf("%02d",month(Date)),  
-                 year(Date),sep="."),
-    # Code = paste("CA",Short),
-    Country ="Canada" ,
-    Metric = "Count",)%>% 
+                       `Canada`="All"),
+       Date = ymd(Date),
+       Date = ddmmyyyy(Date),
+      # Code = paste("CA",Short),
+       Country ="Canada" ,
+       Metric = "Count",)%>% 
   select(Country, Region, Code, Date, Sex, 
-         Age, AgeInt, Metric, Measure, Value) 
+         Age, AgeInt, Metric, Measure, Value) %>% 
+  sort_input_data()
   
 
-#Contains all values with >, remove > and impute 2
-# 
-# Out1 <- 
-#   Out %>% subset(substr(Value,1,1)== ">") %>%
-#   separate(Value, c("col", "Value"), ">", fill = "left") %>%
-#   mutate(Value = as.numeric(Value), 
-#          Value = Value+2,
-#          Value = as.character(Value)) %>%
-#   select(-col) 
-#   
-# # Contains all data without <> 
-# 
-# Out2 <- 
-#   Out %>% 
-#   subset(substr(Value,1,1)!= ">")
-# 
-# #put both togehter again
-# 
-# outfinal <- bind_rows(Out1, Out2)
 
 #save output data 
 write_rds(Out, paste0(dir_n, ctr, ".rds"))
@@ -169,3 +154,27 @@ zip::zipr(zipname,
           include_directories = TRUE)
 
 file.remove(data_source)
+
+## history ============
+
+#Contains all values with >, remove > and impute 2
+# 
+# Out1 <- 
+#   Out %>% subset(substr(Value,1,1)== ">") %>%
+#   separate(Value, c("col", "Value"), ">", fill = "left") %>%
+#   mutate(Value = as.numeric(Value), 
+#          Value = Value+2,
+#          Value = as.character(Value)) %>%
+#   select(-col) 
+#   
+# # Contains all data without <> 
+# 
+# Out2 <- 
+#   Out %>% 
+#   subset(substr(Value,1,1)!= ">")
+# 
+# #put both togehter again
+# 
+# outfinal <- bind_rows(Out1, Out2)
+
+

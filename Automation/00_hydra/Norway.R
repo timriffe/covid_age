@@ -235,8 +235,9 @@ out <-
                       sprintf("%02d",month(Date)),  
                       year(Date),sep="."),
          Code = paste0("NO")) %>% 
-  sort_input_data() %>% 
-  unique()
+  unique() %>% 
+  sort_input_data()  
+  
 
 # Push to Drive ####
 ####################

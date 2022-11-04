@@ -136,7 +136,7 @@ data <- rbind(cases_out, info_out, previous) %>%
 write_rds(data, paste0(dir_n, ctr, ".rds"))
 
 N <- nrow(data)
-log_update(pp = "Somalia", N = N)
+#log_update(pp = "Somalia", N = N)
 
 
 
