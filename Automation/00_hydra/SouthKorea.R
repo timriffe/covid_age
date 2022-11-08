@@ -50,7 +50,8 @@ Cases_Age2 <- Cases_Age %>%
   mutate(Date = as.numeric(Date),
          Date = as.Date(Date, origin = "1899-12-30"),
          across(.cols = -c("Date"), as.integer),
-         across(.cols = -c("Date"), ~replace_na(., 0)))
+         across(.cols = -c("Date"), ~replace_na(., 0))) %>% 
+  filter(!is.na(Date))
 
 
 Cases_Ageprocessed <-  Cases_Age2 %>% 
@@ -96,7 +97,8 @@ Cases_Sex2 <- Cases_Sex %>%
   mutate(Date = as.numeric(Date),
          Date = as.Date(Date, origin = "1899-12-30"),
          across(.cols = -c("Date"), as.integer),
-         across(.cols = -c("Date"), ~replace_na(., 0)))
+         across(.cols = -c("Date"), ~replace_na(., 0))) %>% 
+  filter(!is.na(Date))
 
 
 Cases_Sexprocessed <-  Cases_Sex2 %>% 

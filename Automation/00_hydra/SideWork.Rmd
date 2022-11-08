@@ -69,7 +69,23 @@ ss_db  <- at_rubric %>% dplyr::pull(Source)
 db_drive <- read_sheet(ss = ss_i, sheet = "database") %>% 
   sort_input_data()
 
-sheet_write(db_drive, ss = ss_i, sheet = "database")
+
+deaths_prep_tot <- db_drive %>% 
+  mutate(Date = dmy(Date)) %>% 
+  filter(Measure == "Deaths",
+         Age != "TOT") %>% 
+  distinct(Country, Region, Code, Measure, Date) %>% 
+  mutate(Sex = "b",
+         Age = "TOT", 
+         AgeInt = NA_character_, 
+         Metric = "Count",
+         Value = NA_character_,
+         Date = ddmmyyyy(Date)) %>% 
+  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
+
+
+
+sheet_write(deaths_prep_tot, ss = ss_i, sheet = "deaths_TOT")
 
 
 ```

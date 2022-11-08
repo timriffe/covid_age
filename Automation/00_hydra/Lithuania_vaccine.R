@@ -44,7 +44,7 @@ In= data.table::fread("https://opendata.arcgis.com/api/v3/datasets/ffb0a5bfa5884
 ## add the usual stuff: country ISO code, region, etc.
 
 
-## MSK 26.08.2020
+## MK 26.08.2020
 ## I am adapting the code so that 105 is the oldest age group
 
 processed_data <- In %>%

@@ -107,7 +107,7 @@ drive_contents <-
   drive_folder_url$expanded_url %>% 
   gsub(pattern = "https://drive.google.com/drive/folders/",
        replacement = "") %>% 
-  gsub(pattern = "?usp=share_link",
+  gsub(pattern = "?usp=sharing",
        replacement = "") %>% 
   gsub(pattern = "\\?",
        replacement = "")%>%
