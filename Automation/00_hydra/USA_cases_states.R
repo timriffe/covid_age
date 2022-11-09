@@ -18,13 +18,13 @@ drive_auth(email = Sys.getenv("email"))
 gs4_auth(email = Sys.getenv("email"))
 
 
-ctr <- "US_CDC_cases_state" # it's a placeholder
+ctr <- "US_CDC_cases_state" 
 dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 dir_k <- "K:/CDC_Covid/"
 
 # folder name, this changes 
 
-folder <- "covid_case_restricted_detailed-master_03_10_2022" ## to change every update/ download of the data
+folder <- "covid_case_restricted_detailed-master_03_11_2022" ## to change every update/ download of the data
 
 
 # Read in files names 
