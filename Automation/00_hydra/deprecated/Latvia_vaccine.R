@@ -24,6 +24,9 @@ gs4_auth(email = Sys.getenv("email"))
 
 #Read in data 
 
+## MK: 10.11.2022: since these data are not updated since 07.2022, I deprecate this file (and the relevant dataset)
+## and shift to ECDC data instead. 
+
 
 m_url_pre22 <- "https://data.gov.lv/dati/eng/dataset/covid19-vakcinacijas/resource/51725018-49f3-40d1-9280-2b13219e026f"
 
