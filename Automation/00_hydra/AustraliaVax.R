@@ -60,17 +60,16 @@ rdsData_date <- rdsData %>%
 ## MK: 09.11.2022: LOOKS LIKE THIS CODE NEEDS A LOT OF TIME TO RUN ! SO COMMENT FOR NOW AND TRYING DIFFERNT WAY.. 
 
 
-date_today <- tolower(format(today(), "%d-%B-%Y"))
+date_today <- tolower(format(today()-1, "%d-%B-%Y"))
 
 url_date <- dmy(date_today)
-
 
 urls_df <- data.frame(Date = date_today,
                       link = "https://www.health.gov.au/sites/default/files/documents/") %>% 
   mutate(date_to_convert = dmy(Date),
          year = year(date_to_convert),
          month = month(date_to_convert),
-         excel_url = paste0(link, year, "/", month, "/", "covid-19-vaccination-vaccination-data-", Date, "_0.xlsx"),
+         excel_url = paste0(link, year, "/", month, "/", "covid-19-vaccination-vaccination-data-", Date, ".xlsx"),
          destinations = paste0(dir_n, "Data_sources/", ctr, "/", date_to_convert, ".xlsx"),
          Date = dmy(Date))
 
@@ -83,12 +82,11 @@ if(url_date > rdsData_date){
   excel_destination <- urls_df %>% 
     dplyr::pull(destinations)
     
+ # df <- data.table::fread(excel_url)
+  
   download.file(url = excel_url, destfile = excel_destination, mode = "wb")
   
- # data.table::fread(excel_url)
-  
-
-vax.list <-list.files(
+ vax.list <-list.files(
   path= paste0(dir_n, "Data_sources/", ctr),
   pattern = ".xlsx",
   full.names = TRUE)
