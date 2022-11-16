@@ -83,7 +83,7 @@ scripts <- c('Peru', 'PeruVaccine' ,
              'Argentina', 'AU_New_South_Wales',
              'AustraliaVax', 'Austria', 
              'Bulgaria',  'Belgium', 'CanadaPDFs',
-             'Czechia', 'Colombia', 'Cambodia', 'Croatia', 
+             'Czechia', 'Colombia', 'Croatia', 
              'CA_Manitoba_Saskatchewan', 'CA_Ontario', 'CA_British_Columbia', 
              'CA_Alberta', 'Chile', 'CA_Manitoba', 
              'Chile_vaccine', 'Canada_vaccine',  
@@ -103,7 +103,6 @@ scripts <- c('Peru', 'PeruVaccine' ,
              'Norway',  'Netherlands', 'New_Zealand',  
              'Norway_Vaccine',  
              'Philippines', 'Puerto_Rico', 
-             'Portugal_Vaccine', # does not work
              'Spain', 'Spain_vaccine',
              'Scotland', 'Scotland_Vaccine', 
              'Slovakia',  'Slovenia', 
@@ -112,12 +111,11 @@ scripts <- c('Peru', 'PeruVaccine' ,
              'SwitzerlandEpi', 'Switzerland_Vaccine',
              'Taiwan', 
              'Thailand', # does not work
-             'Uruguay_vaccine', 'Ukraine', 
+             'Ukraine', 
              'US_Wisconsin', 'US_Michigan', 'US_Virginia', 
              'USA_cases_all', 
              'USA_deaths_all', 'USA_deaths_states',
              'USA_vaccine', 'USA_vaccine_states',
-             'Vietnam', # does not work
              'Venezuela')
 
 # scripts <- c('USA_cases_all', 'USA_cases_states', 'USA_deaths_all', 'USA_deaths_states')

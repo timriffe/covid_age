@@ -97,7 +97,7 @@ Out= rbind(Out_vaccine1, Out_vaccine2) %>%
 
 write_rds(Out, paste0(dir_n, ctr, ".rds"))
 
-log_update(pp = ctr, N = nrow(Out)) 
+#log_update(pp = ctr, N = nrow(Out)) 
 
 #archive input data 
 
