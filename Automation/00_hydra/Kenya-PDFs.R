@@ -42,7 +42,7 @@ all_files <- data.frame(pdf_url = files) %>%
 
 ## EPI-DATA Sitreps PDFs 
 
-epifiles_source <- paste0(dir_n, "Data_sources/", ctr, "/EpiData/")
+epifiles_source <- paste0(dir_n, "Data_sources/", ctr, "/")
 
 
 epi_urls <- all_files %>%

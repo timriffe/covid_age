@@ -32,7 +32,7 @@ gs4_auth(email = Sys.getenv("email"))
 dates <- data.frame(date = seq(from = ymd('2022-03-13'), to = ymd(today() - 11), by='days')) %>% 
   mutate(week = epiweek(date),
          year = epiyear(date)) %>% 
-  group_by(year, week, .drop = TRUE) %>% 
+  group_by(year, week) %>% 
   filter(date == max(date)) 
 
 
