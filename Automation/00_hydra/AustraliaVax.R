@@ -57,7 +57,7 @@ rdsData_date <- rdsData %>%
 ## Part II. Download the Excel files since 05.09.2021 or the most recent ===================
 ## Note: (data as of 04.09.2021, as in Usage note)
 
-## MK: 09.11.2022: LOOKS LIKE THIS CODE NEEDS A LOT OF TIME TO RUN ! SO COMMENT FOR NOW AND TRYING DIFFERNT WAY.. 
+## MK: 09.11.2022: LOOKS LIKE THIS CODE NEEDS A LOT OF TIME TO RUN and sometimes it does not run! 
 
 
 date_today <- tolower(format(today()-1, "%d-%B-%Y"))
@@ -82,7 +82,7 @@ if(url_date > rdsData_date){
   excel_destination <- urls_df %>% 
     dplyr::pull(destinations)
     
- # df <- data.table::fread(excel_url)
+ # df <- data.table::fread("https://www.health.gov.au/sites/default/files/documents/2022/11/covid-19-vaccination-vaccination-data-17-november-2022.xlsx")
   
   download.file(url = excel_url, destfile = excel_destination, mode = "wb")
   
