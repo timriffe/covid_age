@@ -23,14 +23,14 @@ gs4_auth(email = Sys.getenv("email"))
 
 ## List the downloaded files 
 
-vax.list <-list.files(
-  path= paste0(dir_n, ctr),
-  pattern = ".csv",
-  full.names = TRUE)
-
-vax_files <- data.frame(path = vax.list) %>%
-  mutate(number = row_number(),
-         file_rds = paste0("BrazilVAX-Part", number))
+# vax.list <-list.files(
+#   path= paste0(dir_n, ctr),
+#   pattern = ".csv",
+#   full.names = TRUE)
+# 
+# vax_files <- data.frame(path = vax.list) %>%
+#   mutate(number = row_number(),
+#          file_rds = paste0("BrazilVAX-Part", number))
 
 
 # ## Loop to read each file from the path column in dataframe and write rds file for each,
@@ -45,15 +45,71 @@ vax_files <- data.frame(path = vax.list) %>%
 #           write_rds(paste0(dir_n, ctr, "/", y, ".rds")))}
 #           
 ## read the .rds files and bind in one dataset 
+# # 
+# rds_files <- list.files(
+#   path= paste0(dir_n, ctr),
+#   pattern = ".rds",
+#   full.names = TRUE)
 # 
-rds_files <- list.files(
-  path= paste0(dir_n, ctr),
-  pattern = ".rds",
-  full.names = TRUE)
+# raw_data <- rds_files %>%
+#   map_dfr(read_rds)
 
-raw_data <- rds_files %>%
-  map_dfr(read_rds)
 
+
+
+
+## also read the coding for doses == this file I made by translating the unique values using Google
+
+# vax_code <- read_excel(paste0(dir_n, ctr,"/BrazilVaxCoding.xlsx"), sheet = "Coding")
+# 
+# ## PROCESS THE DATA ============== 
+# 
+# ## Process step 1
+# 
+# raw_1 <- raw_data %>% 
+#   dplyr::rename(Date = vacina_dataAplicacao,
+#                 Age = paciente_idade,
+#                 Sex = paciente_enumSexoBiologico,
+#                 Region = paciente_endereco_nmMunicipio,
+#                 Original_dose = vacina_descricao_dose) %>% 
+#   dplyr::left_join(vax_code, by = c("Original_dose" = "Original")) %>% 
+#   dplyr::select(-Original_dose) 
+# 
+# 
+# ## write the dataset in each step so that we, hopefully, minimize the R memory used. 
+# 
+# write_rds(raw_1, paste0(dir_n, ctr, "/raw_1", ".rds"))
+
+## then read =D
+
+raw_1 <- read_rds(paste0(dir_n, ctr, "/raw_1", ".rds"))
+
+## Process step 2
+
+raw_2 <- raw_1 %>% 
+  dplyr::mutate(Sex = case_when(Sex == "M" ~ "m",
+                                Sex == "F" ~ "f",
+                                TRUE ~ "UNK"),
+                Age = as.integer(Age),
+                Age = case_when(Age < 0 ~ "UNK",
+                                Age > 105 ~ "105",
+                                TRUE ~ as.character(Age)),
+                Date = ymd(Date)) 
+
+processed_data <- raw_2 %>%  
+  dplyr::group_by(Date, Age, Region, Sex, Dose) %>% 
+  summarize(Value = n(), .groups = "drop")%>%
+  tidyr::complete(Date = seq(min(df_1$Date), max(df_1$Date), by = "1 day"), 
+                  Sex, Age = 0:105, Region, fill = list(Value = 0)) %>% 
+  arrange(Sex, Age, Region, Date) %>% 
+  group_by(Sex, Age, Region, Dose) %>% 
+  mutate(Value = cumsum(Value)) %>% 
+  ungroup()
+
+
+
+
+## How things started (for reference; no need for running this part) ================
 
 # 
 # ## EXAMPLE ##
@@ -79,41 +135,4 @@ raw_data <- rds_files %>%
 # 
 # 
 # 
-
-
-
-## also read the coding for doses == this file I made by translating the unique values using Google
-
-vax_code <- read_excel(paste0(dir_n, ctr,"/BrazilVaxCoding.xlsx"), sheet = "Coding")
-
-## process the data 
-
-
-df_1 <- raw_data %>% 
-  dplyr::rename(Date = vacina_dataAplicacao,
-                Age = paciente_idade,
-                Sex = paciente_enumSexoBiologico,
-                Region = paciente_endereco_nmMunicipio,
-                Original_dose = vacina_descricao_dose) %>% 
-  dplyr::left_join(vax_code, by = c("Original_dose" = "Original")) %>% 
-  dplyr::select(-Original_dose) %>% 
-  dplyr::mutate(Sex = case_when(Sex == "M" ~ "m",
-                                Sex == "F" ~ "f",
-                                TRUE ~ "UNK"),
-                Age = as.character(Age),
-                Age = case_when(Age > 105 ~ "105",
-                                Age < 0 ~ "0",
-                                TRUE ~ Age),
-                Date = ymd(Date)) 
-
-processed_data <- df_1 %>%  
-  dplyr::group_by(Date, Age, Region, Sex, Dose) %>% 
-  summarize(Value = n(), .groups = "drop")%>%
-  tidyr::complete(Date = seq(min(df_1$Date), max(df_1$Date), by = "1 day"), 
-                  Sex, Age = 0:105, Region, fill = list(Value = 0)) %>% 
-  arrange(Sex, Age, Region, Date) %>% 
-  group_by(Sex, Age, Region, Dose) %>% 
-  mutate(Value = cumsum(Value)) %>% 
-  ungroup()
-
 
