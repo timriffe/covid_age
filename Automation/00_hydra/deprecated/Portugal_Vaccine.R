@@ -95,7 +95,7 @@ Out <- rbind(Out, smal_ages) %>%
 write_rds(Out, paste0(dir_n, ctr, ".rds"))
 
 # This command append new rows at the end of the sheet
-log_update(pp = ctr, N = nrow(Out))
+#log_update(pp = ctr, N = nrow(Out))
 
 # now archive
 

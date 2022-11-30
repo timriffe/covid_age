@@ -338,7 +338,7 @@ all_the_tables <- html %>%
     left_join(db_last_update)
   
   # new no-case base
-  db_drive_out <- bind_rows(db_dv1, db_nw)
+  db_drive_out <- bind_rows(db_dv1, db_nw) 
   
   # saving no cases info in Drive
   write_sheet(db_drive_out,
@@ -430,7 +430,8 @@ all_the_tables <- html %>%
   out <- bind_rows(db_c2, db_drive_out) %>% 
     mutate(date_f = dmy(Date)) %>% 
     arrange(date_f, Sex, Measure, suppressWarnings(as.integer(Age))) %>% 
-    select(Country,Region, Code,  Date, Sex, Age, AgeInt, Metric, Measure, Value)
+    select(Country,Region, Code,  Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
+    sort_input_data()
   
   # view(db_all)
   

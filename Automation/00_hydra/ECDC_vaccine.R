@@ -19,6 +19,9 @@ drive_auth(email = Sys.getenv("email"))
 gs4_auth(email = Sys.getenv("email"))
 
 
+## SourceWebsite <- "https://www.ecdc.europa.eu/en/publications-data/data-covid-19-vaccination-eu-eea"
+
+
 #Read in data 
 
 In= read.csv("https://opendata.ecdc.europa.eu/covid19/vaccine_tracker/csv/data.csv")
@@ -29,7 +32,8 @@ Out= In %>%
   #select countries we need 
   subset(Region== "BG"| Region== "CY" | Region== "HR"| Region== "HU"|  Region== "IE"| 
           Region== "LU" | Region== "MT" | Region== "RO"| Region== "PL" | Region == "EL" | 
-           Region == "PT" | Region == "NO" | Region == "NL")%>%
+           Region == "PT" | Region == "NO" | Region == "NL" |
+           Region == "LV" | Region == "SI" | Region == "SK")%>%
   select(YearWeekISO, 
          Vaccination1= FirstDose, 
          Vaccination2= SecondDose, 
@@ -73,6 +77,9 @@ Out= In %>%
                      `Age80+`="80",
                      `AgeUNK`="UNK"))%>% 
     mutate(Country= recode(Short, 
+                     `SI` = "Slovenia",
+                     `SK` = "Slovakia",
+                     `LV` = "Latvia",
                      `BG`= "Bulgaria",
                      `CY`= "Cyprus",
                      `HR`= "Croatia",
@@ -106,6 +113,9 @@ Out= In %>%
       Country == "Romania" ~  "RO",
       Country == "Greece" ~ "GR",
       Country == "Portugal" ~ "PT",
+      Country == "Latvia" ~ "LV",
+      Country == "Slovenia" ~ "SI",
+      Country == "Slovakia" ~ "SK",
       Country == "Netherlands" ~ "NL",
       Country == "Norway" ~ "NO"))%>% 
   mutate(AgeInt = case_when(

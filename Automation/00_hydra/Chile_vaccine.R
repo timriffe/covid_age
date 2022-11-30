@@ -130,7 +130,8 @@ outtot <- vacctot %>%
 
 #put together 
 
-out <- rbind(out1, out2, outtot)
+out <- rbind(out1, out2, outtot) %>% 
+  sort_input_data()
 
 ##adding ages 0 to 9
 # small_ages<- out %>% 

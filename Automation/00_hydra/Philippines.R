@@ -355,102 +355,102 @@ zip::zipr(zipname,
           compression_level = 9,
           include_directories = TRUE)
 
-file.remove(files)
+file.remove(sourcefile)
 
 
 # --------------------------------------------------
 # Make graphs
-do.this <- FALSE
-if (do.this){
-  out %>% 
-    filter(Measure == "Cases") %>% 
-    mutate(Date = dmy(Date)) %>% 
-    group_by(Date) %>% 
-    summarize(N = sum(Value)) %>% 
-    ggplot(aes(x = Date,y = N)) + geom_line()
-  
-  out %>% 
-    filter(Measure == "Deaths") %>% 
-    mutate(Date = dmy(Date)) %>% 
-    group_by(Date) %>% 
-    summarize(N = sum(Value)) %>% 
-    ggplot(aes(x = Date,y = N)) + geom_line()
-  
-  out %>% 
-    filter(Measure%in%c("Cases","Deaths")) %>% 
-    mutate(Date = dmy(Date),
-           Agei = as.integer(Age)) %>% 
-    filter(!is.na(Agei)) %>% 
-    mutate(Age20 = Agei - Agei %% 20) %>% 
-    group_by(Date, Age20, Measure) %>% 
-    summarize(N = sum(Value)) %>% 
-    pivot_wider(names_from=Measure, values_from=N) %>% 
-    filter(Deaths > 5) %>% 
-    ggplot(aes(x = Cases,y = Deaths,color=as.factor(Age20),group=Age20)) + 
-    geom_line()+
-    scale_x_log10()+
-    scale_y_log10()
-  
-  
-  
-  library(colorspace)
-  out %>% 
-    filter(Measure == "Cases",
-           Age != "TOT",
-           Age != "UNK") %>% 
-    mutate(Date = dmy(Date),
-           Agei = as.integer(Age),
-           Age20 = Agei - Agei %% 20) %>% 
-    group_by(Date, Age20) %>% 
-    summarize(Value = sum(Value)) %>% 
-    group_by(Date) %>% 
-    mutate(N = sum(Value),
-           Frac = Value / N) %>% 
-    ungroup() %>% 
-    ggplot(aes(x = Date,
-               y = Frac, 
-               fill = as.factor(Age20))) + 
-    geom_area() + 
-    scale_fill_discrete_sequential("Emrld")
-  
-  # same for NEW cases
-  out %>% 
-    filter(Measure == "Cases",
-           Age != "TOT",
-           Age != "UNK") %>% 
-    mutate(Date = dmy(Date),
-           Agei = as.integer(Age),
-           Age20 = Agei - Agei %% 20) %>% 
-    group_by(Date, Age20) %>% 
-    summarize(Value = sum(Value)) %>% 
-    group_by(Age20) %>% 
-    arrange(Date) %>% 
-    mutate(New = Value - lead(Value)) %>% 
-    ungroup() %>% 
-    filter(Date >= dmy("15.04.2020")) %>% 
-    group_by(Date) %>% 
-    mutate(N = sum(New),
-           Frac = New / N) %>% 
-    ungroup() %>% 
-    ggplot(aes(x = Date,
-               y = Frac, 
-               fill = as.factor(Age20))) + 
-    geom_area() + 
-    scale_fill_discrete_sequential("Emrld")
-  
-  
-  out %>% 
-    filter(Measure %in% c("Cases","Deaths")) %>% 
-    mutate(
-      Agei = as.integer(Age),
-      Age5 = Agei - Agei %% 5) %>% 
-    group_by(Date, Age5, Measure) %>% 
-    summarize(Value = sum(Value)) %>% 
-    ungroup() %>% 
-    pivot_wider(names_from=Measure, values_from=Value) %>% 
-    mutate(ASCFR = Deaths / Cases) %>% 
-    filter(dmy(Date) >= dmy("01.05.2020")) %>% 
-    ggplot(aes(x = Age5, y = ASCFR, color = dmy(Date), group = Date)) + 
-    geom_line()
-  
-}
+# do.this <- FALSE
+# if (do.this){
+#   out %>% 
+#     filter(Measure == "Cases") %>% 
+#     mutate(Date = dmy(Date)) %>% 
+#     group_by(Date) %>% 
+#     summarize(N = sum(Value)) %>% 
+#     ggplot(aes(x = Date,y = N)) + geom_line()
+#   
+#   out %>% 
+#     filter(Measure == "Deaths") %>% 
+#     mutate(Date = dmy(Date)) %>% 
+#     group_by(Date) %>% 
+#     summarize(N = sum(Value)) %>% 
+#     ggplot(aes(x = Date,y = N)) + geom_line()
+#   
+#   out %>% 
+#     filter(Measure%in%c("Cases","Deaths")) %>% 
+#     mutate(Date = dmy(Date),
+#            Agei = as.integer(Age)) %>% 
+#     filter(!is.na(Agei)) %>% 
+#     mutate(Age20 = Agei - Agei %% 20) %>% 
+#     group_by(Date, Age20, Measure) %>% 
+#     summarize(N = sum(Value)) %>% 
+#     pivot_wider(names_from=Measure, values_from=N) %>% 
+#     filter(Deaths > 5) %>% 
+#     ggplot(aes(x = Cases,y = Deaths,color=as.factor(Age20),group=Age20)) + 
+#     geom_line()+
+#     scale_x_log10()+
+#     scale_y_log10()
+#   
+#   
+#   
+#   library(colorspace)
+#   out %>% 
+#     filter(Measure == "Cases",
+#            Age != "TOT",
+#            Age != "UNK") %>% 
+#     mutate(Date = dmy(Date),
+#            Agei = as.integer(Age),
+#            Age20 = Agei - Agei %% 20) %>% 
+#     group_by(Date, Age20) %>% 
+#     summarize(Value = sum(Value)) %>% 
+#     group_by(Date) %>% 
+#     mutate(N = sum(Value),
+#            Frac = Value / N) %>% 
+#     ungroup() %>% 
+#     ggplot(aes(x = Date,
+#                y = Frac, 
+#                fill = as.factor(Age20))) + 
+#     geom_area() + 
+#     scale_fill_discrete_sequential("Emrld")
+#   
+#   # same for NEW cases
+#   out %>% 
+#     filter(Measure == "Cases",
+#            Age != "TOT",
+#            Age != "UNK") %>% 
+#     mutate(Date = dmy(Date),
+#            Agei = as.integer(Age),
+#            Age20 = Agei - Agei %% 20) %>% 
+#     group_by(Date, Age20) %>% 
+#     summarize(Value = sum(Value)) %>% 
+#     group_by(Age20) %>% 
+#     arrange(Date) %>% 
+#     mutate(New = Value - lead(Value)) %>% 
+#     ungroup() %>% 
+#     filter(Date >= dmy("15.04.2020")) %>% 
+#     group_by(Date) %>% 
+#     mutate(N = sum(New),
+#            Frac = New / N) %>% 
+#     ungroup() %>% 
+#     ggplot(aes(x = Date,
+#                y = Frac, 
+#                fill = as.factor(Age20))) + 
+#     geom_area() + 
+#     scale_fill_discrete_sequential("Emrld")
+#   
+#   
+#   out %>% 
+#     filter(Measure %in% c("Cases","Deaths")) %>% 
+#     mutate(
+#       Agei = as.integer(Age),
+#       Age5 = Agei - Agei %% 5) %>% 
+#     group_by(Date, Age5, Measure) %>% 
+#     summarize(Value = sum(Value)) %>% 
+#     ungroup() %>% 
+#     pivot_wider(names_from=Measure, values_from=Value) %>% 
+#     mutate(ASCFR = Deaths / Cases) %>% 
+#     filter(dmy(Date) >= dmy("01.05.2020")) %>% 
+#     ggplot(aes(x = Age5, y = ASCFR, color = dmy(Date), group = Date)) + 
+#     geom_line()
+#   
+# }

@@ -35,7 +35,7 @@ cases_url <- read_html('https://www.opendata.nhs.scot/dataset/b318bddf-a4dc-4262
   html_nodes('#content > div.row.wrapper.no-nav > section > div > p > a') %>% 
   html_attr('href')
 
-## Extract daily cases, with 0 to 14 age groups ##
+## Extract daily cases (cumulative values), with 0 to 14 age groups ##
 sccases <- read_csv(cases_url)
 
 # Pipeline for *today's* data:
@@ -145,7 +145,7 @@ deaths_url <- paste0("https://www.nrscotland.gov.uk/files//statistics/covid19/",
 
 ## DOWNLOAD DEATHS recent file AND READ IN THE DATA ##
 
-download.file(deaths_url,
+download.file(url = deaths_url,
               destfile = deaths_source,
               mode = "wb")
 
@@ -175,23 +175,24 @@ deaths_cleaned <- deaths %>%
   dplyr::mutate(Sex = replace_na(Sex, "b")) %>% 
   dplyr::rename("Year" = `Registration year`,
                 "Week_number" = `Week number`,
-               # "Date" = `Week beginning`,
-                "TOT" = `All ages`) %>% 
-  dplyr::mutate(week = str_pad(Week_number,  2, "left", 0),
-                ISO_WEEK = paste0(Year, "-W", 
-                                  week, "-5"),
-                Date = ISOweek::ISOweek2date(ISO_WEEK)) %>% 
-  dplyr::select(-c("Year", "Week_number", "ISO_WEEK", `Week beginning`, "week")) %>% 
+                "date_prep" = `Week beginning`) %>% 
+  # dplyr::mutate(week = str_pad(Week_number,  2, "left", 0),
+  #               ISO_WEEK = paste0(Year, "-W", 
+  #                                 week, "-5"),
+  #               Date = ISOweek::ISOweek2date(ISO_WEEK)) %>% 
+  #dplyr::select(-c("Year", "Week_number", "ISO_WEEK", `Week beginning`, "week")) %>% 
+  dplyr::select(-c("Year", "Week_number")) %>%
+  dplyr::mutate(date_prep = as.Date(as.numeric(date_prep), origin = "1899-12-30")) %>% 
   dplyr::group_by(Sex) %>% 
-  dplyr::arrange(Date) %>% 
-  dplyr::mutate(across(.cols = -c("Date"), ~ cumsum(.x))) %>% 
-  tidyr::pivot_longer(cols = -c("Date", "Sex"),
+  dplyr::arrange(date_prep) %>% 
+  ## CONVERT THE NEWLY WEEKLY TO CUMULATIVE WEEKLY
+  dplyr::mutate(across(.cols = -c("date_prep"), ~ cumsum(.x))) %>% 
+  tidyr::pivot_longer(cols = -c("date_prep", "Sex"),
                       names_to = "Age",
                       values_to = "Value") %>% 
   dplyr::filter(!is.na(Value)) %>% 
   dplyr::mutate(Value = as.numeric(Value))
 
-## CONVERT THE NEWLY WEEKLY TO CUMULATIVE WEEKLY
 
 deaths_out <- deaths_cleaned %>% 
   dplyr::mutate(Age = recode(Age,
@@ -203,18 +204,19 @@ deaths_out <- deaths_cleaned %>%
                              '75-84' = "75",
                              '85+' = "85"),
                 AgeInt = case_when(
-                  Age == "0" ~ 1,
-                  Age == "1" ~ 14,
-                  Age == "15" ~ 30,
-                  Age == "45" ~ 20,
-                  Age == "65" ~ 10,
-                  Age == "75" ~ 10,
-                  Age == "85" ~ 20),
+                  Age == "0" ~ 1L,
+                  Age == "1" ~ 14L,
+                  Age == "15" ~ 30L,
+                  Age == "45" ~ 20L,
+                  Age == "65" ~ 10L,
+                  Age == "75" ~ 10L,
+                  Age == "85" ~ 20L,
+                  Age == "TOT" ~ NA_integer_),
                 Country = "Scotland",
                 Region = "All",
                 Code = "GB-SCT",
                 Metric = "Count",
-                Date = ddmmyyyy(Date),
+                Date = ddmmyyyy(date_prep),
                 Measure = "Deaths") %>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value) %>% 
@@ -225,6 +227,7 @@ deaths_out <- deaths_cleaned %>%
 write_rds(deaths_out, 
           paste0(dir_n, "Data_sources/Scotland/", ctr, "_DeathsWeekly", Sys.Date(), ".rds"))
 
+## history =============
 # deaths2 <- deaths %>% 
 #   select(Date = DateCode, 
 #          Sex, 

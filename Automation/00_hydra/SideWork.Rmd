@@ -54,6 +54,45 @@ gs4_auth(email = Sys.getenv("email"))
 ```
 
 
+## NEPAL 
+
+
+```{r}
+
+
+at_rubric <- get_input_rubric() %>% 
+  dplyr::filter(Short == "NP")
+ss_i   <- at_rubric %>% dplyr::pull(Sheet)
+ss_db  <- at_rubric %>% dplyr::pull(Source)
+
+
+db_drive <- read_sheet(ss = ss_i, sheet = "database") %>% 
+  sort_input_data()
+
+
+deaths_prep_tot <- db_drive %>% 
+  mutate(Date = dmy(Date)) %>% 
+  filter(Measure == "Deaths",
+         Age != "TOT") %>% 
+  distinct(Country, Region, Code, Measure, Date) %>% 
+  mutate(Sex = "b",
+         Age = "TOT", 
+         AgeInt = NA_character_, 
+         Metric = "Count",
+         Value = NA_character_,
+         Date = ddmmyyyy(Date)) %>% 
+  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
+
+
+
+sheet_write(deaths_prep_tot, ss = ss_i, sheet = "deaths_TOT")
+
+
+```
+
+
+
+
 ## CDC USA nationwide data 
 
 ##├ Date: 27.10.2022
@@ -118,81 +157,6 @@ write_rds(out, paste0(dir_n, ctr, ".rds"))
 
 
 ```
-
-
-# South Korea
-
-```{r}
-
-# info country and N drive address
-ctr    <- "SouthKorea"
-dir_n  <- "N:/COVerAGE-DB/Automation/Hydra/"
-dir_n_source <- "N:/COVerAGE-DB/Automation/SouthKorea"
-
-current_db <- read_rds(paste0(dir_n, ctr, ".rds")) %>% 
-  mutate(Date = dmy(Date))
-
-data_source <- paste0(dir_n, "Data_sources/", ctr, "/ExcelReferenceData/cases_",today(), ".xlsx")
-
-cases_url <- "http://ncov.mohw.go.kr/board/doFileDownload.do?file_name=%EC%BD%94%EB%A1%9C%EB%82%98%EB%B0%94%EC%9D%B4%EB%9F%AC%EC%8A%A4%EA%B0%90%EC%97%BC%EC%A6%9D-19_%ED%99%95%EC%A7%84%ED%99%98%EC%9E%90_%EB%B0%9C%EC%83%9D%ED%98%84%ED%99%A9_220922.xlsx&file_path=/upload/ncov/file/202209/1663821660861_20220922134100.xlsx"
-
-
-download.file(cases_url, destfile = data_source, mode = "wb")
-
-
-raw_data <- read_excel(data_source, sheet = 2) %>% 
-  slice(-1)
-
-col_names <- c("Date", "Cases_TOT", "Cases_0",
-               "Cases_10", "Cases_20", "Cases_30",
-               "Cases_40", "Cases_50", "Cases_60",
-               "Cases_70", "Cases_80")
-
-names(raw_data) <- col_names
-
-rawdata_2 <- raw_data %>% 
-  mutate(Date = as.numeric(Date),
-         Date = as.Date(Date, origin = "1899-12-30"),
-         across(.cols = -c("Date"), as.integer),
-         across(.cols = -c("Date"), ~replace_na(., 0)))
-
-
-processed_data <-  rawdata_2 %>% 
-  arrange(Date) %>% 
-  pivot_longer(cols = -c(Date),
-               names_to = c("Measure", "A_Age"),
-               names_sep = "_",
-               values_to = "Excel_value") %>% 
-  tidyr::complete(A_Age, Measure,
-                  Date = seq(min(rawdata_2$Date), max(rawdata_2$Date), by = "day"),
-                  fill = list(Excel_value = 0)) %>% 
-  pivot_wider(names_from = "A_Age", values_from = "Excel_value") %>% 
-  mutate(across(.cols = -c("Date", "Measure"), ~ cumsum(.x))) %>% 
-  pivot_longer(cols = -c("Date", "Measure"),
-               names_to = c("A_Age"),
-               values_to = "Excel_value") %>% 
-  rename(date_d = Date)
-
-
-check_retro <- current_db %>% 
-  filter(Measure == "Cases") %>% 
-  select(Date, Age, Value) %>% 
-  inner_join(processed_data, by = c("Date" = "date_d",
-                                    "Age" = "A_Age"))
-
-
-data_toremove <- current_db %>% 
-  filter(Date >= "2022-03-21", Date <= "2022-09-06",
-         Measure == "Cases", Age != "TOT")
-
-
-
-
-```
-
-
-
-
 
 
 # India- Vaccination
@@ -503,6 +467,78 @@ write_rds(out,  paste0(dir_n, ctr, ".rds"))
 
 ```
 
+
+# South Korea
+
+Then we got the shared updated link for Cases. 
+
+```{r}
+
+# info country and N drive address
+ctr    <- "SouthKorea"
+dir_n  <- "N:/COVerAGE-DB/Automation/Hydra/"
+dir_n_source <- "N:/COVerAGE-DB/Automation/SouthKorea"
+
+current_db <- read_rds(paste0(dir_n, ctr, ".rds")) %>% 
+  mutate(Date = dmy(Date))
+
+data_source <- paste0(dir_n, "Data_sources/", ctr, "/ExcelReferenceData/cases_",today(), ".xlsx")
+
+cases_url <- "http://ncov.mohw.go.kr/board/doFileDownload.do?file_name=%EC%BD%94%EB%A1%9C%EB%82%98%EB%B0%94%EC%9D%B4%EB%9F%AC%EC%8A%A4%EA%B0%90%EC%97%BC%EC%A6%9D-19_%ED%99%95%EC%A7%84%ED%99%98%EC%9E%90_%EB%B0%9C%EC%83%9D%ED%98%84%ED%99%A9_220922.xlsx&file_path=/upload/ncov/file/202209/1663821660861_20220922134100.xlsx"
+
+
+download.file(cases_url, destfile = data_source, mode = "wb")
+
+
+raw_data <- read_excel(data_source, sheet = 2) %>% 
+  slice(-1)
+
+col_names <- c("Date", "Cases_TOT", "Cases_0",
+               "Cases_10", "Cases_20", "Cases_30",
+               "Cases_40", "Cases_50", "Cases_60",
+               "Cases_70", "Cases_80")
+
+names(raw_data) <- col_names
+
+rawdata_2 <- raw_data %>% 
+  mutate(Date = as.numeric(Date),
+         Date = as.Date(Date, origin = "1899-12-30"),
+         across(.cols = -c("Date"), as.integer),
+         across(.cols = -c("Date"), ~replace_na(., 0)))
+
+
+processed_data <-  rawdata_2 %>% 
+  arrange(Date) %>% 
+  pivot_longer(cols = -c(Date),
+               names_to = c("Measure", "A_Age"),
+               names_sep = "_",
+               values_to = "Excel_value") %>% 
+  tidyr::complete(A_Age, Measure,
+                  Date = seq(min(rawdata_2$Date), max(rawdata_2$Date), by = "day"),
+                  fill = list(Excel_value = 0)) %>% 
+  pivot_wider(names_from = "A_Age", values_from = "Excel_value") %>% 
+  mutate(across(.cols = -c("Date", "Measure"), ~ cumsum(.x))) %>% 
+  pivot_longer(cols = -c("Date", "Measure"),
+               names_to = c("A_Age"),
+               values_to = "Excel_value") %>% 
+  rename(date_d = Date)
+
+
+check_retro <- current_db %>% 
+  filter(Measure == "Cases") %>% 
+  select(Date, Age, Value) %>% 
+  inner_join(processed_data, by = c("Date" = "date_d",
+                                    "Age" = "A_Age"))
+
+
+data_toremove <- current_db %>% 
+  filter(Date >= "2022-03-21", Date <= "2022-09-06",
+         Measure == "Cases", Age != "TOT")
+
+
+
+
+```
 
 
 

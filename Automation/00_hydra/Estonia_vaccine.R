@@ -135,6 +135,7 @@ Out_vaccineALL <- Out_vaccine %>%
 Out_vaccine <- bind_rows(Out_vaccine, Out_vaccineALL)
 Out_vaccine <- Out_vaccine %>% 
   sort_input_data()
+
 write_rds(Out_vaccine, paste0(dir_n, ctr, ".rds"))
 
 log_update(pp = ctr, N = nrow(Out_vaccine))

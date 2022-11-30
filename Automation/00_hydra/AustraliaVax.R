@@ -57,62 +57,40 @@ rdsData_date <- rdsData %>%
 ## Part II. Download the Excel files since 05.09.2021 or the most recent ===================
 ## Note: (data as of 04.09.2021, as in Usage note)
 
-urls <- read_html("https://www.health.gov.au/resources/collections/covid-19-vaccination-vaccination-data#") %>% 
-  html_nodes("a ") %>% 
-  html_attr('href') 
-
-urls_df <- data.frame(excels_url = urls,
-                      baselink = "https://www.health.gov.au") %>%
-                      filter(str_detect(excels_url, "/resources/publications/covid-19-vaccination")) %>%
-                      distinct(excels_url, baselink) %>% 
-  dplyr::mutate(html_page = paste0(baselink, excels_url),
-                date_prep = str_remove(excels_url, "/resources/publications/covid-19-vaccination-vaccination-data-"),
-                date_prep = str_remove(date_prep, "-0"),
-                date = dmy(date_prep),
-                Date = date - 1) %>% 
-  dplyr::select(html_page, Date) %>% 
-  ## get the last published url ## 
-  dplyr::filter(Date == max(Date))
+## MK: 09.11.2022: LOOKS LIKE THIS CODE NEEDS A LOT OF TIME TO RUN and sometimes it does not run! 
 
 
-urls_list <- urls_df %>% 
-  dplyr::pull(html_page)
+date_today <- tolower(format(today()-1, "%d-%B-%Y"))
 
-urls_date <- urls_df %>% 
-  dplyr::pull(Date)
+url_date <- dmy(date_today)
+
+urls_df <- data.frame(Date = date_today,
+                      link = "https://www.health.gov.au/sites/default/files/documents/") %>% 
+  mutate(date_to_convert = dmy(Date),
+         year = year(date_to_convert),
+         month = month(date_to_convert),
+         excel_url = paste0(link, year, "/", month, "/", "covid-19-vaccination-vaccination-data-", Date, ".xlsx"),
+         destinations = paste0(dir_n, "Data_sources/", ctr, "/", date_to_convert, ".xlsx"),
+         Date = dmy(Date))
 
 
-if(urls_date > rdsData_date){
+if(url_date > rdsData_date){
 
+  excel_url <- urls_df %>% 
+    dplyr::pull(excel_url)
   
-  extract_excel <- function(link){
-    scraplinks(link) %>% 
-      dplyr::filter(str_detect(url, ".xlsx")) 
-  }
+  excel_destination <- urls_df %>% 
+    dplyr::pull(destinations)
+    
+ # df <- data.table::fread("https://www.health.gov.au/sites/default/files/documents/2022/11/covid-19-vaccination-vaccination-data-17-november-2022.xlsx")
   
-  excel_df <- urls_df %>% 
-    {map2_dfr(.$html_page, .$Date, function(x,y) extract_excel(x) %>% mutate(Date=y))}
-
-
-excel_df %>% 
-  dplyr::mutate(base_destination = paste0(dir_n, "Data_sources/", ctr),
-                destinations = paste0(base_destination, "/", Date, ".xlsx")) %>% 
-  {map2(.$url, .$destinations, ~ download.file(url = .x, destfile = .y, mode="wb"))}
-
-
-vax.list <-list.files(
+  download.file(url = excel_url, destfile = excel_destination, mode = "wb")
+  
+ vax.list <-list.files(
   path= paste0(dir_n, "Data_sources/", ctr),
   pattern = ".xlsx",
   full.names = TRUE)
 
-## this was for the purpsoe of the missing data files ##
-# sourcedata_vax <- vax.list %>% 
-#   set_names() %>% 
-#   map_dfr(~read_excel(., col_types = c("text", "numeric")),
-#           .id = "file_name") %>% 
-#   dplyr::mutate(date_prep = str_remove(file_name, paste0(dir_n, "Data_sources/", ctr, "/")),
-#                 date_prep = str_remove(date_prep, ".xlsx"),
-#                 Date = ymd(date_prep)) 
 
 
 sourcedata_vax <- data.frame(file_name = vax.list) %>% 
@@ -127,12 +105,6 @@ sourcedata_vax <- data.frame(file_name = vax.list) %>%
                 date_prep = str_remove(date_prep, ".xlsx"),
                 Date = ymd(date_prep)) 
 
-
-# data_raw <- sourcedata_vax %>% 
-#   dplyr::select(Date, 
-#                 Measure = `Measure Name`,
-#                 Measure_fill = `...1`,
-#                 Value)
 
 data_raw <- sourcedata_vax %>% 
   dplyr::select(Date, 
@@ -196,3 +168,81 @@ log_update(pp = ctr, N = nrow(Out))
 
 ## END ## 
 
+
+## Historical code to scrape html pages first then download excel (DEPRECATED FOR NOW) ================
+
+# 
+# url_page <- "https://www.health.gov.au/resources/collections/covid-19-vaccination-vaccination-data"
+# 
+# #page <- xml2::read_html(url_page)
+# 
+# urls <- rvest::read_html("https://www.health.gov.au/resources/collections/covid-19-vaccination-vaccination-data#october-2022") %>% 
+#   rvest::html_nodes("a ") %>% 
+#   rvest::html_attr('href') 
+# 
+# 
+# urls <- scraplinks(url_page)
+# 
+# urls_df <- data.frame(excels_url = urls,
+#                       baselink = "https://www.health.gov.au") %>%
+#                       filter(str_detect(excels_url, "/resources/publications/covid-19-vaccination")) %>%
+#                       distinct(excels_url, baselink) %>% 
+#   dplyr::mutate(html_page = paste0(baselink, excels_url),
+#                 date_prep = str_remove(excels_url, "/resources/publications/covid-19-vaccination-vaccination-data-"),
+#                 date_prep = str_remove(date_prep, "-0"),
+#                 date = dmy(date_prep),
+#                 Date = date - 1) %>% 
+#   dplyr::select(html_page, Date) %>% 
+#   ## get the last published url ## 
+#   dplyr::filter(Date == max(Date))
+# 
+# 
+# urls_list <- urls_df %>% 
+#   dplyr::pull(html_page)
+# url_date <- urls_df %>% 
+#   dplyr::pull(Date)
+
+# 
+# extract_excel <- function(link){
+#   scraplinks(link) %>% 
+#     dplyr::filter(str_detect(url, ".xlsx")) 
+# }
+# 
+# excel_df <- urls_df %>% 
+#   {map2_dfr(.$html_page, .$Date, function(x,y) extract_excel(x) %>% mutate(Date=y))}
+
+# 
+# excel_df %>% 
+#   dplyr::mutate(base_destination = paste0(dir_n, "Data_sources/", ctr),
+#                 destinations = paste0(base_destination, "/", Date, ".xlsx")) %>% 
+#   {map2(.$url, .$destinations, ~ download.file(url = .x, destfile = .y, mode="wb"))}
+
+
+## this was for the purpsoe of the missing data files ##
+# sourcedata_vax <- vax.list %>% 
+#   set_names() %>% 
+#   map_dfr(~read_excel(., col_types = c("text", "numeric")),
+#           .id = "file_name") %>% 
+#   dplyr::mutate(date_prep = str_remove(file_name, paste0(dir_n, "Data_sources/", ctr, "/")),
+#                 date_prep = str_remove(date_prep, ".xlsx"),
+#                 Date = ymd(date_prep)) 
+
+
+# sourcedata_vax <- data.frame(file_name = vax.list) %>% 
+#   dplyr::mutate(date_prep = str_remove(file_name, paste0(dir_n, "Data_sources/", ctr, "/")),
+#                 date_prep = str_remove(date_prep, ".xlsx"),
+#                 Date = ymd(date_prep)) %>% 
+#   dplyr::filter(Date == max(Date)) %>% 
+#   dplyr::pull(file_name) %>% 
+#   purrr::set_names() %>% 
+#   purrr::map_dfr(~read_excel(., col_types = c("text", "numeric")), .id = "file_name") %>% 
+#   dplyr::mutate(date_prep = str_remove(file_name, paste0(dir_n, "Data_sources/", ctr, "/")),
+#                 date_prep = str_remove(date_prep, ".xlsx"),
+#                 Date = ymd(date_prep)) 
+
+
+# data_raw <- sourcedata_vax %>% 
+#   dplyr::select(Date, 
+#                 Measure = `Measure Name`,
+#                 Measure_fill = `...1`,
+#                 Value)

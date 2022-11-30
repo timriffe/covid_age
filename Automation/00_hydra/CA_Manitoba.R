@@ -32,7 +32,7 @@ gs4_auth(email = Sys.getenv("email"))
 dates <- data.frame(date = seq(from = ymd('2022-03-13'), to = ymd(today() - 11), by='days')) %>% 
   mutate(week = epiweek(date),
          year = epiyear(date)) %>% 
-  group_by(year, week, .drop = TRUE) %>% 
+  group_by(year, week) %>% 
   filter(date == max(date)) 
 
 
@@ -80,7 +80,7 @@ cases <- IN %>%
                 Measure = "Cases") %>% 
   dplyr::select(Country, Region, Code,
                 Date, Age, AgeInt, 
-                Sex, Measure, Metric, Value)
+                Sex, Measure, Metric, Value) 
 
 
 
@@ -143,7 +143,8 @@ deaths <- IN_deaths %>%
                 Sex, Measure, Metric, Value)
 
 
-out <- bind_rows(cases, deaths)
+out <- bind_rows(cases, deaths) %>% 
+  sort_input_data()
 
 # saving data in N drive
 write_rds(out, paste0(dir_n, ctr, ".rds"))
@@ -152,19 +153,6 @@ write_rds(out, paste0(dir_n, ctr, ".rds"))
 log_update(pp = ctr, N = nrow(out))
 
 ## END
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

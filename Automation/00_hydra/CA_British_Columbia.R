@@ -74,9 +74,9 @@ out <-
          Date = ddmmyyyy(Date),
          Code = "CA-BC",
          Metric = "Count") %>% 
+  unique() %>% 
   # bind_rows(db_d) %>% # TR: removed 7-Feb 2022
-  sort_input_data() %>% 
-  unique()
+  sort_input_data() 
   
 
 # saving the csv

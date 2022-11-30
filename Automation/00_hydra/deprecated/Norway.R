@@ -51,7 +51,6 @@ for (l in rev(case_urls)){
     print(l)
     db_c <- read_csv(l)
   }, error=function(e){ skip_to_next <<- FALSE})
-  
   if(skip_to_next) { break } 
 }
 
@@ -235,8 +234,9 @@ out <-
                       sprintf("%02d",month(Date)),  
                       year(Date),sep="."),
          Code = paste0("NO")) %>% 
-  sort_input_data() %>% 
-  unique()
+  unique() %>% 
+  sort_input_data()  
+  
 
 # Push to Drive ####
 ####################
@@ -253,7 +253,14 @@ write_rds(out, paste0(dir_n, ctr, ".rds"))
 
 
 N <- nrow(out) - nrow(db_drive)
-log_update(pp = "Norway", N = N)
+
+## MK: 23.11.2022: 
+
+## As announced on the GitHub repo, the repo is archived and no data are published since 14.11.2022.
+## https://github.com/folkehelseinstituttet/surveillance_data
+## as such, this script is deprecated. 
+
+#log_update(pp = "Norway", N = N)
 
 
 # log source files ####
