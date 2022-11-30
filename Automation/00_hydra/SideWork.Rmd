@@ -54,8 +54,7 @@ gs4_auth(email = Sys.getenv("email"))
 ```
 
 
-<<<<<<< HEAD
-=======
+
 ## NEPAL 
 
 
@@ -94,8 +93,6 @@ sheet_write(deaths_prep_tot, ss = ss_i, sheet = "deaths_TOT")
 
 
 
-
->>>>>>> adbbd94a27046b9a52fb61a7df0ef10a63963f8c
 ## CDC USA nationwide data 
 
 ##├ Date: 27.10.2022
