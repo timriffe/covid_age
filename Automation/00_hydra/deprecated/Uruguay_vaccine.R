@@ -89,14 +89,15 @@ select(Date= date,total_fully_12_17,total_fully_18_24,
 
 #put together 
 
-Out= rbind(Out_vaccine1, Out_vaccine2)
+Out= rbind(Out_vaccine1, Out_vaccine2) %>% 
+  sort_input_data()
 
 
 #save output data
 
 write_rds(Out, paste0(dir_n, ctr, ".rds"))
 
-log_update(pp = ctr, N = nrow(Out)) 
+#log_update(pp = ctr, N = nrow(Out)) 
 
 #archive input data 
 

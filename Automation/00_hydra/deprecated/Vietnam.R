@@ -226,7 +226,7 @@ out <- bind_rows(Deaths_out, Cases_out)
 
 write_rds(out, paste0(dir_n, ctr, ".rds"))
 
-log_update(pp = ctr, N = nrow(out)) ###Is that for the automation sheet? 
+#log_update(pp = ctr, N = nrow(out)) ###Is that for the automation sheet? 
 
 #archive input data 
 

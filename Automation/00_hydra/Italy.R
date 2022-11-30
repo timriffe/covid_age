@@ -31,7 +31,7 @@ it <- read_rds(paste0(dir_n, ctr, ".rds"))
 it <- it %>% 
   filter(Measure == "Cases" | Measure == "Deaths")
   
-  last_date_n <- it %>%
+last_date_n <- it %>%
   mutate(date_f = dmy(Date)) %>%
   dplyr::pull(date_f) %>%
   max()
@@ -195,7 +195,7 @@ nrow(vacc3)
 write_rds(out, paste0(dir_n, ctr, ".rds"))
 log_update(pp = ctr, N = nrow(out_drive) + nrow(vacc3))
 
-# Italy adjustment of Bolletino and Infographic sources in one sheet
+# Italy adjustment of Bolletino and Infographic sources in one sheet ==============
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # (Only Once!!!!)
 

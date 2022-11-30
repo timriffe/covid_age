@@ -69,7 +69,7 @@ all_files <- data.frame(pdf_url = files) %>%
 #   filter(!str_detect(Date, "Date"))
 
 
-CurrentDay <- lubridate::ymd(today())
+CurrentDay <- lubridate::ymd(today())-1
 
 files_day <- all_files %>% 
   mutate(reportdate = str_extract(url, "\\d+-\\d+_\\d+_\\d+"),

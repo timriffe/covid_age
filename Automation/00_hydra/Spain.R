@@ -1,69 +1,56 @@
+## Spain EPI-DATA
+## written by: Enrique Acosta
+
+
 # assigning Drive credentials in the case the script is verified manually  
 if (!"email" %in% ls()){
   email <- "kikepaila@gmail.com"
 }
 
-source("https://raw.githubusercontent.com/timriffe/covid_age/master/Automation/00_Functions_automation.R")
-#source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
+source(here::here("Automation/00_Functions_automation.R"))
 
 ctr <- "Spain"
 dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 
-# Drive credentials
-# drive_auth(email = email,
-#            scopes = c("https://www.googleapis.com/auth/spreadsheets",
-#                                "https://www.googleapis.com/auth/drive"))
-# gs4_auth(email = email,
-#          scopes = c("https://www.googleapis.com/auth/spreadsheets",
-#                     "https://www.googleapis.com/auth/drive"))
-# 
 
 drive_auth(email = Sys.getenv("email"))
 gs4_auth(email = Sys.getenv("email"))
 
 
-## SOURCE <- "https://cnecovid.isciii.es/covid19/"
+## SOURCE <- "https://cnecovid.isciii.es/covid19/#documentaci%C3%B3n-y-datos"
 
-url <- "https://cnecovid.isciii.es/covid19/resources/casos_hosp_uci_def_sexo_edad_provres.csv"
+## PDF reports (in case needed): https://www.isciii.es/QueHacemos/Servicios/VigilanciaSaludPublicaRENAVE/EnfermedadesTransmisibles/Paginas/-COVID-19.-Informes-previos.aspx
 
-data_source <- paste0(dir_n, "Data_sources/", ctr, "/all_",today(), ".xlsx")
-
-download.file(url, destfile = data_source, mode = "wb")
-
-# cases and deaths database
-
-IN <- read_csv(data_source)
-
-zipname <- paste0(dir_n, 
-                  "Data_sources/", 
-                  ctr,
-                  "/", 
-                  ctr,
-                  "_data_",
-                  today(), 
-                  ".zip")
-
-zipr(zipname, 
-     data_source, 
-     recurse = TRUE, 
-     compression_level = 9,
-     include_directories = TRUE)
-
-# clean up file chaff
-file.remove(data_source)
+## MK: 11.11.2022: as published on teh dashboard, Due to the change in the COVID-19 Surveillance and Control Strategy, 
+## as of March 28, 2022, only cases of COVID-19 in the population aged 60 and over are shown in this panel.
 
 
-# dim(IN)
-# glimpse(IN)
-# IN$grupo_edad %>% unique()
-# unique(IN$sexo) 
- # geo_ss <- "https://docs.google.com/spreadsheets/d/1gbP_TTqc96PxeZCpwKuZJB1sxxlfbBjlQj-oxXD2zAs/edit#gid=0"
- # geo_lookup <- read_sheet(ss = geo_ss) %>% 
- #   mutate(Code = coalesce(`ISO 3166-2`, `Internal Code`)) %>% 
- #   dplyr::filter(!is.na(Code))
+## 01- DOWNLOAD THE DATA AND MERGE THE DATASETS AS THE MANIPULATION REQUIRES CUMSUM ## 
 
-in2 <-
-  IN %>% 
+## This is the url for the data by Age and region until 27.03.2022, inclusive; 
+
+
+url_1 <- "https://cnecovid.isciii.es/covid19/resources/casos_hosp_uci_def_sexo_edad_provres.csv"
+
+raw_data <- read_csv(url_1)
+
+
+# Cases & Deaths; aged 60 and above (due to change in Surveillance as mentioned above, after 27.03.2022)
+
+url_2 <- "https://cnecovid.isciii.es/covid19/resources/casos_hosp_uci_def_sexo_edad_provres_60_mas.csv"
+
+raw_60 <- read_csv(url_2) %>% 
+  dplyr::filter(fecha > "2022-03-27")
+
+
+## MERGE ALL RAW DATA 
+
+raw_all <- dplyr::bind_rows(raw_data, raw_60)
+
+
+## 02- PROCESSING THE DATA 
+
+processed_data <- raw_all %>% 
   select(Short = provincia_iso, 
          Sex = sexo, 
          Age = grupo_edad,
@@ -73,7 +60,7 @@ in2 <-
   mutate(Short = ifelse(is.na(Short),"NA",Short),
          Short = ifelse(Short == "NC", "UNK+", Short),
          Region = recode(Short,
-                         "A" = "Alicante",      #
+                         "A" = "Alicante",      
                          "AB" = "Albacete",
                          "AL" = "Almeria",
                          "AV" = "Avila",
@@ -90,9 +77,9 @@ in2 <-
                          "CS" = "Castellon",
                          "CU" = "Cuenca", 
                          "GC" = "Las Palmas", 
-                         "GI" = "Girona",      #
+                         "GI" = "Girona",      
                          "GR" = "Granada", 
-                         "GU" = "Guadalajara", #
+                         "GU" = "Guadalajara", 
                          "H" = "Huelva",  
                          "HU" = "Huesca",
                          "J" = "Jaen",  
@@ -169,22 +156,82 @@ in2 <-
   sort_input_data() 
 
 
-nal <- in2 %>% 
+all_spain <- processed_data %>% 
   group_by(Country, Date, Sex, Age, AgeInt, Metric, Measure) %>% 
   summarise(Value = sum(Value), .groups = "drop") %>% 
   mutate(Region = "All",
          Code = paste("ES")) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
 
-out <- bind_rows(nal, in2) %>% 
+
+## 03- OUTPUT & saving the ORIGINAL DATASET 
+
+Out <- bind_rows(processed_data, all_spain) %>% 
   sort_input_data()
-# out$Region %>% unique()
+
 
 # saving data into N drive
-write_rds(out, paste0(dir_n, ctr, ".rds"))
+write_rds(Out, paste0(dir_n, ctr, ".rds"))
 
 # updating hydra dashboard
-log_update(pp = ctr, N = nrow(out))
+log_update(pp = ctr, N = nrow(Out))
+
+
+## Save the source file as zip file 
+
+data_source <- paste0(dir_n, "Data_sources/", ctr)
+
+excels_df <- data.frame(url = c(url_1, url_2),
+                        Date = c("2022-03-27", "2022-03-28")) %>% 
+  dplyr::mutate(destinations = paste0(data_source, "/", Date, ".csv"))
+
+excels_df %>% 
+   {map2(.$url, .$destinations, ~ download.file(url = .x, destfile = .y, mode="wb"))}
+
+data_source_combined <- excels_df %>% 
+  dplyr::pull(destinations)
+
+zipname <- paste0(dir_n, 
+                  "Data_sources/", 
+                  ctr,
+                  "/", 
+                  ctr,
+                  "_data_",
+                  today(), 
+                  ".zip")
+
+zipr(zipname, 
+     data_source_combined, 
+     recurse = TRUE, 
+     compression_level = 9,
+     include_directories = TRUE)
+
+# clean up file chaff
+file.remove(data_source_combined)
+
+
+## END ## 
+
+## Historical code =====================
+# out$Region %>% unique()
+
+# Drive credentials
+# drive_auth(email = email,
+#            scopes = c("https://www.googleapis.com/auth/spreadsheets",
+#                                "https://www.googleapis.com/auth/drive"))
+# gs4_auth(email = email,
+#          scopes = c("https://www.googleapis.com/auth/spreadsheets",
+#                     "https://www.googleapis.com/auth/drive"))
+# 
+
+# dim(IN)
+# glimpse(IN)
+# IN$grupo_edad %>% unique()
+# unique(IN$sexo) 
+# geo_ss <- "https://docs.google.com/spreadsheets/d/1gbP_TTqc96PxeZCpwKuZJB1sxxlfbBjlQj-oxXD2zAs/edit#gid=0"
+# geo_lookup <- read_sheet(ss = geo_ss) %>% 
+#   mutate(Code = coalesce(`ISO 3166-2`, `Internal Code`)) %>% 
+#   dplyr::filter(!is.na(Code))
 
 # out %>% 
 #   filter(Region == "Madrid", 

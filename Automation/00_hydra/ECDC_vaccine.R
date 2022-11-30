@@ -19,6 +19,9 @@ drive_auth(email = Sys.getenv("email"))
 gs4_auth(email = Sys.getenv("email"))
 
 
+## SourceWebsite <- "https://www.ecdc.europa.eu/en/publications-data/data-covid-19-vaccination-eu-eea"
+
+
 #Read in data 
 
 In= read.csv("https://opendata.ecdc.europa.eu/covid19/vaccine_tracker/csv/data.csv")
@@ -27,9 +30,10 @@ In= read.csv("https://opendata.ecdc.europa.eu/covid19/vaccine_tracker/csv/data.c
 
 Out= In %>%
   #select countries we need 
-  subset(Region== "BG"| Region== "CY" | Region== "HR"| Region== "HU"|  Region== "IE"| 
-          Region== "LU" | Region== "MT" | Region== "RO"| Region== "PL" | Region == "EL" | 
-           Region == "PT" | Region == "NO" | Region == "NL")%>%
+  dplyr::filter(
+    Region %in% c("BG","CY","HR","HU","IE","LU","MT","RO","PL","EL",
+                  "PT","NO","NL","LV","SI","SK"))%>%
+
   select(YearWeekISO, 
          Vaccination1= FirstDose, 
          Vaccination2= SecondDose, 
@@ -37,7 +41,7 @@ Out= In %>%
          Vaccination4 = DoseAdditional2, 
          Vaccination5 = DoseAdditional3,
          Vaccinations = UnknownDose,
-         Short=Region,TargetGroup)%>%
+         Code=Region,TargetGroup)%>%
   #remove category medical personnel and long term care residents 
   subset(TargetGroup != "HCW") %>%
   subset(TargetGroup != "LTCF")%>%
@@ -45,21 +49,21 @@ Out= In %>%
   subset(TargetGroup != "1_Age60+") %>%
   subset(TargetGroup != "1_Age<60")%>%
   subset(TargetGroup != "Age<18")%>%
-  pivot_longer(!YearWeekISO & !Short & !TargetGroup, names_to= "Measure", values_to= "Value")%>%
+  pivot_longer(!YearWeekISO & !Code & !TargetGroup, names_to= "Measure", values_to= "Value")%>%
   #data was given separate by vaccine brand, sum those together 
-  group_by(YearWeekISO, Short,TargetGroup, Measure) %>% 
+  group_by(YearWeekISO, Code,TargetGroup, Measure) %>% 
   mutate(Value = sum(Value)) %>% 
   ungroup()%>% 
   distinct()%>%
   #accumulate data 
-  arrange(YearWeekISO, Short,TargetGroup, Measure) %>% 
-  group_by(Short,TargetGroup, Measure) %>% 
+  arrange(YearWeekISO, Code,TargetGroup, Measure) %>% 
+  group_by(Code,TargetGroup, Measure) %>% 
   mutate(Value = cumsum(Value)) %>% 
   ungroup() %>%
   mutate(Day= "5")%>%
   unite('ISODate', YearWeekISO, Day, sep="-", remove=FALSE)%>%
-  mutate(Date= ISOweek::ISOweek2date(ISODate))%>%
-  mutate(Age= recode(TargetGroup, 
+  mutate(Date= ISOweek::ISOweek2date(ISODate),
+         Age= recode(TargetGroup, 
                      `ALL`= "TOT",
                      `Age0_4`= "0",
                      `Age5_9`= "5",
@@ -71,8 +75,11 @@ Out= In %>%
                      `Age60_69`="60",
                      `Age70_79`="70",
                      `Age80+`="80",
-                     `AgeUNK`="UNK"))%>% 
-    mutate(Country= recode(Short, 
+                     `AgeUNK`="UNK"),
+         Country= recode(Code, 
+                     `SI` = "Slovenia",
+                     `SK` = "Slovakia",
+                     `LV` = "Latvia",
                      `BG`= "Bulgaria",
                      `CY`= "Cyprus",
                      `HR`= "Croatia",
@@ -85,8 +92,7 @@ Out= In %>%
                      `EL`="Greece",
                      `PT`="Portugal",
                      `NO`="Norway",
-                     `NL` = "Netherlands")) %>% 
-  mutate(
+                     `NL` = "Netherlands"),
     Metric = "Count",
     Sex= "b",
     Region="All")%>%
@@ -94,31 +100,17 @@ Out= In %>%
   mutate(
     Date = ymd(Date),
     Date = ddmmyyyy(Date),
-    Code = case_when( 
-      Country == "Bulgaria" ~  "BG",
-      Country == "Croatia" ~  "HR",
-      Country == "Cyprus" ~  "CY",
-      Country == "Hungary" ~  "HU",
-      Country == "Ireland" ~  "IE",
-      Country == "Luxembourg" ~  "LU",
-      Country == "Malta" ~  "MT",
-      Country == "Poland" ~  "PL",
-      Country == "Romania" ~  "RO",
-      Country == "Greece" ~ "GR",
-      Country == "Portugal" ~ "PT",
-      Country == "Netherlands" ~ "NL",
-      Country == "Norway" ~ "NO"))%>% 
-  mutate(AgeInt = case_when(
-    Age == "15" ~ 3L,
-    Age == "18" ~ 7L,
-    Age == "25" ~ 25L,
-    Age == "50" ~ 10L,
-    Age == "60" ~ 10L,
-    Age == "70" ~ 10L,
-    Age == "80" ~ 25L,
-    Age == "UNK" ~ NA_integer_,
-    Age == "TOT" ~ NA_integer_,
-    TRUE ~ 5L))%>%
+    AgeInt = case_when(
+               Age == "15" ~ 3L,
+               Age == "18" ~ 7L,
+               Age == "25" ~ 25L,
+               Age == "50" ~ 10L,
+               Age == "60" ~ 10L,
+               Age == "70" ~ 10L,
+               Age == "80" ~ 25L,
+               Age == "UNK" ~ NA_integer_,
+               Age == "TOT" ~ NA_integer_,
+               TRUE ~ 5L))%>%
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value) %>% 
   sort_input_data()

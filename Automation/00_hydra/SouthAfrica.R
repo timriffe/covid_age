@@ -27,7 +27,7 @@ files_source <- paste0(dir_n, "Data_sources/", ctr, "/")
 
 ## THESE ARE WEEKLY REPORTS ##
 
-## Source Website <- "https://www.nicd.ac.za/diseases-a-z-index/disease-index-covid-19/surveillance-reports/weekly-epidemiological-brief/
+## Source Website <- "https://www.nicd.ac.za/diseases-a-z-index/disease-index-covid-19/surveillance-reports/weekly-epidemiological-brief/"
 
 
 url_reports <- "https://www.nicd.ac.za/diseases-a-z-index/disease-index-covid-19/surveillance-reports/weekly-epidemiological-brief/"
@@ -50,15 +50,10 @@ all_files <- data.frame(pdf_url = files) %>%
   filter(WeekNumber == max(WeekNumber))
 
 
-CurrentWeek <- lubridate::week(today())
-
-if(CurrentWeek == all_files$WeekNumber){
-  all_files %>% 
+all_files %>% 
     {map2(.$pdf_url, .$destinations, ~ download.file(url = .x, destfile = .y, mode="wb"))}
-  log_update(pp = ctr, N = "Downloaded")
-} else {
-  log_update(pp = ctr, N = "NoUpdate")
-}
+
+log_update(pp = ctr, N = "Downloaded")
 
 
 ## END ## 

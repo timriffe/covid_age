@@ -44,7 +44,7 @@ In= data.table::fread("https://opendata.arcgis.com/api/v3/datasets/ffb0a5bfa5884
 ## add the usual stuff: country ISO code, region, etc.
 
 
-## MSK 26.08.2020
+## MK 26.08.2020
 ## I am adapting the code so that 105 is the oldest age group
 
 processed_data <- In %>%
@@ -68,7 +68,8 @@ processed_data <- In %>%
                           `1` = "Vaccination1",
                           `2` = "Vaccination2",
                           `3` = "Vaccination3",
-                          `4` = "Vaccination4")) %>% 
+                          `4` = "Vaccination4",
+                          `5` = "Vaccination5")) %>% 
   group_by(ID, Measure) %>% 
   mutate(n = row_number()) %>% 
   ungroup() %>%  

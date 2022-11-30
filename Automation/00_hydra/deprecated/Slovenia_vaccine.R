@@ -43,6 +43,8 @@ gs4_auth(email = Sys.getenv("email"))
 
 #get vaccine data 
 
+# WEBSITE SOURCE <- "https://github.com/sledilnik/data/tree/master/csv"
+
 In_vaccine=read.csv("https://raw.githubusercontent.com/sledilnik/data/master/csv/vaccination.csv")
 
 

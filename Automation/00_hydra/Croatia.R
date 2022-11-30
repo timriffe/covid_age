@@ -105,7 +105,8 @@ out <-
   mutate(n = sum(Value)) %>% 
   ungroup() %>% 
   filter(n > 0) %>% 
-  select(-n)
+  select(-n) %>% 
+  sort_input_data()
 
 
 #save output data

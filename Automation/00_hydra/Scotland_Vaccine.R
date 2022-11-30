@@ -16,11 +16,19 @@ drive_auth(email = Sys.getenv("email"))
 gs4_auth(email = Sys.getenv("email"))
 
 
-###get vaccine data for scotland
+###get vaccine data for Scotland
 
 ## Source Website: https://www.opendata.nhs.scot/dataset/covid-19-vaccination-in-scotland
 
-vacc <- read.csv("https://www.opendata.nhs.scot/dataset/6dbdd466-45e3-4348-9ee3-1eac72b5a592/resource/9b99e278-b8d8-47df-8d7a-a8cf98519ac1/download/daily_vacc_age_sex_20211103.csv")
+
+link_name <- scraplinks("https://www.opendata.nhs.scot/dataset/covid-19-vaccination-in-scotland/resource/9b99e278-b8d8-47df-8d7a-a8cf98519ac1") %>% 
+  filter(str_detect(link, ".csv")) %>% 
+  dplyr::pull(url)
+
+vacc <- read.csv(link_name)
+
+## WRANGLING 
+
 vacc2 <- vacc %>% 
   select(Date = Date, Sex = Sex, 
          Age = AgeGroup, 
