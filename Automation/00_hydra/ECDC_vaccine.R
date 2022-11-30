@@ -32,8 +32,7 @@ Out= In %>%
   #select countries we need 
   dplyr::filter(
     Region %in% c("BG","CY","HR","HU","IE","LU","MT","RO","PL","EL",
-                  "PT","NO","NL","LV","SI","SK"))%>%
-
+                  "PT","NO","NL","LV","SI","SK")) %>%
   select(YearWeekISO, 
          Vaccination1= FirstDose, 
          Vaccination2= SecondDose, 
@@ -41,7 +40,7 @@ Out= In %>%
          Vaccination4 = DoseAdditional2, 
          Vaccination5 = DoseAdditional3,
          Vaccinations = UnknownDose,
-         Code=Region,TargetGroup)%>%
+         Code=Region,TargetGroup) %>%
   #remove category medical personnel and long term care residents 
   subset(TargetGroup != "HCW") %>%
   subset(TargetGroup != "LTCF")%>%
@@ -96,7 +95,7 @@ Out= In %>%
     Metric = "Count",
     Sex= "b",
     Region="All")%>%
-  tidyr::complete(Age, nesting(Date, Measure, Country, Metric, Sex, Region), fill=list(Value=0)) %>%  
+  tidyr::complete(Age, nesting(Date, Measure, Country, Metric, Sex, Region, Code), fill=list(Value=0)) %>%  
   mutate(
     Date = ymd(Date),
     Date = ddmmyyyy(Date),
