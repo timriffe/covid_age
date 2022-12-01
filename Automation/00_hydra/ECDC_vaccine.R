@@ -115,9 +115,11 @@ Out= In %>%
   sort_input_data()
 
 ####we only need third vaccination for norway
-Out <- Out %>% 
-  filter(Country != "Norway" | Measure != "Vaccination1") %>% 
-  filter(Country != "Norway" | Measure != "Vaccination2")
+## MK: 01.12.2022: I stopped this filter, we have data for Norway by Sex in Norway_Vaccine. 
+## Here the data are for both sexes 'b'. I would keep having it as well. 
+# Out <- Out %>% 
+#   filter(Country != "Norway" | Measure != "Vaccination1") %>% 
+#   filter(Country != "Norway" | Measure != "Vaccination2")
 
 
 

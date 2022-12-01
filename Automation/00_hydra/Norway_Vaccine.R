@@ -126,9 +126,7 @@ vacc_historical <- readRDS(paste0(dir_n, "Norway_Vaccine.rds")) %>%
 vacc_out <- rbind(vacc_today, vacc_historical) %>% 
   mutate(
      Date = ymd(Date),
-     Date = paste(sprintf("%02d",day(Date)),    
-                  sprintf("%02d",month(Date)),  
-                  year(Date),sep="."))%>% 
+     Date = ddmmyyyy(Date))%>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)%>% 
   mutate(Value = as.character(Value)) %>% 
