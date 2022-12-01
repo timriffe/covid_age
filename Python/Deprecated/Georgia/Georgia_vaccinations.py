@@ -46,7 +46,8 @@ driver.get(base_url)
 iframe = driver.find_elements(By.TAG_NAME, 'iframe')[1]
 driver.switch_to.frame(iframe)
 
-
+driver.refresh()
+driver.implicitly_wait(10)
 script = [t.get_attribute("innerHTML") for t in driver.find_elements(By.TAG_NAME, "script") if "window.infographicData" in t.get_attribute("innerHTML")]
 check = script[0].split("=",1)[1].replace(";", "")
 data = json.loads(check)
