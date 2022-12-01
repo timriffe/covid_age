@@ -1,1 +1,1 @@
-"N:\COVerAGE-DB\Automation\Github Repository\Working\Bulgaria\Bulgaria.py"
+"U:\git\covid_age\Python\Working\Bulgaria\Bulgaria.py"
