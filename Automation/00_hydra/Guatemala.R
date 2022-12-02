@@ -48,6 +48,8 @@ read_csv_files <- function(tbl, string_selection){
 
 # DATAFRAMES CASES, DEATHS reading & processing #=============
 
+## Cases & Deaths data are cumulative and updated, so we bind all datasets, then sum values, grouped by Dates.
+
 cases_history <- extract_data(dir_main[1]) %>%
   dplyr::select(file_name, Age = Edad,
                 Sex = Sexo, Value = n) %>% 
@@ -144,6 +146,8 @@ epi_data <- epi_data_all %>%
 
 
 # VACCINATION DATA- reading & processing # =====================
+
+## Vaccination Data to appended. No sum/ cumsum is required. 
 
 vaxAge_history <- extract_data(dir_main[3]) %>% 
   mutate(Date = str_extract(file_name, "\\d+"),
