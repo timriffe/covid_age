@@ -20,12 +20,16 @@ gs4_auth(email = Sys.getenv("email"))
 
 ## Source Website: https://www.opendata.nhs.scot/dataset/covid-19-vaccination-in-scotland
 
+## MK: 07.12.2022: As published in the website, data are no longer published by Age. Only weekly totals! 
+
 
 link_name <- scraplinks("https://www.opendata.nhs.scot/dataset/covid-19-vaccination-in-scotland/resource/9b99e278-b8d8-47df-8d7a-a8cf98519ac1") %>% 
   filter(str_detect(link, ".csv")) %>% 
   dplyr::pull(url)
 
 vacc <- read.csv(link_name)
+
+
 
 ## WRANGLING 
 
@@ -100,7 +104,7 @@ vacc2 <- vacc %>%
 
 write_rds(vacc2, paste0(dir_n, ctr, ".rds"))
 
-log_update(pp = ctr, N = nrow(vacc2)) 
+#log_update(pp = ctr, N = nrow(vacc2)) 
 
 #archive input data 
 

@@ -72,7 +72,7 @@ if(class(try(
   silent = TRUE)) == "try-error"){
   log_update(pp = ctr, N = "NoUpdate")
 } else {
-  log_update(pp = ctr, N = "Downloaded")
+ # log_update(pp = ctr, N = "Downloaded")
 }
   
          

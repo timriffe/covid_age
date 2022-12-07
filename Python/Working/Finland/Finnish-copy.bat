@@ -1,1 +1,1 @@
-"N:\COVerAGE-DB\Automation\Github Repository\Working\Finland\Finnish-copy.py"
+"U:\git\covid_age\Python\Working\Finland\Finnish-copy.py"
