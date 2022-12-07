@@ -65,10 +65,15 @@ isoweek_to_date_hack <- function(ISOWEEK){
 ## DATA ## ==========================
 
 ## This data file starts from 01.01.2020 till 03.10.2021 
+## Instead of downloading these data each day; let us save it once and for all. 
 
-cases_2020 <- read.csv2("https://data.rivm.nl/covid-19/COVID-19_casus_landelijk_tm_03102021.csv") %>% 
-  mutate(Date_file = as.Date(Date_file),
-         Date_statistics = ymd(Date_statistics))
+# cases_2020 <- read.csv2("https://data.rivm.nl/covid-19/COVID-19_casus_landelijk_tm_03102021.csv") %>% 
+#   mutate(Date_file = as.Date(Date_file),
+#          Date_statistics = ymd(Date_statistics))
+# 
+# write_rds(cases_2020, paste0(dir_n, "Data_Sources/", ctr, "/cases_2020.rds"))
+
+cases_2020 <- read_rds(paste0(dir_n, "Data_Sources/", ctr, "/cases_2020.rds"))
 
 ## This data file starts from 04.10.2021 till now 
 

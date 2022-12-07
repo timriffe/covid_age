@@ -98,7 +98,7 @@ dates_seq <- data.frame(date = seq(from = ymd('2022-03-13'), to = ymd(today() - 
   filter(date == max(date)) 
 
 
-## Loop over this dataframe to get the CASES data
+## Loop over this dataframe to get the DEATHS data
 
 #deaths_sample <- read.csv("https://www.gov.mb.ca/health/publichealth/surveillance/covid-19/2022/week_27/downloads/age_distribution_severe_outcomes_week_27.csv")
 
@@ -150,7 +150,7 @@ out <- bind_rows(cases, deaths) %>%
 write_rds(out, paste0(dir_n, ctr, ".rds"))
 
 # updating hydra dashboard
-log_update(pp = ctr, N = nrow(out))
+#log_update(pp = ctr, N = nrow(out))
 
 ## END
 

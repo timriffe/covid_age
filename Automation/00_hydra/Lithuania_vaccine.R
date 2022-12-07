@@ -89,10 +89,8 @@ processed_data <- In %>%
 
 
 out <- processed_data %>% 
-  mutate(
-    Metric = "Count", 
-    AgeInt = 1L)%>% 
-  mutate(
+  mutate(Metric = "Count", 
+    AgeInt = 1L,
     Date = ymd(Date),
     Date = ddmmyyyy(Date),
     Code = paste0("LT"),
