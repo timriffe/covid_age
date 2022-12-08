@@ -250,7 +250,8 @@ links_new_vacc <- links_v %>%
 # downloading new vaccine data and loading it
 dim(links_new_vacc)[1] > 0
 db_vcc <- tibble()
- if(dim(links_new_vacc)[1] > 0){
+
+if(dim(links_new_vacc)[1] > 0){
    for(i in 1:dim(links_new_vacc)[1]){
     
     date_v <- links_new_vacc[i, 1] %>% dplyr::pull()
