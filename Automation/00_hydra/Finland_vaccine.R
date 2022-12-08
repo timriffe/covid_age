@@ -11,7 +11,7 @@ dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 drive_auth(email = Sys.getenv("email"))
 gs4_auth(email = Sys.getenv("email"))
 
-
+## NB: Python folder is a back-up; but it is not main source of Data 
 
 #read in archived  data 
 
@@ -38,6 +38,7 @@ date_text <-
 
 date= substr(date_text, 92, 102) %>% 
   dmy()
+
 
 
 if (date > last_date_archive){

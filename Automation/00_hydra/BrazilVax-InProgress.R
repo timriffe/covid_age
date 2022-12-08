@@ -21,6 +21,11 @@ gs4_auth(email = Sys.getenv("email"))
 ## Source website: https://opendatasus.saude.gov.br/dataset/covid-19-vacinacao/resource/301983f2-aa50-4977-8fec-cfab0806cb0b
 
 
+## also read the coding for doses == this file I made by translating the unique values using Google
+
+vax_code <- read_excel(paste0(dir_n, ctr,"/BrazilVaxCoding.xlsx"), sheet = "Coding")
+
+
 ## List the downloaded files 
 
 # vax.list <-list.files(
@@ -46,34 +51,27 @@ gs4_auth(email = Sys.getenv("email"))
 #           
 ## read the .rds files and bind in one dataset 
 # # 
-# rds_files <- list.files(
-#   path= paste0(dir_n, ctr),
-#   pattern = ".rds",
-#   full.names = TRUE)
-# 
-# raw_data <- rds_files %>%
-#   map_dfr(read_rds)
+rds_files <- list.files(
+  path= paste0(dir_n, ctr),
+  pattern = ".rds",
+  full.names = TRUE)
+
+raw_data <- rds_files %>%
+  map_dfr(read_rds)
 
 
-
-
-
-## also read the coding for doses == this file I made by translating the unique values using Google
-
-# vax_code <- read_excel(paste0(dir_n, ctr,"/BrazilVaxCoding.xlsx"), sheet = "Coding")
-# 
 # ## PROCESS THE DATA ============== 
 # 
 # ## Process step 1
 # 
-# raw_1 <- raw_data %>% 
-#   dplyr::rename(Date = vacina_dataAplicacao,
-#                 Age = paciente_idade,
-#                 Sex = paciente_enumSexoBiologico,
-#                 Region = paciente_endereco_nmMunicipio,
-#                 Original_dose = vacina_descricao_dose) %>% 
-#   dplyr::left_join(vax_code, by = c("Original_dose" = "Original")) %>% 
-#   dplyr::select(-Original_dose) 
+raw_1 <- raw_data %>%
+  dplyr::rename(Date = vacina_dataAplicacao,
+                Age = paciente_idade,
+                Sex = paciente_enumSexoBiologico,
+                Region = paciente_endereco_nmMunicipio,
+                Original_dose = vacina_descricao_dose) %>%
+  dplyr::left_join(vax_code, by = c("Original_dose" = "Original")) %>%
+  dplyr::select(-Original_dose)
 # 
 # 
 # ## write the dataset in each step so that we, hopefully, minimize the R memory used. 
@@ -82,7 +80,7 @@ gs4_auth(email = Sys.getenv("email"))
 
 ## then read =D
 
-raw_1 <- read_rds(paste0(dir_n, ctr, "/raw_1", ".rds"))
+#raw_1 <- read_rds(paste0(dir_n, ctr, "/raw_1", ".rds"))
 
 ## Process step 2
 

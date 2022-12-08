@@ -58,5 +58,5 @@ all_files %>%
 
 #write_rds(out, paste0(dir_n, ctr, ".rds"))
 
-log_update(pp = ctr, N = "Downloaded") 
+#log_update(pp = ctr, N = "Downloaded") 
 

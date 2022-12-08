@@ -24,7 +24,7 @@ dir_k <- "K:/CDC_Covid/"
 
 # folder name, this changes 
 
-folder <- "covid_case_restricted_detailed-master_03_11_2022" ## to change every update/ download of the data
+folder <- "covid_case_restricted_detailed-master_01_12_2022" ## to change every update/ download of the data
 
 
 # Read in files names 
