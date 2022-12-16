@@ -80,6 +80,9 @@ httr::GET(url_vac, write_disk(data_source_vac, overwrite = T))
                               TRUE ~ AgeInt),
            AgeInt = case_when(Measure %in% c("Vaccination4") & 
                                 Age == "65" & Date %in% c("07.04.2022", "14.04.2022") ~ "15",
+                              Age == "12" ~ "4",
+                              Age == "16" ~ "2",
+                              Age == "18" ~ "12",
                               TRUE ~ AgeInt))
   
   last_date_drive_vac <- db_drive %>% 

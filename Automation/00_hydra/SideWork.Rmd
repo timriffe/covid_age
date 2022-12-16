@@ -54,6 +54,76 @@ gs4_auth(email = Sys.getenv("email"))
 ```
 
 
+## Canada 
+
+##├ Date: 16.12.2022
+Problem: Missing Cases and deaths data since 20.02.2021; so collected PDFs from Way Back Machhine manually and copied the cases/ deaths data by age for the past two years. here is just to wrangle and append to the database sheet in the drive. 
+
+
+& so to note, that there are missing reports/ data 
+
+```{r}
+
+at_rubric <- get_input_rubric() %>% 
+  dplyr::filter(Short == "CA")
+ss_i   <- at_rubric %>% dplyr::pull(Sheet)
+ss_db  <- at_rubric %>% dplyr::pull(Source)
+
+
+db_drive <- read_sheet(ss = ss_i, sheet = "database") %>% 
+  sort_input_data() %>% 
+  mutate(Age = as.character(Age),
+         AgeInt = as.character(AgeInt))
+
+
+Cases <- read_excel("N:/COVerAGE-DB/Automation/Hydra/Data_sources/Canada/WayBackMacineData-2021-2022.xlsx", 
+                    sheet = "Cases") %>% 
+  select(Date, Age, AgeInt, b, m, f, UNK) %>% 
+  mutate(Age = as.character(Age),
+         AgeInt = as.character(AgeInt),
+         b = as.numeric(b),
+         m = as.numeric(m),
+         f = as.numeric(f),
+         UNK = as.numeric(UNK))
+
+
+Deaths <- read_excel("N:/COVerAGE-DB/Automation/Hydra/Data_sources/Canada/WayBackMacineData-2021-2022.xlsx", 
+                     sheet = "Deaths") %>% 
+  select(Date, Age, AgeInt, b, m, f, UNK) %>% 
+  mutate(Age = as.character(Age),
+         AgeInt = as.character(AgeInt),
+         b = as.numeric(b),
+         m = as.numeric(m),
+         f = as.numeric(f),
+         UNK = as.numeric(UNK))
+
+
+processed_data <- bind_rows("Cases" = Cases,
+                            "Deaths" = Deaths,
+                            .id = "Measure") %>% 
+  pivot_longer(cols = c("b", "m", "f", "UNK"),
+               names_to = "Sex",
+               values_to = "Value") %>% 
+  mutate(Country = "Canada",
+         Code = "CA",
+         Region = "All",
+         Metric = "Count")
+
+
+data_out <- bind_rows(db_drive, processed_data) %>% 
+  sort_input_data()
+
+
+
+sheet_write(data_out, ss = ss_i, sheet = "database")
+
+
+```
+
+
+
+
+
 
 ## NEPAL 
 
