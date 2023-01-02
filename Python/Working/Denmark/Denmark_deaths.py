@@ -34,11 +34,13 @@ time.sleep(35)
 iframe = driver.find_element(By.ID, 'ifrSafe')
 driver.switch_to.frame(iframe)
 
-time.sleep(15)
+time.sleep(35)
 soup = soup(driver.page_source, 'html.parser')
 divs = soup.find_all("div", {"class": "amcharts-chart-div"})
+#print(divs[2])
 
-head_of_graph = divs[3].svg.find('g', class_= re.compile("amcharts-graph-column amcharts-graph-graphAuto0"))
+time.sleep(15)
+head_of_graph = divs[0].svg.find('g', class_= re.compile("amcharts-graph-column amcharts-graph-graphAuto0"))
 the_gs = head_of_graph.find_all('g', class_= re.compile("amcharts-graph-column amcharts-graph-graphAuto0"))
 # print(the_gs)
 
@@ -47,7 +49,7 @@ for g in the_gs:
     split_element = g['aria-label'].split()
     # print(split_element)
     info['age_group'].append(split_element[0])
-    info['deaths'].append(split_element[1])
+    info['deaths'].append(round(float(split_element[1])))
 
 info_df = pd.DataFrame.from_dict(info) 
 info_df.to_excel(r"N:\COVerAGE-DB\Automation\Denmark\Denmark_deaths"+timestr+".xlsx",encoding="utf-8-sig", index=False)

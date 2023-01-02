@@ -33,7 +33,7 @@ src = r"C:\Users\Krishnan\Downloads\\"
 dst = "N:\COVerAGE-DB\Automation\Bulgaria\\"
 
 def download():
-    time.sleep(10)
+    time.sleep(20)
     download_button = driver.find_elements(By.XPATH, '//*[@class="btn btn-primary js-ga-event"]')[0]
     download_button.click()
     time.sleep(3)

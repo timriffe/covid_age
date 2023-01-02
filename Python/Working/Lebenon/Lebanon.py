@@ -55,7 +55,7 @@ time.sleep(50)
 htmlCode=BeautifulSoup(driver.page_source,'html.parser')
 download_button1 = driver.find_elements(By.XPATH, '//*[@class="euiButtonIcon euiButtonIcon--text embPanel__optionsMenuButton"]')[35]
 download_button1.click()
-time.sleep(10)
+time.sleep(20)
 
 
 download_button1 = driver.find_elements(By.XPATH, '//*[@class="euiContextMenuItem__text"]')[0]

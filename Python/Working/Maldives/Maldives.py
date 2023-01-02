@@ -18,7 +18,7 @@ from urllib.parse import urlparse
 from bs4 import BeautifulSoup as bs
 import re
 import urllib
-from fake_useragent import UserAgent
+#from fake_useragent import UserAgent
 from selenium import webdriver
 from selenium.webdriver import Chrome, ChromeOptions
 from selenium.webdriver.common.by import By
@@ -26,8 +26,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 url="https://covid19.health.gov.mv/dashboard/list/?c=0"
-ua = UserAgent()
-headers = { 'User-Agent': ua.chrome}
+#ua = UserAgent(use_cache_server=False)
+#headers = { 'User-Agent': ua.chrome}
 listOfPost=[]
 
 

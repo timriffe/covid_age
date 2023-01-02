@@ -110,7 +110,7 @@ time.sleep(10)
 
 first_tab = driver.find_element(By.XPATH, '//*[@id="shiny-tab-casos_confirmados"]/div[4]/div[3]/div/div[2]/div/ul/li[3]')
 ActionChains(driver).move_to_element(first_tab).click(first_tab).perform()
-time.sleep(20)
+time.sleep(30)
 driver.find_element(By.CLASS_NAME, 'buttons-csv').click()
 time.sleep(10)
 copyFileAndRename("confirmados_edad.csv",f"confirmedcases_{timestr}.csv")
