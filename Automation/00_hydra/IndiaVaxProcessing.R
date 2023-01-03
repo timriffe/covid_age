@@ -25,7 +25,7 @@ data_source <- paste0(dir_n, "Data_sources/India/")
 
 ## Brief: India vaccination data are published in PDFs tables. 
 ## All PDFs have two tables, the first is over the country data, and the second is regional/ State level data. 
-## All PDFs data are copied and pasted into excel file, on monthly basis and mainpulated here.. 
+## All PDFs data are copied and pasted into excel file, on monthly basis and manipulated here.. 
 
 
 ## ARCHIVED DATA reading
@@ -35,7 +35,7 @@ dataarchived <- read_rds(paste0(dir_n, ctr, ".rds"))
 ## READ & PROCESS THE COPIED NEW DATA 
 
 
-file_name <- "IndiaVax-21Sep2022-08Dec2022.xlsx" ## this will change always 
+file_name <- "IndiaVaxDataFromPDFs.xlsx" ## the file_name  
 
 country_data <- read_excel(paste0(data_source, file_name), sheet = 1) %>% 
   mutate(Value = parse_number(Value),
@@ -123,6 +123,7 @@ manual_data <- bind_rows(country_data, regional_data)
 
 
 out <- bind_rows(dataarchived, manual_data) %>% 
+  unique() %>% 
   sort_input_data()
 
 

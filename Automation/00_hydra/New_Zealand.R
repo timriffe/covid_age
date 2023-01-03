@@ -62,10 +62,10 @@ if (date_f > last_date_drive){
   ####################################
   # all cases from github #
   ####################################
+ ## GitHub Folder link: https://github.com/minhealthnz/nz-covid-data
 
-
-  cases <- read.csv("https://raw.githubusercontent.com/minhealthnz/nz-covid-data/main/cases/covid-cases.csv")  
-
+ # cases <- read.csv("https://raw.githubusercontent.com/minhealthnz/nz-covid-data/main/cases/covid-cases.csv")  
+  cases <- read.csv("https://raw.githubusercontent.com/minhealthnz/nz-covid-data/main/cases/covid-case-counts.csv")
   
   db_c2 <- 
     cases %>% 
@@ -459,7 +459,7 @@ all_the_tables <- html %>%
                    data_source5,
                    data_source6)
   
-  write_csv(db_c, data_source1)
+  write_csv(out, data_source1)
   write_csv(db_a, data_source2)
   write_csv(db_s, data_source3)
   write_csv(db_ta, data_source4)

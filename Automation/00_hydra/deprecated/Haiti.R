@@ -70,7 +70,7 @@ if(class(try(
   #  filter(date <= "2022-07-17") %>% 
   {map2(.$url, .$destinations, ~ download.file(url = .x, destfile = .y, mode="wb"))}, 
   silent = TRUE)) == "try-error"){
-  log_update(pp = ctr, N = "NoUpdate")
+ # log_update(pp = ctr, N = "NoUpdate")
 } else {
  # log_update(pp = ctr, N = "Downloaded")
 }

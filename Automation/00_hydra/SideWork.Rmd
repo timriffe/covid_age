@@ -76,7 +76,7 @@ db_drive <- read_sheet(ss = ss_i, sheet = "database") %>%
          AgeInt = as.character(AgeInt))
 
 
-Cases <- read_excel("N:/COVerAGE-DB/Automation/Hydra/Data_sources/Canada/WayBackMacineData-2021-2022.xlsx", 
+Cases <- read_excel("N:/COVerAGE-DB/Automation/Hydra/Data_sources/Canada/CanadaDataFromPDFs.xlsx", 
                     sheet = "Cases") %>% 
   select(Date, Age, AgeInt, b, m, f, UNK) %>% 
   mutate(Age = as.character(Age),
@@ -87,7 +87,7 @@ Cases <- read_excel("N:/COVerAGE-DB/Automation/Hydra/Data_sources/Canada/WayBack
          UNK = as.numeric(UNK))
 
 
-Deaths <- read_excel("N:/COVerAGE-DB/Automation/Hydra/Data_sources/Canada/WayBackMacineData-2021-2022.xlsx", 
+Deaths <- read_excel("N:/COVerAGE-DB/Automation/Hydra/Data_sources/Canada/CanadaDataFromPDFs.xlsx", 
                      sheet = "Deaths") %>% 
   select(Date, Age, AgeInt, b, m, f, UNK) %>% 
   mutate(Age = as.character(Age),

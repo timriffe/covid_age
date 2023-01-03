@@ -103,7 +103,7 @@ for (i in seq_along(files$name)) {
 
 #write_rds(out, paste0(dir_n, ctr, ".rds"))
 
-log_update(pp = ctr, N = "Downloaded")
+#log_update(pp = ctr, N = "Downloaded")
 
 
 
