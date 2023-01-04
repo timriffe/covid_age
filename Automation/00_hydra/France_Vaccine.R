@@ -48,14 +48,17 @@ vacc_age_sex <- vacc_total %>%
          Vaccination2_Homme = n_cum_complet_h, 
          Vaccination3_Homme = n_cum_rappel_h,
          Vaccination4_Homme = n_cum_2_rappel_h,
+         Vaccination5_Homme = n_cum_3_rappel_h,
          Vaccination1_Femme = n_cum_dose1_f, 
          Vaccination2_Femme = n_cum_complet_f, 
          Vaccination3_Femme = n_cum_rappel_f,
          Vaccination4_Femme = n_cum_2_rappel_f,
+         Vaccination5_Femme = n_cum_3_rappel_f,
          Vaccination1_Total = n_cum_dose1_e, 
          Vaccination2_Total = n_cum_complet_e, 
          Vaccination3_Total = n_cum_rappel_e,
-         Vaccination4_Total = n_cum_2_rappel_e) %>% 
+         Vaccination4_Total = n_cum_2_rappel_e,
+         Vaccination5_Total = n_cum_3_rappel_e) %>% 
   pivot_longer(cols = -c("Date", "Age"),
                names_to = c("Measure", "Sex"),
                names_sep = "_",
@@ -98,9 +101,7 @@ vacc_tot_age_sex <- vacc_age_sex %>%
   arrange(Date, Age) %>% 
   mutate(
     Date = ymd(Date),
-    Date = paste(sprintf("%02d",day(Date)),    
-                 sprintf("%02d",month(Date)),  
-                 year(Date),sep="."),
+    Date = ddmmyyyy(Date),
     Code = paste0("FR")) %>% 
   sort_input_data()
 
@@ -127,14 +128,17 @@ vacc_reg_out <- vacc_reg %>%
          Vaccination2_Homme = n_cum_complet_h, 
          Vaccination3_Homme = n_cum_rappel_h,
          Vaccination4_Homme = n_cum_2_rappel_h,
+         Vaccination5_Homme = n_cum_3_rappel_h,
          Vaccination1_Femme = n_cum_dose1_f, 
          Vaccination2_Femme = n_cum_complet_f, 
          Vaccination3_Femme = n_cum_rappel_f,
          Vaccination4_Femme = n_cum_2_rappel_f,
+         Vaccination5_Femme = n_cum_3_rappel_f,
          Vaccination1_Total = n_cum_dose1_e, 
          Vaccination2_Total = n_cum_complet_e, 
          Vaccination3_Total = n_cum_rappel_e,
-         Vaccination4_Total = n_cum_2_rappel_e) %>% 
+         Vaccination4_Total = n_cum_2_rappel_e,
+         Vaccination5_Total = n_cum_3_rappel_e) %>% 
   pivot_longer(cols = -c("Region", "Date", "Age"),
                names_to = c("Measure", "Sex"),
                names_sep = "_",
@@ -220,9 +224,7 @@ vacc_reg_age_sex <- vacc_reg_out %>%
   arrange(Date, Age) %>% 
   mutate(
     Date = ymd(Date),
-    Date = paste(sprintf("%02d",day(Date)),    
-                 sprintf("%02d",month(Date)),  
-                 year(Date),sep=".")) %>% 
+    Date = ddmmyyyy(Date)) %>% 
   sort_input_data()
 
 
