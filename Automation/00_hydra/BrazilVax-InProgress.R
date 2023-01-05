@@ -9,7 +9,7 @@ if (!"email" %in% ls()){
 }
 
 # info country and N drive address
-ctr          <- "Brazil" # it's a placeholder
+ctr          <- "BrazilVax" # it's a placeholder
 dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/Data_sources/"
 
 

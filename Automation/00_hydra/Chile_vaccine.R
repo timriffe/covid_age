@@ -33,6 +33,16 @@ vacc1 <- read_csv("https://raw.githubusercontent.com/MinCiencia/Datos-COVID19/ma
 
 vacc2 <- read_csv ("https://raw.githubusercontent.com/MinCiencia/Datos-COVID19/master/output/producto78/vacunados_edad_fecha_2daDosis_std.csv")
 
+#Vaccination 3
+
+vacc3 <- read_csv("https://raw.githubusercontent.com/MinCiencia/Datos-COVID19/master/output/producto78/vacunados_edad_fecha_Refuerzo_std.csv")
+
+
+#Vaccination 4
+
+vacc4 <- read_csv("https://raw.githubusercontent.com/MinCiencia/Datos-COVID19/master/output/producto78/vacunados_edad_fecha_Cuarta_std.csv")
+
+
 #Vaccination 
 
 vacctot <- read_csv ("https://raw.githubusercontent.com/MinCiencia/Datos-COVID19/master/output/producto78/vacunados_edad_fecha_total_std.csv")
@@ -98,6 +108,63 @@ Age, AgeInt, Metric, Measure, Value)%>%
   mutate(Age = as.character(Age))
 
 
+#Vaccination 3 
+
+out3 <- vacc3 %>%
+  select(Age=Edad, Date= Fecha, Vaccination3= `Dosis Refuerzo`)%>%
+  pivot_longer(!Age & !Date, names_to= "Measure", values_to= "Value")%>%
+  subset(Value != "NA") %>%
+  subset(Age < 106)%>%
+  tidyr::complete(Date, Age = all_ages, fill = list(Value = 0)) %>% 
+  mutate(
+    Metric = "Count", 
+    Sex= "b",
+    AgeInt= 1L,
+    Measure = "Vaccination3")  %>%
+  arrange(Age, Date) %>%
+  group_by(Age) %>% 
+  mutate(Value = cumsum(Value)) %>% 
+  ungroup()%>% 
+  mutate(
+    Date = ymd(Date),
+    Date = ddmmyyyy(Date),
+    Code = "CL",
+    Country = "Chile",
+    Region = "All",)%>% 
+  select(Country, Region, Code, Date, Sex, 
+         Age, AgeInt, Metric, Measure, Value)%>% 
+  mutate(Age = as.character(Age))
+
+
+#Vaccination 4 
+
+out4 <- vacc4 %>%
+  select(Age=Edad, Date= Fecha, Vaccination4= `Cuarta Dosis`)%>%
+  pivot_longer(!Age & !Date, names_to= "Measure", values_to= "Value")%>%
+  subset(Value != "NA") %>%  
+  subset(Age < 106)%>%
+  tidyr::complete(Date, Age = all_ages, fill = list(Value = 0)) %>% 
+  mutate(
+    Metric = "Count", 
+    Sex= "b",
+    AgeInt= 1L,
+    Measure = "Vaccination4")  %>%
+  arrange(Age, Date) %>%
+  group_by(Age) %>% 
+  mutate(Value = cumsum(Value)) %>% 
+  ungroup()%>% 
+  mutate(
+    Date = ymd(Date),
+    Date = ddmmyyyy(Date),
+    Code = "CL",
+    Country = "Chile",
+    Region = "All",)%>% 
+  select(Country, Region, Code, Date, Sex, 
+         Age, AgeInt, Metric, Measure, Value)%>% 
+  mutate(Age = as.character(Age))
+
+
+
 #Vaccinations 
 
 outtot <- vacctot %>%
@@ -130,7 +197,7 @@ outtot <- vacctot %>%
 
 #put together 
 
-out <- rbind(out1, out2, outtot) %>% 
+out <- rbind(out1, out2, out3, out4, outtot) %>% 
   sort_input_data()
 
 ##adding ages 0 to 9
@@ -141,7 +208,7 @@ out <- rbind(out1, out2, outtot) %>%
 #          Value = "0")
 # out <- rbind(out, small_ages) %>% 
 #   sort_input_data()
-out <- sort_input_data(out)
+#out <- sort_input_data(out)
 
 #converting to character, because combining did not work otherwise 
 #db_drive <- db_drive %>% 
@@ -167,14 +234,18 @@ log_update(pp = "Chile_vaccine", N = nrow(out))
 
 data_source_1 <- paste0(dir_n, "Data_sources/", ctr, "/vaccine1_age_",today(), ".csv")
 data_source_2 <- paste0(dir_n, "Data_sources/", ctr, "/vaccine2_age_",today(), ".csv")
-data_source_3 <- paste0(dir_n, "Data_sources/", ctr, "/vaccines_age_",today(), ".csv")
+data_source_3 <- paste0(dir_n, "Data_sources/", ctr, "/vaccine3_age_",today(), ".csv")
+data_source_4 <- paste0(dir_n, "Data_sources/", ctr, "/vaccine4_age_",today(), ".csv")
+data_source_5 <- paste0(dir_n, "Data_sources/", ctr, "/vaccines_age_",today(), ".csv")
 
 write_csv(vacc1, data_source_1)
 write_csv(vacc2, data_source_2)
-write_csv(vacctot, data_source_3)
+write_csv(vacc3, data_source_3)
+write_csv(vacc4, data_source_4)
+write_csv(vacctot, data_source_5)
 
 
-data_source <- c(data_source_1, data_source_2,data_source_3 )
+data_source <- c(data_source_1, data_source_2,data_source_3, data_source_4, data_source_5)
 
 zipname <- paste0(dir_n, 
                   "Data_sources/", 

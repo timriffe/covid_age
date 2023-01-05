@@ -94,6 +94,7 @@ out_total= total %>%
          Vaccination2= secondDoseTotal, 
          Vaccination3 = thirdDoseTotal,
          Vaccination4 = fourthDoseTotal,
+         Vaccination5 = fifthDoseTotal,
          Vaccinations = totalDosesAdministered)%>%
   pivot_longer(cols = everything(), names_to = "Measure", values_to= "Value") %>%
   mutate(Metric = "Count",
@@ -103,9 +104,7 @@ out_total= total %>%
          Sex= "b")%>%
   mutate(
     Date = ymd(Date),
-    Date = paste(sprintf("%02d",day(Date)),    
-                 sprintf("%02d",month(Date)),  
-                 year(Date),sep="."),
+    Date = ddmmyyyy(Date),
     Code = paste0("CN-HK"),
     Country = "China",
     Region = "Hong Kong",)%>% 
@@ -140,9 +139,7 @@ out_age= age %>%
          Sex="b",
          Measure= "Vaccinations",
          Date = ymd(Date),
-         Date = paste(sprintf("%02d",day(Date)),    
-                      sprintf("%02d",month(Date)),  
-                      year(Date),sep="."),
+         Date = ddmmyyyy(Date),
          Code = paste0("CN-HK"),
          Country = "China",
          Region = "Hong Kong",)%>%
@@ -162,9 +159,7 @@ out_sex= sex %>%
     Date =today(),
     Measure= "Vaccinations",
     Date = ymd(Date),
-    Date = paste(sprintf("%02d",day(Date)),    
-                 sprintf("%02d",month(Date)),  
-                 year(Date),sep="."),
+    Date = ddmmyyyy(Date),
     Code = paste0("CN-HK"),
     Country = "China",
     Region = "Hong Kong",)%>% 

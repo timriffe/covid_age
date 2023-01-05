@@ -99,6 +99,8 @@ Out= In %>%
   mutate(
     Date = ymd(Date),
     Date = ddmmyyyy(Date),
+    Code = case_when(Code == "EL" ~ "GR",
+                     TRUE ~ Code),
     AgeInt = case_when(
                Age == "15" ~ 3L,
                Age == "18" ~ 7L,

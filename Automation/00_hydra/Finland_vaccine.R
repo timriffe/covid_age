@@ -30,7 +30,7 @@ last_date_archive <- DataArchive %>%
 #read date last updated from website 
 m_url <- "https://sampo.thl.fi/pivot/prod/fi/vaccreg/cov19cov/summary_cov19covagearea"
 
-html      <- read_html(m_url)
+html  <- read_html(m_url)
 date_text <-
   html_nodes(html, xpath = '/html/body/div[2]/div[1]/div[2]/div[2]/div[2]') %>%
   html_text()

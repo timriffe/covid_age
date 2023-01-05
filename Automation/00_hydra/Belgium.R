@@ -18,6 +18,8 @@ gs4_auth(email = Sys.getenv("email"))
 # Loading data from the web
 ###########################
 
+##Source: https://epistat.sciensano.be/
+
 # vaccines
 url_vcc <- "https://epistat.sciensano.be/Data/COVID19BE_VACC.csv"
 data_source_v <- paste0(dir_n, "Data_sources/", ctr, "/vaccines_",today(), ".csv")

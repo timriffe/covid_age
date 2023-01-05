@@ -62,19 +62,19 @@ dates_df <- data.frame(base = rep("https://mspp.gouv.ht/site/downloads/Sitrep%20
 ## FALSE, if no PDFs, with Downloaded if PDF is downloaded
 
 
-if(class(try(
-  dates_df %>%
-  filter(date > "2022-09-07") %>% 
-  #slice(which.max(date)) %>% 
-  # last published report was 17 July 2022 - to Monitor this
-  #  filter(date <= "2022-07-17") %>% 
-  {map2(.$url, .$destinations, ~ download.file(url = .x, destfile = .y, mode="wb"))}, 
-  silent = TRUE)) == "try-error"){
- # log_update(pp = ctr, N = "NoUpdate")
-} else {
- # log_update(pp = ctr, N = "Downloaded")
-}
-  
+# if(class(try(
+#   dates_df %>%
+#   filter(date > "2022-09-07") %>% 
+#   #slice(which.max(date)) %>% 
+#   # last published report was 17 July 2022 - to Monitor this
+#   #  filter(date <= "2022-07-17") %>% 
+#   {map2(.$url, .$destinations, ~ download.file(url = .x, destfile = .y, mode="wb"))}, 
+#   silent = TRUE)) == "try-error"){
+#  # log_update(pp = ctr, N = "NoUpdate")
+# } else {
+#  # log_update(pp = ctr, N = "Downloaded")
+# }
+#   
          
  
 ## END ##

@@ -225,18 +225,18 @@ cz_vaccines <-
   vacc_in %>% 
   select(Date = datum,
          Age = vekova_skupina,
-         code = kraj_nuts_kod,
+         Code = kraj_nuts_kod,
          first_dose = prvnich_davek,
          second_dose = druhych_davek,
          n_dose = celkem_davek ) %>% 
-  left_join(CZNUTS3, by="code") %>% 
+  left_join(CZNUTS3, by = c("Code" = "code")) %>% 
   select(Date, Age, Code, first_dose, second_dose, n_dose) %>% 
   group_by(Date, Age, Code) %>% 
   summarize(first_dose = sum(first_dose),
             second_dose = sum(second_dose),
             n_dose = sum(n_dose),
             .groups = "drop") %>% 
-  tidyr::complete(Code = CZNUTS3$Code, 
+  tidyr::complete(Code = CZNUTS3$code, 
                   Date = Dates_AllV, 
                   Age = all_ages_V, 
                   fill = list(first_dose = 0, 
@@ -277,8 +277,8 @@ cz_vaccines <-
     Sex= "b",
     Date = ddmmyyyy(Date),
     Metric= "Count") %>% 
-  left_join(CZNUTS3, by  ="Code") %>% 
-  select(Country, Region = `Natural Region Names`, Code, Date, Sex, 
+  left_join(CZNUTS3, by  = c("Code" = "code")) %>% 
+  select(Country, Region = name, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)
 
 cz_vaccines_all <- 

@@ -25,9 +25,7 @@ db_drive <- read_rds(paste0(dir_n, ctr, ".rds")) %>%
  # filter(Date <="2020-08-18") %>% 
 mutate(
   Date = ymd(Date),
-  Date = paste(sprintf("%02d",day(Date)),    
-               sprintf("%02d",month(Date)),  
-               year(Date),sep="."))
+  Date = ddmmyyyy(Date))
 
 ## Source website <- "https://covid19.mhlw.go.jp/en/
 

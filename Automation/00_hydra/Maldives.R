@@ -230,36 +230,6 @@ log_update("Maldives", N = nrow(MV_out))
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #############First draft 
 #cases
 #sum by day  
@@ -279,27 +249,3 @@ log_update("Maldives", N = nrow(MV_out))
 #MV_death_csum= MV_death %>%
 #group_by(Sex,Age) %>%
 #mutate(Value = cumsum(Count))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
