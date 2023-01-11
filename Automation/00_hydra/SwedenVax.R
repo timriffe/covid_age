@@ -29,8 +29,12 @@ gs4_auth(email = Sys.getenv("email"))
 # ~~~~~~~~~~~~~~~~~~~
 
 # 3.2. Vaccines ================
-  
-  # First, see if there is new vaccine data
+
+## Source Epi website <- "https://www.folkhalsomyndigheten.se/smittskydd-beredskap/utbrott/aktuella-utbrott/covid-19/statistik-och-analyser/bekraftade-fall-i-sverige/"
+
+## Vax website <- "https://www.folkhalsomyndigheten.se/folkhalsorapportering-statistik/statistikdatabaser-och-visualisering/vaccinationsstatistik/statistik-for-vaccination-mot-covid-19/"  
+
+# First, see if there is new vaccine data
   
 data_source_vac <- paste0(dir_n, "Data_sources/", ctr, "/vaccination_",today(), ".xlsx")
   
@@ -80,6 +84,9 @@ httr::GET(url_vac, write_disk(data_source_vac, overwrite = T))
                               TRUE ~ AgeInt),
            AgeInt = case_when(Measure %in% c("Vaccination4") & 
                                 Age == "65" & Date %in% c("07.04.2022", "14.04.2022") ~ "15",
+                              Age == "12" ~ "4",
+                              Age == "16" ~ "2",
+                              Age == "18" ~ "12",
                               TRUE ~ AgeInt))
   
   last_date_drive_vac <- db_drive %>% 

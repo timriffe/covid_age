@@ -44,6 +44,7 @@ sourcedata_vax <- data.frame(file_name = vax.list) %>%
 
 sourcedate <- sourcedata_vax %>% 
   dplyr::distinct(Date) %>% 
+  dplyr::filter(!is.na(Date)) %>% 
   dplyr::filter(Date == max(Date)) %>% 
   dplyr::pull(Date)
 
@@ -71,7 +72,8 @@ if(sourcedate > rdsData_date){
                                         TRUE ~ Age_prep2)) %>% 
     dplyr::group_by(Date, Age) %>% 
     dplyr::summarise(Value = sum(Value)) %>% 
-    dplyr::ungroup()
+    dplyr::ungroup() %>% 
+    dplyr::filter(!is.na(Date))
     
     
   dates_f <- seq(min(processed_data$Date), max(processed_data$Date), by = '1 day')

@@ -73,9 +73,9 @@ epi_urls <- all_files %>%
   filter(!url_pdf %in% not_available)
 
 
-
-epi_urls %>% 
-  {map2(.$url_pdf, .$destinations, ~ download.file(url = .x, destfile = .y, mode="wb"))}
+# 
+# epi_urls %>% 
+#   {map2(.$url_pdf, .$destinations, ~ download.file(url = .x, destfile = .y, mode="wb"))}
 
 
 #save output data

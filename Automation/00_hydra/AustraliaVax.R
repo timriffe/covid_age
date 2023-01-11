@@ -42,7 +42,6 @@ gs4_auth(email = Sys.getenv("email"))
 
 
 
-
 ## Part I.a: extract the last date from the .rds ====================
 
 rdsData <- read_rds(paste0(dir_n, ctr_rds, ".rds")) 
@@ -54,56 +53,40 @@ rdsData_date <- rdsData %>%
   dplyr::pull(Date)
 
 
-## Part II. Download the Excel files since 05.09.2021 or the most recent ===================
+## Part II. Download/ Append the Excel files since 05.09.2021 or the most recent ===================
 ## Note: (data as of 04.09.2021, as in Usage note)
 
 ## MK: 09.11.2022: LOOKS LIKE THIS CODE NEEDS A LOT OF TIME TO RUN and sometimes it does not run! 
+## MK: 12.12.2022: I decided to list the files in the directory (after downloading manually each Thursday) and append. 
 
 
-date_today <- tolower(format(today()-1, "%d-%B-%Y"))
-
-url_date <- dmy(date_today)
-
-urls_df <- data.frame(Date = date_today,
-                      link = "https://www.health.gov.au/sites/default/files/documents/") %>% 
-  mutate(date_to_convert = dmy(Date),
-         year = year(date_to_convert),
-         month = month(date_to_convert),
-         excel_url = paste0(link, year, "/", month, "/", "covid-19-vaccination-vaccination-data-", Date, ".xlsx"),
-         destinations = paste0(dir_n, "Data_sources/", ctr, "/", date_to_convert, ".xlsx"),
-         Date = dmy(Date))
-
-
-if(url_date > rdsData_date){
-
-  excel_url <- urls_df %>% 
-    dplyr::pull(excel_url)
-  
-  excel_destination <- urls_df %>% 
-    dplyr::pull(destinations)
-    
- # df <- data.table::fread("https://www.health.gov.au/sites/default/files/documents/2022/11/covid-19-vaccination-vaccination-data-17-november-2022.xlsx")
-  
-  download.file(url = excel_url, destfile = excel_destination, mode = "wb")
-  
- vax.list <-list.files(
+vax.list <-list.files(
   path= paste0(dir_n, "Data_sources/", ctr),
   pattern = ".xlsx",
   full.names = TRUE)
 
 
-
-sourcedata_vax <- data.frame(file_name = vax.list) %>% 
-  dplyr::mutate(date_prep = str_remove(file_name, paste0(dir_n, "Data_sources/", ctr, "/")),
+sourcedata_date <- data.frame(file_name = vax.list) %>% 
+  dplyr::mutate(date_prep = str_remove(file_name, paste0(dir_n, "Data_sources/", ctr, "/covid-19-vaccination-vaccination-data-")),
                 date_prep = str_remove(date_prep, ".xlsx"),
-                Date = ymd(date_prep)) %>% 
+                Date = dmy(date_prep)) %>% 
   dplyr::filter(Date == max(Date)) %>% 
+  dplyr::pull(Date)
+
+
+if(sourcedata_date > rdsData_date){
+  
+  sourcedata_vax <- data.frame(file_name = vax.list) %>% 
+  dplyr::mutate(date_prep = str_remove(file_name, paste0(dir_n, "Data_sources/", ctr, "/covid-19-vaccination-vaccination-data-")),
+                date_prep = str_remove(date_prep, ".xlsx"),
+                Date = dmy(date_prep)) %>% 
   dplyr::pull(file_name) %>% 
   purrr::set_names() %>% 
   purrr::map_dfr(~read_excel(., col_types = c("text", "numeric")), .id = "file_name") %>% 
-  dplyr::mutate(date_prep = str_remove(file_name, paste0(dir_n, "Data_sources/", ctr, "/")),
+  dplyr::mutate(date_prep = str_remove(file_name, paste0(dir_n, "Data_sources/", ctr, "/covid-19-vaccination-vaccination-data-")),
                 date_prep = str_remove(date_prep, ".xlsx"),
-                Date = ymd(date_prep)) 
+                Date = dmy(date_prep)) 
+
 
 
 data_raw <- sourcedata_vax %>% 
@@ -152,6 +135,7 @@ processed_data <- data_raw %>%
 
 
 Out <- bind_rows(rdsData, processed_data) %>% 
+  distinct() %>% 
   sort_input_data()
 
 
@@ -170,6 +154,35 @@ log_update(pp = ctr, N = nrow(Out))
 
 
 ## Historical code to scrape html pages first then download excel (DEPRECATED FOR NOW) ================
+
+
+# date_today <- tolower(format(today()-1, "%d-%B-%Y"))
+# 
+# url_date <- dmy(date_today)
+# 
+# urls_df <- data.frame(Date = date_today,
+#                       link = "https://www.health.gov.au/sites/default/files/documents/") %>% 
+#   mutate(date_to_convert = dmy(Date),
+#          year = year(date_to_convert),
+#          month = month(date_to_convert),
+#          excel_url = paste0(link, year, "/", month, "/", "covid-19-vaccination-vaccination-data-", Date, ".xlsx"),
+#          destinations = paste0(dir_n, "Data_sources/", ctr, "/", date_to_convert, ".xlsx"),
+#          Date = dmy(Date))
+
+
+
+# if(url_date > rdsData_date){
+# 
+#   excel_url <- urls_df %>% 
+#     dplyr::pull(excel_url)
+#   
+#   excel_destination <- urls_df %>% 
+#     dplyr::pull(destinations)
+#     
+#  # df <- data.table::fread("https://www.health.gov.au/sites/default/files/documents/2022/11/covid-19-vaccination-vaccination-data-17-november-2022.xlsx")
+#   
+#   download.file(url = excel_url, destfile = excel_destination, mode = "wb")
+#   
 
 # 
 # url_page <- "https://www.health.gov.au/resources/collections/covid-19-vaccination-vaccination-data"

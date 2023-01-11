@@ -62,10 +62,7 @@ vacc_out <- vacc_out %>%
     Region = "All",
     Sex = "b",
     Date = ymd(Date),
-    Date = paste(sprintf("%02d",day(Date)),
-                 sprintf("%02d",month(Date)),
-                 year(Date),
-                 sep="."),
+    Date = ddmmyyyy(Date),
     Code = paste0("GB-ENG")) %>% 
   sort_input_data()
 

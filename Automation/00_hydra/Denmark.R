@@ -6,6 +6,8 @@ if (!"email" %in% ls()){
   email <- "kikepaila@gmail.com"
 }
 
+## MK 15.12.2022- I split the cases/ deaths data script from the Vax script, since the vax data are changing every now and then. 
+
 # info country and N drive address
 ctr <- "Denmark"
 dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
@@ -23,42 +25,11 @@ ss_db  <- at_rubric %>% dplyr::pull(Source)
 # reading data from Denmark stored in N drive
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 db_n <- read_rds(paste0(dir_n, ctr, ".rds")) %>% 
-  mutate(Date = dmy(Date))
-
-
-  # mutate(Value = as.character(Value)) %>%
-  # mutate(Value = case_when((Code == "DK03.06.2021" & Age == "TOT" & Measure == "Deaths") ~ "2517",
-  #                           TRUE ~ Value)) %>% 
-  # mutate(Value = as.numeric(Value))
-
-unique(db_n$Measure)
-
-# # Fixing issue of vaccines: 
-# # ~~~~~~~~~~~~~~~~~~~~~~~~~
-# # excluding total age, 'Vaccines' measure, adding age 0 (12.04.2021)
-# temp_vacc <- db_n %>%
-#   filter(Measure %in% c("Vaccination1", "Vaccination2"),
-#          Age != "TOT",
-#          Sex != "b") %>%
-#   select(Date, Sex, Age, Measure, Value) %>% 
-#   tidyr::complete(Date, Sex, Age, Measure, fill = list(Value = 0)) %>% 
-#   arrange(Date, Measure, Sex, Age) %>% 
-#   mutate(Date = ddmmyyyy(Date),
-#          Country = "Denmark",
-#          Code = paste0("DK", Date),
-#          Region = "All",
-#          AgeInt = case_when(Age == "90" ~ 15L, 
-#                             Age == "TOT" ~ NA_integer_,
-#                             Age == "UNK" ~ NA_integer_,
-#                             TRUE ~ 10L),
-#          Metric = "Count") %>% 
-#   sort_input_data() %>% 
-#   mutate(Date = dmy(Date))
-#   
-# db_n <- 
-#   db_n %>% 
-#   filter(!Measure %in% c("Vaccination1", "Vaccination2", "Vaccinations")) %>% 
-#   bind_rows(temp_vacc) 
+  mutate(Date = dmy(Date)) %>% 
+  filter(Measure %in% c("Cases"))  
+  # mutate(Value = str_remove(Value, "\\.000"),
+  #        Value = str_remove_all(Value, "\\."),
+  #        Value = as.numeric(Value))
 
 
 # identifying dates already captured in each measure
@@ -68,17 +39,8 @@ dates_cases_n <- db_n %>%
   unique() %>% 
   sort()
 
-dates_deaths_n <- db_n %>% 
-  dplyr::filter(Measure == "Deaths") %>% 
-  dplyr::pull(Date) %>% 
-  unique() %>% 
-  sort()
 
-dates_vacc_n <- db_n %>% 
-  dplyr::filter(Measure %in% c("Vaccinations", "Vaccination1", "Vaccination2")) %>% 
-  dplyr::pull(Date) %>% 
-  unique() %>% 
-  sort()
+
 
 # reading new deaths from Drive
 ## SA collects deaths data on weekly basis by age and sex, so it is preferable to keep. 
@@ -86,81 +48,11 @@ dates_vacc_n <- db_n %>%
 db_drive <- read_sheet(ss = ss_i, sheet = "database")
 
 db_drive_deaths <- db_drive %>% 
-  mutate(Date = dmy(Date)) %>% 
-  dplyr::filter(Measure == "Deaths")
-
-# filtering deaths not included yet
-db_deaths <- db_drive_deaths %>% 
-  filter(!Date %in% dates_deaths_n) %>% 
-  mutate(Age = as.character(Age))
-
-db_deaths2 <- 
-  db_deaths %>% 
-  # bind_rows(
-  #   db_deaths %>% 
-      group_by(Country, Region, Code, Date, Sex, Metric, Measure) %>% 
-      summarise(Value = sum(Value)) %>% 
-      ungroup() %>% 
-      mutate(Age = "TOT",
-             AgeInt = NA)%>% 
-  dplyr::filter(Age != "UNK")
-
-
-##now getting data that is scraped by a python script
-
-
-deaths_py <-list.files(path= dir_n_source, 
-                pattern = ".xlsx",
-                full.names = TRUE)
-
-
-
-
-all_content_age_death <-
-  deaths_py %>%
-  lapply(read_xlsx)
-
-all_filenames_age_death <- deaths_py %>%
-  basename() %>%
-  as.list()
-
-#include filename to get date from filename 
-all_lists <- mapply(c, all_content_age_death, all_filenames_age_death, SIMPLIFY = FALSE)
-
-deaths_py_in <- rbindlist(all_lists, fill = T)
-
-
-deaths_py_out <- deaths_py_in %>% 
-  select(Age = age_group, Value = deaths, Date = `V1`) %>% 
-  mutate(Value = gsub(",", "", Value),
-         Value = as.numeric(Value),
-         Date = substr(Date, 15, 22),
-         Date = as.Date(as.character(Date),format="%Y%m%d"),
-         Measure = "Deaths",
-         Country = "Denmark",
-         Region = "All",
-         Code = "DK",
-         Sex = "b",
-         Age = case_when(
-           Age == "0-9" ~ "0",
-           Age == "10-19" ~ "10",
-           Age == "20-29" ~ "20",
-           Age == "30-39" ~ "30",
-           Age == "40-49" ~ "40",
-           Age == "50-59" ~ "50",
-           Age == "60-69" ~ "60",
-           Age == "70-79" ~ "70",
-           Age == "80-89" ~ "80",
-           Age == "90+" ~ "90" 
-         ),
-         AgeInt = case_when(
-           Age == "90" ~ 15L,
-           TRUE ~ 10L
-         ),
-         Metric = "Count") %>% 
-  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
-
-
+  dplyr::filter(Measure == "Deaths") %>% 
+  mutate(Date = dmy(Date),
+         Age = as.character(Age),
+         AgeInt = as.integer(AgeInt))
+  
 
 
 # reading new cases from the web
@@ -202,10 +94,12 @@ if(dim(links_new_cases)[1] > 0){
              f = 2,
              m = 3,
              b = 4) %>% 
-      # TR: better replace w pivot_longer
-      gather(-1, key = "Sex", value = "Values") %>% 
-      separate(Values, c("Value", "trash"), sep = " ") %>% 
-      mutate(Value = as.numeric(str_replace(Value, "\\.", "")),
+      mutate(f = str_remove_all(f, "\\."),
+             m = str_remove_all(m, "\\."),
+             b = as.character(b)) %>%
+      tidyr::pivot_longer(cols = -Age, names_to = "Sex", values_to = "Values") %>% 
+      tidyr::separate(Values, c("Value", "trash"), sep = " ") %>% 
+      mutate(Value = as.numeric(Value),
              Measure = "Cases") %>% 
       select(-trash)
     
@@ -214,6 +108,7 @@ if(dim(links_new_cases)[1] > 0){
       mutate(Age = case_when(Age == "90+" ~ "90",
                              Age == "I alt" ~ "TOT",
                              TRUE ~ Age),
+             Age = as.character(Age),
              Date = date_c) %>% 
       select(-trash)
     
@@ -223,85 +118,9 @@ if(dim(links_new_cases)[1] > 0){
   }
 }
 
-# reading new vaccines from the web
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-m_url_v <- "https://covid19.ssi.dk/overvagningsdata/download-fil-med-vaccinationsdata"
 
-# links_v <- scraplinks(m_url_v) %>% 
-#   filter(str_detect(link, "zip")) %>% 
-#   separate(link, c("a", "b", "c", "d", "e", "f", "g", "h")) %>% 
-#   mutate(Date = make_date(y = h, m = g, d = f)) %>% 
-#   select(Date, url) %>% 
-#   drop_na() 
 
-#JD: After 18.04. naming of the files changed, adapting the str_detect to the new format 
-#otherwise new files get filtered out 
-
-links_v <- scraplinks(m_url_v) %>% 
-  dplyr::filter(str_detect(link, "zip")) %>% 
-  separate(link, c("a", "b", "c", "d", "e", "f", "g", "h"))%>%
-  mutate(Date= dmy(f)) %>% 
-  select(Date, url) %>% 
-  drop_na()
-
-links_new_vacc <- links_v %>% 
-  dplyr::filter(!Date %in% dates_vacc_n)
- links_new_vacc <- links_v[1,]
-# downloading new vaccine data and loading it
-dim(links_new_vacc)[1] > 0
-db_vcc <- tibble()
- if(dim(links_new_vacc)[1] > 0){
-   for(i in 1:dim(links_new_vacc)[1]){
-    
-    date_v <- links_new_vacc[i, 1] %>% dplyr::pull()
-    data_source_v <- paste0(dir_n, "Data_sources/", 
-                            ctr, "/", ctr, "_vaccines_", as.character(date_v), ".zip")
-    download.file(as.character(links_new_vacc[i, 2]), destfile = data_source_v, mode = "wb")
-    
-    db_v <- read.table(unz(data_source_v, "Vaccine_DB/Vaccine_region_alder_koen_vaccage.csv"), sep=";", header=TRUE)
-    #try(db_v <- read_csv(unz(data_source_v, "ArcGIS_dashboards_data/Vaccine_DB/Vaccinationer_region_aldgrp_koen.csv")))
-    
-    db_v2 <- db_v %>% 
-      rename(Age = 2,
-             Sex = 3,
-             Vaccination1 = 4,
-             Vaccination2 = 5,
-             Vaccination3 = 6,
-             Vaccination4 = 7) %>% 
-      gather(Vaccination1, Vaccination2, Vaccination3, Vaccination4, key = Measure, value = Value) %>% 
-      ## THESE DATA ARE BY REGION, SO WE SUM THE VALUES ## 
-      group_by(Age, Sex, Measure) %>% 
-      summarise(Value = sum(Value),.groups = "drop") %>% 
-      mutate(Sex = recode(Sex,
-                          "K" = "f",
-                          "M" = "m"),
-             Age = str_sub(Age, 1, 2),
-             Age = case_when(Age == "0-" ~ "0",
-                             is.na(Age) ~ "UNK",
-                             TRUE ~ Age),
-             Date = date_v)
-    
-    db_v3 <- 
-      db_v2 %>% 
-      bind_rows(
-        db_v2 %>% 
-          group_by(Sex, Measure, Date) %>% 
-          summarise(Value = sum(Value), .groups = "drop") %>% 
-          mutate(Age = "TOT")
-      ) %>% 
-      dplyr::filter(Age != "UNK")
-    
-    db_vcc <- db_vcc %>% 
-      bind_rows(db_v3)
-    
-  }
- }
-
-db_cases_vcc <- tibble()
-
-if(dim(links_new_vacc)[1] > 0 | dim(links_new_cases)[1] > 0){
-  db_cases_vcc <- 
-    bind_rows(db_cases, db_vcc) %>% 
+Out <- bind_rows(db_n, db_drive_deaths, db_cases) %>% 
     mutate(Date = ddmmyyyy(Date),
            Country = "Denmark",
            Code = "DK",
@@ -310,17 +129,10 @@ if(dim(links_new_vacc)[1] > 0 | dim(links_new_cases)[1] > 0){
                               Age == "TOT" ~ NA_integer_,
                               Age == "UNK" ~ NA_integer_,
                               TRUE ~ 10L),
-           Metric = "Count") 
-}
-
-out <- 
-  bind_rows(db_n, db_deaths2, deaths_py_out) %>% 
-  mutate(Date = ddmmyyyy(Date)) %>% 
-  bind_rows(db_cases_vcc) %>% 
+           Metric = "Count") %>% 
   sort_input_data() %>% 
-  distinct() # TR: should be without effect,
-            # and will not remove redundancies
-            # if values are different
+  # TR: should be without effect, and will not remove redundancies if values are different
+  distinct() 
 
 # TR: this pipeline ended with %>% unique. Is there not a better and more rigorous way to remove redundancies?
 # unique 
@@ -329,5 +141,85 @@ out <-
 ###########################
 #### Saving data in N: ####
 ###########################
-write_rds(out, paste0(dir_n, ctr, ".rds"))
-log_update(pp = ctr, N = nrow(out))
+write_rds(Out, paste0(dir_n, ctr, ".rds"))
+log_update(pp = ctr, N = nrow(Out))
+
+
+## DEATHS HISTROICAL CODE ==========================
+
+# dates_deaths_n <- db_n %>% 
+#   dplyr::filter(Measure == "Deaths") %>% 
+#   dplyr::pull(Date) %>% 
+#   unique() %>% 
+#   sort()
+
+# # filtering deaths not included yet
+# db_deaths <- db_drive_deaths %>% 
+#   filter(!Date %in% dates_deaths_n) %>% 
+#   mutate(Age = as.character(Age))
+# 
+# db_deaths2 <- 
+#   db_deaths %>% 
+#    bind_rows(
+#      db_drive_deaths) %>% 
+#       group_by(Country, Region, Code, Date, Sex, Metric, Measure) %>% 
+#       summarise(Value = sum(Value)) %>% 
+#       ungroup() %>% 
+#       mutate(Age = "TOT",
+#              AgeInt = NA)%>% 
+#   dplyr::filter(Age != "UNK")
+
+
+# MK: 15.12.2022: looks these data have changed; age groups are different and some files are not consistent
+# Since deaths are collected manually each week; no need for confusion with Python outputs! 
+
+##now getting data that is scraped by a python script
+# deaths_py <-list.files(path= dir_n_source, 
+#                 pattern = ".xlsx",
+#                 full.names = TRUE)
+# 
+# # all_content_age_death <-
+#   deaths_py %>%
+#   lapply(read_xlsx)
+# 
+# all_filenames_age_death <- deaths_py %>%
+#   basename() %>%
+#   as.list()
+# 
+# #include filename to get date from filename 
+# all_lists <- mapply(c, all_content_age_death, all_filenames_age_death, SIMPLIFY = FALSE)
+# 
+# deaths_py_in <- rbindlist(all_lists, fill = T)
+# 
+# 
+# deaths_py_out <- deaths_py_in %>% 
+#   select(Age = age_group, Value = deaths, Date = `V1`) %>% 
+#   mutate(Value = gsub(",", "", Value),
+#          Value = as.numeric(Value),
+#          Date = substr(Date, 15, 22),
+#          Date = as.Date(as.character(Date),format="%Y%m%d"),
+#          Measure = "Deaths",
+#          Country = "Denmark",
+#          Region = "All",
+#          Code = "DK",
+#          Sex = "b",
+#          Age = case_when(
+#            Age == "0-9" ~ "0",
+#            Age == "10-19" ~ "10",
+#            Age == "20-29" ~ "20",
+#            Age == "30-39" ~ "30",
+#            Age == "40-49" ~ "40",
+#            Age == "50-59" ~ "50",
+#            Age == "60-69" ~ "60",
+#            Age == "70-79" ~ "70",
+#            Age == "80-89" ~ "80",
+#            Age == "90+" ~ "90" 
+#          ),
+#          AgeInt = case_when(
+#            Age == "90" ~ 15L,
+#            TRUE ~ 10L
+#          ),
+#          Metric = "Count") %>% 
+#   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
+# 
+

@@ -24,11 +24,13 @@ gs4_auth(email = Sys.getenv("email"))
 
 #Read in data 
 
-In= read.csv("https://opendata.ecdc.europa.eu/covid19/vaccine_tracker/csv/data.csv")
+In <- read.csv("https://opendata.ecdc.europa.eu/covid19/vaccine_tracker/csv/data.csv")
 
 #process
 
-Out= In %>%
+age_groups <- c("0", "5", "10", "15", "18", "25", "50", "60", "70", "80")
+
+In_processed <- In %>%
   #select countries we need 
   dplyr::filter(
     Region %in% c("BG","CY","HR","HU","IE","LU","MT","RO","PL","EL",
@@ -53,12 +55,7 @@ Out= In %>%
   group_by(YearWeekISO, Code,TargetGroup, Measure) %>% 
   mutate(Value = sum(Value)) %>% 
   ungroup()%>% 
-  distinct()%>%
-  #accumulate data 
-  arrange(YearWeekISO, Code,TargetGroup, Measure) %>% 
-  group_by(Code,TargetGroup, Measure) %>% 
-  mutate(Value = cumsum(Value)) %>% 
-  ungroup() %>%
+  distinct()%>% 
   mutate(Day= "5")%>%
   unite('ISODate', YearWeekISO, Day, sep="-", remove=FALSE)%>%
   mutate(Date= ISOweek::ISOweek2date(ISODate),
@@ -91,14 +88,23 @@ Out= In %>%
                      `EL`="Greece",
                      `PT`="Portugal",
                      `NO`="Norway",
-                     `NL` = "Netherlands"),
-    Metric = "Count",
-    Sex= "b",
-    Region="All")%>%
-  tidyr::complete(Age, nesting(Date, Measure, Country, Metric, Sex, Region, Code), fill=list(Value=0)) %>%  
+                     `NL` = "Netherlands")) 
+
+
+## Expand the data based on Age Groups and CumSum
+
+Out <- In_processed %>%
+  select(Country, Code, Date, Age, Measure, Value) %>% 
+  tidyr::complete(Age = age_groups, nesting(Country, Code, Date, Measure), fill=list(Value=0)) %>%  
+  arrange(Date, Country, Code, Age, Measure) %>% 
+  group_by(Country, Code, Age, Measure) %>% 
+  mutate(Value = cumsum(Value)) %>% 
+  ungroup() %>%
   mutate(
     Date = ymd(Date),
     Date = ddmmyyyy(Date),
+    Code = case_when(Code == "EL" ~ "GR",
+                     TRUE ~ Code),
     AgeInt = case_when(
                Age == "15" ~ 3L,
                Age == "18" ~ 7L,
@@ -109,7 +115,10 @@ Out= In %>%
                Age == "80" ~ 25L,
                Age == "UNK" ~ NA_integer_,
                Age == "TOT" ~ NA_integer_,
-               TRUE ~ 5L))%>%
+               TRUE ~ 5L),
+    Metric = "Count",
+    Sex= "b",
+    Region="All")%>%
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value) %>% 
   sort_input_data()

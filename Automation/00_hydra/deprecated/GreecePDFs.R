@@ -89,15 +89,15 @@ weeks_df <- data.frame(base = rep("https://eody.gov.gr/wp-content/uploads/",
 ## for daily script run ## 
 CurrentWeek <- lubridate::week(today())
 
-if(CurrentWeek == weeks_df$week){
-  if(class(try(download.file(weeks_df$url,
-                          destfile = weeks_df$destinations,
-                          mode="wb"),
-            silent = TRUE)) == "try-error")
-  log_update(pp = ctr, N = "NoUpdate")
-} else {
-  log_update(pp = ctr, N = "Downloaded")
-}
+# if(CurrentWeek == weeks_df$week){
+#   if(class(try(download.file(weeks_df$url,
+#                           destfile = weeks_df$destinations,
+#                           mode="wb"),
+#             silent = TRUE)) == "try-error")
+#  # log_update(pp = ctr, N = "NoUpdate")
+# } else {
+# #  log_update(pp = ctr, N = "Downloaded")
+# }
 
 
 ## END ##

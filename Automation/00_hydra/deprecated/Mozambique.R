@@ -48,11 +48,11 @@ all_files <- data.frame(pdf_url = files) %>%
   distinct(pdf_url, bulletin_number, destinations)
 
 
-all_files %>% 
-  mutate(bulletin_number = as.integer(bulletin_number)) %>% 
-  filter(!is.na(bulletin_number)) %>% 
-  filter(bulletin_number == max(bulletin_number)) %>% 
-  {map2(.$pdf_url, .$destinations, ~ download.file(url = .x, destfile = .y, mode="wb"))}
+# all_files %>% 
+#   mutate(bulletin_number = as.integer(bulletin_number)) %>% 
+#   filter(!is.na(bulletin_number)) %>% 
+#   filter(bulletin_number == max(bulletin_number)) %>% 
+#   {map2(.$pdf_url, .$destinations, ~ download.file(url = .x, destfile = .y, mode="wb"))}
 
 #save output data
 

@@ -21,7 +21,7 @@ gs4_auth(email = Sys.getenv("email"))
 
 ## PDF reports (in case needed): https://www.isciii.es/QueHacemos/Servicios/VigilanciaSaludPublicaRENAVE/EnfermedadesTransmisibles/Paginas/-COVID-19.-Informes-previos.aspx
 
-## MK: 11.11.2022: as published on teh dashboard, Due to the change in the COVID-19 Surveillance and Control Strategy, 
+## MK: 11.11.2022: as published on the dashboard, Due to the change in the COVID-19 Surveillance and Control Strategy, 
 ## as of March 28, 2022, only cases of COVID-19 in the population aged 60 and over are shown in this panel.
 
 

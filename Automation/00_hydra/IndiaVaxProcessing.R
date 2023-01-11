@@ -19,28 +19,43 @@ ctr          <- "IndiaVax" # it's a placeholder
 dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 data_source <- paste0(dir_n, "Data_sources/India/")
 
-## These data I am not sure about; not sure if 'doses administered' are 'Vaccination1' and 'fully vaccinated' are 'Vaccination2'.
-## Given the context and the time frame, it seems so, but I could not find definitions. 
-
-#vax <- read_csv("http://data.covid19india.org/csv/latest/cowin_vaccine_data_statewise.csv")
 
 ## Back to reality =D ===============
 
 
 ## Brief: India vaccination data are published in PDFs tables. 
 ## All PDFs have two tables, the first is over the country data, and the second is regional/ State level data. 
-## All PDFs first tables are extracted by tabulizer (as above) via RStudio Cloud, 
-## and some of these files table 2 is also extracted 
+## All PDFs data are copied and pasted into excel file, on monthly basis and manipulated here.. 
 
-## Yet, for other files {tabulizer} does not read the second table, so I copied and pasted these 'manually' after opening the PDFs as word documents 
 
+## ARCHIVED DATA reading
 
 dataarchived <- read_rds(paste0(dir_n, ctr, ".rds")) 
 
+## READ & PROCESS THE COPIED NEW DATA 
 
-file_name <- "IndiaRegional-Table2.xlsx" ## this will change always 
 
-country_data <- read_excel(paste0(data_source, file_name), sheet = 1)
+file_name <- "IndiaVaxDataFromPDFs.xlsx" ## the file_name  
+
+country_data <- read_excel(paste0(data_source, file_name), sheet = 1) %>% 
+  mutate(Value = parse_number(Value),
+         Measure = case_when(Dose == "1st Dose" ~ "Vaccination1",
+                             Dose == "2nd Dose" ~ "Vaccination2",
+                             Dose == "3rd Dose" ~ "Vaccination3",
+                             Age == "Total Doses" ~ "Vaccinations"),
+         Age = str_extract(Age, "\\d+"),
+         Age = replace_na(Age, "TOT"),
+         AgeInt = case_when(Age == "12" ~ 3L,
+                            Age == "15" ~ 3L,
+                            Age == "18" & Measure == "Vaccination3" ~ 42L,
+                            Age == "18" & Measure %in% c("Vaccination1", "Vaccination2") ~ 87L,
+                            Age == "60" ~ 45L,
+                            Age == "TOT" ~ NA_integer_),
+         Region = "All",
+         Metric = "Count",
+         Code = "IN",
+         Sex = "b") %>% 
+  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
 
 regional_data <- read_excel(paste0(data_source, file_name), sheet = 2) %>% 
   filter(!is.na(Region)) %>% 
@@ -103,7 +118,13 @@ regional_data <- read_excel(paste0(data_source, file_name), sheet = 2) %>%
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
 
 
-out <- bind_rows(dataarchived, manual_data)
+
+manual_data <- bind_rows(country_data, regional_data)
+
+
+out <- bind_rows(dataarchived, manual_data) %>% 
+  unique() %>% 
+  sort_input_data()
 
 
 #save output data

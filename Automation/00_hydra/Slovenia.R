@@ -25,17 +25,28 @@ links <- scraplinks(m_url) %>%
   select(url)
 
 # capture link with cases data by age
-cases_url <- paste0("https://www.nijz.si", 
-                    links %>% 
-                      filter(str_detect(url, "/uploaded/dnevni_prikazi")) %>% 
-                      dplyr::pull(url))
+# cases_url <- paste0("https://www.nijz.si", 
+#                     links %>% 
+#                       filter(str_detect(url, "/uploaded/dnevni_prikazi")) %>% 
+#                       dplyr::pull(url))
 
-cases_url <- cases_url[-2] #there are two files on the website but we only need the newer one
+cases_url <- links %>% 
+  filter(str_detect(url, "/DNEVNI-PRIKAZI")) %>%
+  dplyr::pull(url)
+
+
+#cases_url <- cases_url[-2] #there are two files on the website but we only need the newer one
 # capture link with deaths data by age
-deaths_url <- paste0("https://www.nijz.si", 
-                    links %>% 
-                      filter(str_detect(url, "umrli")) %>% 
-                      dplyr::pull(url))
+# deaths_url <- paste0("https://www.nijz.si", 
+#                     links %>% 
+#                       filter(str_detect(url, "umrli")) %>% 
+#                       dplyr::pull(url))
+
+
+deaths_url <- links %>% 
+  filter(str_detect(url, "UMRLI")) %>% 
+  dplyr::pull(url)
+
 
 ###############################
 ### daily collection automation
