@@ -174,8 +174,7 @@ Cases2 <-
            Region == "Overijssel" ~ "NL-OV",
            Region == "Utrecht" ~ "NL-UT",
            Region == "Zeeland" ~ "NL-ZE",
-           Region == "Zuid-Holland" ~ "NL-ZH"
-                    ),
+           Region == "Zuid-Holland" ~ "NL-ZH"),
          Metric = "Count",
          Measure = "Cases",
          AgeInt = case_when(

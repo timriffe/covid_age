@@ -120,6 +120,29 @@ sheet_write(data_out, ss = ss_i, sheet = "database")
 
 ```
 
+## KENYA 
+
+
+```{r}
+
+
+at_rubric <- get_input_rubric() %>% 
+  dplyr::filter(Short == "KE")
+ss_i   <- at_rubric %>% dplyr::pull(Sheet)
+ss_db  <- at_rubric %>% dplyr::pull(Source)
+
+
+db_drive <- read_sheet(ss = ss_i, sheet = "database") %>% 
+  unique() %>% 
+  sort_input_data()
+
+
+
+sheet_write(db_drive, ss = ss_i, sheet = "database")
+
+
+```
+
 
 
 

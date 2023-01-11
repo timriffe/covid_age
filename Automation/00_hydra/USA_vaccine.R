@@ -116,6 +116,7 @@ vacc_out <- vacc %>%
     Measure == "Booster_Doses_Yes" ~ "Vaccination3",
     Measure == "Second_Booster" ~ "Vaccination4"
       ),
+    Value = replace_na(Value, 0),
     Metric = "Count",
     Country = "USA",
     Region = "All",

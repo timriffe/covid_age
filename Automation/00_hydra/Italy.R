@@ -134,13 +134,14 @@ vacc2 <- vacc %>%
   group_by(Date, Measure, Age) %>% 
   summarise(new = sum(new)) %>% 
   ungroup()
+
 ages <- c(0, unique(vacc2$Age)) %>% sort()
 
 vacc3 <- vacc2 %>% 
   tidyr::complete(Measure, Age = ages, Date, fill = list(new = 0))  %>% 
+  arrange(Date, Measure, Age) %>% 
   group_by(Measure, Age) %>% 
   mutate(Value = cumsum(new)) %>% 
-  arrange(Date, Measure, Age) %>% 
   ungroup() %>% 
   mutate(Country = "Italy",
        Region = "All",

@@ -95,7 +95,8 @@ Out= In %>%
     Metric = "Count",
     Sex= "b",
     Region="All")%>%
-  tidyr::complete(Age, nesting(Date, Measure, Country, Metric, Sex, Region, Code), fill=list(Value=0)) %>%  
+  ## MK: I don't think this expanding is necessary.. 
+ # tidyr::complete(Age, nesting(Date, Measure, Country, Metric, Sex, Region, Code), fill=list(Value=0)) %>%  
   mutate(
     Date = ymd(Date),
     Date = ddmmyyyy(Date),

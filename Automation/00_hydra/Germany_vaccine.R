@@ -71,11 +71,12 @@ Vaccine_out_reg= Vaccine_in%>%
   mutate(Value=sum(Value))%>%
   unique()%>%
   ungroup()%>%
+  tidyr::complete(Age, nesting(Date, Measure, Region), fill=list(Value=0)) %>% 
   arrange(Age,Date,Region,Measure)%>% 
   group_by(Age,Region,Measure) %>% 
   mutate(Value = cumsum(Value)) %>% 
   ungroup() %>% 
-  mutate(Code1 = case_when(Region == 'Baden-Württemberg' ~ 'DE-BW',
+  mutate(Code = case_when(Region == 'Baden-Württemberg' ~ 'DE-BW',
                            Region == 'Bayern' ~ 'DE-BY',
                            Region == 'Berlin' ~ 'DE-BE',
                            Region == 'Brandenburg' ~ 'DE-BB',
@@ -105,7 +106,6 @@ Vaccine_out_reg= Vaccine_in%>%
                     "18-59"="18",
                     "60+"="60",
                     "u"="UNK")) %>% 
-  tidyr::complete(Age, nesting(Date, Measure, Region, Code1), fill=list(Value=0)) %>% 
         mutate(AgeInt = case_when(
            Age == "0" ~ 5L,
            Age == "5" ~ 7L,
@@ -117,8 +117,7 @@ Vaccine_out_reg= Vaccine_in%>%
          Metric="Count")%>% 
   mutate(
     Date = ymd(Date),
-    Date = ddmmyyyy(Date),
-    Code = paste0(Code1))%>% 
+    Date = ddmmyyyy(Date))%>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)
 
@@ -133,6 +132,7 @@ Vaccine_out_all= Vaccine_in%>%
   mutate(Value=sum(Value))%>%
   unique()%>%
   ungroup()%>%
+  tidyr::complete(Age, nesting(Date, Measure), fill=list(Value=0)) %>%   
   arrange(Age,Date,Measure)%>% 
   group_by(Age,Measure) %>% 
   mutate(Value = cumsum(Value))%>% 
@@ -152,7 +152,6 @@ Vaccine_out_all= Vaccine_in%>%
                     "18-59"="18",
                     "60+"="60",
                     "u"="UNK")) %>% 
-  tidyr::complete(Age, nesting(Date, Measure), fill=list(Value=0)) %>%   
   mutate(AgeInt = case_when(
            Age == "0" ~ 5L,
            Age == "5" ~ 7L,

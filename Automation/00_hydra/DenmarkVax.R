@@ -81,8 +81,8 @@ gs4_auth(email = Sys.getenv("email"))
 #     Age = case_when(Age == "0-" ~ "0",
 #                     is.na(Age) ~ "UNK",
 #                     TRUE ~ Age)) %>% 
+#   arrange(Date, Age, Region, Measure) %>% 
 #   group_by(Age, Region, Measure) %>% 
-#   arrange(Date) %>% 
 #   summarise(Value = cumsum(Value), Date = Date) %>% 
 #   ungroup() %>% 
 #   mutate(Date = ddmmyyyy(Date),

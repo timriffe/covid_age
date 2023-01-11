@@ -160,16 +160,19 @@ vacc_archive_2022 <- readRDS(paste0(dir_n, ctr,".rds")) %>%
       TRUE ~ Measure)) %>% 
   distinct()
 
+#this is last file in December 2022; 13-12-2022
+#vacc_today <- read.csv2("https://info.gesundheitsministerium.at/data/COVID19_vaccination_doses_agegroups_v202206.csv") 
 
-vacc_today <- read.csv2("https://info.gesundheitsministerium.at/data/COVID19_vaccination_doses_agegroups_v202206.csv") 
+vacc_today <- read.csv2("https://info.gesundheitsministerium.at/data/COVID19_vaccination_agegroups_v202210.csv")
 
 vacc_recent <- vacc_today %>% 
   select(Date = 1, 
          state_id, 
          Region = state_name, 
          Age = age_group, Sex = gender, 
-         Measure = dose_number,
-         Value = doses_administered_cumulative) %>% 
+         Measure = vaccination,
+         Value = vaccinations_administered_cumulative) %>% 
+  filter(Region != "All") %>% # somehow, they added a row for 'All', a duplicate of the state_id no. 10
   mutate(Date = ymd(str_sub(Date, 1, 10)),
          Age = recode(Age,
                       "00-11" = "0",
@@ -187,19 +190,25 @@ vacc_recent <- vacc_today %>%
                       "Male" = "m",
                       "Female" = "f",
                       "NonBinary" = "NonBinary",
+                      "Other" = "UNK",
                       "NotAssigned" = "UNK"),
          Measure = paste0("Vaccination", Measure),
-         Region= recode(Region,
-                        "NoState"= "UNK")) %>% 
-  group_by(Date, Age, Sex, state_id, Region, Measure) %>% 
+         Region = case_when(
+           Region == "NoState" ~ "UNK",
+           Region == "Ã–sterreich" ~ "All",
+           Region == "KÃ¤rnten" ~ "Kärnten",
+           Region == "NiederÃ¶sterreich" ~ "Niederöstereich",
+           Region == "OberÃ¶sterreich" ~ "Oberösterreich",
+           TRUE ~ Region),
+         Measure = case_when(Measure == "Vaccination4+" ~ "Vaccination4", TRUE ~ Measure),
+         Code = paste0(ifelse(state_id < 10, paste0("AT-", state_id), "AT"))) %>% 
+  group_by(Date, Age, Sex, Code, Region, Measure) %>% 
   summarize(Value = sum(Value)) %>% 
   ungroup() %>% 
-  distinct(Date, Age, Sex, Region, state_id,
-           Measure, Value) %>% 
+  distinct(Date, Age, Sex, Region, Code,Measure, Value) %>% 
   mutate(Country = "Austria",
          Metric = "Count",
          Date = ddmmyyyy(Date),
-         Code = paste0(ifelse(state_id < 10, paste0("AT-", state_id), "AT")),
          AgeInt = case_when(Age == "0" ~  12L,
                             Age == "12" ~ 3L,
                             Age == "85" ~ 20L,
@@ -208,15 +217,6 @@ vacc_recent <- vacc_today %>%
                             TRUE ~ 10L),
          Code = case_when(Region == "UNK" ~ "AT-UNK+",
                           TRUE ~ Code)) %>% 
-  mutate(Region = case_when(
-    Region == "Ã–sterreich" ~ "All",
-    Region == "KÃ¤rnten" ~ "Kärnten",
-    Region == "NiederÃ¶sterreich" ~ "Niederöstereich",
-    Region == "OberÃ¶sterreich" ~ "Oberösterreich",
-    TRUE ~ Region),
-  Measure = case_when(
-    Measure == "Vaccination5+" ~ "Vaccination5",
-    TRUE ~ Measure)) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
   sort_input_data()
 
@@ -226,6 +226,7 @@ vacc_recent <- vacc_today %>%
 #vacc_out <- bind_rows(vacc3, processed_data, vacc_archive_2022, vacc_recent)
 
 vacc_out <- bind_rows(vacc3, vacc_archive_2022, vacc_recent) %>% 
+  unique() %>% 
   sort_input_data()
 
 

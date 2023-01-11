@@ -17,6 +17,8 @@ dir_n_source <- "N:/COVerAGE-DB/Automation/SouthKorea"
 
 ## MK: 22.09.2022: Downloading the excel CASES data file (from Korean version of website) for reference
 
+## Source Website <- "https://ncov.kdca.go.kr/?brdId=16&brdGubun=161&dataGubun=&ncvContSeq=&contSeq=&board_id="
+
 data_source <- paste0(dir_n, "Data_sources/", ctr, "/ExcelReferenceData/cases_",today(), ".xlsx")
 
 korea_url <- "http://ncov.mohw.go.kr/"
