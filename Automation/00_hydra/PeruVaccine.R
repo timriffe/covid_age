@@ -72,7 +72,7 @@ db_v2 <- db_v %>%
                              Dosis == 3 ~ "Vaccination3",
                              Dosis == 4 ~ "Vaccination4",
                              Dosis == 5 ~ "Vaccination5",
-                             Dosis == 6 ~ "Vaccination6")) %>% 
+                             Dosis %in% c("8", "9") ~ "Vaccinations")) %>% 
   group_by(date_f, Sex, Age, Region, Measure) %>% 
   summarise(new = n()) %>% 
   ungroup() 
