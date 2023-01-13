@@ -16,13 +16,49 @@ if (Sys.info()["nodename"] == "HYDRA11"){
 }
 ### Load data #######################################################
 
+# previous age harmonization run:
+OutputCounts_old <- data.table::fread("N://COVerAGE-DB/Data/Output_5_internal.csv") |>
+  tidyfast::dt_pivot_longer(c(Cases,Deaths,Tests), 
+                            names_to = "Measure", 
+                            values_to = "Value", 
+                            values_drop_na = TRUE)
+  
+
+subsets_keep <- data.table::fread("N://COVerAGE-DB/Data/subsets_keep_harmonizations.csv")
+
+# these can be r-binded back to outputCounts_5_1e5 that were calculated only on the changeset
+OutputCounts_keep <-
+  subsets_keep |>
+  left_join(OutputCounts_old, by = c("Code","Date","Sex","Measure")) |>
+  collapse::fsubset(keep) |>
+  tidyfast::dt_pivot_wider(names_from = "Measure", values_from = "Value")
+
+
+# which of those old results shall we preserve rather than recalculate?
+subset_changes <-
+  data.table::fread("N://COVerAGE-DB/Data/subsets_to_harmonize.csv",
+                    encoding = "UTF-8")
+
 # Count data
-inputCounts <- data.table::fread(here::here("Data","inputCounts.csv"),
+
+# This used to point to a user copy, but now we presume the most recent inputCounts build is on N!
+inputCounts <- data.table::fread("N://COVerAGE-DB/Data/inputCounts.csv",
                                  encoding = "UTF-8") %>% 
   collapse::fsubset(Measure %in% c("Cases","Deaths","Tests")) %>% 
   collapse::fselect(-Metric)
 
- 
+# these subsets have been determined to need new or re-harmonization 
+subset_changes <-
+  data.table::fread("N://COVerAGE-DB/Data/subsets_to_harmonize.csv",
+                    encoding = "UTF-8")
+
+# Use left_join as implicit filter;
+# reduced to just those subsets that are new or altered
+inputCounts <-
+  subset_changes |>
+  left_join(inputCounts, by = c("Code","Date","Sex","Measure"))
+
+
 # Offsets
 # TR: are these updated for wpp2022?
 Offsets     <- readRDS(here::here("Data","Offsets.rds"))
@@ -138,7 +174,13 @@ outputCounts_5_1e5 <-
   as_tibble() %>% 
   pivot_wider(names_from = "Measure", values_from = "Value") %>% 
   dplyr::select(Country, Region, Code, Date, Sex, Age, AgeInt, Cases, Deaths, Tests) %>% 
-  arrange(Country, Region, dmy(Date), Sex, Age) 
+  arrange(Country, Region, dmy(Date), Sex, Age) |>
+  # NEW, to avoid redundant harmonization
+  bind_rows(OutputCounts_keep) |>
+  arrange(Country, Region, Date, Measure, Sex, Age)
+
+
+
 
 # Save binary
 # saveRDS(outputCounts_5_1e5, here::here("Data","Output_5.rds"))
