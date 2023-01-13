@@ -31,15 +31,15 @@ dir.exists("N://COVerAGE-DB/Data/inputCounts-SnapShots")
 
 
 # 1) get files
+snapshot_dir <- "N://COVerAGE-DB/Data/inputCounts-SnapShots"
+files_have <- dir(snapshot_dir)
 
-files_have <- dir("N://COVerAGE-DB/Data/inputCounts-SnapShots")
-
-# test code, to be deleted
-files_have <- c("inputCounts_2021-01-05.csv","inputCounts_2021-02-05.csv",
-               "inputCounts_2021-02-15.csv","inputCounts_2021-03-05.csv",
-               "inputCounts_2021-04-05.csv")
-
-# extract dates
+# # test code, to be deleted
+# files_have <- c("inputCounts_2021-01-05.csv","inputCounts_2021-02-05.csv",
+#                "inputCounts_2021-02-15.csv","inputCounts_2021-03-05.csv",
+#                "inputCounts_2021-04-05.csv")
+# 
+# # extract dates
 dates_have <- gsub(files_have,pattern = "inputCounts_",replacement = "") |>
   gsub(pattern = ".csv", replacement = "") %>% 
   parse_date()
@@ -47,26 +47,97 @@ dates_have <- gsub(files_have,pattern = "inputCounts_",replacement = "") |>
 # get most recent one
 todays_file <- files_have[which.max(dates_have)]
 
-# get date of most recent output build
-
-date_pieces <-readLines("N://COVerAGE-DB/Data/Output_10.csv",n=2)[2] |>
-  gsub(pattern = "Built: ", replace = "") |> 
-  str_split(pattern = " ")
-
+# get date of most recent output build, based on file
+# modification rather than parsing the header...
+o10path <- "N://COVerAGE-DB/Data/Output_10.csv"
 last_date <-
-date_pieces[[1]][c(5,2,3)] |>
-  paste(collapse = "-") |>
+  file.info(o10path)$mtime |> 
   as_date()
 
-
-comparison_file <- files_have[which.max(dates_have[dates_have < last_date])]
+# when we have a longer time series we can change this to a strict < sign
+old_file <- files_have[which.max(dates_have[dates_have <= last_date])]
 
 # Of course comparison file should not be same as today's file!
 
 
-# To be continued
+# read in two files
+
+tfile <- fread(file.path(snapshot_dir,todays_file))
+ofile <- fread(file.path(snapshot_dir,old_file))
+ooutput <- fread(o10path, skip = 3)
+
+# first siphon off
+# potentially add tidyfast and collapse to functions script!
+
+# install.packages("tidyfast")
+# install.package("collapse")
+
+o_subsets <- 
+  ooutput |>
+  tidyfast::dt_pivot_longer(c(Cases,Deaths,Tests), 
+                            names_to = "Measure", 
+                            values_to = "Value", 
+                            values_drop_na = TRUE) %>% 
+  collapse::fselect(Code, Date, Sex, Measure) |>
+  collapse::funique() |>
+  collapse::fmutate(old = TRUE)
+  
+t_subsets <- 
+  tfile |>
+  collapse::fselect(Code, Date, Sex, Measure) |>
+  collapse::funique() |>
+  # only include those measures that we are currently age-harmonizing!
+  # this should be modified when we include Vaccines
+  collapse::fsubset(Measure %in% c("Cases","Deaths","Tests"))
+  
+new_to_harmonize <-
+  # I know there's a data.table faster way to do this, but whatever
+  left_join(t_subsets, o_subsets,  by = c("Code", "Date", "Sex", "Measure")) |>
+  collapse::fmutate(old = data.table::fifelse(is.na(old),FALSE,old)) |>
+  collapse::fsubset(!old)
+
+# Note some of these will be previous harmonization failures, so this
+# also serves as an indirect/inefficient catch on those
 
 
+# Now round counts and select only subsets where at least one value changed.
+# alternatively one could just compare daily sums...
+o_subsets2 <-
+  ofile %>% 
+  collapse::fsubset(Measure %in% c("Cases","Deaths","Tests")) |>
+  collapse::fmutate(value_old = round(Value)) |>
+  collapse::fselect(Code, Date, Sex, Measure, Age, value_old)
 
+t_subsets2 <-  
+  tfile %>% 
+  collapse::fsubset(Measure %in% c("Cases","Deaths","Tests")) |>
+  collapse::fmutate(value_new = round(Value))  |>
+  collapse::fselect(Code, Date, Sex, Measure, Age, value_new)
 
+# Note we're comparing integers here
+values_changes <-
+  inner_join(o_subsets2, t_subsets2, by = c("Code", "Date", "Sex", "Measure", "Age")) |>
+  collapse::fmutate(change = value_new - value_old) |>
+  collapse::fsubset(change != 0)
 
+# save these in case they are of diagnostic value
+values_changes |>
+  collapse::fmutate(old_date = last_date,
+          new_date = max(dates_have)) |>
+  write_csv(path = "N://COVerAGE-DB/Data/count_changes_forthcoming.csv")
+
+  # we don't need to know which age it was, just that
+  # there was a change in a subset...
+reharmonize_subsets <- 
+  values_changes |>
+  collapse::fselect(Code, Date, Sex, Measure) |>
+  collapse::funique()
+
+subsets_to_harmonize <-
+  bind_rows(reharmonize_subsets, new_to_harmonize) |>
+  collapse::funique()
+
+# we only need to harmonize
+100 * nrow(subsets_to_harmonize) / nrow(t_subsets)
+# percent of subsets, much better!
+write_csv(subsets_to_harmonize, path = "N://COVerAGE-DB/Data/subsets_to_harmonize.csv")
