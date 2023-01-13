@@ -135,9 +135,27 @@ reharmonize_subsets <-
 
 subsets_to_harmonize <-
   bind_rows(reharmonize_subsets, new_to_harmonize) |>
-  collapse::funique()
+  collapse::funique() |>
+  collapse::fselect(-old)
 
 # we only need to harmonize
 100 * nrow(subsets_to_harmonize) / nrow(t_subsets)
 # percent of subsets, much better!
 write_csv(subsets_to_harmonize, path = "N://COVerAGE-DB/Data/subsets_to_harmonize.csv")
+
+# save out the complement as well, for easier subsetting in step 4:
+refresh_append <- 
+  subsets_to_harmonize |>
+  collapse::fmutate(refresh = TRUE)
+subsets_keep_harmonizations <-
+  o_subsets |>
+  collapse::fselect(-old) |>
+  left_join(refresh_append, by = c("Code","Date","Sex","Measure")) |>
+  collapse::fmutate(refresh = !is.na(refresh),
+                    keep = !refresh) |>
+  collapse::fselect(-refresh)
+
+write_csv(subsets_keep_harmonizations, path = "N://COVerAGE-DB/Data/subsets_keep_harmonizations.csv")
+
+
+
