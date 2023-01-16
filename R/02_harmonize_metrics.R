@@ -211,6 +211,8 @@ inputCounts <- K[ , AgeInt := add_AgeInt(Age, omega = 105),
 # Save
 # saveRDS(inputCounts, file = here("Data","inputCounts.rds"))
 data.table::fwrite(inputCounts, file = here::here("Data","inputCounts.csv"))
+data.table::fwrite(inputCounts, file = here::here("Data", "inputCounts-SnapShots", 
+                                                  paste0("inputCounts_", lubridate::today(), ".csv")))
 
 rm(inputDB,Z,AA,A,B,C,D,E,G,H,I,J);gc()
 
