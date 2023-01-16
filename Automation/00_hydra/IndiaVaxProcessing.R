@@ -35,16 +35,44 @@ dataarchived <- read_rds(paste0(dir_n, ctr, ".rds"))
 ## READ & PROCESS THE COPIED NEW DATA 
 
 
-file_name <- "IndiaVaxDataFromPDFs.xlsx" ## the file_name  
 
-country_data <- read_excel(paste0(data_source, file_name), sheet = 1) %>% 
-  mutate(Value = parse_number(Value),
-         Measure = case_when(Dose == "1st Dose" ~ "Vaccination1",
-                             Dose == "2nd Dose" ~ "Vaccination2",
-                             Dose == "3rd Dose" ~ "Vaccination3",
-                             Age == "Total Doses" ~ "Vaccinations"),
-         Age = str_extract(Age, "\\d+"),
-         Age = replace_na(Age, "TOT"),
+vax.list.all <-list.files(
+  path= data_source,
+  pattern = ".csv",
+  full.names = TRUE)
+
+vax_list_national <- data.frame(file_name = vax.list.all) %>% 
+  filter(str_detect(file_name, "/national_")) %>% 
+  mutate(date = str_extract(file_name, "\\d+\\w+\\d+"),
+         date = dmy(date)) 
+
+
+vax_list_Subnational <- data.frame(file_name = vax.list.all) %>% 
+  filter(str_detect(file_name, "/subnational_")) %>% 
+  mutate(date = str_extract(file_name, "\\d+\\w+\\d+"),
+         date = dmy(date)) 
+
+## NATIONAL CSV FILES. 
+
+vax_df_national_raw <- vax_list_national %>% 
+  {map2_dfr(.$file_name, .$date, function(x,y) read_csv(x) %>% 
+                     mutate(Date = y))} 
+
+vax_df_national_processed <- vax_df_national_raw %>% 
+  filter(!is.na(Country)) %>% 
+  mutate(across(.cols = -c("Country", "Date"), ~parse_number(.x))) %>% 
+  pivot_longer(cols = -c("Country", "Date"),
+               names_to = "Dose_age",
+               values_to = "Value") %>% 
+  mutate(Measure = case_when(str_detect(Dose_age, "1st_") ~ "Vaccination1",
+                             str_detect(Dose_age, "2nd_") ~ "Vaccination2",
+                             str_detect(Dose_age, "Precaution_") ~ "Vaccination3",
+                             str_detect(Dose_age, "Total_") ~ "Vaccinations"),
+         Age = case_when(str_detect(Dose_age, "12") ~ "12",
+                         str_detect(Dose_age, "15") ~ "15",
+                         str_detect(Dose_age, "18") ~ "18",
+                         str_detect(Dose_age, "60") ~ "60",
+                         str_detect(Dose_age, "Total_") ~ "TOT"),
          AgeInt = case_when(Age == "12" ~ 3L,
                             Age == "15" ~ 3L,
                             Age == "18" & Measure == "Vaccination3" ~ 42L,
@@ -57,18 +85,32 @@ country_data <- read_excel(paste0(data_source, file_name), sheet = 1) %>%
          Sex = "b") %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
 
-regional_data <- read_excel(paste0(data_source, file_name), sheet = 2) %>% 
+
+
+## SUB-NATIONAL CSV FILES. 
+
+vax_df_Subnational_raw <- vax_list_Subnational %>% 
+  {map2_dfr(.$file_name, .$date, function(x,y) read_csv(x) %>% 
+              mutate(Date = y))} 
+
+vax_df_Subnational_processed <- vax_df_Subnational_raw %>% 
   filter(!is.na(Region)) %>% 
-  pivot_longer(cols = -c(Region, Date),
-               names_to = c("Measure", "Age"),
-               names_sep = "_",
+  select(-Serial) %>% 
+  pivot_longer(cols = -c("Region", "Date"),
+               names_to = "Dose_age",
                values_to = "Value") %>% 
-  mutate(Value = parse_number(Value),
+  mutate(Measure = case_when(str_detect(Dose_age, "1st_") ~ "Vaccination1",
+                             str_detect(Dose_age, "2nd_") ~ "Vaccination2",
+                             str_detect(Dose_age, "Precaution_") ~ "Vaccination3",
+                             str_detect(Dose_age, "Total_") ~ "Vaccinations"),
+         Age = case_when(str_detect(Dose_age, "12") ~ "12",
+                         str_detect(Dose_age, "15") ~ "15",
+                         str_detect(Dose_age, "18") ~ "18",
+                         str_detect(Dose_age, "60") ~ "60",
+                         str_detect(Dose_age, "Total_") ~ "TOT"),
          Country = "India",
          Sex = "b",
          Metric = "Count",
-         Age = case_when(Measure == "Vaccinations" ~ "TOT",
-                         TRUE ~ Age),
          Code = case_when(
            Region == "A & N Islands" ~ "IN-AN",
            Region == "Andhra Pradesh" ~ "IN-AP",
@@ -119,10 +161,12 @@ regional_data <- read_excel(paste0(data_source, file_name), sheet = 2) %>%
 
 
 
-manual_data <- bind_rows(country_data, regional_data)
+
+processed_data <- bind_rows(vax_df_national_processed, vax_df_Subnational_processed) %>% 
+  mutate(Date = ddmmyyyy(Date))
 
 
-out <- bind_rows(dataarchived, manual_data) %>% 
+out <- bind_rows(dataarchived, processed_data) %>% 
   unique() %>% 
   sort_input_data()
 
@@ -134,6 +178,101 @@ write_rds(out, paste0(dir_n, ctr, ".rds"))
 log_update(pp = ctr, N = nrow(out)) 
 
 ## END ##
+
+
+
+
+## CODE USED TO RUN AFTER MANUAL COPY ## =============================
+
+# file_name <- "IndiaVaxDataFromPDFs.xlsx" ## the file_name  
+#
+# country_data <- read_excel(paste0(data_source, file_name), sheet = 1) %>% 
+#   mutate(Value = parse_number(Value),
+#          Measure = case_when(Dose == "1st Dose" ~ "Vaccination1",
+#                              Dose == "2nd Dose" ~ "Vaccination2",
+#                              Dose == "3rd Dose" ~ "Vaccination3",
+#                              Age == "Total Doses" ~ "Vaccinations"),
+#          Age = str_extract(Age, "\\d+"),
+#          Age = replace_na(Age, "TOT"),
+#          AgeInt = case_when(Age == "12" ~ 3L,
+#                             Age == "15" ~ 3L,
+#                             Age == "18" & Measure == "Vaccination3" ~ 42L,
+#                             Age == "18" & Measure %in% c("Vaccination1", "Vaccination2") ~ 87L,
+#                             Age == "60" ~ 45L,
+#                             Age == "TOT" ~ NA_integer_),
+#          Region = "All",
+#          Metric = "Count",
+#          Code = "IN",
+#          Sex = "b") %>% 
+#   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
+# 
+# regional_data <- read_excel(paste0(data_source, file_name), sheet = 2) %>% 
+#   filter(!is.na(Region)) %>% 
+#   pivot_longer(cols = -c(Region, Date),
+#                names_to = c("Measure", "Age"),
+#                names_sep = "_",
+#                values_to = "Value") %>% 
+#   mutate(Value = parse_number(Value),
+#          Country = "India",
+#          Sex = "b",
+#          Metric = "Count",
+#          Age = case_when(Measure == "Vaccinations" ~ "TOT",
+#                          TRUE ~ Age),
+#          Code = case_when(
+#            Region == "A & N Islands" ~ "IN-AN",
+#            Region == "Andhra Pradesh" ~ "IN-AP",
+#            Region == "Arunachal Pradesh" ~ "IN-AR",
+#            Region == "Assam" ~ "IN-AS",
+#            Region == "Bihar" ~ "IN-BR",
+#            Region == "Chandigarh" ~ "IN-CH",
+#            Region == "Chhattisgarh" ~ "IN-CT",
+#            Region == "Delhi" ~ "IN-DL",
+#            Region == "Daman & Diu" ~ "IN-DD",
+#            Region == "Dadra & Nagar Haveli" ~ "IN-DN",
+#            Region == "Goa" ~ "IN-GA",
+#            Region == "Gujarat" ~ "IN-GJ",
+#            Region == "Haryana" ~ "IN-HR",
+#            Region == "Himachal Pradesh" ~ "IN-HP",
+#            Region == "Jammu & Kashmir" ~ "IN-JK",
+#            Region == "Jharkhand" ~ "IN-JH",
+#            Region == "Karnataka" ~ "IN-KA",
+#            Region == "Kerala" ~ "IN-KL",
+#            Region == "Ladakh" ~ "IN-LA",
+#            Region == "Lakshadweep" ~ "IN-LD",
+#            Region == "Madhya Pradesh" ~ "IN-MP",
+#            Region == "Maharashtra" ~ "IN-MH",
+#            Region == "Manipur" ~ "IN-MN",
+#            Region == "Meghalaya" ~ "IN-ML",
+#            Region == "Mizoram" ~ "IN-MZ",
+#            Region == "Nagaland" ~ "IN-NL",
+#            Region == "Odisha" ~ "IN-OR",
+#            Region == "Puducherry" ~ "IN-PY",
+#            Region == "Punjab" ~ "IN-PB",
+#            Region == "Rajasthan" ~ "IN-RJ",
+#            Region == "Sikkim" ~ "IN-SK",
+#            Region == "Tamil Nadu" ~ "IN-TN",
+#            Region == "Telangana" ~ "IN-TG",
+#            Region == "Tripura" ~ "IN-TR",
+#            Region == "Uttar Pradesh" ~ "IN-UP",
+#            Region == "Uttarakhand" ~ "IN-UT",
+#            Region == "West Bengal" ~ "IN-WB",
+#            Region == "Miscellaneous" ~ "IN-UNK"
+#          ),
+#          AgeInt = case_when(Age == "12" ~ 3L,
+#                             Age == "15" ~ 3L,
+#                             Age == "18" & Measure == "Vaccination3" ~ 42L,
+#                             Age == "18" & Measure %in% c("Vaccination1", "Vaccination2") ~ 87L,
+#                             Age == "60" ~ 45L,
+#                             Age == "TOT" ~ NA_integer_)) %>% 
+#   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
+
+
+# manual_data <- bind_rows(country_data, regional_data)
+# 
+# 
+# out <- bind_rows(dataarchived, manual_data) %>% 
+#   unique() %>% 
+#   sort_input_data()
 
 
 

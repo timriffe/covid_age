@@ -40,12 +40,14 @@ Vaccine_in= read.csv(data_source)
 
 #process vaccine data 
 
+## LandkreisId : https://de.wikipedia.org/wiki/Amtlicher_Gemeindeschl%C3%BCssel
+
 #remove Bundesressort here, vaccines from federal ressource where state is not documented
 Vaccine_out_reg= Vaccine_in%>%
   mutate(Number= nchar(LandkreisId_Impfort)) %>% 
   mutate(RegID = case_when(
     Number == "4" ~ substr(LandkreisId_Impfort,1,1),
-    TRUE ~ substr(LandkreisId_Impfort,1,2)))%>%
+    TRUE ~ substr(LandkreisId_Impfort,1,2))) %>%
   mutate(Region= recode(RegID,
                         "01"="Schleswig-Holstein",
                         "02"="Hamburg",
@@ -71,7 +73,8 @@ Vaccine_out_reg= Vaccine_in%>%
   mutate(Value=sum(Value))%>%
   unique()%>%
   ungroup()%>%
-  tidyr::complete(Age, nesting(Date, Measure, Region), fill=list(Value=0)) %>% 
+  #suppress tidyr::complete in Germany_vaccine as the data are not daily data
+ # tidyr::complete(Age, nesting(Date, Measure, Region), fill=list(Value=0)) %>% 
   arrange(Age,Date,Region,Measure)%>% 
   group_by(Age,Region,Measure) %>% 
   mutate(Value = cumsum(Value)) %>% 
@@ -132,10 +135,11 @@ Vaccine_out_all= Vaccine_in%>%
   mutate(Value=sum(Value))%>%
   unique()%>%
   ungroup()%>%
-  tidyr::complete(Age, nesting(Date, Measure), fill=list(Value=0)) %>%   
-  arrange(Age,Date,Measure)%>% 
-  group_by(Age,Measure) %>% 
-  mutate(Value = cumsum(Value))%>% 
+  #suppress tidyr::complete in Germany_vaccine as the data are not daily data
+  # tidyr::complete(Age, nesting(Date, Measure), fill=list(Value=0)) %>%   
+  arrange(Age,Date,Measure)%>%
+  group_by(Age,Measure) %>%
+  mutate(Value = cumsum(Value))%>%
   ungroup()%>%
   mutate(
     Measure= case_when(Measure== "1"~ "Vaccination1",

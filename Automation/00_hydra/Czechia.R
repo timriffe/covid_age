@@ -287,7 +287,8 @@ cz_vaccines_all <-
   summarize(Value = sum(Value), .groups = "drop") %>% 
   mutate(Code = "CZ", Region = "All", Age = as.character(Age)) %>% 
   relocate(Region, .after = "Country") %>% 
-  relocate(Code, .after = "Code")
+  relocate(Code, .after = "Code") %>% 
+  sort_input_data()
 #Anna Altova:
 # comments: As of today (15 Feb 2021) only selected population groups 
 # are allowed to get the vaccine. These are people over 80 y.o., medical 

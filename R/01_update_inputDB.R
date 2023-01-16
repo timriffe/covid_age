@@ -1,7 +1,10 @@
 ### Functions & settings ############################################
 
 # prelims
-source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
+#source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
+
+source(here::here("R", "00_Functions.R"))
+
 
 setwd(wd_sched_detect())
 here::i_am("covid_age.Rproj")
@@ -277,33 +280,33 @@ file.copy(from = files_from,
 
 
 
-schedule_this <- FALSE
-if (schedule_this){
-  # TR: note, if you schedule this, you should make sure it's not already scheduled
-  # by someone else!
-  library(taskscheduleR)
-  taskscheduler_delete("COVerAGE-DB-thrice-weekly-inputDB-updates")
-  taskscheduler_create(taskname = "COVerAGE-DB-thrice-weekly-inputDB-updates", 
-                       rscript =  here::here("R","01_update_inputDB.R"), 
-                       schedule = "WEEKLY",
-                       days = c("SAT","TUE","THU"),
-                       starttime = "23:07")
-  # 
-}
-
-# library(taskscheduleR)
-# taskscheduler_ls() %>% view()
-
-schedule_this <- FALSE
-if (schedule_this){
-  # TR: note, if you schedule this, you should make sure it's not already scheduled
-  # by someone else!
-  
-  library(taskscheduleR)
-  taskscheduler_delete("COVerAGE-DB-inputDB-updates-test")
-  taskscheduler_create(taskname = "COVerAGE-DB-inputDB-updates-test", 
-                       rscript =  here::here("R/01_update_inputDB.R"), 
-                       schedule = "ONCE", 
-                       starttime = "09:58")
-  # 
-}
+# schedule_this <- FALSE
+# if (schedule_this){
+#   # TR: note, if you schedule this, you should make sure it's not already scheduled
+#   # by someone else!
+#   library(taskscheduleR)
+#   taskscheduler_delete("COVerAGE-DB-thrice-weekly-inputDB-updates")
+#   taskscheduler_create(taskname = "COVerAGE-DB-thrice-weekly-inputDB-updates",
+#                        rscript =  here::here("R","01_update_inputDB.R"),
+#                        schedule = "WEEKLY",
+#                        days = c("SAT","TUE","THU"),
+#                        starttime = "23:07")
+#   #
+# }
+# 
+# # library(taskscheduleR)
+# # taskscheduler_ls() %>% view()
+# 
+# schedule_this <- FALSE
+# if (schedule_this){
+#   # TR: note, if you schedule this, you should make sure it's not already scheduled
+#   # by someone else!
+# 
+#   library(taskscheduleR)
+#   taskscheduler_delete("COVerAGE-DB-inputDB-updates-test")
+#   taskscheduler_create(taskname = "COVerAGE-DB-inputDB-updates-test",
+#                        rscript =  here::here("R/01_update_inputDB.R"),
+#                        schedule = "ONCE",
+#                        starttime = "09:58")
+#   #
+# }
