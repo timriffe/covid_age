@@ -5,6 +5,10 @@
 ## 01.5_resolve_sources.R
 ## 02_harmonize_metrices.R
 
+Sys.setenv(LANG = "en")
+Sys.setlocale("LC_ALL","English")
+library("taskscheduleR")
+library(here)
 
 here::i_am("covid_age.Rproj")
 
@@ -23,6 +27,7 @@ source(here::here("R", "02_harmonize_metrices.R"))
 ## PART II. Schedule the scripts ## ===============
 
 
+
 schedule_this <- FALSE
 if (schedule_this){
   # TR: note, if you schedule this, you should make sure it's not already scheduled
@@ -32,8 +37,8 @@ if (schedule_this){
   taskscheduler_create(taskname = "COVerAGE-DB-thrice-weekly-inputDB-updates", 
                        rscript =  here::here("R","01_update_inputDB.R"), 
                        schedule = "WEEKLY",
-                       days = c("MON","THU"),
-                       starttime = "23:00")
+                       days = c("MON","WED"),
+                       starttime = "16:45")
 }
 
 #taskscheduleR::taskscheduler_ls() %>% view()
@@ -63,7 +68,7 @@ if (schedule_this){
   taskscheduler_delete("COVerAGE-DB-inputDB-harmonize-matrices")
   taskscheduler_create(taskname = "COVerAGE-DB-harmonize_metrices.R", 
                        rscript =  here::here("R", "02_harmonize_metrices.R"), 
-                       schedule = "WED", 
-                       starttime = "20:00")
+                       schedule = "THU", 
+                       starttime = "23:00")
 }
 

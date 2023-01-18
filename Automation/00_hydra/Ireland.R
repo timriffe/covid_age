@@ -206,14 +206,15 @@ Everything <-
   ungroup() %>% 
   mutate(Country = "Ireland",
          Region = "All",
-         Metric = "Count") 
+         Metric = "Count",
+         Code = "IE") 
 
 IE_in <- get_country_inputDB("IE")
 
 Everything_new <-
   Everything %>% 
   dplyr::filter(Age != "TOT") %>% 
-  select(Date, Measure, Sex) %>% 
+  select(Date, Measure, Sex, Code) %>% 
   distinct()%>% 
   mutate(new = TRUE)
 

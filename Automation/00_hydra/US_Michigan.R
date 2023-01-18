@@ -51,16 +51,16 @@ url3 <- links[4,2]
 db_tests <- rio::import(paste0(root, url3)) %>% 
   as_tibble()
 
-date_f <- as.Date(max(db_tests$Updated))
+date_f <- as.Date(max(db_tests$MessageDate))
 
 
 if (date_f > last_date_drive){
 
   db_tests2 <- db_tests %>% 
-    filter(TestType == "Diagnostic") %>% 
-    mutate(Date = as_date(Updated)) %>% 
+   # filter(TestType == "Diagnostic") %>% 
+    mutate(Date = as_date(MessageDate)) %>% 
     group_by(Date) %>% 
-    summarise(Value = sum(Count)) %>% 
+    summarise(Value = sum(Positive)) %>% 
     mutate(Age = "TOT",
            Sex = "b",
            Measure = "Tests")
