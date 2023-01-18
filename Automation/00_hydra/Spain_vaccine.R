@@ -122,11 +122,11 @@ In_vaccine_youngage = read_ods(data_source, sheet = "Pediátrica")
 # names(In_vaccine_total)[12] <- "three" 
 
 In_vaccine_total <- In_vaccine_total_raw %>% 
-  select(Region = "",
+  select(Region = 1,
          Vaccination1 = contains("Personas con al menos 1 dosis"),
          Vaccination2 = contains("Personas con pauta completa"),
          Vaccination3 = contains("dosis de recuerdo(2)"),
-         Date = `Fecha de la última vacuna registrada(1)`)
+         Date = contains("Fecha "))
 
 source_date <- In_vaccine_total %>% 
   dplyr::mutate(Date = dmy(Date)) %>% 
