@@ -136,7 +136,7 @@ deaths_source <- paste0(dir_n, "Data_sources/", ctr, "/", ctr, "-deaths_",today(
 recent_file_2022 <- read_html("https://www.nrscotland.gov.uk/covid19stats/") %>% 
   html_nodes(".rteright+ td > a") %>% 
   html_attr('href') %>% 
- # .[2] %>% 
+  .[2] %>% 
   stringr::str_replace("/files//statistics/covid19/", "")
 
 

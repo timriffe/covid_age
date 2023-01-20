@@ -51,34 +51,6 @@ df_states <- tibble(uf = c("all", "AC", "AL", "AM", "AP",
 
 # link_page <- "https://transparencia.registrocivil.org.br/painel-registral/dados-covid-download/"
  
-# url_example <- "https://transparencia.registrocivil.org.br/covid/obitos-2020.csv"
-# 
-# year_seq <- lubridate::year(today())
-# 
-# 
-# links_csv <- data.frame(url_base = "https://transparencia.registrocivil.org.br/covid/obitos-",
-#                         seq_year = seq(2020, year_seq, by = 1)) %>% 
-#   dplyr::mutate(url_csv = paste0(url_base, seq_year, ".csv"),
-#                 base_destination = paste0(dir_n, "Data_sources/", ctr),
-#                 destinations = paste0(base_destination, "/Deaths_", seq_year, ".csv"))
-#   
-# ## MK 05.01.2023: This download code does not work; so I will download the 2023 file manually each week!
-# 
-# # links_csv %>% 
-# #   {map2(.$url_csv, .$destinations, ~ download.file(url = .x, destfile = .y, mode="wb"))}
-# 
-# 
-# ## READ THE DOWNLOADED FILES ##
-# 
-# deaths.list <-list.files(
-#   path= paste0(dir_n, "Data_sources/", ctr),
-#   pattern = ".csv",
-#   full.names = TRUE)
-# 
-# raw_data <- deaths.list %>% 
-#   map_dfr(read.csv)
-
-
 # df_states <- tibble(uf = c("all", "AC"),
 #                     state = c("All", "Acre"))
 
@@ -118,6 +90,8 @@ for(i in 1:length(df_states$uf)) {
     cat("State: ", df_states$state[i], " Date: ", as.character(dates[j]), "\n")
   }
 }
+
+
 end_time <- Sys.time()
 duration <- end_time - start_time 
 duration

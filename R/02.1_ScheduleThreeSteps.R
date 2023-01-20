@@ -13,9 +13,9 @@ library(here)
 ## Sys.unsetenv("GITHUB_PAT")
 ## remotes::install_github("timriffe/DemoTools", dependencies = TRUE)
 
-source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
+#source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
 
-#source(here::here("R", "00_Functions.R"))
+source(here::here("R", "00_Functions.R"))
 
 
 setwd(wd_sched_detect())
@@ -65,8 +65,8 @@ if (schedule_this){
   taskscheduler_create(taskname = "COVerAGE-DB-thrice-weekly-inputDB-updates", 
                        rscript =  here::here("R","02.1_ScheduleThreeSteps.R"), 
                        schedule = "WEEKLY",
-                       days = c("THU","MON"),
-                       starttime = "13:30")
+                       days = c("FRI","TUE"),
+                       starttime = "12:30")
 }
 
 
