@@ -264,7 +264,7 @@ if (nrow(rubric) > 0){
            all = TRUE)
   }
   
- # git2r::push(repo,credentials = cred_token())
+  git2r::push(repo,credentials = cred_token())
 }
 
 
