@@ -1,7 +1,7 @@
 
 
 library(here)
-source(here("R","00_Functions.R"))
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
 logfile <- here("buildlog.md")
 
 log_section("begin resolution of multiple sources per population", logfile = logfile)

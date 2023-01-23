@@ -13,9 +13,9 @@ library(here)
 ## Sys.unsetenv("GITHUB_PAT")
 ## remotes::install_github("timriffe/DemoTools", dependencies = TRUE)
 
-#source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
 
-source(here::here("R", "00_Functions.R"))
+#source(here::here("R", "00_Functions.R"))
 
 
 setwd(wd_sched_detect())
@@ -24,16 +24,6 @@ startup::startup()
 
 # always work with the most uptodate repository
 repo <- git2r::repository(here::here())
-
-#init()
-a <- git2r::pull(repo,credentials = cred_token())
-if (class(a)[1]=="try-error"){
-  a <- try(git2r::pull(repo,credentials = cred_token()) )
-}
-if (class(a)[1]=="try-error"){
-  a <- try(git2r::pull(repo,credentials = cred_token()) )
-}
-
 
 email <- Sys.getenv("email")
 gs4_auth(email = email, 
@@ -65,7 +55,7 @@ if (schedule_this){
   taskscheduler_create(taskname = "COVerAGE-DB-thrice-weekly-inputDB-updates", 
                        rscript =  here::here("R","02.1_ScheduleThreeSteps.R"), 
                        schedule = "WEEKLY",
-                       days = c("FRI","TUE"),
+                       days = c("FRI","MON"),
                        starttime = "12:30")
 }
 
