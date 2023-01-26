@@ -33,7 +33,9 @@ age_groups <- c("0", "5", "10", "15", "18", "25", "50", "60", "70", "80")
 In_processed <- In %>%
   #select countries we need 
   dplyr::filter(
-    Region %in% c("BG","CY","HR","HU","IE","LU","MT","RO","PL","EL",
+    Region %in% c("BG","CY","HR","HU",
+                  #"IE",
+                  "LU","MT","RO","PL","EL",
                   "PT","NO","NL","LV","SI","SK")) %>%
   select(YearWeekISO, 
          Vaccination1= FirstDose, 
@@ -80,7 +82,7 @@ In_processed <- In %>%
                      `CY`= "Cyprus",
                      `HR`= "Croatia",
                      `HU`= "Hungary",
-                     `IE`= "Ireland",
+                    # `IE`= "Ireland",
                      `LU`= "Luxembourg",
                      `MT`="Malta",
                      `PL`="Poland",

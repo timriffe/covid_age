@@ -111,6 +111,7 @@ processed_data <- bind_rows("Cases" = Cases,
 
 
 data_out <- bind_rows(db_drive, processed_data) %>% 
+  unique() %>% 
   sort_input_data()
 
 
