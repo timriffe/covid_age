@@ -57,10 +57,10 @@ date_f <- as.Date(max(db_tests$MessageDate))
 if (date_f > last_date_drive){
 
   db_tests2 <- db_tests %>% 
-   # filter(TestType == "Diagnostic") %>% 
-    mutate(Date = as_date(MessageDate)) %>% 
+    filter(TestType == "Diagnostic") %>% 
+    mutate(Date = as_date(Updated)) %>% 
     group_by(Date) %>% 
-    summarise(Value = sum(Positive)) %>% 
+    summarise(Value = sum(Count)) %>% 
     mutate(Age = "TOT",
            Sex = "b",
            Measure = "Tests")

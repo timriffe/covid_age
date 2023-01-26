@@ -38,7 +38,7 @@ drive_auth(email = email,
 
 source(here::here("R", "01_update_inputDB.R"))
 source(here::here("R", "01.5_resolve_sources.R"))
-source(here::here("R", "02_harmonize_metrices.R"))
+source(here::here("R", "02_harmonize_metrics.R"))
 
 
 
@@ -55,7 +55,7 @@ if (schedule_this){
   taskscheduler_create(taskname = "COVerAGE-DB-thrice-weekly-inputDB-updates", 
                        rscript =  here::here("R","02.1_ScheduleThreeSteps.R"), 
                        schedule = "WEEKLY",
-                       days = c("TUE","FRI"),
+                       days = c("WED","THU"),
                        starttime = "12:30")
 }
 

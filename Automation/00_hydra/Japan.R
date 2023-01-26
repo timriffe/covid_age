@@ -413,7 +413,7 @@ totdeath5 <- totdeath5[,-11]
 
 pre_out <- rbind(db_drive, totdeath5, totcases5, death5, cases5) 
 
-## MK: there was duplication of values in 20.09.2022, so I filtered these out separtely and append to the dataset again
+## MK: there was duplication of values in 20.09.2022, so I filtered these out separately and append to the dataset again
 
 sep_22 <- pre_out %>% 
   filter(str_detect(Date, "20.09.2022")) %>% 
