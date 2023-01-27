@@ -51,7 +51,7 @@ url3 <- links[4,2]
 db_tests <- rio::import(paste0(root, url3)) %>% 
   as_tibble()
 
-date_f <- as.Date(max(db_tests$MessageDate))
+date_f <- as.Date(max(db_tests$Updated))
 
 
 if (date_f > last_date_drive){
