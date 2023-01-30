@@ -16,13 +16,15 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service as ChromeService
 
 timestr = time.strftime("%Y%m%d")
-chrome_driver = ChromeDriverManager().install()
+driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager(cache_valid_range=7).install()))
+#chrome_driver = ChromeDriverManager().install()
 options = ChromeOptions()
 options.add_argument("--enable-javascript")
 options.add_argument("--disable-notifications")
-driver = Chrome(chrome_driver,options=options)
+#driver = Chrome(chrome_driver,options=options)
 driver.maximize_window()
 src = "https://experience.arcgis.com/experience/aa41b29149f24e20a4007a0c4e13db1d"
 

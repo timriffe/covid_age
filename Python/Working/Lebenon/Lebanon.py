@@ -19,6 +19,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 from bs4 import BeautifulSoup
+from selenium.webdriver.chrome.service import Service as ChromeService
 
 warnings.filterwarnings("ignore")
 timestr = time.strftime("%Y%m%d")
@@ -27,11 +28,12 @@ timestr = time.strftime("%Y%m%d")
 src = r"C:\Users\Krishnan\Downloads\\"
 dst = r"N:\COVerAGE-DB\Automation\Lebanon\\"
 
-chrome_driver = ChromeDriverManager().install()
+#chrome_driver = ChromeDriverManager().install()
+driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager(cache_valid_range=7).install()))
 options = ChromeOptions()
 options.add_argument("--disable-notifications")
 options.add_argument("--enable-javascript")
-driver = Chrome(chrome_driver,options=options)
+#driver = Chrome(chrome_driver,options=options)
 driver.maximize_window()
 
 driver.get("https://impactpublicdashboard.cib.gov.lb/s/public/app/kibana#/dashboard/5fb54c50-5ff7-11eb-8575-354d83bf82d9?embed=true&_g=h@51b6606&_a=h@673a298")
