@@ -38,12 +38,14 @@ from webdriver_manager.chrome import ChromeDriverManager
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 import time
+from selenium.webdriver.chrome.service import Service as ChromeService
 
-chrome_driver = ChromeDriverManager().install()
+driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager(cache_valid_range=7).install()))
+#chrome_driver = ChromeDriverManager().install()
 options = ChromeOptions()
 options.add_argument("--disable-notifications")
 options.add_argument("--enable-javascript")
-driver = Chrome(chrome_driver,options=options)
+#driver = Chrome(chrome_driver,options=options)
 driver.maximize_window()
 driver.get("https://covid.cdc.gov/covid-data-tracker/#demographics")
 #driver.get("https://public.tableau.com/vizql/w/DPHIdahoCOVID-19Dashboard/v/DeathDemographics/viewData/sessions/7F352E4EC61B4E73B4E392C121208325-0:0/views/10683951929831089226_10461290144834891492?maxrows=200&viz=%7B%22worksheet%22%3A%22Age%20Groups%22%2C%22dashboard%22%3A%22Death%20Demographics%22%7D")

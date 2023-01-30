@@ -15,16 +15,19 @@ from selenium.webdriver.common.by import By
 import os
 from os import path
 import shutil
+from selenium.webdriver.chrome.service import Service as ChromeService
 
 #PATH = r"N:\COVerAGE-DB\Automation\chromedriver\new-version\newest-version\neu-chrome\chromedriver_win32\chromedriver.exe"
 #options=Options()
 #driver = webdriver.Chrome(chrome_options=options,executable_path = PATH) #Path of Chrome Driver
 
-chrome_driver = ChromeDriverManager().install()
+driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager(cache_valid_range=7).install()))
+#ChromeDriverManager(cache_valid_range=1).install()
+#chrome_driver = ChromeDriverManager().install()
 options = ChromeOptions()
 options.add_argument("--disable-notifications")
 options.add_argument("--enable-javascript")
-driver = Chrome(chrome_driver,options=options)
+#driver = Chrome(chrome_driver,options=options)
 driver.maximize_window()
 timestr = time.strftime("%Y%m%d")
 
@@ -33,7 +36,7 @@ src = r"C:\Users\Krishnan\Downloads\\"
 dst = "N:\COVerAGE-DB\Automation\Bulgaria\\"
 
 def download():
-    time.sleep(10)
+    time.sleep(20)
     download_button = driver.find_elements(By.XPATH, '//*[@class="btn btn-primary js-ga-event"]')[0]
     download_button.click()
     time.sleep(3)

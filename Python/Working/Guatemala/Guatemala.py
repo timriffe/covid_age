@@ -17,7 +17,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
-
+from selenium.webdriver.chrome.service import Service as ChromeService
 
 
 warnings.filterwarnings("ignore")
@@ -28,7 +28,7 @@ dst = r"N:\COVerAGE-DB\Automation\Guatemala\\"
 
 base_url = 'https://tablerocovid.mspas.gob.gt/tablerocovid/'
 
-chrome_driver = ChromeDriverManager().install()
+chrome_driver = ChromeDriverManager(cache_valid_range=7).install()
 options = ChromeOptions()
 options.add_argument("--disable-notifications")
 driver = Chrome(chrome_driver,options=options)
@@ -110,7 +110,7 @@ time.sleep(10)
 
 first_tab = driver.find_element(By.XPATH, '//*[@id="shiny-tab-casos_confirmados"]/div[4]/div[3]/div/div[2]/div/ul/li[3]')
 ActionChains(driver).move_to_element(first_tab).click(first_tab).perform()
-time.sleep(20)
+time.sleep(30)
 driver.find_element(By.CLASS_NAME, 'buttons-csv').click()
 time.sleep(10)
 copyFileAndRename("confirmados_edad.csv",f"confirmedcases_{timestr}.csv")
