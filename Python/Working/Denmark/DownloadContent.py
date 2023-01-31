@@ -16,16 +16,18 @@ import pandas as pd
 from selenium.webdriver import Chrome, ChromeOptions
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service as ChromeService
 
 timestr = time.strftime("%Y%m%d")
 src = "https://experience.arcgis.com/experience/aa41b29149f24e20a4007a0c4e13db1d"
 
 
-chrome_driver = ChromeDriverManager().install()
+#chrome_driver = ChromeDriverManager().install()
+driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager(cache_valid_range=7).install()))
 options = ChromeOptions()
 options.add_argument("--disable-notifications")
 options.add_argument("--enable-javascript")
-driver = Chrome(chrome_driver,options=options)
+#driver = Chrome(chrome_driver,options=options)
 driver.maximize_window()
 driver.get(src)
 x = os.path.join("N:\COVerAGE-DB\Automation\Denmark","page_"+timestr+".html")

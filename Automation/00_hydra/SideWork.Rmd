@@ -111,6 +111,7 @@ processed_data <- bind_rows("Cases" = Cases,
 
 
 data_out <- bind_rows(db_drive, processed_data) %>% 
+  unique() %>% 
   sort_input_data()
 
 
@@ -507,20 +508,25 @@ sheet_write(data, ss = ss_i, sheet = "database")
 
 
 # Austria
-
+##├ Date: 31.01.2023
 
 ```{r}
 
 # info country and N drive address
 ctr <- "Austria"
 dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
+
+DataArchived <- readRDS("N:/COVerAGE-DB/Automation/Hydra/Austria.rds")
 files_source <- paste0(dir_n, "Data_sources/", ctr, "/MissingData-15122021-25072022/")
+
+files_download <- paste0(dir_n, "Data_sourrces/", ctr, "/MissingData-Trial/")
 
 # https://info.gesundheitsministerium.at/data/archiv/COVID19_vaccination_doses_agegroups_v202206_20220629.csv
 
 base_url <- "https://info.gesundheitsministerium.at/data/archiv/COVID19_vaccination_doses_agegroups_v202206_"
+base_url2 <- "https://info.gesundheitsministerium.at/data/archiv/COVID19_vaccination_agegroups_v202210_"
 
-seq_dates <- format(seq(from = as.Date("2021/12/15"), to = as.Date("2022/07/24"), by = "1 days"), "%Y%m%d")
+seq_dates <- format(seq(from = as.Date("2021/12/15"), to = as.Date("2022/07/26"), by = "1 days"), "%Y%m%d")
 
 missing_files <- data.frame(base = rep(base_url, 
                                   times = length(seq_dates)),
@@ -531,8 +537,8 @@ missing_files <- data.frame(base = rep(base_url,
 
 
 
-missing_files %>% 
-  {map2(.$url, .$destinations, ~ download.file(url = .x, destfile = .y, mode="wb"))}
+# missing_files %>% 
+#   {map2(.$url, .$destinations, ~ download.file(url = .x, destfile = .y, mode="wb"))}
 
 
 
@@ -622,9 +628,14 @@ processed_data <- raw_data %>%
   sort_input_data()
 
 
+all_out <- DataArchived %>% 
+  bind_rows(processed_data) %>% 
+  unique() %>% 
+  sort_input_data()
+
+write_rds(all_out, paste0(dir_n, ctr, ".rds"))
+
 ```
-
-
 
 
 

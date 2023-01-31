@@ -32,13 +32,17 @@ m_url <- "https://sampo.thl.fi/pivot/prod/fi/vaccreg/cov19cov/summary_cov19covag
 
 html  <- read_html(m_url)
 date_text <-
-  html_nodes(html, xpath = '/html/body/div[2]/div[1]/div[2]/div[2]/div[2]') %>%
-  html_text()
+ # html_nodes(html, xpath = '/html/body/div[2]/div[1]/div[2]/div[2]/div[2]') %>%
+  html_nodes(html, xpath = '/html/body/footer') %>%
+  html_text() 
 
+#MK: this goes with the xpath = div/div etc. 
+# date= substr(date_text, 92, 102) %>% 
+#   dmy()
 
-date= substr(date_text, 92, 102) %>% 
+# MK: this goes with the footer 
+date= substr(date_text, 101, 110) %>% 
   dmy()
-
 
 
 if (date > last_date_archive){

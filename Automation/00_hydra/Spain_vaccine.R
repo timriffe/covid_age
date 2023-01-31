@@ -137,7 +137,7 @@ source_date <- In_vaccine_total %>%
 if(source_date > date_archive) {
 
 In_vax_totals <- In_vaccine_total_s %>% 
-  select(Region = "",
+  select(Region = 1,
          Vaccinations = `Dosis administradas(2)*`)
 
 In_vax_total <- In_vaccine_total %>% 
@@ -146,7 +146,8 @@ In_vax_total <- In_vaccine_total %>%
 
 total <-
   In_vax_total %>%
-  pivot_longer(c(Vaccinations,Vaccination1, Vaccination2,Vaccination3), names_to= "Measure", values_to= "Value") %>% 
+  pivot_longer(c(Vaccinations,Vaccination1, Vaccination2,Vaccination3), 
+               names_to= "Measure", values_to= "Value") %>% 
   mutate(Date = dmy(Date),
          MD = max(Date, na.rm = TRUE),
          Date = coalesce(Date, MD)) %>% 

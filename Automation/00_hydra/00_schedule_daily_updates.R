@@ -91,7 +91,7 @@ scripts <- c('Peru', 'PeruVaccine' ,
              'Estonia_vaccine', 'ECDC_vaccine', 'England_Vaccine', 
              'Finland', 'Finland_vaccine', 'FranceEpi', 'France_Vaccine',
              'Germany', 'Germany_vaccine', 'Guatemala',
-             'Hungary', 'Hong_Kong_Vaccine',
+             'Hong_Kong_Vaccine',
              'IndiaVax', 'IndiaVaxProcessing',
              'Italy', 'Ireland', 'Italy_reg', 
              'Island_of_Jersey', 'Israel',
@@ -150,7 +150,7 @@ for(c in scripts){
 # for individual scheduling
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-sched("AustraliaEpi", tm = "16:14", email = auto_update_email, wd = auto_update_wd)
+sched("Brazil", tm = "12:17", email = auto_update_email, wd = auto_update_wd)
 sched("Italy", tm = "15:55", email = auto_update_email, wd = auto_update_wd)
 sched('Germany_vaccine', tm = "14:45", email = auto_update_email, wd = auto_update_wd)
 sched('Peru', tm = "15:47", email = auto_update_email, wd = auto_update_wd)
@@ -179,7 +179,7 @@ sched("Togo", tm = "15:20", email = auto_update_email, wd = auto_update_wd)
 # taskscheduler_delete("COVerAGE-DB-automatic-daily-build")
 # taskscheduler_delete("COVerAGE-DB-every-8-hour-inputDB-updates")
 
-delete_sched("US_Massachusets")
+delete_sched("Brazil")
 
 
 

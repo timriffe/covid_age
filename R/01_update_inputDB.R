@@ -1,9 +1,7 @@
 ### Functions & settings ############################################
 
 # prelims
-#source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
-
-source(here::here("R", "00_Functions.R"))
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
 
 
 setwd(wd_sched_detect())
@@ -266,7 +264,7 @@ if (nrow(rubric) > 0){
            all = TRUE)
   }
   
-  git2r::push(repo,credentials = cred_token())
+#  git2r::push(repo,credentials = cred_token())
 }
 
 

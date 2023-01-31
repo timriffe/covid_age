@@ -165,9 +165,11 @@ weekly_Boosters <-
                values_to = "Value") %>% 
   filter(Sex != "id")  %>%  # filter out immunocompromised doses ## 
   mutate(Measure = case_when(Sex == "ad2" ~ "Vaccination4",
-                             TRUE ~ "Vaccination3"),
+                             Sex == "ad3" ~ "Vaccination5",
+                             Sex == "ad" ~ "Vaccination3",
+                             Sex %in% c("f", "m", "UNK") ~ "Vaccinations"),
          Sex = case_when(Sex == "na" ~ "UNK",
-                         Sex %in% c("ad", "ad2") ~ "b",
+                         Sex %in% c("ad", "ad2", "ad3") ~ "b",
                          TRUE ~ Sex),
          Age = gsub(Age, pattern = "age", replacement = ""),
          Age = case_when(Age == "na" ~ "UNK",
@@ -187,6 +189,7 @@ weekly_Boosters <-
                        Age == "80" ~ 25L,
                        Age == "5" ~ 7L,
                        Age == "12" ~ 8L,
+                       Sex %in% c("f", "m", "UNK") ~ NA_integer_,
                        TRUE ~ 10L),
     Date = ISOweek::ISOweek2date(paste(week, "5", sep = "-")),
          Date = ddmmyyyy(Date),

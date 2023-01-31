@@ -172,10 +172,12 @@ cumtests <- df_test %>%
   mutate(Value=113082+cumsum(new_tests)) %>%
   mutate(Country="Canada", Region="Ontario", Metric="Count", Measure="Tests") %>%
   mutate(Sex="b", Age="TOT",AgeInt="") %>%
-  rename(Date="Reported.Date")
+  rename(Date="Reported.Date") %>% 
+  mutate(Date = mdy(Date),
+         Date = ddmmyyyy(Date))
 
 # -- Around Christmas 2020 they changed the date format - then changed it back after New Year 2021
-cumtests$Date <- parse_date_time(cumtests$Date,"ymd") %>% format.Date("%d.%m.%Y")
+#cumtests$Date <- parse_date_time(cumtests$Date,"ymd") %>% format.Date("%d.%m.%Y")
 #cumtests$Date <- parse_date_time(cumtests$Date,"%m/%d/%Y") %>% format.Date("%d.%m.%Y")
 
 
@@ -195,6 +197,7 @@ Tests_df <- cumtests %>%
 # then stick together
 out <- 
   bind_rows(Cases_Deaths_df, Tests_df) %>% 
+  unique() %>% 
   sort_input_data()
 
 # then push:

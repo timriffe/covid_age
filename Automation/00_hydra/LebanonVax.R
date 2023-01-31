@@ -100,6 +100,7 @@ if(sourcedate > rdsData_date){
     sort_input_data()
   
   Out <- bind_rows(rdsData, finaldf) %>% 
+    unique() %>% 
     sort_input_data()
   
   

@@ -57,7 +57,7 @@ out <-
                       "U" = "UNK")) %>% 
   select(Date = Reported_Date,
          Sex, Age) %>% 
-  mutate(Date = mdy(Date)) %>% 
+  mutate(Date = ymd(Date)) %>% 
   group_by(Date, Sex, Age) %>% 
   summarise(new = n()) %>% 
   ungroup() %>% 
