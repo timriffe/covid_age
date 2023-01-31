@@ -215,7 +215,7 @@ inputCounts <- K[ , AgeInt := add_AgeInt(Age, omega = 105),
 # data.table::fwrite(inputCounts, file = here("Data", "inputCounts-SnapShots", 
 #                                                   paste0("inputCounts_", lubridate::today(), ".csv")))
 
-data.table::fwrite(inputCounts, file = paste0("N:/COVerAGE-DB/Data/","inputCounts.csv"))
+data.table::fwrite(inputCounts, file = paste0("N:/COVerAGE-DB/Data/inputCounts.csv"))
 data.table::fwrite(inputCounts, file = paste0("N:/COVerAGE-DB/Data/inputCounts-SnapShots/", 
                                             "inputCounts_", lubridate::today(), ".csv"))
 
