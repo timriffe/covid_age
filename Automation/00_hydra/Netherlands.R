@@ -104,7 +104,9 @@ Cases1 <-
                          Agegroup == "80-89" ~ "80",
                          Agegroup == "90+" ~ "90",
                          Agegroup == "<50" ~ "UNK",  # can correct later; 223 cases, moved to UNK to avoid decimals in Value.
-                         Agegroup == "Unknown" ~ "UNK")
+                         Agegroup == "Unknown" ~ "UNK"),
+         Province = case_when(Province %in% c("Fryslân", "FryslÃ¢n") ~ "Fryslân",
+                            TRUE ~ Province)
          ) %>% 
   group_by(Date_statistics, Sex, Age, Province) %>% 
   summarize(New = n()) %>% 
@@ -183,6 +185,7 @@ Cases2 <-
            TRUE ~ 10
          )) %>% 
   select(Country, Region, Code, Date, Sex,Age, AgeInt, Metric, Measure, Value) %>% 
+  unique() %>% 
   sort_input_data()
   
 # Prepare Deaths:
@@ -215,7 +218,9 @@ Deaths <- NL %>%
     Sex = case_when(
       Sex == "Female" ~ "f",
       Sex == "Male" ~ "m",
-      Sex == "Unknown" ~ "UNK")
+      Sex == "Unknown" ~ "UNK"),
+    Province = case_when(Province %in% c("Fryslân", "FryslÃ¢n") ~ "Fryslân",
+                         TRUE ~ Province)
   ) %>% 
   select(Region = Province, date, Sex, Age) %>% 
   group_by(Region, date,Sex,Age) %>% 
@@ -270,7 +275,9 @@ Deaths2 <-
            )) %>% 
     filter(!(Sex == "UNK" & Value == 0),
            !(Age == "UNK" & Value == 0)) %>% 
-    select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value)
+    select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
+  unique() %>% 
+  sort_input_data()
 
 
 # bind and sort:
