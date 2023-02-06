@@ -82,9 +82,9 @@ if(class(try(download.file(files_day$url,
                            destfile = files_day$destinations,
                            mode="wb"),
              silent = TRUE)) == "try-error"){
-  log_update(pp = ctr, N = "NoPDF")
+ # log_update(pp = ctr, N = "NoPDF")
 } else {
-  log_update(pp = ctr, N = "Downloaded")
+#  log_update(pp = ctr, N = "Downloaded")
 }
 
 
