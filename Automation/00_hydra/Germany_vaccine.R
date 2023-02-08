@@ -145,7 +145,7 @@ Vaccine_out_all= Vaccine_in%>%
   unique()%>%
   ungroup()%>%
   #suppress tidyr::complete in Germany_vaccine as the data are not daily data
-  # tidyr::complete(Age, nesting(Date, Measure), fill=list(Value=0)) %>%   
+  tidyr::complete(Age, nesting(Date, Measure), fill=list(Value=0)) %>%   
   arrange(Age,Date,Measure)%>%
   group_by(Age,Measure) %>%
   mutate(Value = cumsum(Value))%>%
