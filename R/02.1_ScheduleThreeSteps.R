@@ -25,7 +25,11 @@ startup::startup()
 # always work with the most uptodate repository
 repo <- git2r::repository(here::here())
 
+
 email <- Sys.getenv("email")
+
+## remove the 'scopes' part if authorization shows errors
+
 gs4_auth(email = email, 
          scopes = c("https://www.googleapis.com/auth/spreadsheets",
                     "https://www.googleapis.com/auth/drive"))
@@ -50,6 +54,8 @@ schedule_this <- FALSE
 if (schedule_this){
   # TR: note, if you schedule this, you should make sure it's not already scheduled
   # by someone else!
+  # Run only the following lines to schedule; 
+  # run the whole section if you want to remove the exisiting scheduled program
   library(taskscheduleR)
   taskscheduler_delete("COVerAGE-DB-thrice-weekly-inputDB-updates")
   taskscheduler_create(taskname = "COVerAGE-DB-thrice-weekly-inputDB-updates", 
