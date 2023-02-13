@@ -207,7 +207,7 @@ VaccSex_processed <- vaxSex_raw %>%
                     Sex == "Masculino" ~ "m",
                     Sex == "Sin Dato" ~ "UNK",
                     TRUE ~ "b"),
-    Age = "UNK",
+    Age = "TOT",
     AgeInt = NA_integer_) %>% 
   tidyr::pivot_longer(cols = contains("Vaccin"),
                       names_to = "Measure",
@@ -230,6 +230,7 @@ out <- bind_rows(epi_data,
   Age = as.character(Age)) %>% 
   dplyr::select(Country, Region, Code, Date, Sex, 
                 Age, AgeInt, Metric, Measure, Value) %>% 
+  unique() %>% 
   sort_input_data()
   
 ## MERGE WITH HISTORICAL ARCHIVED DATA (if required) 
