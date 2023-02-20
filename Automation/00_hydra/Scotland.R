@@ -99,6 +99,26 @@ sc <-
 
 #Source: https://www.nrscotland.gov.uk/covid19stats
 
+## Function to edit the table 
+
+edit_table <- function(dataset){
+  dataset %>% 
+    dplyr::filter(!is.na(`Registration year`),
+                  `Registration year` != "Total") %>% 
+    dplyr::mutate(Sex = case_when(str_detect(`Registration year`, "females") ~ "f",
+                                  str_detect(`Registration year`, "males") ~ "m",
+                                  TRUE ~ NA_character_)) %>% 
+    tidyr::fill(Sex, .direction = "down") %>% 
+    dplyr::filter(!str_detect(`Registration year`, "Table"),
+                  !str_detect(`Registration year`, "Registration year")) %>% 
+    dplyr::mutate(Sex = replace_na(Sex, "b")) %>% 
+    dplyr::rename("Year" = `Registration year`,
+                  "Week_number" = `Week number`,
+                  "date_prep" = `Week beginning`)
+  
+}
+
+
 ## 2020 WEEKLY DEATHS DATA ##
 
 deaths_source2020 <- paste0(dir_n, "Data_sources/", ctr, "/", ctr, "-deaths_2020", ".xlsx")
@@ -110,7 +130,8 @@ download.file(deaths_url_2020,
               mode = "wb")
 
 wk_data_2020 <- read_excel(deaths_source2020,
-                           sheet = 4, skip = 5)
+                           sheet = 4, skip = 5) %>% 
+  edit_table()
 
 
 
@@ -125,7 +146,8 @@ download.file(deaths_url_2021,
               mode = "wb")
 
 wk_data_2021 <- read_excel(deaths_source2021,
-                           sheet = 4, skip = 5)
+                           sheet = 4, skip = 5) %>% 
+  edit_table()
 
 
 ## 2022/ MOST RECENT FILE ## 
@@ -150,7 +172,8 @@ download.file(url = deaths_url,
               mode = "wb")
 
 
-deaths_recent <- read_excel(deaths_source, sheet = 4, skip = 5)
+deaths_recent <- read_excel(deaths_source, sheet = 4, skip = 5) %>% 
+  edit_table()
 
 
 ## MERGE ALL DATASETS: 2020, 2021, 2022 (MOST RECENT)
@@ -164,18 +187,6 @@ deaths <- bind_rows(wk_data_2020,
 ## CLEANING AND WRANGLING 
 
 deaths_cleaned <- deaths %>% 
-  dplyr::filter(!is.na(`Registration year`),
-                `Registration year` != "Total") %>% 
-  dplyr::mutate(Sex = case_when(str_detect(`Registration year`, "females") ~ "f",
-                                str_detect(`Registration year`, "males") ~ "m",
-                                TRUE ~ NA_character_)) %>% 
-  tidyr::fill(Sex, .direction = "down") %>% 
-  dplyr::filter(!str_detect(`Registration year`, "Table"),
-                !str_detect(`Registration year`, "Registration year")) %>% 
-  dplyr::mutate(Sex = replace_na(Sex, "b")) %>% 
-  dplyr::rename("Year" = `Registration year`,
-                "Week_number" = `Week number`,
-                "date_prep" = `Week beginning`) %>% 
   # dplyr::mutate(week = str_pad(Week_number,  2, "left", 0),
   #               ISO_WEEK = paste0(Year, "-W", 
   #                                 week, "-5"),
@@ -202,7 +213,8 @@ deaths_out <- deaths_cleaned %>%
                              '45-64' = "45",
                              '65-74' = "65",
                              '75-84' = "75",
-                             '85+' = "85"),
+                             '85+' = "85",
+                             "All ages" = "TOT"),
                 AgeInt = case_when(
                   Age == "0" ~ 1L,
                   Age == "1" ~ 14L,
@@ -226,60 +238,6 @@ deaths_out <- deaths_cleaned %>%
 
 write_rds(deaths_out, 
           paste0(dir_n, "Data_sources/Scotland/", ctr, "_DeathsWeekly", Sys.Date(), ".rds"))
-
-## history =============
-# deaths2 <- deaths %>% 
-#   select(Date = DateCode, 
-#          Sex, 
-#          Age, 
-#          Value,
-#          Cause.Of.Death) %>% 
-#   filter(Cause.Of.Death == "COVID-19 related",
-#          Date != "2020",
-#          Date != "2021",
-#          Date != "2022",
-#          Age != "All") %>% 
-#   mutate(Date = substr(Date, 5, 14),
-#     Date = ymd(Date),
-#     Age = recode(Age,
-#                  '0 years' = "0",
-#                  '1-14 years' = "1",
-#                  '15-44 years' = "15",
-#                  '45-64 years' = "45",
-#                  '65-74 years' = "65",
-#                  '75-84 years' = "75",
-#                  '85 years and over' = "85"),
-#     Sex = recode(Sex,'Female' = 'f',
-#                  'Male' = 'm',
-#                  'All' = 'b'),
-#     AgeInt = case_when(
-#       Age == "0" ~ 1,
-#       Age == "1" ~ 14,
-#       Age == "15" ~ 30,
-#       Age == "45" ~ 20,
-#       Age == "65" ~ 20,
-#       Age == "75" ~ 20,
-#       Age == "85" ~ 20)
-#     ) %>% 
-#   arrange(Date, Sex ,Age) %>% 
-#   group_by(Sex, Age) %>% 
-#   mutate(Value = cumsum(Value)) %>% 
-#   ungroup() 
-# 
-# #filter(Age != "60+") %>% 
-#   #filter(Age != "0 to 59") %>% 
-#   mutate(Country = "Scotland",
-#          Region = "All",
-#          Metric = "Count",
-#          Measure = "Deaths",
-#          Date = paste(sprintf("%02d",day(Date)),    
-#                       sprintf("%02d",month(Date)),  
-#                       year(Date), 
-#                       sep = "."),
-#          Code = paste0('GB-SCT')) %>% 
-#   select(Country, Region, Code, Date, Sex, 
-#          Age, AgeInt, Metric, Measure, Value) %>% 
-#   sort_input_data()
 
 
 ## Trend data ====================
@@ -373,35 +331,6 @@ TOT <-
 
 # -----------------------
 
-#content > div.row.wrapper.no-nav > section > div > p > a
-
-# -----------------------
-# TR: removed both-sex creation, not needed
-# -----------------------
-
-# -----------------------
-# define helper function that infers 0-14.
-# for unique combos of Date, Sex, Measure
-# age groups are the same now, not needed anymore
-#infer_zero <- function(chunk){
-  
-#  chunk %>% 
-#    mutate(TOT = Value[Age == "TOT"],
-#           Marginal = sum(Value[Age!="TOT"]),
-#           Value = ifelse(Age == "TOT", 
-#                          TOT - Marginal,
-#                          Value),
-#           Age = ifelse(Age == "TOT", "0", Age),
-#           AgeInt = ifelse(Age == "0", 15, AgeInt)) %>% 
-#    select(-TOT, - Marginal) %>% 
-#    arrange(Age)
-  
-#}
-
-# --------------------------------
-####I think this is not needed anymore
-####data gets updates each day
-
 Date_cases  <- sc %>% dplyr::pull(Date) %>% unique() %>% dmy()
 Date_trends <- sct %>% dplyr::pull(Date) %>% dmy() %>% max()
 
@@ -494,3 +423,88 @@ write_sheet(sctot,
             sheet = "totals")
 sheet_delete(meta$id, "Sheet1")
 
+
+
+## history =============
+# deaths2 <- deaths %>% 
+#   select(Date = DateCode, 
+#          Sex, 
+#          Age, 
+#          Value,
+#          Cause.Of.Death) %>% 
+#   filter(Cause.Of.Death == "COVID-19 related",
+#          Date != "2020",
+#          Date != "2021",
+#          Date != "2022",
+#          Age != "All") %>% 
+#   mutate(Date = substr(Date, 5, 14),
+#     Date = ymd(Date),
+#     Age = recode(Age,
+#                  '0 years' = "0",
+#                  '1-14 years' = "1",
+#                  '15-44 years' = "15",
+#                  '45-64 years' = "45",
+#                  '65-74 years' = "65",
+#                  '75-84 years' = "75",
+#                  '85 years and over' = "85"),
+#     Sex = recode(Sex,'Female' = 'f',
+#                  'Male' = 'm',
+#                  'All' = 'b'),
+#     AgeInt = case_when(
+#       Age == "0" ~ 1,
+#       Age == "1" ~ 14,
+#       Age == "15" ~ 30,
+#       Age == "45" ~ 20,
+#       Age == "65" ~ 20,
+#       Age == "75" ~ 20,
+#       Age == "85" ~ 20)
+#     ) %>% 
+#   arrange(Date, Sex ,Age) %>% 
+#   group_by(Sex, Age) %>% 
+#   mutate(Value = cumsum(Value)) %>% 
+#   ungroup() 
+# 
+# #filter(Age != "60+") %>% 
+#   #filter(Age != "0 to 59") %>% 
+#   mutate(Country = "Scotland",
+#          Region = "All",
+#          Metric = "Count",
+#          Measure = "Deaths",
+#          Date = paste(sprintf("%02d",day(Date)),    
+#                       sprintf("%02d",month(Date)),  
+#                       year(Date), 
+#                       sep = "."),
+#          Code = paste0('GB-SCT')) %>% 
+#   select(Country, Region, Code, Date, Sex, 
+#          Age, AgeInt, Metric, Measure, Value) %>% 
+#   sort_input_data()
+
+
+#content > div.row.wrapper.no-nav > section > div > p > a
+
+# -----------------------
+# TR: removed both-sex creation, not needed
+# -----------------------
+
+# -----------------------
+# define helper function that infers 0-14.
+# for unique combos of Date, Sex, Measure
+# age groups are the same now, not needed anymore
+#infer_zero <- function(chunk){
+
+#  chunk %>% 
+#    mutate(TOT = Value[Age == "TOT"],
+#           Marginal = sum(Value[Age!="TOT"]),
+#           Value = ifelse(Age == "TOT", 
+#                          TOT - Marginal,
+#                          Value),
+#           Age = ifelse(Age == "TOT", "0", Age),
+#           AgeInt = ifelse(Age == "0", 15, AgeInt)) %>% 
+#    select(-TOT, - Marginal) %>% 
+#    arrange(Age)
+
+#}
+
+# --------------------------------
+####I think this is not needed anymore
+####data gets updates each day

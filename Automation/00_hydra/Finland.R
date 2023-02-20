@@ -138,51 +138,43 @@ deaths_out <-
 
 # -------------------------------------
 # Now get cases:
-fi_case_url <- "https://opendata.arcgis.com/datasets/aa28e00e8b8647deb3d2573b4d19f73c_0.csv"
+## MK 06.02.2023: this link is not working. so moved to the weekly cases by Age since the start of the pandemic. 
+#fi_case_url <- "https://opendata.arcgis.com/datasets/aa28e00e8b8647deb3d2573b4d19f73c_0.csv"
 
-CasesIN <- read_csv(fi_case_url) 
+## Website source: https://www.thl.fi/episeuranta/tautitapaukset/coronamap.html
+
+fi_case_url <- "https://sampo.thl.fi/pivot/prod/en/epirapo/covid19case/fact_epirapo_covid19case.csv?row=dateweek20200101-509030&column=ttr10yage-444309&filter=measure-444833&&fo=1"
+
+CasesIN <- read_csv2(fi_case_url) 
 # tapauksia  cases
 # miehia     male
 # naisia     female
 Cases <-
   CasesIN %>% 
-  separate(date, 
-           into = c("Date", NA),
+  filter(Time != "All times") %>% 
+  separate(Time, into = c("Year", "year", "Week", "week"),
            sep = " ") %>% 
-  mutate(Date = ymd(Date)) %>% 
-  filter(Date > dmy("01-02-2020")) %>% 
-  pivot_longer(tapauksia:ika_80_,
-               values_to = "Value",
-               names_to = "Age") %>% 
-  select(Date, Age, Value) %>% 
-  mutate(
-    Sex = case_when(
-             Age == "miehia" ~ "m",
-             Age == "naisia" ~ "f",
-             TRUE ~ "b"),
-    Age = tolower(Age),
-    Age = recode(Age,
-                 "miehia" = "TOT",
-                 "naisia" = "TOT",
-                 "tapauksia" = "TOT",
-                 "ika_0_9" = "0",
-                 "ika_10_19" = "10",
-                 "ika_20_29" = "20",
-                 "ika_30_39" = "30",
-                 "ika_40_49" = "40",
-                 "ika_50_59" = "50",
-                 "ika_60_69" = "60",
-                 "ika_70_79" = "70",
-                 "ika_80_"  = "80" 
-                 ) ) %>%
-  group_by(Date,Sex,Age) %>% 
-  summarize(Value = sum(Value), 
-            .groups = "drop") %>% 
+ ## will take the last day (Friday) of the week
+  mutate(YearWeek = paste0(year, "-W", week, "-5"),
+         Date = ISOweek::ISOweek2date(YearWeek),
+         Age = case_when(Age == "All ages" ~ "TOT",
+                         TRUE ~ str_extract(Age, "\\d+")),
+         Age = case_when(Age == "00" ~ "0",
+                         TRUE ~ Age),
+         val = case_when(val == ".." ~ "0",
+                         TRUE ~ val),
+         val = as.numeric(val)) %>% 
+  select(Date, Age, val) %>% 
+  group_by(Age) %>% 
+  arrange(Date) %>% 
+  mutate(Value = cumsum(val)) %>% 
+  ungroup() %>% 
   mutate(
     AgeInt = case_when(
-        Age == "80" ~ 25L,
-        Age == "TOT" ~ NA_integer_,
-        TRUE ~ 10L),
+      Age == "80" ~ 25L,
+      Age == "TOT" ~ NA_integer_,
+      TRUE ~ 10L),
+    Sex = "b",
     Country = "Finland",
     Region = "All",
     Date = ddmmyyyy(Date),
@@ -191,7 +183,57 @@ Cases <-
     Metric = "Count") %>% 
   select(Country, Region, Code, Date, Sex, Age, 
          AgeInt, Metric, Measure, Value)
-    
+  
+  # 
+  # 
+  # MK: This code was for the data by age and sex, the csv file is not working anymore. 
+  # 
+  # separate(date, 
+  #          into = c("Date", NA),
+  #          sep = " ") %>% 
+  # mutate(Date = ymd(Date)) %>% 
+  # filter(Date > dmy("01-02-2020")) %>% 
+  # pivot_longer(tapauksia:ika_80_,
+  #              values_to = "Value",
+  #              names_to = "Age") %>% 
+  # select(Date, Age, Value) %>% 
+  # mutate(
+  #   Sex = case_when(
+  #            Age == "miehia" ~ "m",
+  #            Age == "naisia" ~ "f",
+  #            TRUE ~ "b"),
+  #   Age = tolower(Age),
+  #   Age = recode(Age,
+  #                "miehia" = "TOT",
+  #                "naisia" = "TOT",
+  #                "tapauksia" = "TOT",
+  #                "ika_0_9" = "0",
+  #                "ika_10_19" = "10",
+  #                "ika_20_29" = "20",
+  #                "ika_30_39" = "30",
+  #                "ika_40_49" = "40",
+  #                "ika_50_59" = "50",
+  #                "ika_60_69" = "60",
+  #                "ika_70_79" = "70",
+  #                "ika_80_"  = "80" 
+  #                ) ) %>%
+  # group_by(Date,Sex,Age) %>% 
+  # summarize(Value = sum(Value), 
+  #           .groups = "drop") %>% 
+  # mutate(
+  #   AgeInt = case_when(
+  #       Age == "80" ~ 25L,
+  #       Age == "TOT" ~ NA_integer_,
+  #       TRUE ~ 10L),
+  #   Country = "Finland",
+  #   Region = "All",
+  #   Date = ddmmyyyy(Date),
+  #   Code = paste0("FI"),
+  #   Measure = "Cases",
+  #   Metric = "Count") %>% 
+  # select(Country, Region, Code, Date, Sex, Age, 
+  #        AgeInt, Metric, Measure, Value)
+  #   
 
 # importing stored data 
 FI_in <- read_rds(paste0(dir_n, ctr, ".rds"))
@@ -209,8 +251,8 @@ FI_out <-
   mutate(isMax = Value == max(Value)) %>% 
   ungroup() %>% 
   dplyr::filter(isMax) %>% 
-  sort_input_data() %>% 
-  unique()
+  unique() %>% 
+  sort_input_data() 
 
 
 # # 
@@ -242,7 +284,7 @@ write_rds(FI_out, paste0(dir_n, ctr, ".rds"))
 #            ss = ss_i,
 #            sheet = "database")
 
-log_update("Finland", N = nrow(Cases))
+log_update("Finland", N = nrow(FI_out))
 
 ############################################
 #### uploading metadata to N Drive ####

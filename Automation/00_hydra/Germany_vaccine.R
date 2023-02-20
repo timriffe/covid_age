@@ -49,15 +49,24 @@ Vaccine_out_reg= Vaccine_in%>%
     Number == "4" ~ substr(LandkreisId_Impfort,1,1),
     TRUE ~ substr(LandkreisId_Impfort,1,2))) %>%
   mutate(Region= recode(RegID,
-                        "01"="Schleswig-Holstein",
-                        "02"="Hamburg",
-                        "03"="Niedersachsen",
-                        "04"="Bremen",
-                        "05"="Nordrhein-Westfalen",
-                        "06"="Hessen",
-                        "07"="Rheinland-Pfalz",
-                        "08"="Baden-Württemberg",
-                        "09"="Bayern",
+                        # "01"="Schleswig-Holstein",
+                        # "02"="Hamburg",
+                        # "03"="Niedersachsen",
+                        # "04"="Bremen",
+                        # "05"="Nordrhein-Westfalen",
+                        # "06"="Hessen",
+                        # "07"="Rheinland-Pfalz",
+                        # "08"="Baden-Württemberg",
+                        # "09"="Bayern",
+                        "1"="Schleswig-Holstein",
+                        "2"="Hamburg",
+                        "3"="Niedersachsen",
+                        "4"="Bremen",
+                        "5"="Nordrhein-Westfalen",
+                        "6"="Hessen",
+                        "7"="Rheinland-Pfalz",
+                        "8"="Baden-Württemberg",
+                        "9"="Bayern",
                         "10"="Saarland",
                         "11"="Berlin",
                         "12"="Brandenburg",
@@ -136,7 +145,7 @@ Vaccine_out_all= Vaccine_in%>%
   unique()%>%
   ungroup()%>%
   #suppress tidyr::complete in Germany_vaccine as the data are not daily data
-  # tidyr::complete(Age, nesting(Date, Measure), fill=list(Value=0)) %>%   
+  tidyr::complete(Age, nesting(Date, Measure), fill=list(Value=0)) %>%   
   arrange(Age,Date,Measure)%>%
   group_by(Age,Measure) %>%
   mutate(Value = cumsum(Value))%>%

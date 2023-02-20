@@ -45,7 +45,8 @@ cases_url <- links %>%
 
 deaths_url <- links %>% 
   filter(str_detect(url, "UMRLI")) %>% 
-  dplyr::pull(url)
+  dplyr::pull(url) %>% 
+  .[1]
 
 
 ###############################
@@ -129,9 +130,7 @@ db_d3 <- db_d2 %>%
 
 
 out <- bind_rows(db_c3, db_d3) %>% 
-  mutate(Date = paste(sprintf("%02d", day(date_f)),
-                      sprintf("%02d", month(date_f)),
-                      year(date_f), sep = "."),
+  mutate(Date = ddmmyyyy(date_f),
          Country = "Slovenia",
          Code = paste0("SI"),
          Region = "All",

@@ -21,7 +21,8 @@ gs4_auth(email = Sys.getenv("email"))
 
 ## Part I: extract the last date from the .rds ====================
 
-rdsData <- read_rds(paste0(dir_n, ctr, ".rds")) 
+rdsData <- read_rds(paste0(dir_n, ctr, ".rds")) %>% 
+  unique()
 
 rdsData_date <- rdsData %>% 
   dplyr::mutate(Date = dmy(Date)) %>% 
