@@ -44,6 +44,8 @@ gs4_auth(email = Sys.getenv("email"))
 
 #read in vaccine data 
 
+## Source: https://opendata.digilugu.ee/docs/#/
+
 In_vaccine= read.csv("https://opendata.digilugu.ee/covid19/vaccination/v2/opendata_covid19_vaccination_location_county_agegroup_gender.csv")
 
 

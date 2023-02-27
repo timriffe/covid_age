@@ -19,7 +19,8 @@ gs4_auth(email = Sys.getenv("email"))
 ctr          <- "Hong_Kong_Vaccine" # it's a placeholder
 dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
-
+## Source Epi: https://data.gov.hk/en-data/dataset/hk-dh-chpsebcddr-novel-infectious-agent
+# Source Vax: https://data.gov.hk/en-data/dataset/hk-hhb-hhbcovid19-vaccination-rates-over-time-by-age
 
 #read previous data 
 

@@ -2263,3 +2263,19 @@ v Range 'Tabellenblatt1'.
 New names:
 * `` -> `...6`
 Fri Feb 24 16:23:59 2023
+Warning messages:
+1: startup::check(): Environment variable 'R_LIBS_SITE' specifies a non-existing folder 'C:/PROGRA~1/R/R-42~1.1/site-library' (expands to 'C:\PROGRA~1\R\R-42~1.1\site-library') which R ignores and therefore are not used in .libPaths(). To create this folder, call dir.create("C:/PROGRA~1/R/R-42~1.1/site-library", recursive = TRUE) 
+2: In .Primitive("as.double")(x, ...) : NAs introduced by coercion
+3: In .Primitive("as.double")(x, ...) : NAs introduced by coercion
+4: Problem while computing `Date2 = dmy(Date)`.
+i  1040 failed to parse. 
+Fri Feb 24 16:27:39 2023
+Fri Feb 24 16:31:27 2023
+here() starts at U:/gits/covid_age
+Fri Feb 24 16:32:40 2023
+Fri Feb 24 18:06:49 2023
+Fri Feb 24 18:27:57 2023
+Fri Feb 24 20:21:34 2023
+Fri Feb 24 21:49:24 2023
+Fri Feb 24 22:16:58 2023
+Sat Feb 25 00:28:41 2023

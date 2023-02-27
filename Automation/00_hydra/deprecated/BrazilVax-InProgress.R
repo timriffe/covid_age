@@ -1,6 +1,9 @@
 ## BRAZIL VACCINATION DATA
 ## written by: Manal Kamal
 
+## 27.02.2023: this script I was never able to run because files are very huge, 
+## either on Hydra or in normal mode.
+
 source(here::here("Automation/00_Functions_automation.R"))
 
 # assigning Drive credentials in the case the script is verified manually  
