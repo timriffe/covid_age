@@ -92,7 +92,7 @@ filesdownload <- pdf_urls %>%
   inner_join(weeks_df, by = c("baselink" = "url")) %>% 
   select(pdf_url, destinations) %>% 
   mutate(date = str_extract(destinations, "\\d+-\\d+-\\d+"),
-         date = ymd(date)) %>% 
+         date = ymd(date))  %>% 
   filter(date == max(date))
 
 

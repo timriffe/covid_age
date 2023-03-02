@@ -1,4 +1,5 @@
 # TODO: maybe switch to Natural Earth map source,
+## MK: 02.03.2023: rnatural package is used and the code is updated below. 
 # https://cran.r-project.org/web/packages/rnaturalearth/vignettes/what-is-a-country.html
 setwd(wd_sched_detect())
 here::i_am("covid_age.Rproj")
@@ -16,7 +17,8 @@ library(cartography)
 library(rgdal)
 library(tmap)
 library(sf)
-data(World)
+library(rnaturalearth)
+#data(World)
 
 
 Sys.sleep(120)
@@ -48,39 +50,59 @@ if (class(db_pops)[1] == "try-error"){
 }
 
 
+## map data from the rnatural package 
+world <- ne_countries(scale = "medium", returnclass = "sf")
 
 db_input <- data.table::fread(here("Data","inputDB_internal.csv"),encoding = "UTF-8")
 db_input <- db_input %>% 
-  mutate(Country = ifelse(Country == "US","USA",Country))
-
-# checking coordinate system
-st_crs(World)
-
-World$name <- as.character(World$name)
-
-World$name[World$name == "Swaziland"]       <- "Eswatini"
-# World$name[World$name == "United Kingdom"]  <- "UK"
-World$name[World$name == "United States"]   <- "USA" 
-World$name[World$name == "Korea"] <- "South Korea"
-World$name[World$name == "Dominican Rep."]  <- "Dominican Republic"
-World$name[World$name == "Czech Rep." ]     <- "Czechia"
-World$name[World$name == "Central African Rep." ]     <- "Central African Republic"
-World$name[World$name == "Eq. Guinea" ]     <- "Equatorial Guinea"
-World$name[World$name == "S. Sudan" ]     <- "South Sudan"
-World$name[World$name == "Macedonia" ]     <- "North Macedonia"
-World$name[World$name == "Bosnia and Herz."] <- "Bosnia and Herzegovina"
-# remove Antarctica
-World <- World[!World$name == "Antarctica",]
-
-World$name
-all(db_pops$Country %in% World$name)
-dbc <- db_pops$Country %>% unique()
-dbc[!dbc%in%World$name]
+ # mutate(Country = ifelse(Country == "US","USA",Country)) # when using world map data 
+  mutate(Country = case_when(Country == "USA" ~ "United States of America",
+                             Country == "Eswatini" ~ "Swaziland",
+                             Country == "Czechia" ~ "Czech Republic",
+                             Country == "Island of Jersey" ~ "Jersey",
+                             Country == "Island of Man" ~ "Isle of Man",
+                             Country == "North Macedonia" ~ "Macedonia",
+                             Country == "Serbia" ~ "Republic of Serbia",
+                             ## Special for Hong Kong ## 
+                             Region == "Hong Kong" ~ "Hong Kong S.A.R.",
+                             TRUE ~ Country))
 
 
-# add Robinson projection
-world_rob<-st_transform(World, "+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
-world_rob %>% ggplot() + geom_sf()
+
+## add Robinson projection
+world_rob <- world |> 
+  filter(admin != "Antarctica") |> 
+  st_transform(crs = "+proj=robin") 
+
+# The following uses world map data: 
+# # checking coordinate system
+# st_crs(World)
+# 
+# World$name <- as.character(World$name)
+# 
+# World$name[World$name == "Swaziland"]       <- "Eswatini"
+# # World$name[World$name == "United Kingdom"]  <- "UK"
+# World$name[World$name == "United States"]   <- "USA" 
+# World$name[World$name == "Korea"] <- "South Korea"
+# World$name[World$name == "Dominican Rep."]  <- "Dominican Republic"
+# World$name[World$name == "Czech Rep." ]     <- "Czechia"
+# World$name[World$name == "Central African Rep." ]     <- "Central African Republic"
+# World$name[World$name == "Eq. Guinea" ]     <- "Equatorial Guinea"
+# World$name[World$name == "S. Sudan" ]     <- "South Sudan"
+# World$name[World$name == "Macedonia" ]     <- "North Macedonia"
+# World$name[World$name == "Bosnia and Herz."] <- "Bosnia and Herzegovina"
+# # remove Antarctica
+# World <- World[!World$name == "Antarctica",]
+# 
+# World$name
+# all(db_pops$Country %in% World$name)
+# dbc <- db_pops$Country %>% unique()
+# dbc[!dbc%in%World$name]
+# 
+# 
+# # add Robinson projection
+# world_rob<-st_transform(World, "+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
+# world_rob %>% ggplot() + geom_sf()
 
 
 
@@ -115,7 +137,8 @@ db_coverage <-
 db_coverage$Country[!db_coverage$Country %in% world_rob$name]
 
 map_joined <- left_join(world_rob, db_coverage, 
-                        by = c('name' = 'Country')) 
+                      #  by = c('name' = 'Country'))  # uses world map data
+                      by = c('admin' = 'Country')) 
 
 
 map_joined$coverage[is.na(map_joined$coverage)] <- "Not included yet"

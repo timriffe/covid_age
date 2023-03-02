@@ -9,6 +9,8 @@ if (!"email" %in% ls()){
   email <- "kikepaila@gmail.com"
 }
 
+## MK: 27.02.2023: THIS SCRIPT IS FOR DEATHS DATA. 
+
 # info country and N drive address
 ctr <- "Brazil"
 dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
