@@ -125,11 +125,13 @@ vacc2 <- vacc %>%
          Vaccination1 = d1,
          Vaccination2 = d2,
          Vaccination3 = db1,
-         Vaccination4 = db2) %>% 
+         Vaccination4 = db2,
+         Vaccination5 = db3) %>% 
   select(Date, Age, Vaccination1, Vaccination2, 
-         Vaccination3, Vaccination4) %>% 
+         Vaccination3, Vaccination4, Vaccination5) %>% 
   gather(Vaccination1, Vaccination2, Vaccination3, 
-         Vaccination4, key = "Measure", value = new) %>% 
+         Vaccination4, Vaccination5, 
+         key = "Measure", value = new) %>% 
   mutate(Age = as.integer(str_sub(Age, 1, 2))) %>% 
   group_by(Date, Measure, Age) %>% 
   summarise(new = sum(new)) %>% 
