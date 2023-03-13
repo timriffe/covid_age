@@ -35,7 +35,7 @@ data_source <- paste0(dir_n, "Data_sources/", ctr, "/age_vaccine",today(), ".csv
 
 download.file(url_v, data_source, mode = "wb")
 
-Vaccine_in= read.csv(data_source)
+Vaccine_in <- read.csv(data_source)
 
 
 #process vaccine data 
@@ -43,7 +43,7 @@ Vaccine_in= read.csv(data_source)
 ## LandkreisId : https://de.wikipedia.org/wiki/Amtlicher_Gemeindeschl%C3%BCssel
 
 #remove Bundesressort here, vaccines from federal ressource where state is not documented
-Vaccine_out_reg= Vaccine_in%>%
+Vaccine_out_reg <- Vaccine_in %>%
   mutate(Number= nchar(LandkreisId_Impfort)) %>% 
   mutate(RegID = case_when(
     Number == "4" ~ substr(LandkreisId_Impfort,1,1),
@@ -79,13 +79,12 @@ Vaccine_out_reg= Vaccine_in%>%
   select(Date=Impfdatum, Age= Altersgruppe, Measure= Impfschutz, Value=Anzahl, Region)%>%
   #sum subregional level to regional level
   group_by(Date, Age, Region, Measure)%>%
-  mutate(Value=sum(Value))%>%
-  unique()%>%
+  summarise(Value = sum(Value))%>%
   ungroup()%>%
-  #suppress tidyr::complete in Germany_vaccine as the data are not daily data
- # tidyr::complete(Age, nesting(Date, Measure, Region), fill=list(Value=0)) %>% 
-  arrange(Age,Date,Region,Measure)%>% 
+  #tidyr::complete in Germany_vaccine from the already existing measures, dates and regions
+  tidyr::complete(Age, nesting(Date, Measure, Region), fill=list(Value=0)) %>% 
   group_by(Age,Region,Measure) %>% 
+  arrange(Date) |> 
   mutate(Value = cumsum(Value)) %>% 
   ungroup() %>% 
   mutate(Code = case_when(Region == 'Baden-Württemberg' ~ 'DE-BW',
@@ -137,17 +136,16 @@ Vaccine_out_reg= Vaccine_in%>%
 
 #National Level(include data from Bundesressorts) 
 
-Vaccine_out_all= Vaccine_in%>%
+Vaccine_out_all <- Vaccine_in %>%
   select(Date=Impfdatum, Age= Altersgruppe, Measure= Impfschutz, Value=Anzahl)%>%
   #sum subregional level to national level 
   group_by(Date, Age, Measure)%>%
-  mutate(Value=sum(Value))%>%
-  unique()%>%
+  summarise(Value = sum(Value))%>%
   ungroup()%>%
-  #suppress tidyr::complete in Germany_vaccine as the data are not daily data
-  tidyr::complete(Age, nesting(Date, Measure), fill=list(Value=0)) %>%   
-  arrange(Age,Date,Measure)%>%
-  group_by(Age,Measure) %>%
+  #tidyr::complete in Germany_vaccine for combinations
+  tidyr::complete(Age, Date, Measure, fill=list(Value=0)) %>%   
+  group_by(Age, Measure) %>%
+  arrange(Date) |> 
   mutate(Value = cumsum(Value))%>%
   ungroup()%>%
   mutate(
@@ -189,15 +187,19 @@ Vaccine_out <- rbind(Vaccine_out_all,Vaccine_out_reg) %>%
 
 
 
-##adding age group 0 to 4
-# small_ages <- Vaccine_out %>% 
-#   filter(Age == "5") %>% 
-#   mutate(Age = "0",
-#          AgeInt = 5L,
-#          Value = 0)
-#Vaccine_out <- rbind(Vaccine_out, small_ages) 
-# Vaccine_out2 <- Vaccine_out %>% 
-#   tidyr::complete(Date, Age, Country, Region, Code, AgeInt, Sex, Metric, Measure, fill = list(Value = 0))
+# comparison with aggregate data reported online in 
+# https://impfdashboard.de/en/
+
+Vaccine_out |> 
+  mutate(Date = dmy(Date)) |> 
+  group_by() |> 
+  filter(Date == max(Date)) |> 
+  group_by(Region, Measure) |> 
+  summarize(N = sum(Value)) |> 
+  select(Region, Measure, N) |> 
+  pivot_wider(names_from = Measure, values_from = N) 
+
+
 
 
 write_rds(Vaccine_out, paste0(dir_n, ctr, ".rds"))
@@ -224,7 +226,7 @@ zip::zipr(zipname,
 file.remove(data_source)
 
 
-
+#END# 
 
 
 #####outdated script##############
@@ -455,4 +457,14 @@ file.remove(data_source)
 # file.remove(data_source)            
 # 
 # 
+##adding age group 0 to 4
+# small_ages <- Vaccine_out %>% 
+#   filter(Age == "5") %>% 
+#   mutate(Age = "0",
+#          AgeInt = 5L,
+#          Value = 0)
+#Vaccine_out <- rbind(Vaccine_out, small_ages) 
+# Vaccine_out2 <- Vaccine_out %>% 
+#   tidyr::complete(Date, Age, Country, Region, Code, AgeInt, Sex, Metric, Measure, fill = list(Value = 0))
+
 # 

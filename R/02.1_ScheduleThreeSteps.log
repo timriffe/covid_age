@@ -3093,3 +3093,15 @@ v Range 'Tabellenblatt1'.
 New names:
 * `` -> `...6`
 Fri Mar 10 16:27:21 2023
+Warning message:
+Problem while computing `Date2 = dmy(Date)`.
+i  1054 failed to parse. 
+Fri Mar 10 16:31:21 2023
+Fri Mar 10 16:34:59 2023
+here() starts at U:/gits/covid_age
+Fri Mar 10 16:36:08 2023
+Fri Mar 10 18:11:28 2023
+Fri Mar 10 18:31:04 2023
+Fri Mar 10 20:24:08 2023
+Fri Mar 10 21:56:51 2023
+Fri Mar 10 22:25:06 2023
