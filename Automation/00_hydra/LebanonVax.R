@@ -17,6 +17,8 @@ dir_n_python <- "N:/COVerAGE-DB/Automation/Lebanon/"
 drive_auth(email = Sys.getenv("email"))
 gs4_auth(email = Sys.getenv("email"))
 
+## Source: https://impactpublicdashboard.cib.gov.lb/s/public/app/kibana#/dashboard/5fb54c50-5ff7-11eb-8575-354d83bf82d9?embed=true&_g=h@51b6606&_a=h@673a298
+
 
 
 ## Part I: extract the last date from the .rds ====================

@@ -126,8 +126,8 @@ Vaccinations1and2 <-
             names_to = c("Measure",NA,"Age"), 
             values_to = "Value",
             names_sep = "_") %>% 
-  mutate(Measure = case_when(Measure == "par" ~ "Vaccination1",
-                             Measure == "fully" ~ "Vaccination2"),
+  mutate(Measure = case_when(Measure == "par" ~ "Vaccination1", # Dose 1 of Astrazenenca, MRNA or Single Dose Vaccine
+                             Measure == "fully" ~ "Vaccination2"), # Dose 2 of An MRNA or AztraZeneca Vaccine or a single dose vaccine of a Janssen
          Date = ISOweek::ISOweek2date(paste(week, "5", sep = "-")),
          Date = ddmmyyyy(Date),
          Age = gsub(Age, pattern = "age",replacement = ""),

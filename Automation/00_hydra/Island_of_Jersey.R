@@ -17,12 +17,9 @@ if (!"email" %in% ls()){
 ctr          <- "Island_of_Jersey" # it's a placeholder
 dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
-
-
 # Drive credentials
 drive_auth(email = Sys.getenv("email"))
 gs4_auth(email = Sys.getenv("email"))
-
 
 
 # Drive urls
@@ -104,6 +101,7 @@ Vaccine_out <- vaccine %>%
          Vaccination2_TOT = VaccinationsTotalNumberSecondDoseVaccinations,
          Vaccination3_TOT = VaccinationsTotalNumberThirdDoseVaccinations,
          Vaccination4_TOT = VaccinationsTotalNumberFourthDoseVaccinations,
+         Vaccination5_TOT = VaccinationsTotalNumberAutumnBooster2022,
          ## FIRST DOSE BY AGE
          Vaccination1_80 = VaccinationsTotalVaccinationDosesFirstDose80yearsandover,          
          Vaccination1_75 = VaccinationsTotalVaccinationDosesFirstDose75to79years,              
@@ -115,7 +113,6 @@ Vaccine_out <- vaccine %>%
          Vaccination1_40 = VaccinationsTotalVaccinationDosesFirstDose40to49years,              
          Vaccination1_30 = VaccinationsTotalVaccinationDosesFirstDose30to39years,             
          Vaccination1_18 = VaccinationsTotalVaccinationDosesFirstDose18to29years,              
-         Vaccination1_17 = VaccinationsTotalVaccinationDosesFirstDose17yearsandunder,
          Vaccination1_16 = VaccinationsTotalVaccinationDosesFirstDose16to17years,
          Vaccination1_12 = VaccinationsTotalVaccinationDosesFirstDose12to15years,
          Vaccination1_5 = VaccinationsTotalVaccinationDosesFirstDose5to11years,
@@ -130,7 +127,6 @@ Vaccine_out <- vaccine %>%
          Vaccination2_40 = VaccinationsTotalVaccinationDosesSecondDose40to49years,           
          Vaccination2_30 = VaccinationsTotalVaccinationDosesSecondDose30to39years,            
          Vaccination2_18 = VaccinationsTotalVaccinationDosesSecondDose18to29years,           
-         Vaccination2_17 = VaccinationsTotalVaccinationDosesSecondDose17yearsandunder,
          Vaccination2_16 = VaccinationsTotalVaccinationDosesSecondDose16to17years,
          Vaccination2_12 = VaccinationsTotalVaccinationDosesSecondDose12to15years,
          Vaccination2_5 =  VaccinationsTotalVaccinationDosesSecondDose5to11years,
@@ -162,26 +158,23 @@ Vaccine_out <- vaccine %>%
          Vaccination4_16 = VaccinationsTotalVaccinationDosesFourthDose16to17years,             
          Vaccination4_12 = VaccinationsTotalVaccinationDosesFourthDose12to15years,             
          Vaccination4_5 = VaccinationsTotalVaccinationDosesFourthDose5to11years, 
+       # AUTUMN 2022 DOSES 
+       Vaccination5_80 = VaccinationsTotalVaccinationDosesAutumnBooster202280yearsandover,          
+       Vaccination5_75 = VaccinationsTotalVaccinationDosesAutumnBooster202275to79years,              
+       Vaccination5_70 = VaccinationsTotalVaccinationDosesAutumnBooster202270to74years,             
+       Vaccination5_65 = VaccinationsTotalVaccinationDosesAutumnBooster202265to69years,             
+       Vaccination5_60 = VaccinationsTotalVaccinationDosesAutumnBooster202260to64years,              
+       Vaccination5_55 = VaccinationsTotalVaccinationDosesAutumnBooster202255to59years,             
+       Vaccination5_50 = VaccinationsTotalVaccinationDosesAutumnBooster202250to54years,             
+       Vaccination5_40 = VaccinationsTotalVaccinationDosesAutumnBooster202240to49years,              
+       Vaccination5_30 = VaccinationsTotalVaccinationDosesAutumnBooster202230to39years,             
+       Vaccination5_18 = VaccinationsTotalVaccinationDosesAutumnBooster202218to29years,              
+       Vaccination5_16 = VaccinationsTotalVaccinationDosesAutumnBooster202216to17years,
+       Vaccination5_12 = VaccinationsTotalVaccinationDosesAutumnBooster202212to15years,
+       Vaccination5_5 = VaccinationsTotalVaccinationDosesAutumnBooster20225to11years,
         Date) %>% 
   pivot_longer(!Date, names_to= "Des", values_to= "Value") %>%
   separate(Des, c("Measure", "Age"), sep = "_") %>%
- # mutate(Age=recode(Age, 
- #                   `80yearsandover`="80",
- #                   `75to79years`="75",
- #                   `70to74years`="70",
- #                   `65to69years`="65",
- #                   `60to64years`="60",
- #                   `55to59years`="55",
- #                   `50to54years`="50",
- #                   `40to49years`="40",
- #                   `30to39years`="30",
- #                   `18to29years`="18",
- #                   `17yearsandunder`="17",
- #                   `16to17years` = "16",
- #                   `12to15years` = "12",
- #                   `5to11years` = "5")) #%>%
- # mutate(Age = case_when(is.na(Age) ~ "TOT",
- #                        TRUE~ as.character(Age)))%>%
   mutate(AgeInt = case_when(
     Age == "5" ~ 7L,
     Age == "12" ~ 4L,
@@ -192,21 +185,10 @@ Vaccine_out <- vaccine %>%
     Age == "40" ~ 10L,
     Age == "TOT" ~ NA_integer_,
     TRUE ~ 5L))%>% 
-#  mutate(Measure=recode(Measure, 
-#                    `s`="Vaccinations",
-#                    `sFirst`="Vaccination1",
-#                    `sSecond`="Vaccination2"))%>%
-#  mutate(Measure = case_when(
-#    Des == "VaccinationsTotalNumberFirst" ~ "Vaccination1",
-#    Des == "VaccinationsTotalNumberSecond" ~ "Vaccination2",
-#    TRUE ~ as.character(Measure)))%>% 
   mutate(
     Sex = "b",
     Metric = "Count",
-    # Date = paste(sprintf("%02d",day(Date)),    
-    #              sprintf("%02d",month(Date)),  
-    #              year(Date),sep="."),
-    Code = paste0("JE"),
+    Code = "JE",
     Country = "Island of Jersey",
     Region = "All",)%>% 
   select(Country, Region, Code, Date, Sex, 
@@ -273,4 +255,30 @@ file.remove(data_source)
 
 #END#
 
+## history ==============
 
+# mutate(Age=recode(Age, 
+#                   `80yearsandover`="80",
+#                   `75to79years`="75",
+#                   `70to74years`="70",
+#                   `65to69years`="65",
+#                   `60to64years`="60",
+#                   `55to59years`="55",
+#                   `50to54years`="50",
+#                   `40to49years`="40",
+#                   `30to39years`="30",
+#                   `18to29years`="18",
+#                   `17yearsandunder`="17",
+#                   `16to17years` = "16",
+#                   `12to15years` = "12",
+#                   `5to11years` = "5")) #%>%
+# mutate(Age = case_when(is.na(Age) ~ "TOT",
+#                        TRUE~ as.character(Age)))%>%
+#  mutate(Measure=recode(Measure, 
+#                    `s`="Vaccinations",
+#                    `sFirst`="Vaccination1",
+#                    `sSecond`="Vaccination2"))%>%
+#  mutate(Measure = case_when(
+#    Des == "VaccinationsTotalNumberFirst" ~ "Vaccination1",
+#    Des == "VaccinationsTotalNumberSecond" ~ "Vaccination2",
+#    TRUE ~ as.character(Measure)))%>% 

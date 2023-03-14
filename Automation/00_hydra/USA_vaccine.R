@@ -40,6 +40,7 @@ last_date_archive <- DataArchive %>%
   dplyr::pull(date_max) %>% 
   max()
 
+## Source Web: https://data.cdc.gov/Vaccinations/COVID-19-Vaccination-Age-and-Sex-Trends-in-the-Uni/5i5k-6cmh
 
 vacc <- data.table::fread("https://data.cdc.gov/api/views/km4m-vcsb/rows.csv?accessType=DOWNLOAD")
 

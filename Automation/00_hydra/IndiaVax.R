@@ -25,6 +25,10 @@ dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 files_source <- paste0(dir_n, "Data_sources/", ctr, "/")
 
+## Documentation:
+## https://www.mohfw.gov.in/pdf/AdministrationofSecondDoseofCovishieldVaccinePriortoPrescribedTimeInterval.pdf
+## https://www.mohfw.gov.in/pdf/GuidelinesCovidvaccination12to14yrchildrenMarch2022.pdf
+
 ## To Download the daily report - PENDING the scrapping code or manually entering the data 
 
 files <- read_html("https://www.mohfw.gov.in/") %>% 

@@ -147,8 +147,7 @@ if (date_f > last_date_drive){
 ## MK 05.08.2022: ADDED BOOSTER DOSE DATA, UPDATED AGE GROUPS AND INTERVALS   
   
 db_v <- 
-    read_xlsx(data_source6,
-    sheet = "DHBofResidence by ethnicity") %>% 
+    read_xlsx(data_source6, sheet = "DHBofResidence by ethnicity") %>% 
   select(Age= `Age group`, Sex= Gender, 
          Vaccination1= `At least partially vaccinated`,
          ## MK: 10.08.2022: changed 'Fully Vaccination' to 'Completed primary course'
