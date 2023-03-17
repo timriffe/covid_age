@@ -26,8 +26,8 @@ options.add_argument("--enable-javascript")
 options.add_argument("--disable-notifications")
 #driver = Chrome(chrome_driver,options=options)
 driver.maximize_window()
-src = "https://experience.arcgis.com/experience/aa41b29149f24e20a4007a0c4e13db1d"
-
+#src = "https://experience.arcgis.com/experience/aa41b29149f24e20a4007a0c4e13db1d"
+src = "https://experience.arcgis.com/experience/aa41b29149f24e20a4007a0c4e13db1d/page/Smitte-og-vaccine/"
 
 
 driver.get(src)
