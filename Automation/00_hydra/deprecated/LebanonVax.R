@@ -111,11 +111,11 @@ if(sourcedate > rdsData_date){
   
   write_rds(Out, paste0(dir_n, ctr, ".rds"))
   
-  log_update(pp = ctr, N = nrow(Out))
+ # log_update(pp = ctr, N = nrow(Out))
   
 } else{
   
-  log_update(pp = ctr, N = 0)
+ # log_update(pp = ctr, N = 0)
 }
 
 ## END ## 
