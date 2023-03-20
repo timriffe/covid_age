@@ -49,7 +49,8 @@ vacc <- read.csv(url_age)
 vacc2 <- vacc %>% 
   dplyr::filter(!type %in% c("COVID19PartiallyVaccPersons", "COVID19VaccSixMonthsPersons")) %>% 
   dplyr::filter(age_group_type == "age_group_AKL10") %>% 
-  select(YearWeekISO = date, Region = geoRegion, Age = altersklasse_covid19, Measure = type, Value = sumTotal)
+  select(YearWeekISO = date, Region = geoRegion, 
+         Age = altersklasse_covid19, Measure = type, Value = sumTotal)
 vacc2$YearWeekISO <- gsub("^(.{4})(.*)$",         # Apply gsub
                   "\\1-W\\2",
                   vacc2$YearWeekISO)

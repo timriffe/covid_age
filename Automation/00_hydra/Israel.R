@@ -29,6 +29,8 @@ gs4_auth(email = Sys.getenv("email"))
 #                           destfile = data_source,
 #                           mode = "wb")
 
+## Documentation: https://data.gov.il/dataset/covid-19/resource/93d0df92-8245-466f-8e96-99f2f3f2e4f9/download/readme-.pdf
+
 dates <- seq(from = as.Date("2020/03/15"), to = today(), by = "7 days") %>% 
   length()
 

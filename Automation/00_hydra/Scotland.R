@@ -155,16 +155,25 @@ wk_data_2021 <- read_excel(deaths_source2021,
 
 deaths_source <- paste0(dir_n, "Data_sources/", ctr, "/", ctr, "-deaths_",today(), ".xlsx")
 
-recent_file_2022 <- read_html("https://www.nrscotland.gov.uk/covid19stats/") %>% 
+## This file is changed ##
+# recent_file_2022 <- read_html("https://www.nrscotland.gov.uk/covid19stats/") %>% 
+#   html_nodes(".rteright+ td > a") %>% 
+#   html_attr('href') %>% 
+#  # .[2] %>% 
+#   stringr::str_replace("/files//statistics/covid19/", "")
+# 
+# 
+# deaths_url <- paste0("https://www.nrscotland.gov.uk/files//statistics/covid19/",
+#                      recent_file_2022)
+
+## Source: https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/vital-events/general-publications/weekly-deaths-registered-in-scotland
+deathsfile_url <- read_html("https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/vital-events/general-publications/weekly-deaths-registered-in-scotland") %>% 
   html_nodes(".rteright+ td > a") %>% 
-  html_attr('href') %>% 
- # .[2] %>% 
-  stringr::str_replace("/files//statistics/covid19/", "")
-
-
-deaths_url <- paste0("https://www.nrscotland.gov.uk/files//statistics/covid19/",
-                     recent_file_2022)
-
+  html_attr('href')
+  
+deaths_url <- paste0("https://www.nrscotland.gov.uk",
+                     deathsfile_url)
+  
 ## DOWNLOAD DEATHS recent file AND READ IN THE DATA ##
 
 download.file(url = deaths_url,

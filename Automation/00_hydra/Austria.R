@@ -73,6 +73,7 @@ db_age2 <- db_age%>%
 
 # Vaccination Data ===== 
 
+## Source website: https://info.gesundheitsministerium.at/opendata
 
 vacc_today <- read.csv2("https://info.gesundheitsministerium.at/data/COVID19_vaccination_agegroups_v202210.csv")
 

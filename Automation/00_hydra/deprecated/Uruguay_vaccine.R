@@ -23,6 +23,8 @@ gs4_auth(email = Sys.getenv("email"))
 
 #read in data 
 
+## Source: https://github.com/3dgiordano/covid-19-uy-vacc-data/
+
 In= read.csv("https://raw.githubusercontent.com/3dgiordano/covid-19-uy-vacc-data/main/data/Age.csv")
 
 #process

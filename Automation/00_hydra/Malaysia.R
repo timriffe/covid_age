@@ -157,6 +157,8 @@ epiData_malaysia <- dplyr::bind_rows(cases, deaths)
 # and each has state (& district) level.
 # we will use the age-specific data only and identify sex as 'b' for both
 
+## Documentation: https://github.com/MoH-Malaysia/covid19-public/tree/main/vaccination
+
 Vacc_age <- read.csv("https://github.com/MoH-Malaysia/covid19-public/raw/main/vaccination/vax_demog_age.csv") %>% 
   dplyr::select(-district)
 
