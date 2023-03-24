@@ -85,7 +85,6 @@ Cases_Ageprocessed <-  Cases_Age2 %>%
 
 ## Cases by Sex (totals) == sheet 3
 
-
 Cases_Sex <- read_excel(data_source, sheet = 3) %>% 
   slice(-1)
 
