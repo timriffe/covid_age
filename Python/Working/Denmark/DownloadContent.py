@@ -32,8 +32,8 @@ driver.maximize_window()
 driver.get(src)
 x = os.path.join("N:\COVerAGE-DB\Automation\Denmark","page_"+timestr+".html")
 driver.switch_to.window(driver.current_window_handle)
-time.sleep(35)
-iframe = driver.find_element(By.ID, 'ifrSafe')
+time.sleep(40)
+iframe = driver.find_element(By.ID, 'ifrSafe-widget_137')
 driver.switch_to.frame(iframe)
 
 
