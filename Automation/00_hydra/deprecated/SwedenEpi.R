@@ -133,12 +133,12 @@ if (date_f > last_date_drive){
  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  write_rds(out, paste0(dir_n, ctr, ".rds"))
  
- log_update(pp = "SwedenEpi", N = nrow(out))
+# log_update(pp = "SwedenEpi", N = nrow(out))
     
 
 } else if (date_f == last_date_drive) {
   cat(paste0("no new updates so far, last date: ", date_f))
-  log_update(pp = "SwedenEpi", N = 0)
+ # log_update(pp = "SwedenEpi", N = 0)
 }
 
 

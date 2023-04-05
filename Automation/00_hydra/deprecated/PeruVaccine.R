@@ -170,6 +170,6 @@ out <- db_all %>%
 # save processed data in N: -------------------------------------------------
 #########################
 
-log_update(pp = "PeruVaccine", N = nrow(out))
+#log_update(pp = "PeruVaccine", N = nrow(out))
 
 write_rds(out, paste0(dir_n, "PeruVaccine", ".rds"))

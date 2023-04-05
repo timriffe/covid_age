@@ -46,6 +46,11 @@ m_url_v <- "https://covid19.ssi.dk/overvagningsdata/download-fil-med-vaccination
 ## booster one, and booster 2##
 ## Data collection is changed accordingly, and the previous data structure is deprecated into deprecated folder. 
 
+## MK: As of Thursday, March 23, 2023, the Regional Vaccine Dashboard is no longer active. 
+## This means that from this date the Regional Vaccine Dashboard will no longer be updated 
+## and that SSI will no longer produce the data and files behind the Regional Vaccine Dashboard. 
+
+
 links_v <- scraplinks(m_url_v) %>% 
   dplyr::filter(str_detect(link, "zip")) %>% 
   separate(link, c("a", "b", "c", "d", "e", "f", "g", "h"))%>%
@@ -153,10 +158,10 @@ if(dim(links_new_vacc)[1] > 0){
     
     write_rds(Vax_out, paste0(dir_n, ctr, ".rds"))
     
-    log_update(pp = ctr, N = nrow(Vax_out))
+  ##  log_update(pp = ctr, N = nrow(Vax_out))
   } 
 } else {
-    log_update(pp = ctr, N = "NoUpdate")
+   ## log_update(pp = ctr, N = "NoUpdate")
 }
 
 ## END # 

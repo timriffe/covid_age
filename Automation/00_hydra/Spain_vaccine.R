@@ -22,7 +22,9 @@ gs4_auth(email = Sys.getenv("email"))
 ####################################################################################
 #Read data in 
 
-m_url <- "https://www.mscbs.gob.es/profesionales/saludPublica/ccayes/alertasActual/nCov/vacunaCovid19.htm"
+#m_url <- "https://www.mscbs.gob.es/profesionales/saludPublica/ccayes/alertasActual/nCov/vacunaCovid19.htm"
+
+m_url <- "https://www.sanidad.gob.es/profesionales/saludPublica/ccayes/alertasActual/nCov/vacunaCovid19.htm"
 
 links <- scraplinks(m_url) %>% 
   filter(str_detect(url, ".ods")) %>% 
@@ -33,7 +35,7 @@ url <-
   select(url) %>% 
   dplyr::pull()
 
-url_d = paste0("https://www.mscbs.gob.es/profesionales/saludPublica/ccayes/alertasActual/nCov/",url)
+url_d = paste0("https://www.sanidad.gob.es/profesionales/saludPublica/ccayes/alertasActual/nCov/",url)
 
 #local try 
 #data_source <- paste0("U:/COVerAgeDB/Spain/data_vaccine", today(), ".ods")
@@ -101,7 +103,7 @@ total_sheet_date <- "Comunicacion_2"
 
 dose_1 <- "Etarios_con_al_menos_1_dosis"
 dose_2 <- "Etarios_con_pauta_completa"
-dose_3 <- "Dosis_refuerzo"
+dose_3 <- "Primera_Dosis_refuerzo"
 young <- c("Pediatrica", "5-11_años", "Pediátrica")
 
 In_vaccine_total_raw = read_ods(data_source, sheet = total_sheet_date)

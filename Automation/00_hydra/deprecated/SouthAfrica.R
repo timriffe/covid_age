@@ -53,7 +53,7 @@ all_files <- data.frame(pdf_url = files) %>%
 all_files %>% 
     {map2(.$pdf_url, .$destinations, ~ download.file(url = .x, destfile = .y, mode="wb"))}
 
-log_update(pp = ctr, N = "Downloaded")
+#log_update(pp = ctr, N = "Downloaded")
 
 
 ## END ## 
