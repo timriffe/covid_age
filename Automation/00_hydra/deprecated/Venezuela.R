@@ -149,7 +149,7 @@ if (date_f > last_date_drive) {
   }
 
   
-  log_update(pp = ctr, N = nrow(out))
+ # log_update(pp = ctr, N = nrow(out))
   
   
   ############################################
@@ -168,5 +168,5 @@ if (date_f > last_date_drive) {
 
 } else {
   cat(paste0("no new updates so far, last date: ", date_f))
-  log_update(pp = "Venezuela", N = 0)
+#  log_update(pp = "Venezuela", N = 0)
 }

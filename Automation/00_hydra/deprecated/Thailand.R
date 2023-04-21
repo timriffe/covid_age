@@ -132,7 +132,7 @@ Sys.setlocale("LC_ALL","English")
 
 # Save and log
 write_rds(processed_data, paste0(dir_n, ctr, ".rds"))
-log_update("Thailand", N = nrow(processed_data))
+#log_update("Thailand", N = nrow(processed_data))
 
 # Archive inputs
 #data_source <- paste0(dir_n, "Data_sources/", ctr, "/cases_age_",today(), ".csv")

@@ -222,7 +222,7 @@ write_rds(Out, paste0(dir_n, ctr, ".rds"))
 #             ss = ss_i, 
 #             sheet = "database") 
                     
-log_update("Island of Jersey", N = nrow(Out))
+#log_update("Island of Jersey", N = nrow(Out))
 
 
 # ------------------------------------------

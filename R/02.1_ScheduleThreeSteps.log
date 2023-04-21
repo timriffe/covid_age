@@ -5630,3 +5630,117 @@ v Range 'Tabellenblatt1'.
 New names:
 * `` -> `...6`
 Wed Apr 19 16:45:29 2023
+Wed Apr 19 16:49:26 2023
+Wed Apr 19 16:54:07 2023
+here() starts at U:/gits/covid_age
+Wed Apr 19 16:55:28 2023
+Wed Apr 19 18:54:06 2023
+Wed Apr 19 19:22:52 2023
+Wed Apr 19 21:42:12 2023
+Wed Apr 19 23:24:45 2023
+Wed Apr 19 23:51:27 2023
+Thu Apr 20 02:08:57 2023
+Thu Apr 20 02:59:59 2023
+Thu Apr 20 03:11:44 2023
+Thu Apr 20 03:47:41 2023
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+In addition: Warning messages:
+1: startup::check(): Environment variable 'R_LIBS_SITE' specifies a non-existing folder 'C:/PROGRA~1/R/R-42~1.1/site-library' (expands to 'C:\PROGRA~1\R\R-42~1.1\site-library') which R ignores and therefore are not used in .libPaths(). To create this folder, call dir.create("C:/PROGRA~1/R/R-42~1.1/site-library", recursive = TRUE) 
+2: In eval(jsub, SDenv, parent.frame()) : NAs introduced by coercion
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed
+Error in if (!maybe2) { : missing value where TRUE/FALSE needed

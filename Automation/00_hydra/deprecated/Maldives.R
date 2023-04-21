@@ -221,7 +221,7 @@ MV_out <- bind_rows(MV_cases_out,
 write_rds(MV_out, paste0(dir_n, ctr, ".rds"))
 
 ###########################################Still not sure how to set this up with the automation sheet 
-log_update("Maldives", N = nrow(MV_out))
+#log_update("Maldives", N = nrow(MV_out))
 
 
 #archive: input files already saved on N 

@@ -225,7 +225,7 @@ out <- rbind(out1, out2, out3, out4, outtot) %>%
 ################################
 write_rds(out, paste0(dir_n, ctr, ".rds"))
 # This command append new rows at the end of the sheet
-log_update(pp = "Chile_vaccine", N = nrow(out))
+#log_update(pp = "Chile_vaccine", N = nrow(out))
 
 
 ############################################
