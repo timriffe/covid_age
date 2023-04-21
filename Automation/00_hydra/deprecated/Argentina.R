@@ -100,7 +100,7 @@ out$Code = substr(out$Code,1,nchar(out$Code)-10)
 write_rds(out, paste0(dir_n, ctr, ".rds"))
 
 # updating hydra dashboard
-log_update(pp = ctr, N = nrow(out))
+#log_update(pp = ctr, N = nrow(out))
 
 ## END ##
 

@@ -38,14 +38,23 @@ gs4_auth(email = Sys.getenv("email"))
   
 data_source_vac <- paste0(dir_n, "Data_sources/", ctr, "/vaccination_",today(), ".xlsx")
   
-url_vac <- "https://fohm.maps.arcgis.com/sharing/rest/content/items/fc749115877443d29c2a49ea9eca77e9/data"
-httr::GET(url_vac, write_disk(data_source_vac, overwrite = T))
+# url_vac <- "https://fohm.maps.arcgis.com/sharing/rest/content/items/fc749115877443d29c2a49ea9eca77e9/data"
+# httr::GET(url_vac, write_disk(data_source_vac, overwrite = T))
   
+url_vax <- "https://www.folkhalsomyndigheten.se/folkhalsorapportering-statistik/statistikdatabaser-och-visualisering/vaccinationsstatistik/statistik-for-vaccination-mot-covid-19/"
+
+excel_link <- scraplinks(url_vax) |> 
+  filter(str_detect(url, ".xlsx")) |> 
+  mutate(url = paste0("https://www.folkhalsomyndigheten.se", url)) |> 
+  dplyr::pull(url)
   
-  # date_f_vac <- read_xlsx(data_source_vac, sheet = 1) %>% 
-  #   dplyr::pull(Statistikdatum) %>% 
-  #   max() %>% 
-  #   ymd()
+
+httr::GET(excel_link, write_disk(data_source_vac, overwrite = T))
+
+# date_f_vac <- read_xlsx(data_source_vac, sheet = 1) %>%
+#     dplyr::pull(Statistikdatum) %>%
+#     max() %>%
+#     ymd()
   
   # In vaccine file, the date is not actually stored in 
   # any of the sheets, but, at the time pf writing (20210209)
@@ -53,7 +62,7 @@ httr::GET(url_vac, write_disk(data_source_vac, overwrite = T))
   
   date_f_vac_temp <- excel_sheets(data_source_vac)
   date_f_vac_temp <- date_f_vac_temp[grepl("[0-9]{4}$", date_f_vac_temp)]
-  date_f_vac_temp <- trimws(gsub("FOHM", "", date_f_vac_temp))
+  date_f_vac_temp <- trimws(gsub("Information", "", date_f_vac_temp))
   
   date_f_vac_temp_split <- unlist(strsplit(tolower(date_f_vac_temp), " "))
   
@@ -105,11 +114,18 @@ httr::GET(url_vac, write_disk(data_source_vac, overwrite = T))
     # MK-Update: (04.10.2022):
     # Sweden added sheet for 5th dose, 4th dose separately by age group. so I read all sheets first, 
     ## merge all ages-related tables in one df, then process. 
-    vac_sex <- read_xlsx(data_source_vac, sheet = "Vaccinerade kön")
-    vacc_1_3 <- read_xlsx(data_source_vac, sheet = "Dos 1 till 3 per åldersgrupp")
-    vacc_4 <- read_xlsx(data_source_vac, sheet = "Dos 4 per åldersgrupp")
-    vacc_5 <- read_xlsx(data_source_vac, sheet = "Dos 5 per åldersgrupp")
-    vac_age <- bind_rows(vacc_1_3, vacc_4, vacc_5)
+    
+    ## MK: 03.04.2023: Sweden changed some definitons and the data published accordingly. 
+    ## Vaccinated with at least 3 doses is for; those which last dose is after 01.03.2023, i am not sure this follows the same data as previous, 
+    ## so I kept only first and second doses for now. 
+    ## no data anymore on vaccination 4 & 5. 
+    
+   # vac_sex <- read_xlsx(data_source_vac, sheet = "Vaccinerade kön")
+    vac_age <- read_xlsx(data_source_vac, sheet = "Åldersstatistik dos 1 o 2 LÅST")
+    # vacc_3 <- read_xlsx(data_source_vac, sheet = "Åldersstatistik dos 3")
+    # vacc_4 <- read_xlsx(data_source_vac, sheet = "Dos 4 per åldersgrupp")
+    # vacc_5 <- read_xlsx(data_source_vac, sheet = "Dos 5 per åldersgrupp")
+    # vac_age <- bind_rows(vacc_1_3, vacc_4, vacc_5)
     
    ## vac_age <- read_xlsx(data_source_vac, sheet = 5)
   ##  vacc3_age <- read_xlsx(data_source_vac, sheet = 5)
@@ -117,37 +133,37 @@ httr::GET(url_vac, write_disk(data_source_vac, overwrite = T))
     
     # Get data by sex
     
-    vac_s2 <-
-      vac_sex %>%
-      select(
-        Sex = starts_with("K")
-        , Value = contains("antal")
-        # Changed on 20210423 by Diego after codes changed
-        # , Measure = Dosnummer
-        , Measure = ends_with("status")
-      ) %>%
-      # filter(!grepl("^t", Sex, ignore.case = T)) %>%
-      mutate(
-        Sex = case_when(str_detect(Sex, "M") ~ "m",
-                        str_detect(Sex, "Kv") ~ "f",
-                        str_detect(Sex, "Tot") ~ "b"),
-        Measure = case_when(Measure %in% c("1",
-                                           "Dos 1",
-                                           "Minst 1 dos") ~ "Vaccination1",
-                            Measure %in% c("2", 
-                                           "Minst 2 doser",
-                                           "2 doser",
-                                           "Dos 2",
-                                           "Färdigvaccinerade") ~ "Vaccination2")
-        , Age = "TOT"
-        , AgeInt = ""
-        # Add empty row for UNK
-        # , Sex = ifelse(is.na(Sex), "UNK", Sex)
-        # , AgeInt = ifelse(Sex == "UNK", "", AgeInt)
-        # , Value = ifelse(Sex == "UNK", 0, Value)
-      ) %>%
-      select(Sex, Age, AgeInt, Measure, Value) %>%
-      arrange(Sex)
+    # vac_s2 <-
+    #   vac_sex %>%
+    #   select(
+    #     Sex = starts_with("K")
+    #     , Value = contains("antal")
+    #     # Changed on 20210423 by Diego after codes changed
+    #     # , Measure = Dosnummer
+    #     , Measure = ends_with("status")
+    #   ) %>%
+    #   # filter(!grepl("^t", Sex, ignore.case = T)) %>%
+    #   mutate(
+    #     Sex = case_when(str_detect(Sex, "M") ~ "m",
+    #                     str_detect(Sex, "Kv") ~ "f",
+    #                     str_detect(Sex, "Tot") ~ "b"),
+    #     Measure = case_when(Measure %in% c("1",
+    #                                        "Dos 1",
+    #                                        "Minst 1 dos") ~ "Vaccination1",
+    #                         Measure %in% c("2", 
+    #                                        "Minst 2 doser",
+    #                                        "2 doser",
+    #                                        "Dos 2",
+    #                                        "Färdigvaccinerade") ~ "Vaccination2")
+    #     , Age = "TOT"
+    #     , AgeInt = ""
+    #     # Add empty row for UNK
+    #     # , Sex = ifelse(is.na(Sex), "UNK", Sex)
+    #     # , AgeInt = ifelse(Sex == "UNK", "", AgeInt)
+    #     # , Value = ifelse(Sex == "UNK", 0, Value)
+    #   ) %>%
+    #   select(Sex, Age, AgeInt, Measure, Value) %>%
+    #   arrange(Sex)
 
     # Get data by age
     
@@ -192,7 +208,8 @@ httr::GET(url_vac, write_disk(data_source_vac, overwrite = T))
       select(Sex, Age, AgeInt, Measure, Value)
     
     out_vac <-
-      bind_rows(vac_s2, vac_a2) %>% 
+    #  bind_rows(vac_s2, vac_a2) 
+    vac_a2 %>% 
                 #vac_a4) %>% 
       mutate(Country = "Sweden",
              Region = "All",

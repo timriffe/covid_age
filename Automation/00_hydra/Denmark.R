@@ -54,73 +54,80 @@ db_drive_deaths <- db_drive %>%
          AgeInt = as.integer(AgeInt))
   
 
+# 
+# # reading new cases from the web
+# # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# # detecting the link to the xlsx file in the website
+# # this is a more stable method than using the xpath
+# m_url_c <- "https://covid19.ssi.dk/overvagningsdata/download-fil-med-overvaagningdata"
+# 
+# ## "Files with monitoring data (zip-csv), from 6 May 2020 to 31 March 2023" will be published for the last time 
+# ## on 31 March 2023. This is happening as part of the downscaling of the covid-19 effort in Denmark.
+# 
+# 
+# 
+# # capture all links with excel files
+# links_c <- scraplinks(m_url_c) %>% 
+#   dplyr::filter(str_detect(link, "zip")) %>% 
+#   separate(link, c("a", "b", "c", "d", "e", "Date", "g", "h")) %>% 
+#   mutate(Date = dmy(Date)) %>% 
+#   select(Date, url) %>% 
+#   drop_na()
+# 
+# links_new_cases <- links_c %>% 
+#  dplyr:: filter(!Date %in% dates_cases_n)
+# 
+# links_new_cases <- links_c[1,]
+# # downloading new cases data and loading it
+# dim(links_new_cases)[1] > 0
+# db_cases <- tibble()
+# if(dim(links_new_cases)[1] > 0){
+#   # i <- 1
+#   for(i in 1:dim(links_new_cases)[1]){
+#     
+#     date_c <- links_new_cases[i, 1] %>% dplyr::pull()
+#     data_source_c <- paste0(dir_n, "Data_sources/", 
+#                             ctr, "/", ctr, "_data_", as.character(date_c), ".zip")
+#     
+#     
+#     download.file(as.character(links_new_cases[i, 2]), destfile = data_source_c, mode = "wb")
+#     db_sex <- read_csv2(unz(data_source_c, "Cases_by_sex.csv"))
+#     
+#     db_sex2 <- 
+#       db_sex %>% 
+#       rename(Age = 1,
+#              f = 2,
+#              m = 3,
+#              b = 4) %>% 
+#       mutate(f = str_remove_all(f, "\\."),
+#              m = str_remove_all(m, "\\."),
+#              b = as.character(b)) %>%
+#       tidyr::pivot_longer(cols = -Age, names_to = "Sex", values_to = "Values") %>% 
+#       tidyr::separate(Values, c("Value", "trash"), sep = " ") %>% 
+#       mutate(Value = as.numeric(Value),
+#              Measure = "Cases") %>% 
+#       select(-trash)
+#     
+#     db_c <- bind_rows(db_sex2) %>% 
+#       separate(Age, c("Age", "trash"), sep = "-") %>% 
+#       mutate(Age = case_when(Age == "90+" ~ "90",
+#                              Age == "I alt" ~ "TOT",
+#                              TRUE ~ Age),
+#              Age = as.character(Age),
+#              Date = date_c) %>% 
+#       select(-trash)
+#     
+#     db_cases <- db_cases %>% 
+#       bind_rows(db_c)
+#     
+#   }
+# }
+# 
 
-# reading new cases from the web
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# detecting the link to the xlsx file in the website
-# this is a more stable method than using the xpath
-m_url_c <- "https://covid19.ssi.dk/overvagningsdata/download-fil-med-overvaagningdata"
 
-# capture all links with excel files
-links_c <- scraplinks(m_url_c) %>% 
-  dplyr::filter(str_detect(link, "zip")) %>% 
-  separate(link, c("a", "b", "c", "d", "e", "Date", "g", "h")) %>% 
-  mutate(Date = dmy(Date)) %>% 
-  select(Date, url) %>% 
-  drop_na()
-
-links_new_cases <- links_c %>% 
- dplyr:: filter(!Date %in% dates_cases_n)
-
-links_new_cases <- links_c[1,]
-# downloading new cases data and loading it
-dim(links_new_cases)[1] > 0
-db_cases <- tibble()
-if(dim(links_new_cases)[1] > 0){
-  # i <- 1
-  for(i in 1:dim(links_new_cases)[1]){
-    
-    date_c <- links_new_cases[i, 1] %>% dplyr::pull()
-    data_source_c <- paste0(dir_n, "Data_sources/", 
-                            ctr, "/", ctr, "_data_", as.character(date_c), ".zip")
-    
-    
-    download.file(as.character(links_new_cases[i, 2]), destfile = data_source_c, mode = "wb")
-    db_sex <- read_csv2(unz(data_source_c, "Cases_by_sex.csv"))
-    
-    db_sex2 <- 
-      db_sex %>% 
-      rename(Age = 1,
-             f = 2,
-             m = 3,
-             b = 4) %>% 
-      mutate(f = str_remove_all(f, "\\."),
-             m = str_remove_all(m, "\\."),
-             b = as.character(b)) %>%
-      tidyr::pivot_longer(cols = -Age, names_to = "Sex", values_to = "Values") %>% 
-      tidyr::separate(Values, c("Value", "trash"), sep = " ") %>% 
-      mutate(Value = as.numeric(Value),
-             Measure = "Cases") %>% 
-      select(-trash)
-    
-    db_c <- bind_rows(db_sex2) %>% 
-      separate(Age, c("Age", "trash"), sep = "-") %>% 
-      mutate(Age = case_when(Age == "90+" ~ "90",
-                             Age == "I alt" ~ "TOT",
-                             TRUE ~ Age),
-             Age = as.character(Age),
-             Date = date_c) %>% 
-      select(-trash)
-    
-    db_cases <- db_cases %>% 
-      bind_rows(db_c)
-    
-  }
-}
-
-
-
-Out <- bind_rows(db_n, db_drive_deaths, db_cases) %>% 
+Out <- bind_rows(db_n, db_drive_deaths
+                 #, db_cases
+                 ) %>% 
     mutate(Date = ddmmyyyy(Date),
            Country = "Denmark",
            Code = "DK",

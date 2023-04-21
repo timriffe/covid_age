@@ -32,6 +32,10 @@ gs4_auth(email = Sys.getenv("email"))
 
 ## Source Website <- "https://www.folkhalsomyndigheten.se/smittskydd-beredskap/utbrott/aktuella-utbrott/covid-19/statistik-och-analyser/bekraftade-fall-i-sverige/
 
+## MK: 31 March 2023: Since 30 March 2023, data will be presented here: https://www.folkhalsomyndigheten.se/fall-covid-19/
+## These data are weekly data since 2022, so it is different from what we have. 
+
+
 data_source <- paste0(dir_n, "Data_sources/", ctr, "/cases&deaths_",today(), ".xlsx")
 
 url <- "https://www.arcgis.com/sharing/rest/content/items/b5e7488e117749c19881cce45db13f7e/data"
@@ -129,12 +133,12 @@ if (date_f > last_date_drive){
  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  write_rds(out, paste0(dir_n, ctr, ".rds"))
  
- log_update(pp = "SwedenEpi", N = nrow(out))
+# log_update(pp = "SwedenEpi", N = nrow(out))
     
 
 } else if (date_f == last_date_drive) {
   cat(paste0("no new updates so far, last date: ", date_f))
-  log_update(pp = "SwedenEpi", N = 0)
+ # log_update(pp = "SwedenEpi", N = 0)
 }
 
 

@@ -79,38 +79,36 @@ tasks <-
 
 # list of all available scripts to schedule
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-scripts <- c('Peru', 'PeruVaccine' , 
-             'Argentina', 'AU_New_South_Wales',
+scripts <- c('Peru', 
+             'AU_New_South_Wales',
              'AustraliaVax', 'Austria', 
              'Bulgaria', 'Belgium', 'CanadaPDFs',
              'Czechia', 'Colombia', 'Croatia', 
              'CA_Manitoba_Saskatchewan', 'CA_Ontario', 'CA_British_Columbia', 
-             'CA_Alberta', 'Chile', 'Chile_vaccine', 'Canada_vaccine',  
-             'Denmark', 'DenmarkVax', 
-             'Estonia', 'England', 'England_and_Wales',
+             'CA_Alberta', 'Chile', 'Canada_vaccine',  
+             'Denmark', 
+             'Estonia', 'England', 
              'Estonia_vaccine', 'ECDC_vaccine', 'England_Vaccine', 
              'Finland', 'Finland_vaccine', 'FranceEpi', 'France_Vaccine',
              'Germany', 'Germany_vaccine', 'Guatemala',
              'Hong_Kong_Vaccine',
              'IndiaVax', 'IndiaVaxProcessing',
              'Italy', 'Ireland', 'Italy_reg', 
-             'Island_of_Jersey', 'Israel',
-             'Japan', 'Mexico', 'Malaysia', 'Maldives',
+             'Japan', 'Mexico', 'Malaysia', 
              'Netherlands', 'New_Zealand',  
              'Norway_Vaccine', 'Philippines',  
              'Spain', 'Spain_vaccine',
              'Scotland', 'Slovakia',  'Slovenia', 
-             'SouthAfrica', 'SouthKorea', 
-             'SwedenEpi', 'SwedenVax', 
+             'SouthKorea', 
+             'SwedenVax', 
              'SwitzerlandEpi', 
              'Switzerland_Vaccine',
              'Taiwan', 
-             'Thailand', # does not work
-             'Ukraine', 'US_Wisconsin', 'US_Michigan', 'US_Virginia', 
+             'US_Wisconsin', 'US_Michigan', 'US_Virginia', 
              'USA_cases_all', 
              'USA_deaths_all', 'USA_deaths_states',
              'USA_vaccine', 'USA_vaccine_states',
-             'Venezuela', 'Lithuania_vaccine')
+             'Lithuania_vaccine')
 
 # scripts <- c('USA_cases_all', 'USA_cases_states', 'USA_deaths_all', 'USA_deaths_states')
 # scripts <- c('USA_cases_all', 'USA_deaths_all')

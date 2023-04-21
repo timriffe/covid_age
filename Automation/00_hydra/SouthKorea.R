@@ -21,7 +21,8 @@ dir_n_source <- "N:/COVerAGE-DB/Automation/SouthKorea"
 
 data_source <- paste0(dir_n, "Data_sources/", ctr, "/ExcelReferenceData/cases_",today(), ".xlsx")
 
-korea_url <- "http://ncov.mohw.go.kr/"
+#korea_url <- "http://ncov.mohw.go.kr/"
+korea_url <- "http://ncov.kdca.go.kr/"
 
 url_scrape <- read_html(korea_url) %>% 
   html_nodes("a ") %>% 
@@ -84,7 +85,6 @@ Cases_Ageprocessed <-  Cases_Age2 %>%
 
 
 ## Cases by Sex (totals) == sheet 3
-
 
 Cases_Sex <- read_excel(data_source, sheet = 3) %>% 
   slice(-1)
