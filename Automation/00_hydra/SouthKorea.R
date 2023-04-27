@@ -185,7 +185,7 @@ data_age <-
                          Age == "50-59" ~ "50",
                          Age == "60-69" ~ "60",
                          Age == "70-79" ~ "70",
-                         Age == "80yearsorolder" ~ "80")) %>% 
+                         Age == "80 years or older" ~ "80")) %>% 
   mutate(Metric = "Count") %>% 
   mutate(Country = "South Korea",
          Region = "All",
@@ -260,7 +260,36 @@ new_combos <- new_data %>%
 
 # this now pulls from N, rubric redirected
 current_db <- read_rds(paste0(dir_n, ctr, ".rds")) %>% 
-  filter(Measure != "Cases") 
+  filter(Measure != "Cases") |> 
+  # sounds there were some errors in Sex, Age coding in March 2023
+  mutate(Age = case_when(is.na(Age) ~ "80",
+                         Sex == "0" ~ "0",
+                         Sex == "1" ~ "10",
+                         Sex == "2" ~ "20",
+                         Sex == "3" ~ "30",
+                         Sex == "4" ~ "40",
+                         Sex == "5" ~ "50",
+                         Sex == "6" ~ "60",
+                         Sex == "7" ~ "70",
+                         Sex == "8" ~ "80",
+                         TRUE ~ Age),
+         AgeInt = case_when(Age == "80" ~ 25L,
+                            Sex == "0" ~ 10L,
+                            Sex == "1" ~ 10L,
+                            Sex == "2" ~ 10L,
+                            Sex == "3" ~ 10L,
+                            Sex == "4" ~ 10L,
+                            Sex == "5" ~ 10L,
+                            Sex == "6" ~ 10L,
+                            Sex == "7" ~ 10L,
+                            Sex == "8" ~ 25L,
+                            TRUE ~ AgeInt),
+         Sex = case_when(Sex %in% c("0", "1", "2", "3",
+                                    "4", "5", "6", "7", "8") ~ "b",
+                         TRUE ~ Sex)) |> 
+  unique()
+
+
 
 current_combos <- current_db %>% 
   select(Date, Sex, Age, Measure) %>% 

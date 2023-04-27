@@ -182,7 +182,7 @@ VaccAge_processed <- vaxAge_raw %>%
     Age = case_when(Age == "Total" ~ "TOT",
                     str_detect(Age, "06") ~ "6",
                     TRUE ~ str_extract(Age, "\\d+")),
-    AgeInt = case_when(Age == "Total" ~ NA_integer_,
+    AgeInt = case_when(Age == "TOT" ~ NA_integer_,
                        Age == "6" ~ 6L,
                        Age == "12" ~ 6L,
                        Age == "18" ~ 12L,
