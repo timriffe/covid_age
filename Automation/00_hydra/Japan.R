@@ -21,15 +21,11 @@ gs4_auth(email = Sys.getenv("email"))
 
 ##previous data
 db_drive <- read_rds(paste0(dir_n, ctr, ".rds")) %>% 
-  mutate(Date = dmy(Date))%>%
- # filter(Date <="2020-08-18") %>% 
-mutate(
-  Date = ymd(Date),
-  Date = ddmmyyyy(Date))
+  filter(Measure == "Cases")
 
 ## Source website <- "https://covid19.mhlw.go.jp/en/
 
-#new death 
+#Weekly deaths since the start 
 
 death <- read_csv("https://covid19.mhlw.go.jp/public/opendata/deaths_detail_cumulative_weekly.csv", skip = 1)
 
@@ -145,7 +141,7 @@ death5 <- death4 %>%
 death5 <- death5[,-11]
 
 
-#new cases
+# Weekly cases
 
 cases <- read_csv("https://covid19.mhlw.go.jp/public/opendata/confirmed_cases_detail_cumulative_weekly.csv", skip = 1)
 cases2 <- setDT(cases)
@@ -411,7 +407,9 @@ totdeath5 <- totdeath4 %>%
 names(totdeath5)[1] <- "Value"
 totdeath5 <- totdeath5[,-11]
 
-pre_out <- rbind(db_drive, totdeath5, totcases5, death5, cases5) 
+pre_out <- rbind(db_drive, totdeath5, totcases5, death5, cases5) |> 
+  unique() |> 
+  sort_input_data()
 
 ## MK: there was duplication of values in 20.09.2022, so I filtered these out separately and append to the dataset again
 

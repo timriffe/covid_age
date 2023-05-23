@@ -156,5 +156,5 @@ for (i in 1:length(countries)){
 ss_i <- rubric %>% 
   dplyr::filter(Country == "Ecuador") %>% 
   dplyr::pull(Sheet)
-out_i <- out %>% dplyr::filter(Country == "Ecuador")
+out_i <- out %>% dplyr::filter(Country == "Ecuador") |> unique()
 write_sheet(out_i, ss= ss_i, sheet = "database")

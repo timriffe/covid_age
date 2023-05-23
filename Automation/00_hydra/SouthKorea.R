@@ -164,7 +164,7 @@ total_cases_i <- all_the_tables %>%
 
 age_original <- all_the_tables[age_table_i][[1]]
 
-data_age <- 
+deaths_age_new <- 
   all_the_tables[age_table_i][[1]] %>% 
   mutate(`Confirmed(%)` = str_replace(`Confirmed(%)`, "\\s", "|")) %>% 
   separate(`Confirmed(%)`, into = c("Cases", NA), sep = "\\|") %>% 
@@ -204,7 +204,7 @@ data_age <-
 
 sex_original <- all_the_tables[gender_table_i][[1]]
 
-sex_table <- 
+deaths_sex_new <- 
 all_the_tables[gender_table_i][[1]] %>% 
   rename(Sex = Category, 
          Cases = `Confirmed(%)`,
@@ -248,14 +248,11 @@ all_the_tables[gender_table_i][[1]] %>%
 
 
 new_data <- bind_rows(
-  data_age,
-  sex_table,
+  deaths_age_new,
+  deaths_sex_new,
   cases_all
  # cases_total
-)
-
-new_combos <- new_data %>% 
-  select(Date, Sex, Age, Measure) %>% 
+) %>% 
   distinct()
 
 # this now pulls from N, rubric redirected
@@ -290,20 +287,35 @@ current_db <- read_rds(paste0(dir_n, ctr, ".rds")) %>%
   # unique()
 
 
+## MK: 23.05.2023: there are duplicates in 05.03.2023, 06.03.2023, 07.03.2023
 
+add_later <- current_db |> 
+  filter(Date %in% c("05.03.2023", "06.03.2023", "07.03.2023")) |> 
+  group_by(Date, Age, Sex, Measure) |> 
+  filter(Value == max(Value))
+  
 current_combos <- current_db %>% 
-  select(Date, Sex, Age, Measure) %>% 
+  filter(!Date %in% c("05.03.2023", "06.03.2023", "07.03.2023")) |> 
+  bind_rows(add_later) |> 
   distinct()
 
-current_keep <- anti_join(
-                          current_combos, 
-                          new_combos,
-                          by = c("Date", "Sex", "Age", "Measure")) 
-current_db <- inner_join(current_db, 
-                         current_keep,  
-                         by = c("Date", "Sex", "Age", "Measure") )
-db_out <- bind_rows(current_db, new_data) %>% 
+## back to usual processesses
+
+db_out <- current_combos |> 
+  bind_rows(new_data) |> 
+  unique() |> 
   sort_input_data()
+
+# current_keep <- anti_join(current_combos, 
+#                           new_combos,
+#                           by = c("Date", "Sex", "Age", "Measure")) 
+# current_db_keep <- inner_join(current_db, 
+#                          current_keep,  
+#                          by = c("Date", "Sex", "Age", "Measure") )
+# 
+# db_out <- bind_rows(current_db_keep, new_data) %>% 
+#   unique() |> 
+#   sort_input_data()
 
 # Data push ---------------------------------------------------------------
 # ss_kr <- get_input_rubric() %>% 
