@@ -62,7 +62,7 @@ if (schedule_this){
                        rscript =  here::here("R","02.1_ScheduleThreeSteps.R"), 
                        schedule = "WEEKLY",
                        days = c("WED"),
-                       starttime = "12:30")
+                       starttime = "14:30")
 }
 
 
