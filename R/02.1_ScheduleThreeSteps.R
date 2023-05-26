@@ -61,8 +61,8 @@ if (schedule_this){
   taskscheduler_create(taskname = "COVerAGE-DB-thrice-weekly-inputDB-updates", 
                        rscript =  here::here("R","02.1_ScheduleThreeSteps.R"), 
                        schedule = "WEEKLY",
-                       days = c("THU"),
-                       starttime = "12:00")
+                       days = c("FRI"),
+                       starttime = "13:30")
 }
 
 

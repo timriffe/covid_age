@@ -152,7 +152,7 @@ date_f <- db_c3 %>%
 #### Saving data in N: ####
 ###########################
 write_rds(out, paste0(dir_n, ctr, ".rds"))
-log_update(pp = ctr, N = nrow(out))
+#log_update(pp = ctr, N = nrow(out))
 
 # saving data sources
 data_source_c <- paste0(dir_n, "Data_sources/", ctr, "/cases_",today(), ".xlsx")

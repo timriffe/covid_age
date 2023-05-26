@@ -7659,3 +7659,18 @@ v Range 'Tabellenblatt1'.
 New names:
 * `` -> `...6`
 Thu May 25 15:31:53 2023
+Thu May 25 15:35:49 2023
+Thu May 25 15:39:46 2023
+here() starts at U:/gits/covid_age
+Thu May 25 15:40:55 2023
+Thu May 25 17:20:47 2023
+Thu May 25 17:40:01 2023
+Thu May 25 19:26:46 2023
+Thu May 25 20:54:15 2023
+Thu May 25 21:20:17 2023
+Thu May 25 23:33:09 2023
+Fri May 26 00:19:15 2023
+Fri May 26 00:30:27 2023
+Fri May 26 01:03:43 2023
+Warning message:
+startup::check(): Environment variable 'R_LIBS_SITE' specifies a non-existing folder 'C:/PROGRA~1/R/R-42~1.3/site-library' (expands to 'C:\PROGRA~1\R\R-42~1.3\site-library') which R ignores and therefore are not used in .libPaths(). To create this folder, call dir.create("C:/PROGRA~1/R/R-42~1.3/site-library", recursive = TRUE) 
