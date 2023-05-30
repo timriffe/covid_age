@@ -54,6 +54,54 @@ gs4_auth(email = Sys.getenv("email"))
 ```
 
 
+## Burkina-Faso 
+
+##├ Date: 30.05.2023
+
+
+```{r}
+
+library(rvest)
+
+files_dest <- "N:/COVerAGE-DB/Automation/Hydra/Data_sources/Burkina-Faso/"
+
+url_main <- "https://www.humanitarianresponse.info/en/operations/burkina-faso/documents/themes/covid-19"
+
+page_number <- 1:11
+
+base_url <- "https://www.humanitarianresponse.info/en/operations/burkina-faso/documents/themes/covid-19?page="
+
+
+missing_files <- data.frame(base = rep(base_url), 
+                            times = page_number) %>% 
+  mutate(url = paste0(base, times)) |> 
+  dplyr::pull(url)
+
+
+extract_pdfs <- function(url_main){
+  
+  data.frame(links = read_html(url_main) %>% 
+             html_nodes("a ") %>% 
+             html_attr('href')) |> 
+  filter(str_detect(links, ".pdf"))
+}
+
+
+pdfs_dataframe <- map_dfr(missing_files, extract_pdfs)
+
+
+files_in_dataframe <- pdfs_dataframe %>%
+  mutate(number = row_number(),
+         destinations = paste0(files_dest, "BF-", number, ".pdf")) 
+
+files_in_dataframe %>% 
+  {map2(.$links, .$destinations, ~ download.file(url = .x, destfile = .y, mode="wb"))}
+
+```
+
+
+
+
 ## Canada 
 
 ##├ Date: 16.12.2022
