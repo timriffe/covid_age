@@ -18,10 +18,10 @@ idb <- data.table::fread(here("Data","inputDB_internal.csv"),encoding = "UTF-8")
 
 idb <- idb %>% 
   mutate(Date = dmy(Date),
-         Date = ddmmyyyy(Date)) %>% 
+         Date = ddmmyyyy(Date)) #%>% 
   # TR: new, can't age harmonize until we understand lower bounds better.
   # plus intervals tend to be super wide.
-  filter(!Measure %in% c("Vaccinations","Vaccination1","Vaccionation2"))
+  #filter(!Measure %in% c("Vaccinations","Vaccination1","Vaccionation2"))
 
 data.table::fwrite(idb,file= "Data/inputDBresolved.csv")
 

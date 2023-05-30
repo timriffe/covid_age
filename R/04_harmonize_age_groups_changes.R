@@ -57,7 +57,7 @@ subset_changes <-
 inputCounts <-
   subset_changes |>
   left_join(inputCounts, by = c("Code","Date","Sex","Measure"))
-
+# inputCounts <- tfile
 
 # Offsets
 # TR: are these updated for wpp2022?
@@ -267,3 +267,13 @@ data.table::fwrite(outputCounts_10_rounded,
 # saveRDS(outputCounts_10, here::here("Data","Output_10.rds"))
 data.table::fwrite(outputCounts_10, file = here::here("Data","output_10_internal.csv"))
 
+# also copy rds files to N://COVerAGE-DB/Data
+cdb_files <- c(
+               "Output_5.csv","Output_5_internal.csv",
+               "Output_10.csv","Output_10_internal.csv",
+               "HarmonizationFailures.csv")
+files_from <- file.path("Data",cdb_files)
+
+file.copy(from = files_from, 
+          to = "N:/COVerAGE-DB/Data", 
+          overwrite = TRUE)
