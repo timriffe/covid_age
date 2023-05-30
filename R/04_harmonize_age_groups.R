@@ -14,6 +14,8 @@ n.cores <- min(round(freesz / 16),20)
 if (Sys.info()["nodename"] == "HYDRA11"){
   n.cores <- 50
 }
+# TR override to ensure memory fits
+n.cores <- 4
 ### Load data #######################################################
 
 # Count data

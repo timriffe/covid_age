@@ -1,5 +1,9 @@
 
 ##
+source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
+setwd(wd_sched_detect())
+here::i_am("covid_age.Rproj")
+startup::startup()
 
 # TODO
 # This script will look on N for the most recent inputCounts.csv (or similar) file, 
@@ -141,7 +145,7 @@ subsets_to_harmonize <-
 # we only need to harmonize
 100 * nrow(subsets_to_harmonize) / nrow(t_subsets)
 # percent of subsets, much better!
-write_csv(subsets_to_harmonize, path = "N://COVerAGE-DB/Data/subsets_to_harmonize.csv")
+write_csv(subsets_to_harmonize, file = "N://COVerAGE-DB/Data/subsets_to_harmonize.csv")
 
 # save out the complement as well, for easier subsetting in step 4:
 refresh_append <- 
@@ -155,7 +159,7 @@ subsets_keep_harmonizations <-
                     keep = !refresh) |>
   collapse::fselect(-refresh)
 
-write_csv(subsets_keep_harmonizations, path = "N://COVerAGE-DB/Data/subsets_keep_harmonizations.csv")
+write_csv(subsets_keep_harmonizations, file = "N://COVerAGE-DB/Data/subsets_keep_harmonizations.csv")
 
 
 
