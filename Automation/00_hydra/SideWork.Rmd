@@ -638,8 +638,233 @@ write_rds(all_out, paste0(dir_n, ctr, ".rds"))
 ```
 
 
+##├ Date: 23.05.2023
+
+Austria Vaccination data has duplicates in 20.11.2022, so by inspection turns out that the highest value is the correct one, based on revieiwng the preeceding date data values, 
+
+here we do the appropriate handling:
 
 
+```{r}
+
+# info country and N drive address
+ctr <- "Austria"
+dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
+
+DataArchived <- readRDS("N:/COVerAGE-DB/Automation/Hydra/Austria.rds")
+
+vax_data <- DataArchived |> 
+  filter(str_detect(Measure, "Vacc"))
+
+## The following is to add at the end:
+
+epi_data <- DataArchived |> 
+  filter(!str_detect(Measure, "Vacc"))
+
+vax_data_add <- vax_data |> 
+  filter(Date != "20.11.2022")
+
+vacc_duplicated <- vax_data |> 
+  filter(Date == "20.11.2022") |> 
+  group_by(Region, Sex, Age, AgeInt, Measure) |> 
+  filter(Value == max(Value))
+  
+
+out_all_again <- vacc_duplicated |> 
+  bind_rows(vax_data_add) |> 
+  bind_rows(epi_data) |> 
+  sort_input_data()
+
+
+write_rds(out_all_again, paste0(dir_n, ctr, ".rds"))
+
+```
+
+
+##├ Date: 26.05.2023
+
+Austria changed the path of the files, so we lost May 2023 data in the process. To download from the archive; 
+
+PS.: This works along with Austria.R script for adjustments in the code and binding the archived data with the missing Vax data.
+
+```{r}
+
+dir_source_download <- "N:/COVerAGE-DB/Automation/Hydra/Data_sources/Austria/AustriaVaxMissingMay2023"
+
+vacc_day <- read.csv2("https://opendata.sozialversicherung.at/eimpfpass/COVID19_vaccination_agegroups_v202210.csv")
+
+seq_dates <- format(seq(from = as.Date("2020/12/27"), to = today(), by = "1 days"), "%Y%m%d")
+
+#seq_dates <- format(seq(from = as.Date("2021/01/03"), to = as.Date("2022/01/31"), by = "1 days"), "%Y%m%d")
+
+base_url <- "https://opendata.sozialversicherung.at/eimpfpass/archiv/COVID19_vaccination_agegroups_v202210_"
+
+days_df <- data.frame(base = rep(base_url, 
+                                  times = length(seq_dates)),
+                       date = seq_dates) %>% 
+  mutate(url = paste0(base, date, ".csv"),
+         date = ymd(date),
+         destinations = paste0(dir_source_download, "/Austria_Age_vaccine", date, ".csv"))
+
+
+
+for(i in seq_along(days_df$url)){
+  if(class(try(download.file(days_df$url[i],
+                             destfile = days_df$destinations[i],
+                             mode="wb"),
+               silent = TRUE)) == "try-error"){
+    print(paste("No file for:", i))
+  next 
+    print(paste("downnloading:", i))
+  }
+}
+
+
+## Checking data from the other archive link:
+
+# seq_dates <- format(seq(from = as.Date("2020/12/27"), to = today(), by = "1 days"), "%Y%m%d")
+# 
+# base_url <- "https://info.gesundheitsministerium.at/data/COVID19_vaccination_agegroups_v202210_"
+# 
+# days_df_other <- data.frame(base = rep(base_url, 
+#                                   times = length(seq_dates)),
+#                        date = seq_dates) %>% 
+#   mutate(url = paste0(base, date, ".csv"),
+#          date = ymd(date),
+#          destinations = paste0(dir_source_download, "/BeforeNov2022/Austria_Age_vaccine", date, ".csv"))
+# 
+# 
+# 
+# for(i in seq_along(days_df_other$url)){
+#   if(class(try(download.file(days_df_other$url[i],
+#                              destfile = days_df_other$destinations[i],
+#                              mode="wb"),
+#                silent = TRUE)) == "try-error"){
+#     print(paste("No file for:", i))
+#   next 
+#     print(paste("downnloading:", i))
+#   }
+# }
+
+
+files_to_read = list.files(
+  path = paste0(dir_source_download, "/"),        # directory to search within
+  pattern = ".csv", # regex pattern, some explanation below
+  recursive = TRUE,          # search subdirectories
+  full.names = TRUE          # return the full path
+)
+
+files_to_read <- setNames(files_to_read, files_to_read)
+
+files_in_dataframe <- map_dfr(files_to_read, read_csv2, .id = "file_name")
+  # mutate(Date = str_extract(path, "\\d+-\\d+-\\d+")) %>% 
+  # {map2_dfr(.$path, .$Date, function(x,y) read.csv2(x) %>% mutate(Date=y))}
+
+
+vacc_out <- files_in_dataframe %>% 
+  select(Date = 2, 
+         state_id, 
+         Region = state_name, 
+         Age = age_group, Sex = gender, 
+         Measure = vaccination,
+         Value = vaccinations_administered_cumulative) %>% 
+  filter(Region != "Österreich") %>% # somehow, they added a row for 'All', a duplicate of the state_id no. 10
+  mutate(Date = ymd(str_sub(Date, 1, 10)),
+         Age = recode(Age,
+                      "00-11" = "0",
+                      "12-14" = "12",
+                      "15-24"= "15",
+                      "25-34" = "25",
+                      "35-44" = "35",
+                      "45-54" = "45",
+                      "55-64" = "55",
+                      "65-74" = "65",
+                      "75-84" = "75",
+                      "85+" = "85",
+                      "NotAssigned" = "UNK"),
+         Sex = recode(Sex,
+                      "Male" = "m",
+                      "Female" = "f",
+                      "NonBinary" = "NonBinary",
+                      "Other" = "UNK",
+                      "NotAssigned" = "UNK"),
+         Measure = paste0("Vaccination", Measure),
+         Region = case_when(
+           Region == "NoState" ~ "UNK",
+           Region == "Ã–sterreich" ~ "All",
+           Region == "KÃ¤rnten" ~ "Kärnten",
+           Region == "NiederÃ¶sterreich" ~ "Niederöstereich",
+           Region == "OberÃ¶sterreich" ~ "Oberösterreich",
+           TRUE ~ Region),
+         Measure = case_when(Measure == "Vaccination4+" ~ "Vaccination4", TRUE ~ Measure),
+         Code = paste0(ifelse(state_id < 10, paste0("AT-", state_id), "AT"))) %>% 
+  group_by(Date, Age, Sex, Code, Region, Measure) %>% 
+  summarize(Value = sum(Value)) %>% 
+  ungroup() %>% 
+  distinct(Date, Age, Sex, Region, Code,Measure, Value) %>% 
+  mutate(Country = "Austria",
+         Metric = "Count",
+         Date = ddmmyyyy(Date),
+         AgeInt = case_when(Age == "0" ~  12L,
+                            Age == "12" ~ 3L,
+                            Age == "85" ~ 20L,
+                            #Age == "TOT" ~ "",
+                            Age == "UNK" ~ NA_integer_,
+                            TRUE ~ 10L),
+         Code = case_when(Region == "UNK" ~ "AT-UNK+",
+                          TRUE ~ Code)) %>% 
+  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
+  sort_input_data()
+
+
+```
+
+
+
+# Hong Kong
+
+##├ Date: 23.05.2023
+
+Hongkong Vaccination data has duplicates in 05.01.2023, so by inspection turns out that the highest value is the correct one, based on reviewing the preceding and following date data values, 
+
+here we do the appropriate handling:
+
+
+```{r}
+
+# info country and N drive address
+ctr <- "Hong_Kong_Vaccine"
+dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
+
+DataArchived <- readRDS("N:/COVerAGE-DB/Automation/Hydra/Hong_Kong_Vaccine.rds")
+
+vax_data <- DataArchived |> 
+  filter(str_detect(Measure, "Vacc"))
+
+## The following is to add at the end:
+
+epi_data <- DataArchived |> 
+  filter(!str_detect(Measure, "Vacc"))
+
+vax_data_add <- vax_data |> 
+  filter(Date != "05.01.2023")
+
+vacc_duplicated <- DataArchived |> 
+  filter(Date == "05.01.2023") |> 
+  group_by(Region, Sex, Age, AgeInt, Measure) |> 
+  filter(Value == min(Value)) |> 
+  unique()
+  
+
+out_all_again <- vacc_duplicated |> 
+  bind_rows(vax_data_add) |> 
+  bind_rows(epi_data) |> 
+  sort_input_data()
+
+
+write_rds(out_all_again, paste0(dir_n, ctr, ".rds"))
+
+```
 
 
 
@@ -1890,6 +2115,65 @@ urls_df %>%
   {map2(.$zip_url, .$destinations, ~ download.file(url = .x, destfile = .y, mode="wb"))}
 
 ```
+
+
+
+##├ Date: 23.05.2023
+
+Denmark cases data has duplicates in 20.10.2022 & 27.10.2022, so by inspection turns out that the highest value is for the following date, 21.10.2022 & 28.10.2022, , based on reviewing the preceding and following date data values, 
+
+here we do the appropriate handling:
+
+
+```{r}
+
+# info country and N drive address
+ctr <- "Denmark"
+dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
+
+DataArchived <- readRDS("N:/COVerAGE-DB/Automation/Hydra/Denmark.rds")
+
+cases_data <- DataArchived |> 
+  filter(Measure == "Cases")
+
+## The following is to add at the end:
+
+deaths_data <- DataArchived |> 
+  filter(Measure != "Cases")
+
+cases_data_add <- cases_data |> 
+  filter(!Date %in% c("20.10.2022", "27.10.2022"))
+
+cases_min_add <- cases_data |> 
+  filter(Date %in% c("20.10.2022", "27.10.2022")) |> 
+  group_by(Date, Region, Sex, Age, AgeInt, Measure) |> 
+  filter(Value == min(Value)) |> 
+  unique()
+
+## Seems that there is an error in the date of these data, 
+## should be Friday 21.10.2022 and Friday 28.10.2022 instead of
+## the duplicates: 20.10.2022 and 27.10.2022 
+
+cases_max_datechange_add <- cases_data |> 
+  filter(Date %in% c("20.10.2022", "27.10.2022")) |> 
+  group_by(Date, Region, Sex, Age, AgeInt, Measure) |> 
+  filter(Value == max(Value)) |> 
+  unique() |> 
+  mutate(Date = case_when(Date == "20.10.2022" ~ "21.10.2022",
+                          Date == "27.10.2022" ~ "28.10.2022"))
+  
+
+out_all_again <- deaths_data |> 
+  bind_rows(cases_data_add) |> 
+  bind_rows(cases_min_add) |> 
+  bind_rows(cases_max_datechange_add) |> 
+  sort_input_data()
+
+
+write_rds(out_all_again, paste0(dir_n, ctr, ".rds"))
+
+```
+
 
 
 

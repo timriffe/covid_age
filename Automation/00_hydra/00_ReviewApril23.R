@@ -1,6 +1,9 @@
 library(tidyverse)
 library(lubridate)
 
+## This script aims to check on the last date of the collected data and 
+## so we can get a hint of whether there is still published data or not :)
+
 dir_n   <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 rds.list <-list.files(

@@ -92,6 +92,7 @@ Deaths <- deaths_raw |>
   
 out <- 
   bind_rows(Cases, Deaths, Chile_archived_deaths) %>% 
+  unique() |> 
   sort_input_data()
 
 dim(out)

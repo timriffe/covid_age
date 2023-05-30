@@ -79,7 +79,9 @@ if (date_f > last_date_drive){
   sheet_append(out,
                ss = ss_i,
                sheet = "database")
-  log_update(pp = ctr, N = nrow(out))
+  
+  ## MK 19.05.2023: No further update as of 15.05.2023 following the end of emergency status in US. 
+ # log_update(pp = ctr, N = nrow(out))
   
 
   
@@ -109,7 +111,7 @@ if (date_f > last_date_drive){
 
 } else if (date_f == last_date_drive) {
   cat(paste0("no new updates so far, last date: ", date_f))
-  log_update(pp = ctr, N = 0)
+ # log_update(pp = ctr, N = 0)
 }
 
 ### END ===========

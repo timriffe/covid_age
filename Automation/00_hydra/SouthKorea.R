@@ -164,7 +164,7 @@ total_cases_i <- all_the_tables %>%
 
 age_original <- all_the_tables[age_table_i][[1]]
 
-data_age <- 
+deaths_age_new <- 
   all_the_tables[age_table_i][[1]] %>% 
   mutate(`Confirmed(%)` = str_replace(`Confirmed(%)`, "\\s", "|")) %>% 
   separate(`Confirmed(%)`, into = c("Cases", NA), sep = "\\|") %>% 
@@ -185,7 +185,7 @@ data_age <-
                          Age == "50-59" ~ "50",
                          Age == "60-69" ~ "60",
                          Age == "70-79" ~ "70",
-                         Age == "80yearsorolder" ~ "80")) %>% 
+                         Age == "80 years or older" ~ "80")) %>% 
   mutate(Metric = "Count") %>% 
   mutate(Country = "South Korea",
          Region = "All",
@@ -204,7 +204,7 @@ data_age <-
 
 sex_original <- all_the_tables[gender_table_i][[1]]
 
-sex_table <- 
+deaths_sex_new <- 
 all_the_tables[gender_table_i][[1]] %>% 
   rename(Sex = Category, 
          Cases = `Confirmed(%)`,
@@ -248,33 +248,74 @@ all_the_tables[gender_table_i][[1]] %>%
 
 
 new_data <- bind_rows(
-  data_age,
-  sex_table,
+  deaths_age_new,
+  deaths_sex_new,
   cases_all
  # cases_total
-)
-
-new_combos <- new_data %>% 
-  select(Date, Sex, Age, Measure) %>% 
+) %>% 
   distinct()
 
 # this now pulls from N, rubric redirected
 current_db <- read_rds(paste0(dir_n, ctr, ".rds")) %>% 
-  filter(Measure != "Cases") 
+  filter(Measure != "Cases") #|> 
+  # sounds there were some errors in Sex, Age coding in March 2023
+  # mutate(Age = case_when(is.na(Age) ~ "80",
+  #                        Sex == "0" ~ "0",
+  #                        Sex == "1" ~ "10",
+  #                        Sex == "2" ~ "20",
+  #                        Sex == "3" ~ "30",
+  #                        Sex == "4" ~ "40",
+  #                        Sex == "5" ~ "50",
+  #                        Sex == "6" ~ "60",
+  #                        Sex == "7" ~ "70",
+  #                        Sex == "8" ~ "80",
+  #                        TRUE ~ Age),
+  #        AgeInt = case_when(Age == "80" ~ 25L,
+  #                           Sex == "0" ~ 10L,
+  #                           Sex == "1" ~ 10L,
+  #                           Sex == "2" ~ 10L,
+  #                           Sex == "3" ~ 10L,
+  #                           Sex == "4" ~ 10L,
+  #                           Sex == "5" ~ 10L,
+  #                           Sex == "6" ~ 10L,
+  #                           Sex == "7" ~ 10L,
+  #                           Sex == "8" ~ 25L,
+  #                           TRUE ~ AgeInt),
+  #        Sex = case_when(Sex %in% c("0", "1", "2", "3",
+  #                                   "4", "5", "6", "7", "8") ~ "b",
+  #                        TRUE ~ Sex)) |> 
+  # unique()
 
+
+## MK: 23.05.2023: there are duplicates in 05.03.2023, 06.03.2023, 07.03.2023
+
+add_later <- current_db |> 
+  filter(Date %in% c("05.03.2023", "06.03.2023", "07.03.2023")) |> 
+  group_by(Date, Age, Sex, Measure) |> 
+  filter(Value == max(Value))
+  
 current_combos <- current_db %>% 
-  select(Date, Sex, Age, Measure) %>% 
+  filter(!Date %in% c("05.03.2023", "06.03.2023", "07.03.2023")) |> 
+  bind_rows(add_later) |> 
   distinct()
 
-current_keep <- anti_join(
-                          current_combos, 
-                          new_combos,
-                          by = c("Date", "Sex", "Age", "Measure")) 
-current_db <- inner_join(current_db, 
-                         current_keep,  
-                         by = c("Date", "Sex", "Age", "Measure") )
-db_out <- bind_rows(current_db, new_data) %>% 
+## back to usual processesses
+
+db_out <- current_combos |> 
+  bind_rows(new_data) |> 
+  unique() |> 
   sort_input_data()
+
+# current_keep <- anti_join(current_combos, 
+#                           new_combos,
+#                           by = c("Date", "Sex", "Age", "Measure")) 
+# current_db_keep <- inner_join(current_db, 
+#                          current_keep,  
+#                          by = c("Date", "Sex", "Age", "Measure") )
+# 
+# db_out <- bind_rows(current_db_keep, new_data) %>% 
+#   unique() |> 
+#   sort_input_data()
 
 # Data push ---------------------------------------------------------------
 # ss_kr <- get_input_rubric() %>% 

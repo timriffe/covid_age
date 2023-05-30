@@ -26,7 +26,7 @@ timestr = time.strftime("%Y%m%d")
 src = r"C:\Users\Krishnan\Downloads\\"
 dst = r"N:\COVerAGE-DB\Automation\Guatemala\\"
 
-base_url = 'https://tablerocovid.mspas.gob.gt/tablerocovid/'
+base_url = 'https://tableros.mspas.gob.gt/covid/'
 
 chrome_driver = ChromeDriverManager(cache_valid_range=7).install()
 options = ChromeOptions()

@@ -55,14 +55,14 @@ if (schedule_this){
   # TR: note, if you schedule this, you should make sure it's not already scheduled
   # by someone else!
   # Run only the following lines to schedule; 
-  # run the whole section if you want to remove the exisiting scheduled program
+  # run the whole section if you want to remove the existing scheduled program
   library(taskscheduleR)
   taskscheduler_delete("COVerAGE-DB-thrice-weekly-inputDB-updates")
   taskscheduler_create(taskname = "COVerAGE-DB-thrice-weekly-inputDB-updates", 
                        rscript =  here::here("R","02.1_ScheduleThreeSteps.R"), 
                        schedule = "WEEKLY",
-                       days = c("FRI","WED"),
-                       starttime = "13:00")
+                       days = c("FRI"),
+                       starttime = "13:30")
 }
 
 

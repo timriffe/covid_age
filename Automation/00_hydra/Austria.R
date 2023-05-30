@@ -23,7 +23,10 @@ ss_db  <- at_rubric %>% dplyr::pull(Source)
 # READ IN THE ARCHIVED VAX DATA ===== 
 
 DataArchived <- readRDS(paste0(dir_n, ctr,".rds")) %>% 
-  filter(str_detect(Measure, "Vaccin"))
+  filter(str_detect(Measure, "Vaccin")) #|> 
+  # mutate(Date = dmy(Date)) |>
+  # filter(Date < "2022-11-21") |>
+  # mutate(Date = ddmmyyyy(Date))
 
 #JD: Since August 2021 source uploads whole time series since 02.2020
 #changed the structure of the script from append to refresh 
@@ -75,16 +78,22 @@ db_age2 <- db_age%>%
 
 ## Source website: https://info.gesundheitsministerium.at/opendata
 
-vacc_today <- read.csv2("https://info.gesundheitsministerium.at/data/COVID19_vaccination_agegroups_v202210.csv")
+## totals without age and sex, timeline data: 
+## vacc_timline <- read.csv2("https://opendata.sozialversicherung.at/eimpfpass/COVID19_vaccination_timeline_v202210.csv")
+
+## Old link- just for reference
+#vacc_221120 <- read.csv2("https://info.gesundheitsministerium.at/data/COVID19_vaccination_agegroups_v202210.csv")
+
+vacc_today <- read.csv2("https://opendata.sozialversicherung.at/eimpfpass/COVID19_vaccination_agegroups_v202210.csv")
 
 vacc_out <- vacc_today %>% 
-  select(Date = 1, 
+  select(Date = date, 
          state_id, 
          Region = state_name, 
          Age = age_group, Sex = gender, 
          Measure = vaccination,
          Value = vaccinations_administered_cumulative) %>% 
-  filter(Region != "All") %>% # somehow, they added a row for 'All', a duplicate of the state_id no. 10
+  filter(Region != "Österreich") %>% # somehow, they added a row for 'All', a duplicate of the state_id no. 10
   mutate(Date = ymd(str_sub(Date, 1, 10)),
          Age = recode(Age,
                       "00-11" = "0",

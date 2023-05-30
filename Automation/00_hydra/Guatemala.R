@@ -151,7 +151,11 @@ epi_data <- epi_data_all %>%
 
 vaxAge_history <- extract_data(dir_main[3]) %>% 
   mutate(Date = str_extract(file_name, "\\d+"),
-         Date = dmy(Date))
+         Date = dmy(Date)) |> 
+  ## MK: 23.05.2023: There are 2 totals, one in Sex sheet and another in Age data sheet, 
+  ## they are not consistent sometime and result in duplicates failure
+  ## so, I removed the total by age, and kept the total by sex, as i think it makes sense.
+  filter(Grupo.etario != "Total")
 
 vaxSex_history <- extract_data(dir_main[4]) %>% 
   mutate(Date = str_extract(file_name, "\\d+"),
@@ -182,7 +186,7 @@ VaccAge_processed <- vaxAge_raw %>%
     Age = case_when(Age == "Total" ~ "TOT",
                     str_detect(Age, "06") ~ "6",
                     TRUE ~ str_extract(Age, "\\d+")),
-    AgeInt = case_when(Age == "Total" ~ NA_integer_,
+    AgeInt = case_when(Age == "TOT" ~ NA_integer_,
                        Age == "6" ~ 6L,
                        Age == "12" ~ 6L,
                        Age == "18" ~ 12L,
