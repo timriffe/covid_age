@@ -49,7 +49,9 @@ db <- read_csv(unz(data_source,
                    paste0(recent_file)),
                skip = 1,
                col_names = c("Country","Region","Code","Date","Sex","Age","AgeInt","Metric","Measure","Value")) %>% 
-  mutate(Sex = ifelse(Sex == "x","UNK",Sex)) %>% 
+  mutate(Sex = ifelse(Sex == "x","UNK",Sex),
+         AgeInt = case_when(Age == "100" ~ 5,
+                            TRUE ~ AgeInt)) %>% 
   filter(!(Sex == "UNK" & Value == 0)) 
 
 
@@ -64,14 +66,14 @@ db_total_by_sex <-
          AgeInt = NA) %>% 
   filter(Sex != "UNK")
 
-db_total_by_age <- 
-  db %>% 
-  group_by(Country, Region, Code, Date, Age, Metric, Measure) %>% 
-  summarise(Value = sum(Value)) %>% 
-  ungroup() %>% 
-  mutate(Sex = "b",
-         Age = as.character(Age)) %>% 
-  filter(!is.na(Age))
+# db_total_by_age <- 
+#   db %>% 
+#   group_by(Country, Region, Code, Date, Age, Metric, Measure) %>% 
+#   summarise(Value = sum(Value)) %>% 
+#   ungroup() %>% 
+#   mutate(Sex = "b",
+#          Age = as.character(Age)) %>% 
+#   filter(!is.na(Age))
 
 db_totals <- 
   db %>% 
@@ -89,7 +91,7 @@ out <-
          !is.na(Sex),
          Sex != "UNK") %>% 
   bind_rows(db_total_by_sex,
-            db_total_by_age,
+         #   db_total_by_age,
             db_totals) %>% 
   sort_input_data()
 out$Code = substr(out$Code,1,nchar(out$Code)-10)
