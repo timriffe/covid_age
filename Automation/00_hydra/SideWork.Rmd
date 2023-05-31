@@ -38,7 +38,8 @@ Since this work is related to the already existing datasets and in order to keep
 ```{r}
 
 library(here)
-library(purrr)    
+library(purrr)  
+library(rvest)
 source(here("Automation/00_Functions_automation.R"))
 
 # assigning Drive credentials in the case the script is verified manually  
@@ -52,6 +53,53 @@ drive_auth(email = Sys.getenv("email"))
 gs4_auth(email = Sys.getenv("email"))
 
 ```
+
+
+
+## Ecuador 
+
+##├ Date: 31.05.2023
+
+
+```{r}
+
+files_dest <- "N:/COVerAGE-DB/Automation/Hydra/Data_sources/Ecuador/"
+
+url_main <- "https://www.gestionderiesgos.gob.ec/informes-de-situacion-covid-19-desde-el-13-de-marzo-del-2020/"
+
+pdfs_dataframe <- data.frame(links = read_html(url_main) %>% 
+             html_nodes("a ") %>% 
+             html_attr('href')) |> 
+  filter(str_detect(links, ".pdf")) |> 
+  mutate(name = str_remove(links, "https://www.gestionderiesgos.gob.ec/wp-content/uploads/"),
+         name = str_remove(name, "\\d+/\\d+/"))
+
+
+files_in_dataframe <- pdfs_dataframe %>%
+  unique() |> 
+  mutate(number = row_number(),
+         destinations = paste0(files_dest, name)) 
+
+
+for(i in seq_along(files_in_dataframe$links)){
+  if(class(try(download.file(files_in_dataframe$links[i],
+                             destfile = files_in_dataframe$destinations[i],
+                             mode="wb"),
+               silent = TRUE)) == "try-error"){
+    print(paste("No file for:", i))
+  next 
+    print(paste("downnloading:", i))
+  }
+}
+
+
+
+# files_in_dataframe %>% 
+#   {map2(.$links, .$destinations, ~ download.file(url = .x, destfile = .y, mode="wb"))}
+
+```
+
+
 
 
 ## Burkina-Faso 
@@ -99,6 +147,27 @@ files_in_dataframe %>%
 
 ```
 
+
+##├ Date: XX.06.2023
+
+
+```{r}
+
+at_rubric <- get_input_rubric() %>% 
+  dplyr::filter(Short == "BF")
+ss_i   <- at_rubric %>% dplyr::pull(Sheet)
+ss_db  <- at_rubric %>% dplyr::pull(Source)
+
+
+db_drive <- read_sheet(ss = ss_i, sheet = "database") %>% 
+  unique() %>% 
+  sort_input_data()
+
+
+
+sheet_write(db_drive, ss = ss_i, sheet = "database")
+
+```
 
 
 
