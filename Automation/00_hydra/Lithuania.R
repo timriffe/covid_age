@@ -45,7 +45,9 @@ processed_data <- raw_data |>
   mutate(date = as.Date(date, format = "%Y/%m/%d"),
          Sex = case_when(Sex == "Moteris" ~ "f",
                          Sex == "Nenustatyta" ~ "UNK",
-                         Sex == "Vyras" ~ "m")) |> 
+                         Sex == "Vyras" ~ "m"),
+         age_gr = case_when(age_gr %in% c("100-109", "110-119") ~ "100-120",
+                            TRUE ~ age_gr)) |> 
   group_by(date, Sex, age_gr) |> 
   summarise(Cases = sum(Cases),
             Deaths = sum(Deaths)) |> 
@@ -57,6 +59,7 @@ processed_data <- raw_data |>
          Age = case_when(age_gr == "Nenustatyta" ~ "UNK",
                          TRUE ~ str_remove(age_gr, "-\\d+")),
          AgeInt = case_when(Age == "UNK" ~ NA_integer_,
+                            Age == "100" ~ 5L,
                             TRUE ~ 10L),
          Date = ddmmyyyy(date)) |> 
   ungroup() |> 

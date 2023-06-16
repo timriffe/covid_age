@@ -29,7 +29,11 @@ gs4_auth(email = Sys.getenv("email"))
 
 ## Website source: https://github.com/robert-koch-institut/COVID-19-Impfungen_in_Deutschland/
 
-url_v="https://raw.githubusercontent.com/robert-koch-institut/COVID-19-Impfungen_in_Deutschland/master/Aktuell_Deutschland_Landkreise_COVID-19-Impfungen.csv"
+# old link
+#url_v="https://raw.githubusercontent.com/robert-koch-institut/COVID-19-Impfungen_in_Deutschland/master/Aktuell_Deutschland_Landkreise_COVID-19-Impfungen.csv"
+
+## new link:
+url_v <- "https://raw.githubusercontent.com/robert-koch-institut/COVID-19-Impfungen_in_Deutschland/main/Deutschland_Landkreise_COVID-19-Impfungen.csv"
 
 data_source <- paste0(dir_n, "Data_sources/", ctr, "/age_vaccine",today(), ".csv")
 
