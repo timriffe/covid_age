@@ -81,7 +81,7 @@ tasks <-
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 scripts <- c('Peru', 
              'AU_New_South_Wales',
-             'AustraliaVax', 'Austria', 
+             'Austria', 
              'Bulgaria', 'Belgium', 'CanadaPDFs',
              'Czechia', 'Colombia', 'Croatia', 
              'CA_Manitoba_Saskatchewan', 'CA_Ontario', 'CA_British_Columbia', 
