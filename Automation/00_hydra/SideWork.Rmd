@@ -54,6 +54,30 @@ gs4_auth(email = Sys.getenv("email"))
 
 ```
 
+
+## Zimbabwe 
+
+##├ Date: 20.06.2023
+
+
+```{r}
+
+at_rubric <- get_input_rubric() %>% 
+  dplyr::filter(Short == "ZW")
+ss_i   <- at_rubric %>% dplyr::pull(Sheet)
+ss_db  <- at_rubric %>% dplyr::pull(Source)
+
+
+db_drive <- read_sheet(ss = ss_i, sheet = "database") %>% 
+  unique() %>% 
+  sort_input_data()
+
+sheet_write(db_drive, ss = ss_i, sheet = "database")
+
+```
+
+
+
 ## Germany 
 
 ##├ Date: 15.06.2023
