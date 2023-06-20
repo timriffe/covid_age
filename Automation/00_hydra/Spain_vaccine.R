@@ -24,7 +24,9 @@ gs4_auth(email = Sys.getenv("email"))
 
 #m_url <- "https://www.mscbs.gob.es/profesionales/saludPublica/ccayes/alertasActual/nCov/vacunaCovid19.htm"
 
-m_url <- "https://www.sanidad.gob.es/profesionales/saludPublica/ccayes/alertasActual/nCov/vacunaCovid19.htm"
+#m_url <- "https://www.sanidad.gob.es/profesionales/saludPublica/ccayes/alertasActual/nCov/vacunaCovid19.htm"
+
+m_url <- "https://www.sanidad.gob.es/areas/alertasEmergenciasSanitarias/alertasActuales/nCov/vacunaCovid19.htm"
 
 links <- scraplinks(m_url) %>% 
   filter(str_detect(url, ".ods")) %>% 
@@ -35,7 +37,7 @@ url <-
   select(url) %>% 
   dplyr::pull()
 
-url_d = paste0("https://www.sanidad.gob.es/profesionales/saludPublica/ccayes/alertasActual/nCov/",url)
+url_d = paste0("https://www.sanidad.gob.es/areas/alertasEmergenciasSanitarias/alertasActuales/nCov/",url)
 
 #local try 
 #data_source <- paste0("U:/COVerAgeDB/Spain/data_vaccine", today(), ".ods")

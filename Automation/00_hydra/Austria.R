@@ -86,7 +86,7 @@ db_age2 <- db_age%>%
 
 vacc_today <- read.csv2("https://opendata.sozialversicherung.at/eimpfpass/COVID19_vaccination_agegroups_v202210.csv")
 
-vacc_out <- vacc_today %>% 
+vacc_today_out <- vacc_today %>% 
   select(Date = date, 
          state_id, 
          Region = state_name, 
@@ -139,6 +139,7 @@ vacc_out <- vacc_today %>%
          Code = case_when(Region == "UNK" ~ "AT-UNK+",
                           TRUE ~ Code)) %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
+  unique() |> 
   sort_input_data()
 
 
@@ -147,7 +148,8 @@ vacc_out <- vacc_today %>%
 out <- 
   bind_rows(DataArchived, 
             db_age2,
-            vacc_out) %>% 
+           # vacc_out,
+            vacc_today_out) %>% 
   unique() %>% 
   sort_input_data()
 
