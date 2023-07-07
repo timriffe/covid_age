@@ -154,6 +154,35 @@ for(i in seq_along(files_in_dataframe$links)){
 
 
 
+##├ Date: 07.07.2023
+
+```{r}
+
+at_rubric <- get_input_rubric() %>% 
+  dplyr::filter(Country == "Ecuador")
+ss_i   <- at_rubric %>% dplyr::pull(Sheet)
+ss_db  <- at_rubric %>% dplyr::pull(Source)
+
+
+db_drive <- read_sheet(ss = ss_i, sheet = "database") %>% 
+ # unique() %>% 
+  sort_input_data()
+
+#sheet_write(db_drive, ss = ss_i, sheet = "database")
+
+
+db_drive |> 
+  mutate(Date = dmy(Date)) |> 
+  filter(Measure != "Deaths", Metric != "Fraction") |> 
+  ggplot(aes(x = Date, y = Value)) +
+  geom_point() +
+  facet_wrap(~Age, scales = "free_y")
+
+
+
+```
+
+
 
 ## Burkina-Faso 
 
