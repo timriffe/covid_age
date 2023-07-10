@@ -1466,3 +1466,51 @@
 # J (maybe_lower_closeout) 
  Sat Jul  1 00:32:45 2023 
 
+
+# begin resolution of multiple sources per population 
+ Fri Jul  7 15:52:51 2023 
+
+
+# Resolve USA CDC overlaps 
+ Fri Jul  7 15:56:50 2023 
+
+
+# prep (resolve_UNKUNK) 
+ Fri Jul  7 15:58:12 2023 
+
+
+# A (convert_fractions_sexes) 
+ Fri Jul  7 16:40:10 2023 
+
+
+# B (redistribute_unknown_age) 
+ Fri Jul  7 17:04:20 2023 
+
+
+# C (rescale_to_total) 
+ Fri Jul  7 19:28:16 2023 
+
+
+# D (infer_cases_from_deaths_and_ascfr) 
+ Fri Jul  7 21:13:00 2023 
+
+
+# E (infer_deaths_from_cases_and_ascfr) 
+ Fri Jul  7 21:42:17 2023 
+
+
+# G (redistribute_unknown_sex) 
+ Sat Jul  8 00:04:56 2023 
+
+
+# H (rescale_sexes) 
+ Sat Jul  8 01:00:24 2023 
+
+
+# I (infer_both_sex) 
+ Sat Jul  8 01:12:42 2023 
+
+
+# J (maybe_lower_closeout) 
+ Sat Jul  8 01:54:17 2023 
+
