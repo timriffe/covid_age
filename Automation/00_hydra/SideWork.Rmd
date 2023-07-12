@@ -233,15 +233,15 @@ ss_db  <- at_rubric %>% dplyr::pull(Source)
 
 
 db_drive <- read_sheet(ss = ss_i, sheet = "database") %>% 
- # unique() %>% 
+  unique() %>% 
   sort_input_data()
 
-#sheet_write(db_drive, ss = ss_i, sheet = "database")
+sheet_write(db_drive, ss = ss_i, sheet = "database")
 
 
 db_drive |> 
   mutate(Date = dmy(Date)) |> 
-  filter(Measure != "Deaths", Metric != "Fraction") |> 
+  filter(Measure == "Cases", Metric == "Count") |> 
   ggplot(aes(x = Date, y = Value)) +
   geom_point() +
   facet_wrap(~Age, scales = "free_y")
