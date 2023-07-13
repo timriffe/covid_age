@@ -70,6 +70,7 @@ nulls <- lapply(metadata_tabs, is.null) %>% unlist()
 metadata_tabs <- metadata_tabs[!nulls]
 saveRDS(metadata_tabs,here::here("Data","metadata_tabs.rds"))
 
+# pick out Fields for basic source table
 vars.dash <- c( "Country", 
                 "Region(s)",
                 "Author",
@@ -82,20 +83,57 @@ vars.dash <- c( "Country",
                 "CASES - Date of events",
                 "DEATHS - Definition",
                 "DEATHS - Coverage",
-                "DEATHS - Date of events"
+                "DEATHS - Date of events",
+                "TESTS - Definition",
+                "TESTS - Coverage",
+                "TESTS - Date of events",
+                "VACCINATION - Definition",
+                "VACCINATION - Coverage",
+                "VACCINATION - Date of events"
 )
+
+## Example to run on the list elements
+# meta_all <- metadata_tabs[[1]] |> 
+#   dplyr::filter(Field %in% vars.dash) |> 
+#   select(-`Explanations / instructions`) |> 
+#   mutate(Answer = case_when(is.na(Answer) ~ "Not Available/ collected",
+#                             TRUE ~ Answer)) |> 
+#   tidyr::pivot_wider(names_from = "Field",
+#                      values_from = "Answer")
+
+
+## Function to combine and pivot. 
+
+combine_meta_pivot <- function(list_element){
+  
+  list_element |> 
+    dplyr::filter(Field %in% vars.dash) |> 
+    select(-`Explanations / instructions`) |> 
+    # mutate(Answer = case_when(is.na(Answer) ~ "Not Available/ collected",
+    #                           TRUE ~ Answer)) |> 
+    tidyr::pivot_wider(names_from = "Field",
+                       values_from = "Answer")
+  
+}
+
+## all meta data in df
+
+metadata_important <- map_dfr(metadata_tabs, combine_meta_pivot)
+
+
 # pick out Fields for basic source table
-metadata_important <- 
-  metadata_tabs %>% 
-  lapply(function(X,vars.dash){
-    #cnames <- c("Country","Region(s)","Author","Main website")
-    X <- X %>% 
-      dplyr::filter(Field %in%vars.dash) 
-    out <- data.frame(t(X[, 2]),stringsAsFactors = FALSE)
-    colnames(out) <- vars.dash
-    out
-  },vars.dash=vars.dash) %>% 
-  bind_rows() 
+## MK: this loop does not run when adding Testing and Vaccination metadata, do not know why 
+# metadata_important <- 
+#   metadata_tabs %>% 
+#   lapply(function(X,vars.dash){
+#     #cnames <- c("Country","Region(s)","Author","Main website")
+#     X <- X %>% 
+#       dplyr::filter(Field %in% vars.dash) 
+#     out <- data.frame(t(X[, 2]), stringsAsFactors = FALSE)
+#     colnames(out) <- vars.dash
+#     out
+#   },vars.dash=vars.dash) %>% 
+#   bind_rows() 
 
 
 # save Drive copy for manual inspection / corrections
