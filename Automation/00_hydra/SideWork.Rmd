@@ -38,7 +38,8 @@ Since this work is related to the already existing datasets and in order to keep
 ```{r}
 
 library(here)
-library(purrr)    
+library(purrr)  
+library(rvest)
 source(here("Automation/00_Functions_automation.R"))
 
 # assigning Drive credentials in the case the script is verified manually  
@@ -52,6 +53,177 @@ drive_auth(email = Sys.getenv("email"))
 gs4_auth(email = Sys.getenv("email"))
 
 ```
+
+
+## Zimbabwe 
+
+##├ Date: 20.06.2023
+
+
+```{r}
+
+at_rubric <- get_input_rubric() %>% 
+  dplyr::filter(Short == "ZW")
+ss_i   <- at_rubric %>% dplyr::pull(Sheet)
+ss_db  <- at_rubric %>% dplyr::pull(Source)
+
+
+db_drive <- read_sheet(ss = ss_i, sheet = "database") %>% 
+  unique() %>% 
+  sort_input_data()
+
+sheet_write(db_drive, ss = ss_i, sheet = "database")
+
+```
+
+
+
+## Germany 
+
+##├ Date: 15.06.2023
+
+
+```{r}
+
+
+Germany_vaccine <- readRDS("N:/COVerAGE-DB/Automation/Hydra/Germany_vaccine.rds")
+
+germany_out <- Germany_vaccine |> 
+  filter(Region == "All") 
+
+Germany_vaccine |> write.csv("Germany_raw_cum.csv")
+
+
+# 
+# harmonized <- data.table::fread("N:/COVerAGE-DB/Data/Output_5_internal.csv")
+# 
+# harmonized_ger <- harmonized |> 
+#   filter(str_detect(Measure, "Vacc"))
+
+```
+
+
+
+
+
+
+
+## Ecuador 
+
+##├ Date: 31.05.2023
+
+
+```{r}
+
+files_dest <- "N:/COVerAGE-DB/Automation/Hydra/Data_sources/Ecuador/"
+
+url_main <- "https://www.gestionderiesgos.gob.ec/informes-de-situacion-covid-19-desde-el-13-de-marzo-del-2020/"
+
+pdfs_dataframe <- data.frame(links = read_html(url_main) %>% 
+             html_nodes("a ") %>% 
+             html_attr('href')) |> 
+  filter(str_detect(links, ".pdf")) |> 
+  mutate(name = str_remove(links, "https://www.gestionderiesgos.gob.ec/wp-content/uploads/"),
+         name = str_remove(name, "\\d+/\\d+/"))
+
+
+files_in_dataframe <- pdfs_dataframe %>%
+  unique() |> 
+  mutate(number = row_number(),
+         destinations = paste0(files_dest, name)) 
+
+
+for(i in seq_along(files_in_dataframe$links)){
+  if(class(try(download.file(files_in_dataframe$links[i],
+                             destfile = files_in_dataframe$destinations[i],
+                             mode="wb"),
+               silent = TRUE)) == "try-error"){
+    print(paste("No file for:", i))
+  next 
+    print(paste("downnloading:", i))
+  }
+}
+
+
+
+# files_in_dataframe %>% 
+#   {map2(.$links, .$destinations, ~ download.file(url = .x, destfile = .y, mode="wb"))}
+
+```
+
+
+
+
+## Burkina-Faso 
+
+##├ Date: 30.05.2023
+
+
+```{r}
+
+library(rvest)
+
+files_dest <- "N:/COVerAGE-DB/Automation/Hydra/Data_sources/Burkina-Faso/"
+
+url_main <- "https://www.humanitarianresponse.info/en/operations/burkina-faso/documents/themes/covid-19"
+
+page_number <- 1:11
+
+base_url <- "https://www.humanitarianresponse.info/en/operations/burkina-faso/documents/themes/covid-19?page="
+
+
+missing_files <- data.frame(base = rep(base_url), 
+                            times = page_number) %>% 
+  mutate(url = paste0(base, times)) |> 
+  dplyr::pull(url)
+
+
+extract_pdfs <- function(url_main){
+  
+  data.frame(links = read_html(url_main) %>% 
+             html_nodes("a ") %>% 
+             html_attr('href')) |> 
+  filter(str_detect(links, ".pdf"))
+}
+
+
+pdfs_dataframe <- map_dfr(missing_files, extract_pdfs)
+
+
+files_in_dataframe <- pdfs_dataframe %>%
+  mutate(number = row_number(),
+         destinations = paste0(files_dest, "BF-", number, ".pdf")) 
+
+files_in_dataframe %>% 
+  {map2(.$links, .$destinations, ~ download.file(url = .x, destfile = .y, mode="wb"))}
+
+```
+
+
+##├ Date: 12.06.2023
+
+
+```{r}
+
+at_rubric <- get_input_rubric() %>% 
+  dplyr::filter(Short == "BF")
+ss_i   <- at_rubric %>% dplyr::pull(Sheet)
+ss_db  <- at_rubric %>% dplyr::pull(Source)
+
+
+db_drive |> 
+  mutate(Date = dmy(Date)) |> count(Date) |> View()
+
+db_drive <- read_sheet(ss = ss_i, sheet = "database") %>% 
+  unique() %>% 
+  sort_input_data()
+
+
+
+sheet_write(db_drive, ss = ss_i, sheet = "database")
+
+```
+
 
 
 ## Canada 
@@ -120,6 +292,8 @@ sheet_write(data_out, ss = ss_i, sheet = "database")
 
 
 ```
+
+
 
 ## KENYA 
 
@@ -770,24 +944,22 @@ vacc_out <- files_in_dataframe %>%
          Value = vaccinations_administered_cumulative) %>% 
   filter(Region != "Österreich") %>% # somehow, they added a row for 'All', a duplicate of the state_id no. 10
   mutate(Date = ymd(str_sub(Date, 1, 10)),
-         Age = recode(Age,
-                      "00-11" = "0",
-                      "12-14" = "12",
-                      "15-24"= "15",
-                      "25-34" = "25",
-                      "35-44" = "35",
-                      "45-54" = "45",
-                      "55-64" = "55",
-                      "65-74" = "65",
-                      "75-84" = "75",
-                      "85+" = "85",
-                      "NotAssigned" = "UNK"),
-         Sex = recode(Sex,
-                      "Male" = "m",
-                      "Female" = "f",
-                      "NonBinary" = "NonBinary",
-                      "Other" = "UNK",
-                      "NotAssigned" = "UNK"),
+         Age = case_when(Age == "00-11" ~ "0",
+                         Age == "12-14" ~ "12",
+                         Age == "15-24" ~ "15",
+                         Age == "25-34" ~ "25",
+                         Age == "35-44" ~ "35",
+                         Age == "45-54" ~ "45",
+                      Age == "55-64" ~ "55",
+                      Age == "65-74" ~ "65",
+                      Age == "75-84" ~ "75",
+                      Age == "85+" ~ "85",
+                      Age == "NotAssigned" ~ "UNK"),
+         Sex = case_when(Sex == "Male" ~ "m",
+                      Sex == "Female" ~ "f",
+                      Sex == "NonBinary" ~ "NonBinary",
+                      Sex == "Other" ~ "UNK",
+                      Sex == "NotAssigned" ~ "UNK"),
          Measure = paste0("Vaccination", Measure),
          Region = case_when(
            Region == "NoState" ~ "UNK",

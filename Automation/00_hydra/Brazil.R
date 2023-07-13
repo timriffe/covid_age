@@ -137,6 +137,7 @@ out <-
          Measure = "Deaths",
          Metric = "Count",
          Date = ddmmyyyy(Date)) %>% 
+  unique() %>% 
   sort_input_data()
 
 ############################################

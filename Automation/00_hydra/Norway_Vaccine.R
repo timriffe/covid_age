@@ -77,7 +77,7 @@ library(xml2)
 api <- "https://statistikk.fhi.no/api/sysvak/v0/vaccinations?columns=diagnose&rows=alder&diagnosisList=COVID_19&sexesList=K,M&dosesList=01,02,03,04"
 
 data_today <- jsonlite::fromJSON(api)[['groupings']] %>%
-  tidyr::unnest_wider(column) %>%
+  tidyr::separate(column, into = c("diseses", "dose", "sex"), sep = ",") %>%
   select('Measure' = 2,
          'Sex' = 3,
          "Age" = 4,
@@ -89,14 +89,15 @@ vacc_today <- data_today %>%
     Value = replace_na(Value, 0),
     Date = today(),
     Date = ymd(Date),
-    Sex = case_when(Sex == "Kvinne" ~ "f",
-                    Sex == "Mann" ~ "m"),
-    Measure = case_when(Measure == "Dose 1" ~ "Vaccination1",
-                        Measure == "Dose 2" ~ "Vaccination2",
-                        Measure == "Dose 3" ~ "Vaccination3",
-                        Measure == "Dose 4" ~ "Vaccination4"),
+    Sex = case_when(str_detect(Sex, "Kvinne") ~ "f",
+                    str_detect(Sex, "Mann") ~ "m"),
+    Measure = case_when(str_detect(Measure, "Dose 1") ~ "Vaccination1",
+                        str_detect(Measure, "Dose 2") ~ "Vaccination2",
+                        str_detect(Measure, "Dose 3") ~ "Vaccination3",
+                        str_detect(Measure, "Dose 4") ~ "Vaccination4"),
     Age = str_extract(Age, pattern = "\\d+"),
     AgeInt=case_when(
+      Age == "0" ~ 12L,
       Age == "12" ~ 4L,
       Age == "16" ~ 2L,
       Age == "18" ~ 7L,
@@ -121,17 +122,24 @@ vacc_today <- data_today %>%
 ## read historical saved data 
 
 vacc_historical <- readRDS(paste0(dir_n, "Norway_Vaccine.rds")) %>% 
-  mutate(Date = dmy(Date))
+  mutate(Date = dmy(Date)) # |> 
+ ## MK: 12.06.2023: Norway changed data structure for almost a month, to single-year age from 0-12, 
+  ## then they added age group: 0-11 since 07.05.2023. 
+  # mutate(AgeInt = case_when(Age == "0" & Date >= "2023-05-07" ~ 12L,
+  #                           is.na(AgeInt) ~ 1L,
+  #                           TRUE ~ AgeInt)) 
 
 vacc_out <- rbind(vacc_today, vacc_historical) %>% 
   mutate(
      Date = ymd(Date),
-     Date = ddmmyyyy(Date))%>% 
+     Date = ddmmyyyy(Date),
+     AgeInt = case_when(Age == "0" ~ 12L,
+                        TRUE ~ AgeInt))%>% 
   select(Country, Region, Code, Date, Sex, 
          Age, AgeInt, Metric, Measure, Value)%>% 
   mutate(Value = as.character(Value)) %>% 
-  sort_input_data() %>% 
-  unique()
+  unique() %>% 
+  sort_input_data()
 
 #upload 
 
