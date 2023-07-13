@@ -5,6 +5,11 @@ setwd(wd_sched_detect())
 here::i_am("covid_age.Rproj")
 startup::startup()
 
+# TR 13 July 2023, copied from 01_update_inputDB.R
+Measures <- c("Cases","Deaths","Tests","ASCFR","Vaccinations",
+              "Vaccination1","Vaccination2", "Vaccination3", "Vaccination4", 
+              "Vaccination5", "Vaccination6", "VaccinationBooster")
+
 # TODO
 # This script will look on N for the most recent inputCounts.csv (or similar) file, 
 # which will soon be built simultaneously with the inputDB.
@@ -92,7 +97,7 @@ t_subsets <-
   collapse::funique() |>
   # only include those measures that we are currently age-harmonizing!
   # this should be modified when we include Vaccines
-  collapse::fsubset(Measure %in% c("Cases","Deaths","Tests"))
+  collapse::fsubset(Measure %in% Measures)
   
 new_to_harmonize <-
   # I know there's a data.table faster way to do this, but whatever
@@ -112,9 +117,11 @@ o_subsets2 <-
   collapse::fmutate(value_old = round(Value)) |>
   collapse::fselect(Code, Date, Sex, Measure, Age, value_old)
 
+
+
 t_subsets2 <-  
   tfile %>% 
-  collapse::fsubset(Measure %in% c("Cases","Deaths","Tests")) |>
+  collapse::fsubset(Measure %in% Measures) |>
   collapse::fmutate(value_new = round(Value))  |>
   collapse::fselect(Code, Date, Sex, Measure, Age, value_new)
 
