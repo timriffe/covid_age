@@ -10,15 +10,17 @@ logfile <- here::here("buildlog.md")
 # n.cores  <- 3
 
 freesz  <- memuse::Sys.meminfo()$freeram@size
-n.cores <- min(round(freesz / 16),20)
-if (Sys.info()["nodename"] == "HYDRA11"){
-  n.cores <- 50
-}
+# n.cores <- min(round(freesz / 16),20)
+# if (Sys.info()["nodename"] == "HYDRA11"){
+#   n.cores <- 50
+# }
+n.cores <- 4
 ### Load data #######################################################
 
 # previous age harmonization run:
 OutputCounts_old <- data.table::fread("N://COVerAGE-DB/Data/Output_5_internal.csv") |>
-  tidyfast::dt_pivot_longer(c(Cases,Deaths,Tests), 
+  # TR 13 July 2023 switch to negative selection in order
+  tidyfast::dt_pivot_longer(-c( Country, Region, Code, Date, Sex, Age, AgeInt), 
                             names_to = "Measure", 
                             values_to = "Value", 
                             values_drop_na = TRUE)
@@ -44,7 +46,7 @@ subset_changes <-
 # This used to point to a user copy, but now we presume the most recent inputCounts build is on N!
 inputCounts <- data.table::fread("N://COVerAGE-DB/Data/inputCounts.csv",
                                  encoding = "UTF-8") %>% 
-  collapse::fsubset(Measure %in% c("Cases","Deaths","Tests")) %>% 
+  collapse::fsubset(Measure %in% Measures) %>% 
   collapse::fselect(-Metric)
 
 # these subsets have been determined to need new or re-harmonization 
