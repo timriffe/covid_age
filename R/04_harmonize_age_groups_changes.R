@@ -5,6 +5,12 @@ setwd(wd_sched_detect())
 here::i_am("covid_age.Rproj")
 startup::startup()
 
+# TR 13 July 2023, copied from 01_update_inputDB.R
+Measures <- c("Cases","Deaths","Tests","ASCFR","Vaccinations",
+              "Vaccination1","Vaccination2", "Vaccination3", "Vaccination4", 
+              "Vaccination5", "Vaccination6", "VaccinationBooster")
+
+
 logfile <- here::here("buildlog.md")
 # n.cores <- round(6 + (detectCores() - 8)/4)
 # n.cores  <- 3
