@@ -150,7 +150,8 @@ metadata_important <-
 # save local copy for dash building
 saveRDS(metadata_important, file = here::here("Data","metadata_important.rds"))
 
-
+metadata_tabs <- readRDS(here::here("Data","metadata_tabs.rds"))
+metadata_table <- readRDS(here::here("Data","metadata_important.rds"))
 # ----------------
 # further stuff to design / implement. Lots of field gaps to fill still here.
 do_this <- FALSE
@@ -167,7 +168,13 @@ if (do_this){
                   "CASES - Date of events",
                   "DEATHS - Definition",
                   "DEATHS - Coverage",
-                  "DEATHS - Date of events"
+                  "DEATHS - Date of events",
+                  "TESTS - Definition",
+                  "TESTS - Coverage",
+                  "TESTS - Date of events",
+                  "VACCINATION - Definition",
+                  "VACCINATION - Coverage",
+                  "VACCINATION - Date of events"
   )
 metadata_table <- lapply(metadata_tabs, function(X, vars.dash){
   dash.vars <-
@@ -215,12 +222,28 @@ tab3 <- metadata_table %>%
          Coverage = `DEATHS - Coverage`,
          `Date of events` = `DEATHS - Date of events`)
 
+tab4 <- metadata_table %>% 
+  select(Country, 
+         `Region(s)`,
+         Definition = `TESTS - Definition`,
+         Coverage = `TESTS - Coverage`,
+         `Date of events` = `TESTS - Date of events`)
+
+tab5 <- metadata_table %>% 
+  select(Country, 
+         `Region(s)`,
+         Definition = `VACCINATION - Definition`,
+         Coverage = `VACCINATION - Coverage`,
+         `Date of events` = `VACCINATION - Date of events`)
+
 
 saveRDS(metadata_tabs,file = here::here("Data","metadata_tabs.rds"))
 saveRDS(metadata_table,file = here::here("Data","metadata_table.rds"))
 saveRDS(tab1,file = here::here("Data","tab1.rds"))
 saveRDS(tab2,file = here::here("Data","tab2.rds"))
 saveRDS(tab3,file = here::here("Data","tab3.rds"))
+saveRDS(tab4,file = here::here("Data","tab4.rds"))
+saveRDS(tab5,file = here::here("Data","tab5.rds"))
 
 
 }
