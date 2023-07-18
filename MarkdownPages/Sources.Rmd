@@ -29,11 +29,12 @@ rownames(metadata_sources) <- NULL
 
 metadata_sources_table <-
   metadata_sources %>% 
+  filter(!is.na(Country)) |> 
   arrange(Country, `Region(s)`) %>% 
   datatable(options = list(pageLength = 100))
 
 ```
 
 ```{r, echo = FALSE}
-metadata_sources_table
+metadata_sources_table 
 ```

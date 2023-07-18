@@ -34,6 +34,10 @@ Historic_Tests <- incoming %>% filter(Measure == "Tests")
 
 #--------- Downloading data
 
+## MK, 26.06.2023: Alberta changed the data publishing; seems no age-data anymore is published
+## here: https://www.alberta.ca/stats/covid-19-alberta-statistics.htm#data-export
+## so, I deprecated this script. 
+
 df <- read_csv("https://www.alberta.ca/data/stats/covid-19-alberta-statistics-data.csv")
 
 
@@ -396,6 +400,6 @@ out2 <- bind_rows(out, Historic_Tests) %>%
 #### Saving data in N: ####
 ###########################
 write_rds(out, paste0(dir_n, ctr, ".rds"))
-log_update(pp = ctr, N = nrow(out))
+#log_update(pp = ctr, N = nrow(out))
 
 

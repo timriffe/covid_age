@@ -14,6 +14,11 @@ dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 drive_auth(email = Sys.getenv("email"))
 gs4_auth(email = Sys.getenv("email"))
 
+
+## MK: 13.07.2023, as announced on the website, data are not published anymore and the data available are until April 2023. 
+## Decision: deprecated. 
+
+
 # TR: major change 7 Feb 2022: Drive sheet is read separately 
 # when the inputDB is compiled. If collection changes for 
 # deaths in BC then we will rework it
@@ -87,7 +92,7 @@ out <-
 write_rds(out, paste0(dir_n, ctr, ".rds"))
 
 # updating hydra dashboard
-log_update(pp = ctr, N = nrow(out))
+#log_update(pp = ctr, N = nrow(out))
 
 
 

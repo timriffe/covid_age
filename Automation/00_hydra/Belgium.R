@@ -33,11 +33,12 @@ data_source_c <- paste0(dir_n, "Data_sources/", ctr, "/all_",today(), ".xlsx")
 download.file(url, destfile = data_source_c, mode = "wb")
 
 # cases and deaths database
+## MK: 10.07.2023: deaths sheet is not anymore available. 
 db_c <- read_xlsx(data_source_c,
                   sheet = "CASES_AGESEX")
 
-db_d <- read_xlsx(data_source_c,
-                  sheet = "MORT")
+# db_d <- read_xlsx(data_source_c,
+#                   sheet = "MORT")
 
 db_t <- read_xlsx(data_source_c,
                   sheet = "TESTS")
@@ -70,6 +71,8 @@ last_date <- db_c %>%
   dplyr::pull(last_d) %>% 
   max()
 
+## Cases =============
+
 db_c2 <- db_c %>% 
   select(Region = REGION,
          Date = DATE,
@@ -98,50 +101,55 @@ db_c2 <- db_c %>%
   ungroup() %>% 
   select(-new) 
 
-db_d2 <- db_d %>% 
-  select(Region = REGION,
-         Date = DATE,
-         Sex = SEX,
-         Age = AGEGROUP,
-         new = DEATHS) %>% 
-  separate(Age, c("Age", "trash"), sep = "-") %>% 
-  mutate(Date = ymd(Date),
-         Measure = "Deaths",
-         Age = case_when(Age == "85+" ~ "90",
-                         is.na(Age) ~ "UNK",
-                         TRUE ~ Age),
-         Sex = case_when(Sex == "M" ~ "m",
-                         Sex == "F" ~ "f",
-                         TRUE ~ "UNK"),
-         Region = ifelse(is.na(Region), "UNK", Region)) %>% 
-  select(-trash) %>% 
-  replace_na(list(Date = last_date)) %>% 
-  tidyr::complete(Date, Region, Measure, Sex, Age, fill = list(new = 0)) %>% 
-  arrange(Date) %>% 
-  group_by(Region, Sex, Age, Measure) %>% 
-  mutate(Value = cumsum(new)) %>% 
-  ungroup() %>% 
-  select(-new) 
+## Deaths ==============
 
-db_cd <- bind_rows(db_c2, db_d2)
+# db_d2 <- db_d %>% 
+#   select(Region = REGION,
+#          Date = DATE,
+#          Sex = SEX,
+#          Age = AGEGROUP,
+#          new = DEATHS) %>% 
+#   separate(Age, c("Age", "trash"), sep = "-") %>% 
+#   mutate(Date = ymd(Date),
+#          Measure = "Deaths",
+#          Age = case_when(Age == "85+" ~ "90",
+#                          is.na(Age) ~ "UNK",
+#                          TRUE ~ Age),
+#          Sex = case_when(Sex == "M" ~ "m",
+#                          Sex == "F" ~ "f",
+#                          TRUE ~ "UNK"),
+#          Region = ifelse(is.na(Region), "UNK", Region)) %>% 
+#   select(-trash) %>% 
+#   replace_na(list(Date = last_date)) %>% 
+#   tidyr::complete(Date, Region, Measure, Sex, Age, fill = list(new = 0)) %>% 
+#   arrange(Date) %>% 
+#   group_by(Region, Sex, Age, Measure) %>% 
+#   mutate(Value = cumsum(new)) %>% 
+#   ungroup() %>% 
+#   select(-new) 
 
-db_cd_sex <- db_cd %>% 
+# db_cd <- bind_rows(db_c2, db_d2)
+
+db_cd_sex <- db_c2 %>% 
   group_by(Date, Region, Measure, Age) %>% 
   summarise(Value = sum(Value)) %>% 
   ungroup() %>% 
   mutate(Sex = "b") %>% 
   filter(Age != "UNK")
 
-db_cd_age <- db_cd %>% 
+db_cd_age <- db_c2 %>% 
   group_by(Date, Region, Measure, Sex) %>% 
   summarise(Value = sum(Value)) %>% 
   ungroup() %>% 
   mutate(Age = "TOT") %>% 
   filter(Sex != "UNK")
 
-db_cd2 <- db_cd %>% 
+db_cd2 <- db_c2 %>% 
   filter(Age != "UNK" & Sex != "UNK") %>% 
   bind_rows(db_cd_sex, db_cd_age) 
+
+
+## Vaccines =================
 
 db_v2 <- db_v %>% 
   select(Region = REGION,
@@ -179,6 +187,7 @@ db_v2 <- db_v %>%
   ungroup() %>% 
   select(-new)
 
+## Tests =================
 
 db_t2 <- db_t %>% 
   select(Region = REGION,
@@ -276,6 +285,7 @@ out <- bind_rows(db_nal,
          Metric = "Count") %>% 
   arrange(Region, date_f, Measure, Sex, suppressWarnings(as.integer(Age))) %>% 
   select(Country, Region, Code,  Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
+  unique() |> 
   sort_input_data()
 
 unique(out$Region)

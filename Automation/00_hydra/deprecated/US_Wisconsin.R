@@ -288,7 +288,7 @@ Code = paste0("US-WI"))%>%
 write_rds(db_out2, paste0(dir_n, ctr, ".rds"))
 
 # updating hydra dashboard
-log_update(pp = ctr, N = nrow(db_out2))
+#log_update(pp = ctr, N = nrow(db_out2))
 
 data_source <- paste0(dir_n, 
                       "Data_sources/", 

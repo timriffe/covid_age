@@ -142,7 +142,7 @@ if(source_date > date_archive) {
 
 In_vax_totals <- In_vaccine_total_s %>% 
   select(Region = 1,
-         Vaccinations = `Dosis administradas(2)*`)
+         Vaccinations = `Dosis administradas (2)*`)
 
 In_vax_total <- In_vaccine_total %>% 
   inner_join(In_vax_totals, by = "Region")

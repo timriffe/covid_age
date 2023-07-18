@@ -70,6 +70,7 @@ nulls <- lapply(metadata_tabs, is.null) %>% unlist()
 metadata_tabs <- metadata_tabs[!nulls]
 saveRDS(metadata_tabs,here::here("Data","metadata_tabs.rds"))
 
+# pick out Fields for basic source table
 vars.dash <- c( "Country", 
                 "Region(s)",
                 "Author",
@@ -82,20 +83,57 @@ vars.dash <- c( "Country",
                 "CASES - Date of events",
                 "DEATHS - Definition",
                 "DEATHS - Coverage",
-                "DEATHS - Date of events"
+                "DEATHS - Date of events",
+                "TESTS - Definition",
+                "TESTS - Coverage",
+                "TESTS - Date of events",
+                "VACCINATION - Definition",
+                "VACCINATION - Coverage",
+                "VACCINATION - Date of events"
 )
+
+## Example to run on the list elements
+# meta_all <- metadata_tabs[[1]] |> 
+#   dplyr::filter(Field %in% vars.dash) |> 
+#   select(-`Explanations / instructions`) |> 
+#   mutate(Answer = case_when(is.na(Answer) ~ "Not Available/ collected",
+#                             TRUE ~ Answer)) |> 
+#   tidyr::pivot_wider(names_from = "Field",
+#                      values_from = "Answer")
+
+
+## Function to combine and pivot. 
+
+combine_meta_pivot <- function(list_element){
+  
+  list_element |> 
+    dplyr::filter(Field %in% vars.dash) |> 
+    select(-`Explanations / instructions`) |> 
+    # mutate(Answer = case_when(is.na(Answer) ~ "Not Available/ collected",
+    #                           TRUE ~ Answer)) |> 
+    tidyr::pivot_wider(names_from = "Field",
+                       values_from = "Answer")
+  
+}
+
+## all meta data in df
+
+metadata_important <- map_dfr(metadata_tabs, combine_meta_pivot)
+
+
 # pick out Fields for basic source table
-metadata_important <- 
-  metadata_tabs %>% 
-  lapply(function(X,vars.dash){
-    #cnames <- c("Country","Region(s)","Author","Main website")
-    X <- X %>% 
-      dplyr::filter(Field %in%vars.dash) 
-    out <- data.frame(t(X[, 2]),stringsAsFactors = FALSE)
-    colnames(out) <- vars.dash
-    out
-  },vars.dash=vars.dash) %>% 
-  bind_rows() 
+## MK: this loop does not run when adding Testing and Vaccination metadata, do not know why 
+# metadata_important <- 
+#   metadata_tabs %>% 
+#   lapply(function(X,vars.dash){
+#     #cnames <- c("Country","Region(s)","Author","Main website")
+#     X <- X %>% 
+#       dplyr::filter(Field %in% vars.dash) 
+#     out <- data.frame(t(X[, 2]), stringsAsFactors = FALSE)
+#     colnames(out) <- vars.dash
+#     out
+#   },vars.dash=vars.dash) %>% 
+#   bind_rows() 
 
 
 # save Drive copy for manual inspection / corrections
@@ -112,7 +150,8 @@ metadata_important <-
 # save local copy for dash building
 saveRDS(metadata_important, file = here::here("Data","metadata_important.rds"))
 
-
+metadata_tabs <- readRDS(here::here("Data","metadata_tabs.rds"))
+metadata_table <- readRDS(here::here("Data","metadata_important.rds"))
 # ----------------
 # further stuff to design / implement. Lots of field gaps to fill still here.
 do_this <- FALSE
@@ -129,7 +168,13 @@ if (do_this){
                   "CASES - Date of events",
                   "DEATHS - Definition",
                   "DEATHS - Coverage",
-                  "DEATHS - Date of events"
+                  "DEATHS - Date of events",
+                  "TESTS - Definition",
+                  "TESTS - Coverage",
+                  "TESTS - Date of events",
+                  "VACCINATION - Definition",
+                  "VACCINATION - Coverage",
+                  "VACCINATION - Date of events"
   )
 metadata_table <- lapply(metadata_tabs, function(X, vars.dash){
   dash.vars <-
@@ -177,12 +222,28 @@ tab3 <- metadata_table %>%
          Coverage = `DEATHS - Coverage`,
          `Date of events` = `DEATHS - Date of events`)
 
+tab4 <- metadata_table %>% 
+  select(Country, 
+         `Region(s)`,
+         Definition = `TESTS - Definition`,
+         Coverage = `TESTS - Coverage`,
+         `Date of events` = `TESTS - Date of events`)
+
+tab5 <- metadata_table %>% 
+  select(Country, 
+         `Region(s)`,
+         Definition = `VACCINATION - Definition`,
+         Coverage = `VACCINATION - Coverage`,
+         `Date of events` = `VACCINATION - Date of events`)
+
 
 saveRDS(metadata_tabs,file = here::here("Data","metadata_tabs.rds"))
 saveRDS(metadata_table,file = here::here("Data","metadata_table.rds"))
 saveRDS(tab1,file = here::here("Data","tab1.rds"))
 saveRDS(tab2,file = here::here("Data","tab2.rds"))
 saveRDS(tab3,file = here::here("Data","tab3.rds"))
+saveRDS(tab4,file = here::here("Data","tab4.rds"))
+saveRDS(tab5,file = here::here("Data","tab5.rds"))
 
 
 }

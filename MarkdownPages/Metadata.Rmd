@@ -1,23 +1,116 @@
 ---
 title: "Metadata"
 author: "COVerAGE-DB"
-date: "6/26/2020"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
 ```
 
-##
+
+COVerAGE-DB Metadata definitions of cases, deaths, tests and vaccination as best available and as published by the respective sources. 
+
 
 ```{r, include = FALSE}
 library(DT)
+library(dplyr)
 library(here)
 
 tab1 <- readRDS(here("Data","tab1.rds"))
 tab2 <- readRDS(here("Data","tab2.rds"))
 tab3 <- readRDS(here("Data","tab3.rds"))
+tab4 <- readRDS(here("Data","tab4.rds"))
+tab5 <- readRDS(here("Data","tab5.rds"))
 ```
 
+
+## {.tabset}
+
+### Overview
+
+
+```{r, include = FALSE}
+metadata_overview_table <-
+  tab1 %>% 
+  filter(!is.na(Country)) |> 
+  arrange(Country, `Region(s)`) %>% 
+  datatable(options = list(pageLength = 100))
+```
+
+
+```{r}
+metadata_overview_table
+```
+
+
+### Cases
+
+
+```{r, include = FALSE}
+metadata_cases_table <-
+  tab2 %>% 
+  filter(!is.na(Country)) |> 
+  arrange(Country, `Region(s)`) %>% 
+  datatable(options = list(pageLength = 100))
+
+```
+
+```{r}
+metadata_cases_table
+```
+
+
+### Deaths
+
+
+```{r, include = FALSE}
+metadata_deaths_table <-
+  tab3 %>% 
+  filter(!is.na(Country)) |> 
+  arrange(Country, `Region(s)`) %>% 
+  datatable(options = list(pageLength = 100))
+```
+
+```{r}
+metadata_deaths_table
+```
+
+
+### Tests
+
+
+```{r, include = FALSE}
+metadata_tests_table <-
+  tab4 %>% 
+  filter(!is.na(Country)) |> 
+  arrange(Country, `Region(s)`) %>% 
+  datatable(options = list(pageLength = 100))
+
+ 
+```
+
+```{r}
+metadata_tests_table
+```
+
+
+### Vaccination
+
+
+```{r, include = FALSE}
+metadata_vacc_table <-
+  tab5 %>% 
+  filter(!is.na(Country)) |> 
+  arrange(Country, `Region(s)`) %>% 
+  datatable(options = list(pageLength = 100))
+
+ 
+```
+
+
+```{r}
+metadata_vacc_table
+```
 
