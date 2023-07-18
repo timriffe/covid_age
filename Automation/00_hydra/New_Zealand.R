@@ -46,15 +46,20 @@ m_url <- "https://www.health.govt.nz/our-work/diseases-and-conditions/covid-19-n
 # reading date of last update
 html      <- read_html(m_url)
 date_text <-
-  html_nodes(html, xpath = '//*[@id="node-10866"]/div[2]/div/div/p[1]') %>%
-  html_text()
-loc_date1 <- str_locate(date_text, "Last updated ")[2] + 5
-loc_date2 <- str_length(date_text[1])
+  html_nodes(html, ".footer__last-updated-content--align-to-body") %>%
+             #xpath = '//*[@id="node-10866"]/div[2]/div/div/p[1]') %>%
+  html_text() |> 
+  str_trim()
+  
+  
+#loc_date1 <- str_locate(date_text, "Last updated ")[2] + 5
+date_f <- dmy(date_text)
+#loc_date2 <- str_length(date_text[1])
 
-date_f  <- str_sub(date_text, loc_date1, loc_date2) %>% 
-  str_trim() %>% 
-  str_replace("\\.", "") %>% 
-  dmy()
+# date_f  <- str_sub(date_text, loc_date1, loc_date2) %>% 
+#   str_trim() %>% 
+#   str_replace("\\.", "") %>% 
+#   dmy()
 
 
 if (date_f > last_date_drive){
