@@ -38,8 +38,8 @@ subsets_keep <- data.table::fread("N://COVerAGE-DB/Data/subsets_keep_harmonizati
 OutputCounts_keep <-
   subsets_keep |>
   left_join(OutputCounts_old, by = c("Code","Date","Sex","Measure")) |>
-  collapse::fsubset(keep) |>
-  tidyfast::dt_pivot_wider(names_from = "Measure", values_from = "Value")
+  select(-keep) %>% 
+  pivot_wider(names_from = "Measure", values_from = "Value")
 
 
 # which of those old results shall we preserve rather than recalculate?
