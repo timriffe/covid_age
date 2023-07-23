@@ -203,7 +203,7 @@ outputCounts_5_1e5_rounded <-
          #Tests = round(Tests,1))
 
 # Save csv
-header_msg1 <- "Counts of Cases, Deaths, and Tests in harmonized 5-year age groups"
+header_msg1 <- "Counts of all measures in harmonized 5-year age groups"
 header_msg2 <- paste("Built:",timestamp(prefix="",suffix=""))
 header_msg3 <- paste("Reproducible with: ",paste0("https://github.com/", Sys.getenv("git_handle"), "/covid_age/commit/",system("git rev-parse HEAD", intern=TRUE)))
 
@@ -233,10 +233,8 @@ outputCounts_10 <-
   # Replace numbers ending in 5
   mutate(Age = Age - Age %% 10) %>% 
   # Sum 
-  group_by(Country, Region, Code, Date, Sex, Age) %>% 
-  summarize(Cases = sum(Cases),
-            Deaths = sum(Deaths),
-            Tests = sum(Tests),
+  group_by(Country, Region, Code, Date, Sex, Measure, Age) %>% 
+  summarize(Value = sum(Value),
             .groups= "drop") %>% 
   # Replace age interval values
   mutate(AgeInt = ifelse(Age == 100, 5, 10))
@@ -246,12 +244,12 @@ outputCounts_10 <- outputCounts_10[, colnames(outputCounts_5_1e5)]
 # round output for csv
 outputCounts_10_rounded <- 
   outputCounts_10 %>% 
-  mutate(Cases = round(Cases,1),
-         Deaths = round(Deaths,1),
-         Tests = round(Tests,1))
+  mutate(Value = round(Value,1))
+        # Deaths = round(Deaths,1),
+        # Tests = round(Tests,1))
 
 # Save CSV
-header_msg1 <- "Counts of Cases, Deaths, and Tests in harmonized 10-year age groups"
+header_msg1 <- "Counts of all measures in harmonized 10-year age groups"
 header_msg2 <- paste("Built:",timestamp(prefix="",suffix=""))
 header_msg3 <- paste("Reproducible with: ",paste0("https://github.com/", Sys.getenv("git_handle"), "/covid_age/commit/",system("git rev-parse HEAD", intern=TRUE)))
 
