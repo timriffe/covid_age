@@ -225,7 +225,7 @@ data.table::fwrite(outputCounts_5_1e5_rounded,
 
 
 ### Age harmonization: 10-year age groups ###########################
-outputCounts_5_1e5 %>% length()
+
 # Get 10-year groups from 5-year groups
 outputCounts_10 <- 
   #  Take 5-year groups
