@@ -25,6 +25,9 @@ gs4_auth(email = Sys.getenv("email"))
 #drive_auth(email = Sys.getenv("email"))
 #gs4_auth(email = Sys.getenv("email"))
 
+## Source: https://github.com/InPhyT/COVID19-Italy-Integrated-Surveillance-Data/tree/main
+## MK: 10.07.2023: No published updates since 10.2022. 
+
 ##female cases
 m_url <- "https://github.com/InPhyT/COVID19-Italy-Integrated-Surveillance-Data/tree/main/3_output/data/"
 
@@ -368,7 +371,7 @@ out <- rbind(cases_female_out, cases_male_out, deaths_female_out, deaths_male_ou
 
 write_rds(out, paste0(dir_n, ctr, ".rds"))
 
-log_update(pp = ctr, N = nrow(out)) 
+#log_update(pp = ctr, N = nrow(out)) 
 
 #archive input data 
 

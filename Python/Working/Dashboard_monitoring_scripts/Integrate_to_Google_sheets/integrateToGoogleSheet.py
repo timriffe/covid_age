@@ -41,7 +41,7 @@ spreadsheet = {
 wb = xw.Book('N:/COVerAGE-DB/Automation/Python-Dashboard/PythonDashboard.xlsx')
 app = xw.apps.active
 sht = xw.Sheet('dash-view')
-py_list = sht.range('E3:N8').value
+py_list = sht.range('E3:N7').value
 print(py_list)
 #wb.close()
 app.quit()
@@ -59,7 +59,7 @@ update_response = sheets_service.spreadsheets().values().update(
     range=range_name, 
     valueInputOption='USER_ENTERED').execute()
 
-range_name = "Python_automation!E3:N8"  
+range_name = "Python_automation!E3:N7"  
 
 response = sheets_service.spreadsheets().values().get(
   #spreadsheetId='1T6w5pIRk2q-imBfetddFbOUq0DuXEISFX_P10gpDMUg',#file created by service account

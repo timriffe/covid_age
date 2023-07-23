@@ -166,10 +166,11 @@ weekly_Boosters <-
   filter(Sex != "id")  %>%  # filter out immunocompromised doses ## 
   mutate(Measure = case_when(Sex == "ad2" ~ "Vaccination4",
                              Sex == "ad3" ~ "Vaccination5",
+                             Sex == "ad4" ~ "Vaccination6",
                              Sex == "ad" ~ "Vaccination3",
                              Sex %in% c("f", "m", "UNK") ~ "Vaccinations"),
          Sex = case_when(Sex == "na" ~ "UNK",
-                         Sex %in% c("ad", "ad2", "ad3") ~ "b",
+                         Sex %in% c("ad", "ad2", "ad3", "ad4") ~ "b",
                          TRUE ~ Sex),
          Age = gsub(Age, pattern = "age", replacement = ""),
          Age = case_when(Age == "na" ~ "UNK",
@@ -205,12 +206,12 @@ Everything <-
             Cases,
             Vaccinations1and2,
             weekly_Boosters) %>% 
-
   ungroup() %>% 
   mutate(Country = "Ireland",
          Region = "All",
          Metric = "Count",
-         Code = "IE") 
+         Code = "IE") |> 
+  sort_input_data()
 
 IE_in <- get_country_inputDB("IE")
 
@@ -230,9 +231,11 @@ Deaths_append <-
           by = c("Date","Measure","Sex"))
   
 out <- bind_rows(Everything,
-                        Deaths_append)
+                        Deaths_append) |> 
+  unique() |> 
+  sort_input_data()
 
-saveRDS(Everything, file = "N://COVerAGE-DB/Automation/Hydra/Ireland.rds")
+saveRDS(out, file = "N://COVerAGE-DB/Automation/Hydra/Ireland.rds")
 
 log_update(pp = ctr, N = nrow(out)) 
 

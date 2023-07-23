@@ -46,15 +46,20 @@ m_url <- "https://www.health.govt.nz/our-work/diseases-and-conditions/covid-19-n
 # reading date of last update
 html      <- read_html(m_url)
 date_text <-
-  html_nodes(html, xpath = '//*[@id="node-10866"]/div[2]/div/div/p[1]') %>%
-  html_text()
-loc_date1 <- str_locate(date_text, "Last updated ")[2] + 5
-loc_date2 <- str_length(date_text[1])
+  html_nodes(html, ".footer__last-updated-content--align-to-body") %>%
+             #xpath = '//*[@id="node-10866"]/div[2]/div/div/p[1]') %>%
+  html_text() |> 
+  str_trim()
+  
+  
+#loc_date1 <- str_locate(date_text, "Last updated ")[2] + 5
+date_f <- dmy(date_text)
+#loc_date2 <- str_length(date_text[1])
 
-date_f  <- str_sub(date_text, loc_date1, loc_date2) %>% 
-  str_trim() %>% 
-  str_replace("\\.", "") %>% 
-  dmy()
+# date_f  <- str_sub(date_text, loc_date1, loc_date2) %>% 
+#   str_trim() %>% 
+#   str_replace("\\.", "") %>% 
+#   dmy()
 
 
 if (date_f > last_date_drive){
@@ -112,84 +117,86 @@ if (date_f > last_date_drive){
   # vaccines data
   # ~~~~~~~~~~~~~
   
-  url_vaccine <- "https://www.health.govt.nz/our-work/diseases-and-conditions/covid-19-novel-coronavirus/covid-19-data-and-statistics/covid-19-vaccine-data#age"
+  ## MK 12.07.2023: No published data on vaccines for few months now. so I commented the relevant code. 
   
-  links <- scraplinks(url_vaccine) %>% 
-    filter(str_detect(url, "covid_vaccinations")) %>% 
-    select(url) 
-  
-  url <- 
-    links %>% 
-    select(url) %>% 
-    dplyr::pull()
-  
-  url_d = paste0("https://www.health.govt.nz",url)
-  
-  data_source6 <- paste0(dir_n, "Data_sources/", ctr, "/vaccine_age_",today(), ".xlsx")
-  
-  #data_source6 <- paste0("U:/COVerAgeDB/Datenquellen/New Zealand_vaccine",today(), ".xlsx")
-  
-  download.file(url_d, data_source6, mode = "wb")
-
-  #Date vaccine 
-  
-  date_vacc <- read_xlsx(data_source6,
-                         sheet = "Notes", range = "F1:F2")
-  
-  colnames(date_vacc)[1] <- "Date"
-  
-  date= date_vacc%>%
-    separate(Date, c("Date", "Time"), " ")%>%
-    select(Date)%>% 
-    dmy()
-  
-  
-## MK 05.08.2022: ADDED BOOSTER DOSE DATA, UPDATED AGE GROUPS AND INTERVALS   
-  
-db_v <- 
-    read_xlsx(data_source6, sheet = "DHBofResidence by ethnicity") %>% 
-  select(Age= `Age group`, Sex= Gender, 
-         Vaccination1= `At least partially vaccinated`,
-         ## MK: 10.08.2022: changed 'Fully Vaccination' to 'Completed primary course'
-         ## added Booster 2; Vaccination 4
-         Vaccination2= `Completed primary course`,
-         Vaccination3 = `Booster 1 Received`,
-         Vaccination4 = `Booster 2 Received`) %>%
-  ## MK: Vaccination3 has '<' & ',' signs, so remove it
-  mutate(Vaccination3 = str_remove(Vaccination3, '<'),
-         Vaccination3 = str_remove(Vaccination3, ','),
-         Vaccination3 = as.numeric(Vaccination3),
-         Vaccination4 = str_remove(Vaccination4, '<'),
-         Vaccination4 = str_remove(Vaccination4, ','),
-         Vaccination4 = as.numeric(Vaccination4)) %>% 
-  pivot_longer(!Age & !Sex, 
-               names_to= "Measure", values_to= "Value")%>%
-  #sum up numbers that were separated by race 
-  group_by(Age, Sex, Measure) %>% 
-  mutate(Value = sum(Value)) %>% 
-  ungroup() %>% 
-  distinct()%>%
-  separate(Age, c("Age", "trash"), "-") %>%
-  mutate(Age=recode(Age, 
-                    `90+`= "90")) %>%
-  filter(Age != "Various") %>% 
-  mutate(AgeInt = case_when(
-    Age == "5" ~ 7L,
-    Age == "12" ~ 6L,
-    Age == "18" ~ 7L,
-    Age == "90" ~ 15L,
-    TRUE ~ 5L))%>% 
-  mutate(Sex = case_when(
-   Sex == "Male" ~ "m",
-   Sex == "Female" ~ "f",
-   Sex== "Unknown/Other" ~ "UNK"),
-  Country = "New Zealand",
-  Region = "All",
-  Date = ddmmyyyy(date),
-  Code = "NZ",
-  Metric = "Count")%>% 
-  select(Country, Region, Code, Date, Sex, 
-         Age, AgeInt, Metric, Measure, Value)
+#   url_vaccine <- "https://www.health.govt.nz/our-work/diseases-and-conditions/covid-19-novel-coronavirus/covid-19-data-and-statistics/covid-19-vaccine-data#age"
+#   
+#   links <- scraplinks(url_vaccine) %>% 
+#     filter(str_detect(url, "covid_vaccinations")) %>% 
+#     select(url) 
+#   
+#   url <- 
+#     links %>% 
+#     select(url) %>% 
+#     dplyr::pull()
+#   
+#   url_d = paste0("https://www.health.govt.nz",url)
+#   
+#   data_source6 <- paste0(dir_n, "Data_sources/", ctr, "/vaccine_age_",today(), ".xlsx")
+#   
+#   #data_source6 <- paste0("U:/COVerAgeDB/Datenquellen/New Zealand_vaccine",today(), ".xlsx")
+#   
+#   download.file(url_d, data_source6, mode = "wb")
+# 
+#   #Date vaccine 
+#   
+#   date_vacc <- read_xlsx(data_source6,
+#                          sheet = "Notes", range = "F1:F2")
+#   
+#   colnames(date_vacc)[1] <- "Date"
+#   
+#   date= date_vacc%>%
+#     separate(Date, c("Date", "Time"), " ")%>%
+#     select(Date)%>% 
+#     dmy()
+#   
+#   
+# ## MK 05.08.2022: ADDED BOOSTER DOSE DATA, UPDATED AGE GROUPS AND INTERVALS   
+#   
+# db_v <- 
+#     read_xlsx(data_source6, sheet = "DHBofResidence by ethnicity") %>% 
+#   select(Age= `Age group`, Sex= Gender, 
+#          Vaccination1= `At least partially vaccinated`,
+#          ## MK: 10.08.2022: changed 'Fully Vaccination' to 'Completed primary course'
+#          ## added Booster 2; Vaccination 4
+#          Vaccination2= `Completed primary course`,
+#          Vaccination3 = `Booster 1 Received`,
+#          Vaccination4 = `Booster 2 Received`) %>%
+#   ## MK: Vaccination3 has '<' & ',' signs, so remove it
+#   mutate(Vaccination3 = str_remove(Vaccination3, '<'),
+#          Vaccination3 = str_remove(Vaccination3, ','),
+#          Vaccination3 = as.numeric(Vaccination3),
+#          Vaccination4 = str_remove(Vaccination4, '<'),
+#          Vaccination4 = str_remove(Vaccination4, ','),
+#          Vaccination4 = as.numeric(Vaccination4)) %>% 
+#   pivot_longer(!Age & !Sex, 
+#                names_to= "Measure", values_to= "Value")%>%
+#   #sum up numbers that were separated by race 
+#   group_by(Age, Sex, Measure) %>% 
+#   mutate(Value = sum(Value)) %>% 
+#   ungroup() %>% 
+#   distinct()%>%
+#   separate(Age, c("Age", "trash"), "-") %>%
+#   mutate(Age=recode(Age, 
+#                     `90+`= "90")) %>%
+#   filter(Age != "Various") %>% 
+#   mutate(AgeInt = case_when(
+#     Age == "5" ~ 7L,
+#     Age == "12" ~ 6L,
+#     Age == "18" ~ 7L,
+#     Age == "90" ~ 15L,
+#     TRUE ~ 5L))%>% 
+#   mutate(Sex = case_when(
+#    Sex == "Male" ~ "m",
+#    Sex == "Female" ~ "f",
+#    Sex== "Unknown/Other" ~ "UNK"),
+#   Country = "New Zealand",
+#   Region = "All",
+#   Date = ddmmyyyy(date),
+#   Code = "NZ",
+#   Metric = "Count")%>% 
+#   select(Country, Region, Code, Date, Sex, 
+#          Age, AgeInt, Metric, Measure, Value)
 
 
   ####################################
@@ -307,8 +314,8 @@ all_the_tables <- html %>%
                         year(date_f),
                         sep="."),
            Code = "NZ",
-           Metric = "Count") %>% 
-    bind_rows(db_v)
+           Metric = "Count") 
+    #bind_rows(db_v)
   
   # back up of deaths and tests out of csv
   ########################################
@@ -455,8 +462,7 @@ all_the_tables <- html %>%
                    data_source2,
                    data_source3,
                    data_source4,
-                   data_source5,
-                   data_source6)
+                   data_source5)
   
   write_csv(out, data_source1)
   write_csv(db_a, data_source2)
