@@ -38,8 +38,7 @@ subsets_keep <- data.table::fread("N://COVerAGE-DB/Data/subsets_keep_harmonizati
 OutputCounts_keep <-
   subsets_keep |>
   left_join(OutputCounts_old, by = c("Code","Date","Sex","Measure")) |>
-  select(-keep) %>% 
-  pivot_wider(names_from = "Measure", values_from = "Value")
+  select(-keep) 
 
 
 # which of those old results shall we preserve rather than recalculate?
@@ -174,15 +173,17 @@ data.table::fwrite(HarmonizationFailures, file = here::here("Data","Harmonizatio
 #                       select(-date) %>% 
 #                       # ensure columns in standard order:
 #                       select(Country, Region, Code, Date, Sex, Age, AgeInt, Cases, Deaths, Tests)
+head(out5)
+
 outputCounts_5_1e5 <-
-  out5 %>% 
+  out5%>% 
   as.data.table() %>% 
   .[, Value := nafill(Value, nan = NA, fill = 1)] %>% 
   .[, rescale_sexes_post(chunk = .SD), keyby = .(Country, Region, Code, Date, Measure, AgeInt)] %>% 
   as_tibble() %>% 
-  pivot_wider(names_from = "Measure", values_from = "Value") %>% 
-  dplyr::select(Country, Region, Code, Date, Sex, Age, AgeInt, Cases, Deaths, Tests) %>% 
-  arrange(Country, Region, dmy(Date), Sex, Age) |>
+  # pivot_wider(names_from = "Measure", values_from = "Value") %>% 
+  # dplyr::select(Country, Region, Code, Date, Sex, Age, AgeInt, Cases, Deaths, Tests) %>% 
+  # arrange(Country, Region, dmy(Date), Sex, Age) |>
   # NEW, to avoid redundant harmonization
   bind_rows(OutputCounts_keep) |>
   arrange(Country, Region, Date, Measure, Sex, Age)
@@ -194,12 +195,12 @@ outputCounts_5_1e5 <-
 # saveRDS(outputCounts_5_1e5, here::here("Data","Output_5.rds"))
 data.table::fwrite(outputCounts_5_1e5, file = here::here("Data","Output_5_internal.csv"))
 
-# Round to full integers
+# Round to full integers (update)
 outputCounts_5_1e5_rounded <- 
   outputCounts_5_1e5 %>% 
-  mutate(Cases = round(Cases,1),
-         Deaths = round(Deaths,1),
-         Tests = round(Tests,1))
+  mutate(Value = round(Value,1))
+         #Deaths = round(Deaths,1),
+         #Tests = round(Tests,1))
 
 # Save csv
 header_msg1 <- "Counts of Cases, Deaths, and Tests in harmonized 5-year age groups"
@@ -224,7 +225,7 @@ data.table::fwrite(outputCounts_5_1e5_rounded,
 
 
 ### Age harmonization: 10-year age groups ###########################
-
+outputCounts_5_1e5 %>% length()
 # Get 10-year groups from 5-year groups
 outputCounts_10 <- 
   #  Take 5-year groups
