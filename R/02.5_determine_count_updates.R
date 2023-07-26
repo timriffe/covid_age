@@ -83,10 +83,10 @@ ooutput <- fread(o10path, skip = 3)
 
 o_subsets <- 
   ooutput |>
-  tidyfast::dt_pivot_longer(c(Cases,Deaths,Tests), 
-                            names_to = "Measure", 
-                            values_to = "Value", 
-                            values_drop_na = TRUE) %>% 
+  # tidyfast::dt_pivot_longer(c(Cases,Deaths,Tests), 
+  #                           names_to = "Measure", 
+  #                           values_to = "Value", 
+  #                           values_drop_na = TRUE) %>% 
   collapse::fselect(Code, Date, Sex, Measure) |>
   collapse::funique() |>
   collapse::fmutate(old = TRUE)
@@ -113,7 +113,7 @@ new_to_harmonize <-
 # alternatively one could just compare daily sums...
 o_subsets2 <-
   ofile %>% 
-  collapse::fsubset(Measure %in% c("Cases","Deaths","Tests")) |>
+  collapse::fsubset(Measure %in% Measures) |>
   collapse::fmutate(value_old = round(Value)) |>
   collapse::fselect(Code, Date, Sex, Measure, Age, value_old)
 

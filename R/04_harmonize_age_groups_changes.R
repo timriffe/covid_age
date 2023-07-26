@@ -5,20 +5,28 @@ setwd(wd_sched_detect())
 here::i_am("covid_age.Rproj")
 startup::startup()
 
+# TR 13 July 2023, copied from 01_update_inputDB.R
+Measures <- c("Cases","Deaths","Tests","ASCFR","Vaccinations",
+              "Vaccination1","Vaccination2", "Vaccination3", "Vaccination4", 
+              "Vaccination5", "Vaccination6", "VaccinationBooster")
+
+
 logfile <- here::here("buildlog.md")
 # n.cores <- round(6 + (detectCores() - 8)/4)
 # n.cores  <- 3
 
 freesz  <- memuse::Sys.meminfo()$freeram@size
-n.cores <- min(round(freesz / 16),20)
-if (Sys.info()["nodename"] == "HYDRA11"){
-  n.cores <- 50
-}
+# n.cores <- min(round(freesz / 16),20)
+# if (Sys.info()["nodename"] == "HYDRA11"){
+#   n.cores <- 50
+# }
+n.cores <- 4
 ### Load data #######################################################
 
 # previous age harmonization run:
 OutputCounts_old <- data.table::fread("N://COVerAGE-DB/Data/Output_5_internal.csv") |>
-  tidyfast::dt_pivot_longer(c(Cases,Deaths,Tests), 
+  # TR 13 July 2023 switch to negative selection in order
+  tidyfast::dt_pivot_longer(-c( Country, Region, Code, Date, Sex, Age, AgeInt), 
                             names_to = "Measure", 
                             values_to = "Value", 
                             values_drop_na = TRUE)
@@ -30,8 +38,7 @@ subsets_keep <- data.table::fread("N://COVerAGE-DB/Data/subsets_keep_harmonizati
 OutputCounts_keep <-
   subsets_keep |>
   left_join(OutputCounts_old, by = c("Code","Date","Sex","Measure")) |>
-  collapse::fsubset(keep) |>
-  tidyfast::dt_pivot_wider(names_from = "Measure", values_from = "Value")
+  select(-keep) 
 
 
 # which of those old results shall we preserve rather than recalculate?
@@ -44,7 +51,7 @@ subset_changes <-
 # This used to point to a user copy, but now we presume the most recent inputCounts build is on N!
 inputCounts <- data.table::fread("N://COVerAGE-DB/Data/inputCounts.csv",
                                  encoding = "UTF-8") %>% 
-  collapse::fsubset(Measure %in% c("Cases","Deaths","Tests")) %>% 
+  collapse::fsubset(Measure %in% Measures) %>% 
   collapse::fselect(-Metric)
 
 # these subsets have been determined to need new or re-harmonization 
@@ -166,15 +173,17 @@ data.table::fwrite(HarmonizationFailures, file = here::here("Data","Harmonizatio
 #                       select(-date) %>% 
 #                       # ensure columns in standard order:
 #                       select(Country, Region, Code, Date, Sex, Age, AgeInt, Cases, Deaths, Tests)
+head(out5)
+
 outputCounts_5_1e5 <-
-  out5 %>% 
+  out5%>% 
   as.data.table() %>% 
   .[, Value := nafill(Value, nan = NA, fill = 1)] %>% 
   .[, rescale_sexes_post(chunk = .SD), keyby = .(Country, Region, Code, Date, Measure, AgeInt)] %>% 
   as_tibble() %>% 
-  pivot_wider(names_from = "Measure", values_from = "Value") %>% 
-  dplyr::select(Country, Region, Code, Date, Sex, Age, AgeInt, Cases, Deaths, Tests) %>% 
-  arrange(Country, Region, dmy(Date), Sex, Age) |>
+  # pivot_wider(names_from = "Measure", values_from = "Value") %>% 
+  # dplyr::select(Country, Region, Code, Date, Sex, Age, AgeInt, Cases, Deaths, Tests) %>% 
+  # arrange(Country, Region, dmy(Date), Sex, Age) |>
   # NEW, to avoid redundant harmonization
   bind_rows(OutputCounts_keep) |>
   arrange(Country, Region, Date, Measure, Sex, Age)
@@ -186,15 +195,15 @@ outputCounts_5_1e5 <-
 # saveRDS(outputCounts_5_1e5, here::here("Data","Output_5.rds"))
 data.table::fwrite(outputCounts_5_1e5, file = here::here("Data","Output_5_internal.csv"))
 
-# Round to full integers
+# Round to full integers (update)
 outputCounts_5_1e5_rounded <- 
   outputCounts_5_1e5 %>% 
-  mutate(Cases = round(Cases,1),
-         Deaths = round(Deaths,1),
-         Tests = round(Tests,1))
+  mutate(Value = round(Value,1))
+         #Deaths = round(Deaths,1),
+         #Tests = round(Tests,1))
 
 # Save csv
-header_msg1 <- "Counts of Cases, Deaths, and Tests in harmonized 5-year age groups"
+header_msg1 <- "Counts of all measures in harmonized 5-year age groups"
 header_msg2 <- paste("Built:",timestamp(prefix="",suffix=""))
 header_msg3 <- paste("Reproducible with: ",paste0("https://github.com/", Sys.getenv("git_handle"), "/covid_age/commit/",system("git rev-parse HEAD", intern=TRUE)))
 
@@ -224,10 +233,8 @@ outputCounts_10 <-
   # Replace numbers ending in 5
   mutate(Age = Age - Age %% 10) %>% 
   # Sum 
-  group_by(Country, Region, Code, Date, Sex, Age) %>% 
-  summarize(Cases = sum(Cases),
-            Deaths = sum(Deaths),
-            Tests = sum(Tests),
+  group_by(Country, Region, Code, Date, Sex, Measure, Age) %>% 
+  summarize(Value = sum(Value),
             .groups= "drop") %>% 
   # Replace age interval values
   mutate(AgeInt = ifelse(Age == 100, 5, 10))
@@ -237,12 +244,12 @@ outputCounts_10 <- outputCounts_10[, colnames(outputCounts_5_1e5)]
 # round output for csv
 outputCounts_10_rounded <- 
   outputCounts_10 %>% 
-  mutate(Cases = round(Cases,1),
-         Deaths = round(Deaths,1),
-         Tests = round(Tests,1))
+  mutate(Value = round(Value,1))
+        # Deaths = round(Deaths,1),
+        # Tests = round(Tests,1))
 
 # Save CSV
-header_msg1 <- "Counts of Cases, Deaths, and Tests in harmonized 10-year age groups"
+header_msg1 <- "Counts of all measures in harmonized 10-year age groups"
 header_msg2 <- paste("Built:",timestamp(prefix="",suffix=""))
 header_msg3 <- paste("Reproducible with: ",paste0("https://github.com/", Sys.getenv("git_handle"), "/covid_age/commit/",system("git rev-parse HEAD", intern=TRUE)))
 
@@ -277,3 +284,5 @@ files_from <- file.path("Data",cdb_files)
 file.copy(from = files_from, 
           to = "N:/COVerAGE-DB/Data", 
           overwrite = TRUE)
+
+# end
