@@ -152,51 +152,56 @@ subnational <- region %>%
 ## Brief: deaths data are available till 22 April 2020, per week, per age & sex. 
 ## There is no data available by Region and data stopped publishing since late April 2022. 
 
-deaths <- read.csv2("https://opendata.idf.inserm.fr/cepidc/covid-19/data/deces_hebdomadaires_avec_mention_de_covid_par_sexe_et_age.csv") 
+#deaths <- read.csv2("https://opendata.idf.inserm.fr/cepidc/covid-19/data/deces_hebdomadaires_avec_mention_de_covid_par_sexe_et_age.csv") 
 
 
-deaths_processed <- deaths %>% 
-  dplyr::select(semaine = semaine_de_deces,
-                Age = classe_d_age,
-                Sex = sexe,
-                Deaths  = deces_covid) %>% 
-  dplyr::mutate(YearWeek = str_replace_all(semaine, "-S", "-W"),
-  ## will take the last day (Friday) of the week 
-                YearWeek = paste0(YearWeek, "-5"),
-                Date = ISOweek::ISOweek2date(YearWeek),
-                Age = str_extract(Age, "\\d+"),
-                Age = case_when(Age == "00" ~ "0",
-                                TRUE ~ Age),
-  ## Based on different files and datasets, 1 is for males, 2 for females ## 
-                Sex = case_when(Sex == "1" ~ "m",
-                                Sex == "2" ~ "f")) %>% 
-  ## Since these are NEW weekly data, we will cumsum ACROSS columns before pivoting    
-  dplyr::arrange(Date) %>% 
-  dplyr::group_by(Age, Sex) %>% 
-  dplyr::mutate(across(.cols = c("Deaths"), ~ cumsum(.x))) %>% 
-  tidyr::pivot_longer(cols = c("Deaths"),
-                      names_to = "Measure",
-                      values_to = "Value") %>% 
-  dplyr::mutate(AgeInt = case_when(Age == "0" ~ 25L,
-                                   TRUE ~ 10L),
-                Country = "France",
-                Metric = "Count",
-                ## we don't have the data by Region, so add the variable as 'All' ##
-                Region = "All",
-                Code = paste0("FR")) %>% 
-  dplyr::select(Country, Region, Code, Date, 
-                Age, AgeInt, Sex,
-                Measure, Metric, Value)
+# deaths_processed <- deaths %>% 
+#   dplyr::select(semaine = semaine_de_deces,
+#                 Age = classe_d_age,
+#                 Sex = sexe,
+#                 Deaths  = deces_covid) %>% 
+#   dplyr::mutate(YearWeek = str_replace_all(semaine, "-S", "-W"),
+#   ## will take the last day (Friday) of the week 
+#                 YearWeek = paste0(YearWeek, "-5"),
+#                 Date = ISOweek::ISOweek2date(YearWeek),
+#                 Age = str_extract(Age, "\\d+"),
+#                 Age = case_when(Age == "00" ~ "0",
+#                                 TRUE ~ Age),
+#   ## Based on different files and datasets, 1 is for males, 2 for females ## 
+#                 Sex = case_when(Sex == "1" ~ "m",
+#                                 Sex == "2" ~ "f")) %>% 
+#   ## Since these are NEW weekly data, we will cumsum ACROSS columns before pivoting    
+#   dplyr::arrange(Date) %>% 
+#   dplyr::group_by(Age, Sex) %>% 
+#   dplyr::mutate(across(.cols = c("Deaths"), ~ cumsum(.x))) %>% 
+#   tidyr::pivot_longer(cols = c("Deaths"),
+#                       names_to = "Measure",
+#                       values_to = "Value") %>% 
+#   dplyr::mutate(AgeInt = case_when(Age == "0" ~ 25L,
+#                                    TRUE ~ 10L),
+#                 Country = "France",
+#                 Metric = "Count",
+#                 ## we don't have the data by Region, so add the variable as 'All' ##
+#                 Region = "All",
+#                 Code = paste0("FR")) %>% 
+#   dplyr::select(Country, Region, Code, Date, 
+#                 Age, AgeInt, Sex,
+#                 Measure, Metric, Value)
+
+
+deaths_processed <- readRDS(paste0(dir_n, ctr, ".rds")) |> 
+  filter(Measure == "Deaths")
 
 
 ## OUTPUTs ##
 
-out <- dplyr::bind_rows(national, subnational, deaths_processed) %>% 
+out <- dplyr::bind_rows(national, subnational) %>% 
   dplyr::mutate(
     Date = ymd(Date),
     Date = paste(sprintf("%02d",day(Date)),    
                  sprintf("%02d",month(Date)),  
                  year(Date),sep=".")) %>% 
+  bind_rows(deaths_processed) |> 
   sort_input_data()
 
 
@@ -213,7 +218,7 @@ data_source <- paste0(dir_n, "Data_sources/", ctr, "/National_SubNational_Data_"
 
 datasets <- list("NationalData" = france,
              "SubNationalData" = region,
-             "Deaths" = deaths)
+             "Deaths" = deaths_processed)
 
 writexl::write_xlsx(datasets, 
                     path = data_source)
