@@ -431,7 +431,7 @@ out <- pre_out %>%
 #             sheet = "database")
 write_rds(out, paste0(dir_n, ctr, ".rds"))
 
-log_update(pp = "Japan", N = nrow(out))
+#log_update(pp = "Japan", N = nrow(out))
 
 
 ###backup

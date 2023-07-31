@@ -335,7 +335,7 @@ out <-
 write_rds(out, paste0(dir_n, ctr, ".rds"))
 
 N <- nrow(out)
-log_update(pp = "Philippines", N = N)
+#log_update(pp = "Philippines", N = N)
 
 ############################################
 ### save artifacts                       ###
