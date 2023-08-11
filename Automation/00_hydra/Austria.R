@@ -22,8 +22,8 @@ ss_db  <- at_rubric %>% dplyr::pull(Source)
 
 # READ IN THE ARCHIVED VAX DATA ===== 
 
-DataArchived <- readRDS(paste0(dir_n, ctr,".rds")) %>% 
-  filter(str_detect(Measure, "Vaccin")) #|> 
+DataArchived <- readRDS(paste0(dir_n, ctr,".rds")) 
+  #filter(str_detect(Measure, "Vaccin")) #|> 
   # mutate(Date = dmy(Date)) |>
   # filter(Date < "2022-11-21") |>
   # mutate(Date = ddmmyyyy(Date))
@@ -33,35 +33,39 @@ DataArchived <- readRDS(paste0(dir_n, ctr,".rds")) %>%
 #this overwrites the previous append data 
 #old append- code is at the end of the script as comment 
 
-data_source <- paste0(dir_n, "Data_sources/", ctr, "/", ctr, "_data_", today(), ".zip")
-download.file("https://covid19-dashboard.ages.at/data/data.zip", data_source, mode = "wb")
+## Source website <- "https://www.sozialministerium.at/Themen/Gesundheit/Corona/zahlen-daten.html"
 
-db_age <- read_csv2(unz(data_source, "CovidFaelle_Altersgruppe.csv"))
+## MK: 11.08.2023: Data on cases are not published anymore. link does not work.
 
-# Cases and Deaths =====
-
-db_age2 <- db_age%>%
-  select(Region=Bundesland, Time, Altersgruppe, Geschlecht,BundeslandID, Cases=Anzahl, Deaths=AnzahlTot)%>%
-  separate(Time, c("Date", "trash"), sep = " ")%>%
-  separate(Altersgruppe, c("Age", "trash"), sep = "-") %>%
-  mutate(Country = "Austria",
-         Age = case_when(Age == "<5" ~ "0",
-                         Age == ">84" ~ "85",
-                         TRUE ~ Age),
-         Sex = recode(Geschlecht,
-                      "W" = "f",
-                      "M" = "m"),
-         Metric = "Count",
-         Region = ifelse(Region == "Österreich", "All", Region),
-         Code = paste0(ifelse(BundeslandID < 10, paste0("AT-", BundeslandID), "AT")),
-         AgeInt = case_when(Age == "0" ~ "5",
-                            Age == "85" ~ "20",
-                            Age == "TOT" ~ "",
-                            TRUE ~ "10"),
-         AgeInt = as.integer(AgeInt)) %>% 
-  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Cases, Deaths) %>% 
-  gather(Cases, Deaths, key = "Measure", value = "Value") %>% 
-  sort_input_data()
+# data_source <- paste0(dir_n, "Data_sources/", ctr, "/", ctr, "_data_", today(), ".zip")
+# download.file("https://covid19-dashboard.ages.at/data/data.zip", data_source, mode = "wb")
+# 
+# db_age <- read_csv2(unz(data_source, "CovidFaelle_Altersgruppe.csv"))
+# 
+# # Cases and Deaths =====
+# 
+# db_age2 <- db_age%>%
+#   select(Region=Bundesland, Time, Altersgruppe, Geschlecht,BundeslandID, Cases=Anzahl, Deaths=AnzahlTot)%>%
+#   separate(Time, c("Date", "trash"), sep = " ")%>%
+#   separate(Altersgruppe, c("Age", "trash"), sep = "-") %>%
+#   mutate(Country = "Austria",
+#          Age = case_when(Age == "<5" ~ "0",
+#                          Age == ">84" ~ "85",
+#                          TRUE ~ Age),
+#          Sex = recode(Geschlecht,
+#                       "W" = "f",
+#                       "M" = "m"),
+#          Metric = "Count",
+#          Region = ifelse(Region == "Österreich", "All", Region),
+#          Code = paste0(ifelse(BundeslandID < 10, paste0("AT-", BundeslandID), "AT")),
+#          AgeInt = case_when(Age == "0" ~ "5",
+#                             Age == "85" ~ "20",
+#                             Age == "TOT" ~ "",
+#                             TRUE ~ "10"),
+#          AgeInt = as.integer(AgeInt)) %>% 
+#   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Cases, Deaths) %>% 
+#   gather(Cases, Deaths, key = "Measure", value = "Value") %>% 
+#   sort_input_data()
 
 #Cant upload anymore, exceeds 5000000 cell limit
 #output data gets saved on N 
@@ -147,7 +151,7 @@ vacc_today_out <- vacc_today %>%
 
 out <- 
   bind_rows(DataArchived, 
-            db_age2,
+          #  db_age2,
            # vacc_out,
             vacc_today_out) %>% 
   unique() %>% 

@@ -24,11 +24,11 @@ n.cores <- 4
 ### Load data #######################################################
 
 # previous age harmonization run:
-OutputCounts_old <- data.table::fread("N://COVerAGE-DB/Data/Output_5_internal.csv") |>
+OutputCounts_old <- data.table::fread("N://COVerAGE-DB/Data/Output_5_internal.csv") 
   # TR 13 July 2023 switch to negative selection in order
-  tidyfast::dt_pivot_longer(-c( Country, Region, Code, Date, Sex, Age, AgeInt), 
-                            names_to = "Measure", 
-                            values_to = "Value", 
+  tidyfast::dt_pivot_longer(-c( Country, Region, Code, Date, Sex, Age, AgeInt),
+                            names_to = "Measure",
+                            values_to = "Value",
                             values_drop_na = TRUE)
   
 

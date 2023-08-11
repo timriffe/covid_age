@@ -43,7 +43,9 @@ drive_auth(email = email,
 source(here::here("R", "01_update_inputDB.R"))
 source(here::here("R", "01.5_resolve_sources.R"))
 source(here::here("R", "02_harmonize_metrics.R"))
-
+## In case we need to run the harmonization as part of the input DB build
+#source(here::here("R", "02.5_determine_count_updates.R"))
+#source(here::here("R", "04_harmomize_age_groups_changes.R"))
 
 
 ## PART II. Schedule the scripts ## ===============

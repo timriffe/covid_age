@@ -227,12 +227,12 @@ httr::GET(excel_link, write_disk(data_source_vac, overwrite = T))
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     write_rds(out, paste0(dir_n, ctr, ".rds"))
     
-    log_update(pp = "SwedenVax", N = nrow(out))
+   # log_update(pp = "SwedenVax", N = nrow(out))
     
     
   }  else if (date_f_vac == last_date_drive_vac) {
     cat(paste0("no new updates so far, last date: ", date_f_vac))
-    log_update(pp = "SwedenVax", N = 0)
+   # log_update(pp = "SwedenVax", N = 0)
   }
   
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
