@@ -135,7 +135,7 @@ values_changes <-
 values_changes |>
   collapse::fmutate(old_date = last_date,
           new_date = max(dates_have)) |>
-  write_csv(path = "N://COVerAGE-DB/Data/count_changes_forthcoming.csv")
+  write_csv(file = "N://COVerAGE-DB/Data/count_changes_forthcoming.csv")
 
   # we don't need to know which age it was, just that
   # there was a change in a subset...

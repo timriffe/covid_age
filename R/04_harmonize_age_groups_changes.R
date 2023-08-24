@@ -22,14 +22,16 @@ freesz  <- memuse::Sys.meminfo()$freeram@size
 # }
 n.cores <- 4
 ### Load data #######################################################
+#oo <- data.table::fread("N://COVerAGE-DB/Data/Output_5_internal.csv") 
 
+# TR 26 July 2023 as of now, no longer need this reshape step!
 # previous age harmonization run:
-OutputCounts_old <- data.table::fread("N://COVerAGE-DB/Data/Output_5_internal.csv") |>
+OutputCounts_old <- data.table::fread("N://COVerAGE-DB/Data/Output_5_internal.csv") #|>
   # TR 13 July 2023 switch to negative selection in order
-  tidyfast::dt_pivot_longer(-c( Country, Region, Code, Date, Sex, Age, AgeInt), 
-                            names_to = "Measure", 
-                            values_to = "Value", 
-                            values_drop_na = TRUE)
+  # tidyfast::dt_pivot_longer(-c( Country, Region, Code, Date, Sex, Age, AgeInt), 
+  #                           names_to = "Measure", 
+  #                           values_to = "Value", 
+  #                           values_drop_na = TRUE)
   
 
 subsets_keep <- data.table::fread("N://COVerAGE-DB/Data/subsets_keep_harmonizations.csv")
