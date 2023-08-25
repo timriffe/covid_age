@@ -17,6 +17,8 @@ dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 drive_auth(email = Sys.getenv("email"))
 gs4_auth(email = Sys.getenv("email"))
 
+## Source website: https://github.com/Institut-Zdravotnych-Analyz/covid19-data
+
 cases_url <- "https://raw.githubusercontent.com/Institut-Zdravotnych-Analyz/covid19-data/main/PCR_Tests/OpenData_Slovakia_Covid_PositiveTests_AgeGroup_District.csv"
 
 deaths_url <- "https://raw.githubusercontent.com/Institut-Zdravotnych-Analyz/covid19-data/main/Deaths/OpenData_Slovakia_Covid_Deaths_AgeGroup_District.csv"
@@ -382,7 +384,7 @@ out <-
 write_rds(out, paste0(dir_n, ctr, ".rds"))
 
 # updating hydra dashboard
-log_update(pp = ctr, N = nrow(Deaths_out))
+#log_update(pp = ctr, N = nrow(Deaths_out))
 
 ############################################
 # archive inputs:

@@ -13,6 +13,8 @@ dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 drive_auth(email = Sys.getenv("email"))
 gs4_auth(email = Sys.getenv("email"))
 
+## Source website: https://data.cdc.gov/NCHS/Provisional-COVID-19-Deaths-by-Week-Sex-and-Age/vsak-wrfu
+
 # info by age
 url <- "https://data.cdc.gov/api/views/vsak-wrfu/rows.csv?accessType=DOWNLOAD"
 db <- read_csv(url)
@@ -60,7 +62,7 @@ out <- db3 %>%
 ############################################
 write_rds(out, paste0(dir_n, ctr, ".rds"))
 
-log_update(pp = ctr, N = nrow(out))
+#log_update(pp = ctr, N = nrow(out))
 
 ############################################
 #### uploading metadata to N Drive ####

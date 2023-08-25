@@ -274,7 +274,7 @@ data.table::fwrite(outputCounts_10_rounded,
 # Save binary
 
 # saveRDS(outputCounts_10, here::here("Data","Output_10.rds"))
-data.table::fwrite(outputCounts_10, file = here::here("Data","output_10_internal.csv"))
+data.table::fwrite(outputCounts_10, file = "N://COVerAGE-DB/Data/Output_10_internal.csv")
 
 # TR: deprecated: G now cut out of processing due to space issues 24 Aug 2023
 # also copy rds files to N://COVerAGE-DB/Data

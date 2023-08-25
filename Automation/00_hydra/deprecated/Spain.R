@@ -174,7 +174,7 @@ Out <- bind_rows(processed_data, all_spain) %>%
 write_rds(Out, paste0(dir_n, ctr, ".rds"))
 
 # updating hydra dashboard
-log_update(pp = ctr, N = nrow(Out))
+#log_update(pp = ctr, N = nrow(Out))
 
 
 ## Save the source file as zip file 

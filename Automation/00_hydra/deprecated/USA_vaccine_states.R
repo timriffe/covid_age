@@ -191,7 +191,7 @@ write_rds(vacc_out, paste0(dir_n, ctr, ".rds"))
 
 # Update HYDRA 
 
-log_update(pp = ctr, N = nrow(vacc_out))
+#log_update(pp = ctr, N = nrow(vacc_out))
 
 
 # now archive new data 

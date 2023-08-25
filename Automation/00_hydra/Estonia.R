@@ -26,6 +26,8 @@ cols_in <- cols(
   AnalysisInsertTime = col_datetime(format = "")
 )
 
+## Source website: https://opendata.digilugu.ee/docs/#/
+
 db <- vroom::vroom("https://opendata.digilugu.ee/opendata_covid19_test_results.csv", 
                col_types = cols_in)
 
@@ -42,6 +44,9 @@ RegionCode <- matrix(c(
 ,"EE-71",	"Rapla County"
 ,"EE-74",	"Saare County"
 ,"EE-79",	"Tartu County",
+"EE-84", "Viljandi County",
+"EE-81", "Valga County",
+"EE-87", "Voru County",
 "EE-UNK+","UNK"), ncol = 2, byrow = TRUE,
 dimnames = list(NULL, c("Code","Region"))) %>% 
   as_tibble()
@@ -105,7 +110,8 @@ db_tot <-
   group_by(date_f, Sex, Age, Measure) %>% 
   summarize(Value = sum(Value),
             .groups = "drop") %>% 
-  mutate(Code = "EE")
+  mutate(Code = "EE",
+         Region = "All")
   
 # TR: these steps aren't necessary at the data entry stage.
 # The R pipeline does all this.
@@ -127,19 +133,18 @@ db_tot <-
  #   mutate(Sex = "b") %>% 
  #   ungroup() 
 
-db_all <- bind_rows(db3, 
-                    db_tot) %>% 
+db_all <- db3 |> 
+  left_join(RegionCode, by = "Code") %>% 
+  bind_rows(db_tot) %>% 
   dplyr::filter(
     !(Age == "UNK" & Value == 0),
     !(Sex == "UNK" & Value == 0)) %>%
   mutate(Date = ddmmyyyy(date_f),
          Country = "Estonia",
-         # Code = paste0("EE"),
          AgeInt = case_when(Age == "TOT" | Age == "UNK" ~ NA_real_, 
                             Age == "85" ~ 20,
                             TRUE ~ 5),
          Metric = "Count") %>% 
-  left_join(RegionCode, by = "Code") %>% 
   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
   sort_input_data()
 
@@ -149,7 +154,8 @@ db_all <-
   group_by(Code, Date) %>% 
   mutate(keep_ = sum(Value[Measure == "Cases"]) > 0) %>% 
   dplyr::filter(keep_) %>% 
-  select(-keep_)
+  select(-keep_) |> 
+  ungroup()
 ###########################
 #### Saving data in N: ####
 ###########################
