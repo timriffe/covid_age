@@ -9140,3 +9140,150 @@ Error in install.packages("rstan", repos = "https://mc-stan.org/r-packages/",  :
   unable to install packages
 Calls: source -> withVisible -> eval -> eval -> install.packages
 Execution halted
+[1] "LC_COLLATE=English_United States.1252;LC_CTYPE=English_United States.1252;LC_MONETARY=English_United States.1252;LC_NUMERIC=C;LC_TIME=English_United States.1252"
+here() starts at C:/Windows/System32
+Loading required package: pacman
+here() starts at U:/gits/covid_age
+here() starts at U:/gits/covid_age
+Auto-refreshing stale OAuth token.
+v Reading from "input_rubric".
+v Range ''input''.
+v Reading from "input_rubric".
+v Range ''input''.
+v Reading from "Afghanistan input template".
+v Range ''database'!A:J'.
+v Reading from "Albania input template".
+v Range ''database'!A:J'.
+v Reading from "Algeria input template".
+v Range ''database'!A:J'.
+v Reading from "Angola input template".
+v Range ''database'!A:J'.
+v Reading from "Bangladesh input template".
+v Range ''database'!A:J'.
+v Reading from "Benin".
+v Range ''database'!A:J'.
+v Reading from "Bermuda input template".
+v Range ''database'!A:J'.
+v Reading from "Bolivia input template".
+v Range ''database'!A:J'.
+v Reading from "Bosnia and Herzegovina WHO input template".
+v Range ''database'!A:J'.
+v Reading from "Botswana input template".
+v Range ''database'!A:J'.
+v Reading from "Burkina Faso input template".
+v Range ''database'!A:J'.
+v Reading from "Burundi input template".
+v Range ''database'!A:J'.
+v Reading from "Cameroon input template".
+v Range ''database'!A:J'.
+v Reading from "Canada input".
+v Range ''database'!A:J'.
+v Reading from "Montreal input template".
+v Range ''database'!A:J'.
+v Reading from "Toronto input template".
+v Range ''database'!A:J'.
+v Reading from "British Columbia input template".
+v Range ''database'!A:J'.
+v Reading from "Central African Republic input template".
+v Range ''database'!A:J'.
+v Reading from "Chad input template".
+v Range ''database'!A:J'.
+v Reading from "China  input template".
+v Range ''database'!A:J'.
+v Reading from "Cuba input template".
+v Range ''database'!A:J'.
+v Reading from "Dominican Republic input template".
+v Range ''database'!A:J'.
+v Reading from "Ecuador input template".
+v Range ''database'!A:J'.
+v Reading from "El Salvador input template".
+v Range ''database'!A:J'.
+v Reading from "Equatorial Guinea input template".
+v Range ''database'!A:J'.
+v Reading from "Eswatini input template".
+v Range ''database'!A:J'.
+v Reading from "Ethiopia input template".
+v Range ''database'!A:J'.
+v Reading from "Faroe Islands input template".
+v Range ''database'!A:J'.
+v Reading from "The Gambia input template".
+v Range ''database'!A:J'.
+x Request failed [429]. Retry 1 happens in 2.9 seconds ...
+v Reading from "Georgia WHO input template".
+v Range ''database'!A:J'.
+v Reading from "Ghana input template".
+v Range ''database'!A:J'.
+v Reading from "Greece input template".
+v Range ''database'!A:J'.
+v Reading from "Guinea input template".
+v Range ''database'!A:J'.
+v Reading from "Haiti input template".
+v Range ''database'!A:J'.
+v Reading from "Honduras input template".
+v Range ''database'!A:J'.
+v Reading from "Iceland input template".
+v Range ''database'!A:J'.
+v Reading from "India input template".
+v Range ''database'!A:J'.
+v Reading from "Indonesia input template".
+v Range ''database'!A:J'.
+v Reading from "Iran input template".
+v Range ''database'!A:J'.
+v Reading from "Iraq input template".
+v Range ''database'!A:J'.
+v Reading from "Isle of Man input template".
+v Range ''database'!A:J'.
+v Reading from "Jamaica input template".
+v Range ''database'!A:J'.
+v Reading from "Jordan input template".
+v Range ''database'!A:J'.
+v Reading from "Kazakhstan input template".
+v Range ''database'!A:J'.
+v Reading from "Kazakhstan WHO input template".
+v Range ''database'!A:J'.
+v Reading from "Kenya input template".
+v Range ''database'!A:J'.
+v Reading from "Kyrgyzstan input template".
+v Range ''database'!A:J'.
+v Reading from "Latvia input template".
+v Range ''database'!A:J'.
+v Reading from "Latvia WHO input template".
+v Range ''database'!A:J'.
+v Reading from "Lebanon input template".
+v Range ''database'!A:J'.
+v Reading from "Malawi input template".
+v Range ''database'!A:J'.
+v Reading from "Mali input template".
+v Range ''database'!A:J'.
+v Reading from "Mauritania input template".
+v Range ''database'!A:J'.
+v Reading from "Mauritius WHO input template".
+v Range ''database'!A:J'.
+v Reading from "Moldova".
+v Range ''database'!A:J'.
+v Reading from "Montenegro input template".
+v Range ''database'!A:J'.
+v Reading from "Mozambique input template".
+v Range ''database'!A:J'.
+v Reading from "Namibia".
+v Range ''database'!A:J'.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  template".
+v Range ''database'!A:J'.
+v Reading from "Pennsylvania input template".
+v Range ''database'!A:J'.
+x Request failed [429]. Retry 1 happens in 2 seconds ...
+x Request failed [429]. Retry 2 happens in 4.1 seconds ...
+x Request failed [429]. Retry 3 happens in 15.9 seconds ...
+x Request failed [429]. Retry 4 happens in 9.1 seconds ...
+v Reading from "Vermont input template".
+v Range ''database'!A:J'.
+v Reading from "Venezuela input template".
+v Range ''database'!A:J'.
+v Reading from "Zambia Input Template".
+v Range ''database'!A:J'.
+Auto-refreshing stale OAuth token.
+v Reading from "Region_Code".
+v Range 'Tabellenblatt1'.
+New names:
+* `` -> `...6`
+Fri Aug 25 15:23:12 2023
