@@ -24,7 +24,7 @@ dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 
 #read previous data 
 
-DataArchive <- read_rds(paste0(dir_n, ctr, ".rds")) 
+#DataArchive <- read_rds(paste0(dir_n, ctr, ".rds")) 
 
 
 ## MK, 30.08.2022: removing duplicates ### ===========
@@ -72,108 +72,148 @@ DataArchive <- read_rds(paste0(dir_n, ctr, ".rds"))
 # 
 # age <- age_df %>% 
 #   {map2_dfr(.$paths, .$Date, function(x,y) read.csv(x) %>% mutate(Date=y))}
+# #total vaccines 
+# total= read.csv("https://static.data.gov.hk/covid-vaccine/summary.csv")
 # 
-
-
-
-#total vaccines 
-total= read.csv("https://static.data.gov.hk/covid-vaccine/summary.csv")
-
-#vaccinations by age 
-age= read.csv("https://static.data.gov.hk/covid-vaccine/pie_age.csv")
-
-#vaccinations by sex 
-sex= read.csv("https://static.data.gov.hk/covid-vaccine/pie_gender.csv") 
-
+# #vaccinations by age 
+# age= read.csv("https://static.data.gov.hk/covid-vaccine/pie_age.csv")
+# 
+# #vaccinations by sex 
+# sex= read.csv("https://static.data.gov.hk/covid-vaccine/pie_gender.csv") 
 
 #process
 
 #total 
+# 
+# out_total= total %>%
+#   select(Vaccination1= firstDoseTotal, 
+#          Vaccination2= secondDoseTotal, 
+#          Vaccination3 = thirdDoseTotal,
+#          Vaccination4 = fourthDoseTotal,
+#          Vaccination5 = fifthDoseTotal,
+#          Vaccinations = totalDosesAdministered)%>%
+#   pivot_longer(cols = everything(), names_to = "Measure", values_to= "Value") %>%
+#   mutate(Metric = "Count",
+#          Age= "TOT", 
+#          AgeInt= NA_integer_,
+#          Date =today(),
+#          Sex= "b")%>%
+#   mutate(
+#     Date = ymd(Date),
+#     Date = ddmmyyyy(Date),
+#     Code = paste0("CN-HK"),
+#     Country = "China",
+#     Region = "Hong Kong",)%>% 
+#   select(Country, Region, Code, Date, Sex, 
+#          Age, AgeInt, Metric, Measure, Value)
+# 
+# #Age 
+# 
+# out_age= age %>%
+#   select(Age= age_group, Value= count)%>%
+#   mutate(Age=recode(Age, 
+#                     `Aged 0-2` = "0",
+#                     `Aged 3-11`="3",
+#                     `Aged 5-11` = "5",
+#                     `Aged 12-19`="12",
+#                     `Aged 20-29`="20",
+#                     `Aged 30-39`="30",
+#                     `Aged 40-49`="40",
+#                     `Aged 50-59`="50",
+#                     `Aged 60-69`="60",
+#                     `Aged 70-79`="70",
+#                     `Aged 80 and above`="80"))%>% 
+#   mutate(AgeInt = case_when(
+#     Age == "0" ~ 3L,
+#     Age == "3" ~ 9L,
+#     Age == "5" ~ 7L,
+#     Age == "12" ~ 8L,
+#     Age == "80" ~ 25L,
+#     TRUE ~ 10L))%>%
+#   mutate(Date= today(),
+#          Metric= "Count",
+#          Sex="b",
+#          Measure= "Vaccinations",
+#          Date = ymd(Date),
+#          Date = ddmmyyyy(Date),
+#          Code = paste0("CN-HK"),
+#          Country = "China",
+#          Region = "Hong Kong",)%>%
+#   select(Country, Region, Code, Date, Sex, 
+#          Age, AgeInt, Metric, Measure, Value)
+# 
+# #Sex
+# 
+# out_sex= sex %>%
+#   select(Sex= gender,Value= count)%>%
+#   mutate(Sex=recode(Sex, 
+#                     `Female`="f",
+#                     `Male`="m",), 
+#          Metric = "Count",
+#          Age= "TOT", 
+#          AgeInt= NA_integer_,
+#          Date =today(),
+#          Measure= "Vaccinations",
+#          Date = ymd(Date),
+#          Date = ddmmyyyy(Date),
+#          Code = paste0("CN-HK"),
+#          Country = "China",
+#          Region = "Hong Kong",)%>% 
+#   select(Country, Region, Code, Date, Sex, 
+#          Age, AgeInt, Metric, Measure, Value)
+# 
+# 
+# 
+# #put togehter and appand prev data 
+# 
+# out_today <- bind_rows(out_total, out_age, out_sex)
+# 
+# out= rbind(DataArchive,out_today)
 
-out_total= total %>%
-  select(Vaccination1= firstDoseTotal, 
-         Vaccination2= secondDoseTotal, 
-         Vaccination3 = thirdDoseTotal,
-         Vaccination4 = fourthDoseTotal,
-         Vaccination5 = fifthDoseTotal,
-         Vaccinations = totalDosesAdministered)%>%
-  pivot_longer(cols = everything(), names_to = "Measure", values_to= "Value") %>%
+## 24.08.2023: Hong Kong published the whole series of vaccination since the start, it is overwritten
+## the previous .rds file is deprecated, code is edited. 
+
+vaccination_series <- read.csv("https://www.healthbureau.gov.hk/download/opendata/COVID19/vaccination-rates-over-time-by-age.csv")
+
+
+processed_series <- vaccination_series |> 
+  select(Date = 1,
+         Age = 2,
+         Sex = Sex, everything()) |> 
+  pivot_longer(cols = -c("Date", "Sex", "Age"),
+               names_to = "Measure_tocode",
+               values_to = "Value") |> 
+  mutate(Measure = case_when(str_detect(Measure_tocode, "1st") ~ "Vaccination1",
+                             str_detect(Measure_tocode, "2nd") ~ "Vaccination2",
+                             str_detect(Measure_tocode, "3rd") ~ "Vaccination3",
+                             str_detect(Measure_tocode, "4th") ~ "Vaccination4",
+                             str_detect(Measure_tocode, "5th") ~ "Vaccination5",
+                             str_detect(Measure_tocode, "6th") ~ "Vaccination6",
+                             str_detect(Measure_tocode, "7th") ~ "Vaccination7")) |> 
+  group_by(Date, Age, Sex, Measure) |> 
+  summarise(Value = sum(Value), .groups = "drop") |> 
+  group_by(Age, Sex, Measure) |>
+  arrange(Date) |> 
+  mutate(Value = cumsum(Value)) |> 
+  ungroup() |> 
+  mutate(Sex = case_when(Sex == "M" ~ "m",
+                         Sex == "F" ~ "f"),
+         Age = str_extract(Age, "\\d+"),
+         AgeInt = case_when(Age == 0 ~ 12L,
+                            Age == 12 ~ 8L,
+                            Age == 80 ~ 35L,
+                            TRUE ~ 10L))
+
+out <- processed_series |> 
   mutate(Metric = "Count",
-         Age= "TOT", 
-         AgeInt= NA_integer_,
-         Date =today(),
-         Sex= "b")%>%
-  mutate(
-    Date = ymd(Date),
-    Date = ddmmyyyy(Date),
-    Code = paste0("CN-HK"),
-    Country = "China",
-    Region = "Hong Kong",)%>% 
-  select(Country, Region, Code, Date, Sex, 
-         Age, AgeInt, Metric, Measure, Value)
-  
-#Age 
-
-out_age= age %>%
-  select(Age= age_group, Value= count)%>%
-  mutate(Age=recode(Age, 
-                    `Aged 0-2` = "0",
-                    `Aged 3-11`="3",
-                    `Aged 5-11` = "5",
-                    `Aged 12-19`="12",
-                    `Aged 20-29`="20",
-                    `Aged 30-39`="30",
-                    `Aged 40-49`="40",
-                    `Aged 50-59`="50",
-                    `Aged 60-69`="60",
-                    `Aged 70-79`="70",
-                    `Aged 80 and above`="80"))%>% 
-  mutate(AgeInt = case_when(
-    Age == "0" ~ 3L,
-    Age == "3" ~ 9L,
-    Age == "5" ~ 7L,
-    Age == "12" ~ 8L,
-    Age == "80" ~ 25L,
-    TRUE ~ 10L))%>%
-  mutate(Date= today(),
-         Metric= "Count",
-         Sex="b",
-         Measure= "Vaccinations",
-         Date = ymd(Date),
          Date = ddmmyyyy(Date),
          Code = paste0("CN-HK"),
          Country = "China",
-         Region = "Hong Kong",)%>%
+         Region = "Hong Kong") |>  
   select(Country, Region, Code, Date, Sex, 
-         Age, AgeInt, Metric, Measure, Value)
+         Age, AgeInt, Metric, Measure, Value) |> 
+  sort_input_data()
 
-#Sex
-
-out_sex= sex %>%
-  select(Sex= gender,Value= count)%>%
-  mutate(Sex=recode(Sex, 
-                    `Female`="f",
-                    `Male`="m",), 
-    Metric = "Count",
-    Age= "TOT", 
-    AgeInt= NA_integer_,
-    Date =today(),
-    Measure= "Vaccinations",
-    Date = ymd(Date),
-    Date = ddmmyyyy(Date),
-    Code = paste0("CN-HK"),
-    Country = "China",
-    Region = "Hong Kong",)%>% 
-  select(Country, Region, Code, Date, Sex, 
-         Age, AgeInt, Metric, Measure, Value)
-  
-
-
-#put togehter and appand prev data 
-
-out_today <- bind_rows(out_total, out_age, out_sex)
-
-out= rbind(DataArchive,out_today)
 
 #save output 
 
@@ -186,17 +226,18 @@ log_update(pp = ctr, N = nrow(out))
 
 #zip input data
 
-data_source_1 <- paste0(dir_n, "Data_sources/", ctr, "/vaccine_total_",today(), ".csv")
+#data_source_1 <- paste0(dir_n, "Data_sources/", ctr, "/vaccine_total_",today(), ".csv")
 data_source_2 <- paste0(dir_n, "Data_sources/", ctr, "/vaccine_age_",today(), ".csv")
-data_source_3 <- paste0(dir_n, "Data_sources/", ctr, "/vaccine_sex_",today(), ".csv")
+#data_source_3 <- paste0(dir_n, "Data_sources/", ctr, "/vaccine_sex_",today(), ".csv")
 
 
-write_csv(total,data_source_1)
-write_csv(age, data_source_2)
-write_csv(sex, data_source_3)
+#write_csv(total,data_source_1)
+write_csv(vaccination_series, data_source_2)
+#write_csv(sex, data_source_3)
 
 
-data_source <- c(data_source_1, data_source_2, data_source_3)
+#data_source <- c(data_source_1, data_source_2, data_source_3)
+data_source <- c(data_source_2)
 
 zipname <- paste0(dir_n, 
                   "Data_sources/", 
@@ -355,17 +396,6 @@ file.remove(data_source)
 #put tigethter with prev saved data 
 
 #out= rbind(out_total, out_age, out_sex, out_age_Archive, out_sex_Archive,out_total_archive)
-
-
-
-
-
-
-
-
-
-
-
 
 
 
