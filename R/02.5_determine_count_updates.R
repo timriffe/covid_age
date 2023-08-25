@@ -31,7 +31,8 @@ Measures <- c("Cases","Deaths","Tests","ASCFR","Vaccinations",
 # FALSE meaning we already have age-harmonized results for it, and should therefore use those instead.
 
 # This is where we'll look for inputCounts.csv, which should have YYYY-MM-DD appended to file names.
-dir.exists("N://COVerAGE-DB/Data/inputCounts-SnapShots")
+snapshot_dir <- "N://COVerAGE-DB/Data/inputCounts-SnapShots"
+dir.exists(snapshot_dir)
 # these can be compressed, but we will manually eliminate older unused ones. 
 
 # --------------------------- #
@@ -40,7 +41,6 @@ dir.exists("N://COVerAGE-DB/Data/inputCounts-SnapShots")
 
 
 # 1) get files
-snapshot_dir <- "N://COVerAGE-DB/Data/inputCounts-SnapShots"
 files_have <- dir(snapshot_dir)
 
 # # test code, to be deleted
@@ -64,7 +64,7 @@ last_date <-
   as_date()
 
 # when we have a longer time series we can change this to a strict < sign
-old_file <- files_have[which.max(dates_have[dates_have <= last_date])]
+old_file <- files_have[which.max(dates_have[dates_have < last_date])-2]
 
 # Of course comparison file should not be same as today's file!
 
@@ -76,8 +76,6 @@ ofile <- fread(file.path(snapshot_dir,old_file))
 ooutput <- fread(o10path, skip = 3)
 
 # first siphon off
-# potentially add tidyfast and collapse to functions script!
-
 # install.packages("tidyfast")
 # install.package("collapse")
 
@@ -164,9 +162,12 @@ subsets_keep_harmonizations <-
   left_join(refresh_append, by = c("Code","Date","Sex","Measure")) |>
   collapse::fmutate(refresh = !is.na(refresh),
                     keep = !refresh) |>
-  collapse::fselect(-refresh)
+  collapse::fselect(-refresh) |>
+  # TR new to ensure no duplicates
+  anti_join(subsets_to_harmonize, by = c("Code","Date","Sex","Measure"))
 
 write_csv(subsets_keep_harmonizations, file = "N://COVerAGE-DB/Data/subsets_keep_harmonizations.csv")
 
 
-
+# should have 0 rows!
+# subsets_keep_harmonizations %>% inner_join(subsets_to_harmonize,  by = c("Code","Date","Sex","Measure"))

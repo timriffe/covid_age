@@ -144,7 +144,7 @@ log_section("Age harmonization",
 out5 <- 
   rbindlist(iLout1e5) 
   # Get into one data set
-data.table::fwrite(out5, file = here::here("Data","Output_5_before_sex_scaling_etc.csv"))
+data.table::fwrite(out5, file = "N://COVerAGE-DB/Data/Output_5_before_sex_scaling_etc.csv")
  rm(iL);rm(iLout1e5)
 
 ids_out  <- out5$id %>% unique() %>% sort()
@@ -154,7 +154,7 @@ HarmonizationFailures <-
   inputCounts %>% 
   filter(id %in% failures)
 
-data.table::fwrite(HarmonizationFailures, file = here::here("Data","HarmonizationFailures.csv"))
+data.table::fwrite(HarmonizationFailures, file = "N://COVerAGE-DB/Data/HarmonizationFailures.csv")
 # saveRDS(HarmonizationFailures, file = here::here("Data","HarmonizationFailures.rds"))
 
 # Edit results
@@ -195,7 +195,7 @@ outputCounts_5_1e5 <-
 
 # Save binary
 # saveRDS(outputCounts_5_1e5, here::here("Data","Output_5.rds"))
-data.table::fwrite(outputCounts_5_1e5, file = here::here("Data","Output_5_internal.csv"))
+data.table::fwrite(outputCounts_5_1e5, file = "N://COVerAGE-DB/Data/Output_5_internal.csv")
 
 # Round to full integers (update)
 outputCounts_5_1e5_rounded <- 
@@ -212,15 +212,15 @@ header_msg3 <- paste("Reproducible with: ",paste0("https://github.com/", Sys.get
 #write_lines(header_msg, path = here("Data","Output_5.csv"))
 #write_csv(outputCounts_5_1e5_rounded, path = here("Data","Output_5.csv"), append = TRUE, col_names = TRUE)
 data.table::fwrite(as.list(header_msg1), 
-                   file = here::here("Data","Output_5.csv"))
+                   file = "N://COVerAGE-DB/Data/Output_5.csv")
 data.table::fwrite(as.list(header_msg2), 
-                   file = here::here("Data","Output_5.csv"),
+                   file = "N://COVerAGE-DB/Data/Output_5.csv",
                    append = TRUE)
 data.table::fwrite(as.list(header_msg3), 
-                   file = here::here("Data","Output_5.csv"),
+                   file = "N://COVerAGE-DB/Data/Output_5.csv",
                    append = TRUE)
 data.table::fwrite(outputCounts_5_1e5_rounded, 
-                   file = here::here("Data","Output_5.csv"), 
+                   file = "N://COVerAGE-DB/Data/Output_5.csv", 
                    append = TRUE, col.names = TRUE)
 
 
@@ -259,16 +259,16 @@ header_msg3 <- paste("Reproducible with: ",paste0("https://github.com/", Sys.get
 #write_lines(header_msg, path = here("Data","Output_10.csv"))
 #write_csv(outputCounts_10_rounded, path = here("Data","Output_10.csv"), append = TRUE, col_names = TRUE)
 data.table::fwrite(as.list(header_msg1), 
-                   file = here::here("Data","Output_10.csv"))
+                   file = "N://COVerAGE-DB/Data/Output_10.csv")
 data.table::fwrite(as.list(header_msg2), 
-                   file = here::here("Data","Output_10.csv"),
+                   file = "N://COVerAGE-DB/Data/Output_10.csv",
                    append = TRUE)
 data.table::fwrite(as.list(header_msg3), 
-                   file = here::here("Data","Output_10.csv"),
+                   file = "N://COVerAGE-DB/Data/Output_10.csv",
                    append = TRUE)
 
 data.table::fwrite(outputCounts_10_rounded, 
-                   file = here::here("Data","Output_10.csv"), 
+                   file = "N://COVerAGE-DB/Data/Output_10.csv", 
                    append = TRUE, col.names = TRUE)
 
 # Save binary
@@ -276,15 +276,16 @@ data.table::fwrite(outputCounts_10_rounded,
 # saveRDS(outputCounts_10, here::here("Data","Output_10.rds"))
 data.table::fwrite(outputCounts_10, file = here::here("Data","output_10_internal.csv"))
 
+# TR: deprecated: G now cut out of processing due to space issues 24 Aug 2023
 # also copy rds files to N://COVerAGE-DB/Data
-cdb_files <- c(
-               "Output_5.csv","Output_5_internal.csv",
-               "Output_10.csv","Output_10_internal.csv",
-               "HarmonizationFailures.csv")
-files_from <- file.path("Data",cdb_files)
-
-file.copy(from = files_from, 
-          to = "N:/COVerAGE-DB/Data", 
-          overwrite = TRUE)
+# cdb_files <- c(
+#                "Output_5.csv","Output_5_internal.csv",
+#                "Output_10.csv","Output_10_internal.csv",
+#                "HarmonizationFailures.csv")
+# files_from <- file.path("Data",cdb_files)
+# 
+# file.copy(from = files_from, 
+#           to = "N:/COVerAGE-DB/Data", 
+#           overwrite = TRUE)
 
 # end
