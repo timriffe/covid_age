@@ -9267,7 +9267,66 @@ v Reading from "Mozambique input template".
 v Range ''database'!A:J'.
 v Reading from "Namibia".
 v Range ''database'!A:J'.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  template".
+v Reading from "Nepal Input template".
+v Range ''database'!A:J'.
+v Reading from "Nicaragua input template".
+v Range ''database'!A:J'.
+v Reading from "Nigeria input template".
+v Range ''database'!A:J'.
+v Reading from "North Macedonia WHO input template".
+v Range ''database'!A:J'.
+Auto-refreshing stale OAuth token.
+v Reading from "Northern Ireland input template".
+v Range ''database'!A:J'.
+v Reading from "Oman WHO input template".
+v Range ''database'!A:J'.
+v Reading from "Pakistan input template".
+v Range ''database'!A:J'.
+v Reading from "Palestine input template".
+v Range ''database'!A:J'.
+v Reading from "Panama input template".
+v Range ''database'!A:J'.
+v Reading from "Papua New Guinea template".
+v Range ''database'!A:J'.
+v Reading from "Portugal input template".
+v Range ''database'!A:J'.
+v Reading from "Qatar WHO input template".
+v Range ''database'!A:J'.
+v Reading from "Romania input template".
+v Range ''database'!A:J'.
+v Reading from "Rwanda input template".
+v Range ''database'!A:J'.
+v Reading from "Senegal input template".
+v Range ''database'!A:J'.
+v Reading from "Serbia WHO input template".
+v Range ''database'!A:J'.
+v Reading from "Sierra Leone input template".
+v Range ''database'!A:J'.
+v Reading from "South Africa input template".
+v Range ''database'!A:J'.
+v Reading from "Sri Lanka input template".
+v Range ''database'!A:J'.
+v Reading from "Sudan input template".
+v Range ''database'!A:J'.
+v Reading from "Suriname input template".
+v Range ''database'!A:J'.
+v Reading from "Tunisia input template".
+v Range ''database'!A:J'.
+v Reading from "Turkey input template".
+v Range ''database'!A:J'.
+v Reading from "Uganda input template".
+v Range ''database'!A:J'.
+v Reading from "United Arab Emirates WHO input template".
+v Range ''database'!A:J'.
+v Reading from "Uruguay input template".
+v Range ''database'!A:J'.
+v Reading from "Arizona input template".
+v Range ''database'!A:J'.
+v Reading from "New Jersey input template".
+v Range ''database'!A:J'.
+v Reading from "Illinois input template".
+v Range ''database'!A:J'.
+v Reading from "Michigan input template".
 v Range ''database'!A:J'.
 v Reading from "Pennsylvania input template".
 v Range ''database'!A:J'.
@@ -9287,3 +9346,19 @@ v Range 'Tabellenblatt1'.
 New names:
 * `` -> `...6`
 Fri Aug 25 15:23:12 2023
+Warning messages:
+1: In .Primitive("as.double")(x, ...) : NAs introduced by coercion
+2: In .Primitive("as.double")(x, ...) : NAs introduced by coercion
+Fri Aug 25 15:27:10 2023
+Fri Aug 25 15:31:01 2023
+here() starts at U:/gits/covid_age
+Fri Aug 25 15:32:19 2023
+Fri Aug 25 16:12:16 2023
+Fri Aug 25 16:35:59 2023
+Fri Aug 25 18:47:24 2023
+Fri Aug 25 20:28:45 2023
+Fri Aug 25 20:57:15 2023
+Fri Aug 25 23:21:24 2023
+Sat Aug 26 00:17:37 2023
+Sat Aug 26 00:29:59 2023
+Sat Aug 26 01:12:10 2023
