@@ -49,9 +49,9 @@ n.cores <- 4
 
 
 # which of those old results shall we preserve rather than recalculate?
-# subset_changes <-
-#   data.table::fread("N://COVerAGE-DB/Data/subsets_to_harmonize.csv",
-#                     encoding = "UTF-8")
+subset_changes <-
+  data.table::fread("N://COVerAGE-DB/Data/subsets_to_harmonize.csv",
+                    encoding = "UTF-8")
 
 # Count data
 
@@ -59,10 +59,7 @@ n.cores <- 4
 inputCounts <- data.table::fread("N://COVerAGE-DB/Data/inputCounts.csv",
                                  encoding = "UTF-8") %>% 
   collapse::fsubset(Measure %in% Measures) %>% 
-  collapse::fselect(-Metric) %>% 
-  ## change the Date format to filter out the after 31-03-2023
-  collapse::fmutate(Date = as.Date(Date, format = "%d.%m.%Y")) %>% 
-  dplyr::filter(Date <= "2023-03-31")
+  collapse::fselect(-Metric) 
 
 
 # Use left_join as implicit filter;
@@ -70,10 +67,8 @@ inputCounts <- data.table::fread("N://COVerAGE-DB/Data/inputCounts.csv",
 
 
 inputCounts_changes <-
-  ## MK 28.08.2023: commented these 2 lines as I need to do a one-time-clean-job for all the data
-  #subset_changes |>
-  #left_join(inputCounts, by = c("Code","Date","Sex","Measure")) 
-  inputCounts %>% 
+  subset_changes |>
+  left_join(inputCounts, by = c("Code","Date","Sex","Measure"))  %>% 
   collapse::fmutate(Date = ddmmyyyy(Date)) %>% 
   dplyr::arrange(Country, Region, Date, Measure, Sex, Age) %>% 
   dplyr::group_by(Code, Sex, Measure, Date) %>% 
@@ -107,7 +102,7 @@ ids_in <- inputCounts_changes$id %>% unique() %>% sort()
 # tapply(inputCounts$id,inputCounts$core_id,function(x){x %>% unique() %>% length()})
 # Split counts into big chunks
 iL <- split(inputCounts_changes,
-            inputCounts_changes$Measure,
+            inputCounts_changes$core_id,
             drop = TRUE)
 
 ### Age harmonization: 5-year age groups ############################
@@ -130,7 +125,7 @@ iL <- split(inputCounts_changes,
                       N = 5,
                       OAnew = 100,
                       lambda = 1e5,
-                      mc.cores = 1)
+                      mc.cores = n.cores)
  toc()
 
 # install.packages("doParallel")

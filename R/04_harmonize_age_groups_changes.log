@@ -1,2 +1,7 @@
 Lade nötiges Paket: pacman
 here() starts at U:/gits/covid_age
+Error in unserialize(node$con) : error reading from connection
+Calls: <Anonymous> ... FUN -> recvData -> recvData.SOCKnode -> unserialize
+Error in serialize(data, node$con) : error writing to connection
+Calls: <Anonymous> ... postNode -> sendData -> sendData.SOCKnode -> serialize
+Execution halted

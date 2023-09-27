@@ -22,7 +22,9 @@ dir_n_source <- "N:/COVerAGE-DB/Automation/SouthKorea"
 data_source <- paste0(dir_n, "Data_sources/", ctr, "/ExcelReferenceData/cases_",today(), ".xlsx")
 
 #korea_url <- "http://ncov.mohw.go.kr/"
-korea_url <- "http://ncov.kdca.go.kr/"
+#korea_url <- "http://ncov.kdca.go.kr/"
+
+korea_url <- "https://ncov.kdca.go.kr/bdBoardListR.do?brdId=1&brdGubun=11"
 
 url_scrape <- read_html(korea_url) %>% 
   html_nodes("a ") %>% 
