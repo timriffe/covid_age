@@ -137,7 +137,7 @@ vacc2 <- vacc %>%
   summarise(new = sum(new)) %>% 
   ungroup()
 
-ages <- c(0, unique(vacc2$Age)) %>% sort()
+ages <- c(unique(vacc2$Age)) %>% sort()
 
 vacc3 <- vacc2 %>% 
   tidyr::complete(Measure, Age = ages, Date, fill = list(new = 0))  %>% 
@@ -151,9 +151,10 @@ vacc3 <- vacc2 %>%
        Code = "IT",
        Sex = "b",
        Age = as.character(Age),
-       AgeInt = case_when(Age == "90" ~ 15,
-                          Age == "0" ~ 16,
-                          Age == "16" ~ 4,
+       AgeInt = case_when(Age == "0" ~ 5,
+                          Age == "5" ~ 7,
+                          Age == "12" ~ 8,
+                          Age == "90" ~ 15,
                           TRUE ~ 10),
        Metric = "Count") %>% 
   sort_input_data()
@@ -181,11 +182,22 @@ totals <- totals %>%
   sort_input_data()
 
 
-out <- 
-  bind_rows(out_drive, 
-            vacc3, it)%>%
-  filter(Age != "TOT") %>% 
-  sort_input_data()
+if(exists("out_drive")) {
+  out <- bind_rows(out_drive, vacc3, it) %>%
+    filter(Age != "TOT") %>% 
+    sort_input_data()
+} else{
+  out <- bind_rows(vacc3, it) %>%
+    filter(Age != "TOT") %>% 
+    sort_input_data()
+  }
+
+
+# out <- 
+#   bind_rows(out_drive, 
+#             vacc3, it)%>%
+#   filter(Age != "TOT") %>% 
+#   sort_input_data()
 
 out <- bind_rows(out, totals) %>% 
   unique() %>% 
@@ -193,10 +205,10 @@ out <- bind_rows(out, totals) %>%
   # summarise(Value = sum(Value)) %>% 
   # ungroup() %>% 
   sort_input_data()
-nrow(out_drive)
-nrow(vacc3)
+#nrow(out_drive)
+#nrow(vacc3)
 write_rds(out, paste0(dir_n, ctr, ".rds"))
-log_update(pp = ctr, N = nrow(out_drive) + nrow(vacc3))
+log_update(pp = ctr, N = nrow(out))
 
 # Italy adjustment of Bolletino and Infographic sources in one sheet ==============
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -189,7 +189,9 @@ cz_deaths_region_ss <-
   mutate(Value = cumsum(Value)) %>%  # cumulative!
   ungroup() %>% 
   arrange(Code, Date, Sex,Age) %>% 
-  mutate(AgeInt = 5, # what about the 100+? 
+  mutate(AgeInt = case_when(Age == 0 ~ 1,
+                            Age == 1 ~ 4,
+                            TRUE ~ 5), # what about the 100+? 
          Metric = "Count", 
          Measure = "Deaths",
          Date = ddmmyyyy(Date),
@@ -339,7 +341,9 @@ cz_cases_all_ss <-
   arrange(Date, Sex, Age) %>% 
   mutate(Country = "Czechia",
          Region = "All",
-         AgeInt = ifelse(Age == 100,5,1), 
+         AgeInt = case_when(Age == 0 ~ 1L,
+                            Age == 1 ~ 4L,
+                            TRUE ~ 5L), 
          Metric = "Count", 
          Measure = "Cases",
          Date = ddmmyyyy(Date),
@@ -375,7 +379,9 @@ cz_deaths_all_ss <-
   mutate(Value = cumsum(Value)) %>%  # cumulative!
   ungroup() %>% 
   arrange(Date, Sex, Age) %>% 
-  mutate(AgeInt = ifelse(Age == 100,5,1), 
+  mutate(AgeInt = case_when(Age == 0 ~ 1L,
+                            Age == 1 ~ 4L,
+                            TRUE ~ 5L), 
          Metric = "Count", 
          Measure = "Deaths",
          Date = ddmmyyyy(Date),

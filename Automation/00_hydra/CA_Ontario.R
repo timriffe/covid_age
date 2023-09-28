@@ -30,8 +30,8 @@ url_test <- "https://data.ontario.ca/dataset/f4f86e54-872d-43f8-8a86-3892fd3cb5e
 #-------saving input files locally and to Drive
 
 #download.file(url, destfile = data_source_c)
-df <- data.table::fread(url)
-write_csv(df, data_source_c)
+df_epi <- data.table::fread(url)
+write_csv(df_epi, data_source_c)
 
 download.file(url_test, destfile = data_source_t)
 # loading data
@@ -39,65 +39,72 @@ download.file(url_test, destfile = data_source_t)
 df_test <- read.csv(data_source_t)
 
 
+# df_epi <- read_csv("C:/Users/elzalabany/Downloads/conposcovidloc.csv")
+# 
+# df_test <- read_csv("C:/Users/elzalabany/Downloads/covidtesting.csv")
+
 #-------there are often date problems...checking...first case should be Jan 21, 2020
-range(df$Accurate_Episode_Date)
+range(df_epi$Accurate_Episode_Date)
 
 #------- If the episode date is before Jan 21, 2020 - changing to case reported date
-df_dated <-  df %>%
-  mutate(Date=if_else(Accurate_Episode_Date < ymd("2020-01-22"), 
-                      Case_Reported_Date, 
-                      Accurate_Episode_Date))
+df_dated <-  df_epi %>%
+  mutate(Date = case_when(Accurate_Episode_Date < ymd("2020-01-22") ~ Case_Reported_Date, 
+                          TRUE ~ Accurate_Episode_Date),
+         Measure_pre = case_when(Outcome1 == "FATAL" ~ "Deaths",
+                                 TRUE ~ "Cases"),
+         Gender = case_when(Client_Gender == "FEMALE" ~ "f",
+                            Client_Gender == "MALE" ~ "m",
+                            TRUE ~ "UNK"),
+         Age_gr = case_when(Age_Group == "UNKNOWN" ~ "UNK",
+                            Age_Group == "<20" ~ "0",
+                            TRUE ~ str_extract(Age_Group, "\\d+")))
 
 #----------------------------------------------
 
 date <- max(df_dated$Accurate_Episode_Date) %>% format.Date("%d.%m.%Y")
 
-
-
-
-
 #--------------------------------------------
 #--------Preparing cases and deaths
 #--------------------------------------------
 
-#------renaming variables
-df <- df_dated
-
-df$Outcome1 <- ifelse(df$Outcome1=="Fatal","Deaths","Cases")
-
-df$Age_Group <- ifelse(df$Age_Group=="<20",0,
-                       ifelse(df$Age_Group=="20s",20,
-                              ifelse(df$Age_Group=="30s",30,
-                                     ifelse(df$Age_Group=="40s",40,
-                                            ifelse(df$Age_Group=="50s",50,
-                                                   ifelse(df$Age_Group=="60s",60,
-                                                          ifelse(df$Age_Group=="70s",70,
-                                                                 ifelse(df$Age_Group=="80s",80,
-                                                                        ifelse(df$Age_Group=="90+",90,"unknown")))))))))
-
-df$Client_Gender <-  ifelse(df$Client_Gender=="FEMALE","f",
-                            ifelse(df$Client_Gender=="MALE","m","oth"))                                   
+# #------renaming variables
+# df <- df_dated
+# 
+# df$Outcome1 <- if_else(df$Outcome1=="Fatal","Deaths","Cases")
+# 
+# df$Age_Group <- ifelse(df$Age_Group=="<20",0,
+#                        ifelse(df$Age_Group=="20s",20,
+#                               ifelse(df$Age_Group=="30s",30,
+#                                      ifelse(df$Age_Group=="40s",40,
+#                                             ifelse(df$Age_Group=="50s",50,
+#                                                    ifelse(df$Age_Group=="60s",60,
+#                                                           ifelse(df$Age_Group=="70s",70,
+#                                                                  ifelse(df$Age_Group=="80s",80,
+#                                                                         ifelse(df$Age_Group=="90+",90,"unknown")))))))))
+# 
+# df$Client_Gender <-  ifelse(df$Client_Gender=="FEMALE","f",
+#                             ifelse(df$Client_Gender=="MALE","m","oth"))                                   
 
 #------------------------------------
 
 # calculating the cumulative cases and cumulative deaths
 
-df1 <- df %>%
-  group_by(Date, Age_Group, Client_Gender, Outcome1) %>%
-  count(Outcome1) %>%
-  rename(Reported_Date=Date, 
-         Sex=Client_Gender,
-         Age=Age_Group,
-         Daily_Cases=n,
-         Measure=Outcome1) %>%   
-  arrange(Sex,Age,Reported_Date) 
+df1 <- df_dated %>%
+  group_by(Date, Age_gr, Gender, Measure_pre) %>%
+  count(Measure_pre) %>%
+  rename(Reported_Date = Date, 
+         Sex = Gender,
+         Age = Age_gr,
+         Daily_Cases = n,
+         Measure = Measure_pre) %>%   
+  arrange(Sex, Age, Reported_Date) 
 
 # Filling in zeroes over ages where there are no cases
 
-df1_template <- expand.grid(Reported_Date=sort(unique(df1$Reported_Date)),
-                            Sex=c('m','f','oth'),
-                            Age=unique(df1$Age),
-                            Measure=c("Cases","Deaths")) %>%
+df1_template <- expand.grid(Reported_Date = sort(unique(df1$Reported_Date)),
+                            Sex = c('m','f','UNK'),
+                            Age = unique(df1$Age),
+                            Measure = c("Cases","Deaths")) %>%
   arrange(Reported_Date,Sex,Age)
 
 df1_full <- left_join(df1_template,df1) %>% 
@@ -106,8 +113,8 @@ df1_full <- left_join(df1_template,df1) %>%
 # Making a 'Value' column with cumulative cases
 
 df1_cum <- df1_full %>%
-  group_by(Sex,Age,Measure) %>%
-  mutate(Value=cumsum(Daily_Cases)) %>%
+  group_by(Sex, Age, Measure) %>%
+  mutate(Value = cumsum(Daily_Cases)) %>%
   ungroup() 
 
 # counts for both sexes combined
@@ -115,12 +122,12 @@ df1_cum <- df1_full %>%
 df2 <- df1_cum %>%
   group_by(Reported_Date,Measure,Age) %>%
   summarize(Value=sum(Value,na.rm=T)) %>%
-  mutate(Sex='b') 
+  mutate(Sex = 'b') 
 
 # merging the sex-specific and all sex dataframes 
 
 df3 <- bind_rows(df1_cum,df2)  %>%
-  filter(Sex!="oth") %>%
+  filter(Sex!="UNK") %>%
   arrange(Reported_Date,Sex,Measure,Age) %>%
   select(Reported_Date,Sex,Age,Value,Measure) 
 
@@ -134,7 +141,7 @@ df4 <- df3 %>%
 
 # adding total counts over all ages
 df5 <- bind_rows(df3,df4) %>% 
-  filter(Age!="unknown") %>% 
+  filter(Age!="UNK") %>% 
   arrange(Reported_Date,desc(Sex),Age)
 
 
@@ -166,13 +173,13 @@ Cases_Deaths_df <- df6 %>%
 #--- On 05.06 they changed the variable names
 #--- seems rechanged at 23.06.2022!
 cumtests <- df_test %>% 
-  rename(new_tests="Total.tests.completed.in.the.last.day") %>%
-  select("Reported.Date", new_tests) %>%
+  rename(new_tests="Total tests completed in the last day") %>%
+  select("Reported Date", new_tests) %>%
   filter(is.na(new_tests)==F) %>% 
   mutate(Value=113082+cumsum(new_tests)) %>%
   mutate(Country="Canada", Region="Ontario", Metric="Count", Measure="Tests") %>%
   mutate(Sex="b", Age="TOT",AgeInt="") %>%
-  rename(Date="Reported.Date") %>% 
+  rename(Date="Reported Date") %>% 
   mutate(Date = mdy(Date),
          Date = ddmmyyyy(Date))
 

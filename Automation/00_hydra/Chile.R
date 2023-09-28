@@ -24,8 +24,7 @@ gs4_auth(email = Sys.getenv("email"))
 
 ## MK: 27.02.2023: this is in order to keep the deaths data we already have by region, sex & age
 
-Chile_archived_deaths <- readRDS(paste0(dir_n, ctr, ".rds")) |> 
-  filter(Measure == "Deaths")
+Chile_archived_data <- readRDS(paste0(dir_n, ctr, ".rds")) 
 
 ################# #
 # Cases file ####
@@ -33,7 +32,7 @@ Chile_archived_deaths <- readRDS(paste0(dir_n, ctr, ".rds")) |>
 
 # Full list of github hosted data products here: https://github.com/MinCiencia/Datos-COVID19
 
-# urlfile_c="https://raw.githubusercontent.com/MinCiencia/Datos-COVID19/master/output/producto16/CasosGeneroEtario_std.csv" 
+# urlfile_c="https://raw.githubusercontent.com/MinCiencia/Datos-COVID19/master/output/producto16/CasosGeneroEtario_std.csv"
 # 
 # # Compare these. Does this one have more dates or is it just another format?
 # # urlfile_c2 <- "https://raw.githubusercontent.com/MinCiencia/Datos-COVID19/master/output/producto16/CasosGeneroEtario.csv"
@@ -43,8 +42,8 @@ Chile_archived_deaths <- readRDS(paste0(dir_n, ctr, ".rds")) |>
 # c_input$`Sexo` %>% unique()
 # 
 # #To create data
-# Cases <- 
-# c_input %>% 
+# Cases <-
+# c_input %>%
 #   mutate(Date = dmy(Fecha),
 #          Date = ddmmyyyy(Date),
 #          Age = substr(`Grupo de edad`,1,2) %>% as.integer() %>% as.character(),
@@ -54,8 +53,8 @@ Chile_archived_deaths <- readRDS(paste0(dir_n, ctr, ".rds")) |>
 #          Region = "All",
 #          Metric = "Count",
 #          Code = paste0("CL"),
-#          AgeInt = ifelse(Age == "80", 25L,5L)) %>% 
-#   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value = `Casos confirmados`) |> 
+#          AgeInt = ifelse(Age == "80", 25L,5L)) %>%
+#   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value = `Casos confirmados`) |>
 #   sort_input_data()
 
 # Deaths #####
@@ -92,8 +91,8 @@ Deaths <- deaths_raw |>
   
 out <- 
   bind_rows(
-    #Cases, 
-    Deaths, Chile_archived_deaths) %>% 
+   # Cases, 
+    Deaths, Chile_archived_data) %>% 
   unique() |> 
   sort_input_data()
 

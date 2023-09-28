@@ -208,12 +208,15 @@ db_all2 <- db_all %>%
 
 out <- db_all2 %>% 
   mutate(Country = "Peru",
-         AgeInt = case_when(Region == "All" & !(Age %in% c("TOT", "100")) ~ 1,
-                            Region != "All" & !(Age %in% c("0", "1", "TOT")) ~ 5,
-                            Region != "All" & Age == "0" ~ 1,
-                            Region != "All" & Age == "1" ~ 4,
+         AgeInt = case_when(
+           # Region == "All" & !(Age %in% c("TOT", "100")) ~ 1,
+           #                  Region != "All" & !(Age %in% c("0", "1", "TOT")) ~ 1,
+           #                  Region != "All" & Age == "0" ~ 1,
+           #                  Region != "All" & Age == "1" ~ 4,
                             Age == "100" ~ 5,
-                            Age == "TOT" ~ NA_real_),
+                            Age == "UNK" ~ NA_real_,
+                            Age == "TOT" ~ NA_real_,
+                            TRUE ~ 1),
          Date = ddmmyyyy(date_f),
          Code = case_when(
            Region == "All" ~ paste0("PE"),
