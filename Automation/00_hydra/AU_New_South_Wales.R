@@ -19,6 +19,7 @@ dir_n        <- "N:/COVerAGE-DB/Automation/Hydra/"
 drive_auth(email = Sys.getenv("email"))
 gs4_auth(email = Sys.getenv("email"))
 
+# Source: https://data.nsw.gov.au/data/dataset/nsw-covid-19-cases-by-age-range
 
 nsw_cases_age <- read.csv("https://data.nsw.gov.au/data/dataset/3dc5dc39-40b4-4ee9-8ec6-2d862a916dcf/resource/4b03bc25-ab4b-46c0-bb3e-0c839c9915c5/download/confirmed_cases_table2_age_group_agg.csv") %>% 
   select(Date = notification_date, Age = age_group, Value = confirmed_cases_count) %>% 

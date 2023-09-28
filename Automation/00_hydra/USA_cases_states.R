@@ -21,16 +21,18 @@ gs4_auth(email = Sys.getenv("email"))
 ctr <- "US_CDC_cases_state" 
 dir_n <- "N:/COVerAGE-DB/Automation/Hydra/"
 dir_k <- "K:/CDC_Covid/"
+dir_temp <- "N:/COVerAGE-DB/CDC-MonthlyData/"
 
 # folder name, this changes 
 
-folder <- "covid_case_restricted_detailed-master_04_08_2023" ## to change every update/ download of the data
+folder <- "covid_case_restricted_detailed-master_07_09_2023" ## to change every update/ download of the data
 
 # Read in files names 
 
 files_list <- list.files(
-  path= paste0(dir_k, folder),
-  pattern = ".parquet",
+  path= paste0(dir_temp, folder),
+ # pattern = ".parquet",
+  pattern = ".csv",
   full.names = TRUE)
 
 
@@ -39,44 +41,49 @@ read_par <- function(file_name){
                col_select = c("cdc_case_earliest_dt", "sex", "age_group", "res_state"))
 }
 
+read_file <- function(file_name){
+  data.table::fread(file_name,
+               select = c("cdc_case_earliest_dt", "sex", "age_group", "res_state"))
+}
+
 ## After reading, validate the number of rows as per mentioneD in GitHub repo
   
-raw_data <- files_list %>% 
-  map_dfr(read_par)
+raw_data <- files_list |> 
+  map_dfr(read_file)
 
 ## REVIEW THE DATA BEFORE PROCESSING 
 glimpse(raw_data)
-raw_data %>% count(res_state)
-raw_data %>% count(age_group)
-raw_data %>% count(sex)
+raw_data |> count(res_state)
+raw_data |> count(age_group)
+raw_data |> count(sex)
 
 
 ## PROCESSING 
 
 processed_data <-
-  raw_data %>%
+  raw_data |>
+  ## when State is NA, it is NA in Sex, Age too, so filter these out.
+  filter(!is.na(res_state)) |> 
   select(Date = cdc_case_earliest_dt, 
          Sex = sex, 
          Age = age_group, 
-         State = res_state)%>%
+         State = res_state)|>
   mutate(Sex =  case_when(is.na(Sex) ~ "UNK",
-                          Sex == "NA" ~ "UNK",
-                        Sex== "Unknown" ~ "UNK",
-                        Sex== "Missing" ~ "UNK",
-                        Sex== "Other" ~ "UNK",
-                        Sex== "Male" ~ "m",
-                        Sex== "Female"~"f",
+                          Sex %in% c("NA", "Unknown",
+                                     "Missing", "Other") ~ "UNK",
+                        Sex == "Male" ~ "m",
+                        Sex == "Female"~"f",
                         TRUE ~ as.character(Sex)),
          Age = case_when (is.na(Age) ~ "UNK",
-                         Age== "Unknown" ~" UNK",
-                         TRUE~ as.character(Age)))%>%
-  group_by(Date, Sex, Age, State) %>% 
-  summarize(Value = n(), .groups = "drop")%>%
-  tidyr::complete(Date, Sex, Age, State, fill = list(Value = 0)) %>% 
-  arrange(Sex, Age, State, Date) %>% 
-  group_by(Sex, Age, State) %>% 
-  mutate(Value = cumsum(Value)) %>% 
-  ungroup()%>%
+                         Age %in% c("Unknown", "Missing") ~ "UNK",
+                         TRUE ~ as.character(Age))) |>
+  group_by(Date, Sex, Age, State) |> 
+  summarize(Value = n(), .groups = "drop") |>
+  tidyr::complete(Date, Sex, Age, State, fill = list(Value = 0)) |> 
+  arrange(Sex, Age, State, Date) |> 
+  group_by(Sex, Age, State) |> 
+  mutate(Value = cumsum(Value)) |> 
+  ungroup()|>
   mutate(Age = recode(Age, 
                   `0 - 9 Years`="0",
                   `10 - 19 Years`="10",
@@ -88,20 +95,20 @@ processed_data <-
                   `70 - 79 Years`="70",
                   `80+ Years`="80",
                   `Missing`="UNK",
-                  `NA`="UNK")) %>% 
-  group_by(Date, Age, Sex, State) %>% 
-  summarise(Value = sum(Value)) %>% 
+                  `NA`="UNK")) |> 
+  group_by(Date, Age, Sex, State) |> 
+  summarise(Value = sum(Value)) |> 
   ungroup()
 
 
 ## REVIEW THE DATA AFTER PROCESSING 
 
-processed_data %>% count(State) %>% View()
-processed_data %>% count(Age) %>% View()
-processed_data %>% count(Sex) %>% View()
+processed_data |> count(State) |> View()
+processed_data |> count(Age) |> View()
+processed_data |> count(Sex) |> View()
 
 
-Out <- processed_data %>% 
+Out <- processed_data |> 
   mutate(AgeInt = case_when(
          Age == "80" ~ 25L,
          Age == "UNK" ~ NA_integer_,
@@ -171,9 +178,9 @@ Out <- processed_data %>%
                 State == "WY" ~ "Wyoming",
                 State == "NA" ~ "Unknown"),
     Code= case_when(State == "NA" ~ "US-UNK+",
-                    TRUE ~ paste0 ("US-", State))) %>% 
+                    TRUE ~ paste0 ("US-", State))) |> 
   select(Country, Region, Code, Date, Sex, 
-         Age, AgeInt, Metric, Measure, Value) %>% 
+         Age, AgeInt, Metric, Measure, Value) |> 
   sort_input_data()
 
 
@@ -215,7 +222,7 @@ write_rds(Out, paste0(dir_n, ctr, ".rds"))
 
 
 #states <- c("AZ","AR", "DE","GU","ID","KS","ME","MA","MN","MT","NV","NJ","NC","OK","OR","PA","SC","TN","VA", "IL")
-#  filter(res_state %in% states) %>%
+#  filter(res_state %in% states) |>
 # 
 # State == "AZ" ~ "Arizona",
 # State == "AR" ~ "Arkansas",

@@ -24,8 +24,7 @@ gs4_auth(email = Sys.getenv("email"))
 
 ## MK: 27.02.2023: this is in order to keep the deaths data we already have by region, sex & age
 
-Chile_archived_deaths <- readRDS(paste0(dir_n, ctr, ".rds")) |> 
-  filter(Measure == "Deaths")
+Chile_archived_data <- readRDS(paste0(dir_n, ctr, ".rds")) 
 
 ################# #
 # Cases file ####
@@ -33,30 +32,30 @@ Chile_archived_deaths <- readRDS(paste0(dir_n, ctr, ".rds")) |>
 
 # Full list of github hosted data products here: https://github.com/MinCiencia/Datos-COVID19
 
-urlfile_c="https://raw.githubusercontent.com/MinCiencia/Datos-COVID19/master/output/producto16/CasosGeneroEtario_std.csv" 
-
-# Compare these. Does this one have more dates or is it just another format?
-# urlfile_c2 <- "https://raw.githubusercontent.com/MinCiencia/Datos-COVID19/master/output/producto16/CasosGeneroEtario.csv"
-c_input <- read_csv(url(urlfile_c))
-#head(c_input,10)
-#tail(c_input,10)
-c_input$`Sexo` %>% unique()
-
-#To create data
-Cases <- 
-c_input %>% 
-  mutate(Date = dmy(Fecha),
-         Date = ddmmyyyy(Date),
-         Age = substr(`Grupo de edad`,1,2) %>% as.integer() %>% as.character(),
-         Sex = tolower(Sexo),
-         Measure = "Cases",
-         Country = ctr,
-         Region = "All",
-         Metric = "Count",
-         Code = paste0("CL"),
-         AgeInt = ifelse(Age == "80", 25L,5L)) %>% 
-  select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value = `Casos confirmados`) |> 
-  sort_input_data()
+# urlfile_c="https://raw.githubusercontent.com/MinCiencia/Datos-COVID19/master/output/producto16/CasosGeneroEtario_std.csv"
+# 
+# # Compare these. Does this one have more dates or is it just another format?
+# # urlfile_c2 <- "https://raw.githubusercontent.com/MinCiencia/Datos-COVID19/master/output/producto16/CasosGeneroEtario.csv"
+# c_input <- read_csv(url(urlfile_c))
+# #head(c_input,10)
+# #tail(c_input,10)
+# c_input$`Sexo` %>% unique()
+# 
+# #To create data
+# Cases <-
+# c_input %>%
+#   mutate(Date = dmy(Fecha),
+#          Date = ddmmyyyy(Date),
+#          Age = substr(`Grupo de edad`,1,2) %>% as.integer() %>% as.character(),
+#          Sex = tolower(Sexo),
+#          Measure = "Cases",
+#          Country = ctr,
+#          Region = "All",
+#          Metric = "Count",
+#          Code = paste0("CL"),
+#          AgeInt = ifelse(Age == "80", 25L,5L)) %>%
+#   select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value = `Casos confirmados`) |>
+#   sort_input_data()
 
 # Deaths #####
 
@@ -91,7 +90,9 @@ Deaths <- deaths_raw |>
 
   
 out <- 
-  bind_rows(Cases, Deaths, Chile_archived_deaths) %>% 
+  bind_rows(
+   # Cases, 
+    Deaths, Chile_archived_data) %>% 
   unique() |> 
   sort_input_data()
 
@@ -108,16 +109,16 @@ log_update(pp = ctr, N = nrow(out))
 
 
 data_source_1 <- paste0(dir_n, "Data_sources/", ctr, "/death_age_",today(), ".csv")
-data_source_2 <- paste0(dir_n, "Data_sources/", ctr, "/cases_age_",today(), ".csv")
+#data_source_2 <- paste0(dir_n, "Data_sources/", ctr, "/cases_age_",today(), ".csv")
 
 # dd_archive <- dd %>% 
 #   filter(ANO_DEF >= 2020,
 #          CODIGO_SUBCATEGORIA_DIAG1 == "U071")
 write_csv(deaths_raw, data_source_1)
-write_csv(c_input, data_source_2)
+#write_csv(c_input, data_source_2)
 
 
-data_source <- c(data_source_1, data_source_2)
+data_source <- c(data_source_1)
 
 zipname <- paste0(dir_n, 
                   "Data_sources/", 

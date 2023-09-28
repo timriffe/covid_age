@@ -34,25 +34,25 @@ if(sum(!p_isinstalled(packages_CRAN))>0) {
 }
 
 # Reuired github packages
-packages_git <- c("googlesheets4","DemoTools","parallelsugar","osfr","covidAgeData")
+packages_git <- c("googlesheets4","parallelsugar")
 
 # install from github if necessary
 if (!p_isinstalled("googlesheets4")) {
   remotes::install_github("tidyverse/googlesheets4")
 }
-if (!p_isinstalled("covidAgeData")) {
-  remotes::install_github("eshom/covid-age-data")
-}
-if (!p_isinstalled("DemoTools")) {
-  install.packages("rstan", repos = "https://mc-stan.org/r-packages/", getOption("repos"))
-  remotes::install_github("timriffe/DemoTools", build = FALSE)
-}
+# if (!p_isinstalled("covidAgeData")) {
+#   remotes::install_github("eshom/covid-age-data")
+# }
+# if (!p_isinstalled("DemoTools")) {
+#   install.packages("rstan", repos = "https://mc-stan.org/r-packages/", getOption("repos"))
+#   remotes::install_github("timriffe/DemoTools", build = FALSE)
+# }
 if (!p_isinstalled("parallelsugar")){
   remotes::install_github("nathanvan/parallelsugar")
 }
-if (!p_isinstalled("osfr")){
-  remotes::install_github("ropensci/osfr", force = TRUE)
-}
+# if (!p_isinstalled("osfr")){
+#   remotes::install_github("ropensci/osfr", force = TRUE)
+# }
 
 
 # Load the required CRAN/github packages
@@ -747,13 +747,16 @@ sort_input_data <- function(X) {
 #   
 # }
 
-
+age2int <- function(Age, OAG = TRUE, OAvalue = NA) {
+  fd <- diff(Age)
+  c(fd, ifelse(OAG, OAvalue, fd[length(fd)]))
+}
 #----------------------
 # TR: this will be a bigger pain than it needs to be...
 # still needs to be called AFTER Age is integer
 add_AgeInt <- function(Age, omega = 105){
    
-    DemoTools::age2int(Age = Age, OAvalue = omega - max(Age))
+    age2int(Age = Age, OAvalue = omega - max(Age))
 }
 #---------------------
 
@@ -1855,7 +1858,7 @@ harmonize_offset_age <- function(chunk){
   nlast <- max(105 - max(Age), 5)
   
   # Widths of all age intervals
-  AgeInt<- DemoTools::age2int(Age, OAvalue = nlast)
+  AgeInt<- age2int(Age, OAvalue = nlast)
   
   # Split last age interval using PCLM
   p1 <- pclm(y = Pop, 
@@ -2066,7 +2069,7 @@ harmonize_age_p_del <- function(chunk,
                              lambda = lambda))
   if (class(out)[1] == "try-error"){
     out <- chunk[0,] %>% 
-      select(Country, Region, Code, Date, Sex, Measure, Age, AgeInt, Value, id)
+      collapse::fselect(Country, Region, Code, Date, Sex, Measure, Age, AgeInt, Value, id)
   }
   out
 }
@@ -2462,4 +2465,147 @@ wd_sched_detect <- function(){
     wd <- dirname(wd)
   }
   wd
+}
+
+
+groupOAG <- function(Value, Age, OAnew) {
+  stopifnot(OAnew %in% Age)
+  N        <- length(Value[Age <= OAnew])
+  Value[N] <- sum(Value[Age >= OAnew])
+  Value    <- Value[1:N]
+  names(Value) <- Age[1:N]
+  Value
+}
+
+int2age <- function(AgeInt, ageMin = 0) {
+  n <- length(AgeInt)
+  # if final AgeInt is NA, then assume it's OAG,
+  # count as zero for this calc
+  if (is.na(AgeInt[n])) {
+    AgeInt[n] <- 0
+  }
+  cumsum(AgeInt) - AgeInt + ageMin
+}
+
+
+
+graduate_mono   <- function(
+    Value,
+    Age,
+    AgeInt,
+    OAG = TRUE) {
+  
+  if (missing(Age) & missing(AgeInt)) {
+    Age                 <- names2age(Value)
+  }
+  if (missing(AgeInt)) {
+    # give 1 to final interval to preserve
+    AgeInt              <- age2int(Age, OAG = OAG, OAvalue = 1)
+  }
+  if (missing(Age)) {
+    Age                 <- int2age(AgeInt)
+  }
+  
+  # if age is single return as-is
+  if (is_single(Age)) {
+    names(Value) <- Age
+    return(Value)
+  }
+  
+  # if last age Open, we preserve it
+  if (OAG) {
+    N                   <- length(Value)
+    OAvalue             <- Value[N]
+    Value               <- Value[-N]
+    Age                 <- Age[-N]
+    AgeInt              <- AgeInt[-N]
+  }
+  # if the final age is Open, then we should remove it and then
+  # stick it back on
+  
+  AgePred               <- c(min(Age), cumsum(AgeInt) + min(Age))
+  y                     <- c(0, cumsum(Value))
+  AgeS                  <- min(Age):(sum(AgeInt)+ min(Age))
+  # TR: changed from monoH.FC to hyman 3.3.2021
+  y1                    <- splinefun(y ~ AgePred, method = "hyman")(AgeS)
+  out                   <- diff(y1)
+  names(out)            <- AgeS[-length(AgeS)]
+  
+  # The open age group is maintained as-is.
+  if (OAG) {
+    out                 <- c(out, OAvalue)
+  }
+  age1 <- min(Age):(min(Age) + length(out) - 1)
+  names(out) <- age1
+  out
+}
+
+
+
+names2age <- function(...) {
+  XL <- list(...)
+  # if multiple vectors given must be same lengths
+  if (length(XL) > 1) {
+    LL <- unlist(lapply(XL, function(x) {
+      length(x)
+    }))
+    stopifnot(all(diff(LL) == 0))
+  }
+  # which have names
+  TF <- unlist(lapply(XL, function(x) {
+    name_fun <-
+      ifelse(is.null(dim(x)), names, function(y) {
+        dimnames(y)[[1]]
+      })
+    ! is.null(name_fun(x))
+  }))
+  
+  if (any(TF)) {
+    # takes names from first available
+    x        <- XL[[which(TF)[1]]]
+    name_fun <-
+      ifelse(is.null(dim(x)), names, function(y) {
+        dimnames(y)[[1]]
+      })
+    Age      <- as.integer(name_fun(x))
+  } else {
+    x        <- XL[[1]]
+    Age      <- rep(NA, length(x))
+  }
+  Age
+}
+
+is_single <- function(Age) {
+  all(diff(sort(Age)) == 1)
+}
+
+groupAges <- function(Value,
+                      Age = 1:length(Value) - 1,
+                      N = 5,
+                      shiftdown = 0,
+                      AgeN,
+                      OAnew = max(Age)) {
+  if (missing(AgeN)) {
+    AgeN <- calcAgeN(Age = Age,
+                     N = N,
+                     shiftdown = shiftdown)
+  }
+  out <- tapply(Value, AgeN, sum)
+  
+  # group down open age
+  if (OAnew < max(AgeN)) {
+    AgeA <- sort(unique(AgeN))
+    out  <- groupOAG(Value = out,
+                     Age = AgeA,
+                     OAnew = OAnew)
+  }
+  out
+}
+calcAgeN <- function(Age, N = 5, shiftdown = 0) {
+  shift <- abs(shiftdown)
+  stopifnot(shift < N)
+  Ngroups <- (Age + shift) - (Age + shift) %% N
+  l <- rle(Ngroups)$lengths
+  inds <- cumsum(l) - l + 1
+  rep(Age[inds], times = l)
 }

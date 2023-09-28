@@ -12,7 +12,7 @@ Measures <- c("Cases","Deaths","Tests","ASCFR","Vaccinations",
 
 
 logfile <- here::here("buildlog.md")
-# n.cores <- round(6 + (detectCores() - 8)/4)
+#n.cores <- round(6 + (detectCores() - 8)/4)
 # n.cores  <- 3
 
 # no longer used to determine core usage
@@ -27,8 +27,8 @@ n.cores <- 4
 
 # TR 26 July 2023 as of now, no longer need this reshape step!
 # previous age harmonization run:
-OutputCounts_old <- data.table::fread("N://COVerAGE-DB/Data/Output_5_internal.csv") %>% 
-  filter(!is.na(Value))
+# OutputCounts_old <- data.table::fread("N://COVerAGE-DB/Data/Output_5_internal.csv") %>% 
+#   filter(!is.na(Value))
 #|>
   # TR 13 July 2023 switch to negative selection in order
   # tidyfast::dt_pivot_longer(-c( Country, Region, Code, Date, Sex, Age, AgeInt), 
@@ -37,15 +37,15 @@ OutputCounts_old <- data.table::fread("N://COVerAGE-DB/Data/Output_5_internal.cs
   #                           values_drop_na = TRUE)
   
 
-subsets_keep <- data.table::fread("N://COVerAGE-DB/Data/subsets_keep_harmonizations.csv")
+# subsets_keep <- data.table::fread("N://COVerAGE-DB/Data/subsets_keep_harmonizations.csv")
 
 # these can be r-binded back to outputCounts_5_1e5 that were calculated only on the changeset
 # Note, if something was deprecated from the inputDB, then it doesn't make it to the outputCounts
 # dataset, in which case, its harmonization results are not preserved.
-OutputCounts_keep <-
-  subsets_keep |>
-  left_join(OutputCounts_old, by = c("Code","Date","Sex","Measure")) |>
-  select(-keep) 
+# OutputCounts_keep <-
+#   subsets_keep |>
+#   left_join(OutputCounts_old, by = c("Code","Date","Sex","Measure")) |>
+#   select(-keep) 
 
 
 # which of those old results shall we preserve rather than recalculate?
@@ -59,30 +59,34 @@ subset_changes <-
 inputCounts <- data.table::fread("N://COVerAGE-DB/Data/inputCounts.csv",
                                  encoding = "UTF-8") %>% 
   collapse::fsubset(Measure %in% Measures) %>% 
-  collapse::fselect(-Metric)
+  collapse::fselect(-Metric) 
 
 
 # Use left_join as implicit filter;
 # reduced to just those subsets that are new or altered
+
+
 inputCounts_changes <-
   subset_changes |>
-  left_join(inputCounts, by = c("Code","Date","Sex","Measure")) %>% 
-  arrange(Country, Region, Date, Measure, Sex, Age) %>% 
-  collapse::fgroup_by(Code, Sex, Measure, Date) %>% 
-  collapse::fmutate(id = cur_group_id(),
-                    core_id = sample(1:n.cores,
-                                     size = 1,
-                                     replace = TRUE),
+  left_join(inputCounts, by = c("Code","Date","Sex","Measure"))  %>% 
+  collapse::fmutate(Date = ddmmyyyy(Date)) %>% 
+  dplyr::arrange(Country, Region, Date, Measure, Sex, Age) %>% 
+  dplyr::group_by(Code, Sex, Measure, Date) %>% 
+  dplyr::mutate(id = cur_group_id(),
+                core_id = sample(1:n.cores,
+                                 size = 1,
+                                 replace = TRUE),
                     toss = any(is.na(Value))) %>% 
-  ungroup() %>% 
-  arrange(core_id,id, Age) %>% 
+  dplyr::ungroup() %>% 
+  dplyr::arrange(core_id, id, Age) %>% 
   collapse::fsubset(!toss) %>% 
   collapse::fselect(-toss)
 # inputCounts <- tfile
 
 # Offsets
 # TR: are these updated for wpp2022?
-Offsets     <- readRDS(here::here("Data","Offsets.rds"))
+# Offsets     <- readRDS(here::here("Data","Offsets.rds"))
+Offsets <- readRDS("N://COVerAGE-DB/Data/Offsets.rds")
 # print(object.size(Offsets),units = "Mb")
 # 2.1 Mb
 # Sort count data, add group ids.

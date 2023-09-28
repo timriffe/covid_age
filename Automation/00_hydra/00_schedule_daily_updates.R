@@ -84,11 +84,10 @@ scripts <- c('Peru',
              'Austria', 
              'Bulgaria', 'Belgium', 'CanadaPDFs',
              'Czechia', 'Colombia', 'Croatia', 
-             'CA_Ontario', 
-             'Chile',  
+             'CA_Ontario', 'Chile',  
              'Estonia', 'England', 
              'Estonia_vaccine', 'ECDC_vaccine', 'England_Vaccine', 
-             'Finland', 'Finland_vaccine', 'France_Vaccine',
+             'Finland', 'Finland_vaccine', 
              'Germany', 'Germany_vaccine', 'Guatemala',
              'Hong_Kong_Vaccine',
              'Italy', 'Ireland', 
@@ -98,8 +97,6 @@ scripts <- c('Peru',
              'Scotland',   
              'SouthKorea', 
              'SwitzerlandEpi', 
-             'Switzerland_Vaccine',
-             'Taiwan', 
              'USA_cases_all', 
              'USA_deaths_states',
              'Lithuania_vaccine')
@@ -178,7 +175,8 @@ delete_sched("Brazil")
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # danger zone!!!! deleting all scheduled tasks
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-scripts <- c('USA_all', 'USA_all_deaths')
+scripts <- c('Haiti', 'Nigeria', 'England_and_Wales',
+             'Argentina', 'Chile_vaccine', 'IndiaVaxProcessing')
 
 for(c in scripts){
   delete_sched(c)

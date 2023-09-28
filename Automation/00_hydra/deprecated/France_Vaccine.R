@@ -240,7 +240,7 @@ vacc_tot_out <- bind_rows(vacc_tot_age_sex,vacc_reg_age_sex)
 
 write_rds(vacc_tot_out, paste0(dir_n, ctr, ".rds"))
 
-log_update(pp = ctr, N = nrow(vacc_tot_out))
+#log_update(pp = ctr, N = nrow(vacc_tot_out))
 
 
 #Archive the original source files for the day
