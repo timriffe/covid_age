@@ -58,7 +58,8 @@ db2 <- db %>%
   rename(Sex = Gender) %>% 
   tidyr::separate(AgeGroup, c("Age","age2"), "-") %>% 
   mutate(Test = 1,
-         Case = ifelse(ResultValue == "P", 1, 0),
+         Case = case_when(ResultValue == "P" ~ 1, 
+                          TRUE ~ 0),
          date_f =  as_date(ResultTime),
          Sex = case_when(Sex == 'N' ~ 'f',
                          Sex == 'M' ~ 'm',

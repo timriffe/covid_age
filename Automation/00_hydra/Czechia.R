@@ -66,10 +66,12 @@ cz_cases <- cz_cases %>%
 cz_cases2 <-
   cz_cases %>% 
   select(Date = datum, Age = vek, Sex2 = pohlavi, code = kraj_nuts_kod, LAU1 = okres_lau_kod) %>% 
-  mutate(Sex = ifelse(Sex2 == "M","m","f")) %>% 
+  mutate(Sex = case_when(Sex2 == "M" ~ "m",
+                         TRUE ~ "f")) %>% 
   select(-Sex2) %>% 
   # extracting NUTS3 from LAU1 when NUTS3 is empty
-  mutate(code = ifelse(code == "", str_sub(LAU1, 1, 5), code))
+  mutate(code = case_when(code == "" ~ str_sub(LAU1, 1, 5), 
+                          TRUE ~ code))
 
 # cz_cases2 %>%  dplyr::pull("Age") %>%  unique()
 
@@ -89,7 +91,8 @@ cz_cases_region_ss <-
   mutate(Age = case_when(between(Age,1,4) ~ 1,
                          Age >= 100 ~ 100,
                          TRUE ~ Age - Age %% 5),
-         Code = ifelse(is.na(Code),"UNK",Code)) %>% 
+         Code = case_when(is.na(Code) ~ "UNK",
+                          TRUE ~ Code)) %>% 
   mutate(Age = as.character(Age),
          Age = case_when(is.na(Age) ~ "UNK",
                          TRUE ~ Age)) %>% 
@@ -154,7 +157,8 @@ cz_deaths2 <-
   select(Date = datum, Age = vek, Sex = pohlavi, code = kraj_nuts_kod, LAU1 = okres_lau_kod) %>% 
   mutate(Sex = case_when(Sex == "M" ~ "m",
                          TRUE ~ "f"), 
-         code = ifelse(code == "", str_sub(LAU1, 1, 5), code)) %>% 
+         code = case_when(code == "" ~ str_sub(LAU1, 1, 5), 
+                          TRUE ~ code)) %>% 
   left_join(CZNUTS3, by = "code") %>% 
   select(Code, Date, Sex, Age) 
 
@@ -324,7 +328,8 @@ Ages_all_single <- 0:100
 cz_cases_all_ss <- 
   cz_cases2 %>% 
   select(Date, Sex, Age) %>% 
-  mutate(Age = ifelse(Age >= 100, 100, Age)) %>% 
+  mutate(Age = case_when(Age >= 100 ~ 100, 
+                         TRUE ~ Age)) %>% 
   ### select
   select(Date, Sex, Age) %>% 
   group_by(Date, Age, Sex) %>% 
@@ -363,7 +368,8 @@ cz_cases_all_ss <-
 cz_deaths_all_ss <- 
   cz_deaths2 %>% 
   select(Date, Sex, Age) %>% 
-  mutate(Age = ifelse(Age >= 100, 100, Age)) %>% 
+  mutate(Age = case_when(Age >= 100 ~ 100, 
+                         TRUE ~ Age)) %>% 
   select(Date, Sex, Age) %>% 
   group_by(Date, Age, Sex) %>% 
   summarise(Value = n(),

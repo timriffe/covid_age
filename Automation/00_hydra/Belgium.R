@@ -29,21 +29,26 @@ db_v <- read_csv(data_source_v)
 
 # cases and deaths
 url <- "https://epistat.sciensano.be/Data/COVID19BE.xlsx"
-data_source_c <- paste0(dir_n, "Data_sources/", ctr, "/all_",today(), ".xlsx")
+data_source_c <- paste0(dir_n, "Data_sources/", ctr, "/cases_",today(), ".xlsx")
 download.file(url, destfile = data_source_c, mode = "wb")
 
 # cases and deaths database
-## MK: 10.07.2023: deaths sheet is not anymore available. 
+## MK: 10.07.2023: deaths sheet is available separately until 30.06.2023. 
 db_c <- read_xlsx(data_source_c,
                   sheet = "CASES_AGESEX")
 
+deaths_url <- "https://epistat.sciensano.be/Data/COVID19BE_MORT.csv"
+data_source_d <- paste0(dir_n, "Data_sources/", ctr, "/deaths_",today(), ".csv")
+download.file(deaths_url, destfile = data_source_d, mode = "wb")
+
 # db_d <- read_xlsx(data_source_c,
 #                   sheet = "MORT")
+db_d <- read.csv("https://epistat.sciensano.be/Data/COVID19BE_MORT.csv")
 
 db_t <- read_xlsx(data_source_c,
                   sheet = "TESTS")
 
-data_source <- c(data_source_v, data_source_c)
+data_source <- c(data_source_v, data_source_c, data_source_d)
 
 zipname <- paste0(dir_n, 
                   "Data_sources/", 
@@ -88,63 +93,65 @@ db_c2 <- db_c %>%
          Sex = case_when(Sex == "M" ~ "m",
                          Sex == "F" ~ "f",
                          TRUE ~ "UNK"),
-         Region = ifelse(is.na(Region), "UNK", Region)) %>% 
+         Region = case_when(is.na(Region) ~ "UNK", 
+                            TRUE ~ Region)) %>% 
   select(-trash) %>% 
   replace_na(list(Date = last_date)) %>% 
   group_by(Date,Measure,Age,Sex,Region) %>% 
   summarize(new = sum(new)) %>% 
   ungroup() %>% 
   tidyr::complete(Date, Region, Measure, Sex, Age, fill = list(new = 0)) %>% 
-  arrange(Date) %>% 
   group_by(Region, Sex, Age, Measure) %>% 
+  arrange(Date) %>% 
   mutate(Value = cumsum(new)) %>% 
   ungroup() %>% 
   select(-new) 
 
 ## Deaths ==============
 
-# db_d2 <- db_d %>% 
-#   select(Region = REGION,
-#          Date = DATE,
-#          Sex = SEX,
-#          Age = AGEGROUP,
-#          new = DEATHS) %>% 
-#   separate(Age, c("Age", "trash"), sep = "-") %>% 
-#   mutate(Date = ymd(Date),
-#          Measure = "Deaths",
-#          Age = case_when(Age == "85+" ~ "90",
-#                          is.na(Age) ~ "UNK",
-#                          TRUE ~ Age),
-#          Sex = case_when(Sex == "M" ~ "m",
-#                          Sex == "F" ~ "f",
-#                          TRUE ~ "UNK"),
-#          Region = ifelse(is.na(Region), "UNK", Region)) %>% 
-#   select(-trash) %>% 
-#   replace_na(list(Date = last_date)) %>% 
-#   tidyr::complete(Date, Region, Measure, Sex, Age, fill = list(new = 0)) %>% 
-#   arrange(Date) %>% 
-#   group_by(Region, Sex, Age, Measure) %>% 
-#   mutate(Value = cumsum(new)) %>% 
-#   ungroup() %>% 
-#   select(-new) 
+db_d2 <- db_d %>%
+   select(Region = REGION,
+          Date = DATE,
+          Sex = SEX,
+          Age = AGEGROUP,
+          new = DEATHS) %>%
+   separate(Age, c("Age", "trash"), sep = "-") %>%
+   mutate(Date = ymd(Date),
+          Measure = "Deaths",
+          Age = case_when(Age == "85+" ~ "90",
+                          is.na(Age) ~ "UNK",
+                          TRUE ~ Age),
+          Sex = case_when(Sex == "M" ~ "m",
+                          Sex == "F" ~ "f",
+                          TRUE ~ "UNK"),
+          Region = case_when(is.na(Region) ~ "UNK", 
+                             TRUE ~ Region)) %>%
+   select(-trash) %>%
+   # replace_na(list(Date = last_date)) %>%
+   # tidyr::complete(Date, Region, Measure, Sex, Age, fill = list(new = 0)) %>%
+   group_by(Region, Sex, Age, Measure) %>%
+   arrange(Date) %>%
+   mutate(Value = cumsum(new)) %>%
+   ungroup() %>%
+   select(-new)
 
-# db_cd <- bind_rows(db_c2, db_d2)
+db_cd <- bind_rows(db_c2, db_d2)
 
-db_cd_sex <- db_c2 %>% 
+db_cd_sex <- db_cd %>% 
   group_by(Date, Region, Measure, Age) %>% 
   summarise(Value = sum(Value)) %>% 
   ungroup() %>% 
   mutate(Sex = "b") %>% 
   filter(Age != "UNK")
 
-db_cd_age <- db_c2 %>% 
+db_cd_age <- db_cd %>% 
   group_by(Date, Region, Measure, Sex) %>% 
   summarise(Value = sum(Value)) %>% 
   ungroup() %>% 
   mutate(Age = "TOT") %>% 
   filter(Sex != "UNK")
 
-db_cd2 <- db_c2 %>% 
+db_cd2 <- db_cd %>% 
   filter(Age != "UNK" & Sex != "UNK") %>% 
   bind_rows(db_cd_sex, db_cd_age) 
 
@@ -165,7 +172,8 @@ db_v2 <- db_v %>%
                              Measure == "C" ~ "Vaccination2",
                              Measure == "E" ~ "Vaccination3",
                              Measure == "E2" ~ "Vaccination4",
-                             Measure == "E3" ~ "Vaccination5"),
+                             Measure == "E3" ~ "Vaccination5",
+                             Measure == "E4+" ~ "Vaccination6"),
          Age = case_when(Age == "85+" ~ "85",
                          Age == "00" ~ "0",
                          Age == "05" ~ "5",
@@ -174,8 +182,10 @@ db_v2 <- db_v %>%
          Sex = case_when(Sex == "M" ~ "m",
                          Sex == "F" ~ "f",
                          TRUE ~ "UNK"),
-         Region = ifelse(is.na(Region), "UNK", Region),
-         Region = ifelse(Region == "Ostbelgien", "Wallonia", Region)) %>% 
+         Region = case_when(is.na(Region) ~ "UNK", 
+                            TRUE ~ Region),
+         Region = case_when(Region == "Ostbelgien" ~ "Wallonia",
+                            TRUE ~ Region)) %>% 
   select(-trash) %>% 
   group_by(Region, Date, Sex, Age, Measure) %>% 
   summarise(new = sum(new)) %>% 
@@ -194,7 +204,8 @@ db_t2 <- db_t %>%
          Date = DATE,
          new = TESTS_ALL) %>% 
   mutate(Date = ymd(Date),
-         Region = ifelse(is.na(Region), "UNK", Region)) %>% 
+         Region = case_when(is.na(Region) ~ "UNK", 
+                            TRUE ~ Region)) %>% 
   group_by(Region, Date) %>% 
   summarize(new = sum(new), .groups = "drop") %>% 
   tidyr::complete(Date, Region, fill = list(new = 0)) %>% 
@@ -238,42 +249,49 @@ out <- bind_rows(db_nal,
                             Measure == "Vaccination3" & Age == "0" ~ 5L,
                             Measure == "Vaccination4" & Age == "0" ~ 5L,
                             Measure == "Vaccination5" & Age == "0" ~ 5L,
+                            Measure == "Vaccination6" & Age == "0" ~ 5L,
                             
                             Measure == "Vaccination1" & Age == "5" ~ 7L,
                             Measure == "Vaccination2" & Age == "5" ~ 7L,
                             Measure == "Vaccination3" & Age == "5" ~ 7L,
                             Measure == "Vaccination4" & Age == "5" ~ 7L,
                             Measure == "Vaccination5" & Age == "5" ~ 7L,
+                            Measure == "Vaccination6" & Age == "5" ~ 7L,
                             
                             Measure == "Vaccination1" & Age == "12" ~ 4L,
                             Measure == "Vaccination2" & Age == "12" ~ 4L,
                             Measure == "Vaccination3" & Age == "12" ~ 4L,
                             Measure == "Vaccination4" & Age == "12" ~ 4L,
                             Measure == "Vaccination5" & Age == "12" ~ 4L,
+                            Measure == "Vaccination6" & Age == "12" ~ 4L,
                             
                             Measure == "Vaccination1" & Age == "16" ~ 2L,
                             Measure == "Vaccination2" & Age == "16" ~ 2L,
                             Measure == "Vaccination3" & Age == "16" ~ 2L,
                             Measure == "Vaccination4" & Age == "16" ~ 2L,
                             Measure == "Vaccination5" & Age == "16" ~ 2L,
+                            Measure == "Vaccination6" & Age == "16" ~ 2L,
  
                             Measure == "Vaccination1" & Age == "18" ~ 7L,
                             Measure == "Vaccination2" & Age == "18" ~ 7L,
                             Measure == "Vaccination3" & Age == "18" ~ 7L,
                             Measure == "Vaccination4" & Age == "18" ~ 7L,
                             Measure == "Vaccination5" & Age == "18" ~ 7L,
+                            Measure == "Vaccination6" & Age == "18" ~ 7L,
 
                             Measure == "Vaccination1" & Age == "85" ~ 20L,
                             Measure == "Vaccination2" & Age == "85" ~ 20L,
                             Measure == "Vaccination3" & Age == "85" ~ 20L,
                             Measure == "Vaccination4" & Age == "85" ~ 20L,
                             Measure == "Vaccination5" & Age == "85" ~ 20L,
+                            Measure == "Vaccination6" & Age == "85" ~ 20L,
                             
                             Measure == "Vaccination1" & Age %in% c("25", "35", "45", "55","65","75") ~ 10L,
                             Measure == "Vaccination3" & Age %in% c("25", "35", "45", "55","65","75") ~ 10L,
                             Measure == "Vaccination2" & Age %in% c("25", "35", "45", "55","65","75") ~ 10L,
                             Measure == "Vaccination4" & Age %in% c("25", "35", "45", "55","65","75") ~ 10L,
-                            Measure == "Vaccination5" & Age %in% c("25", "35", "45", "55","65","75") ~ 10L),
+                            Measure == "Vaccination5" & Age %in% c("25", "35", "45", "55","65","75") ~ 10L,
+                            Measure == "Vaccination6" & Age %in% c("25", "35", "45", "55","65","75") ~ 10L),
 
          date_f = Date,
          Date = ddmmyyyy(date_f),

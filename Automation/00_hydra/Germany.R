@@ -51,8 +51,10 @@ raw_prepared <- db |>
                          Altersgruppe == "A80+" ~ "80",
                          Altersgruppe == "unbekannt" ~ "UNK"),
          date_f = ymd(str_sub(Meldedatum, 1, 10)),
-         Cases = ifelse(AnzahlFall < 0, 0, AnzahlFall),
-         Deaths = ifelse(AnzahlTodesfall < 0, 0, AnzahlTodesfall),
+         Cases = case_when(AnzahlFall < 0 ~ 0, 
+                           TRUE ~ AnzahlFall),
+         Deaths = case_when(AnzahlTodesfall < 0 ~ 0, 
+                            TRUE ~ AnzahlTodesfall),
          #  Region = Bundesland) |> 
          Region_code = IdLandkreis,
          Number= nchar(Region_code),

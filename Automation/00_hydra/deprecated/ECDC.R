@@ -131,7 +131,8 @@ PrepIN <-
       as_tibble() %>% 
       mutate( Value  = gsub(Value, pattern = "\\[|\\]", replacement = ""),
               Value = gsub(Value, pattern = "n &lt; ",replacement = "1"),
-              Value = ifelse(Value == "null", NA, Value),
+              Value = case_when(Value == "null" ~ NA, 
+                                TRUE ~ Value),
               Value = as.integer(Value),
               Measure = gsub(Measure, pattern = "\\[|\\]", replacement = ""),
               Country = gsub(Country, pattern = "\\[|\\]", replacement = ""),
@@ -174,8 +175,7 @@ PrepIN <-
              Measure = case_when(
                Measure == "all cases" ~ "Cases",
                Measure == "fatal" ~ "Deaths",
-               TRUE ~ Measure
-             )) %>% 
+               TRUE ~ Measure)) %>% 
       filter(Measure %in% c("Cases","Deaths")) %>% 
       mutate(Sex =tolower(Sex),
              Age = recode(Age,
@@ -190,7 +190,7 @@ PrepIN <-
               "70-79yr" = "70",
               "80+yr" = "80"
              )) %>% 
-      filter( !grepl(Country, pattern = "EU/EEA")) %>% 
+      filter(!grepl(Country, pattern = "EU/EEA")) %>% 
       mutate(Region = "All",
              Date = Date_i,
              Date = ddmmyyyy(Date),
@@ -225,7 +225,8 @@ PrepIN <-
                "Sweden" = "SE",
                "United Kingdom" = "GB"),
              # Code = paste0(Short,"_ECDC_",Date),
-             AgeInt = ifelse(Age == "80", 25, 10)) %>% 
+             AgeInt = case_when(Age == "80" ~ 25, 
+                                TRUE ~ 10)) %>% 
       select(Country, Region, Code, Date, Sex, Age, AgeInt, Metric, Measure, Value) %>% 
       filter(!is.na(Value))
   

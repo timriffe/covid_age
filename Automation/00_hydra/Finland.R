@@ -75,7 +75,8 @@ sex_dist <-
   deaths2 %>% 
   filter(Sex != "b",
          Age %in% c("30", "40")) %>% 
-  mutate(val = ifelse(val == "..", "0", val),
+  mutate(val = case_when(is.na(val) ~ 0, 
+                         TRUE ~ val),
          val = val %>% as.double()) %>% 
   group_by(Sex) %>% 
   summarise(val = sum(val)) %>% 
@@ -88,7 +89,8 @@ sex_dist <-
 val_miss <- 
   deaths2 %>% 
   filter(Sex == "b") %>% 
-  mutate(Age = ifelse(Age != "TOT", "no_tot", Age)) %>% 
+  mutate(Age = case_when(Age != "TOT" ~ "no_tot", 
+                         TRUE ~ Age)) %>% 
   drop_na() %>% 
   group_by(Age) %>% 
   summarise(val = sum(val)) %>% 
@@ -108,7 +110,8 @@ age_drop <-
 deaths3 <- 
   deaths2 %>% 
   filter(Age != age_drop) %>% 
-  mutate(val = ifelse(Sex == "b" & Age == "0", val_miss, val))
+  mutate(val = case_when(Sex == "b" & Age == "0" ~ val_miss, 
+                         TRUE ~ val))
 
 
 deaths_out <- 
@@ -119,7 +122,8 @@ deaths_out <-
               filter(Sex == "b",
                      Age != age_drop) %>% 
               select(Age, val_tot = val)) %>% 
-  mutate(val = ifelse(is.na(val), val_tot * prop, val),
+  mutate(val = case_when(is.na(val) ~ val_tot * prop, 
+                         TRUE ~ val),
          val = round(val)) %>% 
   select(-val_tot, -prop, Value = val) %>% 
   mutate(Measure = "Deaths",

@@ -46,3 +46,23 @@
 # J (maybe_lower_closeout) 
  Sat Aug 26 01:12:10 2023 
 
+
+# begin resolution of multiple sources per population 
+ Thu Oct  5 13:56:34 2023 
+
+
+# Resolve USA CDC overlaps 
+ Thu Oct  5 14:00:51 2023 
+
+
+# prep (resolve_UNKUNK) 
+ Thu Oct  5 14:02:43 2023 
+
+
+# A (convert_fractions_sexes) 
+ Thu Oct  5 14:53:58 2023 
+
+
+# B (redistribute_unknown_age) 
+ Thu Oct  5 15:25:54 2023 
+

@@ -57,7 +57,8 @@ db2 <- db %>%
                          unit == 1 & Edad <= 100 ~ Edad, 
                          unit == 1 & Edad > 100 ~ 100),
          Region = str_to_title(Region),
-         Region = ifelse(Region == "Sta Marta D.e.", "Santa Marta", Region)) 
+         Region = case_when(Region == "Sta Marta D.e." ~ "Santa Marta", 
+                            TRUE ~ Region)) 
 
 # unique(db2$Age)
 
@@ -188,7 +189,8 @@ db_all2 <- db_all %>%
 db_inc2 <- db_inc %>% dplyr::pull(Region)
 
 db_m_reg <- db_m %>% 
-  mutate(date_sub = if_else(str_detect(Fecha, "/"), str_sub(Fecha, -10, -1), str_sub(Fecha, 1, 10)),
+  mutate(date_sub = case_when(str_detect(Fecha, "/") ~ str_sub(Fecha, -10, -1),
+                              TRUE ~ str_sub(Fecha, 1, 10)),
          date_sub = str_replace_all(date_sub, "/", "-")) %>% 
   mutate(date_f = lubridate::parse_date_time(date_sub, orders = c('ymd', 'dmy'))) %>% 
  # drop_na(date_f) %>% 
