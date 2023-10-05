@@ -21,6 +21,7 @@ data_source_t <- paste0(dir_n, "Data_sources/", ctr, "/tests",today(), ".csv")
 # case and death data
 
 ## Source Link: https://data.ontario.ca/dataset/f4112442-bdc8-45d2-be3c-12efae72fb27
+## https://data.ontario.ca/dataset/confirmed-positive-cases-of-covid-19-in-ontario/resource/455fd63b-603d-4608-8216-7d8647f43350
 
 url <- "https://data.ontario.ca/dataset/f4112442-bdc8-45d2-be3c-12efae72fb27/resource/455fd63b-603d-4608-8216-7d8647f43350/download/conposcovidloc.csv"
 # testing data
