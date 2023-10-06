@@ -94,7 +94,8 @@ Cases <-
           `85` = aged85up) %>% 
   drop_na() %>%
   pivot_longer(TOT:`85`, names_to = "Age", values_to = "Value") %>% 
-  mutate(Date = date %>% as_date() %>% ddmmyyyy(),
+  mutate(Date = as.Date(date),
+   # Date = date %>% as_date() %>% ddmmyyyy(),
          Sex = case_when(Age == "TOT_m" ~ "m",
                       Age == "TOT_f" ~ "f",
                       TRUE ~ "b"),
@@ -105,7 +106,8 @@ Cases <-
          AgeInt = case_when(Age == "TOT" ~ NA_integer_,
                             Age == "0" ~ 5L,
                             Age == "85" ~20L,
-                            TRUE ~ 10L)) %>% 
+                            TRUE ~ 10L),
+         Date = ddmmyyyy(Date)) %>% 
   select(-date) 
 
 # Vaccines 1 (partial) and 2 (fully)
@@ -215,25 +217,29 @@ Everything <-
          Code = "IE") |> 
   sort_input_data()
 
-IE_in <- get_country_inputDB("IE")
+deaths_rds <- get_country_inputDB("IE") %>% 
+  filter(Measure == "Deaths")
 
-Everything_new <-
-  Everything %>% 
-  dplyr::filter(Age != "TOT") %>% 
-  select(Date, Measure, Sex, Code) %>% 
-  distinct()%>% 
-  mutate(new = TRUE)
+## There were missing data since 2022; while we have the original csv files. done.
+# files_source <- "N://COVerAGE-DB/Automation/Hydra/Data_sources/Ireland/deaths_scrape"
+# 
+# deaths_files_list <- list.files(
+#     path = files_source,
+#     pattern = ".csv",
+#     full.names = TRUE)
+# 
+# deaths_historical <- deaths_files_list %>% 
+#   map_dfr(read_csv)
+# 
+# deaths_historical_prep <- deaths_historical %>% 
+#   mutate(Country = "Ireland",
+#          Region = "All",
+#          Metric = "Count",
+#          Code = "IE", 
+#          Age = as.character(Age))
 
-
-# inventory %>% 
-#   select(Date, Measure, Sex)
-Deaths_append <- 
-  IE_in %>% 
-  anti_join(Everything_new,
-          by = c("Date","Measure","Sex"))
   
-out <- bind_rows(Everything,
-                        Deaths_append) |> 
+out <- bind_rows(Everything, deaths_rds) |> 
   unique() |> 
   sort_input_data()
 
@@ -277,4 +283,17 @@ zipr(zipname,
 file.remove(data_source)
 
 
+# Everything_new <-
+#   Everything %>% 
+#   dplyr::filter(Age != "TOT") %>% 
+#   select(Date, Measure, Sex, Code) %>% 
+#   distinct()%>% 
+#   mutate(new = TRUE)
 
+
+# inventory %>% 
+#   select(Date, Measure, Sex)
+# Deaths_append <- 
+#   IE_in %>% 
+#   anti_join(Everything_new,
+#           by = c("Date","Measure","Sex"))
