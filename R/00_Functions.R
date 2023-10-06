@@ -6,7 +6,8 @@ if(!require("pacman", character.only = TRUE)) {
   if (!require("pacman", character.only = TRUE))
     stop("Package pacman not found")
 }
-  
+
+
 library(pacman)
 
 # Required CRAN packages
@@ -43,10 +44,10 @@ if (!p_isinstalled("googlesheets4")) {
 # if (!p_isinstalled("covidAgeData")) {
 #   remotes::install_github("eshom/covid-age-data")
 # }
-# if (!p_isinstalled("DemoTools")) {
-#   install.packages("rstan", repos = "https://mc-stan.org/r-packages/", getOption("repos"))
-#   remotes::install_github("timriffe/DemoTools", build = FALSE)
-# }
+if (!p_isinstalled("DemoTools")) {
+  install.packages("rstan", repos = "https://mc-stan.org/r-packages/", getOption("repos"))
+  remotes::install_github("timriffe/DemoTools", build = FALSE)
+}
 if (!p_isinstalled("parallelsugar")){
   remotes::install_github("nathanvan/parallelsugar")
 }

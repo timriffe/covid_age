@@ -13,7 +13,7 @@ here::i_am("covid_age.Rproj")
 startup::startup()
 
 # TR 13 July 2023, copied from 01_update_inputDB.R
-Measures <- c("Cases","Deaths","Tests","ASCFR","Vaccinations",
+Measures <- c("Cases","Deaths","Tests","Vaccinations",
               "Vaccination1","Vaccination2", "Vaccination3", "Vaccination4", 
               "Vaccination5", "Vaccination6", "VaccinationBooster")
 

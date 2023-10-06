@@ -86,3 +86,59 @@
 # B (redistribute_unknown_age) 
  Thu Oct  5 21:48:10 2023 
 
+
+# begin resolution of multiple sources per population 
+ Fri Oct  6 03:16:44 2023 
+
+
+# Resolve USA CDC overlaps 
+ Fri Oct  6 03:21:03 2023 
+
+
+# prep (resolve_UNKUNK) 
+ Fri Oct  6 03:22:51 2023 
+
+
+# A (convert_fractions_sexes) 
+ Fri Oct  6 04:15:38 2023 
+
+
+# B (redistribute_unknown_age) 
+ Fri Oct  6 04:45:54 2023 
+
+
+# C (rescale_to_total) 
+ Fri Oct  6 07:34:53 2023 
+
+
+# D (infer_cases_from_deaths_and_ascfr) 
+ Fri Oct  6 09:50:50 2023 
+
+
+# E (infer_deaths_from_cases_and_ascfr) 
+ Fri Oct  6 10:27:54 2023 
+
+
+# Compile metadata 
+ Fri Oct  6 11:00:29 2023 
+
+
+# Compile metadata 
+ Fri Oct  6 11:04:55 2023 
+
+
+# Compile metadata 
+ Fri Oct  6 11:06:53 2023 
+
+
+# G (redistribute_unknown_sex) 
+ Fri Oct  6 13:47:47 2023 
+
+
+# H (rescale_sexes) 
+ Fri Oct  6 15:02:23 2023 
+
+
+# I (infer_both_sex) 
+ Fri Oct  6 15:19:43 2023 
+
