@@ -142,3 +142,87 @@
 # I (infer_both_sex) 
  Fri Oct  6 15:19:43 2023 
 
+
+# begin resolution of multiple sources per population 
+ Fri Oct  6 22:07:41 2023 
+
+
+# Resolve USA CDC overlaps 
+ Fri Oct  6 22:12:12 2023 
+
+
+# prep (resolve_UNKUNK) 
+ Fri Oct  6 22:21:28 2023 
+
+
+# A (convert_fractions_sexes) 
+ Fri Oct  6 23:17:02 2023 
+
+
+# prep (resolve_UNKUNK) 
+ Fri Oct  6 23:40:04 2023 
+
+
+# A (convert_fractions_sexes) 
+ Sat Oct  7 00:37:54 2023 
+
+
+# B (redistribute_unknown_age) 
+ Sat Oct  7 01:22:41 2023 
+
+
+# C (rescale_to_total) 
+ Sat Oct  7 04:21:59 2023 
+
+
+# D (infer_cases_from_deaths_and_ascfr) 
+ Sat Oct  7 07:12:41 2023 
+
+
+# E (infer_deaths_from_cases_and_ascfr) 
+ Sat Oct  7 08:03:50 2023 
+
+
+# B (redistribute_unknown_age) 
+ Sat Oct  7 11:09:46 2023 
+
+
+# prep (resolve_UNKUNK) 
+ Sat Oct  7 11:20:37 2023 
+
+
+# A (convert_fractions_sexes) 
+ Sat Oct  7 12:14:54 2023 
+
+
+# B (redistribute_unknown_age) 
+ Sat Oct  7 12:43:29 2023 
+
+
+# C (rescale_to_total) 
+ Sat Oct  7 15:22:23 2023 
+
+
+# D (infer_cases_from_deaths_and_ascfr) 
+ Sat Oct  7 17:42:25 2023 
+
+
+# E (infer_deaths_from_cases_and_ascfr) 
+ Sat Oct  7 18:16:31 2023 
+
+
+# G (redistribute_unknown_sex) 
+ Sat Oct  7 21:32:00 2023 
+
+
+# H (rescale_sexes) 
+ Sat Oct  7 22:51:21 2023 
+
+
+# I (infer_both_sex) 
+ Sat Oct  7 23:08:12 2023 
+
+
+# J (maybe_lower_closeout) 
+ Sun Oct  8 00:02:33 2023 
+

@@ -122,6 +122,9 @@ log_section <- function(step = "A", append = TRUE,
   
 }
 
+## rescale_vector 
+rescale_vector <- function(x, scale = 1) {
+  scale * x / sum(x, na.rm = TRUE)}
 
 ### log_processing_error()
 # Write error to log for chunk
