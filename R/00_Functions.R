@@ -2102,6 +2102,85 @@ harmonize_age_p_bigchunks <- function(bigchunk,
   return(out)
 }
 
+# by Jonas for use in memory restricted harmonization
+harmonize_age_minimal <- function(chunk, Offsets = NULL, N = 5, OAnew = 100,
+                                  lambda = 100, stratumlookup) {
+  
+  chunkid <- chunk$id[1]
+  
+  # Maybe we don't need to do anything but lower the OAG?
+  if(all(chunk$AgeInt == N) & max(chunk$Age) >= OAnew) {
+    
+    # Lower open age group: Combine values
+    Value   <- groupOAG(chunk$Value, chunk$Age, OAnew = OAnew)
+    
+    # Reduce ages and interval width
+    Age     <- chunk$Age[1:length(Value)]
+    AgeInt  <- chunk$AgeInt[1:length(Value)]
+    
+    # Output
+    return(data.table(id = chunkid, Age = Age,
+                      AgeInt = AgeInt, Value = Value))
+    
+  }
+  
+  # Get country, region, sex from external lookup table
+  .Country <- stratumlookup[id == chunkid,][['Country']]
+  .Region  <- stratumlookup[id == chunkid,][['Region']]
+  .Sex     <- stratumlookup[id == chunkid,][['Sex']]
+  
+  
+  # ...get offset for country/region/sex
+  Offsets   <-
+    Offsets[Offsets$Country == .Country &
+              Offsets$Region == .Region &
+              Offsets$Sex == .Sex,]
+  
+  # If offsets available...
+  if (nrow(Offsets) == 105){
+    
+    # Apply PCLM with offsets
+    V1 <- ungroup::pclm(
+      x = chunk$Age,
+      y = chunk$Value,
+      nlast = chunk$AgeInt[length(chunk$AgeInt)],
+      offset = Offsets$Population,
+      control = list(lambda = lambda, deg = 3)
+    )$fitted * Offsets$Population
+  }  else {
+    
+    # If no offsets are available then run through without.
+    V1 <- ungroup::pclm(x = chunk$Age,
+                        y = chunk$Value,
+                        nlast = chunk$AgeInt[length(chunk$AgeInt)],
+                        control = list(lambda = lambda, deg = 3))$fitted
+  }
+  
+  # Rescale age groups
+  V1      <- rescaleAgeGroups(Value1 = V1,
+                              AgeInt1 = rep(1,length(V1)),
+                              Value2 = chunk$Value,
+                              AgeInt2 = chunk$AgeInt,
+                              splitfun = graduate_mono)
+  
+  # Replace NaN with zero
+  V1[is.nan(V1)] <- 0
+  
+  # Group to age intervals
+  VN      <- groupAges(V1, 0:104, N = N, OAnew = OAnew)
+  
+  # First age of each age interval
+  Age     <- names2age(VN)
+  
+  # Interval widths
+  AgeInt  <- rep(N, length(VN))
+  
+  # Output
+  data.table::data.table(id = chunkid, Age = Age, AgeInt = AgeInt, Value = VN)
+  
+}
+
+
 
 
 ### rescale_sexes_post()

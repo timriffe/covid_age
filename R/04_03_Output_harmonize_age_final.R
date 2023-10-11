@@ -1,6 +1,3 @@
-## This script is a subscript of '04_harmonize_age_groups_changes.R' 
-## aims to start the harmonization using inputCounts.csv.
-## Outputs: 5/10_internal.csv files.
 
 ### Clean up & functions ############################################
 #source("https://raw.githubusercontent.com/timriffe/covid_age/master/R/00_Functions.R")
@@ -13,74 +10,33 @@ here::i_am("covid_age.Rproj")
 startup::startup()
 
 # TR 13 July 2023, copied from 01_update_inputDB.R
-Measures <- c("Cases","Deaths","Tests","Vaccinations",
-              "Vaccination1","Vaccination2", "Vaccination3", "Vaccination4", 
-              "Vaccination5", "Vaccination6", "VaccinationBooster")
+# Measures <- c("Cases","Deaths","Tests","Vaccinations",
+#               "Vaccination1","Vaccination2", "Vaccination3", "Vaccination4", 
+#               "Vaccination5", "Vaccination6", "VaccinationBooster")
 
 
 logfile <- here::here("buildlog.md")
 #n.cores <- round(6 + (detectCores() - 8)/4)
 # n.cores  <- 3
 Offsets <- readRDS("N://COVerAGE-DB/Data/Offsets.rds")
-# no longer used to determine core usage
-freesz  <- memuse::Sys.meminfo()$freeram@size
 
-inputCounts_raw <- data.table::fread("N://COVerAGE-DB/Data/inputCounts.csv",
-                                 encoding = "UTF-8")
-pre_inputCounts <-
-  inputCounts_raw %>% 
-  collapse::fsubset(Measure %in% Measures) %>% 
-  collapse::fselect(-Metric) %>% 
-  ## filter out the after 31-03-2023
-  collapse::fsubset(dmy(Date) <= ymd("2023-03-31")) %>% 
-  collapse::roworder(Country, Region, Date, Measure, Sex, Age) %>% 
-  collapse::fgroup_by(Code, Sex, Measure, Date) 
+## read all harmonized csv files 
 
-## Here is to create ID vector to use to split the data --
-id_inputCounts <- GRPid(pre_inputCounts) 
-max(id_inputCounts)
+dir_n <- "N:/COVerAGE-DB/Data/"
 
-inputCounts <- pre_inputCounts %>% 
-  collapse::fmutate(
-    id = id_inputCounts,
-    toss = any(is.na(Value))) %>% 
-  collapse::fungroup() %>% 
-  collapse::roworder(id, Age) %>% 
-  collapse::fsubset(!toss) %>% 
-  collapse::fselect(-toss)# %>% 
- # collapse::fsubset(id %in% sample(id, size = 500, replace = FALSE))
+folder <- "outputCounts_Measure"
 
+# Read in files names 
 
-iL <- split(inputCounts, list(inputCounts$id)) 
+files_list <- list.files(
+  path= paste0(dir_n, folder),
+  pattern = ".csv",
+  full.names = TRUE)
 
-## A rough estimation of the duration that the harmonization process would take ~ 5 days.
+out5 <- files_list |> 
+  map_dfr(fread)
 
-iL_test <- sample(1:max(id_inputCounts),1000, replace = FALSE)
-iL_guage <- iL[iL_test]
-tic()
-harmonizedL_guage <- suppressMessages(lapply(iL_guage,
-                      harmonize_age_p_del,
-                      Offsets = Offsets,
-                      OAnew = 100,
-                      N = 5,
-                      lambda = 1e5))
-time_stop <- toc()
-days_to_run <- ((time_stop$toc - time_stop$tic) * length(iL) / 1000) / 60 / 60 / 24
-
-## so we run here the harmonization function for all the splitted data 
-
-harmonizedL <- suppressMessages(lapply(iL,
-                      harmonize_age_p_del,
-                      Offsets = Offsets,
-                      OAnew = 100,
-                      N = 5,
-                      lambda = 1e5))
-
-## Bind the outputs into one data frame 
-
-out5 <- rbindlist(harmonizedL)
-
-## write/ save the output files 
+## Continue the output steps ===== 
 
 # Get into one data set
 data.table::fwrite(out5, file = "N://COVerAGE-DB/Data/Output_5_before_sex_scaling_etc.csv")
@@ -151,7 +107,7 @@ outputCounts_10 <-
   # Sum 
   collapse::fgroup_by(Country, Region, Code, Date, Sex, Measure, Age) %>% 
   collapse::fsummarize(Value = sum(Value),
-            keep.group_vars = FALSE) %>% 
+                       keep.group_vars = FALSE) %>% 
   # Replace age interval values
   collapse::fmutate(AgeInt = ifelse(Age == 100, 5, 10))
 
@@ -189,7 +145,4 @@ data.table::fwrite(outputCounts_10_rounded,
 
 # saveRDS(outputCounts_10, here::here("Data","Output_10.rds"))
 data.table::fwrite(outputCounts_10, file = "N://COVerAGE-DB/Data/Output_10_internal.csv")
-
-
-
 
