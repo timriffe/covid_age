@@ -19,7 +19,7 @@ Created on Sun Aug 22 14:34:08 2021
 @author: Waqar
 """
 
-
+from webdriver_manager.core.driver_cache import DriverCacheManager
 
 
 #path = r"N:\COVerAGE-DB\Automation\chromedriver\new-version\newest-version\neu-chrome\chromedriver_win32\chromedriver.exe"
@@ -32,8 +32,9 @@ from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
 import time
 from selenium.webdriver.chrome.service import Service as ChromeService
+from webdriver_manager.core.driver_cache import DriverCacheManager
 
-driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager(cache_valid_range=7).install()))
+driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager(cache_manager=DriverCacheManager(valid_range=7)).install()))
 #chrome_driver = ChromeDriverManager().install()
 options = ChromeOptions()
 options.add_argument("--disable-notifications")
