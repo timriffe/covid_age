@@ -2,11 +2,12 @@
 ## aims to start the harmonization using inputCounts.csv.
 ## Outputs: 5/10_internal.csv files.
 
-## This script is written by Jonas Schöley.
+## This script is written by Jonas Schöley. The script is written to solve the issues of memory burden 
+## which happened and halthed the run when using 04_harmonize_age_final.R. 
+## this script can be used solely to harmonize the data from inputCounts.csv. 
+## (i.e. no need for any additional scripts to run)
 
 ### Constants #######################################################
-
-#setwd('~/Dropbox/sci/2023-10-covharm/')
 
 source(here::here("R/00_Functions.R"))
 setwd(wd_sched_detect())
@@ -148,36 +149,39 @@ files_list <- list.files(
   full.names = TRUE)
 
 out5 <- files_list |> 
-  map_dfr(readRDS)
+  purrr::map_dfr(readRDS)
 
 ## write/ save the output files
 
 # Get into one data set
-data.table::fwrite(out5, file = "N://COVerAGE-DB/Data/Output_5_before_sex_scaling_etc.csv")
-rm(iL);rm(iLout1e5)
-
-ids_out  <- out5$id %>% unique() %>% sort()
-failures <- ids_in[!ids_in %in% ids_out]
-
-HarmonizationFailures <-
-  inputCounts %>%
-  filter(id %in% failures)
-
-data.table::fwrite(HarmonizationFailures, file = "N://COVerAGE-DB/Data/HarmonizationFailures.csv")
+# data.table::fwrite(out5, file = "N://COVerAGE-DB/Data/Output_5_before_sex_scaling_etc.csv")
+# #rm(iL);rm(iLout1e5)
+# 
+# ids_out  <- out5$id %>% unique() %>% sort()
+# failures <- ids_in[!ids_in %in% ids_out]
+# 
+# HarmonizationFailures <-
+#   inputCounts %>%
+#   filter(id %in% failures)
+# 
+# data.table::fwrite(HarmonizationFailures, file = "N://COVerAGE-DB/Data/HarmonizationFailures.csv")
 # saveRDS(HarmonizationFailures, file = here::here("Data","HarmonizationFailures.rds"))
 
-outputCounts_5_1e5 <-
-  out5 %>%
-  as.data.table() %>%
-  .[, Value := nafill(Value, nan = NA, fill = 1)] %>%
-  .[, rescale_sexes_post(chunk = .SD), keyby = .(Country, Region, Code, Date, Measure, AgeInt)] %>%
-  as_tibble() %>%
-  # pivot_wider(names_from = "Measure", values_from = "Value") %>%
-  # dplyr::select(Country, Region, Code, Date, Sex, Age, AgeInt, Cases, Deaths, Tests) %>%
-  # arrange(Country, Region, dmy(Date), Sex, Age) |>
-  # NEW, to avoid redundant harmonization
-  bind_rows(OutputCounts_keep) |>
-  arrange(Country, Region, Date, Measure, Sex, Age)
+# outputCounts_5_1e5 <-
+#   out5 %>%
+#   as.data.table() %>%
+#   .[, Value := nafill(Value, nan = NA, fill = 1)] %>%
+#   .[, rescale_sexes_post(chunk = .SD), keyby = .(Country, Region, Code, Date, Measure, AgeInt)] %>%
+#   as_tibble() %>%
+#   # pivot_wider(names_from = "Measure", values_from = "Value") %>%
+#   # dplyr::select(Country, Region, Code, Date, Sex, Age, AgeInt, Cases, Deaths, Tests) %>%
+#   # arrange(Country, Region, dmy(Date), Sex, Age) |>
+#   # NEW, to avoid redundant harmonization
+#   bind_rows(OutputCounts_keep) |>
+#   arrange(Country, Region, Date, Measure, Sex, Age)
+
+
+outputCounts_5_1e5 <- out5
 
 data.table::fwrite(outputCounts_5_1e5, file = "N://COVerAGE-DB/Data/Output_5_internal.csv")
 
@@ -212,17 +216,20 @@ data.table::fwrite(outputCounts_5_1e5_rounded,
 # Get 10-year groups from 5-year groups
 outputCounts_10 <-
   #  Take 5-year groups
-  outputCounts_5_1e5 %>%
+  outputCounts_5_1e5 |> 
+  #outputCounts_5_1e5 %>%
   # Replace numbers ending in 5
   collapse::fmutate(Age = Age - Age %% 10) %>%
   # Sum
-  collapse::fgroup_by(Country, Region, Code, Date, Sex, Measure, Age) %>%
-  collapse::fsummarize(Value = sum(Value),
-            keep.group_vars = FALSE) %>%
+  collapse::fgroup_by(Country, Region, Code, Date, Sex, Measure, Age) %>% 
+  collapse::fsummarise(Value = sum(Value)) %>% 
+  collapse::fungroup() |> 
   # Replace age interval values
-  collapse::fmutate(AgeInt = ifelse(Age == 100, 5, 10))
+  collapse::fmutate(AgeInt = case_when(Age == 100 ~ 5, 
+                                       TRUE ~ 10))
 
-outputCounts_10 <- outputCounts_10[, colnames(outputCounts_5_1e5)]
+## MK: I don't know why this line is here
+#outputCounts_10 <- outputCounts_10[, colnames(outputCounts_5_1e5)]
 
 # round output for csv
 outputCounts_10_rounded <-
