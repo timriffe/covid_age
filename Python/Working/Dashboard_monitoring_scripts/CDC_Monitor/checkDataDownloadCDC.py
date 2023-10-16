@@ -26,10 +26,10 @@ print(len(list_of_files))
 wbkName = 'N:/COVerAGE-DB/Automation/Python-Dashboard/PythonDashboard.xlsx' #Indicating the path and filename of Python Dashboard
 wbk = openpyxl.load_workbook(wbkName) #Opening the Python Dashboard
 wks = wbk["dash-view"] #Choosing the first worksheet in the excel workbook
-wks.cell(row=6, column=6).value = wks.cell(row=6, column=5).value #Writing the previous day's record
+wks.cell(row=5, column=6).value = wks.cell(row=5, column=5).value #Writing the previous day's record
 #myRow = 9
 for myCol in range(14,7,-1):
-    wks.cell(row=6, column=myCol).value = wks.cell(row=6, column=myCol-1).value
+    wks.cell(row=5, column=myCol).value = wks.cell(row=5, column=myCol-1).value
 #wks.cell(row=9, column=14).value = wks.cell(row=9, column=13).value
 #wks.cell(row=9, column=13).value = wks.cell(row=9, column=12).value
 #wks.cell(row=9, column=12).value = wks.cell(row=9, column=11).value
@@ -37,7 +37,7 @@ for myCol in range(14,7,-1):
 #wks.cell(row=9, column=10).value = wks.cell(row=9, column=9).value
 #wks.cell(row=9, column=9).value = wks.cell(row=9, column=8).value
 #wks.cell(row=9, column=8).value = wks.cell(row=9, column=7).value
-wks.cell(row=6, column=7).value = "FALSE"
+wks.cell(row=5, column=7).value = "FALSE"
 wbk.save(wbkName)
 wbk.close
 
@@ -50,7 +50,7 @@ if (len(files))!=len(list_of_files): #Compare previous day's data in csv file an
     wbkName = 'N:/COVerAGE-DB/Automation/Python-Dashboard/PythonDashboard.xlsx' #Indicating the path and filename of Python Dashboard
     wbk = openpyxl.load_workbook(wbkName) #Opening the Python Dashboard
     wks = wbk["dash-view"] #Choosing the first worksheet in the excel workbook
-    wks.cell(row=6, column=5).value = len(list_of_files) #Writing the current day's record in Dashboard
-    wks.cell(row=6, column=7).value = "TRUE" #Indicate DATA DOWNLOADED ON THE PARTICULAR DATE
+    wks.cell(row=5, column=5).value = len(list_of_files) #Writing the current day's record in Dashboard
+    wks.cell(row=5, column=7).value = "TRUE" #Indicate DATA DOWNLOADED ON THE PARTICULAR DATE
     wbk.save(wbkName) # Saving and closing the Dashboard
     wbk.close

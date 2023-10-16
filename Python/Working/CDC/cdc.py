@@ -25,10 +25,11 @@ from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 import time
 from selenium.webdriver.chrome.service import Service as ChromeService
+from webdriver_manager.core.driver_cache import DriverCacheManager
 
 
 #chrome_driver = ChromeDriverManager().install()
-driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager(cache_valid_range=7).install()))
+driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager(cache_manager=DriverCacheManager(valid_range=7)).install()))
 options = ChromeOptions()
 options.add_argument("--disable-notifications")
 options.add_argument("--enable-javascript")

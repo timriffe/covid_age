@@ -14,6 +14,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
+from webdriver_manager.core.driver_cache import DriverCacheManager
 
 
 #PATH = r"N:\COVerAGE-DB\Automation\chromedriver\new-version\newest-version\chromedriver.exe"
@@ -34,7 +35,7 @@ import time
 #driver = webdriver.Chrome(chrome_options=options,executable_path = path) #Path of Chrome Driver
 
 #chrome_driver = ChromeDriverManager().install()
-driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager(cache_valid_range=7).install()))
+driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager(cache_manager=DriverCacheManager(valid_range=7)).install()))
 options = ChromeOptions()
 options.add_argument("--disable-notifications")
 options.add_argument("--enable-javascript")
