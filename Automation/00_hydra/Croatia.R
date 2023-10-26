@@ -71,7 +71,8 @@ IN2 <-
   select(Sex = spol, dob, Date = Datum) %>%  # Regions = Counties
   mutate(Date = lubridate::ymd(Date),
           Age = round(lubridate::decimal_date(Date) - (dob+.5)),
-          Age = ifelse(Age > 100,100,Age),
+          Age = case_when(Age > 100 ~ 100,
+                          TRUE ~ Age),
           Age = as.integer(Age)) %>% 
   group_by(Sex, Date, Age) %>% 
   summarize(new = n(),.groups = "drop") %>% 
@@ -89,7 +90,8 @@ out <-
   IN2 %>% 
   tidyr::complete(Date = dates_all, Sex, Age = ages_all, fill = list(new = 0)) %>% 
   mutate(Region = "All",
-         AgeInt = ifelse(Age == 100L, 5L, 1L)) %>% 
+         AgeInt = case_when(Age == 100L ~ 5L,
+                            TRUE ~ 1L)) %>% 
   arrange(Sex, Age, Date) %>% 
   group_by(Sex, Age) %>% 
   mutate(Value = cumsum(new)) %>% 

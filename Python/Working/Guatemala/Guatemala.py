@@ -18,6 +18,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service as ChromeService
+from webdriver_manager.core.driver_cache import DriverCacheManager
 
 
 warnings.filterwarnings("ignore")
@@ -28,10 +29,14 @@ dst = r"N:\COVerAGE-DB\Automation\Guatemala\\"
 
 base_url = 'https://tableros.mspas.gob.gt/covid/'
 
-chrome_driver = ChromeDriverManager(cache_valid_range=7).install()
+driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager(cache_manager=DriverCacheManager(valid_range=7)).install()))
 options = ChromeOptions()
 options.add_argument("--disable-notifications")
-driver = Chrome(chrome_driver,options=options)
+
+#chrome_driver = ChromeDriverManager(cache_valid_range=7).install()
+#options = ChromeOptions()
+#options.add_argument("--disable-notifications")
+#driver = Chrome(chrome_driver,options=options)
 driver.maximize_window()
 driver.get(base_url)
 time.sleep(10)
@@ -114,12 +119,19 @@ time.sleep(30)
 driver.find_element(By.CLASS_NAME, 'buttons-csv').click()
 time.sleep(10)
 copyFileAndRename("confirmados_edad.csv",f"confirmedcases_{timestr}.csv")
+time.sleep(10)
 download_case_screening()
+time.sleep(10)
 copyFileAndRename("sospechosos_edad.csv", f"screenedcases_{timestr}.csv")
+time.sleep(10)
 download_deceased_cases()
+time.sleep(10)
 copyFileAndRename("fallecidos_edad.csv", f"deceasedcases_{timestr}.csv")
+time.sleep(20)
 download_vaccination_gender()
+time.sleep(10)
 copyFileAndRename("vacunados_sexo.csv", f"vaccination_gender_{timestr}.csv")
+time.sleep(20)
 download_vaccination_age()
 copyFileAndRename("vacunados_edad.csv", f"vaccination_age_{timestr}.csv")
 # initiated_vacc_by_sex = driver.find_element_by_xpath("//div[@widgetid='tableauTabbedNavigation_tab_1']")

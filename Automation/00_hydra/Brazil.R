@@ -126,14 +126,16 @@ out <-
   ungroup() %>% 
   select(-new) %>% 
   left_join(df_states) %>% 
-  mutate(Code = ifelse(state == "All", "BR", paste0("BR-", uf))) %>%
+  mutate(Code = case_when(state == "All" ~ "BR", 
+                          TRUE ~ paste0("BR-", uf))) %>%
   rename(Region = state,
          Sex = sex,
          Age = age,
          Date = date) %>% 
   arrange(Date, Region, Sex, suppressWarnings(as.integer(Age))) %>% 
   mutate(Country = "Brazil",
-         AgeInt = ifelse(Age == "100", 5, lead(as.numeric(Age)) - as.numeric(Age)),
+         AgeInt = case_when(Age == "100" ~ 5, 
+                            TRUE ~ lead(as.numeric(Age)) - as.numeric(Age)),
          Measure = "Deaths",
          Metric = "Count",
          Date = ddmmyyyy(Date)) %>% 

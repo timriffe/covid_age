@@ -126,7 +126,8 @@ vacc_today_out <- vacc_today %>%
            Region == "OberÃ¶sterreich" ~ "Oberösterreich",
            TRUE ~ Region),
          Measure = case_when(Measure == "Vaccination4+" ~ "Vaccination4", TRUE ~ Measure),
-         Code = paste0(ifelse(state_id < 10, paste0("AT-", state_id), "AT"))) %>% 
+         Code = paste0(case_when(state_id < 10 ~ paste0("AT-", state_id), 
+                                 TRUE ~ "AT"))) %>% 
   group_by(Date, Age, Sex, Code, Region, Measure) %>% 
   summarize(Value = sum(Value)) %>% 
   ungroup() %>% 

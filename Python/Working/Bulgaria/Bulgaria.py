@@ -11,6 +11,7 @@ import time
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver import Chrome, ChromeOptions
 from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.core.driver_cache import DriverCacheManager
 from selenium.webdriver.common.by import By
 import os
 from os import path
@@ -21,7 +22,8 @@ from selenium.webdriver.chrome.service import Service as ChromeService
 #options=Options()
 #driver = webdriver.Chrome(chrome_options=options,executable_path = PATH) #Path of Chrome Driver
 
-driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager(cache_valid_range=7).install()))
+driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager(cache_manager=DriverCacheManager(valid_range=7)).install()))
+#driver = webdriver.Chrome(ChromeDriverManager().install())
 #ChromeDriverManager(cache_valid_range=1).install()
 #chrome_driver = ChromeDriverManager().install()
 options = ChromeOptions()

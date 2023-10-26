@@ -71,7 +71,8 @@ cases_linelist2 <- cases_linelist %>%
                 Age = case_when(age < 0 ~ "UNK",
                                 age > 105 ~ "105",
                                 TRUE ~ as.character(age)),
-                Sex = if_else(male == "1", "m", "f")) %>% 
+                Sex = case_when(male == "1" ~ "m", 
+                                TRUE ~ "f")) %>% 
   dplyr::select(Date, Age, 
                 Sex, state) %>% 
 ## Since the deaths data are only by State, and for the sake of consistency, 
@@ -124,7 +125,8 @@ deaths_linelist2 <- deaths_linelist %>%
                 Age = case_when(age < 0 ~ "UNK",
                                 age > 105 ~ "105",
                                 TRUE ~ as.character(age)),
-                Sex = if_else(male == "1", "m", "f")) %>%  
+                Sex = case_when(male == "1" ~ "m", 
+                                TRUE ~ "f")) %>%  
   dplyr::group_by(Date, Age, Sex, Region = state) %>%
   dplyr::count(name = "Value") %>% 
   dplyr::ungroup() %>% 

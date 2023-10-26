@@ -154,7 +154,8 @@ overs <- ages_na %>%
 
 # rounding 0s to 1
 ages_na2 <- ages_na %>% 
-  mutate(imp2 = ifelse(imp2 < 1, 1, imp2)) 
+  mutate(imp2 = case_when(imp2 < 1 ~ 1, 
+                          TRUE ~ imp2)) 
 
 # testing the excess mortality produced by imputations
 excess_state <- ages_na2 %>%

@@ -202,11 +202,10 @@ Deaths <- NL %>%
   filter(Deceased == "Yes") %>% 
   mutate(
     Week_of_death = 
-      ifelse(is.na(Week_of_death), 
-             week(Date_statistics + 14) + year(Date_statistics) * 100, 
-             Week_of_death),
+      case_when(is.na(Week_of_death) ~ week(Date_statistics + 14) + year(Date_statistics) * 100, 
+                TRUE ~ Week_of_death),
     # assign date to end of respective week,
-    # implies week sampling of deaths.
+    # implies weekly reporting of deaths.
     date = isoweek_to_date_hack(Week_of_death),
     Age = case_when(Agegroup == "<50" ~ "UNK",
                     Agegroup == "50-59" ~ "50",

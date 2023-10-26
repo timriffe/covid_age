@@ -41,13 +41,13 @@ spreadsheet = {
 wb = xw.Book('N:/COVerAGE-DB/Automation/Python-Dashboard/PythonDashboard.xlsx')
 app = xw.apps.active
 sht = xw.Sheet('dash-view')
-py_list = sht.range('E3:N7').value
+py_list = sht.range('E3:N6').value
 print(py_list)
 #wb.close()
 app.quit()
 
 #Pasting the copied list in ggogle sheet i.e. updating the sheet
-range_name = "Python_automation!E3:N8"
+range_name = "Python_automation!E3:N6"
 
 data = { 'values' : py_list }
 
@@ -59,7 +59,7 @@ update_response = sheets_service.spreadsheets().values().update(
     range=range_name, 
     valueInputOption='USER_ENTERED').execute()
 
-range_name = "Python_automation!E3:N7"  
+range_name = "Python_automation!E3:N6"  
 
 response = sheets_service.spreadsheets().values().get(
   #spreadsheetId='1T6w5pIRk2q-imBfetddFbOUq0DuXEISFX_P10gpDMUg',#file created by service account

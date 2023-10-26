@@ -25,14 +25,14 @@ dir_temp <- "N:/COVerAGE-DB/CDC-MonthlyData/"
 
 # folder name, this changes 
 
-folder <- "covid_case_restricted_detailed-master_07_09_2023" ## to change every update/ download of the data
+folder <- "covid_case_restricted_detailed-master_05_10_2023" ## to change every update/ download of the data
 
 # Read in files names 
 
 files_list <- list.files(
   path= paste0(dir_temp, folder),
- # pattern = ".parquet",
-  pattern = ".csv",
+  pattern = ".parquet",
+ # pattern = ".csv",
   full.names = TRUE)
 
 
@@ -49,7 +49,7 @@ read_file <- function(file_name){
 ## After reading, validate the number of rows as per mentioneD in GitHub repo
   
 raw_data <- files_list |> 
-  map_dfr(read_file)
+  map_dfr(read_par)
 
 ## REVIEW THE DATA BEFORE PROCESSING 
 glimpse(raw_data)
