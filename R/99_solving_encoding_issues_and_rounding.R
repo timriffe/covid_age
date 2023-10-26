@@ -11,8 +11,12 @@ fix_enc <-
              Region = stri_encode(Region, "", "UTF-8"))
   }
 
-out05 <- read.csv("N:/COVerAGE-DB/Data/Output_5_internal.csv", encoding = "UTF-8")
-out10 <- read.csv("N:/COVerAGE-DB/Data/Output_10_internal.csv", encoding = "UTF-8")
+# out05 <- read.csv("N:/COVerAGE-DB/Data/Output_5_internal.csv", encoding = "UTF-8")
+# out10 <- read.csv("N:/COVerAGE-DB/Data/Output_10_internal.csv", encoding = "UTF-8")
+
+## Files with harmonized, fixed, and decumulated data
+out05 <- read.csv("N:/COVerAGE-DB/Data/WebInputs/Output_5_fixed_website.csv", encoding = "UTF-8")
+out10 <- read.csv("N:/COVerAGE-DB/Data/WebInputs/Output_10_fixed_website.csv", encoding = "UTF-8")
 input <- read.csv("N:/COVerAGE-DB/Data/inputDB_internal.csv", encoding = "UTF-8")
 
 out05_enc <- fix_enc(out05)
@@ -20,16 +24,17 @@ out10_enc <- fix_enc(out10)
 input_enc <- fix_enc(input)
 
 out05_enc_rd <- 
-  out05_enc %>% 
-  mutate(Cases = round(Cases, 1),
-         Deaths = round(Deaths, 1),
-         Tests = round(Tests, 1))
+  out05_enc %>%
+  select(-id)
+  # mutate(Cases = round(Cases, 1),
+  #        Deaths = round(Deaths, 1),
+  #        Tests = round(Tests, 1))
 
 out10_enc_rd <- 
-  out10_enc %>% 
-  mutate(Cases = round(Cases, 1),
-         Deaths = round(Deaths, 1),
-         Tests = round(Tests, 1))
+  out10_enc 
+  # mutate(Cases = round(Cases, 1),
+  #        Deaths = round(Deaths, 1),
+  #        Tests = round(Tests, 1))
 
 input_enc_rd <- 
   input_enc %>% 
