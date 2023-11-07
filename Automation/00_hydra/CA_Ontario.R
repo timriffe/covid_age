@@ -174,13 +174,13 @@ Cases_Deaths_df <- df6 %>%
 #--- On 05.06 they changed the variable names
 #--- seems rechanged at 23.06.2022!
 cumtests <- df_test %>% 
-  rename(new_tests="Total tests completed in the last day") %>%
-  select("Reported Date", new_tests) %>%
+  rename(new_tests="Total.tests.completed.in.the.last.day") %>%
+  select("Reported.Date", new_tests) %>%
   filter(is.na(new_tests)==F) %>% 
   mutate(Value=113082+cumsum(new_tests)) %>%
   mutate(Country="Canada", Region="Ontario", Metric="Count", Measure="Tests") %>%
   mutate(Sex="b", Age="TOT",AgeInt="") %>%
-  rename(Date="Reported Date") %>% 
+  rename(Date="Reported.Date") %>% 
   mutate(Date = mdy(Date),
          Date = ddmmyyyy(Date))
 

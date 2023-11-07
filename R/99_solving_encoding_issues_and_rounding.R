@@ -25,13 +25,21 @@ input_enc <- fix_enc(input)
 
 out05_enc_rd <- 
   out05_enc %>%
-  select(-id)
+  select(-id) |> 
+  select(Country, Region, Code, Date, Sex, Age, AgeInt, 
+         Cases, Deaths, Tests, Vaccination1,
+         Vaccination2, Vaccination3, Vaccination4, Vaccination5, Vaccination6, 
+         VaccinationBooster, Vaccinations)
   # mutate(Cases = round(Cases, 1),
   #        Deaths = round(Deaths, 1),
   #        Tests = round(Tests, 1))
 
 out10_enc_rd <- 
-  out10_enc 
+  out10_enc |> 
+  select(Country, Region, Code, Date, Sex, Age, AgeInt, 
+         Cases, Deaths, Tests, Vaccination1,
+         Vaccination2, Vaccination3, Vaccination4, Vaccination5, Vaccination6, 
+         VaccinationBooster, Vaccinations)
   # mutate(Cases = round(Cases, 1),
   #        Deaths = round(Deaths, 1),
   #        Tests = round(Tests, 1))
@@ -39,7 +47,11 @@ out10_enc_rd <-
 input_enc_rd <- 
   input_enc %>% 
   mutate(Value = round(Value, 1)) %>% 
-  select(-templateID)
+  select(-templateID) |> 
+  select(Country, Region, Code, Date, Sex, Age, AgeInt, 
+         Cases, Deaths, Tests, Vaccination1,
+         Vaccination2, Vaccination3, Vaccination4, Vaccination5, Vaccination6, 
+         VaccinationBooster, Vaccinations)
 
 # write.csv(out05_enc, "N:/COVerAGE-DB/website_data/web_out05.csv", fileEncoding = "UTF-8")
 # write.csv(out10_enc, "N:/COVerAGE-DB/website_data/web_out10.csv", fileEncoding = "UTF-8")
