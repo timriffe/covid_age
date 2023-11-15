@@ -79,12 +79,10 @@ tasks <-
 
 # list of all available scripts to schedule
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-scripts <- c('Peru', 
-             'AU_New_South_Wales',
-             'Austria', 
+scripts <- c('Austria', 
              'Bulgaria', 'Belgium', 'CanadaPDFs',
              'Czechia', 'Colombia', 'Croatia', 
-             'CA_Ontario', 'Chile',  
+             'CA_Ontario',  
              'Estonia', 'England', 
              'Estonia_vaccine', 'ECDC_vaccine', 'England_Vaccine', 
              'Finland', 'Finland_vaccine', 

@@ -258,7 +258,7 @@ out <- db_all2 %>%
 # save processed data in N: -------------------------------------------------
 #########################
 
-log_update(pp = ctr, N = nrow(out))
+#log_update(pp = ctr, N = nrow(out))
 
 write_rds(out, paste0(dir_n, ctr, ".rds"))
 
