@@ -31,24 +31,27 @@ download.file("https://covid19datos.salud.gov.pr/estadisticas_v2/download/data/d
 
 death = read.csv(data_source1)
 
+##death = read_csv("N:/COVerAGE-DB/Automation/Hydra/Data_sources/Puerto_Rico/death_age_2022-11-28.csv")
+
 death2= death %>%
-  #remove missing age information 
   select(Sex=CO_SEXO, Age= TX_GRUPO_EDAD, Date= FE_MUERTE)
-death2$Date = substr(death2$Date,1,nchar(death2$Date)-9)
+
 death3 <- death2 %>% 
   mutate(Sex= recode(Sex, 
                      `M`= "m",
-                     `F`= "f")) %>% 
+                     `F`= "f"),
+         Date= ymd(Date)) %>% 
   group_by(Date,Sex, Age) %>% 
   summarise(Value = n()) %>% 
   ungroup() %>% 
   tidyr::complete(Date, nesting(Sex, Age), fill=list(Value=0)) %>% 
   group_by(Sex, Age) %>% 
+  arrange(Date) |> 
   mutate(Value = cumsum(Value)) %>% 
   ungroup() %>% 
   mutate(Measure = "Deaths",
-    Metric = "Count") %>% 
-arrange(Date, Sex, Age) %>% 
+         Metric = "Count") %>% 
+  arrange(Date, Sex, Age) %>% 
   mutate(Date= ddmmyyyy(Date),
          Code = paste0("PR"),
          Age = case_when(Age == "0 - 9" ~ "0",
@@ -72,9 +75,9 @@ download.file("https://covid19datos.salud.gov.pr/estadisticas_v2/download/data/c
 
 cases = read_csv(data_source2)
 
+## cases <- read_csv("N:/COVerAGE-DB/Automation/Hydra/Data_sources/Puerto_Rico/cases_age_2022-11-28.csv")
 
-
-cases2= cases %>%
+cases2 <- cases %>%
   #remove missing age information 
   select(Sex=Sex, Age= Age, Date= "Sample Date")
 #cases2$Date = substr(cases2$Date,1,nchar(cases2$Date)-9)
@@ -82,22 +85,19 @@ cases3 <- cases2 %>%
   mutate(Sex= recode(Sex, 
                      `M`= "m",
                      `F`= "f",
-                    `O` = "UNK"),
+                     `O` = "UNK"),
+         Date= ymd(Date),
          Age = case_when(
-           Age == 106 ~ 105,
-           Age == 107 ~ 105,
-           Age == 108 ~ 105,
-           Age == 109 ~ 105,
-           Age == 111 ~ 105,
-           Age == 115 ~ 105,
-           Age == 118 ~ 105,
-            TRUE ~ Age
-            )) %>% 
+           Age >= 105 ~ "105",
+           is.na(Age) ~ "UNK",
+           TRUE ~ as.character(Age)
+         )) %>% 
   group_by(Date,Sex, Age) %>% 
   summarise(Value = n()) %>% 
   ungroup() %>% 
   tidyr::complete(Date, nesting(Sex, Age), fill=list(Value=0)) %>% 
   group_by(Sex, Age) %>% 
+  arrange(Date) |> 
   mutate(Value = cumsum(Value)) %>% 
   ungroup() %>% 
   mutate(Measure = "Cases",
@@ -107,12 +107,11 @@ cases3 <- cases2 %>%
          Code = paste0("PR"),
          Age = as.character(Age),
          Age = case_when(is.na(Age) ~ "UNK",
-           TRUE ~ Age),
+                         TRUE ~ Age),
          AgeInt = "1",
          Region = "All",
          Country = "Puerto Rico",
          Region = "All")
-
 
 
 ###tests
@@ -123,13 +122,14 @@ tests = read_csv("https://covid19datos.salud.gov.pr/estadisticas_v2/download/dat
 
 write_csv(tests, file = data_source3)
 
+##tests = read_csv("N:/COVerAGE-DB/Automation/Hydra/Data_sources/Puerto_Rico/tests_age_2022-11-28.csv")
 
 tests2= tests %>%
   #remove missing age information 
   select(Sex=CO_SEXO, Age= TX_GRUPO_EDAD, Date= FE_PRUEBA)
 # tests2$Date = substr(tests2$Date,1,nchar(tests2$Date)-9)
 tests3 <- tests2 %>% 
-  mutate(Date= ddmmyyyy(Date),
+  mutate(Date= ymd(Date),
          Sex= recode(Sex, 
                      `M`= "m",
                      `F`= "f",
@@ -140,10 +140,9 @@ tests3 <- tests2 %>%
   ungroup() %>% 
   tidyr::complete(Date, nesting(Sex, Age), fill=list(Value=0)) %>% 
   group_by(Sex, Age) %>% 
+  arrange(Date) |> 
   mutate(Value = cumsum(Value)) %>% 
   ungroup() %>% 
-  mutate(Measure = "Tests",
-         Metric = "Count") %>% 
   arrange(Date, Sex, Age) %>%  
   mutate(Code = paste0("PR"),
          Age = case_when(Age == "0 a 9" ~ "0",
@@ -158,10 +157,12 @@ tests3 <- tests2 %>%
                          Age == "" ~ "UNK",
                          (is.na(Age) ~ "UNK")),
          AgeInt = case_when(Age == "80" ~ "25",
-                            TRUE ~ "10")) %>% 
-  mutate(Region = "All",
+                            TRUE ~ "10"),
+         Measure = "Tests",
+         Metric = "Count",
+         Region = "All",
          Country = "Puerto Rico",
-         Region = "All") %>% 
+         Date= ddmmyyyy(Date)) %>% 
   filter(Date != "",
          Sex != "") 
 
@@ -196,12 +197,14 @@ vaccine3 <- vaccine2 %>%
          Measure = case_when(Dosis == "1" ~ "Vaccination1",
                           Dosis == "2" ~ "Vaccination2",
                           Dosis == "3" ~ "Vaccination3",
-                          Dosis == "4" ~ "Vaccination4")) %>% 
+                          Dosis == "4" ~ "Vaccination4"),
+         Date = ymd(Date)) %>% 
   group_by(Date,Sex, Age, Measure) %>% 
   summarise(Value = n()) %>% 
   ungroup() %>% 
   tidyr::complete(Date, nesting(Sex, Age, Measure), fill=list(Value=0)) %>% 
   group_by(Sex, Age, Measure) %>% 
+  arrange(Date) |> 
   mutate(Value = cumsum(Value)) %>% 
   ungroup() %>% 
 #  mutate(Measure = "Vaccination1") %>% 
