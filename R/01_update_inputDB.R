@@ -198,7 +198,12 @@ if (nrow(rubric) > 0){
     filter(!is.na(Value),
            !is.na(Region),
            !is.na(Country),
-           !is.na(dmy(Date))) 
+           !is.na(dmy(Date))) |> 
+    ##' remove the rows where all series of a data has value = 0. 
+    ##' these 0-value series increase file size, disturbs the harmonization process.
+    group_by(Code, Measure, Sex, Metric, Date) %>%
+    filter(!all(Value == 0)) %>% 
+    ungroup()
   
   # -------------------------------------- #
   inputDB_failures <- bind_rows(

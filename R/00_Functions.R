@@ -14,7 +14,9 @@ library(pacman)
 packages_CRAN <- c("tidyverse","lubridate","gargle","ungroup","HMDHFDplus",
                    "tictoc","parallel","data.table","git2r","usethis",
                    "remotes","here","knitr","rmarkdown","googledrive","zip",
-                   "cartography","rgdal","tmap","svglite",
+                   "cartography",
+                   #"rgdal",
+                   "tmap","svglite",
                    "countrycode","wpp2019","memuse","shiny","DT",
                    "collapse","tidyfast")
 # install.packages("tidyverse")
