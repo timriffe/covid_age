@@ -63,9 +63,9 @@ inputCounts <-
   collapse::fgroup_by(Measure, Code, Sex, Date) %>%
   # subset to complete data series over age
   collapse::fmutate(complete = all(!is.na(Value))) %>%
+  collapse::fungroup() %>% 
   collapse::fsubset(complete == TRUE) %>%
-  collapse::fselect(-complete) %>%
-  collapse::fungroup()
+  collapse::fselect(-complete) 
 
 # add id for individual data series
 inputCounts$id <-
@@ -95,7 +95,7 @@ ids <- unique(inputCounts$id)         # unique data series within measure
 n_series <- length(ids)     # total number of series to harmonize within measure
 n_batches <- ceiling(n_series/cnst$batchsize)
 
-#
+#loop over the n_batches to produce small batches of harmonized dataset
 for (batch in 0:n_batches) {
   element_first = (batch*cnst$batchsize+1)
   element_last  = ((batch+1)*cnst$batchsize)

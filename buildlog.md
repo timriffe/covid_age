@@ -230,3 +230,51 @@
 # remake coverage map 
  Thu Oct 12 11:24:04 2023 
 
+
+# begin resolution of multiple sources per population 
+ Thu Nov 23 18:43:40 2023 
+
+
+# Resolve USA CDC overlaps 
+ Thu Nov 23 18:47:45 2023 
+
+
+# prep (resolve_UNKUNK) 
+ Thu Nov 23 18:49:22 2023 
+
+
+# A (convert_fractions_sexes) 
+ Thu Nov 23 19:36:30 2023 
+
+
+# B (redistribute_unknown_age) 
+ Thu Nov 23 20:03:26 2023 
+
+
+# C (rescale_to_total) 
+ Thu Nov 23 22:38:31 2023 
+
+
+# D (infer_cases_from_deaths_and_ascfr) 
+ Fri Nov 24 01:09:21 2023 
+
+
+# E (infer_deaths_from_cases_and_ascfr) 
+ Fri Nov 24 01:49:13 2023 
+
+
+# G (redistribute_unknown_sex) 
+ Fri Nov 24 05:15:37 2023 
+
+
+# H (rescale_sexes) 
+ Fri Nov 24 06:24:56 2023 
+
+
+# I (infer_both_sex) 
+ Fri Nov 24 06:38:28 2023 
+
+
+# J (maybe_lower_closeout) 
+ Fri Nov 24 07:28:00 2023 
+
