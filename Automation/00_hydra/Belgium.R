@@ -28,14 +28,15 @@ download.file(url_vcc, destfile = data_source_v, mode = "wb")
 db_v <- read_csv(data_source_v)
 
 # cases and deaths
-url <- "https://epistat.sciensano.be/Data/COVID19BE.xlsx"
-data_source_c <- paste0(dir_n, "Data_sources/", ctr, "/cases_",today(), ".xlsx")
+#url <- "https://epistat.sciensano.be/Data/COVID19BE.xlsx"
+url <- "https://epistat.sciensano.be/Data/COVID19BE_CASES_AGESEX.csv"
+data_source_c <- paste0(dir_n, "Data_sources/", ctr, "/cases_",today(), ".csv")
 download.file(url, destfile = data_source_c, mode = "wb")
 
 # cases and deaths database
 ## MK: 10.07.2023: deaths sheet is available separately until 30.06.2023. 
-db_c <- read_xlsx(data_source_c,
-                  sheet = "CASES_AGESEX")
+db_c <- read.csv(data_source_c)
+                  #sheet = "CASES_AGESEX")
 
 deaths_url <- "https://epistat.sciensano.be/Data/COVID19BE_MORT.csv"
 data_source_d <- paste0(dir_n, "Data_sources/", ctr, "/deaths_",today(), ".csv")
@@ -45,8 +46,7 @@ download.file(deaths_url, destfile = data_source_d, mode = "wb")
 #                   sheet = "MORT")
 db_d <- read.csv("https://epistat.sciensano.be/Data/COVID19BE_MORT.csv")
 
-db_t <- read_xlsx(data_source_c,
-                  sheet = "TESTS")
+db_t <- read.csv("https://epistat.sciensano.be/Data/COVID19BE_tests.csv")
 
 data_source <- c(data_source_v, data_source_c, data_source_d)
 

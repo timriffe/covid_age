@@ -20,7 +20,7 @@ gs4_auth(email = Sys.getenv("email"))
 
 prepare_output <- function(df){
   df |> 
-    filter(!Age %in% c("75+", "50+")) %>% 
+    filter(!Age %in% c("75+", "50+", "65+")) %>% 
     mutate(Age = case_when(
       Age == "05_11" ~ "5",
       Age == "12_15" ~ "12",

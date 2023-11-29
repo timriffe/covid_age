@@ -66,7 +66,9 @@ nsw_cases_age <- read.csv("https://data.nsw.gov.au/data/dataset/3dc5dc39-40b4-4e
 
 write_rds(nsw_cases_age, paste0(dir_n, ctr, ".rds"))
 
-log_update(pp = ctr, N = nrow(nsw_cases_age))
+##'MK: No data since 19-10-2023, so deprecated. 
+
+#log_update(pp = ctr, N = nrow(nsw_cases_age))
 
 
 #Archive 
